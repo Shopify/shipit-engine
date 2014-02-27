@@ -2,7 +2,7 @@ require 'test_helper'
 
 class WebhooksControllerTest < ActionController::TestCase
   setup do
-    @stack = stacks(:shipit_production)
+    @stack = stacks(:shipit)
   end
 
   test ":push with the target branch queues a job" do
@@ -18,7 +18,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":status updates the commit with the payload state" do
-    commit = commits(:first_commit)
+    commit = commits(:first)
     params = {"payload" => "{\"sha\":\"#{commit.sha}\", \"state\":\"pending\"}"}
     post :state, { stack_id: @stack.id }.merge(params)
 
