@@ -1,4 +1,4 @@
 shipit:
-  since_commit: first
-  until_commit: second
+  since_commit_id: 1 # first
+  until_commit_id: 2 # second
   stack: shipit

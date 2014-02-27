@@ -25,4 +25,33 @@ class StacksTest < ActiveSupport::TestCase
   test "git_path" do
     assert_equal File.join(@expected_base_path, "git"), @stack.git_path
   end
+
+  test "#trigger_deploy persist a new deploy" do
+    last_commit = commits(:third)
+    deploy = @stack.trigger_deploy(last_commit)
+    assert deploy.persisted?
+    assert_equal last_commit.id, deploy.until_commit_id
+    assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
+  end
+
+  test "#trigger_deploy deploy until the commit passed in argument" do
+    last_commit = commits(:third)
+    deploy = @stack.trigger_deploy(last_commit)
+    assert_equal last_commit.id, deploy.until_commit_id
+  end
+
+  test "#trigger_deploy since_commit is the last deploy until_commit if there is a previous deploy" do
+    last_commit = commits(:third)
+    deploy = @stack.trigger_deploy(last_commit)
+    assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
+  end
+
+  test "#trigger_deploy since_commit is the first stack commit if there is no previous deploy" do
+    @stack.deploys.destroy_all
+
+    last_commit = commits(:third)
+    deploy = @stack.trigger_deploy(last_commit)
+    assert_equal @stack.commits.first.id, deploy.since_commit_id
+  end
+
 end

@@ -1,4 +1,5 @@
 first:
+  id: 1
   sha: 6d9278037b872fd9a6690523e411ecb3aa181355
   message: "lets go"
   stack: shipit
@@ -6,8 +7,17 @@ first:
   committer: walrus
 
 second:
+  id: 2
   sha: f890fd8b5f2be05d1fedb763a3605ee461c39074
   message: "sheep it!"
+  stack: shipit
+  author: walrus
+  committer: walrus
+
+third:
+  id: 3
+  sha: 367578b362bf2b4df5903e1c7960929361c39074
+  message: "fix it!"
   stack: shipit
   author: walrus
   committer: walrus

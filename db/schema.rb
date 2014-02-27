@@ -42,6 +42,13 @@ ActiveRecord::Schema.define(version: 20140227205437) do
   add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id"
   add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id"
 
+  create_table "repos", force: true do |t|
+    t.string   "name",       null: false
+    t.string   "owner",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "stacks", force: true do |t|
     t.string   "repo_name",                          null: false
     t.string   "repo_owner",                         null: false

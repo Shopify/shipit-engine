@@ -4,6 +4,23 @@ class Stack < ActiveRecord::Base
   has_many :commits
   has_many :deploys
 
+  def trigger_deploy(until_commit)
+    since_commit = last_deployed_commit
+
+    deploys.create(
+      until_commit: until_commit,
+      since_commit: since_commit
+    )
+  end
+
+  def last_deployed_commit
+    if last_deploy = deploys.last
+      last_deploy.until_commit
+    else
+      commits.first
+    end
+  end
+
   def repo_http_url
     "https://github.com/#{repo_owner}/#{repo_name}"
   end
