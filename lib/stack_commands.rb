@@ -5,6 +5,14 @@ class StackCommands
     @stack = stack
   end
 
+  def deploy(commit)
+    system(*%W(echo deploying #{commit.sha}))
+  end
+
+  def checkout(commit)
+    git("checkout", "-q", commit.sha)
+  end
+
   def clone(deploy)
     git("clone", "--local", @stack.git_path, deploy.working_directory)
   end
@@ -23,6 +31,7 @@ class StackCommands
   end
 
   def git(*args)
+    puts "RUN: #{args.join(' ')}"
     system("git", *args)
   end
 end
