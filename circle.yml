@@ -1,0 +1,14 @@
+machine:
+  environment:
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  ruby:
+    version: ruby-2.1
+  node:
+    version: 0.10.21
+dependencies:
+  bundler:
+    without:
+      - benchmark
+      - deploy
+      - production
+      - debug
