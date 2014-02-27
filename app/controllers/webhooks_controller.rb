@@ -15,7 +15,7 @@ class WebhooksController < ApplicationController
   end
 
   def state
-    commit = Commit.find_by_sha!(payload['sha'])
+    commit = stack.commits.find_by_sha!(payload['sha'])
     commit.update_attributes(state: payload['state'])
     head :ok
   end
