@@ -8,7 +8,10 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 
 group :development, :test do
+  gem 'faker'
+end
+
+group :debug do
   gem 'byebug'
   gem 'pry'
-  gem 'faker'
 end
