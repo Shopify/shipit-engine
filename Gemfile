@@ -15,6 +15,10 @@ group :development, :test do
   gem 'unicorn-rails'
 end
 
+group :test do
+  gem 'mocha'
+end
+
 group :debug do
   gem 'byebug'
   gem 'pry'
