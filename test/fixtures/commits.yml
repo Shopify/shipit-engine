@@ -1,0 +1,13 @@
+first:
+  sha: 6d9278037b872fd9a6690523e411ecb3aa181355
+  message: "lets go"
+  stack: shipit
+  author: walrus
+  committer: walrus
+
+second:
+  sha: f890fd8b5f2be05d1fedb763a3605ee461c39074
+  message: "sheep it!"
+  stack: shipit
+  author: walrus
+  committer: walrus
