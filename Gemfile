@@ -10,13 +10,13 @@ gem 'rugged'
 gem 'resque'
 gem 'unicorn'
 gem 'octokit'
+gem 'faker'
 
 group :development, :test do
   gem 'unicorn-rails'
 end
 
 group :test do
-  gem 'faker'
   gem 'mocha'
 end
 
