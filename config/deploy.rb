@@ -23,7 +23,7 @@ set :deploy_to, '/u/apps/shipit2'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/unicorn.conf.rb config/database.yml config/secrets.yml}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
@@ -34,15 +34,12 @@ set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
 # Default value for keep_releases is 5
 set :keep_releases, 50
 
-# Convenience vars:
-set :sudo_to_app, "sudo -u shipit2 --"
-set :unicorn_pid, "#{shared_path}/tmp/pids/unicorn.pid"
-
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
   desc "Signal Unicorn to restart the application"
   task :restart do
-    # FIXME this doesn't actually work because capistrano 3 :(
-    run "test ! -f #{unicorn_pid} || #{sudo_to_app} /usr/local/bin/unicorn-corporify shipit2"
+    on roles(:app), in: :parallel do
+      execute "test ! -f #{shared_path}/tmp/pids/unicorn.pid || sudo -u shipit2 /usr/local/bin/unicorn-corporify shipit2"
+    end
   end
 end
