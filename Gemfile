@@ -8,6 +8,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'rugged'
 gem 'resque'
+gem 'unicorn'
 
 group :development, :test do
   gem 'faker'
