@@ -1,7 +1,15 @@
 walrus:
+  name:  Lando Walrussian
   email: walrus@shopify.com
   login: walrus
 
 bob:
-  login: bob
+  name:  Bob the Builder
   email: bob@bob.com
+  github_id: 1234
+  login: bob
+
+anonymous:
+  name:  Anonymous Legion
+  email: anonymous@example.com
+  # no Github info
