@@ -1,5 +1,6 @@
-class GithubUrlHelperTest < ActiveSupport::TestCase
+require 'test_helper'
 
+class GithubUrlHelperTest < ActiveSupport::TestCase
   include GithubUrlHelper
 
   test "#github_url returns the base github url" do
@@ -24,5 +25,4 @@ class GithubUrlHelperTest < ActiveSupport::TestCase
 
     assert_equal expected, github_diff_url("rails", "rails", from_sha, to_sha).to_s
   end
-
 end
