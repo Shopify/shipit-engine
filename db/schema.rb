@@ -11,31 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140226234037) do
+ActiveRecord::Schema.define(version: 20140227154556) do
 
   create_table "commits", force: true do |t|
-    t.integer  "repo_id",               null: false
+    t.integer  "stack_id",              null: false
     t.string   "sha",        limit: 40, null: false
     t.string   "message",               null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "commits", ["repo_id"], name: "index_commits_on_repo_id"
+  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deploys", force: true do |t|
-    t.integer  "repo_id",    null: false
+    t.integer  "stack_id",   null: false
     t.integer  "commit_id",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "deploys", ["commit_id"], name: "index_deploys_on_commit_id"
-  add_index "deploys", ["repo_id"], name: "index_deploys_on_repo_id"
+  add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id"
 
-  create_table "repos", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "owner",      null: false
+  create_table "stacks", force: true do |t|
+    t.string   "repo_name",                          null: false
+    t.string   "repo_owner",                         null: false
+    t.string   "environment", default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

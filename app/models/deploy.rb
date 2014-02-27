@@ -1,4 +1,4 @@
 class Deploy < ActiveRecord::Base
-  belongs_to :repo
+  belongs_to :stack
   belongs_to :commit
 end

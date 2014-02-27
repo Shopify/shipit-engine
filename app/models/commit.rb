@@ -1,4 +1,4 @@
 class Commit < ActiveRecord::Base
-  belongs_to :repo
+  belongs_to :stack
   has_many :deploys
 end
