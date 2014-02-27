@@ -1,3 +1,3 @@
 Shipit::Application.routes.draw do
-  resource :stacks, :only => [:index, :show]
+  resources :stacks, :only => [:index, :show]
 end
