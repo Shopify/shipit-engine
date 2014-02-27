@@ -9,4 +9,6 @@ gem 'jquery-rails'
 
 group :development, :test do
   gem 'byebug'
+  gem 'pry'
+  gem 'faker'
 end
