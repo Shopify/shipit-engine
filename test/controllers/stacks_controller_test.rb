@@ -18,7 +18,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#destroy behaves correctly" do
-    delete :destroy, :id => @stack.id
+    delete :destroy, :id => @stack.to_param
     assert_redirected_to stacks_path
   end
 end

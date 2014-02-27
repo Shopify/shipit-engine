@@ -31,6 +31,6 @@ class WebhooksController < ApplicationController
   end
 
   def stack
-    @stack ||= Stack.find(params[:stack_id])
+    @stack ||= Stack.from_param(params[:stack_id])
   end
 end

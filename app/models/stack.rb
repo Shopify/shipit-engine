@@ -56,4 +56,17 @@ class Stack < ActiveRecord::Base
   def git_mirror_path
     Rails.root + 'data' + 'mirror' + repo_name
   end
+
+  def to_param
+    [repo_owner, repo_name, environment].join('/')
+  end
+
+  def self.from_param(param)
+    repo_owner, repo_name, environment = param.split('/')
+    where(
+      :repo_owner  => repo_owner,
+      :repo_name   => repo_name,
+      :environment => environment
+    ).first!
+  end
 end

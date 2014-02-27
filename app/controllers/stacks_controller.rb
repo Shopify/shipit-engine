@@ -8,7 +8,7 @@ class StacksController < ApplicationController
   end
 
   def show
-    @stack = Stack.find(params[:id])
+    @stack = Stack.from_param(params[:id])
   end
 
   def create
@@ -17,13 +17,13 @@ class StacksController < ApplicationController
   end
 
   def destroy
-    @stack = Stack.find(params[:id])
+    @stack = Stack.from_param(params[:id])
     @stack.destroy!
     respond_with(@stack)
   end
 
   def settings
-    @stack = Stack.find(params[:id])
+    @stack = Stack.from_param(params[:id])
   end
 
   private
