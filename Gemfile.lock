@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/rails/rails.git
-  revision: bdf9141c039afc7ce56d6c69cfe50b60155e5359
+  revision: 82dde716731e1213a18e2787da0901c92a3bf44e
   branch: 4-1-stable
   specs:
     actionmailer (4.1.0.rc1)
@@ -51,7 +51,7 @@ GEM
     arel (5.0.0)
     atomic (1.1.15)
     builder (3.2.2)
-    byebug (2.6.0)
+    byebug (2.7.0)
       columnize (~> 0.3)
       debugger-linecache (~> 1.2)
     coderay (1.1.0)
