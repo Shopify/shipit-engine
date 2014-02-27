@@ -1,20 +1,23 @@
 class GithubSyncJob
+  MAX_PAGES = 2
+
   def perform(params)
-    stack = Stack.find(params[:stack_id])
-    repo  = stack.github_repo
+    @stack = Stack.find(params[:stack_id])
+    repo  = @stack.github_repo
 
-    commits = fetch_missing_commits(stack, repo.rels[:commits])
-
-    commits.reverse.map { |c| stack.commits.from_github(c) }.each(&:save!)
+    commits = fetch_missing_commits(repo.rels[:commits])
+    commits.reverse.each do |gh_commit|
+      @stack.commits.from_github(gh_commit).save!
+    end
   end
 
-  def fetch_missing_commits(stack, relation)
+  def fetch_missing_commits(relation)
     commits = []
 
-    2.times do
+    MAX_PAGES.times do
       resource = relation.get
       resource.data.map do |commit|
-        return commits if stack.commits.where(:sha => commit.sha).exists?
+        return commits if known?(commit.sha)
         commits << commit
       end
 
@@ -24,4 +27,11 @@ class GithubSyncJob
 
     commits
   end
+
+  protected
+
+  def known?(sha)
+    @stack.commits.where(sha: sha).exists?
+  end
+
 end
