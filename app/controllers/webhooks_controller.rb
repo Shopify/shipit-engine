@@ -9,6 +9,12 @@ class WebhooksController < ApplicationController
     head :ok
   end
 
+  def state
+    commit = Commit.find_by_sha!(payload['sha'])
+    commit.update_attributes(state: payload['state'])
+    head :ok
+  end
+
   def index
     render text: "working"
   end
@@ -16,7 +22,7 @@ class WebhooksController < ApplicationController
   private
 
   def payload
-    JSON.load(params[:payload])
+    @payload ||= JSON.load(params[:payload])
   end
 
   def stack
