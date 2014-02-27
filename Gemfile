@@ -12,6 +12,7 @@ gem 'unicorn'
 
 group :development, :test do
   gem 'faker'
+  gem 'unicorn-rails'
 end
 
 group :debug do
