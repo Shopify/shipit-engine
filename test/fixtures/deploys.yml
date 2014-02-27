@@ -1,0 +1,4 @@
+shipit:
+  since_commit: first
+  until_commit: second
+  stack: shipit
