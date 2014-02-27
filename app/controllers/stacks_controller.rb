@@ -22,6 +22,10 @@ class StacksController < ApplicationController
     respond_with(@stack)
   end
 
+  def settings
+    @stack = Stack.find(params[:id])
+  end
+
   private
 
   def create_params

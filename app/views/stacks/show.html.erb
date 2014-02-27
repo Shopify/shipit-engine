@@ -1,5 +1,7 @@
 <h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
 
+<a href="<%= settings_stack_path(@stack) %>">Settings</a>
+
 <h2>Undeployed Commits</h2>
 
 <table>
