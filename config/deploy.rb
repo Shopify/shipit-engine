@@ -34,9 +34,15 @@ set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 # Default value for keep_releases is 5
 set :keep_releases, 50
 
+# Convenience vars:
+set :sudo_to_app, "sudo -u shipit2 --"
+set :unicorn_pid, "#{shared_path}/tmp/pids/unicorn.pid"
+
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
+  desc "Signal Unicorn to restart the application"
   task :restart do
-    invoke 'unicorn:reload'
+    # FIXME this doesn't actually work because capistrano 3 :(
+    run "test ! -f #{unicorn_pid} || #{sudo_to_app} /usr/local/bin/unicorn-corporify shipit2"
   end
 end
