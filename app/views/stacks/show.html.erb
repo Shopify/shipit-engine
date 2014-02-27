@@ -1,6 +1,7 @@
 <h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
 
 <a href="<%= settings_stack_path(@stack) %>">Settings</a>
+<a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
 
 <h2>Undeployed Commits</h2>
 
@@ -16,8 +17,17 @@
   <tbody>
     <% 15.times do %>
       <tr>
-        <td><%= SecureRandom.hex[0...7] %></td>
-        <td><%= Faker::Internet.user_name %></td>
+        <td>
+          <a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, SecureRandom.hex) %>">
+            <%= SecureRandom.hex[0...7] %>
+          </a>
+        </td>
+        <td>
+          <a href="<%= github_user_url(Faker::Internet.user_name) %>">
+            <%= Faker::Internet.user_name %>
+          </a>
+        </td>
+
         <td><%= Faker::Company.catch_phrase %></td>
         <td>
           <% success = [true, false].sample %>
@@ -44,7 +54,11 @@
   <tbody>
     <% 10.times do %>
       <tr>
-        <td><%= SecureRandom.hex[0...7] %> &rarr; <%= SecureRandom.hex[0...7] %></td>
+        <td>
+          <a href="<%= github_diff_url(@stack.repo_owner, @stack.repo_name, SecureRandom.hex, SecureRandom.hex) %>">
+            <%= SecureRandom.hex[0...7] %> &rarr; <%= SecureRandom.hex[0...7] %>
+          </a>
+        </td>
         <td>
           <% success = [true, false].sample %>
           <% if success %>

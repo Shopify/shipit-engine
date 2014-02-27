@@ -3,8 +3,12 @@ module GithubUrlHelper
     "https://github.com"
   end
 
+  def github_user_url(user)
+    [github_url, user].join("/")
+  end
+
   def github_repo_url(owner, repo)
-    [github_url, owner, repo].join("/")
+    [github_user_url(owner), repo].join("/")
   end
 
   def github_commit_url(owner, repo, sha)
