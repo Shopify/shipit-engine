@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140227155328) do
+ActiveRecord::Schema.define(version: 20140227185913) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20140227155328) do
     t.string   "message",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "state"
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id"
@@ -47,6 +48,7 @@ ActiveRecord::Schema.define(version: 20140227155328) do
     t.string   "environment", default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "branch",      default: "master",     null: false
   end
 
   create_table "users", id: false, force: true do |t|

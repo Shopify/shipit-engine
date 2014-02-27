@@ -11,11 +11,11 @@ gem 'resque'
 gem 'unicorn'
 
 group :development, :test do
-  gem 'faker'
   gem 'unicorn-rails'
 end
 
 group :test do
+  gem 'faker'
   gem 'mocha'
 end
 
