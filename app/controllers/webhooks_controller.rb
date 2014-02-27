@@ -5,7 +5,7 @@ class WebhooksController < ApplicationController
 
   def push
     branch = payload['ref'].gsub('refs/heads/', '')
-    GitRefreshJob.perform_async(stack.id) if branch == stack.branch
+    Resque.enqueue(GitRefreshJob, stack.id) if branch == stack.branch
     head :ok
   end
 

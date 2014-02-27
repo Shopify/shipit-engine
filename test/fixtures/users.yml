@@ -1,3 +1,7 @@
 walrus:
   email: walrus@shopify.com
   login: walrus
+
+bob:
+  login: bob
+  email: bob@bob.com

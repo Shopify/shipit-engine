@@ -11,3 +11,11 @@ second:
   stack: shipit
   author: walrus
   committer: walrus
+
+first_commit:
+  sha: ab012310293
+  state:
+  stack: shopify_production
+  author: bob
+  committer: bob
+  message: Initial commit
