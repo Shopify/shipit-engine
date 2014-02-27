@@ -3,4 +3,13 @@ class Commit < ActiveRecord::Base
   has_many :deploys
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
+
+  def self.from_github(commit)
+    new(
+      :sha     => commit.sha,
+      :message => commit.commit.message,
+      :author_id    => 0,
+      :committer_id => 0
+    )
+  end
 end

@@ -9,6 +9,7 @@ gem 'jquery-rails'
 gem 'rugged'
 gem 'resque'
 gem 'unicorn'
+gem 'octokit'
 
 group :development, :test do
   gem 'unicorn-rails'
