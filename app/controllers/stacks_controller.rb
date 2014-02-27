@@ -1,4 +1,8 @@
 class StacksController < ApplicationController
+  def new
+    @stack = Stack.new
+  end
+
   def index
     @stacks = Stack.all
   end
@@ -17,7 +21,7 @@ class StacksController < ApplicationController
     @stack.destroy!
     respond_with(@stack)
   end
-  
+
   private
 
   def create_params

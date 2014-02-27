@@ -1,0 +1,21 @@
+<h1>Create a stack</h1>
+
+<%= form_for @stack do |f| %>
+  <div>
+    <%= f.label :repo_owner %>
+    <%= f.text_field :repo_owner %>
+  </div>
+  <div>
+    <%= f.label :repo_name %>
+    <%= f.text_field :repo_name %>
+  </div>
+  <div>
+    <%= f.label :branch %>
+    <%= f.text_field :branch %>
+  </div>
+  <div>
+    <%= f.label :environment %>
+    <%= f.text_field :environment %>
+  </div>
+  <%= f.submit %>
+<% end %>
