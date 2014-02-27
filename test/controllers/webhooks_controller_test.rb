@@ -25,4 +25,11 @@ class WebhooksControllerTest < ActionController::TestCase
 
     assert_equal 'pending', commit.reload.state
   end
+
+  test ":status with a unexisting commit trows ActiveRecord::RecordNotFound" do
+    params = {"payload" => "{\"sha\":\"notarealcommit\", \"state\":\"pending\"}"}
+    assert_raises ActiveRecord::RecordNotFound do
+      post :state, { stack_id: @stack.id }.merge(params)
+    end
+  end
 end
