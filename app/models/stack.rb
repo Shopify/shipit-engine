@@ -24,12 +24,15 @@ class Stack < ActiveRecord::Base
     File.join(base_path, "git")
   end
 
+  def github_repo_name
+    return [repo_owner, repo_name].join('/')
+  end
+
   def github_repo
-    full_repo = [repo_owner, repo_name].join('/')
-    Shipit.github_api.repo(full_repo)
+    Shipit.github_api.repo(github_repo_name)
   end
 
   def git_mirror_path
-    Rails.root + 'mirror' + repo_name
+    Rails.root + 'data' + 'mirror' + repo_name
   end
 end
