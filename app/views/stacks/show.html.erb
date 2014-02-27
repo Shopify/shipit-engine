@@ -1,3 +1,57 @@
-<h1>stacks/show.html.erb</h1>
+<h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
 
-<%= debug @stack %>
+<h2>Undeployed Commits</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>SHA</th>
+      <th>Author</th>
+      <th>Message</th>
+      <th>CI Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% 15.times do %>
+      <tr>
+        <td><%= SecureRandom.hex[0...7] %></td>
+        <td><%= Faker::Internet.user_name %></td>
+        <td><%= Faker::Company.catch_phrase %></td>
+        <td>
+          <% success = [true, false].sample %>
+          <% if success %>
+            <span style="color: green">&check;</span>
+          <% else %>
+            <span style="color: red">&cross;</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+<table>
+
+<h2>Deploys</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Commit Range</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% 10.times do %>
+      <tr>
+        <td><%= SecureRandom.hex[0...7] %> &rarr; <%= SecureRandom.hex[0...7] %></td>
+        <td>
+          <% success = [true, false].sample %>
+          <% if success %>
+            <span style="color: green">Success</span>
+          <% else %>
+            <span style="color: red">Epic Failure</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+<table>

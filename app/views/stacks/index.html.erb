@@ -1,3 +1,11 @@
-<h1>stacks/index.html.erb</h1>
+<h1>Stacks</h1>
 
-<%= debug @stacks %>
+<ul>
+  <% @stacks.each do |stack| %>
+    <li>
+      <a href="<%= stack_path stack %>">
+        <%= stack.repo_owner %>/<%= stack.repo_name %> <small><%= stack.environment %></small>
+      </a>
+    </li>
+  <% end %>
+</li>
