@@ -1,4 +1,5 @@
 class GithubSyncJob
+  @queue = :default
   MAX_PAGES = 2
 
   def perform(params)

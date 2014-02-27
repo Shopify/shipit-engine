@@ -63,4 +63,13 @@ class StacksTest < ActiveSupport::TestCase
     deploy = @stack.trigger_deploy(last_commit)
   end
 
+  test "creating a stack queues a GithubSetupWebhooksJob" do
+    Resque.expects(:enqueue).with(GithubSetupWebhooksJob, has_key(:stack_id))
+    stack = Stack.create(repo_owner: "Shopify", repo_name: "Unicorns", environment: :production, branch: :master)
+  end
+
+  test "destroying a stack queues a GithubTeardownWebhooksJob" do
+    Resque.expects(:enqueue).with(GithubTeardownWebhooksJob, has_key(:stack_id))
+    stacks(:shipit).destroy
+  end
 end

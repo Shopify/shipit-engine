@@ -4,6 +4,9 @@ class Stack < ActiveRecord::Base
   has_many :commits
   has_many :deploys
 
+  after_create :setup_webhooks
+  after_destroy :teardown_webhooks
+
   def trigger_deploy(until_commit)
     since_commit = last_deployed_commit
 
@@ -68,5 +71,15 @@ class Stack < ActiveRecord::Base
       :repo_name   => repo_name,
       :environment => environment
     ).first!
+  end
+
+  private
+
+  def setup_webhooks
+    Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)
+  end
+
+  def teardown_webhooks
+    Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id)
   end
 end
