@@ -3,3 +3,9 @@ shipit:
   repo_name: "shipit2"
   environment: "production"
 
+shipit_production:
+  repo_owner: Shopify
+  repo_name: shopify
+  environment: production
+  branch: master
+
