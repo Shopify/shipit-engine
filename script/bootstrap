@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Output all commands, stop on failures
+set -e
+set -x
+
+bundle install
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake db:seed
