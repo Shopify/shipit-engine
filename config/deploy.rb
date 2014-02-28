@@ -34,7 +34,8 @@ set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
 # Default value for keep_releases is 5
 set :keep_releases, 50
 
-after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', 'deploy:restart', 'jobs:restart'
+
 namespace :deploy do
   desc "Signal Unicorn to restart the application"
   task :restart do
