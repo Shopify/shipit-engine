@@ -11,9 +11,11 @@
     <header class="sidebar">
       <a href="/" class="logo"><i></i><span>Ship it</span></a>
       <nav class="nav">
-
+        <% stacks_by_owner.each do |owner, stacks_for_owner| %>
+          <% if stacks_by_owner.keys.length > 1 %>
+            <h4><%= owner %></h4>
+          <% end %>
           <ul>
-            <% stacks.group_by(&:repo_owner).each do |owner, stacks_for_owner| %>
             <% stacks_for_owner.group_by(&:repo_name).each do |repo_name, stacks_for_repo| %>
               <li class="nav-item">
                 <span class="platform"><%= repo_name %></span>
@@ -28,9 +30,8 @@
                 </ul>
               </li>
             <% end %>
-            <% end %>
           </ul>
-
+        <% end %>
       </nav>
     </header>
     <div class="main">
