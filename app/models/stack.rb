@@ -7,10 +7,14 @@ class Stack < ActiveRecord::Base
   def trigger_deploy(until_commit)
     since_commit = last_deployed_commit
 
-    deploys.create(
+    deploy = deploys.create(
       until_commit: until_commit,
       since_commit: since_commit
     )
+    if deploy.persisted?
+      Resque.enqueue(DeployJob, deploy_id: deploy.id)
+    end
+    deploy
   end
 
   def last_deployed_commit

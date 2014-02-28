@@ -1,12 +1,13 @@
 require "fileutils"
 
 class StackCommands
+
   def initialize(stack)
     @stack = stack
   end
 
   def deploy(commit)
-    system(*%W(echo deploying #{commit.sha}))
+    Command.new('cap', @stack.environment, 'deploy', "SHA=#{commit.sha}")
   end
 
   def checkout(commit)
@@ -31,7 +32,6 @@ class StackCommands
   end
 
   def git(*args)
-    puts "RUN: #{args.join(' ')}"
-    system("git", *args)
+    Command.new("git", *args)
   end
 end

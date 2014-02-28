@@ -5,7 +5,7 @@ class DeploysController < ApplicationController
   before_action :load_until_commit, only: :create
 
   def show
-    render text: "Deploying #{@deploy.until_commit.sha}"
+    respond_with(@deploy)
   end
 
   def create

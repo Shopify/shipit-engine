@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140227205437) do
+ActiveRecord::Schema.define(version: 20140228000429) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(version: 20140227205437) do
   add_index "deploys", ["since_commit_id"], name: "index_deploys_on_since_commit_id"
   add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id"
   add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id"
+
+  create_table "output_chunks", force: true do |t|
+    t.integer  "deploy_id"
+    t.text     "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id"
 
   create_table "repos", force: true do |t|
     t.string   "name",       null: false
