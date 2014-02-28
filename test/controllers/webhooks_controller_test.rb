@@ -20,10 +20,12 @@ class WebhooksControllerTest < ActionController::TestCase
 
   test ":state updates the commit with the payload state" do
     commit = commits(:first)
-    params = {"sha" => commit.sha, "state" => "pending"}
+    params = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output"}
     post :state, { stack_id: @stack.id }.merge(params)
 
-    assert_equal 'pending', commit.reload.state
+    commit.reload
+    assert_equal 'pending', commit.state
+    assert_equal "https://ci.example.com/1000/output", commit.target_url
   end
 
   test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do

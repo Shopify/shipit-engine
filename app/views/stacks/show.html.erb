@@ -33,10 +33,10 @@
             <%= submit_tag "Deploy", :name => nil, :class => 'btn' %>
           <% end %>
         <% elsif commit.state == 'pending' %>
-          <a href="#" class="btn disabled deploy-action">Pending...</a>
+          <a href="<%= commit.target_url %>" class="btn disabled deploy-action">Pending...</a>
         <% elsif commit.state.blank? %>
         <% else %>
-          <a href="#" class="btn disabled deploy-action">Failure</a>
+          <a href="<%= commit.target_url %>" class="btn disabled deploy-action">Failure</a>
         <% end %>
       </li>
     <% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228205311) do
+ActiveRecord::Schema.define(version: 20140228224148) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20140228205311) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
+    t.string   "target_url"
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id"
