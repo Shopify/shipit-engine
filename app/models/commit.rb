@@ -20,4 +20,8 @@ class Commit < ActiveRecord::Base
   def to_param
     sha
   end
+
+  def short_sha
+    sha[0..9]
+  end
 end
