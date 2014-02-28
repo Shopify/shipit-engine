@@ -135,8 +135,6 @@ GEM
     sawyer (0.5.3)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
-    sepastian-capistrano3-unicorn (0.4.0)
-      capistrano (~> 3.0)
     settingslogic (2.0.9)
     sinatra (1.4.4)
       rack (~> 1.4)
@@ -200,7 +198,6 @@ DEPENDENCIES
   rails!
   resque
   sass-rails (~> 4.0.0)
-  sepastian-capistrano3-unicorn
   settingslogic
   sqlite3
   state_machine

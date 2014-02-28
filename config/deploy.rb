@@ -35,6 +35,11 @@ set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
 set :keep_releases, 50
 
 after 'deploy:publishing', 'deploy:restart'
-after 'deploy:restart', 'unicorn:reload'    # app IS NOT preloaded
-after 'deploy:restart', 'unicorn:restart'   # app preloaded
-after 'deploy:restart', 'unicorn:duplicate' # before_fork hook implemented (zero downtime deployments)
+namespace :deploy do
+  desc "Signal Unicorn to restart the application"
+  task :restart do
+    on roles(:app), in: :parallel do
+      execute "test ! -f #{shared_path}/tmp/pids/unicorn.pid || sudo -u shipit2 /usr/local/bin/unicorn-corporify shipit2"
+    end
+  end
+end
