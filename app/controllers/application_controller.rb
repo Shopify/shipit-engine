@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_filter :basic_auth
 
   def basic_auth
+    return unless Rails.env.production?
     authenticate_or_request_with_http_basic("Application") do |name, password|
       name == 'shipit' && password == 'yoloshipit'
     end
