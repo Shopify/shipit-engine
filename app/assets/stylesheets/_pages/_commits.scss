@@ -18,6 +18,7 @@
     float: left;
     margin-right: 1rem;
     border: 2px solid #ccc;
+      i { background: asset-data-url("default.svg") center center no-repeat; }
 
       &.pending {
         border: 2px solid $blue;
