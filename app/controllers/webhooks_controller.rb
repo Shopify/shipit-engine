@@ -17,7 +17,11 @@ class WebhooksController < ApplicationController
 
   def state
     commit = stack.commits.find_by_sha!(params['sha'])
-    commit.update_attributes(state: params['state'], target_url: params['target_url'])
+    attributes = {
+      state: params['state']
+    }
+    attributes.merge!(target_url: params['target_url']) if params['target_url'].present?
+    commit.update_attributes(attributes)
     head :ok
   end
 
