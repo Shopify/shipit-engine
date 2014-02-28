@@ -86,3 +86,34 @@
     margin: .3em 0;
     float: right;
   }
+
+  .sub-commits {
+    li {
+      padding: 1rem 0;
+    }
+    .event-title {
+      font-size: 1rem;
+      font-weight: normal;
+    }
+    .accessory {
+      float: right;
+      font-size: .875rem;
+      margin-top: .875rem;
+    }
+  }
+
+  .avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    margin-right: .75rem;
+    float: left;
+  }
+
+  .submit-section {
+    border-top: 1px solid rgba(0,0,0,.05);
+    margin-top: 0rem;
+    text-align: center;
+    padding: 4rem 0;
+    padding-top: 6rem;
+  }
