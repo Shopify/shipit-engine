@@ -31,7 +31,7 @@ class StackCommands
   def fetch
     create_directories
     if Dir.exists?(@stack.git_path)
-      Dir.chdir(@stack.git_path) { Command.new("sleep", "120") }
+      Command.new("sh", "-c", "cd #{@stack.git_path} && git fetch", SSH_ENV) # FIXME ugly hax
     else
       git("clone", @stack.repo_git_url, @stack.git_path, SSH_ENV)
     end
