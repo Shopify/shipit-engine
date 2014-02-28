@@ -18,12 +18,9 @@ class User < ActiveRecord::Base
       name: github_user.name,
       email: github_user.email,
       login: github_user.login,
-      avatar_url: github_user.avatar_url,
+      avatar_url: github_user.rels[:avatar].try(:href),
       api_url: github_user.rels[:self].try(:href),
     )
   end
 
-  def avatar_url
-    "https://avatars.githubusercontent.com/u/44640"
-  end
 end
