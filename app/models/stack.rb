@@ -1,5 +1,5 @@
 class Stack < ActiveRecord::Base
-  STACKS_PATH = File.join(Rails.root, "shared", "stacks")
+  STACKS_PATH = File.join(Rails.root, "data", "stacks")
 
   has_many :commits
   has_many :deploys
