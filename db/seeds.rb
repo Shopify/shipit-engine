@@ -31,3 +31,16 @@ stacks.each do |stack|
     )
   end
 end
+
+deploys = []
+
+stacks.each do |stack|
+  stack.commits.limit(15).each_slice(5).each do |commits|
+    deploys << stack.deploys.create!(
+      :since_commit_id => commits.first.id,
+      :until_commit_id => commits.last.id,
+      :status          => "success",
+      :output          => "$ cap production deploy SHA=yolo"
+    )
+  end
+end
