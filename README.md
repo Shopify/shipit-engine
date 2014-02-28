@@ -11,3 +11,15 @@ $ git clone git@github.com:Shopify/shipit2.git
 $ cd shipit2
 $ script/bootstrap
 ```
+
+## Jobs
+
+```shell
+# run workers for deploy jobs
+QUEUE=deploys rake resque:work
+
+# start-stop resque-web
+resque-web
+resque-web -K
+```
+
