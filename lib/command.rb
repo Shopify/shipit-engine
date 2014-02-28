@@ -35,5 +35,4 @@ class Command
     end
   rescue EOFError
   end
-
 end

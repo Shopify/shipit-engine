@@ -3,6 +3,8 @@ class DeployJob
 
   def perform(params)
     @deploy = Deploy.find(params[:deploy_id])
+    @deploy.started!
+
     commands = StackCommands.new(@deploy.stack)
 
     capture commands.fetch
@@ -11,6 +13,9 @@ class DeployJob
       capture commands.checkout(@deploy.until_commit)
       capture commands.deploy(@deploy.until_commit)
     end
+  rescue
+    @deploy.failed! if @deploy
+    raise
   end
 
   def capture(command)
@@ -20,5 +25,4 @@ class DeployJob
     end
     @deploy.write("\n")
   end
-
 end
