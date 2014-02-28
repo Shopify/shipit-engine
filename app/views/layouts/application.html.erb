@@ -9,30 +9,32 @@
 <body>
   <div class="layout">
     <header class="sidebar">
-      <a href="/" class="logo"><i></i><span>Ship it</span></a>
-      <nav class="nav">
-        <% stacks_by_owner.each do |owner, stacks_for_owner| %>
-          <% if stacks_by_owner.keys.length > 1 %>
-            <h4><%= owner %></h4>
-          <% end %>
-          <ul>
-            <% stacks_for_owner.group_by(&:repo_name).each do |repo_name, stacks_for_repo| %>
-              <li class="nav-item">
-                <span class="platform"><%= repo_name %></span>
-                <ul class="server-lst">
-                  <% stacks_for_repo.each do |stack| %>
-                    <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
-                      <a href="<%= stack_path(stack) %>">
-                        <%= stack.environment %>
-                      </a>
-                    </li>
-                  <% end %>
-                </ul>
-              </li>
+      <div class="inner-sidebar">
+        <a href="/" class="logo"><i></i><span>Ship it</span></a>
+        <nav class="nav">
+          <% stacks_by_owner.each do |owner, stacks_for_owner| %>
+            <% if stacks_by_owner.keys.length > 1 %>
+              <h4><%= owner %></h4>
             <% end %>
-          </ul>
-        <% end %>
-      </nav>
+            <ul>
+              <% stacks_for_owner.group_by(&:repo_name).each do |repo_name, stacks_for_repo| %>
+                <li class="nav-item">
+                  <span class="platform"><%= repo_name %></span>
+                  <ul class="server-lst">
+                    <% stacks_for_repo.each do |stack| %>
+                      <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
+                        <a href="<%= stack_path(stack) %>">
+                          <%= stack.environment %>
+                        </a>
+                      </li>
+                    <% end %>
+                  </ul>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </nav>
+      </div>
     </header>
     <div class="main">
       <%= yield %>

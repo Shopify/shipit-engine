@@ -2,10 +2,15 @@
   background-color: #2e343a;
   width: 300px;
   box-sizing: border-box;
-  padding: 5rem 3.75rem 5rem 5rem;
+  padding: 0 3.75rem 0 5rem;
   line-height: 1.4rem;
   flex: 0 0 300px;
   order: -1;
+}
+
+.inner-sidebar {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 
