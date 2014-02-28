@@ -56,7 +56,12 @@
         </div>
         <div class="event">
           <span class="event-meta"><a href="#" class="user main-user">Name</a> deployed <%= time_ago_in_words(deploy.since_commit.created_at) %> ago</span>
-          <span class="event-title"><%= deploy.until_commit.message %> <span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span></span>
+          <span class="event-title">
+            <a href="<%= stack_deploy_path(@stack, deploy) %>">
+              <%= deploy.until_commit.message %>
+            </a>
+            <span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span>
+          </span>
         </div>
       </li>
     <% end %>
