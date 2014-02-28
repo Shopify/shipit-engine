@@ -63,8 +63,9 @@ class StacksTest < ActiveSupport::TestCase
     deploy = @stack.trigger_deploy(last_commit)
   end
 
-  test "#create queues a GithubSetupWebhooksJob" do
+  test "#create queues a GithubSetupWebhooksJob and a GithubSyncJob" do
     Resque.expects(:enqueue).with(GithubSetupWebhooksJob, has_key(:stack_id))
+    Resque.expects(:enqueue).with(GithubSyncJob, has_key(:stack_id))
     Stack.create( repo_name: 'rails', repo_owner: 'rails' )
   end
 
