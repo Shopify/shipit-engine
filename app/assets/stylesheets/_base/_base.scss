@@ -62,6 +62,10 @@ h1 {
   border-radius: 4px;
   font-weight: 300;
   display: inline-block;
+  font-size: 1rem;
+  border: none;
+  margin: 0;
+  cursor: pointer;
     &:hover {
       background-color: darken($blue, 10%);
     }

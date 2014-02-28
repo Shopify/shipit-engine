@@ -17,10 +17,9 @@
       </div>
       <div class="event">
         <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged 12 mins ago</span>
-        <span class="event-title"><%= commit.message %> <span class="event-number">(<%= commit.short_sha %>)</span></span>
+        <span class="event-title"><%= commit.message %> <span class="event-number">(<a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>"><%= commit.short_sha %></a>)</span></span>
       </div>
       <% if commit.state == 'success' %>
-        <a href="#" class="btn deploy-action">Deploy</a>
         <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
           <%= hidden_field_tag :sha, commit.sha %>
           <%= submit_tag "Deploy", :class => 'btn' %>
