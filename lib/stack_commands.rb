@@ -1,7 +1,11 @@
 require "fileutils"
+require "etc"
 
 class StackCommands
-  SSH_ENV = {'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
+  SSH_ENV = {
+    'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock',
+    'HOME' => Etc.getpwuid(Process::Sys.getuid).dir
+  }
   BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
   BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
 
