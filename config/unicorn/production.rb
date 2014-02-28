@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 # Set your full path to application.
-app_path = "/u/apps/shipit2"
+app_path = "/u/apps/shipit2/current"
 
 # Set unicorn options
 worker_processes 1
