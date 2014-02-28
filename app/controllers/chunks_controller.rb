@@ -13,7 +13,7 @@ class ChunksController < ApplicationController
   private
 
   def load_output_chunks
-    @output_chunks = @deploy.chunks
+    @output_chunks = @deploy.chunks.tail(params[:last_id])
   end
 
   def load_deploy

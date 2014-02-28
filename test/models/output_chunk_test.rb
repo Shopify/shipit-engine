@@ -1,7 +1,14 @@
 require 'test_helper'
 
 class OutputChunkTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  def setup
+    @deploy = deploys(:shipit)
+    @chunks = 3.times.map { OutputChunk.create!(text: 'bla', deploy: @deploy) }
+  end
+
+  test "tail" do
+    start = @chunks.first
+    rest  = @chunks - [start]
+    assert_equal rest, @deploy.chunks.tail(start.id)
+  end
 end
