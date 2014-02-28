@@ -1,6 +1,6 @@
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
-  REQUIRED_HOOKS = %w( push state )
+  REQUIRED_HOOKS = %w( push status )
 
   has_many :commits
   has_many :deploys
