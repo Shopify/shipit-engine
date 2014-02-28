@@ -11,8 +11,6 @@ gem 'resque-lock'
 gem 'unicorn'
 gem 'octokit'
 gem 'faker'
-gem 'capistrano-bundler'
-gem 'capistrano-rails'
 gem 'settingslogic'
 
 group :production do
@@ -31,4 +29,9 @@ end
 group :debug do
   gem 'byebug'
   gem 'pry'
+end
+
+group :deploy do
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
 end

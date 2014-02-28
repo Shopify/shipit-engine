@@ -29,7 +29,7 @@ class Command
   end
 
   def stream(&block)
-    _in, @out, wait_thread = Open3.popen2e(*@args)
+    _in, @out, wait_thread = Open3.popen2e(@env, *@args)
     _in.close
     read_stream(@out, &block)
     @code = wait_thread.value

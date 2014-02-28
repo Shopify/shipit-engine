@@ -1,17 +1,25 @@
 require "fileutils"
+require "etc"
 
 class StackCommands
+  SSH_ENV = {
+    'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock',
+    'HOME' => Etc.getpwuid(Process::Sys.getuid).dir
+  }
+  BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
+  BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
 
   def initialize(stack)
     @stack = stack
   end
 
   def bundle_install
-    Command.new('bundle', 'install')
+    Command.new('bundle', 'install', '--frozen', "--path=#{BUNDLE_PATH}",
+                '--retry=2', "--without=#{BUNDLE_WITHOUT.join(':')}", SSH_ENV)
   end
 
   def deploy(commit)
-    env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment, 'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
+    env = SSH_ENV.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
     Command.new('bundle', 'exec', 'cap', @stack.environment, 'deploy', env)
   end
 
@@ -30,9 +38,9 @@ class StackCommands
   def fetch
     create_directories
     if Dir.exists?(@stack.git_path)
-      git("fetch", @stack.git_path)
+      Command.new("sh", "-c", "cd #{@stack.git_path} && git fetch", SSH_ENV) # FIXME ugly hax
     else
-      git("clone", @stack.repo_git_url, @stack.git_path)
+      git("clone", @stack.repo_git_url, @stack.git_path, SSH_ENV)
     end
   end
 
