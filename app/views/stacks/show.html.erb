@@ -18,7 +18,7 @@
         <img src="<%= commit.author.avatar_url %>" alt="">
       </div>
       <div class="event">
-        <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged 12 mins ago</span>
+        <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
         <span class="event-title"><%= commit.message %> <span class="event-number">(<a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>"><%= commit.short_sha %></a>)</span></span>
       </div>
       <% if commit.state == 'success' %>
@@ -48,70 +48,10 @@
           <img src="" alt="">
         </div>
         <div class="event">
-          <span class="event-meta"><a href="#" class="user main-user">Name</a> deployed 12 mins ago</span>
-          <span class="event-title"><span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span></span>
+          <span class="event-meta"><a href="#" class="user main-user">Name</a> deployed <%= time_ago_in_words(deploy.since_commit.created_at) %> ago</span>
+          <span class="event-title"><%= deploy.until_commit.message %> <span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span></span>
         </div>
       </li>
     <% end %>
   </ul>
 </section>
-
-<table>
-  <thead>
-    <tr>
-      <th>SHA</th>
-      <th>Author</th>
-      <th>Message</th>
-      <th>CI Status</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @commits.each do |commit| %>
-      <tr>
-        <td>
-          <a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>">
-            <%= commit.short_sha %>
-          </a>
-        </td>
-        <td>
-          <a href="<%= github_user_url(commit.author.login) %>">
-            <%= commit.author.name %>
-          </a>
-        </td>
-
-        <td><%= commit.message %></td>
-        <td><%= commit.state %></td>
-        <td>
-          <%= form_tag new_stack_deploy_path(@stack), :method => :get do %>
-            <%= hidden_field_tag :sha, commit.sha %>
-            <%= submit_tag "Deploy" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<h2>Deploys</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>Commit Range</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @deploys.each do |deploy| %>
-      <tr>
-        <td>
-          <a href="<%= github_diff_url(@stack.repo_owner, @stack.repo_name, deploy.since_commit.sha, deploy.until_commit.sha) %>">
-            <%= deploy.since_commit.short_sha %> &rarr; <%= deploy.until_commit.short_sha %>
-          </a>
-        </td>
-        <td><%= link_to deploy.status, stack_deploy_path(deploy.stack, deploy) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
