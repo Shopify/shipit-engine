@@ -1,5 +1,7 @@
 <h1>Create a deploy</h1>
 
+<%= debug @deploy.commits %>
+
 <%= form_for [@stack, @deploy] do |f| %>
   <%= f.hidden_field :until_commit_id %>
   <%= f.submit %>

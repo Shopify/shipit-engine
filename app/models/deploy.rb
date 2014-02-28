@@ -25,6 +25,23 @@ class Deploy < ActiveRecord::Base
     state :success
   end
 
+  def commits
+    return [] unless stack
+    @commits ||= stack.commits
+      .where('id > ?', since_commit_id)
+      .where('id <= ?', until_commit_id)
+  end
+
+  def since_commit_id
+    if value = read_attribute(:since_commit_id)
+      value
+    elsif stack
+      default_since_commit_id
+    else
+      nil
+    end
+  end
+
   def working_directory
     File.join(stack.deploys_path, id.to_s)
   end
@@ -41,4 +58,13 @@ class Deploy < ActiveRecord::Base
     end
   end
 
+  private
+
+  def default_since_commit_id
+    @default_since_commit_id ||= last_successful_deploy.try(:until_commit_id)
+  end
+
+  def last_successful_deploy
+    stack.deploys.where(:status => "success").last
+  end
 end
