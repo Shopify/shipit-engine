@@ -2,13 +2,16 @@ require "fileutils"
 
 class StackCommands
   SSH_ENV = {'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
+  BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
+  BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
 
   def initialize(stack)
     @stack = stack
   end
 
   def bundle_install
-    Command.new('bundle', 'install', SSH_ENV)
+    Command.new('bundle', 'install', '--frozen', "--path=#{BUNDLE_PATH}",
+                '--retry=2', "--without=#{BUNDLE_WITHOUT.join(':')}", SSH_ENV)
   end
 
   def deploy(commit)
