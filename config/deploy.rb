@@ -37,7 +37,7 @@ set :keep_releases, 50
 before 'deploy:assets:precompile', 'deploy:use_deploy_log'
 before 'deploy:symlink:release', 'deploy:use_runtime_log'
 
-after 'deploy:publishing', 'deploy:restart', 'jobs:restart'
+after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
   task :use_deploy_log do
@@ -71,3 +71,5 @@ namespace :jobs do
     end
   end
 end
+
+after 'deploy:publishing', 'jobs:restart' # I don't know why this needs to be after jobs:restart :(
