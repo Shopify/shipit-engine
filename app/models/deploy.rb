@@ -36,7 +36,7 @@ class Deploy < ActiveRecord::Base
     if value = read_attribute(:since_commit_id)
       value
     elsif stack
-      default_since_commit_id
+      @default_since_commit_id ||= last_successful_deploy.try(:until_commit_id)
     else
       nil
     end
@@ -59,10 +59,6 @@ class Deploy < ActiveRecord::Base
   end
 
   private
-
-  def default_since_commit_id
-    @default_since_commit_id ||= last_successful_deploy.try(:until_commit_id)
-  end
 
   def last_successful_deploy
     stack.deploys.where(:status => "success").last
