@@ -16,4 +16,5 @@
 /tmp
 /shared
 /config/secrets.yml
+/config/settings.yml
 /data

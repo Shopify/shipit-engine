@@ -6,6 +6,8 @@ machine:
   node:
     version: 0.10.21
 dependencies:
+  pre:
+    - cp config/settings.yml.example config/settings.yml
   bundler:
     without:
       - benchmark
