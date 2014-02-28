@@ -26,8 +26,8 @@ class GithubSetupWebhooksJob < BackgroundJob
   def webhook_urls(stack)
     url_helpers = Rails.application.routes.url_helpers
     {
-      push: url_helpers.push_stack_webhooks_url(stack, host: host),
-      state: url_helpers.state_stack_webhooks_url(stack, host: host),
+      push: url_helpers.push_stack_webhooks_url(stack.id, host: host),
+      state: url_helpers.state_stack_webhooks_url(stack.id, host: host),
     }.stringify_keys
   end
 
