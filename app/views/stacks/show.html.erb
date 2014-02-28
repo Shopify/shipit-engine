@@ -5,8 +5,10 @@
 
 <header class="section-header">
   <h1>Undeployed Commits</h1>
-  <a href="<%= settings_stack_path(@stack) %>">Settings</a>
-  <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
+  <div class="header-accessory">
+    <a href="<%= settings_stack_path(@stack) %>">Settings</a>
+    <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
+  </div>
 </header>
 <ul class="commit-lst">
   <% @commits.each do |commit| %>
