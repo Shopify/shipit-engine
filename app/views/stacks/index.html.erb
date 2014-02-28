@@ -1,13 +1,19 @@
-<h1>Stacks</h1>
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h1>Stacks</h1>
+    </header>
+    <ul>
+      <% @stacks.each do |stack| %>
+        <li>
+          <a href="<%= stack_path stack %>">
+            <%= stack.repo_owner %>/<%= stack.repo_name %> <small><%= stack.environment %></small>
+          </a>
+        </li>
+      <% end %>
+    </ul>
 
-<ul>
-  <% @stacks.each do |stack| %>
-    <li>
-      <a href="<%= stack_path stack %>">
-        <%= stack.repo_owner %>/<%= stack.repo_name %> <small><%= stack.environment %></small>
-      </a>
-    </li>
-  <% end %>
-</ul>
+    <a href="<%= new_stack_path %>">Add a stack</a>
+  </section>
 
-<a href="<%= new_stack_path %>">Add a stack</a>
+</div>
