@@ -7,7 +7,8 @@ class StackCommands
   end
 
   def deploy(commit)
-    Command.new('cap', @stack.environment, 'deploy', "SHA=#{commit.sha}")
+    env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment}
+    Command.new('cap', @stack.environment, 'deploy', env)
   end
 
   def checkout(commit)

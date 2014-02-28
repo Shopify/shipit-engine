@@ -6,10 +6,15 @@ class Command
 
   def initialize(*args)
     @args = args
+    @env = args.extract_options!
   end
 
   def to_s
-    @args.join(' ')
+    "#{format_env} #{@args.join(' ')}"
+  end
+
+  def format_env
+    @env.map { |pair| pair.map(&:to_s).join('=') }.join(' ')
   end
 
   def success?
