@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228000429) do
+ActiveRecord::Schema.define(version: 20140228013139) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
@@ -51,13 +51,6 @@ ActiveRecord::Schema.define(version: 20140228000429) do
 
   add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id"
 
-  create_table "repos", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "owner",      null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "stacks", force: true do |t|
     t.string   "repo_name",                          null: false
     t.string   "repo_owner",                         null: false
@@ -66,6 +59,8 @@ ActiveRecord::Schema.define(version: 20140228000429) do
     t.datetime "updated_at"
     t.string   "branch",      default: "master",     null: false
   end
+
+  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
 
   create_table "users", force: true do |t|
     t.integer  "github_id"
