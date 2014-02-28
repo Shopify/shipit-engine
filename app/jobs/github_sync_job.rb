@@ -1,5 +1,5 @@
 class GithubSyncJob < BackgroundJob
-  extend Resque::Plugins::Lock
+  # extend Resque::Plugins::Lock
 
   @queue = :default
 
