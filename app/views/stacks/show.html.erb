@@ -34,6 +34,26 @@
 </ul>
 </section>
 
+<section>
+  <header class="section-header">
+    <h1>Deploys</h1>
+  </header>
+  <ul class="commit-lst">
+    <% @deploys.each do |deploy| %>
+      <li>
+        <div class="status <%= deploy.status %>">
+          <i><%= deploy.status %></i>
+          <img src="" alt="">
+        </div>
+        <div class="event">
+          <span class="event-meta"><a href="#" class="user main-user">Name</a> deployed 12 mins ago</span>
+          <span class="event-title"><span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span></span>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</section>
+
 <table>
   <thead>
     <tr>

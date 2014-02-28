@@ -76,6 +76,10 @@
 
     .event-number {
       color: #999;
+        a {
+          color: inherit;
+            &:hover { color: $blue; }
+        }
     }
 
   .deploy-action {
