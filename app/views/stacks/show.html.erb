@@ -59,7 +59,7 @@
             <%= deploy.since_commit.short_sha %> &rarr; <%= deploy.until_commit.short_sha %>
           </a>
         </td>
-        <td><%= deploy.status %></td>
+        <td><%= link_to deploy.status, stack_deploy_path(deploy.stack, deploy) %></td>
       </tr>
     <% end %>
   </tbody>
