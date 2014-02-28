@@ -34,9 +34,28 @@ set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
 # Default value for keep_releases is 5
 set :keep_releases, 50
 
+before 'deploy:assets:precompile', 'deploy:use_deploy_log'
+before 'deploy:symlink:release', 'deploy:use_runtime_log'
+
 after 'deploy:publishing', 'deploy:restart', 'jobs:restart'
 
 namespace :deploy do
+  task :use_deploy_log do
+    on roles(:app), in: :parallel do
+      within fetch(:latest_release_directory) do
+        execute "ln -nsfT #{shared_path}/deploy_log ./log"
+      end
+    end
+  end
+
+  task :use_runtime_log do
+    on roles(:app), in: :parallel do
+      within fetch(:latest_release_directory) do
+        execute "ln -nsfT #{shared_path}/log ./log"
+      end
+    end
+  end
+
   desc "Signal Unicorn to restart the application"
   task :restart do
     on roles(:app), in: :parallel do
