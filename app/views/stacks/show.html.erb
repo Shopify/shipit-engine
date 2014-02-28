@@ -19,7 +19,7 @@
       <div class="event">
         <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
           <span class="event-title">
-            <%= commit.pull_request_title || commit.message %>
+            <a href="<%= commit.target_url %>"><%= commit.pull_request_title || commit.message %></a>
             <% if commit.pull_request? %>
               <a href="<%= commit.pull_request_url %>">
                 #<%= commit.pull_request_id %>
@@ -33,10 +33,10 @@
             <%= submit_tag "Deploy", :name => nil, :class => 'btn' %>
           <% end %>
         <% elsif commit.state == 'pending' %>
-          <a href="<%= commit.target_url %>" class="btn disabled deploy-action">Pending...</a>
+          <a href="#" class="btn disabled deploy-action">Pending...</a>
         <% elsif commit.state.blank? %>
         <% else %>
-          <a href="<%= commit.target_url %>" class="btn disabled deploy-action">Failure</a>
+          <a href="#" class="btn disabled deploy-action">Failure</a>
         <% end %>
       </li>
     <% end %>
