@@ -8,6 +8,7 @@ class DeployJobTest < ActiveSupport::TestCase
   end
 
   test "#perform fetch commits from the API" do
+    @job.stubs(:capture)
     @commands = stub(:commands)
     Deploy.expects(:find).with(@deploy.id).returns(@deploy)
     StackCommands.expects(:new).with(@deploy.stack).returns(@commands)
