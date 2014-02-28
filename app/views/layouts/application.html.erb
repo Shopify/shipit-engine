@@ -2,13 +2,28 @@
 <html>
 <head>
   <title>Shipit</title>
-  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= stylesheet_link_tag "master", media: "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
-
+  <div class="layout">
+    <header class="sidebar">
+      <a href="#" class="logo"><i></i><span>Ship it</span></a>
+      <nav class="nav">
+        <ul>
+          <li class="nav-item">
+            <span class="platform">Shopify</span>
+            <ul class="server-lst">
+              <li class="server selected"><a href="#">Production</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="main">
+      <%= yield %>
+    </div>
+  </div>
 </body>
 </html>

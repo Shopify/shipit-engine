@@ -1,0 +1,84 @@
+.commit-lst {
+  list-style-type: none;
+  margin: 0; padding: 0;
+}
+
+  .commit-lst li {
+    padding: 2.25rem 0;
+    border-bottom: 1px solid rgba(#000, .05);
+    @include clearfix;
+      &:last-child { border: none; }
+  }
+
+  .status {
+    width: 3.125rem;
+    height: 3.125rem;
+    border-radius: 50%;
+    position: relative;
+    float: left;
+    margin-right: 1rem;
+      &.pending {
+        border: 2px solid $blue;
+        // background-color: rgba($blue, .1);
+        i { background: asset-data-url("pending.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
+      }
+      &.success {
+        border: 2px solid $green;
+        // background-color: rgba($green, .1);
+        i { background: asset-data-url("success.svg") center center no-repeat; }
+      }
+      &.failure, &.error {
+        border: 2px solid $red;
+        // background-color: rgba($red, .1);
+        i { background: asset-data-url("failure.svg") center center no-repeat; }
+      }
+
+    i {
+      text-indent: -99999999px;
+      overflow: hidden;
+      display: block;
+      width: 3.125rem;
+      height: 3.125rem;
+      display: block;
+    }
+
+    img {
+      width: 1rem;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      position: absolute; bottom: -0.4rem; right: -0.1rem;
+    }
+
+  }
+
+  .event {
+    float: left;
+    padding: .3rem 0;
+  }
+
+    .event-meta {
+      font-size: .75rem;
+      display: block;
+      color: #999;
+
+      .user {
+        font-weight: 500;
+        color: #777;
+          &:hover { color: $blue; }
+      }
+
+    }
+
+    .event-title {
+      font-size: 1.375rem;
+      font-weight: 300;
+    }
+
+    .event-number {
+      color: #999;
+    }
+
+  .deploy-action {
+    margin: .3em 0;
+    float: right;
+  }

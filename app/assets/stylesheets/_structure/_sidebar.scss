@@ -1,0 +1,75 @@
+.sidebar {
+  background-color: #2e343a;
+  width: 300px;
+  box-sizing: border-box;
+  padding: 5rem 3.75rem 5rem 5rem;
+  line-height: 1.4rem;
+  flex: 0 0 300px;
+  order: -1;
+}
+
+
+  .logo {
+    border-bottom: 1px solid rgba(#fff, .1);
+    display: block;
+    padding-bottom: 2.25rem;
+    margin-bottom: 2.25rem;
+
+      span {
+        background: asset-data-url('logo.svg') top right no-repeat;
+        height: 35px;
+        display: inline-block;
+        width: 80px;
+        overflow: hidden;
+        text-indent: -999999px;
+        line-height: 1;
+      }
+
+      i {
+        background: asset-data-url('anchor.svg') center center no-repeat;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        -webkit-transition: -webkit-transform .3s ease-in-out;
+        margin-right: .25rem;
+      }
+    &:hover i {
+      -webkit-transform: rotate(-25deg);
+    }
+  }
+
+
+  nav ul {
+    list-style-type: none;
+    margin: 0; padding: 0;
+  }
+
+    .nav-item + .nav-item {
+        margin-top: 2rem;
+    }
+
+      .platform {
+        color: rgba(#fff, .2);
+        font-size: .75rem;
+      }
+
+        .server {
+          position: relative;
+          a {
+            color: rgba(#fff, .4);
+            display: block;
+              &:hover, &:focus {
+                color: rgba(#fff, .6);
+              }
+          }
+          &.selected a {
+            color: #fff; font-weight: 500;
+              &:before {
+                content: ">";
+                font-family: "Checkout Symbols";
+                font-size: .875rem;
+                position: absolute; left: -1rem;
+                color: $blue;
+              }
+          }
+        }

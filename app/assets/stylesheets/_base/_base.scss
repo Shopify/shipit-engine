@@ -1,0 +1,97 @@
+
+// ===============================================================
+//
+// Base
+//
+// ===============================================================
+
+$blue: #248af2;
+$green: #67ca8b;
+$red: #f39494;
+$slate: #2e343a;
+
+@mixin clearfix {
+  &:after {
+    content:"";
+    display:table;
+    clear:both;
+  }
+}
+
+@-webkit-keyframes rotate {
+  0% { -webkit-transform: rotate(0); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+body {
+  padding: 0; margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  color: #333;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.layout {
+  display: flex;
+   flex: 1;
+}
+
+// Links
+
+a {
+  text-decoration: none;
+  color: #248af2;
+}
+
+// Headings
+
+h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+// Buttons
+
+.btn {
+  font-family: "Helvetica Neue", sans-serif !important;
+  background-color: $blue;
+  color: #fff;
+  padding: .75em 1em;
+  border-radius: 4px;
+  font-weight: 300;
+  display: inline-block;
+    &:hover {
+      background-color: darken($blue, 10%);
+    }
+
+    &.disabled {
+      background: transparent;
+      border: 1px solid rgba(#ccc,.7);
+      color: #ccc;
+      pointer-events: none;
+    }
+
+    &.secondary {
+      background: transparent;
+      border: 1px solid rgba($blue, .8);
+      color: $blue;
+        &:hover {
+          background-color: rgba($blue, .1);
+        }
+    }
+
+}
+
+
+@font-face {
+  font-family: 'Checkout Symbols';
+  font-weight: 400;
+  src: asset-url('CheckoutSymbols-Regular.eot'); /* IE9 Compat Modes */
+  src: asset-url('CheckoutSymbols-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       asset-url('CheckoutSymbols-Regular.woff') format('woff'), /* Modern Browsers */
+       asset-url('CheckoutSymbols-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       asset-url('CheckoutSymbols-Regular.svg#9a6d998e14a2d97b6369d42f64b6816f') format('svg'); /* Legacy iOS */
+  font-style: normal;
+}
