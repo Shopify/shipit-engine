@@ -13,7 +13,11 @@ Shipit::Application.routes.draw do
     end
 
     resources :deploys, :id => /\d+/, :only =>  [:new, :show, :create] do
-      resources :chunks, :id => /\d+/, :only =>  [:index], defaults: {format: :json}
+      resources :chunks, :id => /\d+/, :only =>  [:index], defaults: {format: :json} do
+        collection do
+          get :tail
+        end
+      end
     end
   end
 end

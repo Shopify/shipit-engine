@@ -1,4 +1,8 @@
-class GitMirrorUpdateJob
+class GitMirrorUpdateJob < BackgroundJob
+  extend Resque::Plugins::Lock
+
+  @queue = :default
+
   def perform(params)
     stack = Stack.find(params[:stack_id])
     path  = stack.git_mirror_path
