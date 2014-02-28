@@ -43,3 +43,11 @@ namespace :deploy do
     end
   end
 end
+
+namespace :jobs do
+  task :restart do
+    on roles(:app), in: :parallel do
+      execute "sv-sudo quit /etc/sv/shipit2-*-resque-*"
+    end
+  end
+end
