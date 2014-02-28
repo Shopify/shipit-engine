@@ -10,7 +10,7 @@ gem 'resque'
 gem 'unicorn'
 gem 'octokit'
 gem 'faker'
-gem 'capistrano3-unicorn'
+gem 'sepastian-capistrano3-unicorn'
 gem 'capistrano-bundler'
 gem 'capistrano-rails'
 

@@ -5,7 +5,7 @@ require 'capistrano/setup'
 require 'capistrano/deploy'
 
 # For unicorn deployment
-require 'capistrano3/unicorn'
+require 'capistrano/unicorn'
 
 # Includes tasks from other gems included in your Gemfile
 #
