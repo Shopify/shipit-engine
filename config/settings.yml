@@ -1,0 +1,5 @@
+development:
+  host: https://57212e00.ngrok.com
+
+test:
+  host: https://example.com

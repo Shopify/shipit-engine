@@ -13,6 +13,7 @@ gem 'faker'
 gem 'sepastian-capistrano3-unicorn'
 gem 'capistrano-bundler'
 gem 'capistrano-rails'
+gem 'settingslogic'
 
 group :production do
   gem 'mysql2'

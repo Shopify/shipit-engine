@@ -1,8 +1,10 @@
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
+  REQUIRED_HOOKS = %w( push state )
 
   has_many :commits
   has_many :deploys
+  has_many :webhooks
 
   after_create :setup_webhooks
   after_destroy :teardown_webhooks
@@ -80,6 +82,6 @@ class Stack < ActiveRecord::Base
   end
 
   def teardown_webhooks
-    Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id)
+    Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
   end
 end

@@ -51,13 +51,6 @@ ActiveRecord::Schema.define(version: 20140228152548) do
 
   add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id"
 
-  create_table "repos", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "owner",      null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "stacks", force: true do |t|
     t.string   "repo_name",                          null: false
     t.string   "repo_owner",                         null: false
@@ -75,6 +68,14 @@ ActiveRecord::Schema.define(version: 20140228152548) do
     t.string   "email",      null: false
     t.string   "login"
     t.string   "api_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "webhooks", force: true do |t|
+    t.integer  "stack_id",   null: false
+    t.integer  "github_id"
+    t.string   "event"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

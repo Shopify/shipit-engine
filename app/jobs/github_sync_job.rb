@@ -1,4 +1,4 @@
-class GithubSyncJob
+class GithubSyncJob < BackgroundJob
   @queue = :default
   MAX_PAGES = 2
 
