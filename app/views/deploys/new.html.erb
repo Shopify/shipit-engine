@@ -1,31 +1,37 @@
-<section>
+<div class="wrapper">
 
-    <header class="section-header">
-      <h1>Deploy</h1>
-      <div class="header-accessory">
-        <p>Deploying <a href="<%= github_commit_url(@deploy.stack.repo_owner, @deploy.stack.repo_name, @deploy.until_commit.sha) %>"><%= @deploy.until_commit.short_sha %></a> to <a href="<%= github_repo_url(@deploy.stack.repo_owner, @deploy.stack.repo_name) %>" class="repo-name"><%= @deploy.stack.repo_name %></a> (<%= @deploy.stack.environment %>)</p>
-      </div>
-    </header>
+  <section>
 
-    <ul class="commit-lst sub-commits">
-      <% @deploy.commits.each do |commit| %>
-        <li>
-          <img src="<%= commit.author.avatar_url %>" alt="" class="avatar" />
-          <div class="event">
-            <span class="event-meta"><a href="#" class="user main-user"><%= commit.author.name %></a> deployed <%= time_ago_in_words(commit.created_at) %> ago</span>
-            <span class="event-title"><%= commit.message %></span>
-          </div>
-          <a href="#" class="accessory more">View on Github</a>
-        </li>
-      <% end %>
-    </ul>
+      <header class="section-header">
+        <h1>Deploy</h1>
+        <div class="header-accessory">
+          <p>Deploying <a href="<%= github_commit_url(@deploy.stack.repo_owner, @deploy.stack.repo_name, @deploy.until_commit.sha) %>"><%= @deploy.until_commit.short_sha %></a> to <a href="<%= github_repo_url(@deploy.stack.repo_owner, @deploy.stack.repo_name) %>" class="repo-name"><%= @deploy.stack.repo_name %></a> (<%= @deploy.stack.environment %>)</p>
+        </div>
+      </header>
 
-</section>
+      <ul class="commit-lst sub-commits">
+        <% @deploy.commits.each do |commit| %>
+          <li>
+            <img src="<%= commit.author.avatar_url %>" alt="" class="avatar" />
+            <div class="event">
+              <span class="event-meta"><a href="#" class="user main-user"><%= commit.author.name %></a> deployed <%= time_ago_in_words(commit.created_at) %> ago</span>
+              <span class="event-title"><%= commit.message %></span>
+            </div>
+            <a href="#" class="accessory more">View on Github</a>
+          </li>
+        <% end %>
+      </ul>
+
+  </section>
 
 
-<section class="submit-section">
-  <%= form_for [@stack, @deploy] do |f| %>
-    <%= f.hidden_field :until_commit_id %>
-    <%= f.submit :class => ['btn', 'primary'] %>
-  <% end %>
-</section>
+  <section class="submit-section">
+    <%= form_for [@stack, @deploy] do |f| %>
+      <%= f.hidden_field :until_commit_id %>
+      <%= f.submit :class => ['btn', 'primary'] %>
+    <% end %>
+  </section>
+
+
+
+</div>
