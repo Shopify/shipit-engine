@@ -8,4 +8,4 @@ bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate
 bundle exec rake db:seed
-cp config/settings.yml.example config/settings.yml
+cp -n config/settings.yml.example config/settings.yml
