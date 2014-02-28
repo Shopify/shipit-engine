@@ -19,7 +19,7 @@
                 <span class="platform"><%= repo_name %></span>
                 <ul class="server-lst">
                   <% stacks_for_repo.each do |stack| %>
-                    <li class="server <%= current_page?(stack_path(stack)) ? 'selected' : '' %>">
+                    <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
                       <a href="<%= stack_path(stack) %>">
                         <%= stack.environment %>
                       </a>
