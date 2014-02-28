@@ -2,3 +2,16 @@ shipit:
   since_commit_id: 1 # first
   until_commit_id: 2 # second
   stack: shipit
+  status: success
+
+shipit2:
+  since_commit_id: 2 # second
+  until_commit_id: 3 # third
+  stack: shipit
+  status: success
+
+shipit_pending:
+  since_commit_id: 3 # third
+  until_commit_id: 4 # fourth
+  stack: shipit
+  status: pending

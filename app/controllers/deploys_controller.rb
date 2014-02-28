@@ -6,7 +6,7 @@ class DeploysController < ApplicationController
 
   def new
     @commit = @stack.commits.where(:sha => params[:sha]).first!
-    @deploy = Deploy.new(:until_commit => @commit)
+    @deploy = @stack.deploys.new(:until_commit => @commit)
   end
 
   def show
