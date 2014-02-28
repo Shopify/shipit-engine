@@ -27,6 +27,7 @@
         <% end %>
       <% elsif commit.state == 'pending' %>
         <a href="#" class="btn disabled deploy-action">Pending...</a>
+      <% elsif commit.state.blank? %>
       <% else %>
         <a href="#" class="btn disabled deploy-action">Failure</a>
       <% end %>
