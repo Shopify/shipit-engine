@@ -6,9 +6,13 @@ class StackCommands
     @stack = stack
   end
 
+  def bundle_install
+    Command.new('bundle', 'install')
+  end
+
   def deploy(commit)
     env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment}
-    Command.new('cap', @stack.environment, 'deploy', env)
+    Command.new('bundle', 'exec', 'cap', @stack.environment, 'deploy', env)
   end
 
   def checkout(commit)
