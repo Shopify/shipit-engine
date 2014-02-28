@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 82dde716731e1213a18e2787da0901c92a3bf44e
+  revision: 4c0fb7c1a723cb2125e0116e32943479fd49a6a9
   branch: 4-1-stable
   specs:
     actionmailer (4.1.0.rc1)
@@ -137,6 +137,7 @@ GEM
       faraday (~> 0.8, < 0.10)
     sepastian-capistrano3-unicorn (0.4.0)
       capistrano (~> 3.0)
+    settingslogic (2.0.9)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -200,6 +201,7 @@ DEPENDENCIES
   resque
   sass-rails (~> 4.0.0)
   sepastian-capistrano3-unicorn
+  settingslogic
   sqlite3
   state_machine
   uglifier (>= 1.3.0)

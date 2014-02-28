@@ -63,4 +63,13 @@ class StacksTest < ActiveSupport::TestCase
     deploy = @stack.trigger_deploy(last_commit)
   end
 
+  test "#create queues a GithubSetupWebhooksJob" do
+    Resque.expects(:enqueue).with(GithubSetupWebhooksJob, has_key(:stack_id))
+    Stack.create( repo_name: 'rails', repo_owner: 'rails' )
+  end
+
+  test "#destroy queues a GithubTeardownWebhooksJob" do
+    Resque.expects(:enqueue).with(GithubTeardownWebhooksJob, all_of(has_key(:stack_id), has_key(:github_repo_name)))
+    stacks(:shipit).destroy
+  end
 end

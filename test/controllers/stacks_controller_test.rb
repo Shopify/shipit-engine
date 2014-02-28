@@ -5,7 +5,7 @@ class StacksControllerTest < ActionController::TestCase
     @stack = stacks(:shipit)
   end
 
-  test "#create behaves correctly" do
+  test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
     params = {}
     params[:stack] = {
       :repo_name   => "rails",
@@ -13,7 +13,11 @@ class StacksControllerTest < ActionController::TestCase
       :environment => "staging",
       :branch      => "staging"
     }
-    post :create, params
+
+    assert_difference "Stack.count" do
+      post :create, params
+    end
+
     assert_redirected_to stack_path(Stack.last)
   end
 

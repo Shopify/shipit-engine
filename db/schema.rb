@@ -72,4 +72,12 @@ ActiveRecord::Schema.define(version: 20140228152548) do
     t.datetime "updated_at"
   end
 
+  create_table "webhooks", force: true do |t|
+    t.integer  "stack_id",   null: false
+    t.integer  "github_id"
+    t.string   "event"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
 end
