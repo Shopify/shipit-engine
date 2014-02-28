@@ -8,6 +8,6 @@ $ ->
         if data.chunks.length > 0
           data.chunks.map (chunk) ->
             $("code").append(chunk.text)
-        if data.deploy.status != 'pending'
+        if data.deploy.status != 'pending' && data.deploy.status != 'running'
           clearTimeout(tid)
     tid = setInterval func, 500
