@@ -10,7 +10,7 @@ class DeploysController < ApplicationController
 
   def create
     @deploy = @stack.trigger_deploy(@until_commit)
-    respond_with([@deploy.stack, @deploy])
+    respond_with(@deploy.stack, @deploy)
   end
 
   private
@@ -20,7 +20,7 @@ class DeploysController < ApplicationController
   end
 
   def load_stack
-    @stack ||= Stack.find(params[:stack_id])
+    @stack ||= Stack.from_param(params[:stack_id])
   end
 
   def load_until_commit
