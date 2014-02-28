@@ -15,7 +15,7 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
     Shipit.github_api.expects(:create_hook).with('Shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/state",
       content_type: 'json'
-    }, { events: ['state'], active: true }).returns(stub(id: 123))
+    }, { events: ['status'], active: true }).returns(stub(id: 123))
 
     assert_difference 'Webhook.count', +2 do
       @job.perform(stack_id: @stack.id, hostname: "example.com")
@@ -25,7 +25,7 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   end
 
   test "#perform creates only missing webhooks" do
-    @stack.webhooks.create(event: 'state', github_id: 1)
+    @stack.webhooks.create(event: 'status', github_id: 1)
 
     Shipit.github_api.expects(:create_hook).with('Shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/push",
