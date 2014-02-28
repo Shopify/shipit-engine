@@ -13,6 +13,6 @@ class OutputChunkTest < ActiveSupport::TestCase
   end
 
   test "tail without start" do
-    assert_equal @chunks, @deploy.chunks.tail(nil)
+    assert_equal @deploy.chunks, @deploy.chunks.tail(nil)
   end
 end
