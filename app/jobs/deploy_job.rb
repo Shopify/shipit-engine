@@ -1,4 +1,5 @@
 class DeployJob
+  @queue = :deploys
 
   def perform(params)
     @deploy = Deploy.find(params[:deploy_id])
