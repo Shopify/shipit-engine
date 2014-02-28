@@ -9,7 +9,7 @@ app_path = "/u/apps/shipit2/current"
 worker_processes 1
 preload_app true
 timeout 180
-listen "127.0.0.1:3000"
+listen "127.0.0.1:9000"
 
 # Spawn unicorn master worker for user apps (group: apps)
 user 'deploy', 'users' 
