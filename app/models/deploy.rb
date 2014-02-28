@@ -6,7 +6,6 @@ class Deploy < ActiveRecord::Base
   has_many :chunks, class_name: 'OutputChunk'
 
   state_machine :status, initial: :pending do
-
     event :run do
       transition pending: :running
     end

@@ -4,7 +4,7 @@ class DeployJobTest < ActiveSupport::TestCase
 
   setup do
     @job = DeployJob.new
-    @deploy = deploys(:shipit)
+    @deploy = deploys(:shipit_pending)
   end
 
   test "#perform fetch commits from the API" do
