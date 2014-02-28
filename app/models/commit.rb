@@ -6,10 +6,18 @@ class Commit < ActiveRecord::Base
 
   def self.from_github(commit)
     new(
-      :sha     => commit.sha,
-      :message => commit.commit.message,
+      :sha          => commit.sha,
+      :message      => commit.commit.message,
       :author_id    => 0,
       :committer_id => 0
     )
+  end
+
+  def self.from_param(param)
+    find_by_sha(sha)
+  end
+
+  def to_param
+    sha
   end
 end
