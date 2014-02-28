@@ -57,6 +57,11 @@
   .event {
     float: left;
     padding: .3rem 0;
+    max-width: calc(100% - 170px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	overflow: hidden;
+
   }
 
     .event-meta {
