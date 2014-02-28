@@ -49,12 +49,8 @@ class Deploy < ActiveRecord::Base
     chunks.create!(text: text)
   end
 
-  def display_output
-    if output?
-      output
-    else
-      chunks.pluck(:text).join
-    end
+  def chunk_output
+    chunks.pluck(:text).join("\n")
   end
 
   private

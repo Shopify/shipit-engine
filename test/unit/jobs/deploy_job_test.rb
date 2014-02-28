@@ -17,6 +17,7 @@ class DeployJobTest < ActiveSupport::TestCase
     @commands.expects(:clone).with(@deploy).once
     Dir.expects(:chdir).with(@deploy.working_directory).once.yields
     @commands.expects(:checkout).with(@deploy.until_commit).once
+    @commands.expects(:bundle_install).once
     @commands.expects(:deploy).with(@deploy.until_commit).once
 
     @job.perform(deploy_id: @deploy.id)

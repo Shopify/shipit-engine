@@ -5,11 +5,15 @@ class Commit < ActiveRecord::Base
   belongs_to :committer, class_name: "User"
 
   def self.from_github(commit)
+    # require 'byebug'
+    # byebug unless commit.author
+    # byebug unless commit.committer
+    
     new(
-      :sha          => commit.sha,
-      :message      => commit.commit.message,
-      :author_id    => 0,
-      :committer_id => 0
+      :sha       => commit.sha,
+      :message   => commit.commit.message,
+      :author    => User.find_or_create_from_github(commit.author || commit.commit.author),
+      :committer => User.find_or_create_from_github(commit.committer || commit.commit.committer),
     )
   end
 

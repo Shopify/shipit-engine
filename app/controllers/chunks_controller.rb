@@ -1,4 +1,5 @@
 class ChunksController < ApplicationController
+  include ChunksHelper
 
   before_action :load_stack
   before_action :load_deploy
@@ -8,6 +9,16 @@ class ChunksController < ApplicationController
 
   def index
     respond_with(@output_chunks)
+  end
+
+  def tail
+    respond_with(
+      {
+        url: next_chunks_url,
+        deploy: @deploy,
+        chunks: @output_chunks,
+      }
+    )
   end
 
   private

@@ -1,4 +1,5 @@
 class DeploysController < ApplicationController
+  include ChunksHelper
 
   before_action :load_stack
   before_action :load_deploy, only: :show

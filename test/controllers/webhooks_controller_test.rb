@@ -8,28 +8,45 @@ class WebhooksControllerTest < ActionController::TestCase
   test ":push with the target branch queues a job" do
     Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
     Resque.expects(:enqueue).with(GitMirrorUpdateJob, stack_id: @stack.id)
-    params = {"payload"=>"{\"ref\":\"refs/heads/master\",\"after\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"before\":\"afa3d1edbb8689a03a2920667c0f685469fd349b\",\"created\":false,\"deleted\":false,\"forced\":false,\"compare\":\"https://github.com/gmalette/Enhance/compare/afa3d1edbb86...435b9937f277\",\"commits\":[{\"id\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"distinct\":true,\"message\":\"toto\",\"timestamp\":\"2014-02-27T09:22:13-08:00\",\"url\":\"https://github.com/gmalette/Enhance/commit/435b9937f2774b351adb06412c9fac3e477134df\",\"author\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"committer\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"added\":[],\"removed\":[],\"modified\":[]}],\"head_commit\":{\"id\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"distinct\":true,\"message\":\"toto\",\"timestamp\":\"2014-02-27T09:22:13-08:00\",\"url\":\"https://github.com/gmalette/Enhance/commit/435b9937f2774b351adb06412c9fac3e477134df\",\"author\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"committer\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"added\":[],\"removed\":[],\"modified\":[]},\"repository\":{\"id\":2284946,\"name\":\"Enhance\",\"url\":\"https://github.com/gmalette/Enhance\",\"description\":\"Rack middleware to resize images\",\"homepage\":\"\",\"watchers\":4,\"stargazers\":4,\"forks\":1,\"fork\":false,\"size\":278,\"owner\":{\"name\":\"gmalette\",\"email\":\"gmalette@gmail.com\"},\"private\":false,\"open_issues\":0,\"has_issues\":true,\"has_downloads\":true,\"has_wiki\":true,\"language\":\"Ruby\",\"created_at\":1314563387,\"pushed_at\":1393521739,\"master_branch\":\"master\"},\"pusher\":{\"name\":\"gmalette\",\"email\":\"gmalette@gmail.com\"}}", "action"=>"create", "controller"=>"webhooks"}
-    post :push, { stack_id: @stack.to_param }.merge(params)
+    params = {"ref"=>"refs/heads/master", "after"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "before"=>"16c259864de2fc2da2e185c3088f4f33e5b09a3c", "created"=>false, "deleted"=>false, "forced"=>false, "compare"=>"https://github.com/byroot/junk/compare/16c259864de2...79d29e99cb83", "commits"=>[{"id"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "distinct"=>true, "message"=>"modif", "timestamp"=>"2014-02-28T10:27:42-08:00", "url"=>"https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f", "author"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "committer"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "added"=>nil, "removed"=>nil, "modified"=>["toto.txt"]}], "head_commit"=>{"id"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "distinct"=>true, "message"=>"modif", "timestamp"=>"2014-02-28T10:27:42-08:00", "url"=>"https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f", "author"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "committer"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "added"=>nil, "removed"=>nil, "modified"=>["toto.txt"]}, "repository"=>{"id"=>17266426, "name"=>"junk", "url"=>"https://github.com/byroot/junk", "description"=>"Pure test repo, look elsewhere please.", "watchers"=>0, "stargazers"=>0, "forks"=>0, "fork"=>false, "size"=>0, "owner"=>{"name"=>"byroot", "email"=>"jean.boussier@gmail.com"}, "private"=>false, "open_issues"=>0, "has_issues"=>true, "has_downloads"=>true, "has_wiki"=>true, "created_at"=>1393538266, "pushed_at"=>1393612064, "master_branch"=>"master"}, "pusher"=>{"name"=>"gmalette", "email"=>"gmalette@gmail.com"}, "webhook"=>{}}
+    post :push, { stack_id: @stack.id }.merge(params)
   end
 
   test ":push does not enqueue a job if not the target branch" do
     Resque.expects(:enqueue).never
-    params = {"payload"=>"{\"ref\":\"refs/heads/not-master\",\"after\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"before\":\"afa3d1edbb8689a03a2920667c0f685469fd349b\",\"created\":false,\"deleted\":false,\"forced\":false,\"compare\":\"https://github.com/gmalette/Enhance/compare/afa3d1edbb86...435b9937f277\",\"commits\":[{\"id\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"distinct\":true,\"message\":\"toto\",\"timestamp\":\"2014-02-27T09:22:13-08:00\",\"url\":\"https://github.com/gmalette/Enhance/commit/435b9937f2774b351adb06412c9fac3e477134df\",\"author\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"committer\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"added\":[],\"removed\":[],\"modified\":[]}],\"head_commit\":{\"id\":\"435b9937f2774b351adb06412c9fac3e477134df\",\"distinct\":true,\"message\":\"toto\",\"timestamp\":\"2014-02-27T09:22:13-08:00\",\"url\":\"https://github.com/gmalette/Enhance/commit/435b9937f2774b351adb06412c9fac3e477134df\",\"author\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"committer\":{\"name\":\"Guillaume Malette\",\"email\":\"guillaume@jadedpixel.com\",\"username\":\"gmalette\"},\"added\":[],\"removed\":[],\"modified\":[]},\"repository\":{\"id\":2284946,\"name\":\"Enhance\",\"url\":\"https://github.com/gmalette/Enhance\",\"description\":\"Rack middleware to resize images\",\"homepage\":\"\",\"watchers\":4,\"stargazers\":4,\"forks\":1,\"fork\":false,\"size\":278,\"owner\":{\"name\":\"gmalette\",\"email\":\"gmalette@gmail.com\"},\"private\":false,\"open_issues\":0,\"has_issues\":true,\"has_downloads\":true,\"has_wiki\":true,\"language\":\"Ruby\",\"created_at\":1314563387,\"pushed_at\":1393521739,\"master_branch\":\"master\"},\"pusher\":{\"name\":\"gmalette\",\"email\":\"gmalette@gmail.com\"}}", "action"=>"create", "controller"=>"webhooks"}
-    post :push, { stack_id: @stack.to_param }.merge(params)
+    params = {"ref"=>"refs/heads/not-master", "after"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "before"=>"16c259864de2fc2da2e185c3088f4f33e5b09a3c", "created"=>false, "deleted"=>false, "forced"=>false, "compare"=>"https://github.com/byroot/junk/compare/16c259864de2...79d29e99cb83", "commits"=>[{"id"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "distinct"=>true, "message"=>"modif", "timestamp"=>"2014-02-28T10:27:42-08:00", "url"=>"https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f", "author"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "committer"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "added"=>nil, "removed"=>nil, "modified"=>["toto.txt"]}], "head_commit"=>{"id"=>"79d29e99cb83e0ba16c9e30c502a60995e711e5f", "distinct"=>true, "message"=>"modif", "timestamp"=>"2014-02-28T10:27:42-08:00", "url"=>"https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f", "author"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "committer"=>{"name"=>"Guillaume Malette", "email"=>"gmalette@gmail.com", "username"=>"gmalette"}, "added"=>nil, "removed"=>nil, "modified"=>["toto.txt"]}, "repository"=>{"id"=>17266426, "name"=>"junk", "url"=>"https://github.com/byroot/junk", "description"=>"Pure test repo, look elsewhere please.", "watchers"=>0, "stargazers"=>0, "forks"=>0, "fork"=>false, "size"=>0, "owner"=>{"name"=>"byroot", "email"=>"jean.boussier@gmail.com"}, "private"=>false, "open_issues"=>0, "has_issues"=>true, "has_downloads"=>true, "has_wiki"=>true, "created_at"=>1393538266, "pushed_at"=>1393612064, "master_branch"=>"master"}, "pusher"=>{"name"=>"gmalette", "email"=>"gmalette@gmail.com"}, "webhook"=>{}}
+    post :push, { stack_id: @stack.id }.merge(params)
   end
 
-  test ":status updates the commit with the payload state" do
+  test ":state updates the commit with the payload state" do
     commit = commits(:first)
-    params = {"payload" => "{\"sha\":\"#{commit.sha}\", \"state\":\"pending\"}"}
-    post :state, { stack_id: @stack.to_param }.merge(params)
+    params = {"sha" => commit.sha, "state" => "pending"}
+    post :state, { stack_id: @stack.id }.merge(params)
 
     assert_equal 'pending', commit.reload.state
   end
 
-  test ":status with a unexisting commit trows ActiveRecord::RecordNotFound" do
-    params = {"payload" => "{\"sha\":\"notarealcommit\", \"state\":\"pending\"}"}
+  test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do
+    params = {"sha" => "notarealcommit", "state" => "pending"}
     assert_raises ActiveRecord::RecordNotFound do
-      post :state, { stack_id: @stack.to_param }.merge(params)
+      post :state, { stack_id: @stack.id }.merge(params)
     end
+  end
+
+  test ":push returns head :ok if request is ping" do
+    @request.env['HTTP_X_GITHUB_EVENT'] = 'ping'
+
+    Resque.expects(:enqueue).never
+    post :state, { stack_id: @stack.id, zen: "Git is beautiful" }
+    assert_response :ok
+  end
+
+  test ":state returns head :ok if request is ping" do
+    @request.env['HTTP_X_GITHUB_EVENT'] = 'ping'
+
+    commit = commits(:first)
+    post :state, { stack_id: @stack.id }
+    Resque.expects(:enqueue).never
+    assert_response :ok
   end
 end

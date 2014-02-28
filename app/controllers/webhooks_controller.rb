@@ -1,10 +1,11 @@
 class WebhooksController < ApplicationController
   skip_before_filter :verify_authenticity_token
+  before_filter :check_if_ping
 
   respond_to :json
 
   def push
-    branch = payload['ref'].gsub('refs/heads/', '')
+    branch = params['ref'].gsub('refs/heads/', '')
 
     if branch == stack.branch
       Resque.enqueue(GithubSyncJob, stack_id: stack.id)
@@ -15,8 +16,8 @@ class WebhooksController < ApplicationController
   end
 
   def state
-    commit = stack.commits.find_by_sha!(payload['sha'])
-    commit.update_attributes(state: payload['state'])
+    commit = stack.commits.find_by_sha!(params['sha'])
+    commit.update_attributes(state: params['state'])
     head :ok
   end
 
@@ -26,11 +27,11 @@ class WebhooksController < ApplicationController
 
   private
 
-  def payload
-    @payload ||= JSON.load(params[:payload])
+  def check_if_ping
+    return head :ok if request.headers['HTTP_X_GITHUB_EVENT'] == 'ping'
   end
 
   def stack
-    @stack ||= Stack.from_param(params[:stack_id])
+    @stack ||= Stack.find(params[:stack_id])
   end
 end

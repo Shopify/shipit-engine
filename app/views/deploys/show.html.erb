@@ -1,3 +1,9 @@
 <h1>Deploying <%= @deploy.until_commit.sha %></h1>
-
-<pre><code><%= @deploy.display_output %></code></pre>
+<div id="status"><%= @deploy.status %></div>
+<pre>
+  <% if @deploy.output? %>
+    <code><%= @deploy.output %></code>
+  <% else %>
+    <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
+  <% end %>
+</pre>

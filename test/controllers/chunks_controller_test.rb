@@ -19,4 +19,10 @@ class ChunksControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal @response.body, '[]'
   end
+
+  test ":tail" do
+    get :tail, stack_id: @stack.to_param, deploy_id: @deploy.id, last_id: @last_chunk.id, format: :json
+    assert_response :success
+    assert_equal JSON.parse(@response.body).keys, ['url', 'deploy', 'chunks']
+  end
 end

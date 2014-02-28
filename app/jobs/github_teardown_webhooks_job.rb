@@ -1,4 +1,6 @@
 class GithubTeardownWebhooksJob < BackgroundJob
+  extend Resque::Plugins::Lock
+
   @queue = :default
 
   def perform(params)
