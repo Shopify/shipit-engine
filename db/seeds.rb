@@ -15,13 +15,11 @@ stacks = 3.times.map do
   )
 end
 
-commits = []
-
 stacks.each do |stack|
   20.times do
     user = users.sample
 
-    commits << Commit.create!(
+    Commit.create!(
       :stack_id     => stack.id,
       :author_id    => user.id,
       :committer_id => user.id,
@@ -36,11 +34,13 @@ deploys = []
 
 stacks.each do |stack|
   stack.commits.limit(15).each_slice(5).each do |commits|
+    chunks = 5.times.map { OutputChunk.new(:text => Faker::Lorem.paragraph) }
     deploys << stack.deploys.create!(
       :since_commit_id => commits.first.id,
       :until_commit_id => commits.last.id,
       :status          => "success",
-      :output          => "$ cap production deploy SHA=yolo"
+      :output          => "$ cap production deploy SHA=yolo",
+      :chunks          => chunks,
     )
   end
 end

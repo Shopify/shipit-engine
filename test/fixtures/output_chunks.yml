@@ -1,9 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  deploy_id: 
-  text: MyText
-
-two:
-  deploy_id: 
-  text: MyText
+shipit:
+  deploy: shipit
+  text: "deploy deploy deploy, faiiil"
