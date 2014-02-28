@@ -15,28 +15,21 @@
     </tr>
   </thead>
   <tbody>
-    <% 15.times do %>
+    <% @stack.commits.each do |commit| %>
       <tr>
         <td>
-          <a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, SecureRandom.hex) %>">
-            <%= SecureRandom.hex[0...7] %>
+          <a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>">
+            <%= commit.short_sha %>
           </a>
         </td>
         <td>
-          <a href="<%= github_user_url(Faker::Internet.user_name) %>">
-            <%= Faker::Internet.user_name %>
+          <a href="<%= github_user_url(commit.author.login) %>">
+            <%= commit.author.name %>
           </a>
         </td>
 
-        <td><%= Faker::Company.catch_phrase %></td>
-        <td>
-          <% success = [true, false].sample %>
-          <% if success %>
-            <span style="color: green">&check;</span>
-          <% else %>
-            <span style="color: red">&cross;</span>
-          <% end %>
-        </td>
+        <td><%= commit.message %></td>
+        <td><%= commit.state %></td>
       </tr>
     <% end %>
   </tbody>

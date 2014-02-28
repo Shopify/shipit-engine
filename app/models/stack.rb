@@ -33,6 +33,10 @@ class Stack < ActiveRecord::Base
     "git@github.com:#{repo_owner}/#{repo_name}.git"
   end
 
+  def short_sha
+    sha[0..9]
+  end
+
   def base_path
     File.join(STACKS_PATH, repo_owner, repo_name, environment)
   end

@@ -8,7 +8,7 @@ class StacksController < ApplicationController
   end
 
   def show
-    @stack = Stack.from_param(params[:id])
+    @stack = Stack.preload(:commits => :author).from_param(params[:id])
   end
 
   def create
