@@ -1,17 +1,18 @@
 require "fileutils"
 
 class StackCommands
+  SSH_ENV = {'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
 
   def initialize(stack)
     @stack = stack
   end
 
   def bundle_install
-    Command.new('bundle', 'install')
+    Command.new('bundle', 'install', SSH_ENV)
   end
 
   def deploy(commit)
-    env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment, 'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
+    env = SSH_ENV.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
     Command.new('bundle', 'exec', 'cap', @stack.environment, 'deploy', env)
   end
 
@@ -30,9 +31,9 @@ class StackCommands
   def fetch
     create_directories
     if Dir.exists?(@stack.git_path)
-      git("fetch", @stack.git_path)
+      git("fetch", @stack.git_path, SSH_ENV)
     else
-      git("clone", @stack.repo_git_url, @stack.git_path)
+      git("clone", @stack.repo_git_url, @stack.git_path, SSH_ENV)
     end
   end
 
