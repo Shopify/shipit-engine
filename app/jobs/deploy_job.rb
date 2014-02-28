@@ -17,7 +17,7 @@ class DeployJob < BackgroundJob
     end
     @deploy.complete!
   rescue
-    @deploy.fail!
+    @deploy.failure! if @deploy
     raise
   end
 

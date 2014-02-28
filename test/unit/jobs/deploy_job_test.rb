@@ -10,7 +10,6 @@ class DeployJobTest < ActiveSupport::TestCase
   test "#perform fetch commits from the API" do
     @job.stubs(:capture)
     @commands = stub(:commands)
-    Deploy.expects(:find).with(@deploy.id).returns(@deploy)
     StackCommands.expects(:new).with(@deploy.stack).returns(@commands)
 
     @commands.expects(:fetch).once
@@ -23,6 +22,11 @@ class DeployJobTest < ActiveSupport::TestCase
     @job.perform(deploy_id: @deploy.id)
   end
 
-  # TODO: test this job better
-
+  test "#perform raises an error" do
+    @job.expects(:capture).raises("some error")
+    assert_raise(RuntimeError) do
+      @job.perform(deploy_id: @deploy.id)
+    end
+    assert_equal 'failed', @deploy.reload.status
+  end
 end

@@ -10,7 +10,7 @@ class Deploy < ActiveRecord::Base
       transition pending: :running
     end
 
-    event :fail do
+    event :failure do
       transition running: :failed
     end
 
