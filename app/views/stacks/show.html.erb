@@ -80,7 +80,7 @@
           </a>
         </td>
 
-        <td><%= commit.message %></td>
+        <td><%= commit.pull_request_title || commit.message %></td>
         <td><%= commit.state %></td>
         <td>
           <%= form_tag new_stack_deploy_path(@stack), :method => :get do %>
