@@ -54,4 +54,13 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal @stack.commits.first.id, deploy.since_commit_id
   end
 
+  test "#trigger_deploy enqueue  a deploy job" do
+    @stack.deploys.destroy_all
+
+    Resque.expects(:enqueue).with(DeployJob, instance_of(Hash))
+
+    last_commit = commits(:third)
+    deploy = @stack.trigger_deploy(last_commit)
+  end
+
 end
