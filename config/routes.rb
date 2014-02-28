@@ -3,6 +3,8 @@ require "resque/server"
 Shipit::Application.routes.draw do
   root :to => 'stacks#index'
 
+  mount Resque::Server.new, :at => "/resque"
+
   resources :stacks, :only => [:new, :create, :index] do
     resource :webhooks, :only => [] do
       post :push, :state
@@ -22,6 +24,4 @@ Shipit::Application.routes.draw do
       end
     end
   end
-
-  mount Resque::Server.new, :at => "/resque"
 end
