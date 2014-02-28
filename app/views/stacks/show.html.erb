@@ -12,6 +12,7 @@
       <th>Author</th>
       <th>Message</th>
       <th>CI Status</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -30,6 +31,12 @@
 
         <td><%= commit.message %></td>
         <td><%= commit.state %></td>
+        <td>
+          <%= form_tag new_stack_deploy_path(@stack), :method => :get do %>
+            <%= hidden_field_tag :sha, commit.sha %>
+            <%= submit_tag "Deploy" %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

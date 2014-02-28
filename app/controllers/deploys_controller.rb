@@ -4,6 +4,11 @@ class DeploysController < ApplicationController
   before_action :load_deploy, only: :show
   before_action :load_until_commit, only: :create
 
+  def new
+    @commit = @stack.commits.where(:sha => params[:sha]).first!
+    @deploy = Deploy.new(:until_commit => @commit)
+  end
+
   def show
     respond_with(@deploy)
   end

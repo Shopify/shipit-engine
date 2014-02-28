@@ -8,7 +8,7 @@ Shipit::Application.routes.draw do
       get :settings
     end
 
-    resources :deploys, :id => /\d+/, :only =>  [:show, :create]
+    resources :deploys, :id => /\d+/, :only =>  [:new, :show, :create]
 
     resource :webhooks, :id => /\d+/, :only => [] do
       post :push, :state
