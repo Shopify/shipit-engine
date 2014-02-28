@@ -1,0 +1,29 @@
+.main {
+  flex: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 10%;
+  padding-top: 3rem;
+}
+
+  section + section {
+    margin-top: 2rem;
+  }
+
+  .section-header {
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 2.25rem 0;
+    @include clearfix;
+      h1 {
+        float: left;
+      }
+  }
+
+  .header-accessory {
+    float: right;
+      & > a {
+        padding: .7rem 0;
+        display: inline-block;
+        & + a { margin-left: 1rem; }
+      }
+  }

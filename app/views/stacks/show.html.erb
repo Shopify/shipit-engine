@@ -1,9 +1,60 @@
-<h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
+<!-- <h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1> -->
 
-<a href="<%= settings_stack_path(@stack) %>">Settings</a>
-<a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
 
-<h2>Undeployed Commits</h2>
+<section>
+
+<header class="section-header">
+  <h1>Undeployed Commits</h1>
+  <div class="header-accessory">
+    <a href="<%= settings_stack_path(@stack) %>">Settings</a>
+    <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
+  </div>
+</header>
+<ul class="commit-lst">
+  <% @commits.each do |commit| %>
+    <li>
+      <div class="status <%= commit.state %>">
+        <i><%= commit.state %></i>
+        <img src="<%= commit.author.avatar_url %>" alt="">
+      </div>
+      <div class="event">
+        <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged 12 mins ago</span>
+        <span class="event-title"><%= commit.message %> <span class="event-number">(<a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>"><%= commit.short_sha %></a>)</span></span>
+      </div>
+      <% if commit.state == 'success' %>
+        <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+          <%= hidden_field_tag :sha, commit.sha %>
+          <%= submit_tag "Deploy", :class => 'btn' %>
+        <% end %>
+      <% elsif commit.state == 'pending' %>
+        <a href="#" class="btn disabled deploy-action">Pending...</a>
+      <% else %>
+        <a href="#" class="btn disabled deploy-action">Failure</a>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+</section>
+
+<section>
+  <header class="section-header">
+    <h1>Deploys</h1>
+  </header>
+  <ul class="commit-lst">
+    <% @deploys.each do |deploy| %>
+      <li>
+        <div class="status <%= deploy.status %>">
+          <i><%= deploy.status %></i>
+          <img src="" alt="">
+        </div>
+        <div class="event">
+          <span class="event-meta"><a href="#" class="user main-user">Name</a> deployed 12 mins ago</span>
+          <span class="event-title"><span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span></span>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</section>
 
 <table>
   <thead>

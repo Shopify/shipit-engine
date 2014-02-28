@@ -2,13 +2,40 @@
 <html>
 <head>
   <title>Shipit</title>
-  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= stylesheet_link_tag "master", media: "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <div class="layout">
+    <header class="sidebar">
+      <a href="/" class="logo"><i></i><span>Ship it</span></a>
+      <nav class="nav">
 
-<%= yield %>
+          <ul>
+            <% stacks.group_by(&:repo_owner).each do |owner, stacks_for_owner| %>
+            <% stacks_for_owner.group_by(&:repo_name).each do |repo_name, stacks_for_repo| %>
+              <li class="nav-item">
+                <span class="platform"><%= repo_name %></span>
+                <ul class="server-lst">
+                  <% stacks_for_repo.each do |stack| %>
+                    <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
+                      <a href="<%= stack_path(stack) %>">
+                        <%= stack.environment %>
+                      </a>
+                    </li>
+                  <% end %>
+                </ul>
+              </li>
+            <% end %>
+            <% end %>
+          </ul>
 
+      </nav>
+    </header>
+    <div class="main">
+      <%= yield %>
+    </div>
+  </div>
 </body>
 </html>
