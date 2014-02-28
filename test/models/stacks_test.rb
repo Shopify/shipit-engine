@@ -3,7 +3,7 @@ require 'test_helper'
 class StacksTest < ActiveSupport::TestCase
   def setup
     @stack = stacks(:shipit)
-    @expected_base_path = File.join(Rails.root, "shared", "stacks", @stack.repo_owner, @stack.repo_name, @stack.environment)
+    @expected_base_path = File.join(Rails.root, "data", "stacks", @stack.repo_owner, @stack.repo_name, @stack.environment)
   end
 
   test "repo_http_url" do
