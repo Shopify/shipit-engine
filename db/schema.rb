@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228191707) do
+ActiveRecord::Schema.define(version: 20140228205311) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
     t.integer  "author_id",               null: false
     t.integer  "committer_id",            null: false
     t.string   "sha",          limit: 40, null: false
-    t.string   "message",                 null: false
+    t.text     "message",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
