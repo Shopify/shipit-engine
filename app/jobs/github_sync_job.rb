@@ -35,7 +35,7 @@ class GithubSyncJob < BackgroundJob
   protected
 
   def fetch_state(commit)
-    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).last.try(:state)
+    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).first.try(:state)
   end
 
   def known?(sha)
