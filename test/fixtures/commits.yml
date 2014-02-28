@@ -21,3 +21,19 @@ third:
   stack: shipit
   author: walrus
   committer: walrus
+
+fourth:
+  id: 4
+  sha: 367578b362bf2b4df5903e1c7960929361c3435a
+  message: "#yoloshipit!"
+  stack: shipit
+  author: walrus
+  committer: walrus
+
+fifth:
+  id: 5
+  sha: 367578b362bf2b4df5903e1c7960929361c3abcd
+  message: "fix all teh things"
+  stack: shipit
+  author: walrus
+  committer: walrus
