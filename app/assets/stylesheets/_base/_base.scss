@@ -44,12 +44,26 @@ a {
   color: #248af2;
 }
 
+.more {
+  &:after {
+    content: " >";
+    font-family: "Checkout Symbols";
+  }
+}
+
 // Headings
 
 h1 {
   font-size: 2rem;
   font-weight: 300;
   margin: 0;
+}
+
+h4 {
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  font-size: .75rem;
+  font-weight: 400;
 }
 
 // Buttons
@@ -84,6 +98,10 @@ h1 {
         &:hover {
           background-color: rgba($blue, .1);
         }
+    }
+
+    &.primary {
+      padding: 1.5em 4em;
     }
 
 }
