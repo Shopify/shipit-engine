@@ -5,6 +5,16 @@ class DeploysTest < ActiveSupport::TestCase
     @deploy = deploys(:shipit)
   end
 
+  test "enqueue" do
+    Resque.expects(:enqueue).with(DeployJob, deploy_id: @deploy.id)
+
+    @deploy.enqueue
+  end
+
+  test "enqueue when not persisted" do
+    assert_raise(RuntimeError) { Deploy.new.enqueue }
+  end
+
   test "working_directory" do
     assert_equal File.join(@deploy.stack.deploys_path, @deploy.id.to_s), @deploy.working_directory
   end

@@ -53,6 +53,11 @@ class Deploy < ActiveRecord::Base
     chunks.pluck(:text).join("\n")
   end
 
+  def enqueue
+    raise "only persisted jobs can be enqueued" unless persisted?
+    Resque.enqueue(DeployJob, deploy_id: id)
+  end
+
   private
 
   def last_successful_deploy

@@ -16,9 +16,7 @@ class Stack < ActiveRecord::Base
       until_commit: until_commit,
       since_commit: since_commit
     )
-    if deploy.persisted?
-      Resque.enqueue(DeployJob, deploy_id: deploy.id)
-    end
+    deploy.enqueue
     deploy
   end
 
