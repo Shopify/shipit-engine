@@ -11,7 +11,7 @@ class StackCommands
   end
 
   def deploy(commit)
-    env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment}
+    env = {'SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment, 'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock'}
     Command.new('bundle', 'exec', 'cap', @stack.environment, 'deploy', env)
   end
 

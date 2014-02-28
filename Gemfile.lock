@@ -121,7 +121,7 @@ GEM
     redis (3.0.7)
     redis-namespace (1.4.1)
       redis (~> 3.0.4)
-    resque (1.25.1)
+    resque (1.26.pre.0)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
       redis-namespace (~> 1.2)
@@ -197,7 +197,7 @@ DEPENDENCIES
   octokit
   pry
   rails!
-  resque
+  resque (= 1.26.pre.0)
   resque-lock
   sass-rails (~> 4.0.0)
   settingslogic

@@ -1,4 +1,9 @@
 class ApplicationController < ActionController::Base
+  # Use basic auth for now
+  if Rails.env.production?
+    http_basic_authenticate_with :name => "shipit", :password => "yoloshipit"
+  end
+
   # Respond to HTML by default
   respond_to :html
 

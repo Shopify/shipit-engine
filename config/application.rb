@@ -23,5 +23,8 @@ module Shipit
 
     # Autoload lib/
     config.autoload_paths += Dir["#{config.root}/lib", "#{config.root}/lib/**/"]
+
+    # Compile the correct assets
+    config.assets.precompile += ['master.css']
   end
 end

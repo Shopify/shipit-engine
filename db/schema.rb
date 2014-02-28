@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228181557) do
+ActiveRecord::Schema.define(version: 20140228191707) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                null: false
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20140228181557) do
     t.string   "api_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "avatar_url"
   end
 
   create_table "webhooks", force: true do |t|

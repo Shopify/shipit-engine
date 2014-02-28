@@ -11,7 +11,7 @@ class GithubSyncJob < BackgroundJob
 
     commits = fetch_missing_commits(repo.rels[:commits])
     commits.reverse.each do |gh_commit|
-      @stack.commits.from_github(gh_commit).save!
+      @stack.commits.from_github(gh_commit, fetch_state(gh_commit)).save!
     end
   end
 
@@ -33,6 +33,10 @@ class GithubSyncJob < BackgroundJob
   end
 
   protected
+
+  def fetch_state(commit)
+    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).last.try(:state)
+  end
 
   def known?(sha)
     @stack.commits.where(sha: sha).exists?

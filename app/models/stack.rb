@@ -1,6 +1,6 @@
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
-  REQUIRED_HOOKS = %w( push state )
+  REQUIRED_HOOKS = %w( push status )
 
   has_many :commits
   has_many :deploys
@@ -17,7 +17,7 @@ class Stack < ActiveRecord::Base
       since_commit: since_commit
     )
     if deploy.persisted?
-      Resque.enqueue(DeployJob, deploy_id: id)
+      Resque.enqueue(DeployJob, deploy_id: deploy.id)
     end
     deploy
   end

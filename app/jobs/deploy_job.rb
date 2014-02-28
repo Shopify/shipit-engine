@@ -16,9 +16,13 @@ class DeployJob < BackgroundJob
       end
     end
     @deploy.complete!
-  rescue
-    @deploy.fail!
-    raise
+  rescue StandardError => e
+    begin
+      @deploy.failure! if @deploy
+    rescue
+      Rails.logger.error "Unable to mark job as failed!"
+    end
+    raise e
   end
 
   def capture(command)
