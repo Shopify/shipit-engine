@@ -2,22 +2,22 @@
 <div class="wrapper">
 
 <section>
-  <header class="section-header">
-    <h1>Undeployed Commits</h1>
-    <div class="header-accessory">
-      <a href="<%= settings_stack_path(@stack) %>">Settings</a>
-      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
-    </div>
-  </header>
-  <ul class="commit-lst">
-    <% @commits.each do |commit| %>
-      <li>
-        <div class="status <%= commit.state %>">
-          <i><%= commit.state %></i>
-          <img src="<%= commit.author.avatar_url %>" alt="">
-        </div>
-        <div class="event">
-          <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
+<header class="section-header">
+  <h1>Undeployed Commits</h1>
+  <div class="header-accessory">
+    <a href="<%= settings_stack_path(@stack) %>">Settings</a>
+    <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
+  </div>
+</header>
+<ul class="commit-lst">
+  <% @commits.each do |commit| %>
+    <li>
+      <div class="status <%= commit.state %>">
+        <i><%= commit.state %></i>
+        <img src="<%= commit.author.avatar_url %>" alt="">
+      </div>
+      <div class="event">
+        <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
           <span class="event-title">
             <%= commit.pull_request_title || commit.message %>
             <% if commit.pull_request? %>

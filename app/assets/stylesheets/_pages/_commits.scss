@@ -18,6 +18,7 @@
     float: left;
     margin-right: 1rem;
     border: 2px solid #ccc;
+      i { background: asset-data-url("default.svg") center center no-repeat; }
 
       &.pending {
         border: 2px solid $blue;
@@ -56,6 +57,11 @@
   .event {
     float: left;
     padding: .3rem 0;
+    max-width: calc(100% - 170px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	overflow: hidden;
+
   }
 
     .event-meta {
