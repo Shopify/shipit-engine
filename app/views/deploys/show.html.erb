@@ -1,5 +1,15 @@
-<h1>Deploying <%= @deploy.until_commit.sha %></h1>
-<div id="status"><%= @deploy.status %></div>
+<section>
+
+<div class="wrapper">
+  <header class="section-header">
+    <div class="status pending">
+      <i></i>
+    </div>
+    <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>
+  </header>
+
+</div>
+
 <pre>
   <% if @deploy.output? %>
     <code><%= @deploy.output %></code>
@@ -7,3 +17,4 @@
     <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
   <% end %>
 </pre>
+</section>

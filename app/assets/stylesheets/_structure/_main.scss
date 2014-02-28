@@ -1,8 +1,14 @@
 .main {
   flex: 1;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 3rem 10%;
+
+
+  padding: 3rem 0;
+}
+
+  .wrapper {
+  padding: 0 10%;
+max-width: 1000px;
+margin: 0 auto;
 }
 
   section + section {
@@ -35,3 +41,14 @@
     }
 
   }
+
+
+pre {
+  background-color: rgba(#2E343A, .9);
+  overflow: scroll;
+  color: #fff;
+  padding: 1.5rem;
+  line-height: 1.5em;
+  margin-top: -.25rem;
+  font-family: "Source Code Pro"
+}

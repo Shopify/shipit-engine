@@ -17,6 +17,8 @@
     position: relative;
     float: left;
     margin-right: 1rem;
+    border: 2px solid #ccc;
+
       &.pending {
         border: 2px solid $blue;
         // background-color: rgba($blue, .1);
