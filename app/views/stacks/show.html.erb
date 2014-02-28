@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @stack.commits.each do |commit| %>
+    <% @commits.each do |commit| %>
       <tr>
         <td>
           <a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>">
@@ -45,21 +45,14 @@
     </tr>
   </thead>
   <tbody>
-    <% 10.times do %>
+    <% @deploys.each do |deploy| %>
       <tr>
         <td>
-          <a href="<%= github_diff_url(@stack.repo_owner, @stack.repo_name, SecureRandom.hex, SecureRandom.hex) %>">
-            <%= SecureRandom.hex[0...7] %> &rarr; <%= SecureRandom.hex[0...7] %>
+          <a href="<%= github_diff_url(@stack.repo_owner, @stack.repo_name, deploy.since_commit.sha, deploy.until_commit.sha) %>">
+            <%= deploy.since_commit.short_sha %> &rarr; <%= deploy.until_commit.short_sha %>
           </a>
         </td>
-        <td>
-          <% success = [true, false].sample %>
-          <% if success %>
-            <span style="color: green">Success</span>
-          <% else %>
-            <span style="color: red">Epic Failure</span>
-          <% end %>
-        </td>
+        <td><%= deploy.status %></td>
       </tr>
     <% end %>
   </tbody>

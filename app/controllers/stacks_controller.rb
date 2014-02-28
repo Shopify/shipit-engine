@@ -8,7 +8,12 @@ class StacksController < ApplicationController
   end
 
   def show
-    @stack = Stack.preload(:commits => :author).from_param(params[:id])
+    @stack   = Stack.preload(:commits => :author).from_param(params[:id])
+    @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit).limit(10)
+    @commits = @stack.commits.order(id: :desc).preload(:author)
+    if deployed_commit_id = @stack.deploys.last.try(:until_commit_id)
+      @commits = @commits.where('id > ?', deployed_commit_id)
+    end
   end
 
   def create
