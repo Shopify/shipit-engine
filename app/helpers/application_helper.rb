@@ -1,5 +1,5 @@
 module ApplicationHelper
   def stacks
-    @stacks ||= Stacks.all
+    @stacks ||= Stack.all
   end
 end
