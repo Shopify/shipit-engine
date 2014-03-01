@@ -1,5 +1,6 @@
 module Shipit::Config
   def github_api
-    @github_api ||= Octokit::Client.new(:access_token => Rails.application.secrets.github_api_token)
+    credentials = Rails.application.secrets.github_credentials || {}
+    @github_api ||= Octokit::Client.new(credentials.symbolize_keys)
   end
 end
