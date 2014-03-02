@@ -10,11 +10,10 @@ class DeployJobTest < ActiveSupport::TestCase
   test "#perform fetch commits from the API" do
     @job.stubs(:capture)
     @commands = stub(:commands)
-    StackCommands.expects(:new).with(@deploy.stack).returns(@commands)
+    DeployCommands.expects(:new).with(@deploy).returns(@commands)
 
     @commands.expects(:fetch).once
-    @commands.expects(:clone).with(@deploy).once
-    Dir.expects(:chdir).with(@deploy.working_directory).once.yields
+    @commands.expects(:clone).once
     @commands.expects(:checkout).with(@deploy.until_commit).once
     @commands.expects(:bundle_install).once
     @commands.expects(:deploy).with(@deploy.until_commit).once
