@@ -12,6 +12,7 @@ gem 'unicorn'
 gem 'octokit'
 gem 'faker'
 gem 'settingslogic'
+gem 'omniauth'
 
 group :production do
   gem 'mysql2'
@@ -35,3 +36,13 @@ group :deploy do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
 end
+
+if File.exist?(settings_path = File.expand_path('../config/settings.yml', __FILE__))
+  require 'yaml'
+  settings = YAML.load_file(settings_path)[ENV['RAILS_ENV'] || 'development']
+  begin
+    gem settings['authentication']['gem'] if settings['authentication']['gem']
+  rescue NoMethodError
+  end
+end
+

@@ -1,5 +1,11 @@
 class ApplicationController < ActionController::Base
   before_filter :basic_auth
+  before_filter :authenticate
+
+  def authenticate
+    return if session[:user] || Settings.authentication.blank?
+    redirect_to "/auth/#{Settings.authentication.provider}"
+  end
 
   def basic_auth
     return unless Rails.env.production?

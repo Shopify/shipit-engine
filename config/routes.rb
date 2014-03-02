@@ -5,6 +5,11 @@ Shipit::Application.routes.draw do
 
   mount Resque::Server.new, :at => "/resque"
 
+  scope :authentication, controller: :authentication do
+    post :finalize
+    get :logout
+  end
+
   resources :stacks, :only => [:new, :create, :index] do
     resource :webhooks, :only => [] do
       post :push, :state
