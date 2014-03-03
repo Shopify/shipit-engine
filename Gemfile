@@ -13,10 +13,7 @@ gem 'octokit'
 gem 'faker'
 gem 'settingslogic'
 gem 'omniauth'
-
-group :authentication do
-  gem 'omniauth-google-apps'
-end
+gem 'omniauth-google-apps'
 
 group :production do
   gem 'mysql2'

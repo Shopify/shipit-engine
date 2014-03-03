@@ -4,7 +4,7 @@ class AuthenticationController < ApplicationController
   def finalize
     return_url = session[:return_to] || root_path
 
-    unless Settings.authentication
+    unless Settings.authentication.present?
       return redirect_to return_url
     end
 
