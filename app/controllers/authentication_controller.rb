@@ -1,7 +1,7 @@
 class AuthenticationController < ApplicationController
-  skip_before_filter :authenticate, :verify_authenticity_token, :only => :finalize
+  skip_before_filter :authenticate, :verify_authenticity_token, :only => :callback
 
-  def finalize
+  def callback
     return_url = session[:return_to] || root_path
 
     unless Settings.authentication.present?
@@ -10,7 +10,7 @@ class AuthenticationController < ApplicationController
 
     auth = request.env['omniauth.auth']
     if auth.blank?
-      return render :inline => '<h3>Snowman says No</h3><h1 style="text-align:center; font-size:4000%;">&#9731;</h1>'
+      return render 'failed'
     end
 
     reset_session
