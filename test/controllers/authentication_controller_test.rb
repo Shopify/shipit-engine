@@ -8,6 +8,7 @@ class AuthenticationControllerTest < ActionController::TestCase
     post :callback, provider: :google_apps
     assert_response :ok
     assert_select "h3", "Snowman says No"
+    assert_select ".sidebar", false
   end
 
   test ":callback redirects to session[:redirect_to] if auth is ok" do

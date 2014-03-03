@@ -10,7 +10,7 @@ class AuthenticationController < ApplicationController
 
     auth = request.env['omniauth.auth']
     if auth.blank?
-      return render 'failed'
+      return render 'failed', layout: false
     end
 
     reset_session
