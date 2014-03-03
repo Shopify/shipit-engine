@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   def authenticate
     return if session[:user] || Settings.authentication.blank?
     session[:return_to] = request.fullpath
-    redirect_to "/auth/#{Settings.authentication.provider}"
+    redirect_to authentication_path(provider: Settings.authentication.provider)
   end
 
   # Respond to HTML by default

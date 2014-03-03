@@ -6,6 +6,7 @@ Shipit::Application.routes.draw do
   mount Resque::Server.new, :at => "/resque"
 
   scope '/auth/:provider', as: :authentication, controller: :authentication do
+    get '/', action: :mock
     post :callback
     get :logout
   end
