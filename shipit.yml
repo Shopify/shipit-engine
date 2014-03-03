@@ -1,0 +1,10 @@
+dependencies:
+  bundler:
+    without:
+      - default
+      - production
+      - development
+      - test
+      - staging
+      - benchmark
+      - debug

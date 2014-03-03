@@ -15,8 +15,8 @@ class DeployJob < BackgroundJob
     capture commands.clone
     capture commands.checkout(@deploy.until_commit)
     Bundler.with_clean_env do
-      capture commands.bundle_install
-      capture commands.deploy(@deploy.until_commit)
+      capture_all commands.install_dependencies
+      capture_all commands.deploy(@deploy.until_commit)
     end
     @deploy.complete!
   rescue Command::Error
@@ -24,6 +24,10 @@ class DeployJob < BackgroundJob
   rescue StandardError
     @deploy.error!
     raise
+  end
+
+  def capture_all(commands)
+    commands.map { |c| capture(c) }
   end
 
   def capture(command)
