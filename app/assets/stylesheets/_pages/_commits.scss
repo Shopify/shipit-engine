@@ -20,17 +20,20 @@
     border: 2px solid #ccc;
       i { background: asset-data-url("default.svg") center center no-repeat; }
 
-      &.pending {
+      &.pending, &[data-deploy-status=pending],
+      &.running, &[data-deploy-status=running] {
         border: 2px solid $blue;
         // background-color: rgba($blue, .1);
         i { background: asset-data-url("pending.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
       }
-      &.success {
+      &.success, &[data-deploy-status=success] {
         border: 2px solid $green;
         // background-color: rgba($green, .1);
         i { background: asset-data-url("success.svg") center center no-repeat; }
       }
-      &.failure, &.error {
+      &.failure, &[data-deploy-status=failure],
+      &.failed, &[data-deploy-status=failed],
+      &.error, &[data-deploy-status=error] {
         border: 2px solid $red;
         // background-color: rgba($red, .1);
         i { background: asset-data-url("failure.svg") center center no-repeat; }
