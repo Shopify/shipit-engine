@@ -22,11 +22,32 @@ class DeployJobTest < ActiveSupport::TestCase
     @job.perform(deploy_id: @deploy.id)
   end
 
-  test "#perform raises an error" do
+  test "marks deploy as successful" do
+    Dir.stubs(:chdir).yields
+    @job.stubs(:capture)
+
+    @job.perform(deploy_id: @deploy.id)
+    assert_equal 'success', @deploy.reload.status
+  end
+
+  test "marks deploy as `error` if any application error is raised" do
     @job.expects(:capture).raises("some error")
     assert_raise(RuntimeError) do
       @job.perform(deploy_id: @deploy.id)
     end
+    assert_equal 'error', @deploy.reload.status
+  end
+
+  test "marks deploy as `failed` if a command exit with an error code" do
+    @job.expects(:capture).raises(Command::Error.new('something'))
+    @job.perform(deploy_id: @deploy.id)
     assert_equal 'failed', @deploy.reload.status
   end
+
+  test "bail out if deploy is not pending" do
+    @deploy.run!
+    @job.expects(:capture).never
+    @job.perform(deploy_id: @deploy.id)
+  end
+
 end
