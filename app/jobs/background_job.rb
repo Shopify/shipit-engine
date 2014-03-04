@@ -6,4 +6,8 @@ class BackgroundJob
 
     new.perform(*args)
   end
+
+  def logger
+    Rails.logger
+  end
 end

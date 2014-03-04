@@ -18,10 +18,15 @@ class Deploy < ActiveRecord::Base
       transition running: :success
     end
 
+    event :error do
+      transition running: :error
+    end
+
     state :pending
     state :running
     state :failed
     state :success
+    state :error
   end
 
   def commits

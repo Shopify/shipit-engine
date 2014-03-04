@@ -3,6 +3,11 @@ class DeployJob < BackgroundJob
 
   def perform(params)
     @deploy = Deploy.find(params[:deploy_id])
+    unless @deploy.pending?
+      logger.error("Deploy ##{@deploy.id} already in `#{@deploy.status}` state. Aborting.")
+      return
+    end
+
     @deploy.run!
     commands = StackCommands.new(@deploy.stack)
 
@@ -16,13 +21,11 @@ class DeployJob < BackgroundJob
       end
     end
     @deploy.complete!
-  rescue StandardError => e
-    begin
-      @deploy.failure! if @deploy
-    rescue
-      Rails.logger.error "Unable to mark job as failed!"
-    end
-    raise e
+  rescue Command::Error
+    @deploy.failure!
+  rescue StandardError
+    @deploy.error!
+    raise
   end
 
   def capture(command)
