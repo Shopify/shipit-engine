@@ -9,7 +9,7 @@ $ ->
         chunkUrl = data.url
         if data.chunks.length > 0
           chunk_text = data.chunks.map (chunk) -> chunk.text
-          $("code").append(colorize(chunk_text.join()))
+          $("code").append(colorize(chunk_text.join('')))
         if data.deploy.status != 'pending' && data.deploy.status != 'running'
           clearTimeout(tid)
     tid = setInterval func, 500
