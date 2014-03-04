@@ -1,4 +1,5 @@
 namespace :dev do
+  desc "Appends chunks to the last deploy, or specify with DEPLOY=id"
   task stream: :environment do
     require 'faker'
     logger = Logger.new(STDOUT)
