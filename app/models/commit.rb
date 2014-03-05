@@ -15,11 +15,11 @@ class Commit < ActiveRecord::Base
   end
 
   def pull_request_url
-    "https://github.com/#{stack.repo_owner}/#{stack.repo_name}/pull/#{pull_request_id}"
+    parsed && "https://github.com/#{stack.repo_owner}/#{stack.repo_name}/pull/#{pull_request_id}"
   end
 
   def pull_request_id
-    parsed && parsed['pr_id']
+    parsed && parsed['pr_id'].to_i
   end
 
   def pull_request_title
@@ -43,6 +43,6 @@ class Commit < ActiveRecord::Base
   end
 
   def parsed
-    @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\/]+\n\n(?<pr_title>.*)/)
+    @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-\_\/]+\n\n(?<pr_title>.*)/)
   end
 end
