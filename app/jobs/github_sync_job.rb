@@ -3,8 +3,6 @@ class GithubSyncJob < BackgroundJob
 
   @queue = :default
 
-  MAX_PAGES = 2
-
   def perform(params)
     @stack = Stack.find(params[:stack_id])
     repo  = @stack.github_repo
@@ -17,18 +15,11 @@ class GithubSyncJob < BackgroundJob
 
   def fetch_missing_commits(relation)
     commits = []
-
-    MAX_PAGES.times do
-      resource = relation.get
-      resource.data.map do |commit|
-        return commits if known?(commit.sha)
-        commits << commit
-      end
-
-      relation = resource.rels[:next]
-      break if relation.nil?
+    iterator = FirstParentCommitsIterator.new(relation)
+    iterator.each do |commit|
+      return commits if known?(commit.sha)
+      commits << commit
     end
-
     commits
   end
 
