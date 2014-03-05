@@ -2,7 +2,7 @@
 
 <div class="wrapper">
   <header class="section-header">
-    <div class="status pending">
+    <div class="status" data-deploy-status="<%= @deploy.status %>">
       <i></i>
     </div>
     <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>

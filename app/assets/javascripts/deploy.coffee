@@ -1,18 +1,52 @@
-$ ->
-  colorize = (text) -> ansi_up.ansi_to_html(text)
+class ChunkPoller
+  INTERVAL = 1000
+  constructor: ($body, @pollUrl) ->
+    @$status = $body.find('[data-deploy-status]')
+    @$code = $body.find('code')
+    @$body = $body
+    @$window = $(window)
 
-  chunkUrl = $("code").data('next-chunks-url')
-  if chunkUrl
-    func = ->
-      jQuery.get chunkUrl, (data) ->
-        $("#status").html(data.deploy.status)
-        chunkUrl = data.url
-        if data.chunks.length > 0
-          chunk_text = data.chunks.map (chunk) -> chunk.text
-          $("code").append(colorize(chunk_text.join('')))
-        if data.deploy.status != 'pending' && data.deploy.status != 'running'
-          clearTimeout(tid)
-    tid = setInterval func, 500
+  poll: =>
+    jQuery.get(@pollUrl, @update)
 
-  $("code").each ->
-    $(this).html(colorize(this.innerHTML))
+  update: (response) =>
+    @pollUrl = response.url
+    @restoreBrowserScroll =>
+      @appendChunks(response.chunks)
+    @updateDeployStatus(response.deploy)
+    unless @deployIsFinished(response.deploy)
+      @start()
+
+  restoreBrowserScroll: (callback) ->
+    wasScrolledToBottom = @isScrolledToBottom()
+    callback()
+    if wasScrolledToBottom
+      @$window.scrollTop(@$body.height())
+
+  isScrolledToBottom: ->
+    @$body.height() - @$window.height() == window.scrollY
+
+  start: ->
+    setTimeout(@poll, INTERVAL)
+
+  updateDeployStatus: (deploy) ->
+    @$status.attr('data-deploy-status', deploy.status)
+
+  deployIsFinished: (deploy) ->
+    @$status.attr('data-deploy-status') not in ['pending', 'running']
+
+  appendChunks: (chunks) ->
+    return unless chunks.length
+
+    text = chunks.map((c) -> c.text).join('')
+    @$code.append(@colorize(text))
+
+  colorize: (text) ->
+    ansi_up.ansi_to_html(text)
+
+jQuery ->
+  poller = new ChunkPoller($('body'), $('code').data('next-chunks-url'))
+  poller.start()
+
+  $('code').each ->
+    $(this).html(ChunkPoller::colorize(this.innerHTML))
