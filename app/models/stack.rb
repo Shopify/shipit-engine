@@ -6,7 +6,7 @@ class Stack < ActiveRecord::Base
   has_many :deploys
   has_many :webhooks
 
-  after_create :setup_webhooks, :clone_github
+  after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks
 
   def trigger_deploy(until_commit)
@@ -83,7 +83,7 @@ class Stack < ActiveRecord::Base
     Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
   end
 
-  def clone_github
+  def sync_github
     Resque.enqueue(GithubSyncJob, stack_id: id)
   end
 end
