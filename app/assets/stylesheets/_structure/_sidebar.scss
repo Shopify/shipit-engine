@@ -80,12 +80,11 @@
                 content: ">";
                 font-family: "Checkout Symbols";
                 font-size: .875rem;
-                position: absolute; left: -1rem;
+                position: absolute; top: 50%; left: -1.125rem;
                 color: $blue;
                 display: block;
-                left: -1.125rem;
-                display: block;
                 padding-left: .25em;
+                margin-top: -.65em;
               }
           }
         }
