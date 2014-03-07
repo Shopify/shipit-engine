@@ -1,5 +1,4 @@
-class WebhooksController < ApplicationController
-  skip_before_filter :verify_authenticity_token, :authenticate
+class WebhooksController < ActionController::Base
   before_filter :check_if_ping
 
   respond_to :json
