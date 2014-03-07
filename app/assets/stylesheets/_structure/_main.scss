@@ -58,6 +58,10 @@ pre {
     &.success { background-color: $green; }
     &.failure { background-color: $bright-red; }
 
+  a {
+    color: #fff;
+  }
+
   .repo-name {
     float: left;
   }

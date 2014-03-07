@@ -1,3 +1,20 @@
-<h1>Settings for <%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
+<header class="repo-header">
+  <div class="wrapper">
+    <div class="repo-name">
+      <p>Repo owned by <%= @stack.repo_owner %></p>
+      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+    </div>
+    <div class="header-accessory">
+      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
+      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
+    </div>
+  </div>
+</header>
 
-<%= button_to "Delete", stack_path(@stack), :method => :delete, :confirm => "Are you sure?" %>
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Settings</h2>
+    </header>
+    <%= button_to "Delete", stack_path(@stack), :method => :delete, :confirm => "Are you sure?" %>
+  </section>
