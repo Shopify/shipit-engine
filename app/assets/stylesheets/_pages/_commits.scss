@@ -4,7 +4,7 @@
 }
 
   .commit-lst li {
-    padding: 2.25rem 0;
+    padding: 1.5rem 0;
     border-bottom: 1px solid rgba(#000, .05);
     @include clearfix;
       &:last-child { border: none; }
@@ -23,19 +23,16 @@
       &.pending, &[data-deploy-status=pending],
       &.running, &[data-deploy-status=running] {
         border: 2px solid $blue;
-        // background-color: rgba($blue, .1);
         i { background: asset-data-url("pending.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
       }
       &.success, &[data-deploy-status=success] {
         border: 2px solid $green;
-        // background-color: rgba($green, .1);
         i { background: asset-data-url("success.svg") center center no-repeat; }
       }
       &.failure, &[data-deploy-status=failure],
       &.failed, &[data-deploy-status=failed],
       &.error, &[data-deploy-status=error] {
         border: 2px solid $red;
-        // background-color: rgba($red, .1);
         i { background: asset-data-url("failure.svg") center center no-repeat; }
       }
 

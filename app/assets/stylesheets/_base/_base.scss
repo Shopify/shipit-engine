@@ -8,6 +8,7 @@
 $blue: #248af2;
 $green: #67ca8b;
 $red: #f39494;
+$bright-red: #f37272;
 $slate: #2e343a;
 
 @mixin clearfix {
@@ -113,6 +114,24 @@ h4 {
 
 }
 
+.ico {
+  display: inline-block;
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-indent: -99999px;
+}
+
+.ico-github {
+  @extend .ico;
+  background-image: asset-data-url('github.svg');
+  width: 18px; height: 18px;
+}
+
+.ico-settings {
+  @extend .ico;
+  background-image: asset-data-url('settings.svg');
+  width: 18px; height: 18px;
+}
 
 @font-face {
   font-family: 'Checkout Symbols';
