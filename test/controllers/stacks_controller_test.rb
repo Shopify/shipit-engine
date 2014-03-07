@@ -27,7 +27,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#index before authentication redirects to authentication" do
-    Settings.stubs(:authentication).returns(stub(provider: :google_apps))
+    Settings.stubs(:[]).with('authentication').returns(stub(provider: :google_apps))
 
     get :index
 
@@ -36,14 +36,14 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#index when authentication is disabled does not redirect" do
-    Settings.stubs(:authentication).returns(false)
+    Settings.stubs(:[]).with('authentication').returns(false)
 
     get :index
     assert_response :ok
   end
 
   test "#index when authentication is successful does not redirect" do
-    Settings.stubs(:authentication).returns(stub(provider: :google_apps))
+    Settings.stubs(:[]).with('authentication').returns(stub(provider: :google_apps))
 
     get :index, {}, { user: { email: 'bob@toto.com' } }
 
