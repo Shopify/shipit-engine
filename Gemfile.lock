@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 4c0fb7c1a723cb2125e0116e32943479fd49a6a9
+  revision: 58db2df59a4b2d664a875c95d693a05b3a5ae25b
   branch: 4-1-stable
   specs:
     actionmailer (4.1.0.rc1)
@@ -99,7 +99,7 @@ GEM
     mocha (1.0.0)
       metaclass (~> 0.0.1)
     mono_logger (1.1.0)
-    multi_json (1.8.4)
+    multi_json (1.9.0)
     multipart-post (2.0.0)
     mysql2 (0.3.15)
     net-scp (1.1.2)
