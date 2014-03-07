@@ -1,9 +1,15 @@
-<!-- <h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1> -->
+<header class="repo-header">
+  <div class="wrapper">
+    <p>Repo owned by <%= @stack.repo_owner %></p>
+    <h1><%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
+  </div>
+</header>
+
 <div class="wrapper">
 
 <section>
 <header class="section-header">
-  <h1>Undeployed Commits</h1>
+  <h2>Undeployed Commits</h2>
   <div class="header-accessory">
     <a href="<%= settings_stack_path(@stack) %>">Settings</a>
     <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
@@ -45,7 +51,7 @@
 
 <section>
   <header class="section-header">
-    <h1>Deploys</h1>
+    <h2>Deploys</h2>
   </header>
   <ul class="commit-lst">
     <% @deploys.each do |deploy| %>

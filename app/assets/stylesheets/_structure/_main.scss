@@ -1,15 +1,13 @@
 .main {
   flex: 1;
-
-
-  padding: 3rem 0;
+  padding-bottom: 3rem;
 }
 
   .wrapper {
-  padding: 0 10%;
-max-width: 1000px;
-margin: 0 auto;
-}
+    padding: 0 10%;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 
   section + section {
     margin-top: 2rem;
@@ -19,7 +17,7 @@ margin: 0 auto;
     border-bottom: 1px solid rgba(0,0,0,.05);
     padding: 2.25rem 0;
     @include clearfix;
-      h1 {
+      h2 {
         float: left;
       }
   }
@@ -51,4 +49,18 @@ pre {
   line-height: 1.5em;
   margin-top: -.25rem;
   font-family: "Source Code Pro"
+}
+
+.repo-header {
+  background-color: $blue;
+  padding: 3.5rem 0 3rem;
+  p {
+    font-size: .75rem;
+    color: rgba(#000, .3);
+    margin: 0;
+  }
+  h1 {
+    color: #fff;
+    small { color: rgba(#000, .5); font-size: 1em; font-weight: 200; text-transform: capitalize; }
+  }
 }
