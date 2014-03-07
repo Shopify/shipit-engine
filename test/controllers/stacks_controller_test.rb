@@ -25,4 +25,28 @@ class StacksControllerTest < ActionController::TestCase
     delete :destroy, :id => @stack.to_param
     assert_redirected_to stacks_path
   end
+
+  test "#index before authentication redirects to authentication" do
+    Settings.stubs(:authentication).returns(stub(provider: :google_apps))
+
+    get :index
+
+    assert_redirected_to "/auth/google_apps"
+    assert_equal '/', session[:return_to]
+  end
+
+  test "#index when authentication is disabled does not redirect" do
+    Settings.stubs(:authentication).returns(false)
+
+    get :index
+    assert_response :ok
+  end
+
+  test "#index when authentication is successful does not redirect" do
+    Settings.stubs(:authentication).returns(stub(provider: :google_apps))
+
+    get :index, {}, { user: { email: 'bob@toto.com' } }
+
+    assert_response :ok
+  end
 end

@@ -12,6 +12,8 @@ gem 'unicorn'
 gem 'octokit'
 gem 'faker'
 gem 'settingslogic'
+gem 'omniauth'
+gem 'omniauth-google-apps'
 
 group :production do
   gem 'mysql2'
@@ -35,3 +37,4 @@ group :deploy do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
 end
+

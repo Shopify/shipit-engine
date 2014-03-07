@@ -1,11 +1,10 @@
 class ApplicationController < ActionController::Base
-  before_filter :basic_auth
+  before_filter :authenticate
 
-  def basic_auth
-    return unless Rails.env.production?
-    authenticate_or_request_with_http_basic("Application") do |name, password|
-      name == 'shipit' && password == 'yoloshipit'
-    end
+  def authenticate
+    return if session[:user] || Settings.authentication.blank?
+    session[:return_to] = request.fullpath
+    redirect_to authentication_path(provider: Settings.authentication.provider)
   end
 
   # Respond to HTML by default

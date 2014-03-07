@@ -1,5 +1,11 @@
 development:
   host: https://57212e00.ngrok.com
+  authentication:
+    provider: google_apps
+    gem: omniauth-google-apps
+    options:
+      domain: 'example.com'
 
 test:
   host: https://example.com
+  authentication:

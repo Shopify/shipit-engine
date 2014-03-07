@@ -5,12 +5,20 @@ Shipit::Application.routes.draw do
 
   mount Resque::Server.new, :at => "/resque"
 
+  scope '/auth/:provider', as: :authentication, controller: :authentication do
+    get '/', action: :mock
+    post :callback
+    get :logout
+  end
+
+  # Robots
   resources :stacks, :only => [:new, :create, :index] do
     resource :webhooks, :only => [] do
       post :push, :state
     end
   end
 
+  # Humans
   resources :stacks, :path => "/", :id => %r{[^/]+/[^/]+/[^/]+}, :only => [:show, :destroy] do
     member do
       get :settings
