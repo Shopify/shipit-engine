@@ -1,5 +1,5 @@
 class WebhooksController < ApplicationController
-  skip_before_filter :verify_authenticity_token, :basic_auth
+  skip_before_filter :verify_authenticity_token, :authenticate
   before_filter :check_if_ping
 
   respond_to :json
