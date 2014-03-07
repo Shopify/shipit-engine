@@ -5,8 +5,8 @@
       <h1><%= @stack.repo_name %> <small><%= @stack.environment %></small></h1>
     </div>
     <div class="header-accessory">
-      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github">Github Repo</a>
-      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings">Settings</a>
+      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
+      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
     </div>
   </div>
 </header>

@@ -133,6 +133,67 @@ h4 {
   width: 18px; height: 18px;
 }
 
+[data-tooltip], [data-tooltip-multiline] { // Add this attribute to the element that needs a tooltip
+
+  position: relative;
+  cursor: pointer;
+
+    &:before, &:after { // Hide the tooltip content by default
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0;
+    }
+
+    &:hover:before, &:hover:after { // Show tooltip content on hover
+      visibility: visible;
+      opacity: 1;
+    }
+
+    &:before { // Position tooltip above the element
+      content: attr(data-tooltip);
+      box-sizing: border-box;
+      position: absolute; bottom: 120%; left: 50%;
+      margin-bottom: 5px; padding: .75em 1em;
+
+      border-radius: 5px;
+      background: #333; background: rgba(68, 68, 68, 0.9);
+      font-size: 12px; font-style: normal; font-weight: normal;
+      line-height: 1.4em;
+      text-align: center;
+      color: #fff;
+      text-indent: 0;
+
+    }
+
+    &:after { // Triangle hack to make tooltip look like a speech bubble
+      content: " ";
+      position: absolute; bottom: 120%; left: 50%;
+      margin-left: -7px;
+      width: 0;
+      border-top: 5px solid #333; border-top: 5px solid rgba(68, 68, 68, 0.9);
+      border-right: 7px solid transparent; border-left: 7px solid transparent;
+      font-size: 0;
+      line-height: 0;
+    }
+
+}
+
+[data-tooltip-multiline] {
+  &:before {
+    width: 180px;
+    margin-left: -90px;
+    white-space: normal;
+  }
+}
+
+[data-tooltip] {
+  &:before {
+    white-space: nowrap;
+    -webkit-transform: translateX(-50%);
+  }
+}
+
 @font-face {
   font-family: 'Checkout Symbols';
   font-weight: 400;
