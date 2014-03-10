@@ -112,6 +112,11 @@ h4 {
       padding: 1.5em 4em;
     }
 
+    &.failure {
+      color: $red;
+      border-color: $red;
+    }
+
 }
 
 .ico {
