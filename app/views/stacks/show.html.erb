@@ -20,7 +20,7 @@
 <ul class="commit-lst">
   <% @commits.each do |commit| %>
     <li>
-      <div class="status <%= commit.state %>">
+      <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
         <i><%= commit.state %></i>
         <img src="<%= commit.author.avatar_url %>" alt="">
       </div>
@@ -58,7 +58,7 @@
   <ul class="commit-lst">
     <% @deploys.each do |deploy| %>
       <li>
-        <div class="status <%= deploy.status %>">
+        <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
           <i><%= deploy.status %></i>
           <img src="" alt="">
         </div>
