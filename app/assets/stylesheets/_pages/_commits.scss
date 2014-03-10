@@ -11,8 +11,8 @@
   }
 
   .status {
-    width: 3.125rem;
-    height: 3.125rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
     position: relative;
     float: left;
@@ -40,8 +40,8 @@
       text-indent: -99999999px;
       overflow: hidden;
       display: block;
-      width: 3.125rem;
-      height: 3.125rem;
+      width: 2.5rem;
+      height: 2.5rem;
       display: block;
     }
 
@@ -56,7 +56,7 @@
 
   .event {
     float: left;
-    padding: .3rem 0;
+    padding: .2rem 0;
     max-width: calc(100% - 170px);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -77,8 +77,7 @@
     }
 
     .event-title {
-      font-size: 1.375rem;
-      font-weight: 300;
+      font-size: 1.125rem;
         a { color: inherit; }
     }
 
@@ -91,7 +90,7 @@
     }
 
   .deploy-action {
-    margin: .3em 0;
+    margin: 0;
     float: right;
   }
 
