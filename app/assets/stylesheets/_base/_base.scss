@@ -137,12 +137,14 @@ h4 {
 
   position: relative;
   cursor: pointer;
+  -webkit-transform: translate3d(0,0,0);
 
     &:before, &:after { // Hide the tooltip content by default
       visibility: hidden;
       pointer-events: none;
       z-index: 200;
       opacity: 0;
+      -webkit-transform: translate3d(0,0,0);
     }
 
     &:hover:before, &:hover:after { // Show tooltip content on hover
