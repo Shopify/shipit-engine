@@ -67,9 +67,10 @@ pre {
   }
 
   p {
-    font-size: .75rem;
+    font-size: .875rem;
     color: rgba(#000, .3);
     margin: 0;
+    &:hover { color: rgba(#000, .4); }
   }
 
   h1 {
