@@ -1,12 +1,22 @@
+<header class="repo-header">
+  <div class="wrapper">
+    <div class="repo-name">
+      <p>Repo owned by <%= @stack.repo_owner %></p>
+      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+    </div>
+    <div class="header-accessory">
+      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
+      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
+    </div>
+  </div>
+</header>
+
 <div class="wrapper">
 
   <section>
 
       <header class="section-header">
-        <h1>Deploy</h1>
-        <div class="header-accessory">
-          <p>Deploying <a href="<%= github_commit_url(@deploy.stack.repo_owner, @deploy.stack.repo_name, @deploy.until_commit.sha) %>"><%= @deploy.until_commit.short_sha %></a> to <a href="<%= github_repo_url(@deploy.stack.repo_owner, @deploy.stack.repo_name) %>" class="repo-name"><%= @deploy.stack.repo_name %></a> (<%= @deploy.stack.environment %>)</p>
-        </div>
+        <h2>Commits included in this deploy</h2>
       </header>
 
       <ul class="commit-lst sub-commits">
