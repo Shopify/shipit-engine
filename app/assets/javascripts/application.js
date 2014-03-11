@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
-//= require jquery.hcsticky-min
+//= jquery.hc-sticky
 
 $(function(){
   $('.inner-sidebar').hcSticky();
