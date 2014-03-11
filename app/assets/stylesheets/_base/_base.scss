@@ -185,6 +185,32 @@ h5 {
   width: 18px; height: 18px;
 }
 
+.ico-pending-small,
+.ico-success-small,
+.ico-error-small, .ico-failure-small {
+  @extend .ico;
+  width: 14px; height: 14px;
+  margin-bottom: -2px;
+}
+
+.ico-success-small {
+  background: asset-data-url("success.svg") center center no-repeat;
+  background-size: contain;
+  margin-right: 3px;
+}
+
+.ico-error-small, .ico-failure-small {
+  background: asset-data-url("failure.svg") center center no-repeat;
+  background-size: contain;
+}
+
+.ico-pending-small {
+  background: asset-data-url("pending.svg") center center no-repeat;
+  background-size: contain;
+  margin-right: 3px;
+  -webkit-animation: rotate 2s linear infinite;
+}
+
 [data-tooltip], [data-tooltip-multiline] { // Add this attribute to the element that needs a tooltip
 
   position: relative;

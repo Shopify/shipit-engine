@@ -120,6 +120,10 @@
     border-radius: 50%;
     margin-right: .75rem;
     float: left;
+      img {
+        max-width: 100%;
+        border-radius: 50%;
+      }
   }
 
   .submit-section {

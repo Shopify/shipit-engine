@@ -22,11 +22,13 @@
       <ul class="commit-lst sub-commits">
         <% @deploy.commits.each do |commit| %>
           <li>
-            <img src="<%= commit.author.avatar_url %>" alt="" class="avatar" />
+            <div data-tooltip="<%= commit.author.name %>" class="avatar">
+              <img src="<%= commit.author.avatar_url %>" />
+            </div>
             <div class="event">
               <span class="event-title"><%= commit.message %></span>
             </div>
-            <a href="#" class="accessory subdued"><%= commit.short_sha %></a>
+            <a href="#" class="accessory subdued" data-tooltip="View on Github"><i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %></a>
           </li>
         <% end %>
       </ul>
