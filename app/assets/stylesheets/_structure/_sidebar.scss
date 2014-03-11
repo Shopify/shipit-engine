@@ -76,6 +76,7 @@
               }
           }
           &.selected a {
+            color: #fff;
               &:before {
                 content: ">";
                 font-family: "Checkout Symbols";
