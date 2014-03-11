@@ -1,18 +1,26 @@
-<!-- <h1><%= @stack.repo_owner %>/<%= @stack.repo_name %> <small><%= @stack.environment %></small></h1> -->
+<header class="repo-header">
+  <div class="wrapper">
+    <div class="repo-name">
+      <p>Repo owned by <%= @stack.repo_owner %></p>
+      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+    </div>
+    <div class="header-accessory">
+      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
+      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
+    </div>
+  </div>
+</header>
+
 <div class="wrapper">
 
 <section>
 <header class="section-header">
-  <h1>Undeployed Commits</h1>
-  <div class="header-accessory">
-    <a href="<%= settings_stack_path(@stack) %>">Settings</a>
-    <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>">Github Repo</a>
-  </div>
+  <h2>Undeployed Commits</h2>
 </header>
 <ul class="commit-lst">
   <% @commits.each do |commit| %>
     <li>
-      <div class="status <%= commit.state %>">
+      <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
         <i><%= commit.state %></i>
         <img src="<%= commit.author.avatar_url %>" alt="">
       </div>
@@ -36,7 +44,7 @@
           <a href="#" class="btn disabled deploy-action">Pending...</a>
         <% elsif commit.state.blank? %>
         <% else %>
-          <a href="#" class="btn disabled deploy-action">Failure</a>
+          <a href="#" class="btn disabled failure deploy-action">Failure</a>
         <% end %>
       </li>
     <% end %>
@@ -45,12 +53,12 @@
 
 <section>
   <header class="section-header">
-    <h1>Deploys</h1>
+    <h2>Deploys</h2>
   </header>
   <ul class="commit-lst">
     <% @deploys.each do |deploy| %>
       <li>
-        <div class="status <%= deploy.status %>">
+        <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
           <i><%= deploy.status %></i>
           <img src="" alt="">
         </div>

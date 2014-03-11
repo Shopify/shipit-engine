@@ -1,17 +1,15 @@
 .main {
   flex: 1;
-
-
-  padding: 3rem 0;
+  padding-bottom: 3rem;
 }
 
   .wrapper {
-  padding: 0 10%;
-max-width: 1000px;
-margin: 0 auto;
-}
+    padding: 0 10%;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 
-  section + section {
+  section {
     margin-top: 2rem;
   }
 
@@ -19,26 +17,26 @@ margin: 0 auto;
     border-bottom: 1px solid rgba(0,0,0,.05);
     padding: 2.25rem 0;
     @include clearfix;
-      h1 {
+
+      h2 {
         float: left;
       }
-  }
 
-  .header-accessory {
-    float: right;
-      & > a {
-        padding: .7rem 0;
-        display: inline-block;
-        & + a { margin-left: 1rem; }
+      .header-accessory {
+        float: right;
+          & > a {
+            padding: .7rem 0;
+            display: inline-block;
+            & + a { margin-left: 1rem; }
+          }
+        & > p {
+          margin: 0;
+          padding: .7rem 0;
+          color: #999;
+          font-size: .875rem;
+            .repo-name { font-weight: 500; color: #777; }
+        }
       }
-
-    & > p {
-      margin: 0;
-      padding: .7rem 0;
-      color: #999;
-      font-size: .875rem;
-        .repo-name { font-weight: 500; color: #777; }
-    }
 
   }
 
@@ -51,4 +49,40 @@ pre {
   line-height: 1.5em;
   margin-top: -.25rem;
   font-family: "Source Code Pro"
+}
+
+.repo-header {
+  background-color: $blue;
+  padding: 3.5rem 0 3rem;
+  @include clearfix;
+    &.success { background-color: $green; }
+    &.failure { background-color: $bright-red; }
+
+  a {
+    color: #fff;
+  }
+
+  .repo-name {
+    float: left;
+  }
+
+  p {
+    font-size: .875rem;
+    color: rgba(#000, .3);
+    margin: 0;
+    &:hover { color: rgba(#000, .4); }
+  }
+
+  h1 {
+    color: #fff;
+    font-size: 2rem;
+    small { color: rgba(#000, .4); font-size: 1em; font-weight: 200; text-transform: capitalize; }
+  }
+
+  .header-accessory {
+    float: right;
+    margin-top: 1rem;
+    a + a { margin-left: .5rem; }
+  }
+
 }
