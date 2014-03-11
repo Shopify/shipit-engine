@@ -14,7 +14,6 @@
           <li>
             <img src="<%= commit.author.avatar_url %>" alt="" class="avatar" />
             <div class="event">
-              <span class="event-meta"><a href="#" class="user main-user"><%= commit.author.name %></a> deployed <%= time_ago_in_words(commit.created_at) %> ago</span>
               <span class="event-title"><%= commit.message %></span>
             </div>
             <a href="#" class="accessory more">View on Github</a>
