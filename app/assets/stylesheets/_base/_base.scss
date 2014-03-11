@@ -79,6 +79,8 @@ p {
 a {
   text-decoration: none;
   color: #248af2;
+    &.subdued { color: #999; }
+    &.subdued:hover { color: #248af2; }
 }
 
 .more {
