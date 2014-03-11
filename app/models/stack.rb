@@ -28,6 +28,14 @@ class Stack < ActiveRecord::Base
     end
   end
 
+  def repo_name=(name)
+    super(name.try(:downcase))
+  end
+
+  def repo_owner=(name)
+    super(name.try(:downcase))
+  end
+
   def repo_http_url
     "https://github.com/#{repo_owner}/#{repo_name}"
   end
@@ -67,8 +75,8 @@ class Stack < ActiveRecord::Base
   def self.from_param(param)
     repo_owner, repo_name, environment = param.split('/')
     where(
-      :repo_owner  => repo_owner,
-      :repo_name   => repo_name,
+      :repo_owner  => repo_owner.downcase,
+      :repo_name   => repo_name.downcase,
       :environment => environment
     ).first!
   end

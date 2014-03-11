@@ -6,6 +6,16 @@ class StacksTest < ActiveSupport::TestCase
     @expected_base_path = File.join(Rails.root, "data", "stacks", @stack.repo_owner, @stack.repo_name, @stack.environment)
   end
 
+  test "repo_owner is automatically downcased" do
+    @stack.repo_owner = 'George'
+    assert_equal 'george', @stack.repo_owner
+  end
+
+  test "repo_name is automatically downcased" do
+    @stack.repo_name = 'Cyclim.se'
+    assert_equal 'cyclim.se', @stack.repo_name
+  end
+
   test "repo_http_url" do
     assert_equal "https://github.com/#{@stack.repo_owner}/#{@stack.repo_name}", @stack.repo_http_url
   end
