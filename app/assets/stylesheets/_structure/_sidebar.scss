@@ -3,7 +3,6 @@
   width: 300px;
   box-sizing: border-box;
   padding: 0 3.75rem 0 5rem;
-  line-height: 1.4rem;
   flex: 0 0 300px;
   order: -1;
 }
@@ -18,7 +17,6 @@
     border-bottom: 1px solid rgba(#fff, .1);
     display: block;
     padding-bottom: 2.25rem;
-    margin-bottom: 2.25rem;
 
       span {
         background: asset-data-url('logo.svg') top right no-repeat;
@@ -44,6 +42,11 @@
   }
 
 
+.stack {
+  padding: 2.25rem 0;
+  + .stack { border-top: 1px solid rgba(#fff, .1); }
+}
+
   nav ul {
     list-style-type: none;
     margin: 0; padding: 0;
@@ -54,27 +57,34 @@
     }
 
       .platform {
-        color: rgba(#fff, .2);
-        font-size: .75rem;
+        color: rgba(#fff, .8);
+        line-height: 1em;
+        margin-bottom: .25em;
+        display: block;
       }
 
         .server {
           position: relative;
           a {
-            color: rgba(#fff, .4);
+            color: rgba(#fff, .6);
+            font-size: .875rem;
             display: block;
+            padding: .25em 0;
+            text-transform: capitalize;
               &:hover, &:focus {
-                color: rgba(#fff, .6);
+                color: #fff;
               }
           }
           &.selected a {
-            color: #fff; font-weight: 500;
               &:before {
                 content: ">";
                 font-family: "Checkout Symbols";
                 font-size: .875rem;
-                position: absolute; left: -1rem;
+                position: absolute; top: 50%; left: -1.125rem;
                 color: $blue;
+                display: block;
+                padding-left: .25em;
+                margin-top: -.65em;
               }
           }
         }
