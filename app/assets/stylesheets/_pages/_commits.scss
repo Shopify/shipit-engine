@@ -124,3 +124,12 @@
     padding: 4rem 0;
     padding-top: 6rem;
   }
+
+
+.setting-section {
+  padding: 1.75rem 0;
+    & + .setting-section { border-top: 1px solid rgba(#000, 0.05); }
+
+    p { color: #777; }
+
+}
