@@ -39,10 +39,24 @@ class ChunkPoller
     return unless chunks.length
 
     text = chunks.map((c) -> c.text).join('')
-    @$code.append(@colorize(text))
+    @$code.append(@colorize(@escapeHTML(text)))
 
   colorize: (text) ->
     ansi_up.ansi_to_html(text)
+
+
+  ENTITIES = {
+    '&': '&amp;'
+    '<': '&lt;'
+    '>': '&gt;'
+    '"': '&quot;'
+    "'": '&#x27;'
+  }
+  ESCAPE_PATTERN = new RegExp("[#{Object.keys(ENTITIES).join('')}]", 'g')
+
+  escapeHTML: (html) ->
+    html.replace ESCAPE_PATTERN, (char) ->
+      ENTITIES[char]
 
 jQuery ->
   poller = new ChunkPoller($('body'), $('code').data('next-chunks-url'))
