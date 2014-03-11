@@ -2,10 +2,11 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate
 
   def authenticate
-    auth_settings = Settings['authentication']
+    auth_settings = Settings.authentication
     return if session[:user] || auth_settings.blank?
     session[:return_to] = request.fullpath
     redirect_to authentication_path(provider: auth_settings.provider)
+  rescue Settingslogic::MissingSetting
   end
 
   # Respond to HTML by default
