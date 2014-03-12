@@ -17,9 +17,17 @@
       <h2>Settings</h2>
     </header>
     <div class="setting-section">
+      <h5>Resynchronize this stack</h5>
+      <p>Ensure that all required webhooks have been created.</p>
+      <%= button_to "Webhooks", sync_webhooks_stack_path(@stack), class: "btn", method: "post" %>
+      <p>Force synchronization of new commits in case webhooks haven't been triggered correctly.</p>
+      <%= button_to "Commits", sync_commits_stack_path(@stack), class: "btn", method: "post" %>
+    </div>
+    <div class="setting-section">
       <h5>Delete this stack</h5>
       <p>This action will delete the stack from Ship it permanently. Be careful.</p>
       <%= button_to "Delete", stack_path(@stack), :class => "btn delete", :method => :delete, :confirm => "Are you sure?" %>
     </div>
 
   </section>
+</div>

@@ -22,6 +22,8 @@ Shipit::Application.routes.draw do
   resources :stacks, :path => "/", :id => %r{[^/]+/[^/]+/[^/]+}, :only => [:show, :destroy] do
     member do
       get :settings
+      post :sync_commits
+      post :sync_webhooks
     end
 
     resources :deploys, :id => /\d+/, :only =>  [:new, :show, :create] do
