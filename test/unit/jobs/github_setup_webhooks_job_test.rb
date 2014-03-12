@@ -7,12 +7,12 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   end
 
   test "#perform creates webhooks for push and status" do
-    Shipit.github_api.expects(:create_hook).with('Shopify/shipit2', 'web', {
+    Shipit.github_api.expects(:create_hook).with('shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/push",
       content_type: 'json'
     }, { events: ['push'], active: true }).returns(stub(id: 122))
 
-    Shipit.github_api.expects(:create_hook).with('Shopify/shipit2', 'web', {
+    Shipit.github_api.expects(:create_hook).with('shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/state",
       content_type: 'json'
     }, { events: ['status'], active: true }).returns(stub(id: 123))
@@ -27,7 +27,7 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   test "#perform creates only missing webhooks" do
     @stack.webhooks.create(event: 'status', github_id: 1)
 
-    Shipit.github_api.expects(:create_hook).with('Shopify/shipit2', 'web', {
+    Shipit.github_api.expects(:create_hook).with('shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/push",
       content_type: 'json'
     }, { events: ['push'], active: true }).returns(stub(id: 122))

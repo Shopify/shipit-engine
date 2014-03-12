@@ -24,7 +24,7 @@ class CommitsTest < ActiveSupport::TestCase
   end
 
   test "#pull_request_url build the pull request url from the message" do
-    assert_equal 'https://github.com/Shopify/shipit2/pull/31', @pr.pull_request_url
+    assert_equal 'https://github.com/shopify/shipit2/pull/31', @pr.pull_request_url
     assert_nil @commit.pull_request_url
   end
 
