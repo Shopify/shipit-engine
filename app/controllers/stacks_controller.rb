@@ -1,4 +1,6 @@
 class StacksController < ApplicationController
+  before_action :load_stack, only: [ :destroy, :settings, :sync_webhooks, :sync_commits ]
+
   def new
     @stack = Stack.new
   end
@@ -22,16 +24,28 @@ class StacksController < ApplicationController
   end
 
   def destroy
-    @stack = Stack.from_param(params[:id])
     @stack.destroy!
     respond_with(@stack)
   end
 
   def settings
-    @stack = Stack.from_param(params[:id])
+  end
+
+  def sync_commits
+    Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
+    redirect_to settings_stack_path(@stack)
+  end
+
+  def sync_webhooks
+    Resque.enqueue(GithubSetupWebhooksJob, stack_id: @stack.id)
+    redirect_to settings_stack_path(@stack)
   end
 
   private
+
+  def load_stack
+    @stack = Stack.from_param(params[:id])
+  end
 
   def create_params
     params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch)
