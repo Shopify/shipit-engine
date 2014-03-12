@@ -95,8 +95,14 @@
   }
 
   .sub-commits {
+    padding: .75rem 0;
+    .avatar {
+      width: 1.5rem; height: 1.5rem;
+      background-color: #ccc;
+    }
     li {
-      padding: 1rem 0;
+      padding: .5rem 0;
+      border-bottom: none;
     }
     .event-title {
       font-size: 1rem;
@@ -105,7 +111,6 @@
     .accessory {
       float: right;
       font-size: .875rem;
-      margin-top: .875rem;
     }
   }
 
@@ -115,6 +120,10 @@
     border-radius: 50%;
     margin-right: .75rem;
     float: left;
+      img {
+        max-width: 100%;
+        border-radius: 50%;
+      }
   }
 
   .submit-section {
