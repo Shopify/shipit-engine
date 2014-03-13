@@ -4,7 +4,7 @@ class Commit < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
 
-  def self.from_github(commit, state = nil)
+  def self.from_github(commit, state = 'unknown')
     new(
       :sha       => commit.sha,
       :state     => state,
@@ -28,14 +28,6 @@ class Commit < ActiveRecord::Base
 
   def pull_request?
     !!parsed
-  end
-
-  def self.from_param(param)
-    find_by_sha(sha)
-  end
-
-  def to_param
-    sha
   end
 
   def short_sha

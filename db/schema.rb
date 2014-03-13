@@ -11,17 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140311185905) do
+ActiveRecord::Schema.define(version: 20140313145544) do
 
   create_table "commits", force: true do |t|
-    t.integer  "stack_id",                null: false
-    t.integer  "author_id",               null: false
-    t.integer  "committer_id",            null: false
-    t.string   "sha",          limit: 40, null: false
-    t.text     "message",                 null: false
+    t.integer  "stack_id",                                    null: false
+    t.integer  "author_id",                                   null: false
+    t.integer  "committer_id",                                null: false
+    t.string   "sha",          limit: 40,                     null: false
+    t.text     "message",                                     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "state"
+    t.string   "state",                   default: "unknown", null: false
     t.string   "target_url"
   end
 
