@@ -274,6 +274,10 @@ h5 {
   }
 }
 
+a.disabled {
+  cursor: default;
+}
+
 @font-face {
   font-family: 'Checkout Symbols';
   font-weight: 400;

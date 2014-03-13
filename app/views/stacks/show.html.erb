@@ -19,10 +19,12 @@
 </header>
 <ul class="commit-lst">
   <% @commits.each do |commit| %>
-    <li>
+    <li class="commit">
       <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
-        <i><%= commit.state %></i>
-        <img src="<%= commit.author.avatar_url %>" alt="">
+        <a href="<%= commit.target_url%>" class="<%= :disabled unless commit.target_url.present? %>">
+          <i><%= commit.state %></i>
+          <img src="<%= commit.author.avatar_url %>" alt="">
+        </a>
       </div>
       <div class="event">
         <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
