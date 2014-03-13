@@ -5,7 +5,7 @@ module StacksHelper
     message = commit.pull_request_title || commit.message
     github_id = commit.pull_request? ? "##{commit.pull_request_id}" : commit.short_sha
     message += ' ' + content_tag(:span, "(#{github_id})", class: 'event-number')
-    link_to(message.html_safe, url)
+    link_to(message.html_safe, url, target: '_blank')
   end
 
 end
