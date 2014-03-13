@@ -15,14 +15,15 @@ class DeployJobTest < ActiveSupport::TestCase
     @commands.expects(:fetch).once
     @commands.expects(:clone).once
     @commands.expects(:checkout).with(@deploy.until_commit).once
-    @commands.expects(:bundle_install).once
-    @commands.expects(:deploy).with(@deploy.until_commit).once
+    @commands.expects(:install_dependencies).returns([]).once
+    @commands.expects(:deploy).with(@deploy.until_commit).returns([]).once
 
     @job.perform(deploy_id: @deploy.id)
   end
 
   test "marks deploy as successful" do
     Dir.stubs(:chdir).yields
+    DeployCommands.any_instance.stubs(:deploy).returns([])
     @job.stubs(:capture)
 
     @job.perform(deploy_id: @deploy.id)

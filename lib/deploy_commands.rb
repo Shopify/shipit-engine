@@ -14,14 +14,17 @@ class DeployCommands
     @stack = deploy.stack
   end
 
-  def bundle_install
-    Command.new('bundle', 'install', '--frozen', "--path=#{BUNDLE_PATH}",
-                '--retry=2', "--without=#{BUNDLE_WITHOUT.join(':')}", env: SSH_ENV, chdir: @deploy.working_directory)
+  def install_dependencies
+    deploy_spec.dependencies_steps.map do |command_line|
+      Command.new(command_line, env: SSH_ENV, chdir: @deploy.working_directory)
+    end
   end
 
   def deploy(commit)
     env = SSH_ENV.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
-    Command.new('bundle', 'exec', 'cap', @stack.environment, 'deploy', env: env, chdir: @deploy.working_directory)
+    deploy_spec.deploy_steps.map do |command_line|
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
+    end
   end
 
   def checkout(commit)
@@ -47,5 +50,9 @@ class DeployCommands
 
   def git(*args)
     Command.new("git", *args)
+  end
+  
+  def deploy_spec
+    @deploy_spec ||= DeploySpec.new(@deploy.working_directory)
   end
 end

@@ -5,6 +5,11 @@ class DeployCommandsTest < ActiveSupport::TestCase
     @stack = stacks(:shipit)
     @deploy = deploys(:shipit_pending)
     @commands = DeployCommands.new(@deploy)
+    @deploy_spec = stub(
+      dependencies_steps: ['bundle install --some-args'],
+      deploy_steps: ['bundle exec cap $ENVIRONMENT deploy'],
+    )
+    @commands.stubs(:deploy_spec).returns(@deploy_spec)
   end
 
   test "#fetch call git fetch if repository cache already exist" do
@@ -52,25 +57,37 @@ class DeployCommandsTest < ActiveSupport::TestCase
   end
 
   test "#deploy call cap $environment deploy" do
-    command = @commands.deploy(@deploy.until_commit)
-    assert_equal ['bundle', 'exec', 'cap', @stack.environment, 'deploy'], command.args
+    commands = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy'], command.args
   end
 
   test "#deploy call cap $environment deploy from the working_directory" do
-    command = @commands.deploy(@deploy.until_commit)
+    commands = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, commands.length
+    command = commands.first
     assert_equal @deploy.working_directory, command.chdir
   end
 
   test "#deploy call cap $environment deploy with the SHA in the environment" do
-    command = @commands.deploy(@deploy.until_commit)
+    commands = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, commands.length
+    command = commands.first
     assert_equal @deploy.until_commit.sha, command.env['SHA']
   end
 
-  test "#bundle_install call bundle install" do
-    command = @commands.bundle_install
-    args = ["bundle", "install", "--frozen", "--path=#{DeployCommands::BUNDLE_PATH}", "--retry=2",
-        "--without=default:production:development:test:staging:benchmark:debug"]
-    assert_equal args, command.args
+  test "#deploy call cap $environment deploy with the ENVIRONMENT in the environment" do
+    commands = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal @stack.environment, command.env['ENVIRONMENT']
+  end
+
+  test "#install_dependencies call bundle install" do
+    commands = @commands.install_dependencies
+    assert_equal 1, commands.length
+    assert_equal ['bundle install --some-args'], commands.first.args
   end
 
 end

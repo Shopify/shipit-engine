@@ -14,6 +14,7 @@ gem 'faker'
 gem 'settingslogic'
 gem 'omniauth'
 gem 'omniauth-google-apps'
+gem 'safe_yaml', require: 'safe_yaml/load'
 
 group :production do
   gem 'mysql2'
