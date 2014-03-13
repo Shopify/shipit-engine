@@ -29,13 +29,8 @@
       <div class="event">
         <span class="event-meta"><a href="<%= github_user_url(commit.author.login) %>" class="user main-user"><%= commit.author.name %></a> merged <%= time_ago_in_words(commit.created_at) %> ago</span>
           <span class="event-title">
-            <a href="<%= commit.target_url %>"><%= commit.pull_request_title || commit.message %></a>
-            <% if commit.pull_request? %>
-              <a href="<%= commit.pull_request_url %>">
-                #<%= commit.pull_request_id %>
-              </a>
-            <% end %>
-            <span class="event-number">(<a href="<%= github_commit_url(@stack.repo_owner, @stack.repo_name, commit.sha) %>"><%= commit.short_sha %></a>)</span></span>
+            <%= render_commit_message commit %>
+          </span>
         </div>
         <% if commit.state == 'success' %>
           <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
