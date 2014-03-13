@@ -36,6 +36,12 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.deploys_path, command.chdir
   end
 
+  test "#fetch merges Settings.env in ENVIRONMENT" do
+    Settings.stubs(:[]).with('env').returns("SPECIFIC_CONFIG" => 5)
+    command = @commands.fetch
+    assert_equal 5, command.env["SPECIFIC_CONFIG"]
+  end
+
   test "#clone clone the repository cache into the working directory" do
     command = @commands.clone
     assert_equal ['git', 'clone', '--local', @stack.git_path, @deploy.working_directory], command.args
@@ -84,10 +90,22 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.environment, command.env['ENVIRONMENT']
   end
 
+  test "#deploy merges Settings.env in ENVIRONMENT" do
+    Settings.stubs(:[]).with('env').returns("SPECIFIC_CONFIG" => 5)
+    command = @commands.deploy(@deploy.until_commit).first
+    assert_equal 5, command.env["SPECIFIC_CONFIG"]
+  end
+
   test "#install_dependencies call bundle install" do
     commands = @commands.install_dependencies
     assert_equal 1, commands.length
     assert_equal ['bundle install --some-args'], commands.first.args
+  end
+
+  test "#install_dependencies merges Settings.env in ENVIRONMENT" do
+    Settings.stubs(:[]).with('env').returns("SPECIFIC_CONFIG" => 5)
+    command = @commands.install_dependencies.first
+    assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end
 
 end

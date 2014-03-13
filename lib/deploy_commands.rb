@@ -2,10 +2,6 @@ require "fileutils"
 require "etc"
 
 class DeployCommands
-  SSH_ENV = {
-    'SSH_AUTH_SOCK' => '/u/apps/shipit2/shared/ssh/auth_sock',
-    'HOME' => Etc.getpwuid(Process::Sys.getuid).dir
-  }
   BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
   BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
 
@@ -14,14 +10,18 @@ class DeployCommands
     @stack = deploy.stack
   end
 
+  def env
+    Settings['env'] || {}
+  end
+
   def install_dependencies
     deploy_spec.dependencies_steps.map do |command_line|
-      Command.new(command_line, env: SSH_ENV, chdir: @deploy.working_directory)
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
   end
 
   def deploy(commit)
-    env = SSH_ENV.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
+    env = self.env.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
     deploy_spec.deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
@@ -42,16 +42,16 @@ class DeployCommands
   def fetch
     create_directories
     if Dir.exists?(@stack.git_path)
-      git("fetch", env: SSH_ENV, chdir: @stack.git_path)
+      git("fetch", env: env, chdir: @stack.git_path)
     else
-      git("clone", @stack.repo_git_url, @stack.git_path, env: SSH_ENV, chdir: @stack.deploys_path)
+      git("clone", @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
     end
   end
 
   def git(*args)
     Command.new("git", *args)
   end
-  
+
   def deploy_spec
     @deploy_spec ||= DeploySpec.new(@deploy.working_directory)
   end
