@@ -1,5 +1,14 @@
 class ChunkPoller
   INTERVAL = 1000
+  @init: ->
+    $('code').each ->
+      $(this).html(ChunkPoller::colorize(this.innerHTML))
+
+    pollUrl = $('code').data('next-chunks-url')
+    return unless pollUrl
+    poller = new ChunkPoller($('body'), pollUrl)
+    poller.start()
+
   constructor: ($body, @pollUrl) ->
     @$status = $body.find('[data-deploy-status]')
     @$code = $body.find('code')
@@ -59,8 +68,4 @@ class ChunkPoller
       ENTITIES[char]
 
 jQuery ->
-  poller = new ChunkPoller($('body'), $('code').data('next-chunks-url'))
-  poller.start()
-
-  $('code').each ->
-    $(this).html(ChunkPoller::colorize(this.innerHTML))
+  ChunkPoller.init()

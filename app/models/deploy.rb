@@ -29,6 +29,10 @@ class Deploy < ActiveRecord::Base
     state :error
   end
 
+  def finished?
+    !pending? && !running?
+  end
+
   def commits
     return [] unless stack
     @commits ||= stack.commits
