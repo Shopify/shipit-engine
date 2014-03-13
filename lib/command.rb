@@ -5,11 +5,12 @@ class Command
 
   Error = Class.new(StandardError)
 
-  attr_reader :out, :code
+  attr_reader :out, :code, :chdir, :env, :args
 
-  def initialize(*args)
+  def initialize(*args, env: {}, chdir: )
     @args = args
-    @env = args.extract_options!
+    @env = env
+    @chdir = chdir
   end
 
   def to_s
@@ -29,7 +30,7 @@ class Command
   end
 
   def stream(&block)
-    _in, @out, wait_thread = Open3.popen2e(@env, *@args)
+    _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
     _in.close
     read_stream(@out, &block)
     @code = wait_thread.value
