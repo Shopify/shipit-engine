@@ -30,14 +30,6 @@ class Commit < ActiveRecord::Base
     !!parsed
   end
 
-  def self.from_param(param)
-    find_by_sha(param)
-  end
-
-  def to_param
-    sha
-  end
-
   def short_sha
     sha[0..9]
   end
