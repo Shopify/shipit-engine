@@ -4,7 +4,8 @@ class Commit < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
 
-  def self.from_github(commit, state = 'unknown')
+  def self.from_github(commit, state = nil)
+    state ||= 'unknown'
     new(
       :sha       => commit.sha,
       :state     => state,
