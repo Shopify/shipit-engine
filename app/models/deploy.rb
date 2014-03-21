@@ -5,6 +5,8 @@ class Deploy < ActiveRecord::Base
 
   has_many :chunks, class_name: 'OutputChunk'
 
+  scope :success, -> { where(status: 'success') }
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running

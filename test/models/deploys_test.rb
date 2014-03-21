@@ -32,7 +32,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "#since_commit_id returns a default value if stack_id is set" do
     stack  = stacks(:shipit)
     deploy = stack.deploys.new
-    last   = stack.deploys.where(:status => "success").last.until_commit_id
+    last   = stack.deploys.success.last.until_commit_id
     assert_equal last, deploy.since_commit_id
   end
 
