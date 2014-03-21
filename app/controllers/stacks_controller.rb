@@ -17,6 +17,7 @@ class StacksController < ApplicationController
       if deployed_commit = @stack.last_deployed_commit
         @commits = @commits.where('id > ?', deployed_commit.id)
       end
+      @commits = @commits.to_a
     end
   end
 
