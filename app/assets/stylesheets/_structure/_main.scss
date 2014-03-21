@@ -15,7 +15,7 @@
 
   .section-header {
     border-bottom: 1px solid rgba(0,0,0,.05);
-    padding: 2.25rem 0;
+    padding-bottom: .5rem;
     @include clearfix;
 
       h2 {
@@ -40,7 +40,6 @@
 
   }
 
-
 pre {
   background-color: rgba(#2E343A, .9);
   overflow: scroll;
@@ -53,7 +52,7 @@ pre {
 
 .repo-header {
   background-color: $blue;
-  padding: 3.5rem 0 3rem;
+  padding: 1rem 0;
   @include clearfix;
     &.success { background-color: $green; }
     &.failure { background-color: $bright-red; }
