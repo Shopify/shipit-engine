@@ -1,5 +1,5 @@
 class Commit < ActiveRecord::Base
-  belongs_to :stack
+  belongs_to :stack, touch: true
   has_many :deploys
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"

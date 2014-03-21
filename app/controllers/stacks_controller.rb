@@ -10,11 +10,13 @@ class StacksController < ApplicationController
   end
 
   def show
-    @stack   = Stack.preload(:commits => :author).from_param(params[:id])
-    @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit).limit(10)
-    @commits = @stack.commits.order(id: :desc).preload(:author)
-    if deployed_commit = @stack.last_deployed_commit
-      @commits = @commits.where('id > ?', deployed_commit.id)
+    @stack = Stack.from_param(params[:id])
+    if stale?(@stack)
+      @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit).limit(10)
+      @commits = @stack.commits.preload(:author).order(id: :desc)
+      if deployed_commit = @stack.last_deployed_commit
+        @commits = @commits.where('id > ?', deployed_commit.id)
+      end
     end
   end
 
