@@ -21,7 +21,7 @@ class Stack < ActiveRecord::Base
   end
 
   def last_deployed_commit
-    if last_deploy = deploys.last
+    if last_deploy = deploys.success.last
       last_deploy.until_commit
     else
       commits.first
