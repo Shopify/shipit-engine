@@ -50,7 +50,7 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal last_commit.id, deploy.until_commit_id
   end
 
-  test "#trigger_deploy since_commit is the last deploy until_commit if there is a previous deploy" do
+  test "#trigger_deploy since_commit is the last completed deploy until_commit if there is a previous deploy" do
     last_commit = commits(:third)
     deploy = @stack.trigger_deploy(last_commit)
     assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
