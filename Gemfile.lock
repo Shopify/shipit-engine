@@ -134,8 +134,24 @@ GEM
     raindrops (0.13.0)
     rake (10.1.1)
     redis (3.0.7)
+    redis-actionpack (4.0.0)
+      actionpack (~> 4)
+      redis-rack (~> 1.5.0)
+      redis-store (~> 1.1.0)
+    redis-activesupport (4.0.0)
+      activesupport (~> 4)
+      redis-store (~> 1.1.0)
     redis-namespace (1.4.1)
       redis (~> 3.0.4)
+    redis-rack (1.5.0)
+      rack (~> 1.5)
+      redis-store (~> 1.1.0)
+    redis-rails (4.0.0)
+      redis-actionpack (~> 4)
+      redis-activesupport (~> 4)
+      redis-store (~> 1.1.0)
+    redis-store (1.1.4)
+      redis (>= 2.2)
     resque (1.26.pre.0)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
@@ -218,6 +234,7 @@ DEPENDENCIES
   omniauth-google-apps
   pry
   rails!
+  redis-rails
   resque (= 1.26.pre.0)
   resque-lock
   safe_yaml
