@@ -64,6 +64,11 @@ class Stack < ActiveRecord::Base
     Shipit.github_api.repo(github_repo_name)
   end
 
+  def github_commits
+    Shipit.github_api.commits(github_repo_name, sha: branch)
+    Shipit.github_api.last_response
+  end
+
   def git_mirror_path
     Rails.root + 'data' + 'mirror' + repo_name
   end

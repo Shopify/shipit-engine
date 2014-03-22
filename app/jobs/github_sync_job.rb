@@ -5,9 +5,7 @@ class GithubSyncJob < BackgroundJob
 
   def perform(params)
     @stack = Stack.find(params[:stack_id])
-    repo  = @stack.github_repo
-
-    commits = fetch_missing_commits(repo.rels[:commits])
+    commits = fetch_missing_commits(@stack.github_commits)
     commits.reverse.each do |gh_commit|
       @stack.commits.from_github(gh_commit, fetch_state(gh_commit)).save!
     end

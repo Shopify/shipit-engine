@@ -8,7 +8,7 @@ class CommitsIterator
   end
 
   def each(&block)
-    resource = @relation.get
+    resource = @relation
 
     loop do
       resource.data.each(&block)
