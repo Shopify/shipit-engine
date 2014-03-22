@@ -6,7 +6,6 @@ class Commit < ActiveRecord::Base
 
   def self.from_github(commit, state = nil)
     state ||= 'unknown'
-    p commit.sha
     new(
       :sha       => commit.sha,
       :state     => state,
