@@ -1,4 +1,5 @@
 require "open3"
+require 'fileutils'
 
 class Command
   MAX_READ = 2 ** 16
@@ -10,7 +11,7 @@ class Command
   def initialize(*args, env: {}, chdir: )
     @args = args
     @env = env
-    @chdir = chdir
+    @chdir = chdir.to_s
   end
 
   def to_s
@@ -29,7 +30,16 @@ class Command
     "#{self.to_s} exited with status #{@code}"
   end
 
+  def run!
+    output = []
+    stream! do |out|
+      output << out
+    end
+    output.join
+  end
+
   def stream(&block)
+    FileUtils.mkdir_p(@chdir)
     _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
     _in.close
     read_stream(@out, &block)

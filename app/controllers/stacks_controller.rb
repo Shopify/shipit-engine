@@ -1,5 +1,5 @@
 class StacksController < ApplicationController
-  before_action :load_stack, only: [ :destroy, :settings, :sync_webhooks, :sync_commits ]
+  before_action :load_stack, only: %i(destroy settings sync_webhooks sync_commits clear_git_cache)
 
   def new
     @stack = Stack.new
@@ -41,6 +41,11 @@ class StacksController < ApplicationController
 
   def sync_webhooks
     Resque.enqueue(GithubSetupWebhooksJob, stack_id: @stack.id)
+    redirect_to settings_stack_path(@stack)
+  end
+
+  def clear_git_cache
+    Resque.enqueue(ClearGitCacheJob, stack_id: @stack.id)
     redirect_to settings_stack_path(@stack)
   end
 

@@ -24,6 +24,7 @@ Shipit::Application.routes.draw do
       get :settings
       post :sync_commits
       post :sync_webhooks
+      post :clear_git_cache
     end
 
     resources :deploys, :id => /\d+/, :only =>  [:new, :show, :create] do

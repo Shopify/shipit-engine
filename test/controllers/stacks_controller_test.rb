@@ -61,4 +61,10 @@ class StacksControllerTest < ActionController::TestCase
     post :sync_webhooks, id: @stack.to_param
     assert_redirected_to settings_stack_path(@stack)
   end
+
+  test "#clear_git_cache queues a ClearGitCacheJob" do
+    Resque.expects(:enqueue).with(ClearGitCacheJob, stack_id: @stack.id)
+    post :clear_git_cache, id: @stack.to_param
+    assert_redirected_to settings_stack_path(@stack)
+  end
 end
