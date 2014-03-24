@@ -5,6 +5,11 @@ class StacksControllerTest < ActionController::TestCase
     @stack = stacks(:shipit)
   end
 
+  test "#show is success" do
+    get :show, id: @stack.to_param
+    assert_response :ok
+  end
+
   test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
     params = {}
     params[:stack] = {

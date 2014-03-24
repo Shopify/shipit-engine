@@ -1,8 +1,19 @@
 class Commit < ActiveRecord::Base
   belongs_to :stack, touch: true
   has_many :deploys
+
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
+
+  scope :newer_than, -> (commit) {
+    where('id > ?', commit.try(:id) || commit)
+  }
+
+  scope :reachable, -> { where(detached: false) }
+
+  def self.detach!
+    update_all(detached: true)
+  end
 
   def self.from_github(commit, state = nil)
     state ||= 'unknown'
@@ -13,6 +24,14 @@ class Commit < ActiveRecord::Base
       :author    => User.find_or_create_from_github(commit.author || commit.commit.author),
       :committer => User.find_or_create_from_github(commit.committer || commit.commit.committer),
     )
+  end
+
+  def children
+    self.class.where(stack_id: stack_id).newer_than(self)
+  end
+
+  def detach_children!
+    children.detach!
   end
 
   def pull_request_url
