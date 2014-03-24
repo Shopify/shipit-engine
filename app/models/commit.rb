@@ -15,15 +15,19 @@ class Commit < ActiveRecord::Base
     update_all(detached: true)
   end
 
-  def self.from_github(commit, state = nil)
-    state ||= 'unknown'
+  def self.from_github(commit, status)
     new(
-      :sha       => commit.sha,
-      :state     => state,
-      :message   => commit.commit.message,
-      :author    => User.find_or_create_from_github(commit.author || commit.commit.author),
-      :committer => User.find_or_create_from_github(commit.committer || commit.commit.committer),
+      sha: commit.sha,
+      state: status.try(:state) || 'unknown',
+      target_url: fetch_target_url(status),
+      message: commit.commit.message,
+      author: User.find_or_create_from_github(commit.author || commit.commit.author),
+      committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
     )
+  end
+
+  def self.fetch_target_url(status)
+    status && status.rels.try(:[], :target).try(:href)
   end
 
   def children

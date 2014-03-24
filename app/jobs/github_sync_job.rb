@@ -14,7 +14,7 @@ class GithubSyncJob < BackgroundJob
     @stack.transaction do
       shared_parent.try(:detach_children!)
       new_commits.each do |gh_commit|
-        @stack.commits.from_github(gh_commit, fetch_state(gh_commit)).save!
+        @stack.commits.from_github(gh_commit, fetch_status(gh_commit)).save!
       end
     end
   end
@@ -33,8 +33,8 @@ class GithubSyncJob < BackgroundJob
 
   protected
 
-  def fetch_state(commit)
-    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).first.try(:state)
+  def fetch_status(commit)
+    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).first
   end
 
   def known?(sha)
