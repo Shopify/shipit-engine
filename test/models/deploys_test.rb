@@ -6,7 +6,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "enqueue" do
-    Resque.expects(:enqueue).with(DeployJob, deploy_id: @deploy.id)
+    Resque.expects(:enqueue).with(DeployJob, deploy_id: @deploy.id, stack_id: @deploy.id)
 
     @deploy.enqueue
   end

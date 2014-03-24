@@ -158,7 +158,8 @@ GEM
       redis-namespace (~> 1.2)
       sinatra (>= 0.9.2)
       vegas (~> 0.1.2)
-    resque-lock (1.1.0)
+    resque-workers-lock (1.9)
+      resque
     ruby-openid (2.3.0)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
@@ -236,7 +237,7 @@ DEPENDENCIES
   rails!
   redis-rails
   resque (= 1.26.pre.0)
-  resque-lock
+  resque-workers-lock
   safe_yaml
   sass-rails (~> 4.0.0)
   settingslogic
