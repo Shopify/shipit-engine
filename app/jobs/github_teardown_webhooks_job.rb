@@ -1,7 +1,7 @@
 class GithubTeardownWebhooksJob < BackgroundJob
-  # extend Resque::Plugins::Lock
-
   @queue = :default
+
+  extend BackgroundJob::StackExclusive
 
   def perform(params)
     Webhook.where(stack_id: params[:stack_id]).each do |webhook|

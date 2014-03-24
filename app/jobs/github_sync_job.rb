@@ -1,7 +1,11 @@
 class GithubSyncJob < BackgroundJob
-  # extend Resque::Plugins::Lock
-
   @queue = :default
+
+  extend Resque::Plugins::Workers::Lock
+
+  def self.lock_workers(params)
+    "github-sync-#{params[:stack_id]}"
+  end
 
   def perform(params)
     @stack = Stack.find(params[:stack_id])
