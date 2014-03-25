@@ -5,6 +5,8 @@ first:
   stack: shipit
   author: walrus
   committer: walrus
+  authored_at: <%= 10.days.ago.to_s(:db) %>
+  committed_at: <%= 9.days.ago.to_s(:db) %>
 
 second:
   id: 2
@@ -13,6 +15,8 @@ second:
   stack: shipit
   author: walrus
   committer: walrus
+  authored_at: <%= 8.days.ago.to_s(:db) %>
+  committed_at: <%= 7.days.ago.to_s(:db) %>
 
 third:
   id: 3
@@ -21,6 +25,8 @@ third:
   stack: shipit
   author: walrus
   committer: walrus
+  authored_at: <%= 6.days.ago.to_s(:db) %>
+  committed_at: <%= 5.days.ago.to_s(:db) %>
 
 fourth:
   id: 4
@@ -29,6 +35,8 @@ fourth:
   stack: shipit
   author: walrus
   committer: walrus
+  authored_at: <%= 4.days.ago.to_s(:db) %>
+  committed_at: <%= 3.days.ago.to_s(:db) %>
 
 fifth:
   id: 5
@@ -37,3 +45,5 @@ fifth:
   stack: shipit
   author: walrus
   committer: walrus
+  authored_at: <%= 2.days.ago.to_s(:db) %>
+  committed_at: <%= 1.days.ago.to_s(:db) %>

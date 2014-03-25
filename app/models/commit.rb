@@ -17,6 +17,7 @@ class Commit < ActiveRecord::Base
   end
 
   def self.from_github(commit, status)
+    p [commit.committer.date, commit.author.date]
     new(
       sha: commit.sha,
       state: status.try(:state) || 'unknown',
@@ -24,6 +25,8 @@ class Commit < ActiveRecord::Base
       message: commit.commit.message,
       author: User.find_or_create_from_github(commit.author || commit.commit.author),
       committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
+      committed_at: commit.commit.committer.date,
+      authored_at: commit.commit.author.date,
     )
   end
 
