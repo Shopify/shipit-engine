@@ -28,4 +28,8 @@ class CommitsTest < ActiveSupport::TestCase
     assert_nil @commit.pull_request_url
   end
 
+  test "#newer_than(nil) returns all commits" do
+    assert_equal @stack.commits.all.to_a, @stack.commits.newer_than(nil).to_a
+  end
+
 end

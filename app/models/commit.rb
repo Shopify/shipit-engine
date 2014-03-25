@@ -6,7 +6,8 @@ class Commit < ActiveRecord::Base
   belongs_to :committer, class_name: "User"
 
   scope :newer_than, -> (commit) {
-    where('id > ?', commit.try(:id) || commit)
+    id = commit.try(:id) || commit
+    id ? where('id > ?', id) : all
   }
 
   scope :reachable, -> { where(detached: false) }
