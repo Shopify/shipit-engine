@@ -17,7 +17,6 @@ class Commit < ActiveRecord::Base
   end
 
   def self.from_github(commit, status)
-    p [commit.committer.date, commit.author.date]
     new(
       sha: commit.sha,
       state: status.try(:state) || 'unknown',
