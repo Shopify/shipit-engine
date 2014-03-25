@@ -35,14 +35,30 @@
 
   </section>
 
+  <%- if @stack.checklist? -%>
+    <section>
+      <header class="section-header">
+        <h2>Checklist</h2>
+      </header>
+
+      <ul class="checklist">
+        <%- @stack.checks.each do |check| -%>
+          <li>
+            <label>
+              <%= check_box_tag :checklist %>
+              <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
+            </label>
+          </li>
+        <%- end -%>
+      </ul>
+    </section>
+  <%- end -%>
 
   <section class="submit-section">
     <%= form_for [@stack, @deploy] do |f| %>
       <%= f.hidden_field :until_commit_id %>
-      <%= f.submit :class => ['btn', 'primary'] %>
+      <%= f.submit :class => ['btn', 'primary', 'trigger-deploy'] %>
     <% end %>
   </section>
-
-
 
 </div>
