@@ -25,11 +25,11 @@ class GithubSyncJob < BackgroundJob
     iterator = FirstParentCommitsIterator.new(relation)
     iterator.each do |commit|
       if shared_parent = lookup_commit(commit.sha)
-        return commits.reverse, shared_parent
+        return commits, shared_parent
       end
-      commits << commit
+      commits.unshift(commit)
     end
-    return commits.reverse, nil
+    return commits, nil
   end
 
   protected
