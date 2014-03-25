@@ -1,5 +1,4 @@
 class DeployCommands < Commands
-  BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
   BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
 
   delegate :fetch, to: :stack_commands

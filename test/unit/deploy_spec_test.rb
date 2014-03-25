@@ -25,7 +25,7 @@ class DeploySpecTest < ActiveSupport::TestCase
       --frozen
       --path=#{DeploySpec::BUNDLE_PATH}
       --retry=2
-      --without=developement:test:benchmark:debug
+      --without=default:production:development:test:staging:benchmark:debug
     ).gsub(/\s+/, ' ').strip
     assert_equal command, @spec.bundle_install.first
   end
