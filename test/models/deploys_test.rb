@@ -57,4 +57,18 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal last.id, commits.map(&:id).max
     assert_not_equal first.id, commits.map(&:id).min
   end
+
+  test "#commits returns commits from newer to older" do
+    stack = stacks(:shipit)
+    first = commits(:first)
+    last  = commits(:fourth)
+
+    deploy = stack.deploys.new(
+      :since_commit => first,
+      :until_commit => last
+    )
+
+    assert_equal [4, 3, 2], deploy.commits.pluck(:id)
+  end
+
 end

@@ -38,7 +38,7 @@ class Deploy < ActiveRecord::Base
 
   def commits
     return [] unless stack
-    @commits ||= stack.commits.newer_than(since_commit_id).where('id <= ?', until_commit_id)
+    @commits ||= stack.commits.reachable.newer_than(since_commit_id).where('id <= ?', until_commit_id).order(id: :desc)
   end
 
   def since_commit_id
