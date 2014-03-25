@@ -29,7 +29,7 @@ class GithubSyncJob < BackgroundJob
       end
       commits << commit
     end
-    return commits, nil
+    return commits.reverse, nil
   end
 
   protected
