@@ -17,6 +17,14 @@
       <h2>Settings</h2>
     </header>
     <div class="setting-section">
+      <%= form_for @stack do |f| %>
+        <p>Checklist (Leave a blank line between items, HTML &lt;a&gt; and &lt;strong&gt; elements are authorized)</p>
+        <p><%= f.text_area :checklist %></p>
+        <p><%= f.submit class: "btn" %></p>
+      <%- end -%>
+    </div>
+
+    <div class="setting-section">
       <h5>Resynchronize this stack</h5>
       <p>Ensure that all required webhooks have been created.</p>
       <%= button_to "Webhooks", sync_webhooks_stack_path(@stack), class: "btn", method: "post" %>

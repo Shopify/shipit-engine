@@ -1,5 +1,5 @@
 class StacksController < ApplicationController
-  before_action :load_stack, only: %i(destroy settings sync_webhooks sync_commits clear_git_cache)
+  before_action :load_stack, only: %i(update destroy settings sync_webhooks sync_commits clear_git_cache)
 
   def new
     @stack = Stack.new
@@ -32,6 +32,11 @@ class StacksController < ApplicationController
   end
 
   def settings
+  end
+
+  def update
+    @stack.update(params.require(:stack).permit(:checklist))
+    redirect_to settings_stack_path(@stack)
   end
 
   def sync_commits

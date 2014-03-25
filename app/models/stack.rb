@@ -86,6 +86,10 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
+  def checks
+    checklist.to_s.lines.map(&:strip).select(&:present?)
+  end
+
   private
 
   def setup_webhooks

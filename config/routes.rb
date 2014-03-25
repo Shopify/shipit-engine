@@ -19,7 +19,7 @@ Shipit::Application.routes.draw do
   end
 
   # Humans
-  resources :stacks, :path => "/", :id => %r{[^/]+/[^/]+/[^/]+}, :only => [:show, :destroy] do
+  resources :stacks, :path => "/", :id => %r{[^/]+/[^/]+/[^/]+}, only: %i(show destroy update) do
     member do
       get :settings
       post :sync_commits

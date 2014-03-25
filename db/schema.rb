@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20140325173951) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "branch",      default: "master",     null: false
+    t.text     "checklist"
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
