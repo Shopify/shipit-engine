@@ -20,6 +20,7 @@ class DeploySpecTest < ActiveSupport::TestCase
 
   test '#bundle_install return a sane default bundle install command' do
     command = %Q(
+      bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
       --frozen
       --path=#{DeploySpec::BUNDLE_PATH}
@@ -32,6 +33,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     command = %Q(
+      bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
       --frozen
       --path=#{DeploySpec::BUNDLE_PATH}

@@ -27,7 +27,7 @@ class DeploySpec
   end
 
   def bundle_install
-    [%Q(bundle install --frozen --path=#{BUNDLE_PATH} --retry=2 --without=#{bundler_without.join(':')})]
+    [%Q(bundle check --path=#{BUNDLE_PATH} || bundle install --frozen --path=#{BUNDLE_PATH} --retry=2 --without=#{bundler_without.join(':')})]
   end
 
   def bundler_without
