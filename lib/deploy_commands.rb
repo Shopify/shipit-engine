@@ -19,7 +19,7 @@ class DeployCommands < Commands
     env = self.env.merge(
       'SHA' => commit.sha,
       'ENVIRONMENT' => @stack.environment,
-      'USER' => @deploy.user_name,
+      'USER' => "#{@deploy.user_name} via Shipit 2",
       'EMAIL' => @deploy.user_email,
     )
     deploy_spec.deploy_steps.map do |command_line|
