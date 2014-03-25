@@ -11,7 +11,7 @@ class StackCommands < Commands
     if Dir.exists?(@stack.git_path)
       git('fetch', 'origin', @stack.branch, env: env, chdir: @stack.git_path)
     else
-      git('clone', '--single-branch', '--branch', @stack.branch, @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
+      git('clone', '--branch', @stack.branch, @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
     end
   end
 
