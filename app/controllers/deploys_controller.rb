@@ -22,10 +22,11 @@ class DeploysController < ApplicationController
   private
 
   def user_info
+    session_user = session[:user] || {}
     {
-      user_email: session[:email] || 'anonymous@example.com',
-      user_name: session[:name] || 'Anonymous',
-      user: session[:email] && User.find_by_email(session[:email])
+      user_email: session_user[:email] || 'anonymous@example.com',
+      user_name: session_user[:name] || 'Anonymous',
+      user: session_user[:email] && User.find_by_email(session[:email])
     }
   end
 
