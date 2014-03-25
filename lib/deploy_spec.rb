@@ -2,7 +2,7 @@ require 'pathname'
 
 class DeploySpec
   BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
-  DEFAULT_BUNDLER_WITHOUT = %w(developement test benchmark debug)
+  DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug)
   Error = Class.new(StandardError)
 
   def initialize(app_dir)
