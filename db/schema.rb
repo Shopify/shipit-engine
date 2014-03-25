@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140321191326) do
+ActiveRecord::Schema.define(version: 20140325173951) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -31,18 +31,22 @@ ActiveRecord::Schema.define(version: 20140321191326) do
   add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deploys", force: true do |t|
-    t.integer  "stack_id",                            null: false
-    t.integer  "since_commit_id",                     null: false
-    t.integer  "until_commit_id",                     null: false
-    t.string   "status",          default: "pending", null: false
+    t.integer  "stack_id",                                          null: false
+    t.integer  "since_commit_id",                                   null: false
+    t.integer  "until_commit_id",                                   null: false
+    t.string   "status",          default: "pending",               null: false
     t.text     "output"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "user_name",       default: "Anonymous",             null: false
+    t.string   "user_email",      default: "anonymous@example.com", null: false
+    t.integer  "user_id"
   end
 
   add_index "deploys", ["since_commit_id"], name: "index_deploys_on_since_commit_id"
   add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id"
   add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id"
+  add_index "deploys", ["user_id"], name: "index_deploys_on_user_id"
 
   create_table "output_chunks", force: true do |t|
     t.integer  "deploy_id"

@@ -9,13 +9,13 @@ class Stack < ActiveRecord::Base
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks
 
-  def trigger_deploy(until_commit)
+  def trigger_deploy(until_commit, user_info={})
     since_commit = last_deployed_commit
 
-    deploy = deploys.create(
+    deploy = deploys.create(user_info.merge(
       until_commit: until_commit,
       since_commit: since_commit
-    )
+    ))
     deploy.enqueue
     deploy
   end

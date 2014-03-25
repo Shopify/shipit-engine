@@ -21,7 +21,12 @@ class DeployCommands
   end
 
   def deploy(commit)
-    env = self.env.merge('SHA' => commit.sha, 'ENVIRONMENT' => @stack.environment)
+    env = self.env.merge(
+      'SHA' => commit.sha,
+      'ENVIRONMENT' => @stack.environment,
+      'USER' => @deploy.user_name,
+      'EMAIL' => @deploy.user_email,
+    )
     deploy_spec.deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
