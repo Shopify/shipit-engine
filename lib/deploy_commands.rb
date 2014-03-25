@@ -1,17 +1,12 @@
-require "fileutils"
-require "etc"
-
-class DeployCommands
+class DeployCommands < Commands
   BUNDLE_WITHOUT = %w(default production development test staging benchmark debug)
   BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
+
+  delegate :fetch, to: :stack_commands
 
   def initialize(deploy)
     @deploy = deploy
     @stack = deploy.stack
-  end
-
-  def env
-    Settings['env'] || {}
   end
 
   def install_dependencies
@@ -40,24 +35,11 @@ class DeployCommands
     git("clone", "--local", @stack.git_path, @deploy.working_directory, chdir: @stack.deploys_path)
   end
 
-  def create_directories
-    FileUtils.mkdir_p(@stack.deploys_path)
-  end
-
-  def fetch
-    create_directories
-    if Dir.exists?(@stack.git_path)
-      git("fetch", env: env, chdir: @stack.git_path)
-    else
-      git("clone", @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
-    end
-  end
-
-  def git(*args)
-    Command.new("git", *args)
-  end
-
   def deploy_spec
     @deploy_spec ||= DeploySpec.new(@deploy.working_directory)
+  end
+
+  def stack_commands
+    @stack_commands = StackCommands.new(@stack)
   end
 end

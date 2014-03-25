@@ -30,6 +30,14 @@ class Command
     "#{self.to_s} exited with status #{@code}"
   end
 
+  def run
+    output = []
+    stream do |out|
+      output << out
+    end
+    output.join
+  end
+
   def run!
     output = []
     stream! do |out|
