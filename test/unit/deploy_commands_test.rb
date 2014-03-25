@@ -10,6 +10,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
       deploy_steps: ['bundle exec cap $ENVIRONMENT deploy'],
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
+    StackCommands.stubs(git_version: Gem::Version.new('1.8.4.3'))
   end
 
   test "#fetch call git fetch if repository cache already exist" do
@@ -28,6 +29,13 @@ class DeployCommandsTest < ActiveSupport::TestCase
     Dir.expects(:exists?).with(@stack.git_path).returns(false)
     command = @commands.fetch
     assert_equal ['git', 'clone', '--single-branch', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
+  end
+
+  test "#fetch do not use --single-branch if git is outdated" do
+    Dir.expects(:exists?).with(@stack.git_path).returns(false)
+    StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
+    command = @commands.fetch
+    assert_equal ['git', 'clone', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
   end
 
   test "#fetch call git fetch in base_path directory if repository cache do not exist" do
