@@ -8,6 +8,7 @@ machine:
 dependencies:
   pre:
     - cp config/settings.yml.example config/settings.yml
+    - mkdir -p tmp/cache/
   bundler:
     without:
       - benchmark
