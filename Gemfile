@@ -16,6 +16,7 @@ gem 'settingslogic'
 gem 'omniauth'
 gem 'omniauth-google-apps'
 gem 'safe_yaml', require: 'safe_yaml/load'
+gem 'airbrake'
 
 group :production do
   gem 'mysql2'
