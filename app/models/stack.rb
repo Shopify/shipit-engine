@@ -8,6 +8,7 @@ class Stack < ActiveRecord::Base
 
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks
+  after_commit :bump_menu_cache, on: %i(create destroy)
 
   def trigger_deploy(until_commit, user_info={})
     since_commit = last_deployed_commit
@@ -103,4 +104,9 @@ class Stack < ActiveRecord::Base
   def sync_github
     Resque.enqueue(GithubSyncJob, stack_id: id)
   end
+
+  def bump_menu_cache
+    Menu.bump_cache
+  end
+
 end

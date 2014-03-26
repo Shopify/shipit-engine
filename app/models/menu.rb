@@ -29,4 +29,12 @@ class Menu
     @owners = Stack.all.to_a.group_by(&:repo_owner).map { |name, stacks| Owner.new(name, stacks) }
   end
 
+  def updated_at
+    Rails.cache.fetch('menu:updated_at') { Stack.maximum(:created_at) }
+  end
+
+  def self.bump_cache
+    Rails.cache.write('menu:updated_at', Time.now)
+  end
+
 end
