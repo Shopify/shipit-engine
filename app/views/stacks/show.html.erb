@@ -25,7 +25,7 @@
             <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
               <a href="<%= commit.target_url%>" class="<%= :disabled unless commit.target_url.present? %>" target="_blank">
                 <i><%= commit.state %></i>
-                <img src="<%= commit.author.avatar_url %>" alt="">
+                <%= github_avatar commit.author, size: 20 %>
               </a>
             </div>
             <div class="event">

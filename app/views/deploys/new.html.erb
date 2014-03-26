@@ -23,7 +23,7 @@
         <% @deploy.commits.each do |commit| %>
           <li>
             <div data-tooltip="<%= commit.author.name %>" class="avatar">
-              <img src="<%= commit.author.avatar_url %>" />
+              <%= github_avatar commit.author, size: 24 %>
             </div>
             <div class="event">
               <span class="event-title"><%= commit.message %></span>

@@ -1,6 +1,20 @@
 module GithubUrlHelper
+  DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
+
   def github_url
     "https://github.com"
+  end
+
+  def github_avatar(user, options={})
+    uri = URI.parse(user.avatar_url) rescue DEFAULT_AVATAR
+    attributes = {alt: user.name}
+    if options[:size]
+      uri.query += "&s=#{options[:size]}"
+      attributes[:width] = options[:size]
+      attributes[:height] = options[:size]
+    end
+
+    image_tag(uri.to_s, attributes)
   end
 
   def github_user_url(user)
