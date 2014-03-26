@@ -11,7 +11,7 @@ class StacksController < ApplicationController
 
   def show
     @stack = Stack.from_param(params[:id])
-    return unless stale?(etag: @stack, last_modified: [menu.updated_at, @stack.updated_at].max)
+    return unless stale?(last_modified: [menu.updated_at, @stack.updated_at].max)
 
     @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit).limit(10)
     @commits = @stack.commits.reachable.preload(:author).order(id: :desc)
