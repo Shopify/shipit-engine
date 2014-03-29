@@ -8,6 +8,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     @deploy_spec = stub(
       dependencies_steps: ['bundle install --some-args'],
       deploy_steps: ['bundle exec cap $ENVIRONMENT deploy'],
+      machine_env: {'GLOBAL' => '1'},
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
     StackCommands.stubs(git_version: Gem::Version.new('1.8.4.3'))
@@ -104,6 +105,11 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end
 
+  test "#deploy merges shipit.yml machine_env in ENVIRONMENT" do
+    command = @commands.deploy(@deploy.until_commit).first
+    assert_equal '1', command.env['GLOBAL']
+  end
+
   test "#install_dependencies call bundle install" do
     commands = @commands.install_dependencies
     assert_equal 1, commands.length
@@ -114,6 +120,11 @@ class DeployCommandsTest < ActiveSupport::TestCase
     Settings.stubs(:[]).with('env').returns("SPECIFIC_CONFIG" => 5)
     command = @commands.install_dependencies.first
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
+  end
+
+  test "#install_dependencies merges machine_env in ENVIRONMENT" do
+    command = @commands.install_dependencies.first
+    assert_equal '1', command.env['GLOBAL']
   end
 
 end
