@@ -60,4 +60,9 @@ class DeploySpecTest < ActiveSupport::TestCase
     end
   end
 
+  test '#machine_env return an environment hash' do
+    @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
+    assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
+  end
+
 end

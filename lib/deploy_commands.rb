@@ -9,6 +9,7 @@ class DeployCommands < Commands
   end
 
   def install_dependencies
+    env = self.env.merge(deploy_spec.machine_env)
     deploy_spec.dependencies_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
@@ -20,7 +21,7 @@ class DeployCommands < Commands
       'ENVIRONMENT' => @stack.environment,
       'USER' => "#{@deploy.user_name} via Shipit 2",
       'EMAIL' => @deploy.user_email,
-    )
+    ).merge(deploy_spec.machine_env)
     deploy_spec.deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end

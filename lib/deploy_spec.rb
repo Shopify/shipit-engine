@@ -14,6 +14,10 @@ class DeploySpec
     keys.flatten.reduce(@config) { |h, k| h[k] if h.respond_to?(:[]) }
   end
 
+  def machine_env
+    config('machine', 'environment') || {}
+  end
+
   def dependencies_steps
     config('dependencies', 'override') || discover_bundler || []
   end
