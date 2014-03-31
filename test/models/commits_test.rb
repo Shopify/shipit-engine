@@ -32,4 +32,36 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal @stack.commits.all.to_a, @stack.commits.newer_than(nil).to_a
   end
 
+  test "updating to detached broadcasts a 'detach' event" do
+    assert_event('detach')
+    @commit.update_attributes(detached: true)
+  end
+
+  test "#destroy broadcasts a 'destroy' event" do
+    assert_event('destroy')
+    @commit.destroy
+  end
+
+  test "updating broadcasts an 'update' event" do
+    assert_event('update')
+    @commit.update_attributes(message: "toto")
+  end
+
+  test "creating broadcasts a 'create' event" do
+    assert_event('create')
+    walrus = users(:walrus)
+    @stack.commits.create(author: walrus,
+                          committer: walrus,
+                          sha: "ab12",
+                          authored_at: DateTime.now,
+                          committed_at: DateTime.now,
+                          message: "more fish!")
+  end
+
+  private
+  def assert_event(type)
+    Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
+      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}"
+    end
+  end
 end
