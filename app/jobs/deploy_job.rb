@@ -10,20 +10,25 @@ class DeployJob < BackgroundJob
       return
     end
 
+    @commands = DeployCommands.new(@deploy)
+    pre_deploy_steps
     @deploy.run!
-    commands = DeployCommands.new(@deploy)
 
-    capture commands.fetch
-    capture commands.clone
-    capture commands.checkout(@deploy.until_commit)
+
+    capture @commands.fetch
+    capture @commands.clone
+    capture @commands.checkout(@deploy.until_commit)
     Bundler.with_clean_env do
-      capture_all commands.install_dependencies
-      capture_all commands.deploy(@deploy.until_commit)
+      capture_all @commands.install_dependencies
+      capture_all @commands.deploy(@deploy.until_commit)
     end
+    post_deploy_steps
     @deploy.complete!
   rescue Command::Error
+    post_deploy_steps
     @deploy.failure!
   rescue StandardError
+    post_deploy_steps
     @deploy.error!
     raise
   end
@@ -38,6 +43,20 @@ class DeployJob < BackgroundJob
       @deploy.write(line)
     end
     @deploy.write("\n")
+  end
+
+  def pre_deploy_steps
+    commands = @commands.before_deploy_steps
+    commands.map do |command_line|
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
+    end unless commands.nil?
+  end
+
+  def post_deploy_steps
+    commands = @commands.after_deploy_steps
+    commands.map do |command_line|
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
+    end unless commands.nil?
   end
 
 end
