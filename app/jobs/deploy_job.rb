@@ -10,22 +10,24 @@ class DeployJob < BackgroundJob
       return
     end
 
-    pre_deploy_steps
     @deploy.run!
-
-    capture commands.fetch
-    capture commands.clone
-    capture commands.checkout(@deploy.until_commit)
-    Bundler.with_clean_env do
-      capture_all commands.install_dependencies
-      capture_all commands.deploy(@deploy.until_commit)
+    begin
+      capture commands.fetch
+      capture commands.clone
+      capture commands.checkout(@deploy.until_commit)
+      Bundler.with_clean_env do
+        capture_all commands.install_dependencies
+        capture_all commands.deploy(@deploy.until_commit)
+      end
+    rescue Command::Error => e
+      @deploy.failure!
+      capture_all commands.failure_hooks(e.message)
+    else
+      @deploy.complete!
+      capture_all commands.success_hooks
     end
-    post_deploy_steps
-    @deploy.complete!
-  rescue Command::Error
-    post_deploy_steps
-    @deploy.failure!
-  rescue StandardError
+
+  rescue StandardError => e
     @deploy.error!
     raise
   end
@@ -44,18 +46,6 @@ class DeployJob < BackgroundJob
       @deploy.write(line)
     end
     @deploy.write("\n")
-  end
-
-  def pre_deploy_steps
-    commands.before_deploy_steps.map do |command_line|
-      Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end
-  end
-
-  def post_deploy_steps
-    commands.after_deploy_steps.map do |command_line|
-      Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end
   end
 
 end

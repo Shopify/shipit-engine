@@ -43,19 +43,17 @@ class DeployCommands < Commands
     @stack_commands = StackCommands.new(@stack)
   end
 
-  def before_deploy_steps
-   deploy_spec.pre_deploy_steps
-  end
-
-  def after_deploy_steps
-    steps_to_run = []
-
-    if @deploy.status == 'success'
-      steps_to_run = deploy_spec.post_success_deploy_steps + deploy_spec.post_deploy_steps
-    elsif @deploy.status == 'failed'
-      steps_to_run = deploy_spec.post_failure_deploy_steps + deploy_spec.post_deploy_steps
+  def failure_hooks(message)
+    failure_env = env.merge('ERROR' => message)
+    deploy_spec.failure_steps.map do |command_line|
+      Command.new(command_line, env: failure_env, chdir: @deploy.working_directory)
     end
-
-    steps_to_run
   end
+
+  def success_hooks
+    deploy_spec.success_steps.map do |command_line|
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
+    end
+  end
+
 end

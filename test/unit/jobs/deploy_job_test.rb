@@ -14,20 +14,18 @@ class DeployJobTest < ActiveSupport::TestCase
     @commands = stub(:commands)
     DeployCommands.expects(:new).with(@deploy).returns(@commands)
 
-    @commands.expects(:before_deploy_steps).returns([]).once
     @commands.expects(:fetch).once
     @commands.expects(:clone).once
     @commands.expects(:checkout).with(@deploy.until_commit).once
     @commands.expects(:install_dependencies).returns([]).once
     @commands.expects(:deploy).with(@deploy.until_commit).returns([]).once
-    @commands.expects(:after_deploy_steps).returns([]).once
+    @commands.expects(:success_hooks).returns([]).once
 
     @job.perform(deploy_id: @deploy.id)
   end
 
   test "marks deploy as successful" do
     @commands.stubs(:deploy_spec).returns(@spec)
-    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz), 'post' => %w(foo2 bar2 baz2), 'success' => %w(foo3 bar3 baz3)})
 
     Dir.stubs(:chdir).yields
     DeployCommands.any_instance.stubs(:deploy).returns([])
@@ -36,7 +34,6 @@ class DeployJobTest < ActiveSupport::TestCase
     @job.perform(deploy_id: @deploy.id)
 
     assert_equal 'success', @deploy.reload.status
-    assert_equal %w(foo3 bar3 baz3 foo2 bar2 baz2), @commands.after_deploy_steps
   end
 
   test "marks deploy as `error` if any application error is raised" do
@@ -51,7 +48,6 @@ class DeployJobTest < ActiveSupport::TestCase
 
   test "does not fail on error if on_failure is not defined" do
     @commands.stubs(:deploy_spec).returns(@spec)
-    @spec.stubs(:load_config).returns('')
 
     @job.expects(:capture).raises("some error")
     assert_raise(RuntimeError) do
@@ -59,18 +55,17 @@ class DeployJobTest < ActiveSupport::TestCase
     end
 
     assert_equal 'error', @deploy.reload.status
-    assert_equal [], @commands.after_deploy_steps
   end
 
   test "marks deploy as `failed` if a command exit with an error code" do
+    DeployCommands.expects(:new).with(@deploy).returns(@commands)
     @commands.stubs(:deploy_spec).returns(@spec)
-    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz), 'post' => %w(foo2 bar2 baz2), 'success' => %w(foo3 bar3 baz3)})
 
-    @job.expects(:capture).raises(Command::Error.new('something'))
+    @commands.expects(:fetch).raises(Command::Error.new('something'))
+
     @job.perform(deploy_id: @deploy.id)
 
     assert_equal 'failed', @deploy.reload.status
-    assert_equal %w(foo bar baz foo2 bar2 baz2), @commands.after_deploy_steps
   end
 
   test "bail out if deploy is not pending" do

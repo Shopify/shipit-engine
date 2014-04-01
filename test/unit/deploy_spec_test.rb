@@ -53,31 +53,24 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
-  test '#after_deploy_steps returns `deploy.post` if present' do
-    @spec.stubs(:load_config).returns('deploy' => {'post' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.post_deploy_steps
-  end
-
-  test '#after_deploy_steps returns `deploy.success` if present' do
-    @spec.stubs(:load_config).returns('deploy' => {'success' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.post_success_deploy_steps
-  end
-
-  test '#after_deploy_steps returns `deploy.failure` if present' do
-    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.post_failure_deploy_steps
-  end
-
-  test '#before_deploy_steps returns `deploy.pre` if present' do
+  test '#deploy_steps prepend `deploy.pre`' do
     @spec.stubs(:load_config).returns('deploy' => {'pre' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.pre_deploy_steps
+    assert_equal ['foo', 'bar', 'baz', 'bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
-  test '#deploy_steps raise a DeploySpec::Error if it dont know how to deploy the app' do
-    @spec.expects(:capistrano?).returns(false)
-    assert_raise DeploySpec::Error do
-      @spec.deploy_steps
-    end
+  test '#deploy_steps append `deploy.post`' do
+    @spec.stubs(:load_config).returns('deploy' => {'post' => %w(foo bar baz)})
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy', 'foo', 'bar', 'baz'], @spec.deploy_steps
+  end
+
+  test '#failure_steps returns `failure`' do
+    @spec.stubs(:load_config).returns('failure' => %w(foo bar baz))
+    assert_equal %w(foo bar baz), @spec.failure_steps
+  end
+
+  test '#success_steps returns `success`' do
+    @spec.stubs(:load_config).returns('success' => %w(foo bar baz))
+    assert_equal %w(foo bar baz), @spec.success_steps
   end
 
 end
