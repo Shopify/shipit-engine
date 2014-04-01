@@ -26,12 +26,20 @@ class DeploySpec
     config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
   end
 
+  def post_success_deploy_steps
+    config('deploy','success') || []
+  end
+
+  def post_failed_deploy_steps
+    config('deploy','failure') || []
+  end
+
   def post_deploy_steps
-    config('deploy','post') || {}
+    config('deploy','post') || []
   end
 
   def pre_deploy_steps
-    config('deploy','pre') || {}
+    config('deploy','pre') || []
   end
 
   def discover_bundler

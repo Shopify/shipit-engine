@@ -48,18 +48,12 @@ class DeployCommands < Commands
   end
 
   def after_deploy_steps
-    post_steps = deploy_spec.post_deploy_steps
     steps_to_run = []
 
-
-    if @deploy.reload.status == 'success'
-      steps_to_run = post_steps['on_success']
-    elsif @deploy.reload.status == 'failed' || @deploy.status == 'error'
-      steps_to_run = post_steps['on_failure']
-    end
-
-    if post_steps.key?('always')
-      steps_to_run = steps_to_run + post_steps['always']
+    if @deploy.status == 'success'
+      steps_to_run = deploy_spec.post_success_deploy_steps + deploy_spec.post_deploy_steps
+    elsif @deploy.status == 'failed'
+      steps_to_run = deploy_spec.post_failed_deploy_steps + deploy_spec.post_deploy_steps
     end
 
     steps_to_run

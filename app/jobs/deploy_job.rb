@@ -10,17 +10,15 @@ class DeployJob < BackgroundJob
       return
     end
 
-    @commands = DeployCommands.new(@deploy)
     pre_deploy_steps
     @deploy.run!
 
-
-    capture @commands.fetch
-    capture @commands.clone
-    capture @commands.checkout(@deploy.until_commit)
+    capture commands.fetch
+    capture commands.clone
+    capture commands.checkout(@deploy.until_commit)
     Bundler.with_clean_env do
-      capture_all @commands.install_dependencies
-      capture_all @commands.deploy(@deploy.until_commit)
+      capture_all commands.install_dependencies
+      capture_all commands.deploy(@deploy.until_commit)
     end
     post_deploy_steps
     @deploy.complete!
@@ -28,13 +26,16 @@ class DeployJob < BackgroundJob
     post_deploy_steps
     @deploy.failure!
   rescue StandardError
-    post_deploy_steps
     @deploy.error!
     raise
   end
 
-  def capture_all(commands)
-    commands.map { |c| capture(c) }
+  def commands
+    @deploy_commands ||= DeployCommands.new(@deploy)
+  end
+
+  def capture_all(deploy_commands)
+    deploy_commands.map { |c| capture(c) }
   end
 
   def capture(command)
@@ -46,17 +47,15 @@ class DeployJob < BackgroundJob
   end
 
   def pre_deploy_steps
-    commands = @commands.before_deploy_steps
-    commands.map do |command_line|
+    commands.before_deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end unless commands.nil?
+    end
   end
 
   def post_deploy_steps
-    commands = @commands.after_deploy_steps
-    commands.map do |command_line|
+    commands.after_deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end unless commands.nil?
+    end
   end
 
 end
