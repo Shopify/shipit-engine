@@ -42,4 +42,18 @@ class DeployCommands < Commands
   def stack_commands
     @stack_commands = StackCommands.new(@stack)
   end
+
+  def failure_hooks(message)
+    failure_env = env.merge('ERROR' => message)
+    deploy_spec.failure_steps.map do |command_line|
+      Command.new(command_line, env: failure_env, chdir: @deploy.working_directory)
+    end
+  end
+
+  def success_hooks
+    deploy_spec.success_steps.map do |command_line|
+      Command.new(command_line, env: env, chdir: @deploy.working_directory)
+    end
+  end
+
 end

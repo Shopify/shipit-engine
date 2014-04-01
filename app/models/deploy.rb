@@ -22,7 +22,7 @@ class Deploy < ActiveRecord::Base
     end
 
     event :error do
-      transition running: :error
+      transition any => :error
     end
 
     state :pending

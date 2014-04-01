@@ -53,16 +53,24 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
-  test '#deploy_steps raise a DeploySpec::Error if it dont know how to deploy the app' do
-    @spec.expects(:capistrano?).returns(false)
-    assert_raise DeploySpec::Error do
-      @spec.deploy_steps
-    end
+  test '#deploy_steps prepend `deploy.pre`' do
+    @spec.stubs(:load_config).returns('deploy' => {'pre' => %w(foo bar baz)})
+    assert_equal ['foo', 'bar', 'baz', 'bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
-  test '#machine_env return an environment hash' do
-    @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
-    assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
+  test '#deploy_steps append `deploy.post`' do
+    @spec.stubs(:load_config).returns('deploy' => {'post' => %w(foo bar baz)})
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy', 'foo', 'bar', 'baz'], @spec.deploy_steps
+  end
+
+  test '#failure_steps returns `failure`' do
+    @spec.stubs(:load_config).returns('failure' => %w(foo bar baz))
+    assert_equal %w(foo bar baz), @spec.failure_steps
+  end
+
+  test '#success_steps returns `success`' do
+    @spec.stubs(:load_config).returns('success' => %w(foo bar baz))
+    assert_equal %w(foo bar baz), @spec.success_steps
   end
 
 end
