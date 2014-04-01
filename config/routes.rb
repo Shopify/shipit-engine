@@ -4,7 +4,7 @@ Shipit::Application.routes.draw do
   root to: 'stacks#index'
 
   mount Resque::Server.new, at: "/resque"
-  mount Pubsubstub::Application.new, at: "/events", as: :events
+  mount UserRequiredMiddleware.new(Pubsubstub::StreamAction.new), at: "/events", as: :events
 
   scope '/auth/:provider', as: :authentication, controller: :authentication do
     get '/', action: :mock

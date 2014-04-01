@@ -108,7 +108,7 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
-    pubsubstub (0.0.4)
+    pubsubstub (0.0.6)
       em-hiredis (~> 0.2)
       eventmachine (~> 1.0)
       redis (~> 3.0)
@@ -236,8 +236,8 @@ DEPENDENCIES
   omniauth
   omniauth-google-apps
   pry
+  pubsubstub (~> 0.0.6)
   rails (= 4.1.0)
-  pubsubstub (~> 0.0.4)
   redis-rails
   resque (= 1.26.pre.0)
   resque-workers-lock

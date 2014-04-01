@@ -20,9 +20,7 @@
       <p><%= emoji_tag(:walrus) %> is happy. Good job!</p>
     <%- else -%>
       <ul class="commit-lst">
-        <% @commits.each do |commit| %>
-          <%= render partial: "commits/list_item", locals: { commit: commit } %>
-        <% end %>
+        <%= render partial: "commits/commit", collection: @commits %>
       </ul>
     <%- end -%>
   </section>
@@ -31,7 +29,7 @@
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="commit-lst" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>" data-commits-path="<%= stack_commit_path(@stack, 0) %>">
+    <ul class="commit-lst" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
       <% @deploys.each do |deploy| %>
         <li>
           <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">

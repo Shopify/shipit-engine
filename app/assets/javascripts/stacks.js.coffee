@@ -1,8 +1,7 @@
 jQuery ->
   loadCommit = (message, callback) ->
     json = JSON.parse(message.data)
-    url = $('[data-commits-path]').data('commits-path').replace /\d+$/, json.id
-    jQuery.ajax url,
+    jQuery.ajax json.url,
       complete: (response) ->
         callback(json.id, response.responseText)
 
@@ -23,6 +22,5 @@ jQuery ->
     source = new EventSource(url)
     source.addEventListener 'commit.update', onUpdate
     source.addEventListener 'commit.create', onCreate
-    source.addEventListener 'commit.detach', onRemove
-    source.addEventListener 'commit.destroy', onRemove
+    source.addEventListener 'commit.remove', onRemove
 

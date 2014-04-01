@@ -32,13 +32,13 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal @stack.commits.all.to_a, @stack.commits.newer_than(nil).to_a
   end
 
-  test "updating to detached broadcasts a 'detach' event" do
-    assert_event('detach')
-    @commit.update_attributes(detached: true)
+  test "updating to detached broadcasts a 'remove' event" do
+    assert_event('remove')
+    @commit.update(detached: true)
   end
 
-  test "#destroy broadcasts a 'destroy' event" do
-    assert_event('destroy')
+  test "#destroy broadcasts a 'remove' event" do
+    assert_event('remove')
     @commit.destroy
   end
 
@@ -61,7 +61,8 @@ class CommitsTest < ActiveSupport::TestCase
   private
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
-      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}"
+      data = JSON.load(event.data)
+      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}" && data['url'].match(/#{@stack.to_param}\/commits\/\d+/)
     end
   end
 end
