@@ -53,7 +53,7 @@ class DeployCommands < Commands
     if @deploy.status == 'success'
       steps_to_run = deploy_spec.post_success_deploy_steps + deploy_spec.post_deploy_steps
     elsif @deploy.status == 'failed'
-      steps_to_run = deploy_spec.post_failed_deploy_steps + deploy_spec.post_deploy_steps
+      steps_to_run = deploy_spec.post_failure_deploy_steps + deploy_spec.post_deploy_steps
     end
 
     steps_to_run

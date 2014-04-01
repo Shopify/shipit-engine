@@ -30,7 +30,7 @@ class DeploySpec
     config('deploy','success') || []
   end
 
-  def post_failed_deploy_steps
+  def post_failure_deploy_steps
     config('deploy','failure') || []
   end
 

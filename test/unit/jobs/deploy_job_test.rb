@@ -27,7 +27,7 @@ class DeployJobTest < ActiveSupport::TestCase
 
   test "marks deploy as successful" do
     @commands.stubs(:deploy_spec).returns(@spec)
-    @spec.stubs(:load_config).returns('deploy' => {'success' => %w(foo bar baz) })
+    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz), 'post' => %w(foo2 bar2 baz2), 'success' => %w(foo3 bar3 baz3)})
 
     Dir.stubs(:chdir).yields
     DeployCommands.any_instance.stubs(:deploy).returns([])
@@ -36,7 +36,7 @@ class DeployJobTest < ActiveSupport::TestCase
     @job.perform(deploy_id: @deploy.id)
 
     assert_equal 'success', @deploy.reload.status
-    assert_equal %w(foo bar baz), @commands.after_deploy_steps
+    assert_equal %w(foo3 bar3 baz3 foo2 bar2 baz2), @commands.after_deploy_steps
   end
 
   test "marks deploy as `error` if any application error is raised" do
@@ -64,13 +64,13 @@ class DeployJobTest < ActiveSupport::TestCase
 
   test "marks deploy as `failed` if a command exit with an error code" do
     @commands.stubs(:deploy_spec).returns(@spec)
-    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz) })
+    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz), 'post' => %w(foo2 bar2 baz2), 'success' => %w(foo3 bar3 baz3)})
 
     @job.expects(:capture).raises(Command::Error.new('something'))
     @job.perform(deploy_id: @deploy.id)
 
     assert_equal 'failed', @deploy.reload.status
-    assert_equal %w(foo bar baz), @commands.after_deploy_steps
+    assert_equal %w(foo bar baz foo2 bar2 baz2), @commands.after_deploy_steps
   end
 
   test "bail out if deploy is not pending" do

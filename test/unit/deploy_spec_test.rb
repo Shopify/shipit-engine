@@ -58,6 +58,16 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal %w(foo bar baz), @spec.post_deploy_steps
   end
 
+  test '#after_deploy_steps returns `deploy.success` if present' do
+    @spec.stubs(:load_config).returns('deploy' => {'success' => %w(foo bar baz)})
+    assert_equal %w(foo bar baz), @spec.post_success_deploy_steps
+  end
+
+  test '#after_deploy_steps returns `deploy.failure` if present' do
+    @spec.stubs(:load_config).returns('deploy' => {'failure' => %w(foo bar baz)})
+    assert_equal %w(foo bar baz), @spec.post_failure_deploy_steps
+  end
+
   test '#before_deploy_steps returns `deploy.pre` if present' do
     @spec.stubs(:load_config).returns('deploy' => {'pre' => %w(foo bar baz)})
     assert_equal %w(foo bar baz), @spec.pre_deploy_steps
