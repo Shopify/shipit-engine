@@ -25,7 +25,9 @@ stacks.each do |stack|
       :committer_id => user.id,
       :sha          => SecureRandom.hex(20),
       :message      => Faker::Company.catch_phrase,
-      :state        => %w(pending success error failure).sample
+      :state        => %w(pending success error failure).sample,
+      :authored_at  => Time.now,
+      :committed_at => Time.now,
     )
   end
 end
