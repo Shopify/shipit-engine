@@ -10,8 +10,10 @@ class DeployJob < BackgroundJob
       return
     end
 
-    @deploy.run!
     commands = DeployCommands.new(@deploy)
+    commands.before_deploy_steps(@deploy)
+
+    @deploy.run!
 
     capture commands.fetch
     capture commands.clone
@@ -21,10 +23,13 @@ class DeployJob < BackgroundJob
       capture_all commands.deploy(@deploy.until_commit)
     end
     @deploy.complete!
+    commands.after_deploy_steps(@deploy)
   rescue Command::Error
     @deploy.failure!
+    commands.after_deploy_steps(@deploy)
   rescue StandardError
     @deploy.error!
+    commands.after_deploy_steps(@deploy)
     raise
   end
 

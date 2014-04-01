@@ -53,6 +53,16 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
+  test '#after_deploy_steps returns `deploy.post` if present' do
+    @spec.stubs(:load_config).returns('deploy' => {'post' => %w(foo bar baz)})
+    assert_equal %w(foo bar baz), @spec.after_deploy_steps
+  end
+
+  test '#before_deploy_steps returns `deploy.pre` if present' do
+    @spec.stubs(:load_config).returns('deploy' => {'pre' => %w(foo bar baz)})
+    assert_equal %w(foo bar baz), @spec.before_deploy_steps
+  end
+
   test '#deploy_steps raise a DeploySpec::Error if it dont know how to deploy the app' do
     @spec.expects(:capistrano?).returns(false)
     assert_raise DeploySpec::Error do

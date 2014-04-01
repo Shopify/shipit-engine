@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20140325195628) do
     t.string   "target_url"
     t.boolean  "detached",                default: false,     null: false
     t.datetime "authored_at",                                 null: false
-    t.datetime "committed_at",                                 null: false
+    t.datetime "committed_at",                                null: false
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id"

@@ -41,4 +41,27 @@ class DeployCommands < Commands
   def stack_commands
     @stack_commands = StackCommands.new(@stack)
   end
+
+  def before_deploy_steps(deploy)
+    pre_steps = deploy_spec.pre_deploy_steps
+
+    pre_steps.map do |command_line|
+      Command.new(command_line, env: env, chdir: deploy.working_directory)
+    end
+  end
+
+  def after_deploy_steps(deploy)
+    post_steps = deploy_spec.post_deploy_steps
+
+    if deploy.complete!
+      steps_to_run = post_steps.on_success + post_steps.after_deploy
+    elsif deploy.failure! || deploy.error!
+      steps_to_run = post_steps.on_failure + post_steps.after_deploy
+    end
+
+    steps_to_run.map do |command_line|
+      Command.new(command_line, env: env, chdir: deploy.working_directory)
+    end
+  end
+
 end
