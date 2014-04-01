@@ -42,4 +42,26 @@ class DeployCommands < Commands
   def stack_commands
     @stack_commands = StackCommands.new(@stack)
   end
+
+  def before_deploy_steps
+   deploy_spec.pre_deploy_steps
+  end
+
+  def after_deploy_steps
+    post_steps = deploy_spec.post_deploy_steps
+    steps_to_run = []
+
+
+    if @deploy.reload.status == 'success'
+      steps_to_run = post_steps['on_success']
+    elsif @deploy.reload.status == 'failed' || @deploy.status == 'error'
+      steps_to_run = post_steps['on_failure']
+    end
+
+    if post_steps.key?('always')
+      steps_to_run = steps_to_run + post_steps['always']
+    end
+
+    steps_to_run
+  end
 end

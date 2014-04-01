@@ -26,6 +26,14 @@ class DeploySpec
     config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
   end
 
+  def post_deploy_steps
+    config('deploy','post') || {}
+  end
+
+  def pre_deploy_steps
+    config('deploy','pre') || {}
+  end
+
   def discover_bundler
     bundle_install if bundler?
   end
