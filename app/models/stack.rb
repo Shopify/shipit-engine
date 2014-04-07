@@ -70,10 +70,6 @@ class Stack < ActiveRecord::Base
     Shipit.github_api.last_response
   end
 
-  def git_mirror_path
-    Rails.root + 'data' + 'mirror' + repo_name
-  end
-
   def to_param
     [repo_owner, repo_name, environment].join('/')
   end
