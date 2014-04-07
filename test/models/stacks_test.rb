@@ -83,4 +83,9 @@ class StacksTest < ActiveSupport::TestCase
     Resque.expects(:enqueue).with(GithubTeardownWebhooksJob, all_of(has_key(:stack_id), has_key(:github_repo_name)))
     stacks(:shipit).destroy
   end
+
+  test "#destroy delete all local files (git mirror and deploy clones)" do
+    FileUtils.expects(:rm_rf).with(Rails.root.join('data', 'stacks', 'shopify', 'shipit2', 'production').to_s)
+    stacks(:shipit).destroy
+  end
 end

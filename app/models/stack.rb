@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
   REQUIRED_HOOKS = %w( push status )
@@ -7,7 +9,7 @@ class Stack < ActiveRecord::Base
   has_many :webhooks
 
   after_create :setup_webhooks, :sync_github
-  after_destroy :teardown_webhooks
+  after_destroy :teardown_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
 
   def trigger_deploy(until_commit, user_info={})
@@ -103,6 +105,10 @@ class Stack < ActiveRecord::Base
 
   def bump_menu_cache
     Menu.bump_cache
+  end
+
+  def clear_local_files
+    FileUtils.rm_rf(base_path)
   end
 
 end
