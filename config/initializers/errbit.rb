@@ -3,4 +3,7 @@ Airbrake.configure do |config|
   config.host    = 'exceptions.shopify.com'
   config.port    = 443
   config.secure  = true
+  ENV.keys.each do |filtered_key|
+    config.rake_environment_filters << filtered_key
+  end
 end

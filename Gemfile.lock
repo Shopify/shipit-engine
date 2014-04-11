@@ -219,7 +219,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake
+  airbrake (~> 3.1.5)
   byebug
   capistrano-bundler
   capistrano-rails
