@@ -12,6 +12,9 @@ class Stack < ActiveRecord::Base
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
 
+  validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
+  validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
+
   def trigger_deploy(until_commit, user_info={})
     since_commit = last_deployed_commit
 

@@ -16,6 +16,18 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal 'cyclim.se', @stack.repo_name
   end
 
+  test "repo_owner cannot contain a `/`" do
+    assert @stack.valid?
+    @stack.repo_owner = 'foo/bar'
+    refute @stack.valid?
+  end
+
+  test "repo_name cannot contain a `/`" do
+    assert @stack.valid?
+    @stack.repo_name = 'foo/bar'
+    refute @stack.valid?
+  end
+
   test "repo_http_url" do
     assert_equal "https://github.com/#{@stack.repo_owner}/#{@stack.repo_name}", @stack.repo_http_url
   end
