@@ -1,0 +1,30 @@
+<li class="commit">
+  <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
+    <a href="<%= commit.target_url%>" class="<%= :disabled unless commit.target_url.present? %>" target="_blank">
+      <i><%= commit.state %></i>
+      <%= github_avatar commit.author, size: 20 %>
+    </a>
+  </div>
+  <div class="event">
+    <span class="event-meta">
+      <a href="<%= github_user_url(commit.author.login) %>" class="user main-user">
+        <%= commit.author.name %>
+      </a>
+      merged <%= time_ago_in_words(commit.committed_at) %> ago
+    </span>
+    <span class="event-title">
+      <%= render_commit_message commit %>
+    </span>
+  </div>
+  <% if commit.state == 'success' %>
+    <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+      <%= hidden_field_tag :sha, commit.sha %>
+      <%= submit_tag "Deploy", :name => nil, :class => 'btn' %>
+    <% end %>
+  <% elsif commit.state == 'pending' %>
+    <a href="#" class="btn disabled deploy-action">Pending...</a>
+  <% elsif commit.state.blank? %>
+  <% else %>
+    <a href="#" class="btn disabled failure deploy-action">Failure</a>
+  <% end %>
+</li>
