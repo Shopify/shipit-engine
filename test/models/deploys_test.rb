@@ -71,4 +71,9 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal [4, 3, 2], deploy.commits.pluck(:id)
   end
 
+  test "transitioning away from the pending state enqueues a ChunkRollupJob" do
+    deploy = deploys(:shipit_pending)
+    Resque.expects(:enqueue).with(ChunkRollupJob, deploy_id: deploy.id)
+    deploy.run! && deploy.complete!
+  end
 end
