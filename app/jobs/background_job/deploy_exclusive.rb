@@ -5,7 +5,7 @@ module BackgroundJob::DeployExclusive
   end
 
   def self.lock_workers(params)
-    "stack-#{params[:deploy_id]}"
+    "deploy-#{params[:deploy_id]}"
   end
 
 end
