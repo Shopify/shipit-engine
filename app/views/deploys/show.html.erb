@@ -11,10 +11,6 @@
 </div>
 
 <pre>
-  <% if @deploy.output? %>
-    <code><%= @deploy.output %></code>
-  <% else %>
-    <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
-  <% end %>
+  <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
 </pre>
 </section>
