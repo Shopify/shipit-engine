@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140412143318) do
+ActiveRecord::Schema.define(version: 20140415010655) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 20140412143318) do
     t.integer  "since_commit_id",                                   null: false
     t.integer  "until_commit_id",                                   null: false
     t.string   "status",          default: "pending",               null: false
-    t.text     "output"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "user_name",       default: "Anonymous",             null: false
