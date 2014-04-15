@@ -6,8 +6,8 @@ class ChunkRollupJob < BackgroundJob
   def perform(params)
     @deploy = Deploy.find(params[:deploy_id])
 
-    unless @deploy.pending?
-      logger.error("Deploy ##{@deploy.id} already in `#{@deploy.status}` state. Aborting.")
+    unless @deploy.finished?
+      logger.error("Deploy ##{@deploy.id} is not finished (current state: #{@deploy.status}). Aborting.")
       return
     end
 
