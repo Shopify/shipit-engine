@@ -4,7 +4,7 @@ class Deploy < ActiveRecord::Base
   belongs_to :since_commit, class_name: "Commit"
   belongs_to :until_commit, class_name: "Commit"
 
-  has_many :chunks, class_name: 'OutputChunk'
+  has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
 
   scope :success, -> { where(status: 'success') }
 
@@ -30,6 +30,8 @@ class Deploy < ActiveRecord::Base
     state :failed
     state :success
     state :error
+
+    after_transition from: :running, do: :rollup_chunks
   end
 
   def finished?
@@ -66,6 +68,10 @@ class Deploy < ActiveRecord::Base
   def enqueue
     raise "only persisted jobs can be enqueued" unless persisted?
     Resque.enqueue(DeployJob, deploy_id: id, stack_id: stack_id)
+  end
+
+  def rollup_chunks
+    Resque.enqueue(ChunkRollupJob, deploy_id: id)
   end
 
   private

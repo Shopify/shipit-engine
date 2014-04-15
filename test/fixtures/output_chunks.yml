@@ -3,3 +3,23 @@
 shipit:
   deploy: shipit
   text: "deploy deploy deploy, faiiil"
+
+shipit2:
+  deploy: shipit
+  text: "Migrating some stuff"
+
+shipit3:
+  deploy: shipit
+  text: "Compiling all the sass"
+
+shipit4:
+  deploy: shipit
+  text: "Making ops cry"
+
+shipit5:
+  deploy: shipit
+  text: "sudo rm -rf /"
+
+shipit6:
+  deploy: shipit
+  text: "sudo chmod -R 777 /"
