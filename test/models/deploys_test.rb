@@ -71,4 +71,13 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal [4, 3, 2], deploy.commits.pluck(:id)
   end
 
+  test "#ongoing? is true if deploy is pending or running" do
+    assert Deploy.new(status: 'pending').ongoing?
+    assert Deploy.new(status: 'running').ongoing?
+
+    refute Deploy.new(status: 'success').ongoing?
+    refute Deploy.new(status: 'failed').ongoing?
+    refute Deploy.new(status: 'error').ongoing?
+  end
+
 end

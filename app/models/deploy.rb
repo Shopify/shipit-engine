@@ -32,6 +32,10 @@ class Deploy < ActiveRecord::Base
     state :error
   end
 
+  def ongoing?
+    pending? || running?
+  end
+
   def finished?
     !pending? && !running?
   end
