@@ -4,7 +4,7 @@ class Deploy < ActiveRecord::Base
   belongs_to :since_commit, class_name: "Commit"
   belongs_to :until_commit, class_name: "Commit"
 
-  has_many :chunks, class_name: 'OutputChunk'
+  has_many :chunks, class_name: 'OutputChunk', order: 'id'
 
   scope :success, -> { where(status: 'success') }
 
@@ -30,6 +30,10 @@ class Deploy < ActiveRecord::Base
     state :failed
     state :success
     state :error
+
+    after_transition from: :running do
+      Resque.enqueue(ChunkRollupJob, deploy_id: id)
+    end
   end
 
   def finished?
