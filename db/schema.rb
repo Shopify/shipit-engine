@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415010655) do
+ActiveRecord::Schema.define(version: 20140415142820) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20140415010655) do
 
   create_table "output_chunks", force: true do |t|
     t.integer  "deploy_id"
-    t.text     "text"
+    t.text     "text",       limit: 1048576
     t.datetime "created_at"
     t.datetime "updated_at"
   end
