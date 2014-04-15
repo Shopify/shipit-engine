@@ -1,4 +1,5 @@
 development:
+  authentication: false
   # host: https://57212e00.ngrok.com
   # authentication:
   #   provider: google_apps
