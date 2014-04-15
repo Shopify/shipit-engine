@@ -4,7 +4,7 @@ class Deploy < ActiveRecord::Base
   belongs_to :since_commit, class_name: "Commit"
   belongs_to :until_commit, class_name: "Commit"
 
-  has_many :chunks, -> { order 'id' }, class_name: 'OutputChunk'
+  has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
 
   scope :success, -> { where(status: 'success') }
 
