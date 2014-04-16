@@ -28,7 +28,9 @@
             <div class="event">
               <span class="event-title"><%= commit.message %></span>
             </div>
-            <a href="#" class="accessory subdued" data-tooltip="View on Github"><i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %></a>
+            <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued" data-tooltip="View on GitHub">
+              <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
+            </a>
           </li>
         <% end %>
       </ul>
