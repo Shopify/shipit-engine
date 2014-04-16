@@ -92,6 +92,14 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @deploy.until_commit.sha, command.env['SHA']
   end
 
+  test "#deploy transliterates the user name" do
+    @deploy.user_name = "Simon Hørup Eskildsen"
+    commands = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal "Simon Horup Eskildsen via Shipit 2", command.env['USER']
+  end
+
   test "#deploy call cap $environment deploy with the ENVIRONMENT in the environment" do
     commands = @commands.deploy(@deploy.until_commit)
     assert_equal 1, commands.length
