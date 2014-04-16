@@ -16,10 +16,8 @@ class GithubUrlHelperTest < ActiveSupport::TestCase
   end
 
   test "#github_commit_url returns a commit url" do
-    sha      = SecureRandom.hex
-    expected = "https://github.com/rails/rails/commit/#{sha}"
-
-    assert_equal expected, github_commit_url("rails", "rails", sha)
+    expected = 'https://github.com/shopify/shopify/commit/6d9278037b872fd9a6690523e411ecb3aa181355'
+    assert_equal expected, github_commit_url(commits(:first))
   end
 
   test "#github_diff_url returns a diff url" do
