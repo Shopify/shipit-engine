@@ -27,7 +27,7 @@ module GithubUrlHelper
   end
 
   def github_commit_url(commit)
-    [github_repo_url(commit.stack.repo_owner, commit.stack.repo_owner), "commit", commit.sha].join("/")
+    [github_repo_url(commit.stack.repo_owner, commit.stack.repo_name), "commit", commit.sha].join("/")
   end
 
   def github_diff_url(owner, repo, from_sha, to_sha)
