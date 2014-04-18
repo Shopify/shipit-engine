@@ -13,6 +13,7 @@
 #= require jquery
 #= require jquery_ujs
 #= require jquery.hc-sticky
+#= require ansi_up
 #= require_tree .
 
 jQuery ->
