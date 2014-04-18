@@ -90,10 +90,11 @@
 
       // Do proper handling of sequences (aka - injest vi split(';') into state machine
       //match,codes,txt = text.match(/([\d;]+)m(.*)/m);
-      var matches = text.match(/([\d;]+?)m([^]*)/m);
+      var matches = text.match(/([\d;]+?)m(.*)([^]*)/m);
 
       if (!matches) return text;
 
+      var remaining = matches[3];
       var orig_txt = matches[2];
       var nums = matches[1].split(';');
 
@@ -133,9 +134,9 @@
           }
         }
         if (use_classes) {
-          return ["<span class=\"" + classes.join(' ') + "\">", orig_txt, "</span>"];
+          return ["<span class=\"" + classes.join(' ') + "\">", orig_txt, "</span>", remaining];
         } else {
-          return ["<span style=\"" + styles.join(';') + "\">", orig_txt, "</span>"];
+          return ["<span style=\"" + styles.join(';') + "\">", orig_txt, "</span>", remaining];
         }
       }
     };
