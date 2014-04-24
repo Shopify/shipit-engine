@@ -9,7 +9,7 @@ gem 'state_machine'
 gem 'resque', '1.26.pre.0'
 gem 'resque-workers-lock', require: 'resque/plugins/workers/lock'
 gem 'redis-rails'
-gem 'unicorn'
+gem 'thin'
 gem 'octokit'
 gem 'faker'
 gem 'settingslogic'
@@ -23,7 +23,6 @@ group :production do
 end
 
 group :development, :test do
-  gem 'unicorn-rails'
   gem 'sqlite3'
 end
 
