@@ -11,7 +11,7 @@ jQuery ->
 
   onCreate = (message) ->
     loadCommit message, (id, commit) ->
-      $("ul.commit-lst").prepend(commit)
+      $("[data-event-stream] ul.commit-lst").prepend(commit)
 
   onRemove = (message) ->
     json = JSON.parse(message.data)

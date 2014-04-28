@@ -12,7 +12,7 @@
 </header>
 
 <div class="wrapper">
-  <section>
+  <section data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
     <header class="section-header">
       <h2><%= @commits.empty? ? 'No' : @commits.size %> Undeployed Commits</h2>
     </header>
@@ -29,7 +29,7 @@
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="commit-lst" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
+    <ul class="commit-lst">
       <% @deploys.each do |deploy| %>
         <li>
           <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
