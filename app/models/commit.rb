@@ -2,6 +2,10 @@ class Commit < ActiveRecord::Base
   belongs_to :stack, touch: true
   has_many :deploys
 
+  after_create{ broadcast_event('create') }
+  after_destroy{ broadcast_event('remove') }
+  after_update{ broadcast_update('update') }
+
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
 
@@ -63,5 +67,21 @@ class Commit < ActiveRecord::Base
 
   def parsed
     @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-\_\/]+\n\n(?<pr_title>.*)/)
+  end
+
+  private
+  def broadcast_event(type)
+    url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
+    payload = {id: id, url: url}.to_json
+    event = Pubsubstub::Event.new(payload, name: "commit.#{type}")
+    Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
+  end
+
+  def broadcast_update(type)
+    if detached_changed? && detached?
+      broadcast_event('remove')
+    else
+      broadcast_event('update')
+    end
   end
 end

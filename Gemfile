@@ -17,6 +17,7 @@ gem 'omniauth'
 gem 'omniauth-google-apps'
 gem 'safe_yaml', require: 'safe_yaml/load'
 gem 'airbrake', '~> 3.1.5'
+gem 'pubsubstub', '~> 0.0.6'
 
 group :production do
   gem 'mysql2'
