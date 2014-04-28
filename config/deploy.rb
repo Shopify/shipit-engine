@@ -59,7 +59,7 @@ namespace :deploy do
   desc "Signal Thin services to restart the application"
   task :restart do
     on roles(:app), in: :parallel do
-      execute "sv-sudo quit /etc/sv/shipit2-thin-*"
+      execute "sv-sudo hup /etc/sv/shipit2-thin-*"
     end
   end
 end
