@@ -24,9 +24,7 @@
                     <ul class="server-lst">
                       <% repo.stacks.each do |stack| %>
                         <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
-                          <a href="<%= stack_path(stack) %>">
-                            <%= stack.environment %>
-                          </a>
+                          <%= link_to stack.environment, stack_path(stack) %>
                         </li>
                       <% end %>
                     </ul>
