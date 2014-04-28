@@ -23,7 +23,7 @@ set :deploy_to, '/u/apps/shipit2'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/unicorn.conf.rb config/database.yml config/secrets.yml config/settings.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/settings.yml}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}
@@ -56,10 +56,10 @@ namespace :deploy do
     end
   end
 
-  desc "Signal Unicorn to restart the application"
+  desc "Signal Thin services to restart the application"
   task :restart do
     on roles(:app), in: :parallel do
-      execute "test ! -f #{shared_path}/tmp/pids/unicorn.pid || sudo -u shipit2 /usr/local/bin/unicorn-corporify shipit2"
+      execute "sv-sudo hup /etc/sv/shipit2-thin-*"
     end
   end
 end
