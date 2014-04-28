@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate
   before_action :set_variant
+  before_filter :set_favourite_stacks
 
   def authenticate
     auth_settings = Settings.authentication
@@ -28,6 +29,22 @@ class ApplicationController < ActionController::Base
     if request.negotiate_mime('text/partial+html')
       request.format = :html
       request.variant = :partial
+    end
+  end
+
+  def current_user
+    return nil unless session[:user]
+
+    email = session[:user][:email]
+
+    @current_user ||= User.where(email: email).first
+  end
+
+  def set_favourite_stacks
+    if current_user
+      @favourite_stacks = FavouriteStack.where(user_id: current_user.id).order(position: :desc, created_at: :desc).includes(:stack).map(&:stack)
+    else
+      @favourite_stacks = []
     end
   end
 end
