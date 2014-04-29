@@ -16,40 +16,17 @@
     <header class="section-header">
       <h2><%= @commits.empty? ? 'No' : @commits.size %> Undeployed Commits</h2>
     </header>
-    <%- if @commits.empty? -%>
-      <p><%= emoji_tag(:walrus) %> is happy. Good job!</p>
-    <%- else -%>
-      <ul class="commit-lst">
-        <%= render partial: "commits/commit", collection: @commits %>
-      </ul>
-    <%- end -%>
+    <ul class="commit-lst">
+      <%= render partial: "commits/commit", collection: @commits %>
+    </ul>
   </section>
 
   <section>
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="commit-lst">
-      <% @deploys.each do |deploy| %>
-        <li>
-          <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
-            <i><%= deploy.status %></i>
-            <%= github_avatar deploy.user, size: 20 %>
-          </div>
-          <div class="event">
-            <span class="event-meta">
-              <a href="#" class="user main-user disabled"><%= deploy.user_name %></a>
-              deployed <%= time_ago_in_words(deploy.created_at) %> ago
-            </span>
-            <span class="event-title">
-              <a href="<%= stack_deploy_path(@stack, deploy) %>">
-                <%= deploy.until_commit.message %>
-              </a>
-              <span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span>
-            </span>
-          </div>
-        </li>
-      <% end %>
+    <ul class="deploy-lst">
+      <%= render partial: "deploys/deploy", collection: @deploys %>
     </ul>
   </section>
 </div>

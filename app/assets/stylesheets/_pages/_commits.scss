@@ -1,9 +1,11 @@
-.commit-lst {
+.commit-lst, .deploy-lst {
   list-style-type: none;
   margin: 0; padding: 0;
 }
 
-  .commit-lst li {
+.commit-lst:empty:before { /* "toto"; */ }
+
+  .commit-lst li, .deploy-lst li {
     padding: .75rem 0;
     border-bottom: 1px solid rgba(#000, .05);
     @include clearfix;
