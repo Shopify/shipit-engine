@@ -11,8 +11,8 @@
   </div>
 </header>
 
-<div class="wrapper">
-  <section data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
+<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
+  <section>
     <header class="section-header">
       <h2><%= @commits.empty? ? 'No' : @commits.size %> Undeployed Commits</h2>
     </header>
