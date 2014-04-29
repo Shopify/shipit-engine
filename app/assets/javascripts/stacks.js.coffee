@@ -1,26 +1,50 @@
 jQuery ->
-  loadCommit = (message, callback) ->
+  loadFragment = (message, callback) ->
     json = JSON.parse(message.data)
     jQuery.ajax json.url,
       complete: (response) ->
         callback(json.id, response.responseText)
 
-  onUpdate = (message) ->
-    loadCommit message, (id, commit) ->
+  removeCommit = (id) ->
+    $("#commit-#{id}").remove()
+
+  onCommitUpdate = (message) ->
+    loadFragment message, (id, commit) ->
       $("#commit-#{id}").html(commit)
 
-  onCreate = (message) ->
-    loadCommit message, (id, commit) ->
+  onCommitCreate = (message) ->
+    loadFragment message, (id, commit) ->
       $("ul.commit-lst").prepend(commit)
 
-  onRemove = (message) ->
+  onCommitRemove = (message) ->
     json = JSON.parse(message.data)
-    $("#commit-#{json.id}").remove()
+    removeCommit id
+
+  onDeploySuccess = (message) ->
+    json = JSON.parse(message.data)
+    for id in json.commit_ids
+      removeCommit id
+
+  onDeployUpdate = (message) ->
+    loadFragment message, (id, deploy) ->
+      $("#deploy-#{id}").html(deploy)
+
+  onDeployCreate = (message) ->
+    loadFragment message, (id, deploy) ->
+      $("ul.deploy-lst").prepend(deploy)
 
   $('[data-event-stream]').each ->
     url = $(this).data('event-stream')
     source = new EventSource(url)
-    source.addEventListener 'commit.update', onUpdate
-    source.addEventListener 'commit.create', onCreate
-    source.addEventListener 'commit.remove', onRemove
+    source.addEventListener 'commit.update', onCommitUpdate
+    source.addEventListener 'commit.create', onCommitCreate
+    source.addEventListener 'commit.remove', onCommitRemove
+
+    source.addEventListener 'deploy.success', onDeploySuccess
+    source.addEventListener 'deploy.success', onDeployUpdate
+
+    source.addEventListener 'deploy.failed', onDeployUpdate
+    source.addEventListener 'deploy.error', onDeployUpdate
+    source.addEventListener 'deploy.running', onDeployUpdate
+    source.addEventListener 'deploy.pending', onDeployCreate
 
