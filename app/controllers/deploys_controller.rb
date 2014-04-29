@@ -14,6 +14,12 @@ class DeploysController < ApplicationController
     respond_with(@deploy)
   end
 
+  def partial
+    @stack = Stack.from_param(params[:stack_id])
+    @deploy = @stack.deploys.find(params[:id])
+    render partial: "deploys/deploy", locals: { deploy: @deploy }
+  end
+
   def create
     @deploy = @stack.trigger_deploy(@until_commit, user_info)
     respond_with(@deploy.stack, @deploy)
