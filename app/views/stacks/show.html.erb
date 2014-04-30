@@ -34,7 +34,7 @@
         <li>
           <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
             <i><%= deploy.status %></i>
-            <img src="" alt="">
+            <%= github_avatar deploy.user, size: 20 %>
           </div>
           <div class="event">
             <span class="event-meta">
