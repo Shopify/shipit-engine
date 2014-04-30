@@ -13,7 +13,7 @@ class StacksController < ApplicationController
     @stack = Stack.from_param(params[:id])
     return unless stale?(last_modified: [menu.updated_at, @stack.updated_at].max)
 
-    @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit).limit(10)
+    @deploys = @stack.deploys.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
     @commits = @stack.commits.reachable.preload(:author).order(id: :desc)
     if deployed_commit = @stack.last_deployed_commit
       @commits = @commits.where('id > ?', deployed_commit.id)

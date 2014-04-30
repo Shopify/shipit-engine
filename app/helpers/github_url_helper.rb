@@ -7,7 +7,7 @@ module GithubUrlHelper
 
   def github_avatar(user, options={})
     uri = URI.parse(user.avatar_url) rescue DEFAULT_AVATAR.dup
-    attributes = {alt: user.name}
+    attributes = {alt: user.try(:name)}
     if options[:size]
       uri.query ||= ''
       uri.query += "&s=#{options[:size]}"
