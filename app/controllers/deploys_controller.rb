@@ -3,6 +3,7 @@ class DeploysController < ApplicationController
 
   before_action :load_stack
   before_action :load_deploy, only: :show
+  before_action :load_variant, only: :show
   before_action :load_until_commit, only: :create
 
   def new
@@ -11,13 +12,11 @@ class DeploysController < ApplicationController
   end
 
   def show
-    respond_with(@deploy)
-  end
-
-  def partial
-    @stack = Stack.from_param(params[:stack_id])
-    @deploy = @stack.deploys.find(params[:id])
-    render partial: "deploys/deploy", locals: { deploy: @deploy }
+    respond_with(@deploy) do |format|
+      format.html.partial {
+        render partial: "deploys/deploy", locals: { deploy: @deploy }
+      }
+    end
   end
 
   def create
@@ -34,6 +33,10 @@ class DeploysController < ApplicationController
       user_name: session_user[:name] || 'Anonymous',
       user: session_user[:email] && User.find_by_email(session[:email])
     }
+  end
+
+  def load_variant
+    request.variant = :partial if params[:partial]
   end
 
   def load_deploy
