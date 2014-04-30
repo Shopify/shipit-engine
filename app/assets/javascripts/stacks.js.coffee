@@ -2,6 +2,9 @@ jQuery ->
   loadFragment = (message, callback) ->
     json = JSON.parse(message.data)
     jQuery.ajax json.url,
+      accepts:
+        html: "text/partial+html"
+      dataType: "html"
       complete: (response) ->
         callback(json.id, response.responseText)
 
