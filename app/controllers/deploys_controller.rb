@@ -26,7 +26,7 @@ class DeploysController < ApplicationController
     {
       user_email: session_user[:email] || 'anonymous@example.com',
       user_name: session_user[:name] || 'Anonymous',
-      user: session_user[:email] && User.find_by_email(session[:email])
+      user: session_user[:email] && User.find_by_email(session_user[:email])
     }
   end
 
