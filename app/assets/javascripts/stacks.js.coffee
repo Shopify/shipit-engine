@@ -1,12 +1,8 @@
 jQuery ->
   loadFragment = (message, callback) ->
     json = JSON.parse(message.data)
-    jQuery.ajax json.url,
-      accepts:
-        html: "text/partial+html"
-      dataType: "html"
-      complete: (response) ->
-        callback(json.id, response.responseText)
+    success = (response) -> callback(json.id, response.responseText)
+    jQuery.get(json.url, success, 'text/partial+html')
 
   removeCommit = (id) ->
     $("#commit-#{id}").remove()
