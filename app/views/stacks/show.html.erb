@@ -14,19 +14,15 @@
 <div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
   <section>
     <header class="section-header">
-      <h2><%= @commits.empty? ? 'No' : @commits.size %> Undeployed Commits</h2>
+      <h2>Undeployed Commits</h2>
     </header>
-    <ul class="commit-lst">
-      <%= render partial: "commits/commit", collection: @commits %>
-    </ul>
+    <ul class="commit-lst"><%= render partial: "commits/commit", collection: @commits %></ul>
   </section>
 
   <section>
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="deploy-lst">
-      <%= render partial: "deploys/deploy", collection: @deploys %>
-    </ul>
+    <ul class="deploy-lst"><%= render partial: "deploys/deploy", collection: @deploys %></ul>
   </section>
 </div>

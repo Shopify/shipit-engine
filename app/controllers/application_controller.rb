@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate
+  before_action :set_variant
 
   def authenticate
     auth_settings = Settings.authentication
@@ -22,4 +23,11 @@ class ApplicationController < ActionController::Base
     @menu ||= Menu.new
   end
   helper_method :menu
+
+  def set_variant
+    if request.negotiate_mime('text/partial+html')
+      request.format = :html
+      request.variant = :partial
+    end
+  end
 end

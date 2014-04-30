@@ -84,7 +84,7 @@ class Deploy < ActiveRecord::Base
   end
 
   def broadcast_deploy
-    url = Rails.application.routes.url_helpers.partial_stack_deploy_path(stack, self)
+    url = Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
     payload = { id: id, url: url, commit_ids: commits.map(&:id) }.to_json
     event = Pubsubstub::Event.new(payload, name: "deploy.#{status}")
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)

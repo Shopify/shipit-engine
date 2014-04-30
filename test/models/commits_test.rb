@@ -62,7 +62,7 @@ class CommitsTest < ActiveSupport::TestCase
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
-      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}" && data['url'].match(/#{@stack.to_param}\/commits\/\d+/)
+      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}" && data['url'].match(%r{#{@stack.to_param}/commits/\d+})
     end
   end
 end

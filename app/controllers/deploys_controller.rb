@@ -11,13 +11,11 @@ class DeploysController < ApplicationController
   end
 
   def show
-    respond_with(@deploy)
-  end
-
-  def partial
-    @stack = Stack.from_param(params[:stack_id])
-    @deploy = @stack.deploys.find(params[:id])
-    render partial: "deploys/deploy", locals: { deploy: @deploy }
+    respond_with(@deploy) do |format|
+      format.html.partial {
+        render partial: "deploys/deploy", locals: { deploy: @deploy }
+      }
+    end
   end
 
   def create

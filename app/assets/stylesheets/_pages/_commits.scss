@@ -3,7 +3,9 @@
   margin: 0; padding: 0;
 }
 
-.commit-lst:empty:before { /* "toto"; */ }
+.commit-lst:empty:before {
+  content: "No undeployed commit, Walrus is happy.";
+}
 
   .commit-lst li, .deploy-lst li {
     padding: .75rem 0;
