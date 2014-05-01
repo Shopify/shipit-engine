@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20140501202601) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "avatar_url"
+    t.datetime "favourites_updated_at"
   end
 
   create_table "webhooks", force: true do |t|
