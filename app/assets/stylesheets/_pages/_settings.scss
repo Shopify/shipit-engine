@@ -3,4 +3,11 @@
     width: 800px;
     height: 200px;
   }
+  label {
+  	display: inline-block;
+  	width: 120px;
+  }
+  input[type=text] {
+  	width: 240px;
+  }
 }
