@@ -1,0 +1,18 @@
+<li class="deploy" id="deploy-<%= deploy.id %>">
+  <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
+    <i><%= deploy.status %></i>
+    <img src="" alt="">
+  </div>
+  <div class="event">
+    <span class="event-meta">
+      <a href="#" class="user main-user disabled"><%= deploy.user_name %></a>
+      deployed <%= time_ago_in_words(deploy.created_at) %> ago
+    </span>
+    <span class="event-title">
+      <a href="<%= stack_deploy_path(@stack, deploy) %>">
+        <%= deploy.until_commit.message %>
+      </a>
+      <span class="event-number">(<%= deploy.since_commit.short_sha %> - <%= deploy.until_commit.short_sha %>)</span>
+    </span>
+  </div>
+</li>

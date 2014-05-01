@@ -11,7 +11,11 @@ class DeploysController < ApplicationController
   end
 
   def show
-    respond_with(@deploy)
+    respond_with(@deploy) do |format|
+      format.html.partial {
+        render partial: "deploys/deploy", locals: { deploy: @deploy }
+      }
+    end
   end
 
   def create

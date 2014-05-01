@@ -32,7 +32,10 @@ class Deploy < ActiveRecord::Base
     state :error
 
     after_transition from: :running, do: :rollup_chunks
+    after_transition :broadcast_deploy
   end
+
+  after_create :broadcast_deploy
 
   def finished?
     !pending? && !running?
@@ -78,5 +81,12 @@ class Deploy < ActiveRecord::Base
 
   def last_successful_deploy
     stack.deploys.where(:status => "success").last
+  end
+
+  def broadcast_deploy
+    url = Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
+    payload = { id: id, url: url, commit_ids: commits.map(&:id) }.to_json
+    event = Pubsubstub::Event.new(payload, name: "deploy.#{status}")
+    Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
   end
 end

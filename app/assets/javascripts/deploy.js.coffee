@@ -16,7 +16,7 @@ class ChunkPoller
     @$window = $(window)
 
   poll: =>
-    jQuery.get(@pollUrl, @update)
+    jQuery.get(@pollUrl, @update, 'text/partial+html')
 
   update: (response) =>
     @pollUrl = response.url

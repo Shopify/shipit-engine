@@ -13,6 +13,14 @@ class DeploysControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test ":show renders a partial" do
+    @request.headers['Accept'] = "text/partial+html"
+    get :show, stack_id: @stack.to_param, id: @deploy.id
+
+    assert_select "html", false
+    assert_select "li.deploy"
+  end
+
   test ":create persists a new deploy" do
     assert_difference '@stack.deploys.count', +1 do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}

@@ -76,4 +76,57 @@ class DeploysTest < ActiveSupport::TestCase
     Resque.expects(:enqueue).with(ChunkRollupJob, deploy_id: deploy.id)
     deploy.run! && deploy.complete!
   end
+
+  test "transitioning to success causes an event to be broadcasted" do
+    deploy = deploys(:shipit_pending)
+
+    expect_event(deploy, "success")
+    deploy.status = 'running'
+    deploy.complete!
+  end
+
+  test "transitioning to failed causes an event to be broadcasted" do
+    deploy = deploys(:shipit_pending)
+
+    expect_event(deploy, "failed")
+    deploy.status = 'running'
+    deploy.failure!
+  end
+
+  test "transitioning to error causes an event to be broadcasted" do
+    deploy = deploys(:shipit_pending)
+
+    expect_event(deploy, "error")
+    deploy.status = 'running'
+    deploy.error!
+  end
+
+  test "transitioning to running causes an event to be broadcasted" do
+    deploy = deploys(:shipit_pending)
+
+    expect_event(deploy, "running")
+    deploy.status = 'pending'
+    deploy.run!
+  end
+
+  test "creating a deploy causes an event to be broadcasted" do
+    shipit = stacks(:shipit)
+    deploy = shipit.deploys.build(
+      since_commit: shipit.commits.first,
+      until_commit: shipit.commits.last
+    )
+
+    expect_event(deploy, "pending")
+    deploy.save!
+  end
+
+  def expect_event(deploy, status)
+    Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
+      data = JSON.load(event.data)
+      channel == "stack.#{deploy.stack.id}" &&
+      event.name == "deploy.#{status}" &&
+      data['url'].match(%r{#{deploy.stack.to_param}/deploys/#{deploy.id || "\\d"}}) &&
+      data['commit_ids'] == deploy.commits.pluck(:id)
+    end
+  end
 end
