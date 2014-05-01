@@ -27,8 +27,4 @@ class ActiveSupport::TestCase
       last_name:  '',
     }
   end
-
-  def logout
-    session.delete(:user)
-  end
 end
