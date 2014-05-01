@@ -1,21 +1,37 @@
-<h1>Create a stack</h1>
+<header class="repo-header">
+  <div class="wrapper">
+    <div class="repo-name">
+      <h1>Create a stack</h1>
+    </div>
+  </div>
+</header>
 
-<%= form_for @stack do |f| %>
-  <div>
-    <%= f.label :repo_owner %>
-    <%= f.text_field :repo_owner %>
-  </div>
-  <div>
-    <%= f.label :repo_name %>
-    <%= f.text_field :repo_name %>
-  </div>
-  <div>
-    <%= f.label :branch %>
-    <%= f.text_field :branch %>
-  </div>
-  <div>
-    <%= f.label :environment %>
-    <%= f.text_field :environment %>
-  </div>
-  <%= f.submit %>
-<% end %>
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Information</h2>
+    </header>
+    <div class="setting-section">
+      <%= form_for @stack do |f| %>
+        <p>
+          <%= f.label :repo_owner %>
+          <%= f.text_field :repo_owner, value: 'Shopify' %>
+        </p>
+        <p>
+          <%= f.label :repo_name %>
+          <%= f.text_field :repo_name %>
+        </p>
+        <p>
+          <%= f.label :branch %>
+          <%= f.text_field :branch %>
+        </p>
+        <p>
+          <%= f.label :environment %>
+          <%= f.text_field :environment %>
+        </p>
+        <p><%= f.submit class: 'btn' %></p>
+      <% end %>
+    </div>
+
+  </section>
+</div>
