@@ -1,0 +1,25 @@
+<% favourites_menu.owners.each do |owner| %>
+  <div class="stack">
+    <h4 class="stack-owner"><%= owner.name %></h4>
+    <ul>
+      <% owner.repos.each do |repo| %>
+        <li class="nav-item">
+          <span class="platform"><%= repo.name %></span>
+          <ul class="server-lst">
+            <% repo.stacks.each do |stack| %>
+              <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
+                <%= image_tag 'star.png', border: 0, class: 'star' %>
+
+                <%= link_to stack_favourite_path(stack.id), class: 'remove-favourite', method: :delete, 'data-confirm' => 'Are you sure you want to unfavourite this?' do %>
+                  <%= image_tag 'x_remove.png', border: 0, class: 'remove' %>
+                <% end %>
+
+                <%= link_to stack.environment, stack_path(stack) %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,6 +1,11 @@
 class Menu
-  class Repo
+  attr_reader :stacks
 
+  def initialize(stacks)
+    @stacks = stacks
+  end
+
+  class Repo
     attr_reader :name, :stacks
 
     def initialize(name, stacks)
@@ -11,7 +16,6 @@ class Menu
   end
 
   class Owner
-
     attr_reader :name
 
     def initialize(name, stacks)
@@ -22,11 +26,10 @@ class Menu
     def repos
       @repos ||= @stacks.group_by(&:repo_name).map { |name, stacks| Repo.new(name, stacks) }
     end
-
   end
 
   def owners
-    @owners = Stack.all.to_a.group_by(&:repo_owner).map { |name, stacks| Owner.new(name, stacks) }
+    @owners = @stacks.to_a.group_by(&:repo_owner).map { |name, stacks| Owner.new(name, stacks) }
   end
 
   def updated_at
@@ -36,5 +39,4 @@ class Menu
   def self.bump_cache
     Rails.cache.write('menu:updated_at', Time.now)
   end
-
 end

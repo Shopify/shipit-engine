@@ -12,35 +12,8 @@
       <div class="inner-sidebar">
         <a href="/" class="logo"><i></i><span>Ship it</span></a>
         <nav class="nav">
-          <%= render 'layouts/favourite_stacks' if @favourite_stacks.any? %>
-
-          <% menu.owners.each do |owner| %>
-            <div class="stack">
-              <% if menu.owners.count > 1 %>
-                <h4 class="stack-owner"><%= owner.name %></h4>
-              <% end %>
-              <ul>
-                <% owner.repos.each do |repo| %>
-                  <li class="nav-item">
-                    <span class="platform"><%= repo.name %></span>
-                    <ul class="server-lst">
-                      <% repo.stacks.each do |stack| %>
-                        <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
-                          <% unless @favourite_stacks.include?(stack) -%>
-                            <%= link_to stack_favourite_path(stack.id), class: 'add-favourite', method: :post do %>
-                              <%= image_tag 'star.png', border: 0 %>
-                            <% end %>
-                          <% end -%>
-
-                          <%= link_to stack.environment, stack_path(stack) %>
-                        </li>
-                      <% end %>
-                    </ul>
-                  </li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
+          <%= render 'layouts/favourites_menu' if favourites_menu.stacks.any? -%>
+          <%= render 'layouts/menu' %>
         </nav>
       </div>
     </header>
