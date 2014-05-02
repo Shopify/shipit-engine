@@ -1,5 +1,7 @@
 class ChunkPoller
   INTERVAL = 1000
+  MAX_RETRIES = 15
+
   @init: ->
     $('code').each ->
       $(this).html(ChunkPoller::colorize(this.innerHTML))
@@ -16,9 +18,16 @@ class ChunkPoller
     @$window = $(window)
 
   poll: =>
-    jQuery.get(@pollUrl, @update)
+    jQuery.ajax @pollUrl,
+      success: @update
+      error: @error
+
+  error: (response) =>
+    (@retries ||= 0)
+    @start() if 600 > response.status > 500 && (@retries += 1) < MAX_RETRIES
 
   update: (response) =>
+    @retries = 0
     @pollUrl = response.url
     @restoreBrowserScroll =>
       @appendChunks(response.chunks)
