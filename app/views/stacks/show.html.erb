@@ -3,6 +3,9 @@
     <div class="repo-name">
       <p>Repo owned by <%= @stack.repo_owner %></p>
       <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+      <% if @stack.deploy_url.present? %>
+        <p class="deploy-url">Deployed to: <%= link_to @stack.deploy_url, @stack.deploy_url, :target => '_blank' %></p>
+      <% end %>
     </div>
     <div class="header-accessory">
       <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>

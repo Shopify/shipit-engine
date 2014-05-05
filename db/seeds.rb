@@ -11,7 +11,8 @@ end
 stacks = 3.times.map do
   Stack.create!(
     repo_name:  Faker::Internet.domain_name.parameterize,
-    repo_owner: Faker::Company.name.parameterize
+    repo_owner: Faker::Company.name.parameterize,
+    deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/"
   )
 end
 
