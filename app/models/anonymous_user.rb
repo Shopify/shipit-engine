@@ -9,4 +9,8 @@ class AnonymousUser
 
   def id
   end
+
+  def logged_in?
+    false
+  end
 end

@@ -11,7 +11,9 @@
     <header class="sidebar">
       <div class="inner-sidebar">
         <a href="/" class="logo"><i></i><span>Ship it</span></a>
-        <%= link_to "Authenticate with Github", authentication_path(:github, origin: request.original_url) %>
+        <% if can_login? %>
+          <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
+        <% end %>
         <nav class="nav">
           <% menu.owners.each do |owner| %>
             <div class="stack">

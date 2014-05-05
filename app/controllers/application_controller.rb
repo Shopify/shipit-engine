@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
       AnonymousUser.new
     end
   end
+  helper_method :current_user
 
   def menu
     @menu ||= Menu.new
