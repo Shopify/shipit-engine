@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     @current_user ||= begin
       User.find(session[:user_id])
     rescue ActiveRecord::RecordNotFound
-      NullUser.new
+      AnonymousUser.new
     end
   end
 

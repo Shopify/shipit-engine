@@ -15,7 +15,7 @@ class Stack < ActiveRecord::Base
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
 
-  def trigger_deploy(until_commit, user = NullUser.new)
+  def trigger_deploy(until_commit, user)
     since_commit = last_deployed_commit
 
     deploy = deploys.create(

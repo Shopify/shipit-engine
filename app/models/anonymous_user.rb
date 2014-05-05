@@ -1,4 +1,4 @@
-class NullUser
+class AnonymousUser
   def email
     'anonymous@example.com'
   end
