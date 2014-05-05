@@ -9,6 +9,7 @@ Shipit::Application.routes.draw do
   scope '/auth/:provider', as: :authentication, controller: :authentication do
     get '/', action: :mock
     post :callback
+    get :callback
     get :logout
   end
 

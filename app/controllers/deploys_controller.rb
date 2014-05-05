@@ -19,20 +19,11 @@ class DeploysController < ApplicationController
   end
 
   def create
-    @deploy = @stack.trigger_deploy(@until_commit, user_info)
+    @deploy = @stack.trigger_deploy(@until_commit, current_user)
     respond_with(@deploy.stack, @deploy)
   end
 
   private
-
-  def user_info
-    session_user = session[:user] || {}
-    {
-      user_email: session_user[:email] || 'anonymous@example.com',
-      user_name: session_user[:name] || 'Anonymous',
-      user: session_user[:email] && User.find_by_email(session[:email])
-    }
-  end
 
   def load_deploy
     @deploy = @stack.deploys.find(params[:id])
