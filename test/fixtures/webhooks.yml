@@ -1,0 +1,9 @@
+shipit_push:
+  stack: shipit
+  event: push
+  secret: 1234
+
+shipit_status:
+  stack: shipit
+  event: status
+  secret: 1234
