@@ -12,7 +12,7 @@ class GithubSetupWebhooksJob < BackgroundJob
 
   private
   def create_webhook(stack, event, url)
-    secret = SecureRandom.hex(8)
+    secret = SecureRandom.hex
     github_hook = Shipit.github_api.create_hook(stack.github_repo_name, 'web', {
       url: url,
       content_type: 'json',

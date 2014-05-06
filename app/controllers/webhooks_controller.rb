@@ -31,6 +31,7 @@ class WebhooksController < ActionController::Base
   private
 
   def verify_signature
+    request.body.rewind
     head(422) unless webhook.verify_signature(request.headers['X-Hub-Signature'], request.body.read)
   end
 
