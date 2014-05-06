@@ -4,6 +4,7 @@ class GithubTeardownWebhooksJobTest < ActiveSupport::TestCase
   setup do
     @job = GithubTeardownWebhooksJob.new
     @stack = stacks(:shipit)
+    @stack.webhooks.destroy_all
   end
 
   test "#perform destroys stack webhooks" do

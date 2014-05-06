@@ -1,5 +1,5 @@
 class WebhooksController < ActionController::Base
-  before_filter :check_if_ping
+  before_filter :check_if_ping, :verify_signature
 
   respond_to :json
 
@@ -30,8 +30,21 @@ class WebhooksController < ActionController::Base
 
   private
 
+  def verify_signature
+    request.body.rewind
+    head(422) unless webhook.verify_signature(request.headers['X-Hub-Signature'], request.body.read)
+  end
+
   def check_if_ping
-    return head :ok if request.headers['HTTP_X_GITHUB_EVENT'] == 'ping'
+    head :ok if event == 'ping'
+  end
+
+  def webhook
+    @webhook ||= stack.webhooks.where(event: event).first!
+  end
+
+  def event
+    request.headers['X-Github-Event']
   end
 
   def stack

@@ -12,12 +12,14 @@ class GithubSetupWebhooksJob < BackgroundJob
 
   private
   def create_webhook(stack, event, url)
+    secret = SecureRandom.hex
     github_hook = Shipit.github_api.create_hook(stack.github_repo_name, 'web', {
       url: url,
-      content_type: 'json'
+      content_type: 'json',
+      secret: secret,
     }, { events: [event], active: true })
 
-    webhook = stack.webhooks.create!(github_id: github_hook.id, event: event)
+    webhook = stack.webhooks.create!(github_id: github_hook.id, event: event, secret: secret)
   end
 
   def missing_webhooks(stack)
