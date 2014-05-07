@@ -50,6 +50,10 @@ class Stack < ActiveRecord::Base
     "git@github.com:#{repo_owner}/#{repo_name}.git"
   end
 
+  def repo_owner_url
+    "https://github.com/#{repo_owner}"
+  end
+
   def base_path
     File.join(STACKS_PATH, repo_owner, repo_name, environment)
   end

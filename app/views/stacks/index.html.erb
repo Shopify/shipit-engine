@@ -3,17 +3,19 @@
     <header class="section-header">
       <h1>Stacks</h1>
     </header>
-    <ul>
+    <ul class="stack-lst">
       <% @stacks.each do |stack| %>
         <li>
-          <a href="<%= stack_path stack %>">
-            <%= stack.repo_owner %>/<%= stack.repo_name %> <small><%= stack.environment %></small>
-          </a>
+          <p>Repo owned by <%= link_to stack.repo_owner, stack.repo_owner_url %></p>
+          <%= link_to stack_path(stack), class: 'commits-path' do %>
+            <%= stack.repo_name %>
+            <small><%= stack.environment.capitalize %></small>
+          <% end %>
         </li>
       <% end %>
     </ul>
 
-    <a href="<%= new_stack_path %>">Add a stack</a>
+    <%= link_to 'Add a stack', new_stack_path, class: 'btn' %>
   </section>
 
 </div>
