@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 20140506140931) do
   add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id"
   add_index "deploys", ["user_id"], name: "index_deploys_on_user_id"
 
+  create_table "favourite_stacks", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "stack_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "favourite_stacks", ["stack_id"], name: "index_favourite_stacks_on_stack_id"
+  add_index "favourite_stacks", ["user_id"], name: "index_favourite_stacks_on_user_id"
+
   create_table "output_chunks", force: true do |t|
     t.integer  "deploy_id"
     t.text     "text",       limit: 1048576
@@ -80,6 +90,7 @@ ActiveRecord::Schema.define(version: 20140506140931) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "avatar_url"
+    t.datetime "favourites_updated_at"
   end
 
   create_table "webhooks", force: true do |t|

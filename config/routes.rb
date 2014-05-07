@@ -17,6 +17,8 @@ Shipit::Application.routes.draw do
     resource :webhooks, only: [] do
       post :push, :state
     end
+
+    resource :favourite, only: [:create, :destroy], controller: 'favourite_stacks'
   end
 
   # Humans

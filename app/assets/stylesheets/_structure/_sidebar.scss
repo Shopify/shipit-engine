@@ -65,6 +65,10 @@
         .server {
           position: relative;
 
+          img.star {
+            float: right;
+          }
+
           a {
             color: rgba(#fff, .6);
             font-size: .875rem;
@@ -74,6 +78,21 @@
               &:hover, &:focus {
                 color: #fff;
               }
+
+            &.add-favourite, &.remove-favourite {
+              display: none;
+              float: right;
+              text-decoration: none;
+            }
+          }
+
+          &:hover img.star {
+            display: none;
+          }
+
+          &:hover a.add-favourite, &:hover a.remove-favourite {
+            display: block;
+            line-height: 10px;
           }
 
           &.selected a {

@@ -4,3 +4,8 @@ shipit:
   environment: "production"
   branch: master
 
+shopify_core:
+  repo_owner: "shopify"
+  repo_name: "shopify"
+  environment: "production"
+  branch: "master"

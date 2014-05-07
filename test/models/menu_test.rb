@@ -1,32 +1,37 @@
 require 'test_helper'
 
 class MenuTest < ActiveSupport::TestCase
-
   setup do
-    @menu = Menu.new
-    @owner = @menu.owners.first
-    @repo = @owner.repos.first
+    @stacks = [stacks(:shipit)]
+    @menu   = Menu.new(@stacks)
+    @owner  = @menu.owners.first
+    @repo   = @owner.repos.first
+
     Rails.cache.clear
+  end
+
+  test '#stacks returns the stacks' do
+    assert_equal @stacks, @menu.stacks
   end
 
   test '#owners' do
     assert_equal 1, @menu.owners.count
   end
 
-  test 'Owner have a name' do
+  test 'Owner has a name' do
     assert_equal 'shopify', @owner.name
   end
 
-  test 'Owner have a repos' do
-    assert_equal 1, @owner.repos.count
+  test 'Owner has repos' do
+    assert_equal [@repo], @owner.repos
   end
 
-  test 'Repo have a name' do
+  test 'Repo has a name' do
     assert_equal 'shipit2', @repo.name
   end
 
-  test 'Repo have stacks' do
-    assert_equal 1, @repo.stacks.count
+  test 'Repo has stacks' do
+    assert_equal @stacks, @repo.stacks
   end
 
   test '#updated_at is last updated_at stack by default' do
@@ -39,5 +44,4 @@ class MenuTest < ActiveSupport::TestCase
     Menu.bump_cache
     assert_equal now, @menu.updated_at
   end
-
 end
