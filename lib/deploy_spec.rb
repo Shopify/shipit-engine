@@ -5,8 +5,9 @@ class DeploySpec
   DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug)
   Error = Class.new(StandardError)
 
-  def initialize(app_dir)
+  def initialize(app_dir, env)
     @app_dir = Pathname(app_dir)
+    @env = env
   end
 
   def config(*keys)
@@ -15,15 +16,15 @@ class DeploySpec
   end
 
   def machine_env
-    config('machine', 'environment') || {}
+    config(@env, 'machine', 'environment') || config('machine', 'environment') || {}
   end
 
   def dependencies_steps
-    config('dependencies', 'override') || discover_bundler || []
+    config(@env, 'dependencies', 'override') || config('dependencies', 'override') || discover_bundler || []
   end
 
   def deploy_steps
-    config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
+    config(@env, 'deploy', 'override') || config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
   end
 
   def discover_bundler

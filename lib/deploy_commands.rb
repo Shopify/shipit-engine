@@ -38,7 +38,7 @@ class DeployCommands < Commands
   end
 
   def deploy_spec
-    @deploy_spec ||= DeploySpec.new(@deploy.working_directory)
+    @deploy_spec ||= DeploySpec.new(@deploy.working_directory, @stack.environment)
   end
 
   def stack_commands
