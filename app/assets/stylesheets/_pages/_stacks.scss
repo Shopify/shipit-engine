@@ -19,10 +19,7 @@ $green: #38B68D;
         &:hover { background-color: darken(#F9F9F9, 5%); }
       }
       &:last-child { margin-bottom: 30px }
-      &:hover {
-        background-color: darken(white, 5%);
-        font-weight: 600;
-      }
+      &:hover { background-color: darken(white, 5%); }
   }
 
     .commits-path {
@@ -38,6 +35,6 @@ $green: #38B68D;
 
 .btn {
   background-color: $green;
-  font-size: 24px;
+  font-size: 20px;
   &:hover { background-color: darken($green, 5%); }
 }
