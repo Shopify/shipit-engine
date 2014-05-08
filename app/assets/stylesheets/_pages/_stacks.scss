@@ -1,12 +1,10 @@
-$dark-gray: #777;
-$blue: #248AF2;
-$dark-blue: darken($blue, 5%);
-$light-blue: rgba($blue, 0.4);
+$dark-blue: darken(#248AF2, 10%);
+$light-blue: rgba(#248AF2, 0.4);
 $green: #38B68D;
 
 .stack-lst {
   list-style-type: none;
-  margin: 0; padding: 5px;
+  margin: 0; padding: 10px 10px;
 }
 
 .stack-lst:empty:before {
@@ -14,35 +12,32 @@ $green: #38B68D;
 }
 
   .stack-lst li {
-    color: $dark-gray;
-    padding: .75rem 0;
+    padding: .35rem 0;
     @include clearfix;
-      &:last-child {
-        margin-bottom: 30px;
+      &:nth-child(odd) {
+        background-color: #F9F9F9;
+        &:hover { background-color: darken(#F9F9F9, 5%); }
+      }
+      &:last-child { margin-bottom: 30px }
+      &:hover {
+        background-color: darken(white, 5%);
+        font-weight: 600;
       }
   }
 
-    p { font-size: 12px; }
-
     .commits-path {
-      font-size: 24px;
-      &:hover {
-        color: $dark-blue;
-      }
+      font-size: 18px;
+      &:hover { color: $dark-blue; }
 
       small {
-        font-size: 24px;
+        font-size: 18px;
         color: $light-blue;
-        &:hover {
-          color: darken($light-blue, 5%);
-        }
+        &:hover { color: darken($light-blue, 10%); }
       }
     }
 
 .btn {
   background-color: $green;
   font-size: 24px;
-  &:hover {
-    background-color: darken($green, 5%);
-  }
+  &:hover { background-color: darken($green, 5%); }
 }

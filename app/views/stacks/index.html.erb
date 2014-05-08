@@ -6,7 +6,6 @@
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
         <li>
-          <p>Repo owned by <%= link_to stack.repo_owner, stack.repo_owner_url %></p>
           <%= link_to stack_path(stack), class: 'commits-path' do %>
             <%= stack.repo_name %>
             <small><%= stack.environment.capitalize %></small>
