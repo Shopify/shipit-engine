@@ -3,28 +3,12 @@ require 'test_helper'
 class DeploySpecTest < ActiveSupport::TestCase
 
   setup do
-    @spec = DeploySpec.new('.', 'staging')
+    @spec = DeploySpec.new('.', 'env')
     @spec.stubs(:load_config).returns({})
   end
 
   test '#dependencies_steps returns `dependencies.override` if present' do
     @spec.stubs(:load_config).returns('dependencies' => {'override' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.dependencies_steps
-  end
-
-  test '#dependencies_steps returns env-specific `dependencies.override` if present' do
-    @spec.stubs(:load_config).returns({
-      'dependencies' => {'override' => %w(foo bar baz)},
-      'staging' => {'dependencies' => {'override' => %w(bee baa boo)}}
-    })
-    assert_equal %w(bee baa boo), @spec.dependencies_steps
-  end
-
-  test '#dependencies_steps returns `dependencies.override` if env-specific is not present' do
-    @spec.stubs(:load_config).returns({
-      'dependencies' => {'override' => %w(foo bar baz)},
-      'nonexistant' => {'dependencies' => {'override' => %w(bee baa boo)}}
-    })
     assert_equal %w(foo bar baz), @spec.dependencies_steps
   end
 
@@ -64,22 +48,6 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal %w(foo bar baz), @spec.deploy_steps
   end
 
-  test '#deploy_steps returns env-specific `deploy.override` if present' do
-    @spec.stubs(:load_config).returns({
-      'deploy' => {'override' => %w(foo bar baz)},
-      'staging' => {'deploy' => {'override' => %w(bee baa boo)}}
-    })
-    assert_equal %w(bee baa boo), @spec.deploy_steps
-  end
-
-  test '#deploy_steps returns `deploy.override` if env-specific is not present' do
-    @spec.stubs(:load_config).returns({
-      'deploy' => {'override' => %w(foo bar baz)},
-      'nonexistant' => {'deploy' => {'override' => %w(bee baa boo)}}
-    })
-    assert_equal %w(foo bar baz), @spec.deploy_steps
-  end
-
   test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
     @spec.expects(:capistrano?).returns(true)
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
@@ -97,20 +65,26 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
   end
 
-  test '#machine_env return an env-specific environment hash if present' do
-    @spec.stubs(:load_config).returns({
-      'machine' => {'environment' => {'GLOBAL' => '1'}},
-      'staging' => {'machine' => {'environment' => {'GLOBAL' => '2'}}}
-    })
-    assert_equal({'GLOBAL' => '2'}, @spec.machine_env)
+  test '#load_config can grab the env-specific shipit.yml file' do
+    config = {}
+    config.expects(:exist?).returns(true)
+    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+    spec = DeploySpec.new('.', 'staging')
+    spec.expects(:shipit_env_yml).twice.returns(config)
+    assert_equal %w(foo bar baz), spec.dependencies_steps
   end
 
-  test '#machine_env return a global environment hash env-specific hash is not if present' do
-    @spec.stubs(:load_config).returns({
-      'machine' => {'environment' => {'GLOBAL' => '1'}},
-      'nonexistant' => {'machine' => {'environment' => {'GLOBAL' => '2'}}}
-    })
-    assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
-  end
+  test '#load_config grabs the global shipit.yml file if there is no env-specific file' do
+    not_config = {}
+    not_config.expects(:exist?).returns(false)
 
+    config = {}
+    config.expects(:exist?).returns(true)
+    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+
+    spec = DeploySpec.new('.', 'staging')
+    spec.expects(:shipit_env_yml).once.returns(not_config)
+    spec.expects(:shipit_yml).twice.returns(config)
+    assert_equal %w(foo bar baz), spec.dependencies_steps
+  end
 end

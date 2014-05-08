@@ -16,15 +16,15 @@ class DeploySpec
   end
 
   def machine_env
-    config(@env, 'machine', 'environment') || config('machine', 'environment') || {}
+    config('machine', 'environment') || {}
   end
 
   def dependencies_steps
-    config(@env, 'dependencies', 'override') || config('dependencies', 'override') || discover_bundler || []
+    config('dependencies', 'override') || discover_bundler || []
   end
 
   def deploy_steps
-    config(@env, 'deploy', 'override') || config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
+    config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
   end
 
   def discover_bundler
@@ -58,11 +58,17 @@ class DeploySpec
   end
 
   def load_config
-    if shipit_yml.exist?
+    if shipit_env_yml.exist?
+      SafeYAML.load(shipit_env_yml.read)
+    elsif shipit_yml.exist?
       SafeYAML.load(shipit_yml.read)
     else
       {}
     end
+  end
+
+  def shipit_env_yml
+    @app_dir.join("shipit.#{@env}.yml")
   end
 
   def shipit_yml
