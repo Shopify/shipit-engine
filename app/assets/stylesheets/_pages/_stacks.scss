@@ -1,0 +1,40 @@
+$dark-blue: darken(#248AF2, 10%);
+$light-blue: rgba(#248AF2, 0.4);
+$green: #38B68D;
+
+.stack-lst {
+  list-style-type: none;
+  margin: 0; padding: 10px 10px;
+}
+
+.stack-lst:empty:before {
+  content: "No environment to deploy to, Shipit Squirrel is displeased";
+}
+
+  .stack-lst li {
+    padding: .35rem 0;
+    @include clearfix;
+      &:nth-child(odd) {
+        background-color: #F9F9F9;
+        &:hover { background-color: darken(#F9F9F9, 5%); }
+      }
+      &:last-child { margin-bottom: 30px }
+      &:hover { background-color: darken(white, 5%); }
+  }
+
+    .commits-path {
+      font-size: 18px;
+      &:hover { color: $dark-blue; }
+
+      small {
+        font-size: 18px;
+        color: $light-blue;
+        &:hover { color: darken($light-blue, 10%); }
+      }
+    }
+
+.btn {
+  background-color: $green;
+  font-size: 20px;
+  &:hover { background-color: darken($green, 5%); }
+}
