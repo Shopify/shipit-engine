@@ -50,7 +50,7 @@ class StacksTest < ActiveSupport::TestCase
 
   test "#trigger_deploy persist a new deploy" do
     last_commit = commits(:third)
-    deploy = @stack.trigger_deploy(last_commit)
+    deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert deploy.persisted?
     assert_equal last_commit.id, deploy.until_commit_id
     assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
@@ -58,13 +58,13 @@ class StacksTest < ActiveSupport::TestCase
 
   test "#trigger_deploy deploy until the commit passed in argument" do
     last_commit = commits(:third)
-    deploy = @stack.trigger_deploy(last_commit)
+    deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert_equal last_commit.id, deploy.until_commit_id
   end
 
   test "#trigger_deploy since_commit is the last completed deploy until_commit if there is a previous deploy" do
     last_commit = commits(:third)
-    deploy = @stack.trigger_deploy(last_commit)
+    deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
   end
 
@@ -72,7 +72,7 @@ class StacksTest < ActiveSupport::TestCase
     @stack.deploys.destroy_all
 
     last_commit = commits(:third)
-    deploy = @stack.trigger_deploy(last_commit)
+    deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert_equal @stack.commits.first.id, deploy.since_commit_id
   end
 
@@ -81,7 +81,7 @@ class StacksTest < ActiveSupport::TestCase
     Deploy.any_instance.expects(:enqueue).once
 
     last_commit = commits(:third)
-    deploy = @stack.trigger_deploy(last_commit)
+    deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert_instance_of Deploy, deploy
   end
 

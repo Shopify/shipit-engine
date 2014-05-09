@@ -23,4 +23,8 @@ class User < ActiveRecord::Base
     )
   end
 
+  def logged_in?
+    true
+  end
+
 end

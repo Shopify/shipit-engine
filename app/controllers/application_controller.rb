@@ -4,9 +4,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate
     auth_settings = Settings.authentication
-    return if session[:user] || auth_settings.blank?
+    return if session[:authenticated] || auth_settings.blank?
     session[:return_to] = request.fullpath
-    redirect_to authentication_path(provider: auth_settings.provider)
+    redirect_to authentication_path(provider: auth_settings.provider, origin: request.fullpath)
   rescue Settingslogic::MissingSetting
   end
 
@@ -18,6 +18,15 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   protected
+
+  def current_user
+    @current_user ||= begin
+      User.find(session[:user_id])
+    rescue ActiveRecord::RecordNotFound
+      AnonymousUser.new
+    end
+  end
+  helper_method :current_user
 
   def menu
     @menu ||= Menu.new

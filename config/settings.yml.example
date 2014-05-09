@@ -7,6 +7,9 @@ development:
   #   options:
   #     domain: 'example.com'
 
+  github: false
+
 test:
   host: https://example.com
   authentication:
+  github:

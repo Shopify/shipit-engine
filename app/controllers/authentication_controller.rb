@@ -2,30 +2,33 @@ class AuthenticationController < ApplicationController
   skip_before_filter :authenticate, :verify_authenticity_token, :only => :callback
 
   def callback
-    return_url = session[:return_to] || root_path
+    return_url = params[:origin] || root_path
+    auth = request.env['omniauth.auth']
 
-    unless Settings.authentication.present?
+    return render 'failed', layout: false if auth.blank?
+
+    sign_in_github(auth)
+
+    if Settings.authentication.blank?
       return redirect_to return_url
     end
 
-    auth = request.env['omniauth.auth']
-    if auth.blank?
-      return render 'failed', layout: false
-    end
+    session[:authenticated] = true if auth['provider'] == Settings.authentication.provider
 
-    reset_session
-
-    session[:user] = {
-      email: auth['info']['email'],
-      name: auth['info']['name'],
-      first_name: auth['info']['first_name'],
-      last_name: auth['info']['last_name']
-    }
     redirect_to return_url
   end
 
   def logout
     reset_session
     redirect_to root_path
+  end
+
+  private
+
+  def sign_in_github(auth)
+    return unless auth[:provider] == 'github'
+
+    user = Shipit.github_api.user(auth[:info][:nickname])
+    session[:user_id] = User.find_or_create_from_github(user).id
   end
 end

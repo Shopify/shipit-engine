@@ -11,6 +11,10 @@ module ApplicationHelper
     @stack == stack
   end
 
+  def can_login?
+    Settings.github && !current_user.logged_in?
+  end
+
   def emoji_tag(emoji)
     image_tag("emoji/#{emoji}.png", height: 20, width: 20, alt: ":#{emoji}:")
   end

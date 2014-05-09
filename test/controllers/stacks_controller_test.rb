@@ -36,8 +36,7 @@ class StacksControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_redirected_to "/auth/google_apps"
-    assert_equal '/', session[:return_to]
+    assert_redirected_to "/auth/google_apps?origin=%2F"
   end
 
   test "#index when authentication is disabled does not redirect" do
@@ -50,7 +49,7 @@ class StacksControllerTest < ActionController::TestCase
   test "#index when authentication is successful does not redirect" do
     Settings.stubs(:authentication).returns(stub(provider: 'google_apps'))
 
-    get :index, {}, { user: { email: 'bob@toto.com' } }
+    get :index, {}, { authenticated: true }
 
     assert_response :ok
   end

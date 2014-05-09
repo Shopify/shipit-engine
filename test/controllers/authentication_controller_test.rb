@@ -11,22 +11,23 @@ class AuthenticationControllerTest < ActionController::TestCase
     assert_select ".sidebar", false
   end
 
-  test ":callback redirects to session[:redirect_to] if auth is ok" do
+  test ":callback redirects to params[:origin] if auth is ok" do
     Settings.stubs(:authentication).returns(stub(provider: :google_apps))
     @request.env['omniauth.auth'] = { 'info' => { 'email' => 'bob@toto.com' } }
     stack = stacks(:shipit)
 
-    post :callback, { provider: :google_apps }, { return_to: stack_path(stack) }
+    post :callback, provider: :google_apps, origin: stack_path(stack)
     assert_redirected_to stack_path(stack)
   end
 
-  test ":callback redirects to session[:redirect_to] if auth isn't required" do
-    Settings.stubs(:authentication).returns(false)
-    @request.env['omniauth.auth'] = nil
+  test ":callback can sign in to github" do
+    Settings.stubs(:authentication).returns(stub(provider: :google_apps))
 
-    stack = stacks(:shipit)
+    @request.env['omniauth.auth'] = { provider: 'github', info:  { nickname: 'shipit' } }
+    github_user = mock('Sawyer User')
+    Shipit.github_api.stubs(:user).returns(github_user)
+    User.expects(:find_or_create_from_github).with(github_user).returns(stub(id: 44))
 
-    post :callback, { provider: :google_apps }, { return_to: stack_path(stack) }
-    assert_redirected_to stack_path(stack)
+    get :callback, provider: 'github'
   end
 end
