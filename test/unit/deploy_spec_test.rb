@@ -3,7 +3,7 @@ require 'test_helper'
 class DeploySpecTest < ActiveSupport::TestCase
 
   setup do
-    @spec = DeploySpec.new('.')
+    @spec = DeploySpec.new('.', 'env')
     @spec.stubs(:load_config).returns({})
   end
 
@@ -65,4 +65,26 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
   end
 
+  test '#load_config can grab the env-specific shipit.yml file' do
+    config = {}
+    config.expects(:exist?).returns(true)
+    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+    spec = DeploySpec.new('.', 'staging')
+    spec.expects(:shipit_env_yml).twice.returns(config)
+    assert_equal %w(foo bar baz), spec.dependencies_steps
+  end
+
+  test '#load_config grabs the global shipit.yml file if there is no env-specific file' do
+    not_config = {}
+    not_config.expects(:exist?).returns(false)
+
+    config = {}
+    config.expects(:exist?).returns(true)
+    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+
+    spec = DeploySpec.new('.', 'staging')
+    spec.expects(:shipit_env_yml).once.returns(not_config)
+    spec.expects(:shipit_yml).twice.returns(config)
+    assert_equal %w(foo bar baz), spec.dependencies_steps
+  end
 end

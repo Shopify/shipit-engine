@@ -5,8 +5,9 @@ class DeploySpec
   DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug)
   Error = Class.new(StandardError)
 
-  def initialize(app_dir)
+  def initialize(app_dir, env)
     @app_dir = Pathname(app_dir)
+    @env = env
   end
 
   def config(*keys)
@@ -57,11 +58,17 @@ class DeploySpec
   end
 
   def load_config
-    if shipit_yml.exist?
+    if shipit_env_yml.exist?
+      SafeYAML.load(shipit_env_yml.read)
+    elsif shipit_yml.exist?
       SafeYAML.load(shipit_yml.read)
     else
       {}
     end
+  end
+
+  def shipit_env_yml
+    @app_dir.join("shipit.#{@env}.yml")
   end
 
   def shipit_yml
