@@ -6,10 +6,10 @@ class Stack < ActiveRecord::Base
 
   has_many :commits
   has_many :deploys
-  has_many :webhooks
+  has_many :remote_webhooks
 
-  after_create :setup_webhooks, :sync_github
-  after_destroy :teardown_webhooks, :clear_local_files
+  after_create :setup_remote_webhooks, :sync_github
+  after_destroy :teardown_remote_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
@@ -97,11 +97,11 @@ class Stack < ActiveRecord::Base
 
   private
 
-  def setup_webhooks
+  def setup_remote_webhooks
     Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)
   end
 
-  def teardown_webhooks
+  def teardown_remote_webhooks
     Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
   end
 

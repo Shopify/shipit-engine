@@ -15,7 +15,7 @@ Shipit::Application.routes.draw do
 
   # Robots
   resources :stacks, only: [:new, :create, :index] do
-    resource :webhooks, only: [] do
+    resource :remote_webhooks, only: [] do
       post :push, :state
     end
   end
@@ -25,7 +25,7 @@ Shipit::Application.routes.draw do
     member do
       get :settings
       post :sync_commits
-      post :sync_webhooks
+      post :sync_remote_webhooks
       post :clear_git_cache
     end
 
