@@ -10,4 +10,7 @@ module StacksHelper
     link_to(message + identifier, url, target: '_blank')
   end
 
+  def time_ago_tag(time)
+    content_tag(:abbr, "on #{l(time, format: :short)}", class: :timeago, title: time.iso8601)
+  end
 end
