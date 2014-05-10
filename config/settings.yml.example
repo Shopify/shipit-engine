@@ -13,3 +13,5 @@ test:
   host: https://example.com
   authentication:
   github:
+    client_id: 1d
+    client_secret: s3cr37
