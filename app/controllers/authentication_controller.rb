@@ -7,13 +7,17 @@ class AuthenticationController < ApplicationController
 
     return render 'failed', layout: false if auth.blank?
 
-    sign_in_github(auth)
+    user_id = sign_in_github(auth) || session[:user_id]
 
     if Settings.authentication.blank?
       return redirect_to return_url
     end
 
-    session[:authenticated] = true if auth['provider'] == Settings.authentication.provider
+    authenticated = session[:authenticated]
+    authenticated = true if auth['provider'] == Settings.authentication.provider
+    reset_session
+    session[:authenticated] = authenticated
+    session[:user_id] = user_id
 
     redirect_to return_url
   end
@@ -29,6 +33,6 @@ class AuthenticationController < ApplicationController
     return unless auth[:provider] == 'github'
 
     user = Shipit.github_api.user(auth[:info][:nickname])
-    session[:user_id] = User.find_or_create_from_github(user).id
+    User.find_or_create_from_github(user).id
   end
 end
