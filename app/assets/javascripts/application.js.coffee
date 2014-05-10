@@ -13,11 +13,13 @@
 #= require jquery
 #= require jquery_ujs
 #= require jquery.hc-sticky
+#= require jquery.timeago
 #= require ansi_up
 #= require_tree .
 
 jQuery ->
-  $('.inner-sidebar').hcSticky();
+  $('.inner-sidebar').hcSticky()
+  jQuery("abbr.timeago").timeago()
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()

@@ -10,7 +10,7 @@
       <a href="<%= github_user_url(commit.author.login) %>" class="user main-user">
         <%= commit.author.name %>
       </a>
-      merged <%= time_ago_in_words(commit.committed_at) %> ago
+      merged <abbr class="timeago" title="<%= commit.committed_at.iso8601 %>">on <%= l commit.committed_at, format: :short %></abbr>
     </span>
     <span class="event-title">
       <%= render_commit_message commit %>

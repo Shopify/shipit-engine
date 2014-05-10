@@ -6,7 +6,7 @@
   <div class="event">
     <span class="event-meta">
       <a href="#" class="user main-user disabled"><%= deploy.user_name %></a>
-      deployed <%= time_ago_in_words(deploy.created_at) %> ago
+      deployed <abbr class="timeago" title="<%= deploy.created_at.iso8601 %>">on <%= l deploy.created_at, format: :short %></abbr>
     </span>
     <span class="event-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">
