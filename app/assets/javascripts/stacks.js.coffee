@@ -1,6 +1,11 @@
 jQuery ($) ->
   MAX_RETRY = 4
 
+  $timeago = (html) ->
+    $element = $(html)
+    $element.find('time[data-time-ago]').timeago()
+    $element
+
   retry = (message, callback, retryCount=0) ->
     retryCount += 1
     return if retryCount >= MAX_RETRY
@@ -16,11 +21,11 @@ jQuery ($) ->
 
   onCommitUpdate = (message) ->
     loadFragment message, (id, commit) ->
-      $("#commit-#{id}").html(commit)
+      $("#commit-#{id}").html($timeago(commit))
 
   onCommitCreate = (message) ->
     loadFragment message, (id, commit) ->
-      $("ul.commit-lst").prepend(commit)
+      $("ul.commit-lst").prepend($timeago(commit))
 
   onCommitRemove = (message) ->
     json = JSON.parse(message.data)
@@ -33,11 +38,11 @@ jQuery ($) ->
 
   onDeployUpdate = (message) ->
     loadFragment message, (id, deploy) ->
-      $("#deploy-#{id}").html(deploy)
+      $("#deploy-#{id}").html($timeago(deploy))
 
   onDeployCreate = (message) ->
     loadFragment message, (id, deploy) ->
-      $("ul.deploy-lst").prepend(deploy)
+      $("ul.deploy-lst").prepend($timeago(deploy))
 
   $('[data-event-stream]').each ->
     url = $(this).data('event-stream')
