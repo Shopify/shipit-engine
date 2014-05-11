@@ -12,6 +12,7 @@
 #
 #= require jquery
 #= require jquery_ujs
+#= require rails-timeago
 #= require jquery.hc-sticky
 #= require ansi_up
 #= require_tree .

@@ -148,6 +148,9 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.1.1)
       sprockets-rails (~> 2.0)
+    rails-timeago (2.10.1)
+      actionpack (>= 3.1)
+      activesupport (>= 3.1)
     railties (4.1.1)
       actionpack (= 4.1.1)
       activesupport (= 4.1.1)
@@ -257,6 +260,7 @@ DEPENDENCIES
   pry
   pubsubstub (~> 0.0.6)
   rails (= 4.1.1)
+  rails-timeago (~> 2.0)
   redis-rails
   resque (= 1.26.pre.0)
   resque-workers-lock
