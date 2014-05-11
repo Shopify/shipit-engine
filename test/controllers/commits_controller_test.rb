@@ -1,6 +1,11 @@
 require 'test_helper'
 
 class CommitsControllerTest < ActionController::TestCase
+
+  setup do
+    session[:user_id] = users(:walrus).id
+  end
+
   test "#show renders the commit partial" do
     commit = commits(:first)
 

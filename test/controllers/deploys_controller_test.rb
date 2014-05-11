@@ -6,6 +6,7 @@ class DeploysControllerTest < ActionController::TestCase
     @stack = stacks(:shipit)
     @deploy = deploys(:shipit)
     @commit = commits(:second)
+    session[:user_id] = users(:walrus).id
   end
 
   test ":show is success" do

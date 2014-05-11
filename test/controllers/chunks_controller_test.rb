@@ -6,6 +6,7 @@ class ChunksControllerTest < ActionController::TestCase
     @stack = stacks(:shipit)
     @deploy = deploys(:shipit)
     @last_chunk = @deploy.chunks.last
+    session[:user_id] = users(:walrus).id
   end
 
   test ":index is success" do

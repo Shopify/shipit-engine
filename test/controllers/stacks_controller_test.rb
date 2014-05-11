@@ -3,6 +3,20 @@ require 'test_helper'
 class StacksControllerTest < ActionController::TestCase
   setup do
     @stack = stacks(:shipit)
+    session[:user_id] = users(:walrus).id
+  end
+
+  test "GitHub authentication is mandatory" do
+    session[:user_id] = nil
+    get :index
+    assert_redirected_to authentication_path(:github, origin: root_url)
+  end
+
+  test "mandatory GitHub authentication can be disabled" do
+    session[:user_id] = nil
+    Settings.github.stubs(:optional).returns(true)
+    get :index
+    assert_response :ok
   end
 
   test "#show is success" do

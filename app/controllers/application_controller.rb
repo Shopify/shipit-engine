@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_filter :authenticate
-  before_action :set_variant
+  before_action :authenticate, :force_github_authentication, :set_variant
 
   def authenticate
     auth_settings = Settings.authentication
@@ -18,14 +17,23 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def current_user
-    @current_user ||= begin
-      User.find(session[:user_id])
-    rescue ActiveRecord::RecordNotFound
-      AnonymousUser.new
+  def force_github_authentication
+    if !Settings.github.try(:optional) && !current_user.logged_in?
+      redirect_to authentication_path(:github, origin: request.original_url)
+      return false
     end
   end
+
+  def current_user
+    @current_user ||= find_current_user || AnonymousUser.new
+  end
   helper_method :current_user
+
+  def find_current_user
+    return unless session[:user_id].present?
+    User.find(session[:user_id])
+  rescue ActiveRecord::RecordNotFound
+  end
 
   def menu
     @menu ||= Menu.new

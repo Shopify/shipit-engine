@@ -1,5 +1,5 @@
 class AuthenticationController < ApplicationController
-  skip_before_filter :authenticate, :verify_authenticity_token, :only => :callback
+  skip_before_filter :authenticate, :force_github_authentication, :verify_authenticity_token, :only => :callback
 
   def callback
     return_url = params[:origin] || root_path
