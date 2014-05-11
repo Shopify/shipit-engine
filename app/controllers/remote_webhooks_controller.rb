@@ -1,4 +1,4 @@
-class WebhooksController < ActionController::Base
+class RemoteWebhooksController < ActionController::Base
   before_filter :check_if_ping, :verify_signature
 
   respond_to :json
@@ -32,15 +32,15 @@ class WebhooksController < ActionController::Base
 
   def verify_signature
     request.body.rewind
-    head(422) unless webhook.verify_signature(request.headers['X-Hub-Signature'], request.body.read)
+    head(422) unless remote_webhook.verify_signature(request.headers['X-Hub-Signature'], request.body.read)
   end
 
   def check_if_ping
     head :ok if event == 'ping'
   end
 
-  def webhook
-    @webhook ||= stack.webhooks.where(event: event).first!
+  def remote_webhook
+    @remote_webhook ||= stack.remote_webhooks.where(event: event).first!
   end
 
   def event

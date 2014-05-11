@@ -1,4 +1,4 @@
-class Webhook < ActiveRecord::Base
+class RemoteWebhook < ActiveRecord::Base
   include SecureCompare
   belongs_to :stack
 
