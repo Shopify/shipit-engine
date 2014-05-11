@@ -20,6 +20,7 @@ gem 'safe_yaml', require: 'safe_yaml/load'
 gem 'airbrake', '~> 3.1.5'
 gem 'pubsubstub', '~> 0.0.6'
 gem 'securecompare', '~>1.0'
+gem 'rails-timeago', '~> 2.0'
 
 group :production do
   gem 'mysql2'
