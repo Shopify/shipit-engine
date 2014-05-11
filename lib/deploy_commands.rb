@@ -17,7 +17,6 @@ class DeployCommands < Commands
 
   def deploy(commit)
     normalized_name = ActiveSupport::Inflector.transliterate(@deploy.user_name)
-
     env = self.env.merge(
       'SHA' => commit.sha,
       'ENVIRONMENT' => @stack.environment,
