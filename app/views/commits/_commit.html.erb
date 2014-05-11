@@ -10,7 +10,7 @@
       <a href="<%= github_user_url(commit.author.login) %>" class="user main-user">
         <%= commit.author.name %>
       </a>
-      merged <%= timeago_tag(commit.committed_at, force: true) %> ago
+      merged <%= timeago_tag(commit.committed_at, force: true) %>
     </span>
     <span class="event-title">
       <%= render_commit_message commit %>
