@@ -1,8 +1,15 @@
 jQuery ($) ->
-  loadFragment = (message, callback) ->
+  MAX_RETRY = 4
+
+  retry = (message, callback, retryCount=0) ->
+    retryCount += 1
+    return if retryCount >= MAX_RETRY
+    setTimeout((-> loadFragment(message, callback, retryCount)), 1000 * retryCount)
+
+  loadFragment = (message, callback, retryCount=0) ->
     json = JSON.parse(message.data)
     success = (response) -> callback(json.id, response)
-    jQuery.ajax(json.url, accepts: 'text/partial+html').success(success)
+    jQuery.ajax(json.url, accepts: 'text/partial+html').success(success).error(-> retry(message, callback, retryCount))
 
   removeCommit = (id) ->
     $("#commit-#{id}").remove()
