@@ -5,7 +5,7 @@
   </div>
   <div class="event">
     <span class="event-meta">
-      <a href="#" class="user main-user disabled"><%= deploy.user_name %></a>
+      <a href="#" class="user main-user disabled"><%= deploy.author.name %></a>
       deployed <%= timeago_tag(deploy.created_at, force: true) %>
     </span>
     <span class="event-title">

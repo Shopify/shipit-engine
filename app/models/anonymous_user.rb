@@ -3,6 +3,10 @@ class AnonymousUser
     'anonymous@example.com'
   end
 
+  def login
+    'anonymous'
+  end
+
   def name
     'Anonymous'
   end

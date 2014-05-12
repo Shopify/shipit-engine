@@ -16,12 +16,12 @@ class DeployCommands < Commands
   end
 
   def deploy(commit)
-    normalized_name = ActiveSupport::Inflector.transliterate(@deploy.user_name)
+    normalized_name = ActiveSupport::Inflector.transliterate(@deploy.author.name)
     env = self.env.merge(
       'SHA' => commit.sha,
       'ENVIRONMENT' => @stack.environment,
-      'USER' => "#{normalized_name} via Shipit 2",
-      'EMAIL' => @deploy.user_email,
+      'USER' => "#{@deploy.author.login} (#{normalized_name}) via Shipit 2",
+      'EMAIL' => @deploy.author.email,
     ).merge(deploy_spec.machine_env)
     deploy_spec.deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
