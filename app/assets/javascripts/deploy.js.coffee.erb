@@ -18,6 +18,7 @@ class ChunkPoller
     @$body = $body
     @$window = $(window)
     @initialScroll = true
+    @deployShortSha = $body.find('#deploy-short-sha')[0]?.innerHTML
 
   poll: =>
     jQuery.ajax @pollUrl,
@@ -34,7 +35,9 @@ class ChunkPoller
     @restoreBrowserScroll =>
       @appendChunks(response.chunks)
     @updateDeployStatus(response.deploy)
-    unless @deployIsFinished(response.deploy)
+    if @deployIsFinished(response.deploy)
+      @notifyFinishedDeploy(response.deploy)
+    else
       @start()
 
   restoreBrowserScroll: (callback) ->
@@ -65,6 +68,35 @@ class ChunkPoller
 
   deployIsFinished: (deploy) ->
     @$status.attr('data-deploy-status') not in ['pending', 'running']
+
+  notifyFinishedDeploy: (deploy) ->
+    return unless $.notifyCheck() == 0
+    $.notify(
+      @notificationURL(deploy),
+      @notificationTitle(deploy),
+      @notificationMessage(deploy)
+    )
+
+  notificationURL: (deploy) ->
+    if deploy.status == 'success'
+      '<%= image_path "deploy_success.jpg" %>'
+    else if deploy.status == 'failed'
+      '<%= image_path "deploy_failed.jpg" %>'
+    else if deploy.status == 'error'
+      '<%= image_path "deploy_error.jpg" %>'
+
+  notificationTitle: (deploy) ->
+    @$status.attr('data-repo-full-name')
+
+  notificationMessage: (deploy) ->
+    if deploy.status == 'success'
+      'Your deploy of ' + @deployShortSha + ' was successful!'
+    else if deploy.status == 'failed'
+      'Your deploy of ' + @deployShortSha + ' failed.'
+    else if deploy.status == 'error'
+      'Error while deploying ' + @deployShortSha + ' .'
+    else
+      'Your deploy of ' + @deployShortSha + ' ended with status: '+ deploy.status
 
   appendChunks: (chunks) ->
     return unless chunks.length

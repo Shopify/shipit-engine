@@ -14,6 +14,7 @@
 #= require jquery_ujs
 #= require rails-timeago
 #= require jquery.hc-sticky
+#= require jquery-notify
 #= require ansi_up
 #= require_tree .
 
@@ -22,3 +23,11 @@ jQuery ->
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
+
+$(window).load ->
+  if $.notifyCheck() == 1
+    btn = $('<br /><button class="btn">Manage desktop <br />notifications</button>').css('backgroudColor', '#00CCFF').css('fontSize', '14px')
+    btn.click () =>
+      $.notifyRequest()
+      btn.hide()
+    $('.logo').after(btn)
