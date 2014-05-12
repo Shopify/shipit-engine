@@ -19,8 +19,6 @@ class Stack < ActiveRecord::Base
     since_commit = last_deployed_commit
 
     deploy = deploys.create(
-      user_email: user.email,
-      user_name: user.name,
       user_id: user.id,
       until_commit: until_commit,
       since_commit: since_commit

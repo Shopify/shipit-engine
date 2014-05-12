@@ -37,6 +37,10 @@ class Deploy < ActiveRecord::Base
 
   after_create :broadcast_deploy
 
+  def author
+    user || AnonymousUser.new
+  end
+
   def finished?
     !pending? && !running?
   end
