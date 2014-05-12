@@ -33,9 +33,18 @@
 				return window.external.msIsSiteMode() ? 0 : 1;
 			}
 			else if("webkitNotifications" in window){
-				return window.webkitNotifications.checkPermission() === 0 ? 0 : 1;
+				chk = window.webkitNotifications.checkPermission();
+				if (chk === 2) {
+					// user has denied notifications: act as not suppored
+					return -1;
+				}
+				return chk;
 			}
 			else if("Notification" in window) {
+				if (Notification.permission === 'denied') {
+					// user has denied notifications: act as not suppored
+					return -1;
+				}
 				return (Notification.permission === 'granted') ? 0 : 1;
 			}
 			else {
