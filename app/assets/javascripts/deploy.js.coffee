@@ -17,7 +17,7 @@ class ChunkPoller
     @$code = $body.find('code')
     @$body = $body
     @$window = $(window)
-    @initial_scroll = true
+    @initialScroll = true
 
   poll: =>
     jQuery.ajax @pollUrl,
@@ -44,8 +44,8 @@ class ChunkPoller
       @$window.scrollTop(@codeBottomPosition() - @$window.height() + 50)
 
   isScrolledToBottom: ->
-    if @initial_scroll
-      @initial_scroll = (window.scrollY == 0)
+    if @initialScroll
+      @initialScroll = (window.scrollY == 0)
       true
     else
       @viewportBottomPosition() >= @codeBottomPosition() - STICKY_SCROLL_TOLERENCE and \
