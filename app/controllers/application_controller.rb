@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def force_github_authentication
+    return unless Settings.github
     if !Settings.github.try(:optional) && !current_user.logged_in?
       redirect_to authentication_path(:github, origin: request.original_url)
       return false
