@@ -21,7 +21,7 @@ jQuery ($) ->
 
   onCommitUpdate = (message) ->
     loadFragment message, (id, commit) ->
-      $("#commit-#{id}").html($timeago(commit))
+      $("#commit-#{id}").replaceWith($timeago(commit))
 
   onCommitCreate = (message) ->
     loadFragment message, (id, commit) ->
