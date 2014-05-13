@@ -2,20 +2,21 @@
   background-color: #2e343a;
   width: 300px;
   box-sizing: border-box;
-  padding: 0 3.75rem 0 5rem;
   @include flex(0 0 300px);
   @include order(-1);
 }
 
 .inner-sidebar {
-  padding-top: 5rem;
   padding-bottom: 5rem;
 }
 
   .logo {
-    border-bottom: 1px solid rgba(#fff, .1);
     display: block;
-    padding-bottom: 2.25rem;
+    background-color: #2679cd;
+    padding: 2.85rem 3.75rem 2.25rem 5rem;
+    -webkit-transition: background-color .3s ease-in-out;
+
+      &:hover { background-color: darken(#2679cd, 5%); }
 
       span {
         background: asset-data-url('logo.svg') top right no-repeat;
@@ -46,6 +47,9 @@
   + .stack { border-top: 1px solid rgba(#fff, .1); }
 }
 
+nav {
+  padding: 1rem 3.75rem 0 5rem;
+}
   nav ul {
     list-style-type: none;
     margin: 0; padding: 0;

@@ -10,12 +10,12 @@
   }
 
   section {
-    margin-top: 2rem;
+    margin-top: 3rem;
   }
 
   .section-header {
     border-bottom: 1px solid rgba(0,0,0,.05);
-    padding-bottom: .5rem;
+    padding-bottom: 1rem;
     @include clearfix;
 
       h2 {
@@ -41,19 +41,24 @@
   }
 
 pre {
-  background-color: rgba(#2E343A, .9);
+  background-color: #272c30;
   overflow: scroll;
   color: #fff;
   padding: 1.5rem;
   line-height: 1.5em;
   margin-top: -.25rem;
+  margin-bottom: -3rem;
   font-family: "Source Code Pro";
   white-space: pre-wrap;
 }
 
+.number {
+  font-family: Menlo, monospace;
+}
+
 .repo-header {
   background-color: $blue;
-  padding: 1rem 0;
+  padding: 1.75rem 0;
   @include clearfix;
     &.success { background-color: $green; }
     &.failure { background-color: $bright-red; }
@@ -64,28 +69,32 @@ pre {
 
   .repo-name {
     float: left;
+      h1 a {
+        text-transform: capitalize;
+      }
   }
 
   p {
-    font-size: .875rem;
-    color: rgba(#000, .3);
+    font-size: .75rem;
+    color: rgba(#000, .4);
     margin: 0;
-    &:hover { color: rgba(#000, .4); }
   }
 
   h1 {
     color: #fff;
-    font-size: 2rem;
+    font-size: 1.75rem;
+    margin-bottom: 0;
     small { color: rgba(#000, .4); font-size: 1em; font-weight: 200; text-transform: capitalize; }
   }
 
   .header-accessory {
     float: right;
-    margin-top: 1rem;
+    margin-top: 1.35rem;
     a + a { margin-left: .5rem; }
   }
 
-  p.deploy-url {
-    color: white;
+  .deploy-url {
+    color: rgba(#fff, .5);
+    font-size: .75em;
   }
 }

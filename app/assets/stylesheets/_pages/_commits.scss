@@ -1,6 +1,11 @@
 .commit-lst, .deploy-lst {
   list-style-type: none;
   margin: 0; padding: 0;
+    .btn {
+      font-size: .875rem;
+      font-weight: normal;
+      padding: .7em 1em .8em;
+    }
 }
 
 .commit-lst:empty:before {
@@ -15,8 +20,8 @@
   }
 
   .status {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 50%;
     position: relative;
     float: left;
@@ -44,8 +49,8 @@
       text-indent: -99999999px;
       overflow: hidden;
       display: block;
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 2.25rem;
+      height: 2.25rem;
       display: block;
     }
 
@@ -82,7 +87,7 @@
     }
 
     .event-title {
-      font-size: 1.125rem;
+      font-size: 1rem;
         a { color: inherit; }
     }
 

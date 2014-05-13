@@ -1,0 +1,36 @@
+.deploy-banner {
+  background-color: #f0f4f7;
+  overflow: hidden;
+  padding: .95rem 0 1.125rem;
+  position: relative;
+
+    &.pending:before {
+      content: "";
+      background-color: $blue;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      position: absolute;
+      z-index: 9999;
+      -webkit-animation: loading-slide 1.2s linear infinite;
+    }
+
+    .deploy-status {
+      color: #8f9498;
+    }
+    .short-sha {
+      background: #e6eaed;
+      font-family: Menlo, monospace;
+      color: #9cacbb;
+      border-radius: 4px;
+      font-size: .875rem;
+      padding: .25em .45em;
+    }
+}
+
+@include keyframes(loading-slide) {
+  0% { width: 0%; left: 0%; }
+  30% {  left: 0%; }
+  100% { width: 50%; left: 100%; }
+}

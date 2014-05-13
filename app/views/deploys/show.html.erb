@@ -1,16 +1,10 @@
-<section>
-
-<div class="wrapper">
-  <header class="section-header">
-    <div class="status" data-deploy-status="<%= @deploy.status %>">
-      <i></i>
-    </div>
-    <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>
-  </header>
-
+<%= render partial: "stacks/header", locals: { stack: @stack } %>
+<div class="deploy-banner <%= @deploy.status %>" data-deploy-status="<%= @deploy.status %>">
+  <div class="wrapper">
+    <span class="deploy-status">Deploying <span class="short-sha"><%= @deploy.until_commit.short_sha %></span></span>
+  </div>
 </div>
 
 <pre>
   <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
 </pre>
-</section>

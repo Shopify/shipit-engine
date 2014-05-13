@@ -1,13 +1,17 @@
 module StacksHelper
 
+  def github_change_url(commit)
+    commit.pull_request_url || github_commit_url(commit)
+  end
+
   def render_commit_message(commit)
-    url = commit.pull_request_url || github_commit_url(commit)
     message = content_tag(:span, commit.pull_request_title || commit.message, class: 'event-message')
+    link_to(message, github_change_url(commit), target: '_blank')
+  end
 
+  def render_commit_id_link(commit)
     github_id = commit.pull_request? ? "##{commit.pull_request_id}" : commit.short_sha
-    identifier = content_tag(:span, "(#{github_id})", class: 'event-number').to_s.html_safe
-
-    link_to(message + identifier, url, target: '_blank')
+    link_to(github_id, github_change_url(commit), target: '_blank', class: 'number')
   end
 
 end
