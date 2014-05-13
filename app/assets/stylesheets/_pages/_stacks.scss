@@ -1,10 +1,6 @@
-$dark-blue: darken(#248AF2, 10%);
-$light-blue: rgba(#248AF2, 0.4);
-$green: #38B68D;
-
 .stack-lst {
   list-style-type: none;
-  margin: 0; padding: 10px 10px;
+  margin: 0; padding: 0;
 }
 
 .stack-lst:empty:before {
@@ -12,23 +8,20 @@ $green: #38B68D;
 }
 
   .stack-lst li {
-    padding: .35rem 0;
+    padding: .35rem;
     @include clearfix;
       &:nth-child(odd) {
-        background-color: #F9F9F9;
-        &:hover { background-color: darken(#F9F9F9, 5%); }
+        background-color: lighten(#EDF1F3, 3.5%);
       }
       &:last-child { margin-bottom: 30px }
-      &:hover { background-color: darken(white, 5%); }
+      &:hover { background-color: #EDF1F3; }
   }
 
     .commits-path {
       font-size: 18px;
-      &:hover { color: $dark-blue; }
 
       small {
         font-size: 18px;
-        color: $light-blue;
-        &:hover { color: darken($light-blue, 10%); }
+        color: lighten(#9cacbb, 10%);
       }
     }
