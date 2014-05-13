@@ -31,4 +31,4 @@ jQuery ->
       $.notifyRequest()
       btn.hide()
   else
-  	btn.hide()
+    btn.hide()
