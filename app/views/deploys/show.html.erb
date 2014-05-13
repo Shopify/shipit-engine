@@ -1,16 +1,18 @@
-<section>
-
-<div class="wrapper">
-  <header class="section-header">
+<header class="repo-header">
+  <div class="wrapper">
     <div class="status" data-deploy-status="<%= @deploy.status %>">
       <i></i>
     </div>
-    <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>
-  </header>
-
+    <div class="repo-name">
+      <p>Repo owned by <%= @stack.repo_owner %></p>
+      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+      <hr />
+      <p class="deploy-sha">Deploying <%= @deploy.until_commit.short_sha %></p>
+    </div>
+  </div>
+</header>
+<div class="deploy-status">
+  <pre>
+    <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
+  </pre>
 </div>
-
-<pre>
-  <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
-</pre>
-</section>

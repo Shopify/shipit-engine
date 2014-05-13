@@ -41,7 +41,7 @@
   }
 
 pre {
-  background-color: rgba(#2E343A, .9);
+  background-color: rgba(#101010, .9);
   overflow: scroll;
   color: #fff;
   padding: 1.5rem;
@@ -88,4 +88,21 @@ pre {
   p.deploy-url {
     color: white;
   }
+
+  p.deploy-sha {
+    color: white;
+    font-size: larger;
+    margin-top: 10px;
+  }
+
+  hr {
+    background-color: rgba(#000, .4);;
+    border: 0;
+    height: 1px;
+  }
+
+  .status {
+    margin-top: 1rem;
+  }
 }
+
