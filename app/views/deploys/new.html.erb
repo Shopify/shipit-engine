@@ -1,18 +1,4 @@
-<header class="repo-header">
-  <div class="wrapper">
-    <div class="repo-name">
-      <p><%= @stack.repo_owner %></p>
-      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
-      <% if @stack.deploy_url.present? %>
-        <%= link_to @stack.deploy_url, @stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
-      <% end %>
-    </div>
-    <div class="header-accessory">
-      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
-      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
-    </div>
-  </div>
-</header>
+<%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <div class="wrapper">
 
@@ -33,7 +19,7 @@
                 <%= render_commit_message commit %>
               </span>
             </div>
-            <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued" data-tooltip="View on GitHub">
+            <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued number" data-tooltip="View on GitHub">
               <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
             </a>
           </li>
