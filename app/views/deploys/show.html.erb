@@ -2,10 +2,10 @@
 
 <div class="wrapper">
   <header class="section-header">
-    <div class="status" data-deploy-status="<%= @deploy.status %>">
+    <div class="status" data-deploy-status="<%= @deploy.status %>" data-repo-full-name="<%= @deploy.stack.github_repo_name %>">
       <i></i>
     </div>
-    <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>
+    <h1>Deploying <span id="deploy-short-sha"><%= @deploy.until_commit.short_sha %></span></h1>
   </header>
 
 </div>

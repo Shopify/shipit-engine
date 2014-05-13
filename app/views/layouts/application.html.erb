@@ -14,6 +14,8 @@
         <% if can_login? %>
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
         <% end %>
+        <br />
+        <button class="btn notifications">Manage desktop <br />notifications</button>
         <nav class="nav">
           <% menu.owners.each do |owner| %>
             <div class="stack">

@@ -5,6 +5,11 @@
   padding: 0 3.75rem 0 5rem;
   @include flex(0 0 300px);
   @include order(-1);
+
+  button.notifications {
+    backgroud-color: #00CCFF;
+    font-size: 14px;
+  }
 }
 
 .inner-sidebar {

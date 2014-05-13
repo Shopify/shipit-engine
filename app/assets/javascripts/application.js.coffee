@@ -14,6 +14,7 @@
 #= require jquery_ujs
 #= require rails-timeago
 #= require jquery.hc-sticky
+#= require jquery-notify
 #= require ansi_up
 #= require_tree .
 
@@ -22,3 +23,12 @@ jQuery ->
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
+
+jQuery ->
+  btn = $('button.notifications')
+  if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
+    btn.click () =>
+      $.notifyRequest()
+      btn.hide()
+  else
+  	btn.hide()
