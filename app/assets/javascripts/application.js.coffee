@@ -18,7 +18,7 @@
 #= require_tree .
 
 jQuery ->
-  $('.inner-sidebar').hcSticky();
+  #$('.inner-sidebar').hcSticky();
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()

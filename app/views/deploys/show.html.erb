@@ -1,16 +1,27 @@
-<section>
-
-<div class="wrapper">
-  <header class="section-header">
-    <div class="status" data-deploy-status="<%= @deploy.status %>">
-      <i></i>
+<header class="repo-header">
+  <div class="wrapper">
+    <div class="repo-name">
+      <p><%= @stack.repo_owner %></p>
+      <h1><a href="<%= stack_path(@stack) %>"><%= @stack.repo_name %> <small><%= @stack.environment %></small></a></h1>
+      <% if @stack.deploy_url.present? %>
+        <%= link_to @stack.deploy_url, @stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
+      <% end %>
     </div>
-    <h1>Deploying <%= @deploy.until_commit.short_sha %></h1>
-  </header>
+    <div class="header-accessory">
+      <a href="<%= github_repo_url(@stack.repo_owner, @stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
+      <a href="<%= settings_stack_path(@stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
+    </div>
+  </div>
+</header>
 
+
+<div class="deploy-banner <%= @deploy.status %>">
+  <div class="wrapper">
+    <!-- <div class="status" data-deploy-status="<%= @deploy.status %>"><i></i></div> -->
+    <span class="deploy-status">Deploying <span class="short-sha"><%= @deploy.until_commit.short_sha %></span></span>
+  </div>
 </div>
 
 <pre>
   <code data-next-chunks-url="<%= next_chunks_url %>"><%= @deploy.chunk_output %></code>
 </pre>
-</section>

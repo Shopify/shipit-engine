@@ -32,9 +32,3 @@ $green: #38B68D;
         &:hover { color: darken($light-blue, 10%); }
       }
     }
-
-.btn {
-  background-color: $green;
-  font-size: 20px;
-  &:hover { background-color: darken($green, 5%); }
-}
