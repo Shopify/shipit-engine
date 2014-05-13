@@ -7,6 +7,15 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <div class="notice notifications">
+    <div class="message">
+      <h3>Enable desktop notifications?</h3>
+      <p>Desktop notifications are used to let you know the status of your deploy</p>
+    </div>
+    <div class="cta">
+      <button class="btn">Enable</button>
+    </div>
+  </div>
   <div class="layout">
     <header class="sidebar">
       <div class="inner-sidebar">
@@ -14,8 +23,6 @@
         <% if can_login? %>
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
         <% end %>
-        <br />
-        <button class="btn notifications">Manage desktop <br />notifications</button>
         <nav class="nav">
           <% menu.owners.each do |owner| %>
             <div class="stack">

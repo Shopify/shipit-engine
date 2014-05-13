@@ -20,10 +20,12 @@ $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
 
 jQuery ->
-  btn = $('button.notifications')
+  notificationNotice = $('.notifications')
+  btn = notificationNotice.find('button')
+
   if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
     btn.click () =>
       $.notifyRequest()
-      btn.hide()
+      notificationNotice.hide()
   else
-    btn.hide()
+    notificationNotice.hide()

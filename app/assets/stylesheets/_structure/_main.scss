@@ -98,3 +98,34 @@ pre {
     font-size: .75em;
   }
 }
+
+.notice {
+  background-color: #f0f4f7;
+  padding: 1rem 1.5rem;
+  -webkit-animation: notice-slide-in .3s .6s ease-in-out backwards;
+
+    .message {
+      float: left;
+    }
+
+    .cta {
+      float: right;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 0;
+      color: #4b5866;
+    }
+
+    p {
+      font-size: .875rem;
+      color: #828d96;
+      margin: 0;
+    }
+
+}
+
+@include keyframes(notice-slide-in) {
+  0% { margin-top: -74px; }
+}
