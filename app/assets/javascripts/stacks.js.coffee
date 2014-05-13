@@ -58,31 +58,3 @@ jQuery ($) ->
     source.addEventListener 'deploy.error', onDeployUpdate
     source.addEventListener 'deploy.running', onDeployUpdate
     source.addEventListener 'deploy.pending', onDeployCreate
-
-
-jQuery ->
-
-  $search_box = $('.stack-search input')
-  $search_fields = $('[data-search]')
-  $search_hints = $('.search-hint')
-
-  search = (search_term) =>
-    $search_hints.hide()
-
-    if search_term == ''
-      $search_fields.parents('.search-item').show()
-      return
-
-    $search_fields.parents('.search-item').hide()
-
-    results = $('[data-search]').filter (index, element) =>
-      value = $(element).text().toLowerCase()
-      return value.indexOf(search_term.toLowerCase()) > -1
-
-    results.parents('.search-hint').show()
-    results.parents('.search-item').show()
-
-  $search_box.keyup =>
-    search($search_box.val())
-
-  $search_box.focus()

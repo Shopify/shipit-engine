@@ -39,12 +39,6 @@
   border: 1px #a0a0a0 solid;
 }
 
-.search-hint {
+.search-item.not-matching {
   display: none;
-  color: #a0a0a0;
-  font-size: smaller;
-
-  span {
-    color: #808080;
-  }
 }
