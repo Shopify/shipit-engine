@@ -38,7 +38,7 @@ jQuery ($) ->
 
   onDeployUpdate = (message) ->
     loadFragment message, (id, deploy) ->
-      $("#deploy-#{id}").html($timeago(deploy))
+      $("#deploy-#{id}").replaceWith($timeago(deploy))
 
   onDeployCreate = (message) ->
     loadFragment message, (id, deploy) ->
