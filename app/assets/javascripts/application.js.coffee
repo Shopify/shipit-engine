@@ -13,13 +13,8 @@
 #= require jquery
 #= require jquery_ujs
 #= require rails-timeago
-#= require jquery.hc-sticky
-#= require jquery-notify
 #= require ansi_up
 #= require_tree .
-
-jQuery ->
-  $('.inner-sidebar').hcSticky();
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
