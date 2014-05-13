@@ -2,6 +2,10 @@ class ChunkPoller
   INTERVAL = 1000
   MAX_RETRIES = 15
   STICKY_SCROLL_TOLERENCE = 200
+  NOTIFICATION_IMAGES =
+    success: '<%= image_path "deploy_success.jpg" %>'
+    failed: '<%= image_path "deploy_failed.jpg" %>'
+    error: '<%= image_path "deploy_error.jpg" %>'
 
   @init: ->
     $('code').each ->
@@ -18,7 +22,7 @@ class ChunkPoller
     @$body = $body
     @$window = $(window)
     @initialScroll = true
-    @deployShortSha = $body.find('#deploy-short-sha')[0]?.innerHTML
+    @deployShortSha = $body.find('#deploy-short-sha').text()
 
   poll: =>
     jQuery.ajax @pollUrl,
@@ -70,7 +74,7 @@ class ChunkPoller
     @$status.attr('data-deploy-status') not in ['pending', 'running']
 
   notifyFinishedDeploy: (deploy) ->
-    return unless $.notifyCheck() == 0
+    return unless $.notifyCheck() == $.NOTIFY_ALLOWED
     $.notify(
       @notificationURL(deploy),
       @notificationTitle(deploy),
@@ -78,25 +82,21 @@ class ChunkPoller
     )
 
   notificationURL: (deploy) ->
-    if deploy.status == 'success'
-      '<%= image_path "deploy_success.jpg" %>'
-    else if deploy.status == 'failed'
-      '<%= image_path "deploy_failed.jpg" %>'
-    else if deploy.status == 'error'
-      '<%= image_path "deploy_error.jpg" %>'
+    NOTIFICATION_IMAGES[deploy.status]
 
   notificationTitle: (deploy) ->
     @$status.attr('data-repo-full-name')
 
   notificationMessage: (deploy) ->
-    if deploy.status == 'success'
-      'Your deploy of ' + @deployShortSha + ' was successful!'
-    else if deploy.status == 'failed'
-      'Your deploy of ' + @deployShortSha + ' failed.'
-    else if deploy.status == 'error'
-      'Error while deploying ' + @deployShortSha + ' .'
-    else
-      'Your deploy of ' + @deployShortSha + ' ended with status: '+ deploy.status
+    switch deploy.status
+      when 'success'
+        'Your deploy of ' + @deployShortSha + ' was successful!'
+      when 'failed'
+        'Your deploy of ' + @deployShortSha + ' failed.'
+      when 'error'
+        'Error while deploying ' + @deployShortSha + ' .'
+      else
+        'Your deploy of ' + @deployShortSha + ' ended with status: ' + deploy.status
 
   appendChunks: (chunks) ->
     return unless chunks.length

@@ -24,10 +24,11 @@ jQuery ->
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
 
-$(window).load ->
-  if $.notifyCheck() == 1
-    btn = $('<br /><button class="btn">Manage desktop <br />notifications</button>').css('backgroudColor', '#00CCFF').css('fontSize', '14px')
+jQuery ->
+  btn = $('button.notifications')
+  if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
     btn.click () =>
       $.notifyRequest()
       btn.hide()
-    $('.logo').after(btn)
+  else
+  	btn.hide()

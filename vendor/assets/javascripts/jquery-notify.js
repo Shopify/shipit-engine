@@ -4,51 +4,37 @@
  * @author Andrew Dodson
  */
 
-(function($){
-
-	// Relative Directory
-	var dir = (function(){
-					var script = document.getElementsByTagName("script");
-					script = script[script.length-1];
-					return ( script.src || script.getAttribute("src",4) ).replace(/[^\/]+$/, '');
-				})();
-
-	// default icon
-	var star = dir + "star.ico";
-
-	// Unique reference of the items in the 
-	var guid = [];
-
+(function($) {
 
 	$.extend({
+
+		NOTIFY_ALLOWED: 0,
+		NOTIFY_NOT_ALLOWED: 1,
+		NOTIFY_DENIED: 2,
+
 		// Check for browser support
 		notifyCheck : function(){
 			// Check whether the current desktop supports notifications and if they are authorised, 
 			// 0 (yes they are supported and permission is granted), 
 			// 1 (yes they are supported, permission has not been granted), 
-			// -1 (Notifications are not supported)
+			// 2 (Notifications are not supported or disabled)
 			
 			// IE9
 			if(("external" in window) && ("msIsSiteMode" in window.external)){
-				return window.external.msIsSiteMode() ? 0 : 1;
+				return window.external.msIsSiteMode() ? $.NOTIFY_ALLOWED : $.NOTIFY_NOT_ALLOWED;
 			}
 			else if("webkitNotifications" in window){
-				chk = window.webkitNotifications.checkPermission();
-				if (chk === 2) {
-					// user has denied notifications: act as not suppored
-					return -1;
-				}
-				return chk;
+				return window.webkitNotifications.checkPermission();
 			}
 			else if("Notification" in window) {
 				if (Notification.permission === 'denied') {
 					// user has denied notifications: act as not suppored
-					return -1;
+					return $.NOTIFY_DENIED;
 				}
-				return (Notification.permission === 'granted') ? 0 : 1;
+				return (Notification.permission === 'granted') ? $.NOTIFY_ALLOWED : $.NOTIFY_NOT_ALLOWED;
 			}
 			else {
-				return -1;
+				return $.NOTIFY_DENIED;
 			}
 		},
 
@@ -70,7 +56,7 @@
 				}
 			}
 			// If Chrome and not already enabled
-			else if("webkitNotifications" in window && window.webkitNotifications.checkPermission() !== 0 ){
+			else if("webkitNotifications" in window && window.webkitNotifications.checkPermission() !== $.NOTIFY_ALLOWED ){
 				return window.webkitNotifications.requestPermission(cb);
 			}
 			else if("Notification" in window) {
@@ -86,7 +72,7 @@
 		notify : function(icon, title, description, callback){
 	
 			// Create a notification
-			createNotification( icon || star, title, description);
+			createNotification(icon, title, description);
 		}
 	});
 
@@ -113,7 +99,7 @@
 			return false;
 		}
 		else if("webkitNotifications" in window){
-			if(window.webkitNotifications.checkPermission() === 0){
+			if(window.webkitNotifications.checkPermission() === $.NOTIFY_ALLOWED){
 				n = window.webkitNotifications.createNotification(icon, title, description )
 				n.show();
 				n.onclick = function(){
