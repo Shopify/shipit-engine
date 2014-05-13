@@ -13,6 +13,7 @@
 #= require jquery
 #= require jquery_ujs
 #= require rails-timeago
+#= require jquery-notify
 #= require ansi_up
 #= require_tree .
 
