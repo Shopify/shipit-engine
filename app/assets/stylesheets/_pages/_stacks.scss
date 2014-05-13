@@ -25,3 +25,26 @@
         color: lighten(#9cacbb, 10%);
       }
     }
+
+
+.stack-search input {
+  margin-left: 4%;
+  width: 92%;
+  padding: 6px;
+  font-size: larger;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  outline: 0;
+  border: 1px #a0a0a0 solid;
+}
+
+.search-hint {
+  display: none;
+  color: #a0a0a0;
+  font-size: smaller;
+
+  span {
+    color: #808080;
+  }
+}
