@@ -3,12 +3,16 @@
     <header class="section-header">
       <h1>Stacks</h1>
     </header>
+    <section class="stack-search">
+      <input id="stacks-search" placeholder="Search stacks" />
+    </section>
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
-        <li>
+        <li class="search-item" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>">
           <%= link_to stack_path(stack), class: 'commits-path' do %>
-            <%= stack.repo_name %>
+            <span><%= stack.repo_name %></span>
             <small><%= stack.environment.capitalize %></small>
+            <small><%= stack.deploy_url %></small>
           <% end %>
         </li>
       <% end %>

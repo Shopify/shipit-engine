@@ -58,4 +58,3 @@ jQuery ($) ->
     source.addEventListener 'deploy.error', onDeployUpdate
     source.addEventListener 'deploy.running', onDeployUpdate
     source.addEventListener 'deploy.pending', onDeployCreate
-
