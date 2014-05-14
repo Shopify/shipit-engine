@@ -85,7 +85,7 @@ class ChunkPoller
     NOTIFICATION_IMAGES[deploy.status]
 
   notificationTitle: (deploy) ->
-    @$status.attr('data-repo-full-name')
+    $('.repo-name').attr('data-repo-full-name')
 
   notificationMessage: (deploy) ->
     switch deploy.status
