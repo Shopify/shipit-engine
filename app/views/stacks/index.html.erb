@@ -12,6 +12,7 @@
           <%= link_to stack_path(stack), class: 'commits-path' do %>
             <span><%= stack.repo_name %></span>
             <small><%= stack.environment.capitalize %></small>
+            <small><%= stack.deploy_url %></small>
           <% end %>
         </li>
       <% end %>
