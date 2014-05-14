@@ -35,7 +35,7 @@ class StacksController < ApplicationController
   end
 
   def update
-    @stack.update(params.require(:stack).permit(:checklist, :deploy_url))
+    @stack.update(params.require(:stack).permit(:checklist, :deploy_url, :lock_reason))
     redirect_to settings_stack_path(@stack)
   end
 
