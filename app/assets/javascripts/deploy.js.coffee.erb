@@ -22,7 +22,7 @@ class ChunkPoller
     @$body = $body
     @$window = $(window)
     @initialScroll = true
-    @deployShortSha = $body.find('#deploy-short-sha').text()
+    @deployShortSha = $body.find('.short-sha').text()
 
   poll: =>
     jQuery.ajax @pollUrl,
