@@ -73,4 +73,4 @@ jQuery ($) ->
     source.addEventListener 'deploy.running', onDeployUpdate
     source.addEventListener 'deploy.pending', onDeployCreate
 
-    source.addEventListener 'stack.updated', onStackUpdate
+    source.addEventListener 'stack.update', onStackUpdate
