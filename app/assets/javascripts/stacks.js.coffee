@@ -58,7 +58,7 @@ jQuery ($) ->
 
   updateDeployButtons($('[data-stack-locked]').data('stack-locked'))
 
-  listenToEventSource: (url) ->
+  listenToEventSource = (url) ->
     source = new EventSource(url)
     reconnect = -> listenToEventSource(url)
     source.onerror = -> setTimeout(reconnect, 3000)
