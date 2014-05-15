@@ -1,18 +1,20 @@
 <div class="wrapper">
   <section>
     <header class="section-header">
-      <h1>Stacks</h1>
+      <input class="stack-search" id="stack-search" placeholder="Search stacks" />
     </header>
-    <section class="stack-search">
-      <input id="stacks-search" placeholder="Search stacks" />
-    </section>
+    <ul class="stack-table-header">
+      <li class="col">Name</li>
+      <li class="col">Environment</li>
+      <li class="col">Deploy URL</li>
+    </ul>
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
         <li class="search-item" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>">
           <%= link_to stack_path(stack), class: 'commits-path' do %>
-            <span><%= stack.repo_name %></span>
-            <small><%= stack.environment.capitalize %></small>
-            <small><%= stack.deploy_url %></small>
+            <span class="col"><%= stack.repo_name %></span>
+            <small class="col"><%= stack.environment.capitalize %></small>
+            <small class="col"><%= stack.deploy_url %></small>
           <% end %>
         </li>
       <% end %>

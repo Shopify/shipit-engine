@@ -1,6 +1,41 @@
+.stack-search {
+  -webkit-appearance: none;
+  width: 100%;
+  @extend h1;
+  border: none;
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 200;
+  background: url('/assets/search.svg') no-repeat center right;
+  &::-webkit-input-placeholder {
+    color: #B5C0CA;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.stack-table-header {
+  @include clearfix;
+  margin: 0; padding: 1.25rem 0 1rem;
+  .col {
+    width: 33.33%;
+    float: left;
+
+  }
+  li {
+    list-style-type: none;
+    font-size: .875em;
+    color: #BAC5D1;
+  }
+}
+
 .stack-lst {
   list-style-type: none;
-  margin: 0; padding: 0;
+  margin: 0; padding: 0; margin-bottom: 1.5rem;
+    .col {
+      width: 33.33%;
+      float: left;
+    }
 }
 
 .stack-lst:empty:before {
@@ -9,12 +44,18 @@
 
   .stack-lst li {
     padding: .35rem;
+    margin-left: -0.35rem; margin-right: -0.35rem;
     @include clearfix;
-      &:nth-child(odd) {
+    border-radius: 4px;
+      &:nth-child(even) {
         background-color: lighten(#EDF1F3, 3.5%);
       }
-      &:last-child { margin-bottom: 30px }
       &:hover { background-color: #EDF1F3; }
+      &:hover {
+        background-color: $blue;
+        span { color: #fff; }
+        small { color: rgba(#fff, .8); }
+      }
   }
 
     .commits-path {
@@ -22,7 +63,7 @@
 
       small {
         font-size: 18px;
-        color: lighten(#9cacbb, 10%);
+        color: #8D9EB0;
       }
     }
 
