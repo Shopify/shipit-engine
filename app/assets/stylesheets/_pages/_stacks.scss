@@ -5,7 +5,7 @@
   border: none;
   font-family: "Helvetica Neue", sans-serif;
   font-weight: 200;
-  background: url('/assets/search.svg') no-repeat center right;
+  background: asset-data-url('search.svg') no-repeat center right;
   &::-webkit-input-placeholder {
     color: #B5C0CA;
   }
@@ -20,7 +20,6 @@
   .col {
     width: 33.33%;
     float: left;
-
   }
   li {
     list-style-type: none;
@@ -35,6 +34,11 @@
     .col {
       width: 33.33%;
       float: left;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-right: .5rem;
+      box-sizing: border-box;
     }
 }
 
