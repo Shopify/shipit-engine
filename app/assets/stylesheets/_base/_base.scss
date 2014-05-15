@@ -69,6 +69,11 @@ $slate: #2e343a;
   100% { -webkit-transform: rotate(360deg); }
 }
 
+::selection {
+  background: $blue;
+  color: #fff;
+}
+
 body {
   padding: 0; margin: 0;
   font-family: "Helvetica Neue", sans-serif;
