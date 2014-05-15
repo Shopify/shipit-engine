@@ -37,8 +37,14 @@
   border-radius: 8px;
   outline: 0;
   border: 1px #a0a0a0 solid;
+  margin-bottom: 2rem;
 }
 
 .search-item.not-matching {
   display: none;
+}
+
+.stack-count {
+  font-size: smaller;
+  color: #a0a0a0;
 }
