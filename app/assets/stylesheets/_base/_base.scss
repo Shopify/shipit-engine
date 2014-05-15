@@ -304,3 +304,7 @@ a.disabled {
        asset-url('CheckoutSymbols-Regular.svg#9a6d998e14a2d97b6369d42f64b6816f') format('svg'); /* Legacy iOS */
   font-style: normal;
 }
+
+.hidden {
+  display: none;
+}
