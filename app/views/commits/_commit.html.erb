@@ -17,13 +17,9 @@
     </span>
   </div>
   <% if commit.state == 'success' %>
-    <% if @stack.lock_reason.present? %>
-      <a href="#" class="btn disabled failure deploy-action locked" data-tooltip="<%= @stack.lock_reason %>">Locked</a>
-    <% else %>
-      <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
-        <%= hidden_field_tag :sha, commit.sha %>
-        <%= submit_tag "Deploy", :name => nil, :class => 'btn' %>
-      <% end %>
+    <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+      <%= hidden_field_tag :sha, commit.sha %>
+      <%= submit_tag "Deploy", :name => nil, :class => 'btn' %>
     <% end %>
   <% elsif commit.state == 'pending' %>
     <a href="#" class="btn disabled deploy-action">Pending...</a>
