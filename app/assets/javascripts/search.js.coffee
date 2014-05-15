@@ -2,7 +2,7 @@ unless String::contains
   String::contains = (args...) ->
     @indexOf(args...) != -1
 
-$(document).on 'keyup', '#stacks-search', (event) ->
+$(document).on 'keyup', '.stack-search', (event) ->
   query = $.trim($(event.target).val()).toLowerCase()
 
   $items = $('[data-search]')
@@ -15,4 +15,4 @@ $(document).on 'keyup', '#stacks-search', (event) ->
     $items.removeClass('not-matching')
 
 jQuery ->
-  $('#stacks-search').focus()
+  $('.stack-search').focus()
