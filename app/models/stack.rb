@@ -11,6 +11,7 @@ class Stack < ActiveRecord::Base
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
+  after_commit :broadcast_update, on: :update
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
@@ -76,6 +77,10 @@ class Stack < ActiveRecord::Base
     Shipit.github_api.last_response
   end
 
+  def locked?
+    lock_reason.present?
+  end
+
   def to_param
     [repo_owner, repo_name, environment].join('/')
   end
@@ -115,4 +120,9 @@ class Stack < ActiveRecord::Base
     FileUtils.rm_rf(base_path)
   end
 
+  def broadcast_update
+    payload = {id: id, locked: lock_reason.present?}.to_json
+    event = Pubsubstub::Event.new(payload, name: "stack.updated")
+    Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
+  end
 end

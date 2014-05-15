@@ -1,6 +1,6 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
-<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
+<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>" data-stack-locked="<%= @stack.locked? %>">
   <section>
     <header class="section-header">
       <h2>Undeployed Commits</h2>

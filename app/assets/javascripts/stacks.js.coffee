@@ -44,6 +44,20 @@ jQuery ($) ->
     loadFragment message, (id, deploy) ->
       $("ul.deploy-lst").prepend($timeago(deploy))
 
+  DEPLOY_BUTTON = { value: "Deploy", className: "btn" }
+  LOCKED_BUTTON = { value: "Locked", className: "btn disabled failure deploy-action"}
+
+  updateDeployButtons = (locked) ->
+    $(".commit input[type='submit']").each ->
+      {@value, @className} = if locked then LOCKED_BUTTON else DEPLOY_BUTTON
+
+  onStackUpdate = (message) ->
+    locked = JSON.parse(message.data).locked
+    updateDeployButtons(locked)
+    $('[data-stack-locked]').data('stack-locked', locked)
+
+  updateDeployButtons($('[data-stack-locked]').data('stack-locked'))
+
   $('[data-event-stream]').each ->
     url = $(this).data('event-stream')
     source = new EventSource(url)
@@ -58,3 +72,5 @@ jQuery ($) ->
     source.addEventListener 'deploy.error', onDeployUpdate
     source.addEventListener 'deploy.running', onDeployUpdate
     source.addEventListener 'deploy.pending', onDeployCreate
+
+    source.addEventListener 'stack.updated', onStackUpdate

@@ -14,7 +14,20 @@
         <p><%= f.submit class: "btn" %></p>
       <%- end -%>
     </div>
-
+    <div class="setting-section">
+      <h5>Lock deploys</h5>
+      <%= form_for @stack do |f| %>
+        <% if @stack.lock_reason.present? %>
+          <p><%= f.hidden_field :lock_reason, value: nil %></p>
+          <p>Deploys are currently locked: <%= @stack.lock_reason %></p>
+          <p><%= f.submit class: "btn", value: "Unlock" %></p>
+        <% else %>
+          <p>Please enter a reason to lock deploys for this stack</p>
+          <p><%= f.text_field :lock_reason %></p>
+          <p><%= f.submit class: "btn", value: "Lock" %></p>
+        <% end %>
+      <%- end -%>
+    </div>
     <div class="setting-section">
       <h5>Resynchronize this stack</h5>
       <p>Ensure that all required webhooks have been created.</p>
