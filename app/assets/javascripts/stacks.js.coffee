@@ -58,9 +58,10 @@ jQuery ($) ->
 
   updateDeployButtons($('[data-stack-locked]').data('stack-locked'))
 
-  $('[data-event-stream]').each ->
-    url = $(this).data('event-stream')
+  listenToEventSource: (url) ->
     source = new EventSource(url)
+    reconnect = -> listenToEventSource(url)
+    source.onerror = -> setTimeout(reconnect, 3000)
     source.addEventListener 'commit.update', onCommitUpdate
     source.addEventListener 'commit.create', onCommitCreate
     source.addEventListener 'commit.remove', onCommitRemove
@@ -74,3 +75,6 @@ jQuery ($) ->
     source.addEventListener 'deploy.pending', onDeployCreate
 
     source.addEventListener 'stack.update', onStackUpdate
+
+  $('[data-event-stream]').each ->
+    listenToEventSource($(this).data('event-stream'))
