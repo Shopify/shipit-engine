@@ -40,6 +40,10 @@
       <%= button_to "Clear Git Cache", clear_git_cache_stack_path(@stack), class: "btn", method: "post" %>
     </div>
     <div class="setting-section">
+      <h5>Stack-Information</h5>
+      <p>ID: <%= @stack.id %></p>
+    </div>
+    <div class="setting-section">
       <h5>Delete this stack</h5>
       <p>This action will delete the stack from Ship it permanently. Be careful.</p>
       <%= button_to "Delete", stack_path(@stack), :class => "btn delete", :method => :delete, :confirm => "Are you sure?" %>
