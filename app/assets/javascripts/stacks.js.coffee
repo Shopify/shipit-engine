@@ -61,7 +61,7 @@ jQuery ($) ->
   listenToEventSource = (url) ->
     source = new EventSource(url)
     reconnect = -> listenToEventSource(url)
-    source.onerror = -> setTimeout(reconnect, 3000)
+    #source.onerror = -> setTimeout(reconnect, 3000)
     source.addEventListener 'commit.update', onCommitUpdate
     source.addEventListener 'commit.create', onCommitCreate
     source.addEventListener 'commit.remove', onCommitRemove
