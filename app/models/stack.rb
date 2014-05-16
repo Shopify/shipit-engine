@@ -2,7 +2,7 @@ require 'fileutils'
 
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
-  REQUIRED_HOOKS = %w( push status )
+  REQUIRED_HOOKS = %i( push status )
 
   has_many :commits
   has_many :deploys

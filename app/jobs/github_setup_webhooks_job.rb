@@ -5,7 +5,10 @@ class GithubSetupWebhooksJob < BackgroundJob
 
   def perform(params)
     stack = Stack.find(params[:stack_id])
-    missing_webhooks(stack).each do |event, url|
+
+    GithubTeardownWebhooksJob.new.perform(stack_id: stack.id)
+
+    webhook_urls(stack).slice(*Stack::REQUIRED_HOOKS).each do |event, url|
       create_webhook(stack, event, url)
     end
   end
@@ -17,14 +20,9 @@ class GithubSetupWebhooksJob < BackgroundJob
       url: url,
       content_type: 'json',
       secret: secret,
-    }, { events: [event], active: true })
+    }, { events: [event.to_s], active: true })
 
     webhook = stack.webhooks.create!(github_id: github_hook.id, event: event, secret: secret)
-  end
-
-  def missing_webhooks(stack)
-    events = Stack::REQUIRED_HOOKS - stack.webhooks.pluck(:event)
-    webhook_urls(stack).slice(*events)
   end
 
   def webhook_urls(stack)
@@ -32,7 +30,7 @@ class GithubSetupWebhooksJob < BackgroundJob
     {
       push: url_helpers.push_stack_webhooks_url(stack.id, host: host),
       status: url_helpers.state_stack_webhooks_url(stack.id, host: host),
-    }.stringify_keys
+    }
   end
 
   def host
