@@ -32,7 +32,7 @@ class DeploySpec
   end
 
   def bundle_install
-    [%Q(bundle check --path=#{BUNDLE_PATH} || bundle install --frozen --path=#{BUNDLE_PATH} --retry=2 --without=#{bundler_without.join(':')})]
+    [%Q(bundle check --path=#{BUNDLE_PATH} || bundle install #{frozen_flag} --path=#{BUNDLE_PATH} --retry=2 --without=#{bundler_without.join(':')})]
   end
 
   def bundler_without
@@ -51,6 +51,10 @@ class DeploySpec
 
   def bundler?
     @app_dir.join('Gemfile').exist?
+  end
+
+  def frozen_flag
+    '--frozen' if @app_dir.join('Gemfile.lock').exist?
   end
 
   def cant_detect_deploy_steps
