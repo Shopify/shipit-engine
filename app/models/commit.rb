@@ -37,6 +37,12 @@ class Commit < ActiveRecord::Base
     status && status.rels.try(:[], :target).try(:href)
   end
 
+  def refresh_status
+    if status = Shipit.github_api.statuses(stack.github_repo_name, sha).first
+      update(state: status.try(:state) || 'unknown')
+    end
+  end
+
   def children
     self.class.where(stack_id: stack_id).newer_than(self)
   end

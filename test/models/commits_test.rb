@@ -58,6 +58,13 @@ class CommitsTest < ActiveSupport::TestCase
                           message: "more fish!")
   end
 
+  test "refresh_status pull state from github" do
+    status = mock(state: 'success')
+    Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
+    @commit.refresh_status
+    assert_equal 'success', @commit.state
+  end
+
   private
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
