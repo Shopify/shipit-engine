@@ -34,6 +34,8 @@
       <%= button_to "Webhooks", sync_webhooks_stack_path(@stack), class: "btn", method: "post" %>
       <p>Force synchronization of new commits in case webhooks haven't been triggered correctly.</p>
       <%= button_to "Commits", sync_commits_stack_path(@stack), class: "btn", method: "post" %>
+      <p>Force synchronization of last 30 commits CI status, in case webhooks have been lost or are slow.</p>
+      <%= button_to "Refresh statuses", refresh_statuses_stack_path(@stack), class: "btn", method: "post" %>
       <p>Delete the local git mirror in case it's in a bad state.</p>
       <%= button_to "Clear Git Cache", clear_git_cache_stack_path(@stack), class: "btn", method: "post" %>
     </div>

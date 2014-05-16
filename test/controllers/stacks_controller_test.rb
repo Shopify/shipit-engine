@@ -74,6 +74,12 @@ class StacksControllerTest < ActionController::TestCase
     assert_redirected_to settings_stack_path(@stack)
   end
 
+  test "#refresh_statuses queues a RefreshStatusesJob" do
+    Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
+    post :refresh_statuses, id: @stack.to_param
+    assert_redirected_to settings_stack_path(@stack)
+  end
+
   test "#sync_webhooks queues a GithubSetupWeebhookJob" do
     Resque.expects(:enqueue).with(GithubSetupWebhooksJob, stack_id: @stack.id)
     post :sync_webhooks, id: @stack.to_param

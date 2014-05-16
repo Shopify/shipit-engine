@@ -25,6 +25,7 @@ Shipit::Application.routes.draw do
     member do
       get :settings
       post :sync_commits
+      post :refresh_statuses
       post :sync_webhooks
       post :clear_git_cache
     end
