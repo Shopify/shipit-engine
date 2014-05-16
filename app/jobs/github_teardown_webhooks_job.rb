@@ -5,7 +5,10 @@ class GithubTeardownWebhooksJob < BackgroundJob
 
   def perform(params)
     Webhook.where(stack_id: params[:stack_id]).each do |webhook|
-      Shipit.github_api.remove_hook(params[:github_repo_name], webhook.github_id)
+      begin
+        Shipit.github_api.remove_hook(params[:github_repo_name], webhook.github_id)
+      rescue
+      end
       webhook.destroy
     end
   end
