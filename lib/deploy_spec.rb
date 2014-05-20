@@ -53,8 +53,12 @@ class DeploySpec
     @app_dir.join('Gemfile').exist?
   end
 
+  def has_gemfile_lock?
+    @app_dir.join('Gemfile.lock').exist?
+  end
+
   def frozen_flag
-    '--frozen' if @app_dir.join('Gemfile.lock').exist?
+    '--frozen' if has_gemfile_lock?
   end
 
   def cant_detect_deploy_steps
