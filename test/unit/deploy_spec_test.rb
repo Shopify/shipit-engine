@@ -43,6 +43,18 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal command, @spec.bundle_install.first
   end
 
+  test '#bundle_install has --frozen option if Gemfile.lock is present' do
+    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+    @spec.stubs(:has_gemfile_lock?).returns(true)
+    assert @spec.bundle_install.first.include?('--frozen')
+  end
+
+  test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
+    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+    @spec.stubs(:has_gemfile_lock?).returns(false)
+    refute @spec.bundle_install.first.include?('--frozen')
+  end
+
   test '#deploy_steps returns `deploy.override` if present' do
     @spec.stubs(:load_config).returns('deploy' => {'override' => %w(foo bar baz)})
     assert_equal %w(foo bar baz), @spec.deploy_steps

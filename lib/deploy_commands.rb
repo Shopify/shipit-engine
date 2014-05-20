@@ -22,6 +22,7 @@ class DeployCommands < Commands
       'ENVIRONMENT' => @stack.environment,
       'USER' => "#{@deploy.author.login} (#{normalized_name}) via Shipit 2",
       'EMAIL' => @deploy.author.email,
+      'BUNDLE_PATH' => BUNDLE_PATH,
     ).merge(deploy_spec.machine_env)
     deploy_spec.deploy_steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
