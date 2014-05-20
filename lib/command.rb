@@ -46,13 +46,24 @@ class Command
     output.join
   end
 
+  def with_full_path
+    old_path = ENV['PATH']
+    ENV['PATH'] = "#{ENV['PATH']}:#{Rails.root.join('lib', 'snippets')}"
+    yield
+  ensure
+    ENV['PATH'] = old_path
+  end
+
   def stream(&block)
     FileUtils.mkdir_p(@chdir)
-    _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
-    _in.close
-    read_stream(@out, &block)
-    @code = wait_thread.value
-    yield exit_message + "\n" unless success?
+    _in, @out, wait_thread = []
+    with_full_path do
+      _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
+      _in.close
+      read_stream(@out, &block)
+      @code = wait_thread.value
+      yield exit_message + "\n" unless success?
+    end
     self
   end
 

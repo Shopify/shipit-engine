@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'ostruct'
+
+class FakeSpec < OpenStruct
+  private
+
+  def method_missing(name, *args)
+    super
+  rescue NoMethodError
+  end
+end
+
+module Gem
+  class Specification
+    def self.new
+      spec = FakeSpec.new
+      yield spec
+      print spec.version
+    end
+  end
+end
+
+load ARGV[0]

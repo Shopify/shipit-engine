@@ -24,7 +24,15 @@ class DeploySpec
   end
 
   def deploy_steps
-    config('deploy', 'override') || discover_capistrano || cant_detect_deploy_steps
+    config('deploy', 'override') || discover_capistrano || discover_gem || cant_detect_deploy_steps
+  end
+
+  def discover_gem
+    publish_gem if gem?
+  end
+
+  def publish_gem
+    ["assert-gem-version-tag #{gemspec}", 'bundle exec rake release']
   end
 
   def discover_bundler
@@ -32,17 +40,27 @@ class DeploySpec
   end
 
   def bundle_install
-    [%Q(bundle check --path=#{BUNDLE_PATH} || bundle install #{frozen_flag} --path=#{BUNDLE_PATH} --retry=2 --without=#{bundler_without.join(':')})]
+    bundle = %Q(bundle check --path=#{BUNDLE_PATH} || bundle install #{frozen_flag} --path=#{BUNDLE_PATH} --retry=2)
+    bundle += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
+    [bundle]
   end
 
   def bundler_without
-    config('dependencies', 'bundler', 'without') || DEFAULT_BUNDLER_WITHOUT
+    config('dependencies', 'bundler', 'without') || (gem? ? [] : DEFAULT_BUNDLER_WITHOUT)
   end
 
   def discover_capistrano
     bundle_exec = ''
     bundle_exec = 'bundle exec ' if bundler?
     ["#{bundle_exec}cap $ENVIRONMENT deploy"] if capistrano?
+  end
+
+  def gem?
+    !!gemspec
+  end
+
+  def gemspec
+    Dir[@app_dir.join('*.gemspec').to_s].first
   end
 
   def capistrano?

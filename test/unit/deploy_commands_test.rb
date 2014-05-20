@@ -17,7 +17,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
   test "#fetch call git fetch if repository cache already exist" do
     Dir.expects(:exists?).with(@stack.git_path).returns(true)
     command = @commands.fetch
-    assert_equal %w(git fetch origin master), command.args
+    assert_equal %w(git fetch origin --tags master), command.args
   end
 
   test "#fetch call git fetch in git_path directory if repository cache already exist" do
