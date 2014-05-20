@@ -6,7 +6,7 @@ class StacksController < ApplicationController
   end
 
   def index
-    @stacks = Stack.all
+    @stacks = Stack.order(deploys_count: :desc)
   end
 
   def show

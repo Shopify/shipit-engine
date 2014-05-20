@@ -3,4 +3,4 @@ shipit:
   repo_name: "shipit2"
   environment: "production"
   branch: master
-
+  deploys_count: 3
