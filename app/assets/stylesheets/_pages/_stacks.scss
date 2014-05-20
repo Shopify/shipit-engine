@@ -11,6 +11,7 @@
   }
   &:focus {
     outline: none;
+    background-image: asset-data-url('search-active.svg');
   }
 }
 
