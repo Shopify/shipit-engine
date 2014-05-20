@@ -11,6 +11,7 @@
   }
   &:focus {
     outline: none;
+    background-image: asset-data-url('search-active.svg');
   }
 }
 
@@ -50,6 +51,14 @@
     &:nth-child(even) a {
       background-color: lighten(#EDF1F3, 3.5%);
     }
+
+    &.selected a {
+      background-color: $blue;
+      outline: none;
+      span { color: #fff; }
+      small { color: rgba(#fff, .8); }
+    }
+
     a {
     padding: .35rem;
     margin-left: -0.35rem; margin-right: -0.35rem;
