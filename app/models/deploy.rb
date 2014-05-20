@@ -1,6 +1,6 @@
 class Deploy < ActiveRecord::Base
   belongs_to :user
-  belongs_to :stack, touch: true
+  belongs_to :stack, touch: true, counter_cache: true
   belongs_to :since_commit, class_name: "Commit"
   belongs_to :until_commit, class_name: "Commit"
 
