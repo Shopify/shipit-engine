@@ -3,7 +3,7 @@ require 'test_helper'
 class DeploySpecTest < ActiveSupport::TestCase
 
   setup do
-    @spec = DeploySpec.new('.', 'env')
+    @spec = DeploySpec.new('/tmp/', 'env')
     @spec.stubs(:load_config).returns({})
   end
 
@@ -19,6 +19,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#bundle_install return a sane default bundle install command' do
+    @spec.stubs(:has_gemfile_lock?).returns(true)
     command = %Q(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
@@ -31,6 +32,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
+    @spec.stubs(:has_gemfile_lock?).returns(true)
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     command = %Q(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
@@ -61,6 +63,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
+    @spec.expects(:bundler?).returns(true)
     @spec.expects(:capistrano?).returns(true)
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
@@ -99,4 +102,27 @@ class DeploySpecTest < ActiveSupport::TestCase
     spec.expects(:shipit_yml).twice.returns(config)
     assert_equal %w(foo bar baz), spec.dependencies_steps
   end
+
+  test '#gemspec gives the path of the repo gemspec if present' do
+    spec = DeploySpec.new('foobar/', 'production')
+    Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])
+    assert_equal 'foobar/foobar.gemspec', spec.gemspec
+  end
+
+  test '#gem? is true if a gemspec is present' do
+    @spec.expects(:gemspec).returns('something')
+    assert @spec.gem?
+  end
+
+  test '#gem? is false if there is no gemspec' do
+    @spec.expects(:gemspec).returns(nil)
+    refute @spec.gem?
+  end
+
+  test '#publish_gem first check if version tag have been created, and then invoke bundler release task' do
+    @spec.stubs(:gemspec).returns('/tmp/shipit.gemspec')
+    refute @spec.capistrano?
+    assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
+  end
+
 end

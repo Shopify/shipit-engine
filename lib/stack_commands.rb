@@ -9,7 +9,7 @@ class StackCommands < Commands
   def fetch
     create_directories
     if Dir.exists?(@stack.git_path)
-      git('fetch', 'origin', @stack.branch, env: env, chdir: @stack.git_path)
+      git('fetch', 'origin', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
     else
       git('clone', *modern_git_args, '--branch', @stack.branch, @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
     end
