@@ -8,13 +8,12 @@ class ChunkPoller
     error: '<%= image_path "deploy_error.jpg" %>'
 
   @init: ->
+    pollUrl = $('code').data('next-chunks-url')
     poller = new ChunkPoller($('body'), pollUrl)
     $('code').each ->
       $(this).html(poller.colorize(this.innerHTML))
 
-    pollUrl = $('code').data('next-chunks-url')
-    return unless pollUrl
-    poller.start()
+    poller.start() if pollUrl
 
   constructor: ($body, @pollUrl) ->
     @$status = $body.find('[data-deploy-status]')
