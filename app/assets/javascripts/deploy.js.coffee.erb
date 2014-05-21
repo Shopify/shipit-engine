@@ -8,12 +8,12 @@ class ChunkPoller
     error: '<%= image_path "deploy_error.jpg" %>'
 
   @init: ->
+    poller = new ChunkPoller($('body'), pollUrl)
     $('code').each ->
-      $(this).html(ChunkPoller::colorize(this.innerHTML))
+      $(this).html(poller.colorize(this.innerHTML))
 
     pollUrl = $('code').data('next-chunks-url')
     return unless pollUrl
-    poller = new ChunkPoller($('body'), pollUrl)
     poller.start()
 
   constructor: ($body, @pollUrl) ->
@@ -23,6 +23,7 @@ class ChunkPoller
     @$window = $(window)
     @initialScroll = true
     @deployShortSha = $body.find('.short-sha').text()
+    @stream = new AnsiStream()
 
   poll: =>
     jQuery.ajax @pollUrl,
@@ -102,24 +103,10 @@ class ChunkPoller
     return unless chunks.length
 
     text = chunks.map((c) -> c.text).join('')
-    @$code.append(@colorize(@escapeHTML(text)))
+    @$code.append(@colorize(text))
 
   colorize: (text) ->
-    ansi_up.ansi_to_html(text)
-
-
-  ENTITIES = {
-    '&': '&amp;'
-    '<': '&lt;'
-    '>': '&gt;'
-    '"': '&quot;'
-    "'": '&#x27;'
-  }
-  ESCAPE_PATTERN = new RegExp("[#{Object.keys(ENTITIES).join('')}]", 'g')
-
-  escapeHTML: (html) ->
-    html.replace ESCAPE_PATTERN, (char) ->
-      ENTITIES[char]
+    @stream.process(text)
 
 jQuery ->
   ChunkPoller.init()
