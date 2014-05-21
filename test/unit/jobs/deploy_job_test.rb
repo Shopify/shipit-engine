@@ -10,6 +10,7 @@ class DeployJobTest < ActiveSupport::TestCase
   test "#perform fetch commits from the API" do
     @job.stubs(:capture)
     @commands = stub(:commands)
+    Deploy.expects(:find).with(@deploy.id).returns(@deploy)
     DeployCommands.expects(:new).with(@deploy).returns(@commands)
 
     @commands.expects(:fetch).once
@@ -17,6 +18,8 @@ class DeployJobTest < ActiveSupport::TestCase
     @commands.expects(:checkout).with(@deploy.until_commit).once
     @commands.expects(:install_dependencies).returns([]).once
     @commands.expects(:deploy).with(@deploy.until_commit).returns([]).once
+
+    @deploy.expects(:clear_working_directory)
 
     @job.perform(deploy_id: @deploy.id)
   end

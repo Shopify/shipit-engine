@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Deploy < ActiveRecord::Base
   belongs_to :user
   belongs_to :stack, touch: true, counter_cache: true
@@ -7,6 +9,7 @@ class Deploy < ActiveRecord::Base
   has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
 
   scope :success, -> { where(status: 'success') }
+  scope :completed, -> { where(status: %w(success error failed)) }
 
   state_machine :status, initial: :pending do
     event :run do
@@ -62,6 +65,10 @@ class Deploy < ActiveRecord::Base
 
   def working_directory
     File.join(stack.deploys_path, id.to_s)
+  end
+
+  def clear_working_directory
+    FileUtils.rm_rf(working_directory)
   end
 
   def write(text)

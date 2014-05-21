@@ -26,6 +26,8 @@ class DeployJob < BackgroundJob
   rescue StandardError
     @deploy.error!
     raise
+  ensure
+    @deploy.clear_working_directory
   end
 
   def capture_all(commands)
