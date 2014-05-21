@@ -31,7 +31,6 @@ GEM
     airbrake (3.1.16)
       builder
       multi_json
-    ansi_stream (0.0.2)
     arel (5.0.1.20140414130214)
     builder (3.2.2)
     byebug (2.7.0)
@@ -246,7 +245,6 @@ PLATFORMS
 
 DEPENDENCIES
   airbrake (~> 3.1.5)
-  ansi_stream (~> 0.0.2)
   byebug
   capistrano-bundler
   capistrano-rails

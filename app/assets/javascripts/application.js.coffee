@@ -14,7 +14,7 @@
 #= require jquery_ujs
 #= require rails-timeago
 #= require jquery-notify
-#= require ansi_stream
+#= require ansi_up
 #= require_tree .
 
 $(document).on 'click', 'a.disabled', (event) ->
