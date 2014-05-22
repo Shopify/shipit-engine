@@ -226,10 +226,9 @@ h5 {
 }
 
 .ico-pending-small {
-  background: asset-data-url("pending.svg") center center no-repeat;
+  background: asset-data-url("pending.gif") center center no-repeat;
   background-size: contain;
   margin-right: 3px;
-  -webkit-animation: rotate 2s linear infinite;
 }
 
 [data-tooltip], [data-tooltip-multiline] { // Add this attribute to the element that needs a tooltip

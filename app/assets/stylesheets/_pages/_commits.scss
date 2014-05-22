@@ -27,22 +27,29 @@
     float: left;
     margin-right: 1rem;
     border: 2px solid #ccc;
-      i { background: asset-data-url("default.svg") center center no-repeat; }
+      i { background: asset-data-url("unknown.svg") center center no-repeat; }
 
-      &.pending, &[data-deploy-status=pending],
-      &.running, &[data-deploy-status=running] {
+      &.pending, &[data-deploy-status=pending] {
+        border: 2px solid #ccc;
+        i { background: asset-data-url("pending.gif") center center no-repeat; background-size: 21px 5px; }
+      }
+      &.deploying, &[data-deploy-status=running] {
         border: 2px solid $blue;
-        i { background: asset-data-url("pending.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
+        i { background: asset-data-url("deploying.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
       }
       &.success, &[data-deploy-status=success] {
         border: 2px solid $green;
         i { background: asset-data-url("success.svg") center center no-repeat; }
       }
       &.failure, &[data-deploy-status=failure],
-      &.failed, &[data-deploy-status=failed],
-      &.error, &[data-deploy-status=error] {
+      &.failed, &[data-deploy-status=failed] {
         border: 2px solid $red;
         i { background: asset-data-url("failure.svg") center center no-repeat; }
+      }
+
+      &.error, &[data-deploy-status=error] {
+        border: 2px solid #FFC66C;
+        i { background: asset-data-url("error.svg") center center no-repeat; }
       }
 
     i {
