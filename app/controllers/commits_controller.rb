@@ -5,7 +5,7 @@ class CommitsController < ApplicationController
 
     respond_to do |format|
       format.html.partial {
-        render partial: "commits/commit", locals: { commit: @commit }
+        render partial: "commits/commit", locals: { commit: @commit, stack: @stack }
       }
     end
   end
