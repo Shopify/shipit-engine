@@ -66,6 +66,6 @@ class StacksController < ApplicationController
   end
 
   def create_params
-    params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url)
+    params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url, :enforce_ci)
   end
 end
