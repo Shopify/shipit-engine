@@ -13,4 +13,17 @@
   span.helper-text {
     font-size: smaller;
   }
+
+  table {
+    border-collapse: collapse;
+
+    td {
+      padding: .25rem;
+
+      &:first-child {
+        text-align: right;
+        padding-left: 0;
+      }
+    }
+  }
 }
