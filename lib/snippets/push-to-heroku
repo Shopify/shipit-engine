@@ -11,75 +11,43 @@ function yellow() {
 }
 
 HEROKU_APP=$1
-SCHEMA_VERSION=`cat db/schema.rb | grep 'ActiveRecord::Schema.define(version:' | sed -e 's/.*version\:\s\([0-9]\+\).*/\1/'`
-HEROKU_VERSION=`heroku run rake db:version --app $HEROKU_APP | grep 'Current version:' | sed -e 's/.*version\:\s\([0-9]\+\).*/\1/'`
+HEROKU_RELEASE=`heroku releases --app repodb 2>/dev/null | head -n2 | tail -n1 | cut -d" " -f1`
 
-if [ -z $SCHEMA_VERSION ]; then
-  red "Error detecting current schema version."
+if [ -z $HEROKU_RELEASE ]; then
+  red "Error detecting current heroku release."
   exit 1;
-elif [ -z $HEROKU_VERSION ]; then
-  red "Error detecting current heroku database version."
-  exit 1;
-elif [ $HEROKU_VERSION -eq $SCHEMA_VERSION ]; then
-  green "Heroku database is up-to-date."
-  green "--> At $HEROKU_VERSION"
-  NEED_MIGRATION=0
-elif [ $HEROKU_VERSION -lt $SCHEMA_VERSION ]; then
-  yellow "Heroku database version is behind; migration is needed."
-  yellow "--> From $HEROKU_VERSION to $SCHEMA_VERSION"
-  NEED_MIGRATION=1
-else
-  red "Heroku database version is greater than repository schema version."
-  red "This is probably due to migrations applied to heroku but not commited to your Git origin."
-  red ""
-  red "--> Heroku is at $HEROKU_VERSION"
-  red "--> Git schema is at $SCHEMA_VERSION"
-  red ""
-  red "Please contact one of the following people:"
-  heroku sharing --app $HEROKU_APP
-  red ""
-  red "Aborting."
-  exit 1
 fi
 
-if [ $NEED_MIGRATION -eq 1 ]; then
-  green "Enabling maintenance mode"
-  heroku maintenance:on --app $HEROKU_APP
-  if [ $? -ne 0 ]; then
-    red "Failed to set maintenance mode."
-    exit 1
-  fi
-fi
+green "Current heroku release: $HEROKU_RELEASE"
 
 green "Pushing to heroku."
 git push git@heroku.com:$HEROKU_APP.git $SHA:master
 if [ $? -ne 0 ]; then
   red "Heroku push rejected. See message above."
-  if [ $NEED_MIGRATION -eq 1 ]; then
-    red "Turning off maintenance mode."
-    heroku maintenance:off --app $HEROKU_APP
-  fi
+  red "Please contact a heroku collaborator for $HEROKU_APP:"
+  heroku sharing --app $HEROKU_APP
   exit 1;
 fi
 
-if [ $NEED_MIGRATION -eq 1 ]; then
+MIGRATIONS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
 
-  green "Displaying pending migrations."
-  heroku run rake db:migrate:status
+if [ "$MIGRATIONS" != "" ]; then
+  green "There are pending migrations to apply:"
+  echo $MIGRATIONS
 
   green "Migrating database."
-  heroku run rake db:migrate
+  heroku run rake db:migrate --app $HEROKU_APP
   if [ $? -ne 0 ]; then
-    red "Something went wrong while applying migrations."
+    red "Migration failed! This is bad."
     red "Please contact a heroku collaborator for $HEROKU_APP:"
     heroku sharing --app $HEROKU_APP
-    red ""
-    red "The app has been left in maintenance mode."
+    red "The app $HEROKU_APP will now be reverted to its last working version $HEROKU_RELEASE."
+    heroku releases:rollback $HEROKU_RELEASE --app $HEROKU_APP
+    red "Abort."
     exit 1
   fi
-
-  green "Turning off maintenance mode."
-  heroku maintenance:off --app $HEROKU_APP
+else
+  green "There are no pending migrations."
 fi
 
 green "All done."
