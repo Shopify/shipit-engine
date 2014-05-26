@@ -51,6 +51,9 @@ if [ "$MIGRATIONS" != "" ]; then
     red "Abort."
     exit 1
   fi
+
+  green "Post-migration dyno restart."
+  heroku restart --app $HEROKU_APP
 else
   green "There are no pending migrations."
 fi
