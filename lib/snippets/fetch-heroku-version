@@ -3,10 +3,10 @@
 HEROKU_APP=$1
 
 if [ -z $HEROKU_APP ]; then
-  echo "Usage: $0 <app-name>"
+  echo "Usage: $0 <app-name>" >&2
   exit 1;
 fi
 
 HEROKU_GIT="git@heroku.com:$HEROKU_APP.git"
 
-git ls-remote --heads $HEROKU_GIT 2>&1 | grep 'refs/heads/master' | awk '{ print $1; }'
+git ls-remote --heads $HEROKU_GIT | grep 'refs/heads/master' | awk '{ print $1; }'
