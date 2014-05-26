@@ -11,7 +11,12 @@ function yellow() {
 }
 
 HEROKU_APP=$1
-HEROKU_RELEASE=`heroku releases --app repodb 2>/dev/null | head -n2 | tail -n1 | cut -d" " -f1`
+HEROKU_RELEASE=`heroku releases --app $HEROKU_APP 2>/dev/null | head -n2 | tail -n1 | cut -d" " -f1`
+
+if [ -z $HEROKU_APP ]; then
+  red "Usage: $0 <app-name>"
+  exit 1;
+fi
 
 if [ -z $HEROKU_RELEASE ]; then
   red "Error detecting current heroku release."
