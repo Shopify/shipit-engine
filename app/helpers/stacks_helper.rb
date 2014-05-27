@@ -21,7 +21,7 @@ module StacksHelper
     when 'pending'
       'Pending...'
     when 'unknown'
-      'Not Run'
+      commit.deployable? ? 'Deploy' : 'Not Run'
     else
       'Failure'
     end

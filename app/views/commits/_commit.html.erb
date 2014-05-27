@@ -17,12 +17,11 @@
     </span>
   </div>
 
-  <%= form_tag new_stack_deploy_path(stack), :method => :get, :class => 'deploy-action' do %>
-    <%= hidden_field_tag :sha, commit.sha %>
-    <%= button_tag commit_button_text(commit),
-      :name     => nil,
-      :class    => ['btn', commit.state].join(' '),
-      :disabled => !commit.deployable?
+  <div class='deploy-action'>
+    <%= button_to commit_button_text(commit),
+      new_stack_deploy_path(stack, sha: commit.sha),
+      class: "btn #{commit.state}",
+      disabled: !commit.deployable?
     %>
-  <% end %>
+  </div>
 </li>
