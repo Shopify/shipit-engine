@@ -11,7 +11,7 @@ class StackSearch
   
   constructor: (root) ->
     @$root = $(root)
-    @$root.on('keydown', '.stack-search', @onKeyUp)
+    @$root.on('keyup', '.stack-search', @onKeyUp)
 
   onKeyUp: (event) =>
     @$items = @$root.find('[data-search]')
