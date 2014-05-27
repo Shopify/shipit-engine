@@ -65,7 +65,28 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 'success', @commit.state
   end
 
+  test "#deployable? is true when state == 'success'" do
+    @commit.stubs(state: 'success')
+    assert @commit.deployable?
+  end
+
+  test "#deployable? is true when the stack does not enforce CI" do
+    @commit.stack.stubs(enforce_ci: false)
+    @commit.stubs(state: 'unknown')
+    assert @commit.deployable?
+  end
+
+  test "#deployable? is false when the state is not 'success' and the stack enforces CI" do
+    @commit.stubs(state: 'unknown')
+    refute @commit.deployable?
+  end
+
+  test "#deployable? is false when the stack isn't set and the state is not 'success'" do
+    refute Commit.new.deployable?
+  end
+
   private
+
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
