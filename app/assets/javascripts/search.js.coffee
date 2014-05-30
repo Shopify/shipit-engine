@@ -51,7 +51,8 @@ class StackSearch
     $previous.addClass('selected')
 
   goToSelectedStack: ->
-    window.location = @$items.filter('.selected').find('.commits-path').attr('href')
+    if stack = @$items.filter('.selected').filter(':not(.not-matching)').find('.commits-path').attr('href')
+      window.location = stack
 
 search = new StackSearch(document)
 
