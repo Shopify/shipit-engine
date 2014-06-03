@@ -1,7 +1,11 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 <div class="deploy-banner <%= @deploy.status %>" data-deploy-status="<%= @deploy.status %>">
   <div class="wrapper">
-    <span class="deploy-status">Deploying <span class="short-sha"><%= @deploy.until_commit.short_sha %></span></span>
+    <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
+    <span class="deploy-status">
+      deploying <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
+      <%= timeago_tag(@deploy.created_at, force: true) %> at <%= @deploy.created_at %>
+    </span>
   </div>
 </div>
 
