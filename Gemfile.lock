@@ -62,12 +62,22 @@ GEM
       hiredis (~> 0.4.0)
     erubis (2.7.0)
     eventmachine (1.0.3)
+    excon (0.34.0)
     execjs (2.0.2)
     faker (1.2.0)
       i18n (~> 0.5)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     hashie (2.0.5)
+    heroku (3.8.2)
+      heroku-api (~> 0.3.17)
+      launchy (>= 0.3.2)
+      netrc (~> 0.7.7)
+      rest-client (~> 1.6.1)
+      rubyzip
+    heroku-api (0.3.18)
+      excon (~> 0.27)
+      multi_json (~> 1.8)
     hike (1.2.3)
     hiredis (0.4.5)
     i18n (0.6.9)
@@ -77,6 +87,8 @@ GEM
     json (1.8.1)
     jwt (0.1.13)
       multi_json (>= 1.5)
+    launchy (2.4.2)
+      addressable (~> 2.3)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -94,6 +106,7 @@ GEM
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.8.0)
+    netrc (0.7.7)
     oauth2 (0.9.3)
       faraday (>= 0.8, < 0.10)
       jwt (~> 0.1.8)
@@ -185,9 +198,12 @@ GEM
       vegas (~> 0.1.2)
     resque-workers-lock (1.9)
       resque
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     ruby-openid (2.3.0)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
+    rubyzip (1.1.4)
     safe_yaml (1.0.1)
     sass (3.2.19)
     sass-rails (4.0.3)
@@ -252,6 +268,7 @@ DEPENDENCIES
   capistrano-rails
   coffee-rails
   faker
+  heroku (~> 3.8.2)
   jquery-rails
   mocha
   mysql2

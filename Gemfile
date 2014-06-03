@@ -22,6 +22,7 @@ gem 'pubsubstub', '~> 0.0.7'
 gem 'securecompare', '~>1.0'
 gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.2'
+gem 'heroku', '~> 3.8.2'
 
 group :production do
   gem 'mysql2'
