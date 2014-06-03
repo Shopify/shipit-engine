@@ -6,7 +6,8 @@
   <div class="event">
     <span class="event-meta">
       <a href="#" class="user main-user disabled"><%= deploy.author.name %></a>
-      deployed <span class="number"><%= deploy.since_commit.short_sha %>-<%= deploy.until_commit.short_sha %></span> <%= timeago_tag(deploy.created_at, force: true) %> at <%= deploy.created_at %>
+      deployed <span class="number"><%= deploy.since_commit.short_sha %>-<%= deploy.until_commit.short_sha %></span> <%= timeago_tag(deploy.created_at, force: true) %>
+      <span class="event-time">at <%= deploy.created_at %></span>
     </span>
     <span class="event-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">
@@ -14,5 +15,5 @@
       </a>
       <span class="event-number"></span>
     </span>
-  </div>
+  </div
 </li>

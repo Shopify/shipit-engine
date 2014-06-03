@@ -90,7 +90,6 @@
         color: #777;
           &:hover { color: $blue; }
       }
-
     }
 
     .event-title {
@@ -104,6 +103,10 @@
           color: inherit;
             &:hover { color: $blue; }
         }
+    }
+
+    .event-time {
+      color: #BBB;
     }
 
   .deploy-action {
