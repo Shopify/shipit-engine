@@ -23,31 +23,6 @@
         <% if can_login? %>
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
         <% end %>
-        <nav class="nav">
-          <% menu.owners.each do |owner| %>
-            <div class="stack">
-              <% if menu.owners.count > 1 %>
-                <h4 class="stack-owner"><%= owner.name %></h4>
-              <% end %>
-              <ul>
-                <% owner.repos.each do |repo| %>
-                  <li class="nav-item">
-                    <span class="platform"><%= repo.name %></span>
-                    <ul class="server-lst">
-                      <% repo.stacks.each do |stack| %>
-                        <li class="server <%= is_current_stack?(stack) ? 'selected' : '' %>">
-                          <a href="<%= stack_path(stack) %>">
-                            <%= stack.environment %>
-                          </a>
-                        </li>
-                      <% end %>
-                    </ul>
-                  </li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-        </nav>
       </div>
     </header>
     <div class="main">
