@@ -34,3 +34,7 @@
   30% {  left: 0%; }
   100% { width: 50%; left: 100%; }
 }
+
+pre.nowrap {
+  white-space: 'pre';
+}
