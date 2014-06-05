@@ -40,6 +40,21 @@ class StacksControllerTest < ActionController::TestCase
     assert_redirected_to stack_path(Stack.last)
   end
 
+  test "#create when not valid renders new" do
+    params = {
+      stack: {
+        repo_owner:  "some",
+        repo_name:   "owner/path" #no good
+      }
+    }
+
+    assert_no_difference "Stack.count" do
+      post :create, params
+    end
+
+    assert_template :new
+  end
+
   test "#destroy behaves correctly" do
     delete :destroy, :id => @stack.to_param
     assert_redirected_to stacks_path
