@@ -16,6 +16,18 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal 'cyclim.se', @stack.repo_name
   end
 
+  test "branch defaults to master" do
+    @stack.branch = ""
+    assert @stack.save
+    assert_equal 'master', @stack.branch
+  end
+
+  test "environment defaults to production" do
+    @stack.environment = ""
+    assert @stack.save
+    assert_equal 'production', @stack.environment
+  end
+
   test "repo_owner cannot contain a `/`" do
     assert @stack.valid?
     @stack.repo_owner = 'foo/bar'
