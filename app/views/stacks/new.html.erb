@@ -27,7 +27,14 @@
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
           <span class="form-hint">Where is this stack deployed to?</span>
         </p>
-        <p><%= f.submit class: 'btn' %></p>
+        <p>
+          <%= f.label :enforce_ci, "Enforce CI" %>
+          <%= f.check_box :enforce_ci %>
+          <span class="helper-text">&#8592; require a green CI run before deploying?</span>
+        </p>
+        <p>
+          <%= f.submit class: 'btn' %>
+        </p>
       <% end %>
     </div>
 

@@ -14,4 +14,16 @@ module StacksHelper
     link_to(github_id, github_change_url(commit), target: '_blank', class: 'number')
   end
 
+  def commit_button_text(commit)
+    case commit.state
+    when 'success'
+      'Deploy'
+    when 'pending'
+      'Pending...'
+    when 'unknown'
+      commit.deployable? ? 'Deploy' : 'Not Run'
+    else
+      'Failure'
+    end
+  end
 end

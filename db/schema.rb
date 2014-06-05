@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140521193738) do
+ActiveRecord::Schema.define(version: 20140523221321) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20140521193738) do
     t.string   "deploy_url"
     t.string   "lock_reason"
     t.integer  "deploys_count", default: 0,            null: false
+    t.boolean  "enforce_ci",    default: true,         null: false
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true

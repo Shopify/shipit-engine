@@ -75,7 +75,12 @@ class Commit < ActiveRecord::Base
     @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-\_\/]+\n\n(?<pr_title>.*)/)
   end
 
+  def deployable?
+    state == 'success' || (stack && !stack.enforce_ci)
+  end
+
   private
+
   def broadcast_event(type)
     url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
     payload = {id: id, url: url}.to_json
