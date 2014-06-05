@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 20140605184534) do
     t.string   "deploy_url"
     t.string   "lock_reason"
     t.integer  "deploys_count",         default: 0,            null: false
-    t.boolean  "continuous_deployment", default: false
+    t.boolean  "continuous_deployment", default: false,        null: false
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
