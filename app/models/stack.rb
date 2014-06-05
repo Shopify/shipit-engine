@@ -16,6 +16,10 @@ class Stack < ActiveRecord::Base
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
 
+  def self.refresh_deployed_revisions
+    find_each(&:async_refresh_deployed_revision)
+  end
+
   def undeployed_commits?
     undeployed_commits_count > 0
   end
@@ -30,6 +34,24 @@ class Stack < ActiveRecord::Base
     )
     deploy.enqueue
     deploy
+  end
+
+  def async_refresh_deployed_revision
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: id)
+  end
+
+  def update_deployed_revision(sha)
+    return if deploying?
+
+    recorded_last_deployed_commit = last_deployed_commit
+    return if recorded_last_deployed_commit.sha == sha
+
+    until_commit = commits.reachable.where(sha: sha).last
+    deploys.create!(
+      until_commit: until_commit,
+      since_commit: recorded_last_deployed_commit,
+      status: 'success',
+    )
   end
 
   def last_deployed_commit
@@ -79,6 +101,10 @@ class Stack < ActiveRecord::Base
   def github_commits
     Shipit.github_api.commits(github_repo_name, sha: branch)
     Shipit.github_api.last_response
+  end
+
+  def deploying?
+    deploys.active.any?
   end
 
   def locked?

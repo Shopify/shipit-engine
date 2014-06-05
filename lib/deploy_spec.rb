@@ -27,6 +27,10 @@ class DeploySpec
     config('deploy', 'override') || discover_capistrano || discover_gem || cant_detect_deploy_steps
   end
 
+  def fetch_deployed_revision_steps
+    config('fetch') || []
+  end
+
   def discover_gem
     publish_gem if gem?
   end

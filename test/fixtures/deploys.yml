@@ -11,7 +11,7 @@ shipit2:
   status: failed
 
 shipit_pending:
-  since_commit_id: 3 # third
+  since_commit_id: 2 # second
   until_commit_id: 4 # fourth
   stack: shipit
   status: pending
