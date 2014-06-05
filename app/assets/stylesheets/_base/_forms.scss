@@ -1,0 +1,97 @@
+$required_icon: asset-url('validation/required.png');
+$valid_icon: asset-url('validation/valid.png');
+$invalid_icon: asset-url('validation/invalid.png');
+
+form {
+  *:focus {
+    outline: none;
+  }
+
+  label {
+    width: 25%;
+    margin-top: 3px;
+    display: inline-block;
+    float: left;
+    padding: 3px;
+  }
+
+  input:not(.btn), select {
+    height: 20px;
+    width: 220px;
+    padding: 5px 8px;
+  }
+
+  textarea {
+    padding: 8px;
+    width: 300px;
+  }
+
+  input:not(.btn), textarea, select {
+    border:1px solid #aaa;
+    box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+    border-radius:2px;
+    padding-right:30px;
+    -moz-transition: padding .25s;
+    -webkit-transition: padding .25s;
+    -o-transition: padding .25s;
+    transition: padding .25s;
+
+    &:focus {
+      background: #fff;
+      border: 1px solid #555;
+      box-shadow: 0 0 3px #aaa;
+      padding-right: 70px;
+    }
+
+    &:required {
+      background: #fff $required_icon no-repeat 98% center;
+    }
+
+    &:required:valid {
+      background: #fff $valid_icon no-repeat 98% center;
+      box-shadow: 0 0 5px #5cd053;
+      border-color: #28921f;
+    }
+
+    &:focus:invalid {
+      background: #fff $invalid_icon no-repeat 98% center;
+      box-shadow: 0 0 5px #d45252;
+      border-color: #b03535
+    }
+  }
+
+  .form-hint {
+    background: #d45252;
+    border-radius: 3px 3px 3px 3px;
+    color: white;
+    margin-left:8px;
+    padding: 1px 6px;
+    z-index: 999; /* hints stay above all other elements */
+    position: absolute; /* allows proper formatting if hint is two lines */
+    display: none;
+
+    &:before {
+      content: "\25C0";
+      color: #d45252;
+      position: absolute;
+      top: 1px;
+      left: -6px;
+    }
+  }
+
+  .form-hint {
+    font-size: 11px;
+  }
+
+  input:focus + .form-hint, select:focus + .form-hint {
+    display: inline;
+  }
+
+  input:required:valid + .form-hint, select:required:valid + .form-hint {
+    background: #28921f;
+  }
+
+  input:required:valid + .form-hint::before, select:required:valid + .form-hint::before {
+    color: #28921f;
+  }
+}

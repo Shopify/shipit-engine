@@ -8,6 +8,7 @@ class Stack < ActiveRecord::Base
   has_many :deploys
   has_many :webhooks
 
+  before_validation :update_defaults
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
@@ -124,5 +125,10 @@ class Stack < ActiveRecord::Base
     payload = {id: id, locked: lock_reason.present?}.to_json
     event = Pubsubstub::Event.new(payload, name: "stack.update")
     Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
+  end
+
+  def update_defaults
+    self.environment = 'production' if environment.blank?
+    self.branch = 'master' if branch.blank?
   end
 end

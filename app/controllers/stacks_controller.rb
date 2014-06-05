@@ -22,7 +22,7 @@ class StacksController < ApplicationController
   end
 
   def create
-    @stack = Stack.create!(create_params)
+    @stack = Stack.create(create_params)
     respond_with(@stack)
   end
 

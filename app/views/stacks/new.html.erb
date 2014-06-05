@@ -7,24 +7,25 @@
       <%= form_for @stack do |f| %>
         <p>
           <%= f.label :repo_owner %>
-          <%= f.text_field :repo_owner, value: 'Shopify' %>
+          <%= f.text_field :repo_owner, placeholder: 'e.g. Shopify', required: true %>
         </p>
         <p>
           <%= f.label :repo_name %>
-          <%= f.text_field :repo_name %>
+          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_]+$" %>
+          <span class="form-hint">Only letters, numbers, underscores and dashes</span>
         </p>
         <p>
           <%= f.label :branch %>
-          <%= f.text_field :branch %>
+          <%= f.text_field :branch, placeholder: 'master' %>
         </p>
         <p>
           <%= f.label :environment %>
-          <%= f.text_field :environment %>
+          <%= f.text_field :environment, placeholder: 'production' %>
         </p>
         <p>
           <%= f.label :deploy_url %>
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
-          <span class="helper-text">&#8592; where is this stack deployed to?</span>
+          <span class="form-hint">Where is this stack deployed to?</span>
         </p>
         <p><%= f.submit class: 'btn' %></p>
       <% end %>
