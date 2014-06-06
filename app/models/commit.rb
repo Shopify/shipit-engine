@@ -15,8 +15,8 @@ class Commit < ActiveRecord::Base
     id ? where('id > ?', id) : all
   }
 
-  scope :reachable, -> { where(detached: false) }
-  scope :success,   -> { where(state: 'success') }
+  scope :reachable,  -> { where(detached: false) }
+  scope :successful, -> { where(state: 'success') }
 
   def self.detach!
     update_all(detached: true)
@@ -81,14 +81,12 @@ class Commit < ActiveRecord::Base
 
   def schedule_continuous_delivery
     return unless state == 'success' && stack.continuous_deployment?
-
-    unless deploy_in_progress? || newer_commit_deployed?
-      stack.trigger_deploy(self, committer)
-    end
+    return if deploy_in_progress? || newer_commit_deployed?
+    stack.trigger_deploy(self, committer)
   end
 
   def deploy_in_progress?
-    stack.deploys.running.count > 0
+    stack.deploys.active.any?
   end
 
   def newer_commit_deployed?
