@@ -80,11 +80,18 @@ class Commit < ActiveRecord::Base
 
   def schedule_continuous_delivery
     return unless state == 'success' && stack.continuous_deployment?
-    stack.trigger_deploy(self, committer) unless deploy_in_progress?
+
+    unless deploy_in_progress? || newer_commit_deployed?
+      stack.trigger_deploy(self, committer)
+    end
   end
 
   def deploy_in_progress?
     stack.deploys.running.count > 0
+  end
+
+  def newer_commit_deployed?
+    stack.last_deployed_commit.id > id
   end
 
   def broadcast_event(type)

@@ -65,6 +65,32 @@ class CommitsTest < ActiveSupport::TestCase
     end
   end
 
+  test "updating won't trigger a deploy if a newer commit has been deployed" do
+    @stack.reload.update(continuous_deployment: true)
+    @stack.deploys.destroy_all
+
+    walrus = users(:walrus)
+    new_commit = @stack.commits.create!(
+      sha: '1234',
+      message: 'bla',
+      author: walrus,
+      committer: walrus,
+      authored_at: Time.now,
+      committed_at: Time.now
+    )
+
+    @stack.deploys.create!(
+      user_id: walrus.id,
+      since_commit: @stack.last_deployed_commit,
+      until_commit: new_commit,
+      status: 'success'
+    )
+
+    assert_no_difference "Deploy.count" do
+      @commit.update(state: 'success')
+    end
+  end
+
   test "updating without CD skips deploy regardless of state" do
     @stack.reload.deploys.destroy_all
 
