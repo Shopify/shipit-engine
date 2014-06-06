@@ -15,3 +15,9 @@ shipit_pending:
   until_commit_id: 4 # fourth
   stack: shipit
   status: pending
+
+shipit_running:
+  since_commit_id: 3
+  until_commit_id: 4
+  stack: shipit
+  status: running
