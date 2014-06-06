@@ -2,9 +2,10 @@ class Commit < ActiveRecord::Base
   belongs_to :stack, touch: true
   has_many :deploys
 
-  after_create{ broadcast_event('create') }
-  after_destroy{ broadcast_event('remove') }
-  after_update{ broadcast_update('update') }
+  after_create  { broadcast_event('create') }
+  after_destroy { broadcast_event('remove') }
+  after_update  { broadcast_update('update') }
+  after_update :schedule_continuous_delivery
 
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
@@ -76,6 +77,16 @@ class Commit < ActiveRecord::Base
   end
 
   private
+
+  def schedule_continuous_delivery
+    return unless state == 'success' && stack.continuous_deployment?
+    stack.trigger_deploy(self, committer) unless deploy_in_progress?
+  end
+
+  def deploy_in_progress?
+    stack.deploys.running.count > 0
+  end
+
   def broadcast_event(type)
     url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
     payload = {id: id, url: url}.to_json

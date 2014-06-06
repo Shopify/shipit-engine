@@ -10,6 +10,7 @@ class Deploy < ActiveRecord::Base
 
   scope :success, -> { where(status: 'success') }
   scope :completed, -> { where(status: %w(success error failed)) }
+  scope :running, -> { where(status: %w(pending running)) }
 
   state_machine :status, initial: :pending do
     event :run do

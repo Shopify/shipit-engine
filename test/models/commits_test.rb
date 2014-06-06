@@ -47,6 +47,41 @@ class CommitsTest < ActiveSupport::TestCase
     @commit.update_attributes(message: "toto")
   end
 
+  test "updating state to success triggers new deploy when stack has continuous deployment" do
+    @stack.reload.update(continuous_deployment: true)
+    @stack.deploys.destroy_all
+
+    assert_difference "Deploy.count" do
+      @commit.update(state: 'success')
+    end
+  end
+
+  test "updating state to success skips deploy when stack has CD but a deploy is in progress" do
+    @stack.reload.update(continuous_deployment: true)
+    @stack.trigger_deploy(@commit, @commit.committer)
+
+    assert_no_difference "Deploy.count" do
+      @commit.update(state: 'success')
+    end
+  end
+
+  test "updating without CD skips deploy regardless of state" do
+    @stack.reload.deploys.destroy_all
+
+    assert_no_difference "Deploy.count" do
+      @commit.update(state: 'success')
+    end
+  end
+
+  test "updating when not success does not schedule CD" do
+    @stack.reload.update(continuous_deployment: true)
+    @stack.deploys.destroy_all
+
+    assert_no_difference "Deploy.count" do
+      @commit.update(state: 'unknown')
+    end
+  end
+
   test "creating broadcasts a 'create' event" do
     assert_event('create')
     walrus = users(:walrus)
