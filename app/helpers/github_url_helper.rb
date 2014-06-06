@@ -18,6 +18,10 @@ module GithubUrlHelper
     image_tag(uri.to_s, attributes)
   end
 
+  def github_commit_range_url(stack, since_commit, until_commit)
+    [github_repo_url(stack.repo_owner, stack.repo_name), 'compare', "#{since_commit.sha}...#{until_commit.sha}"].join('/')
+  end
+
   def github_user_url(user)
     [github_url, user].join("/")
   end
@@ -34,4 +38,11 @@ module GithubUrlHelper
     ref = [from_sha, to_sha].join("...")
     [github_repo_url(owner, repo), "compare", ref].join("/")
   end
+
+  def link_to_github_deploy(deploy)
+    url = github_commit_range_url(deploy.stack, deploy.since_commit, deploy.until_commit)
+    text = "#{deploy.since_commit.short_sha}...#{deploy.until_commit.short_sha}"
+    link_to(text, url, class: 'number')
+  end
+
 end

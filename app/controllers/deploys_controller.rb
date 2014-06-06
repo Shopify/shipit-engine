@@ -6,8 +6,8 @@ class DeploysController < ApplicationController
   before_action :load_until_commit, only: :create
 
   def new
-    @commit = @stack.commits.where(:sha => params[:sha]).first!
-    @deploy = @stack.deploys.new(:until_commit => @commit)
+    @commit = @stack.commits.where(sha: params[:sha]).first!
+    @deploy = @stack.deploys.new(until_commit: @commit, since_commit: @stack.last_deployed_commit)
   end
 
   def show
