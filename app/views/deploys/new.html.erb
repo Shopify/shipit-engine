@@ -13,9 +13,7 @@
       <ul class="commit-lst sub-commits">
         <% @deploy.commits.each do |commit| %>
           <li>
-            <div data-tooltip="<%= commit.author.name %>" class="avatar">
-              <%= github_avatar commit.author, size: 24 %>
-            </div>
+            <%= render_user commit.author %>
             <div class="event">
               <span class="event-title">
                 <%= render_commit_message commit %>

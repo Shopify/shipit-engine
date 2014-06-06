@@ -1,5 +1,11 @@
 module StacksHelper
 
+  def render_user(user)
+    content_tag(:div, class: 'avatar', 'data-tooltip' => user.name) do
+      github_avatar(user, size: 24)
+    end
+  end
+
   def github_change_url(commit)
     commit.pull_request_url || github_commit_url(commit)
   end
