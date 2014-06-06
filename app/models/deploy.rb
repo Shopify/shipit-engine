@@ -37,6 +37,16 @@ class Deploy < ActiveRecord::Base
 
     after_transition from: :running, do: :rollup_chunks
     after_transition :broadcast_deploy
+    after_transition to: :success, do: :schedule_continuous_delivery
+  end
+
+  def schedule_continuous_delivery
+    return unless stack.continuous_deployment?
+
+    to_deploy = stack.commits.order(:id).newer_than(until_commit).success.last
+    if to_deploy
+      stack.trigger_deploy(to_deploy, to_deploy.committer)
+    end
   end
 
   after_create :broadcast_deploy

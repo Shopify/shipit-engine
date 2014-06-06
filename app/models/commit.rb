@@ -16,6 +16,7 @@ class Commit < ActiveRecord::Base
   }
 
   scope :reachable, -> { where(detached: false) }
+  scope :success,   -> { where(state: 'success') }
 
   def self.detach!
     update_all(detached: true)
