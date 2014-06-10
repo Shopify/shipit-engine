@@ -34,7 +34,7 @@ class Deploy < ActiveRecord::Base
     state :success
     state :error
 
-    after_transition from: :running, do: :rollup_chunks
+    # after_transition from: :running, do: :rollup_chunks # FIXME: I suspect this to be the reason of the MySQL deadlocks
     after_transition :broadcast_deploy
   end
 

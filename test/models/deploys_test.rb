@@ -72,6 +72,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "transitioning away from the pending state enqueues a ChunkRollupJob" do
+    skip('this feature was disabled because we suspect it to generate deadlocks')
     deploy = deploys(:shipit_pending)
     Resque.expects(:enqueue).with(ChunkRollupJob, deploy_id: deploy.id)
     deploy.run! && deploy.complete!
