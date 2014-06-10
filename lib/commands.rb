@@ -11,7 +11,7 @@ class Commands
   delegate :git_version, to: :class
 
   def env
-    Settings['env'] || {}
+    @env ||= {'SHIPIT' => '1'}.merge(Settings['env'] || {})
   end
 
   def git(*args)
