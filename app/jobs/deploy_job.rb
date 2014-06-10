@@ -1,4 +1,5 @@
 class DeployJob < BackgroundJob
+  COMMAND_TIMEOUT = 3.minutes.to_i
   @queue = :deploys
 
   extend BackgroundJob::StackExclusive
@@ -36,7 +37,7 @@ class DeployJob < BackgroundJob
 
   def capture(command)
     @deploy.write("$ #{command.to_s}\n")
-    command.stream! do |line|
+    command.stream!(timeout: COMMAND_TIMEOUT) do |line|
       @deploy.write(line)
     end
     @deploy.write("\n")
