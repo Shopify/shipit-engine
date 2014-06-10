@@ -1,5 +1,7 @@
 class Commands
 
+  DEFAULT_ENVIRONMENT = {'SHIPIT' => '1'}.freeze
+
   def self.git_version
     @git_version ||= begin
       `git --version` =~ /([\d\.]+)/
@@ -11,7 +13,7 @@ class Commands
   delegate :git_version, to: :class
 
   def env
-    Settings['env'] || {}
+    @env ||= DEFAULT_ENVIRONMENT.merge(Settings['env'] || {})
   end
 
   def git(*args)
