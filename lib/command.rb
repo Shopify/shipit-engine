@@ -1,5 +1,6 @@
-require "open3"
+require 'open3'
 require 'fileutils'
+require 'timeout'
 
 class Command
   MAX_READ = 2 ** 16
@@ -30,17 +31,17 @@ class Command
     "#{self.to_s} exited with status #{@code}"
   end
 
-  def run
+  def run(timeout: nil)
     output = []
-    stream do |out|
+    stream(timeout: timeout) do |out|
       output << out
     end
     output.join
   end
 
-  def run!
+  def run!(timeout: nil)
     output = []
-    stream! do |out|
+    stream!(timeout: timeout) do |out|
       output << out
     end
     output.join
@@ -54,30 +55,50 @@ class Command
     ENV['PATH'] = old_path
   end
 
-  def stream(&block)
+  def stream(timeout: nil, &block)
     FileUtils.mkdir_p(@chdir)
     _in, @out, wait_thread = []
     with_full_path do
       _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
       _in.close
-      read_stream(@out, &block)
-      @code = wait_thread.value
-      yield exit_message + "\n" unless success?
+      begin
+        read_stream(@out, timeout: timeout, &block)
+      rescue Timeout::Error => error
+        wait_thread.kill
+        @code = 'timeout'
+        yield red("No output received in the last #{timeout} seconds.") + "\n"
+        raise
+      else
+        @code = wait_thread.value
+        yield exit_message + "\n" unless success?
+      end
     end
     self
   end
 
-  def stream!(&block)
-    stream(&block)
+  def red(text)
+    "\033[1;31m#{text}\033[0m"
+  end
+
+  def stream!(timeout: nil, &block)
+    stream(timeout: timeout, &block)
     raise Command::Error.new(exit_message) unless success?
     self
   end
 
-  def read_stream(io, &block)
+  def read_stream(io, timeout: timeout, &block)
     loop do
-      yield io.readpartial(MAX_READ)
+      with_timeout(timeout) do
+        yield io.readpartial(MAX_READ)
+      end
     end
   rescue EOFError
+  end
+
+  def with_timeout(timeout, &block)
+    return yield unless timeout
+
+    Timeout.timeout(timeout, &block)
   end
 
 end
