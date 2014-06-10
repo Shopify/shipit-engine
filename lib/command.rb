@@ -57,19 +57,20 @@ class Command
 
   def stream(timeout: nil, &block)
     FileUtils.mkdir_p(@chdir)
-    _in, @out, wait_thread = []
+    _in, @out, @subprocess = []
     with_full_path do
-      _in, @out, wait_thread = Open3.popen2e(@env, *@args, chdir: @chdir)
+      _in, @out, @subprocess = Open3.popen2e(@env, *@args, chdir: @chdir)
       _in.close
       begin
         read_stream(@out, timeout: timeout, &block)
       rescue Timeout::Error => error
-        wait_thread.kill
+        @subprocess.kill
         @code = 'timeout'
         yield red("No output received in the last #{timeout} seconds.") + "\n"
-        raise
+        terminate!(&block)
+        raise error
       else
-        @code = wait_thread.value
+        @code = @subprocess.value
         yield exit_message + "\n" unless success?
       end
     end
@@ -99,6 +100,31 @@ class Command
     return yield unless timeout
 
     Timeout.timeout(timeout, &block)
+  end
+
+  def terminate!(&block)
+    kill_and_wait('INT', 5, &block)
+    kill_and_wait('INT', 2, &block)
+    kill_and_wait('TERM', 5, &block)
+    kill_and_wait('TERM', 2, &block)
+    kill('KILL', &block)
+  rescue Errno::ECHILD
+    true # much success
+  ensure
+    read_stream(@out, timeout: 1, &block) rescue nil
+  end
+
+  def kill_and_wait(sig, wait, &block)
+    kill(sig, &block)
+    Timeout.timeout(wait) do
+      read_stream(@out, &block)
+    end
+  rescue Timeout::Error
+  end
+
+  def kill(sig)
+    yield red("Sending SIG#{sig} to PID #{@subprocess.pid}\n")
+    Process.kill(sig, @subprocess.pid)
   end
 
 end
