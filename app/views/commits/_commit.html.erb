@@ -1,5 +1,5 @@
 <li class="commit" id="commit-<%= commit.id %>">
-  <div class="status <%= commit.state %>" data-tooltip="<%= commit.state.capitalize %>">
+  <div class="status <%= commit.state || 'unknown' %>" data-tooltip="<%= commit.state.capitalize %>">
     <a href="<%= commit.target_url%>" class="<%= :disabled unless commit.target_url.present? %>" target="_blank">
       <i><%= commit.state %></i>
       <%= github_avatar commit.author, size: 20 %>

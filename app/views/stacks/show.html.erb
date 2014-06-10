@@ -1,6 +1,6 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
-<section>
+<section class="hidden">
   <div class="wrapper configure-ci">
     <p>Hey there, did you forget to enable Continuous Integration for this repository?</p>
     <a href="https://repodb.herokuapp.com/ci/<%= @stack.github_repo_name %>/show" target="_blank">Take me there!</a>

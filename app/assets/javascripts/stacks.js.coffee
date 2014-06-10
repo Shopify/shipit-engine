@@ -13,11 +13,8 @@ jQuery ($) ->
 
   displayConfigureCiMessage = ->
     commits = $('.commit')
-    not_run_commits = commits.find('a.unknown')
-    if commits.length > 0 and commits.length == not_run_commits.length
-      $('.configure-ci').show()
-    else
-      $('.configure-ci').hide()
+    ciConfigured = !commits.length || commits.length != commits.filter('.unknown').length
+    $('.configure-ci').toggleClass('hidden', ciConfigured)
     return
 
   displayConfigureCiMessage()
