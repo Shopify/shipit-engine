@@ -2,10 +2,9 @@ class Commit < ActiveRecord::Base
   belongs_to :stack, touch: true
   has_many :deploys
 
-  after_create  { broadcast_event('create') }
-  after_destroy { broadcast_event('remove') }
-  after_update  { broadcast_update('update') }
-  after_update :schedule_continuous_delivery
+  after_create{ broadcast_event('create') }
+  after_destroy{ broadcast_event('remove') }
+  after_update{ broadcast_update('update') }
 
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
@@ -15,8 +14,7 @@ class Commit < ActiveRecord::Base
     id ? where('id > ?', id) : all
   }
 
-  scope :reachable,  -> { where(detached: false) }
-  scope :successful, -> { where(state: 'success') }
+  scope :reachable, -> { where(detached: false) }
 
   def self.detach!
     update_all(detached: true)
@@ -78,21 +76,6 @@ class Commit < ActiveRecord::Base
   end
 
   private
-
-  def schedule_continuous_delivery
-    return unless state == 'success' && stack.continuous_deployment?
-    return if deploy_in_progress? || newer_commit_deployed?
-    stack.trigger_deploy(self, committer)
-  end
-
-  def deploy_in_progress?
-    stack.deploys.active.any?
-  end
-
-  def newer_commit_deployed?
-    stack.last_deployed_commit.id > id
-  end
-
   def broadcast_event(type)
     url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
     payload = {id: id, url: url}.to_json

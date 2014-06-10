@@ -15,7 +15,7 @@ form {
     padding: 3px;
   }
 
-  input[type=text], input[type=password], select {
+  input:not(.btn), select {
     height: 20px;
     width: 220px;
     padding: 5px 8px;
@@ -26,7 +26,7 @@ form {
     width: 300px;
   }
 
-  input[type=text], input[type=password], textarea, select {
+  input:not(.btn), textarea, select {
     border:1px solid #aaa;
     box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
     border-radius:2px;

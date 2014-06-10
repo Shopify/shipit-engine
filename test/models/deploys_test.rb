@@ -120,36 +120,6 @@ class DeploysTest < ActiveSupport::TestCase
     deploy.save!
   end
 
-  test "transitioning to success triggers next deploy when stack uses CD" do
-    commits(:fifth).update_column(:state, 'success')
-
-    deploy = deploys(:shipit_running)
-    deploy.stack.update(continuous_deployment: true)
-
-    assert_difference "Deploy.count" do
-      deploy.complete
-    end
-  end
-
-  test "transitioning to success skips CD deploy when stack doesn't use it" do
-    commits(:fifth).update_column(:state, 'success')
-
-    deploy = deploys(:shipit_running)
-
-    assert_no_difference "Deploy.count" do
-      deploy.complete
-    end
-  end
-
-  test "transitioning to success skips CD when no successful commits after until_commit" do
-    deploy = deploys(:shipit_running)
-    deploy.stack.update(continuous_deployment: true)
-
-    assert_no_difference "Deploy.count" do
-      deploy.complete
-    end
-  end
-
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)

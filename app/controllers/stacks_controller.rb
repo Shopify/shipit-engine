@@ -35,7 +35,7 @@ class StacksController < ApplicationController
   end
 
   def update
-    @stack.update(update_params)
+    @stack.update(params.require(:stack).permit(:checklist, :deploy_url, :lock_reason))
     redirect_to settings_stack_path(@stack)
   end
 
@@ -67,9 +67,5 @@ class StacksController < ApplicationController
 
   def create_params
     params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url)
-  end
-
-  def update_params
-    params.require(:stack).permit(:checklist, :deploys_count, :lock_reason, :continuous_deployment)
   end
 end

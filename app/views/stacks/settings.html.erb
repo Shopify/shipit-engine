@@ -11,7 +11,6 @@
         <p><%= f.text_area :checklist %></p>
         <p>Deploy URL (Where is this stack deployed to?)</p>
         <p><%= f.text_field :deploy_url, placeholder: 'https://' %></p>
-        <p>Continuous Deployment? <%= f.check_box :continuous_deployment %></p>
         <p><%= f.submit class: "btn" %></p>
       <%- end -%>
     </div>
