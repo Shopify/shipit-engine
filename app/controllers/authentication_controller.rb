@@ -8,6 +8,7 @@ class AuthenticationController < ApplicationController
     return render 'failed', layout: false if auth.blank?
 
     user_id = sign_in_github(auth) || session[:user_id]
+    session[:user_id] = user_id
 
     if Settings.authentication.blank?
       return redirect_to return_url
