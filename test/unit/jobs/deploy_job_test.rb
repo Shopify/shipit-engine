@@ -55,6 +55,7 @@ class DeployJobTest < ActiveSupport::TestCase
 
   test "mark deploy as error if a command timeout" do
     Timeout.expects(:timeout).raises(Timeout::Error.new)
+    Command.any_instance.expects(:terminate!)
     assert_raises(Timeout::Error) do
       @job.perform(deploy_id: @deploy.id)
     end
