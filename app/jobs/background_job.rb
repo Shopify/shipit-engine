@@ -1,10 +1,26 @@
 class BackgroundJob
-  def self.perform(*args)
-    if options = args.extract_options!
-      args = [*args, options.with_indifferent_access]
+
+  class << self
+
+    attr_accessor :timeout
+
+    def self.perform(*args)
+      if options = args.extract_options!
+        args = [*args, options.with_indifferent_access]
+      end
+
+      with_timeout do
+        new.perform(*args)
+      end
     end
 
-    new.perform(*args)
+    private
+
+    def with_timeout(&block)
+      return yield unless timeout
+      Timeout.timeout(timeout, &block)
+    end
+
   end
 
   def logger

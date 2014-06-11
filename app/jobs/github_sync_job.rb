@@ -1,6 +1,8 @@
 class GithubSyncJob < BackgroundJob
   @queue = :default
 
+  self.timeout = 60
+
   extend Resque::Plugins::Workers::Lock
 
   def self.lock_workers(params)
