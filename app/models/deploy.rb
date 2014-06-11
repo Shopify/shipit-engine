@@ -8,8 +8,9 @@ class Deploy < ActiveRecord::Base
 
   has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
 
-  scope :success, -> { where(status: 'success') }
+  scope :success,   -> { where(status: 'success') }
   scope :completed, -> { where(status: %w(success error failed)) }
+  scope :active,    -> { where(status: %w(pending running)) }
 
   state_machine :status, initial: :pending do
     event :run do
@@ -36,6 +37,7 @@ class Deploy < ActiveRecord::Base
 
     # after_transition from: :running, do: :rollup_chunks # FIXME: I suspect this to be the reason of the MySQL deadlocks
     after_transition :broadcast_deploy
+    after_transition to: :success, do: :schedule_continuous_delivery
   end
 
   after_create :broadcast_deploy
@@ -89,6 +91,15 @@ class Deploy < ActiveRecord::Base
   end
 
   private
+
+  def schedule_continuous_delivery
+    return unless stack.continuous_deployment?
+
+    to_deploy = stack.commits.order(:id).newer_than(until_commit).successful.last
+    if to_deploy
+      stack.trigger_deploy(to_deploy, to_deploy.committer)
+    end
+  end
 
   def last_successful_deploy
     stack.deploys.where(:status => "success").last
