@@ -9,7 +9,12 @@ class StacksController < ApplicationController
     @undeployed = Commit.includes(:author).where(:users => {:login => current_user.login}, :detached => false).
       where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group('commits.stack_id').count.to_h
     ids = @undeployed.values.join(',')
-    @stacks = Stack.order("stacks.id IN (#{ids}) DESC").order(deploys_count: :desc)
+
+    @stacks = Stack.all
+    if @undeployed.size > 0
+      @stacks.order("stacks.id IN (#{ids}) DESC")
+    end
+    @stacks.order(deploys_count: :desc)
   end
 
   def show
