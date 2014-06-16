@@ -6,7 +6,10 @@ class StacksController < ApplicationController
   end
 
   def index
-    @stacks = Stack.order(deploys_count: :desc)
+    @undeployed = Commit.includes(:author).where(:users => {:login => current_user.login}, :detached => false).
+      where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group('commits.stack_id').count.to_h
+    ids = @undeployed.values.join(',')
+    @stacks = Stack.order("stacks.id IN (#{ids}) DESC").order(deploys_count: :desc)
   end
 
   def show
