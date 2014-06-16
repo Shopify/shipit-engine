@@ -12,9 +12,13 @@ function yellow() {
 
 HEROKU_APP=$1
 HEROKU_RELEASE=`heroku releases --app $HEROKU_APP 2>/dev/null | head -n2 | tail -n1 | cut -d" " -f1`
+GIT_COMMAND=${GIT_COMMAND:="git push git@heroku.com:$HEROKU_APP.git $SHA:master $GIT_FLAGS"}
 
 if [ -z $HEROKU_APP ]; then
   red "Usage: $0 <app-name>"
+  red "Supported environment variables:"
+  red "  - GIT_COMMAND: override the entire 'git push' command."
+  red "  - GIT_FLAGS: add arguments to the default 'git push' command."
   exit 1;
 fi
 
@@ -26,7 +30,7 @@ fi
 green "Current heroku release: $HEROKU_RELEASE"
 
 green "Pushing to heroku."
-git push git@heroku.com:$HEROKU_APP.git $SHA:master
+$GIT_COMMAND
 if [ $? -ne 0 ]; then
   red "Heroku push rejected. See message above."
   red "Please contact a heroku collaborator for $HEROKU_APP:"
