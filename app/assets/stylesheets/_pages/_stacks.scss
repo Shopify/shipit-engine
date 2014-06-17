@@ -103,6 +103,10 @@
   display: none;
 }
 
+div[data-stack-locked="false"] .lock-reason {
+  display: none;
+}
+
 .message {
   background-color: #E2F1FF;
   margin: 0px;
