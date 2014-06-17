@@ -1,9 +1,13 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>" data-stack-locked="<%= @stack.locked? %>">
-  <% if @stack.locked? %>
-    <h2><%= @stack.lock_reason %></h2>
-  <% end %>
+
+  <section class="lock-reason">
+    <div class="wrapper message">
+      <h2>Deploys are locked</h2>
+      <p><%= @stack.lock_reason %></p>
+    </div>
+  </section>
 
   <section>
     <header class="section-header">

@@ -52,9 +52,11 @@ jQuery ($) ->
       {@value, @className} = if locked then LOCKED_BUTTON else DEPLOY_BUTTON
 
   onStackUpdate = (message) ->
-    locked = JSON.parse(message.data).locked
-    updateDeployButtons(locked)
-    $('[data-stack-locked]').data('stack-locked', locked)
+    json = JSON.parse(message.data)
+    updateDeployButtons(json.locked)
+    $('[data-stack-locked]').data('stack-locked', json.locked)
+    $('.lock-reason p').text(json.lock_reason)
+    $('.lock-reason').toggle(json.locked)
 
   updateDeployButtons($('[data-stack-locked]').data('stack-locked'))
 

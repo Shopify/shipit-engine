@@ -122,7 +122,7 @@ class Stack < ActiveRecord::Base
   end
 
   def broadcast_update
-    payload = {id: id, locked: lock_reason.present?}.to_json
+    payload = {id: id, locked: locked?, lock_reason: lock_reason}.to_json
     event = Pubsubstub::Event.new(payload, name: "stack.update")
     Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
   end
