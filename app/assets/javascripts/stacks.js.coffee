@@ -11,6 +11,14 @@ jQuery ($) ->
     return if retryCount >= MAX_RETRY
     setTimeout((-> loadFragment(message, callback, retryCount)), 1000 * retryCount)
 
+  displayConfigureCiMessage = ->
+    commits = $('.commit')
+    ciConfigured = !commits.length || commits.length != commits.filter('.unknown').length
+    $('.configure-ci').toggleClass('hidden', ciConfigured)
+    return
+
+  displayConfigureCiMessage()
+
   loadFragment = (message, callback, retryCount=0) ->
     json = JSON.parse(message.data)
     success = (response) -> callback(json.id, response)
@@ -22,14 +30,17 @@ jQuery ($) ->
   onCommitUpdate = (message) ->
     loadFragment message, (id, commit) ->
       $("#commit-#{id}").replaceWith($timeago(commit))
+    displayConfigureCiMessage()
 
   onCommitCreate = (message) ->
     loadFragment message, (id, commit) ->
       $("ul.commit-lst").prepend($timeago(commit))
+    displayConfigureCiMessage()
 
   onCommitRemove = (message) ->
     json = JSON.parse(message.data)
     removeCommit id
+    displayConfigureCiMessage()
 
   onDeploySuccess = (message) ->
     json = JSON.parse(message.data)
