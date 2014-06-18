@@ -102,3 +102,17 @@
 .search-item.not-matching {
   display: none;
 }
+
+div[data-stack-locked="false"] .lock-reason {
+  display: none;
+}
+
+.message {
+  background-color: #E2F1FF;
+  margin: 0px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  h2 { font-weight: bold; padding-bottom: 10px; }
+  p { margin: 0px; }
+}
