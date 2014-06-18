@@ -10,7 +10,7 @@
     </ul>
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
-        <li class="search-item <%= @undeployed[stack.id] ? 'undeployed' : '' %>" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>" data-stack-id="<%= stack.id %>">
+        <li class="search-item <%= @undeployed[stack.id] ? 'undeployed' : '' %> <%= @user_stacks.include?(stack.id) ? '' : 'not-matching' %>" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>" data-stack-id="<%= stack.id %>">
           <%= link_to stack_path(stack), class: 'commits-path' do %>
             <span class="col"><%= stack.repo_name %></span>
             <small class="col"><%= stack.environment.capitalize %></small>
@@ -20,7 +20,7 @@
       <% end %>
     </ul>
 
-    <%= link_to 'Add a stack', new_stack_path, class: 'btn' %>
+    <%= link_to 'Add a stack', new_stack_path, class: 'btn' %>&nbsp;<%= link_to 'show all stacks', '#', class: 'btn secondary', id: 'show-all-stacks' %></p>
   </section>
 
 </div>

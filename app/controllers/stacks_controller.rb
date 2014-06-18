@@ -6,15 +6,20 @@ class StacksController < ApplicationController
   end
 
   def index
-    @undeployed = Commit.includes(:author).where(:users => {:login => current_user.login}, :detached => false).
-      where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group('commits.stack_id').count.to_h
-    ids = @undeployed.values.join(',')
+    @undeployed = Commit.where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group(:stack_id).count.to_h
 
-    @stacks = Stack.all
-    if @undeployed.size > 0
-      @stacks.order("stacks.id IN (#{ids}) DESC")
+    @user_stacks = if current_user.id
+      Commit.where("commits.author_id = #{current_user.id} or commits.committer_id = #{current_user.id}", :detached => false).select(:stack_id).group(:stack_id).collect(&:stack_id)
+    else
+      []
     end
-    @stacks.order(deploys_count: :desc)
+
+    stacks = Stack.all
+    if @undeployed.size > 0
+      ids = @undeployed.keys.join(',')
+      stacks = stacks.order("stacks.id IN (#{ids}) DESC")
+    end
+    @stacks = stacks.order(deploys_count: :desc)
   end
 
   def show
