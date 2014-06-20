@@ -126,6 +126,17 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 'success', @commit.state
   end
 
+  test "#creating a commit update the undeployed_commits_count" do
+    @stack.expects(:update_undeployed_commits_count).once
+    walrus = users(:walrus)
+    @stack.commits.create(author: walrus,
+                          committer: walrus,
+                          sha: "ab12",
+                          authored_at: DateTime.now,
+                          committed_at: DateTime.now,
+                          message: "more fish!")
+  end
+
   private
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|

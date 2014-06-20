@@ -4,3 +4,4 @@ shipit:
   environment: "production"
   branch: master
   deploys_count: 3
+  undeployed_commits_count: 3

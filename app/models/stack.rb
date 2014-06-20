@@ -141,11 +141,10 @@ class Stack < ActiveRecord::Base
 
   def update_undeployed_commits_count
     deploy = last_successful_deploy
-    count = if deploy
+    undeployed_commits_count = if deploy
       commits.where('commits.id > ?', deploy.until_commit_id).count
     else
       commits.count
     end
-    update_attributes!(undeployed_commits_count: count)
   end
 end
