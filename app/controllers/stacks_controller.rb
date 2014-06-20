@@ -6,13 +6,8 @@ class StacksController < ApplicationController
   end
 
   def index
-    @undeployed = Commit.where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group(:stack_id).count.to_h
-
-    @user_stacks = if current_user.id
-      Commit.where("commits.author_id = #{current_user.id} or commits.committer_id = #{current_user.id}", :detached => false).select(:stack_id).group(:stack_id).collect(&:stack_id)
-    else
-      []
-    end
+    @undeployed = Commit.reachable.where('commits.id > (select max(deploys.until_commit_id) from deploys where deploys.stack_id = commits.stack_id)').group(:stack_id).count.to_h
+    @user_stacks = current_user.stacks_contributed_to
 
     stacks = Stack.all
     if @undeployed.size > 0
