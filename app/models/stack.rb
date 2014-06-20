@@ -102,8 +102,8 @@ class Stack < ActiveRecord::Base
     checklist.to_s.lines.map(&:strip).select(&:present?)
   end
 
-  def last_deploy
-    deploys.order(id: :desc).limit(1).first
+  def last_successful_deploy
+    deploys.success.order(id: :desc).limit(1).first
   end
 
   private
@@ -140,7 +140,7 @@ class Stack < ActiveRecord::Base
   end
 
   def update_undeployed_commits_count
-    deploy = last_deploy
+    deploy = last_successful_deploy
     count = if deploy
       commits.where('commits.id > ?', deploy.until_commit_id).count
     else
