@@ -41,6 +41,14 @@
       padding-right: .5rem;
       box-sizing: border-box;
     }
+    .undeployed {
+      background-image: asset-data-url('ship.png');
+      background-repeat: no-repeat;
+      background-size: 22px 22px;
+      background-position: 0px center;
+      padding-left: 30px;
+      margin-left: -30px;
+    }
 }
 
 .stack-lst:empty:before {

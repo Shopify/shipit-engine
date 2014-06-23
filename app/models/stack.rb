@@ -17,6 +17,10 @@ class Stack < ActiveRecord::Base
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
 
+  def undeployed_commits?
+    undeployed_commits_count > 0
+  end
+
   def trigger_deploy(until_commit, user)
     since_commit = last_deployed_commit
 
@@ -97,6 +101,12 @@ class Stack < ActiveRecord::Base
 
   def checks
     checklist.to_s.lines.map(&:strip).select(&:present?)
+  end
+
+  def update_undeployed_commits_count(after_commit=nil)
+    after_commit ||= last_deployed_commit
+    undeployed_commits = Commit.reachable.where(stack_id: id).select('count(*) as count').where('id > ?', after_commit.id)
+    self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
 
   private

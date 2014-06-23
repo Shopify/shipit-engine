@@ -27,4 +27,8 @@ class User < ActiveRecord::Base
     true
   end
 
+  def stacks_contributed_to
+    return [] unless id
+    Commit.where('author_id = :id or committer_id = :id', id: id).uniq.pluck(:stack_id)
+  end
 end

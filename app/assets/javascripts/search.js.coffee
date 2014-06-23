@@ -2,16 +2,20 @@ unless String::contains
   String::contains = (args...) ->
     @indexOf(args...) != -1
 
-KEY = 
+KEY =
   UP: 38
   DOWN: 40
   ENTER: 13
 
 class StackSearch
-  
+
   constructor: (root) ->
     @$root = $(root)
     @$root.on('keyup', '.stack-search', @onKeyUp)
+    @$root.on('click', '#show-all-stacks', (e) =>
+      @$root.find('.not-matching').removeClass('not-matching')
+      e.preventDefault()
+    )
 
   onKeyUp: (event) =>
     @$items = @$root.find('[data-search]')

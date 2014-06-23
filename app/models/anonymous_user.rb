@@ -17,4 +17,8 @@ class AnonymousUser
   def logged_in?
     false
   end
+
+  def stacks_contributed_to
+    []
+  end
 end

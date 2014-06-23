@@ -150,6 +150,18 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  test "#transitioning to success update the undeployed_commits_count" do
+    stack  = stacks(:shipit)
+    deploy = stack.deploys.active.first
+    assert_equal 3, stack.undeployed_commits_count
+
+    deploy.run!
+    deploy.complete!
+
+    stack.reload
+    assert_equal 1, stack.undeployed_commits_count
+  end
+
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)

@@ -6,7 +6,9 @@ class StacksController < ApplicationController
   end
 
   def index
-    @stacks = Stack.order(deploys_count: :desc)
+    @user_stacks = current_user.stacks_contributed_to
+
+    @stacks = Stack.order('(undeployed_commits_count > 0) desc', deploys_count: :desc)
   end
 
   def show
