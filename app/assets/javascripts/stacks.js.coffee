@@ -13,7 +13,7 @@ jQuery ($) ->
 
   displayConfigureCiMessage = ->
     commits = $('.commit')
-    ciConfigured = !commits.length || commits.length != commits.find('a.unknown').length
+    ciConfigured = !commits.length || commits.length != commits.find('div.unknown').length
     $('.configure-ci').toggleClass('hidden', ciConfigured)
     return
 
