@@ -8,8 +8,6 @@ class Stack < ActiveRecord::Base
   has_many :deploys
   has_many :webhooks
 
-  scope :has_undeployed_commits,   -> { where('undeployed_commits_count > 0') }
-
   before_validation :update_defaults
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks, :clear_local_files
@@ -18,6 +16,10 @@ class Stack < ActiveRecord::Base
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
+
+  def undeployed_commits?
+    undeployed_commits_count > 0
+  end
 
   def trigger_deploy(until_commit, user)
     since_commit = last_deployed_commit
@@ -102,7 +104,7 @@ class Stack < ActiveRecord::Base
   end
 
   def update_undeployed_commits_count(after_commit=nil)
-    after_commit = last_deployed_commit unless after_commit
+    after_commit ||= last_deployed_commit
     undeployed_commits = Commit.reachable.where(stack_id: id).select('count(*) as count').where('id > ?', after_commit.id)
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
