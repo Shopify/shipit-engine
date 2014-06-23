@@ -15,7 +15,6 @@ class Stack < ActiveRecord::Base
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :bump_menu_cache, on: %i(create destroy)
   after_commit :broadcast_update, on: :update
-  after_touch :update_undeployed_commits_count
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
@@ -102,8 +101,10 @@ class Stack < ActiveRecord::Base
     checklist.to_s.lines.map(&:strip).select(&:present?)
   end
 
-  def last_successful_deploy
-    deploys.success.order(id: :desc).limit(1).first
+  def update_undeployed_commits_count(after_commit=nil)
+    after_commit = last_deployed_commit unless after_commit
+    undeployed_commits = Commit.reachable.where(stack_id: id).select('count(*) as count').where('id > ?', after_commit.id)
+    self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
 
   private
@@ -137,14 +138,5 @@ class Stack < ActiveRecord::Base
   def update_defaults
     self.environment = 'production' if environment.blank?
     self.branch = 'master' if branch.blank?
-  end
-
-  def update_undeployed_commits_count
-    deploy = last_successful_deploy
-    undeployed_commits_count = if deploy
-      commits.where('commits.id > ?', deploy.until_commit_id).count
-    else
-      commits.count
-    end
   end
 end

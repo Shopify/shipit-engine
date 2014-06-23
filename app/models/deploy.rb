@@ -38,6 +38,7 @@ class Deploy < ActiveRecord::Base
     after_transition from: :running, do: :rollup_chunks
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
+    after_transition to: :success, do: :update_undeployed_commits_count
   end
 
   after_create :broadcast_deploy
@@ -103,6 +104,10 @@ class Deploy < ActiveRecord::Base
 
   def last_successful_deploy
     stack.deploys.where(:status => "success").last
+  end
+
+  def update_undeployed_commits_count
+    stack.update_undeployed_commits_count(until_commit)
   end
 
   def broadcast_deploy

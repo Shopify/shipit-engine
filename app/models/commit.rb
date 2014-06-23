@@ -6,6 +6,7 @@ class Commit < ActiveRecord::Base
   after_destroy { broadcast_event('remove') }
   after_update  { broadcast_update('update') }
   after_update :schedule_continuous_delivery
+  after_create { stack.update_undeployed_commits_count }
 
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"

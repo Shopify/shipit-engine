@@ -153,10 +153,13 @@ class DeploysTest < ActiveSupport::TestCase
   test "#transitioning to success update the undeployed_commits_count" do
     stack  = stacks(:shipit)
     deploy = stack.deploys.active.first
-    deploy.run!
+    assert_equal 3, stack.undeployed_commits_count
 
-    stack.expects(:update_undeployed_commits_count).once
+    deploy.run!
     deploy.complete!
+
+    stack.reload
+    assert_equal 1, stack.undeployed_commits_count
   end
 
   def expect_event(deploy, status)
