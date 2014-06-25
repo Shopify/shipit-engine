@@ -36,11 +36,6 @@ class ApplicationController < ActionController::Base
   rescue ActiveRecord::RecordNotFound
   end
 
-  def menu
-    @menu ||= Menu.new
-  end
-  helper_method :menu
-
   def set_variant
     if request.negotiate_mime('text/partial+html')
       request.format = :html

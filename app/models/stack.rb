@@ -11,7 +11,6 @@ class Stack < ActiveRecord::Base
   before_validation :update_defaults
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks, :clear_local_files
-  after_commit :bump_menu_cache, on: %i(create destroy)
   after_commit :broadcast_update, on: :update
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
@@ -121,10 +120,6 @@ class Stack < ActiveRecord::Base
 
   def sync_github
     Resque.enqueue(GithubSyncJob, stack_id: id)
-  end
-
-  def bump_menu_cache
-    Menu.bump_cache
   end
 
   def clear_local_files
