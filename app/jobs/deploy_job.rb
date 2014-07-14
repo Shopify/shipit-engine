@@ -1,5 +1,5 @@
 class DeployJob < BackgroundJob
-  COMMAND_TIMEOUT = 3.minutes.to_i
+  COMMAND_TIMEOUT = 5.minutes.to_i
   @queue = :deploys
 
   extend BackgroundJob::StackExclusive
