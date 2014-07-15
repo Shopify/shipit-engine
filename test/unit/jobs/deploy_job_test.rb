@@ -15,6 +15,7 @@ class DeployJobTest < ActiveSupport::TestCase
 
     @commands.expects(:fetch).once
     @commands.expects(:clone).once
+    @commands.expects(:remote_prune).once
     @commands.expects(:checkout).with(@deploy.until_commit).once
     @commands.expects(:install_dependencies).returns([]).once
     @commands.expects(:deploy).with(@deploy.until_commit).returns([]).once
