@@ -17,4 +17,8 @@
 /shared
 /config/secrets.yml
 /config/settings.yml
+
+/config/ejson-publickey.pem
+/config/ejson-privatekey.pem
+
 /data

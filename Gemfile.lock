@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/shopify/ejson.git
+  revision: 986217947a5ac459f862f5efd09d088ddad95140
+  ref: 986217947a5ac459f862f5efd09d088ddad95140
+  branch: serializer-api
+  specs:
+    ejson (0.3.0)
+      thor (~> 0.18)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -267,6 +276,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   coffee-rails
+  ejson!
   faker
   heroku (~> 3.8.2)
   jquery-rails

@@ -16,11 +16,7 @@ class Command
   end
 
   def to_s
-    "#{format_env} #{@args.join(' ')}"
-  end
-
-  def format_env
-    @env.map { |pair| pair.map(&:to_s).join('=') }.join(' ')
+    @args.join(' ')
   end
 
   def success?

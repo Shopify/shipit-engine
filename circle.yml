@@ -7,7 +7,9 @@ machine:
     version: 0.10.21
 dependencies:
   pre:
-    - cp config/settings.yml.example config/settings.yml
+    - cp config/settings{.example,}.yml
+    - cp config/ejson-privatekey{.example,}.pem
+    - cp config/ejson-publickey{.example,}.pem
     - mkdir -p tmp/cache/
   bundler:
     without:
