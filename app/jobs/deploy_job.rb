@@ -16,6 +16,7 @@ class DeployJob < BackgroundJob
 
     capture commands.fetch
     capture commands.clone
+    capture commands.remote_prune
     capture commands.checkout(@deploy.until_commit)
     Bundler.with_clean_env do
       capture_all commands.install_dependencies

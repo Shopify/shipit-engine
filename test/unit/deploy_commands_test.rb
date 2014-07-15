@@ -14,32 +14,32 @@ class DeployCommandsTest < ActiveSupport::TestCase
     StackCommands.stubs(git_version: Gem::Version.new('1.8.4.3'))
   end
 
-  test "#fetch call git fetch if repository cache already exist" do
+  test "#fetch calls git fetch if repository cache already exist" do
     Dir.expects(:exists?).with(@stack.git_path).returns(true)
     command = @commands.fetch
     assert_equal %w(git fetch origin --tags master), command.args
   end
 
-  test "#fetch call git fetch in git_path directory if repository cache already exist" do
+  test "#fetch calls git fetch in git_path directory if repository cache already exist" do
     Dir.expects(:exists?).with(@stack.git_path).returns(true)
     command = @commands.fetch
     assert_equal @stack.git_path, command.chdir
   end
 
-  test "#fetch call git clone if repository cache do not exist" do
+  test "#fetch calls git clone if repository cache do not exist" do
     Dir.expects(:exists?).with(@stack.git_path).returns(false)
     command = @commands.fetch
     assert_equal ['git', 'clone', '--single-branch', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
   end
 
-  test "#fetch do not use --single-branch if git is outdated" do
+  test "#fetch does not use --single-branch if git is outdated" do
     Dir.expects(:exists?).with(@stack.git_path).returns(false)
     StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
     command = @commands.fetch
     assert_equal ['git', 'clone', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
   end
 
-  test "#fetch call git fetch in base_path directory if repository cache do not exist" do
+  test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
     Dir.expects(:exists?).with(@stack.git_path).returns(false)
     command = @commands.fetch
     assert_equal @stack.deploys_path, command.chdir
@@ -51,41 +51,46 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end
 
-  test "#clone clone the repository cache into the working directory" do
+  test "#clone clones the repository cache into the working directory" do
     command = @commands.clone
     assert_equal ['git', 'clone', '--local', @stack.git_path, @deploy.working_directory], command.args
   end
 
-  test "#clone clone the repository cache from the deploys_path" do
+  test "#clone clones the repository cache from the deploys_path" do
     command = @commands.clone
     assert_equal @stack.deploys_path, command.chdir
   end
 
-  test "#checkout checkout the deployed commit" do
+  test "#remote_prune calls git remote prune origin" do
+    command = @commands.remote_prune
+    assert_equal ['git', 'remote', 'prune', 'origin'], command.args
+  end
+
+  test "#checkout checks out the deployed commit" do
     command = @commands.checkout(@deploy.until_commit)
     assert_equal ['git', 'checkout', '-q', @deploy.until_commit.sha], command.args
   end
 
-  test "#checkout checkout the deployed commit from the working directory" do
+  test "#checkout checks out the deployed commit from the working directory" do
     command = @commands.checkout(@deploy.until_commit)
     assert_equal @deploy.working_directory, command.chdir
   end
 
-  test "#deploy call cap $environment deploy" do
+  test "#deploy calls cap $environment deploy" do
     commands = @commands.deploy(@deploy.until_commit)
     assert_equal 1, commands.length
     command = commands.first
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], command.args
   end
 
-  test "#deploy call cap $environment deploy from the working_directory" do
+  test "#deploy calls cap $environment deploy from the working_directory" do
     commands = @commands.deploy(@deploy.until_commit)
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @deploy.working_directory, command.chdir
   end
 
-  test "#deploy call cap $environment deploy with the SHA in the environment" do
+  test "#deploy calls cap $environment deploy with the SHA in the environment" do
     commands = @commands.deploy(@deploy.until_commit)
     assert_equal 1, commands.length
     command = commands.first
@@ -100,7 +105,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipit 2", command.env['USER']
   end
 
-  test "#deploy call cap $environment deploy with the ENVIRONMENT in the environment" do
+  test "#deploy calls cap $environment deploy with the ENVIRONMENT in the environment" do
     commands = @commands.deploy(@deploy.until_commit)
     assert_equal 1, commands.length
     command = commands.first
@@ -118,7 +123,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal '1', command.env['GLOBAL']
   end
 
-  test "#install_dependencies call bundle install" do
+  test "#install_dependencies calls bundle install" do
     commands = @commands.install_dependencies
     assert_equal 1, commands.length
     assert_equal ['bundle install --some-args'], commands.first.args
@@ -134,5 +139,4 @@ class DeployCommandsTest < ActiveSupport::TestCase
     command = @commands.install_dependencies.first
     assert_equal '1', command.env['GLOBAL']
   end
-
 end

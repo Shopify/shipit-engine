@@ -29,6 +29,10 @@ class DeployCommands < Commands
     end
   end
 
+  def remote_prune
+    git("remote", "prune", "origin", chdir: @deploy.working_directory)
+  end
+
   def checkout(commit)
     git("checkout", "-q", commit.sha, chdir: @deploy.working_directory)
   end
