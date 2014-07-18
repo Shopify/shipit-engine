@@ -16,6 +16,8 @@ class Stack < ActiveRecord::Base
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
 
+  store :secrets, coder: Shipit.ejson.serializer
+
   def undeployed_commits?
     undeployed_commits_count > 0
   end

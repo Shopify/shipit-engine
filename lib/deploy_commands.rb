@@ -44,4 +44,11 @@ class DeployCommands < Commands
   def stack_commands
     @stack_commands = StackCommands.new(@stack)
   end
+
+  protected
+
+  def env
+    super.merge(@stack.secrets)
+  end
+
 end

@@ -23,6 +23,7 @@ gem 'securecompare', '~>1.0'
 gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.2'
 gem 'heroku', '~> 3.8.2'
+gem 'ejson', github: 'shopify/ejson', branch: 'serializer-api', ref: '986217947a5ac459f862f5efd09d088ddad95140'
 
 group :production do
   gem 'mysql2'

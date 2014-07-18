@@ -24,4 +24,10 @@ class StackCommands < Commands
     FileUtils.mkdir_p(@stack.deploys_path)
   end
 
+  private
+
+  def env
+    super.merge(@stack.secrets)
+  end
+
 end

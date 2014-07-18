@@ -29,4 +29,4 @@ jQuery ->
       $.notifyRequest()
       $notificationNotice.addClass('hidden')
     $notificationNotice.removeClass('hidden')
-    
+

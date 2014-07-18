@@ -2,8 +2,8 @@ require 'test_helper'
 
 class DeployCommandsTest < ActiveSupport::TestCase
   def setup
-    @stack = stacks(:shipit)
     @deploy = deploys(:shipit_pending)
+    @stack = @deploy.stack
     @commands = DeployCommands.new(@deploy)
     @deploy_spec = stub(
       dependencies_steps: ['bundle install --some-args'],
@@ -128,6 +128,12 @@ class DeployCommandsTest < ActiveSupport::TestCase
     Settings.stubs(:[]).with('env').returns("SPECIFIC_CONFIG" => 5)
     command = @commands.install_dependencies.first
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
+  end
+
+  test "#install_dependencies merges stack.secrets in ENVIRONMENT" do
+    @stack.update(secrets: {'SECRET_KEY' => 'S3CR3T!'})
+    command = @commands.install_dependencies.first
+    assert_equal 'S3CR3T!', command.env["SECRET_KEY"]
   end
 
   test "#install_dependencies merges machine_env in ENVIRONMENT" do

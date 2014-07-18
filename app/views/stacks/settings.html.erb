@@ -52,6 +52,25 @@
     </div>
 
     <div class="setting-section">
+      <h5>Secret environment</h5>
+
+      <% unless @stack.secrets.empty?%>
+      <ul>
+        <% @stack.secrets.each do |key, secret_value| %>
+          <li><span class="secret-key"><%= key %></span><%= link_to 'Delete', stack_secret_path(@stack, key), method: :delete, data: {confirm: 'Are you sure?'} %></li>
+        <% end %>
+      </ul>
+      <% end %>
+
+      <%= form_for :secret, url: stack_secrets_path(@stack) do |f| %>
+        <%= f.text_field :key, placeholder: 'key' %>
+        <%= f.password_field :secret_value, placeholder: 'value' %>
+        <%= f.submit %>
+      <% end %>
+
+    </div>
+
+    <div class="setting-section">
       <h5>Stack-Information</h5>
       <p>ID: <%= @stack.id %></p>
     </div>

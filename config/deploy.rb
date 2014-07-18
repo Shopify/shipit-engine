@@ -23,7 +23,7 @@ set :deploy_to, '/u/apps/shipit2'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/database.yml config/secrets.yml config/settings.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/settings.yml config/ejson-publickey.pem config/ejson-privatekey.pem}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin data log tmp vendor/bundle public/system}

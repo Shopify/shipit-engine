@@ -30,6 +30,8 @@ Shipit::Application.routes.draw do
       post :clear_git_cache
     end
 
+    resources :secrets, id: /\w+/, only: %i(create destroy)
+
     resources :commits, id: /\d+/, only: :show
 
     resources :deploys, id: /\d+/, only:  [:new, :show, :create] do

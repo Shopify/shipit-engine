@@ -4,7 +4,10 @@
 set -e
 set -x
 
-cp -n config/settings.yml.example config/settings.yml
+cp -n config/settings{.example,}.yml
+cp -n config/ejson-privatekey{.example,}.pem
+cp -n config/ejson-publickey{.example,}.pem
+
 bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate
