@@ -23,6 +23,10 @@ class User < ActiveRecord::Base
     )
   end
 
+  def self.all_ids_of_users(ids)
+    where(id: ids).select(:github_id, :name, :email)
+  end
+
   def logged_in?
     true
   end

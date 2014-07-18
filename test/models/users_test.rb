@@ -41,6 +41,16 @@ class UsersTest < ActiveSupport::TestCase
     assert_equal @github_user.login, user.login
   end
 
+  test "all_ids_of_users returns an array of ids for each user" do
+    user = users(:bob)
+    result = User.all_ids_of_users([user.id])
+    assert_equal result.class, User::ActiveRecord_Relation
+
+    expected_values = [result.first.github_id, result.first.name, result.first.email]
+    values = [user.github_id, user.name, user.email]
+    assert_equal expected_values, values
+  end
+
   private
 
   def fetch_user
