@@ -60,6 +60,11 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal File.join(@expected_base_path, "git"), @stack.git_path
   end
 
+  test "old_undeployed_commits returns undeployed commits older than specified time" do
+    old_undeployed_commits = @stack.old_undeployed_commits(long_time_ago = 3.days.ago)
+    assert_equal [commits(:third).id, commits(:fourth).id], old_undeployed_commits.pluck(:id)
+  end
+
   test "#trigger_deploy persist a new deploy" do
     last_commit = commits(:third)
     deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)

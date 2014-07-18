@@ -146,6 +146,15 @@ class Stack < ActiveRecord::Base
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
 
+  def old_undeployed_commits(long_time_ago = 30.minutes.ago)
+    if undeployed_commits?
+      Commit.reachable.where(
+        "stack_id = :stack_id and id > :commit_id and committed_at < :committed_at",
+        stack_id: id, commit_id: last_deployed_commit.id, committed_at: long_time_ago
+      )
+    end
+  end
+
   private
 
   def setup_webhooks
