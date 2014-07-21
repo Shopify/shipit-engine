@@ -1,6 +1,6 @@
 development:
   authentication: false
-  host: https://57212e00.ngrok.com
+  # host: https://57212e00.ngrok.com
   # authentication:
   #   provider: google_oauth2
   #   gem: omniauth-google-oauth2
