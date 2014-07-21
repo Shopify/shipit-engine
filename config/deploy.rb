@@ -1,14 +1,14 @@
 # config valid only for Capistrano 3.1
 lock '3.1.0'
 
-set :application, 'shipit2'
+set :application, 'shipit'
 set :repo_url, 'git@shipit2.github.shopify.com:Shopify/shipit2.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/u/apps/shipit2'
+set :deploy_to, '/u/apps/shipit'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -59,7 +59,7 @@ namespace :deploy do
   desc "Signal Thin services to restart the application"
   task :restart do
     on roles(:app), in: :parallel do
-      execute "sv-sudo hup /etc/sv/shipit2-thin-*"
+      execute "sv-sudo hup /etc/sv/shipit-thin-*"
     end
   end
 end
@@ -67,7 +67,7 @@ end
 namespace :jobs do
   task :restart do
     on roles(:app), in: :parallel do
-      execute "sv-sudo quit /etc/sv/shipit2-*-resque-*"
+      execute "sv-sudo quit /etc/sv/shipit-*-resque-*"
     end
   end
 end
