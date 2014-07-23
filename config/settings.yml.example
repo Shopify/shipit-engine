@@ -2,10 +2,11 @@ development:
   authentication: false
   # host: https://57212e00.ngrok.com
   # authentication:
-  #   provider: google_apps
-  #   gem: omniauth-google-apps
-  #   options:
-  #     domain: 'example.com'
+  #   provider: google_oauth2
+  #   gem: omniauth-google-oauth2
+  #   parameters:
+  #     - "<%= ENV['GOOGLE_KEY'] %>"
+  #     - "<%= ENV['GOOGLE_SECRET'] %>"
 
   github: false
 
