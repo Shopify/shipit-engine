@@ -28,6 +28,8 @@ class Stack < ActiveRecord::Base
     find_each(&:async_refresh_deployed_revision)
   end
 
+  scope :requires_notification, -> { where.not( reminder_url: '' ) }
+
   def undeployed_commits?
     undeployed_commits_count > 0
   end
