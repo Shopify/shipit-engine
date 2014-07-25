@@ -18,6 +18,8 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   test "#perform creates webhooks for push and status" do
     @stack.webhooks.destroy_all
 
+    Shipit.github_api.expects(:hooks).with('shopify/shipit2').returns([])
+
     Shipit.github_api.expects(:create_hook).with('shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/push",
       content_type: 'json',
