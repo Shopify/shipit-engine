@@ -8,6 +8,9 @@ class GithubTeardownWebhooksJobTest < ActiveSupport::TestCase
   end
 
   test "#perform destroys stack webhooks" do
+    hooks = [Hashie::Mash.new(id: 666, last_response: {status: 'misconfigured'})]
+    Shipit.github_api.expects(:hooks).with('Shopify/shipit2').returns(hooks)
+    Shipit.github_api.expects(:remove_hook).with('Shopify/shipit2', 666)
     Shipit.github_api.expects(:remove_hook).with('Shopify/shipit2', 13)
     Shipit.github_api.expects(:remove_hook).with('Shopify/shipit2', 23)
 
