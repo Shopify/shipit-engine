@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class DeploysTest < ActiveSupport::TestCase
+
   def setup
     @deploy = deploys(:shipit)
   end
@@ -162,6 +163,10 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal 1, stack.undeployed_commits_count
   end
 
+  test "#push_github_status create the remove deploy on the fly if needed" do
+    Shipit.github_api.expects(:create_deployment).with('Shopify/shipit', 'master')
+  end
+
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
@@ -170,5 +175,19 @@ class DeploysTest < ActiveSupport::TestCase
       data['url'].match(%r{#{deploy.stack.to_param}/deploys/#{deploy.id || "\\d"}}) &&
       data['commit_ids'] == deploy.commits.pluck(:id)
     end
+  end
+end
+
+
+class NonTransationnalDeploysTest < ActiveSupport::TestCase
+  self.use_transactional_fixtures = false
+
+  test "#event transition trigger a GithubDeployStatusJob" do
+    commits(:fifth).update_column(:state, 'success')
+
+    deploy = deploys(:shipit_running)
+    Resque.expects(:enqueue).at_least_once
+    Resque.expects(:enqueue).with(GithubDeployStatusJob, deploy_id: deploy.id, status: 'success')
+    deploy.complete!
   end
 end
