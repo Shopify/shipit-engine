@@ -91,7 +91,20 @@ class Deploy < ActiveRecord::Base
     Resque.enqueue(ChunkRollupJob, deploy_id: id)
   end
 
+  def push_github_status(status)
+    remote_deploy
+  end
+
+  def remote_deploy
+    create_remote_deploy unless api_url?
+    
+  end
+
   private
+
+  def create_remote_deploy
+    
+  end
 
   def schedule_continuous_delivery
     return unless stack.continuous_deployment?
