@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140620171312) do
+ActiveRecord::Schema.define(version: 20140728180225) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -28,9 +28,9 @@ ActiveRecord::Schema.define(version: 20140620171312) do
     t.datetime "committed_at",                                null: false
   end
 
-  add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree
-  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id", using: :btree
-  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id", using: :btree
+  add_index "commits", ["author_id"], name: "index_commits_on_author_id"
+  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id"
+  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deploys", force: true do |t|
     t.integer  "stack_id",                            null: false
@@ -40,21 +40,22 @@ ActiveRecord::Schema.define(version: 20140620171312) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "api_url"
   end
 
-  add_index "deploys", ["since_commit_id"], name: "index_deploys_on_since_commit_id", using: :btree
-  add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id", using: :btree
-  add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id", using: :btree
-  add_index "deploys", ["user_id"], name: "index_deploys_on_user_id", using: :btree
+  add_index "deploys", ["since_commit_id"], name: "index_deploys_on_since_commit_id"
+  add_index "deploys", ["stack_id"], name: "index_deploys_on_stack_id"
+  add_index "deploys", ["until_commit_id"], name: "index_deploys_on_until_commit_id"
+  add_index "deploys", ["user_id"], name: "index_deploys_on_user_id"
 
   create_table "output_chunks", force: true do |t|
     t.integer  "deploy_id"
-    t.text     "text",       limit: 16777215
+    t.text     "text",       limit: 1048576
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id", using: :btree
+  add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id"
 
   create_table "stacks", force: true do |t|
     t.string   "repo_name",                                       null: false
@@ -69,9 +70,10 @@ ActiveRecord::Schema.define(version: 20140620171312) do
     t.integer  "deploys_count",            default: 0,            null: false
     t.boolean  "continuous_deployment",    default: false,        null: false
     t.integer  "undeployed_commits_count", default: 0,            null: false
+    t.text     "secrets",                  default: "{}",         null: false
   end
 
-  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
+  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
 
   create_table "users", force: true do |t|
     t.integer  "github_id"

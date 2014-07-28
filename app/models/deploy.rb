@@ -39,9 +39,11 @@ class Deploy < ActiveRecord::Base
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
+    after_transition do: :push_remote_status_after_commit
   end
 
   after_create :broadcast_deploy
+  after_commit :push_remote_statuses
 
   def author
     user || AnonymousUser.new
@@ -91,7 +93,48 @@ class Deploy < ActiveRecord::Base
     Resque.enqueue(ChunkRollupJob, deploy_id: id)
   end
 
+  def push_github_status(status)
+    create_remote_deploy unless api_url?
+    Shipit.github_api.create_deployment_status(api_url, status,
+      target_url: Rails.application.routes.url_helpers.stack_deploy_url(stack, self),
+      accept: 'application/vnd.github.cannonball-preview+json'
+    )
+  end
+
+  def remote_deploy
+    @remote_deploy ||= fetch_remote_deploy || create_remote_deploy
+  end
+
   private
+
+  LOCAL_TO_REMOTE_STATUSES = {'running' => 'pending'}
+  def push_remote_status_after_commit(transition)
+    @deploy_statuses ||= []
+    @deploy_statuses << (LOCAL_TO_REMOTE_STATUSES[transition.to] || transition.to)
+  end
+
+  def push_remote_statuses
+    @deploy_statuses.try(:each) do |status|
+      Resque.enqueue(GithubDeployStatusJob, deploy_id: id, status: status)
+    end
+    @deploy_statuses = nil
+  end
+
+  def create_remote_deploy
+    @remote_deploy = Shipit.github_api.create_deployment(stack.github_repo_name, stack.branch,
+      environment: stack.environment,
+      auto_merge: false,
+      required_context: [],
+      accept: 'application/vnd.github.cannonball-preview+json'
+    )
+    update(api_url: @remote_deploy.rels[:self].href)
+    @remote_deploy
+  end
+
+  def fetch_remote_deploy
+    return unless api_url?
+    Shipit.github_api.get(api_url, accept: 'application/vnd.github.cannonball-preview+json')
+  end
 
   def schedule_continuous_delivery
     return unless stack.continuous_deployment?
