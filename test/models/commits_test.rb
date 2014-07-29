@@ -121,7 +121,7 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "refresh_status pull state from github" do
     status = mock(state: 'success')
-    Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
+    Shipit.github_api.expects(:combined_status).with(@stack.github_repo_name, @commit.sha).returns(status)
     @commit.refresh_status
     assert_equal 'success', @commit.state
   end

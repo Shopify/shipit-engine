@@ -37,7 +37,7 @@ class GithubSyncJob < BackgroundJob
   protected
 
   def fetch_status(commit)
-    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).first
+    Shipit.github_api.combined_status(@stack.github_repo_name, commit.sha)
   end
 
   def lookup_commit(sha)
