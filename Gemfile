@@ -29,6 +29,7 @@ group :production do
 end
 
 group :development, :test do
+  gem 'foreman', '~> 0.74'
   gem 'sqlite3'
 end
 
