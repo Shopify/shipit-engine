@@ -23,7 +23,6 @@ gem 'securecompare', '~>1.0'
 gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.3'
 gem 'heroku', '~> 3.8.2'
-gem 'whenever'
 
 group :production do
   gem 'mysql2'
@@ -45,5 +44,6 @@ end
 group :deploy do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
+  gem 'whenever'
 end
 
