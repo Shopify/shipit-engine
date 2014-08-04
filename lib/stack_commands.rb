@@ -27,8 +27,9 @@ class StackCommands < Commands
   end
 
   def with_temporary_working_directory
+    fetch.run!
     Dir.mktmpdir do |dir|
-      git('clone', '--local', @stack.git_path, @stack.repo_name, chdir: dir).run!
+      git('clone', *modern_git_args, '--branch', @stack.branch, @stack.git_path, @stack.repo_name, chdir: dir).run!
       yield Pathname.new(File.join(dir, @stack.repo_name))
     end
   end
