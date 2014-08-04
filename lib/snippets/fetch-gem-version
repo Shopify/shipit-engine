@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'net/https'
+require 'uri'
+require 'json'
+
+gem_name = ARGV[0]
+github_repository = ARGV[1]
+
+def get_json(url)
+  uri = URI.parse(url)
+  response = Net::HTTP.get_response(uri)
+  versions = JSON.load(response.body)
+end
+
+versions = get_json("https://rubygems.org/api/v1/versions/#{gem_name}.json")
+last_released_version = versions.reject { |g| g['prerelease'] }.map { |g| g['number'] }.sort_by(&Gem::Version.method(:new)).last
+
+tag = get_json("https://api.github.com/repos/#{github_repository}/git/refs/tags/v#{last_released_version}")
+
+print tag['object']['sha']
