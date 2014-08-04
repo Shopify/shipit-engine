@@ -18,6 +18,15 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal :bundle_install, @spec.dependencies_steps
   end
 
+  test '#fetch_deployed_revision_steps is empty by default' do
+    assert_equal [], @spec.fetch_deployed_revision_steps
+  end
+
+  test '#fetch_deployed_revision_steps use `fetch` is present' do
+    @spec.stubs(:load_config).returns('fetch' => ['echo l33t'])
+    assert_equal ['echo l33t'], @spec.fetch_deployed_revision_steps
+  end
+
   test '#bundle_install return a sane default bundle install command' do
     @spec.stubs(:has_gemfile_lock?).returns(true)
     command = %Q(
