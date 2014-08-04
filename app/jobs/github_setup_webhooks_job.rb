@@ -35,6 +35,6 @@ class GithubSetupWebhooksJob < BackgroundJob
   end
 
   def host
-    Settings.host
+    Shipit.host
   end
 end

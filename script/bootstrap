@@ -4,7 +4,7 @@
 set -e
 set -x
 
-cp -n config/settings.yml.example config/settings.yml
+cp -n config/secrets.yml.example config/secrets.yml
 bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate

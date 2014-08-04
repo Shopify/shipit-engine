@@ -5,7 +5,7 @@ class UserRequiredMiddleware
 
   def call(env)
     env['rack.session'][:init] = true
-    if env['rack.session'][:authenticated] || Settings.authentication.blank?
+    if env['rack.session'][:authenticated] || Shipit.authentication.blank?
       @app.call(env)
     else
       [403, {"Content-Type" => "text/html"}, ["Log into Shipit first"]]
