@@ -1,3 +1,3 @@
-every 1.minute do
-  rake 'cron:minutely'
-end
+# every 1.minute do
+#   rake 'cron:minutely'
+# end
