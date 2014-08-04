@@ -1,4 +1,6 @@
 set :whenever_command, 'bundle exec whenever'
+set :whenever_roles, %w(db)
+set :whenever_command_environment_variables, {}
 require 'whenever/capistrano'
 
 # config valid only for Capistrano 3.1
