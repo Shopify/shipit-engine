@@ -1,10 +1,7 @@
-set :whenever_command, 'bundle exec whenever'
-set :whenever_roles, %w(db)
-set :whenever_command_environment_variables, {}
-require 'whenever/capistrano'
-
 # config valid only for Capistrano 3.1
 lock '3.1.0'
+
+set :bundle_bins, fetch(:bundle_bins, []).push('whenever')
 
 set :application, 'shipit'
 set :repo_url, 'git@shipit2.github.shopify.com:Shopify/shipit2.git'
@@ -67,6 +64,18 @@ namespace :deploy do
       execute "sv-sudo hup /etc/sv/shipit-thin-*"
     end
   end
+
+  desc "Regenerate cron tasks"
+  task :cron do
+    on roles(:db) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute 'whenever', '--write-crontab'
+        end
+      end
+    end
+  end
+
 end
 
 namespace :jobs do
@@ -77,4 +86,6 @@ namespace :jobs do
   end
 end
 
+before 'deploy:finishing', 'deploy:cron'
+after 'deploy:finishing_rollback', 'deploy:cron' # If anything goes wrong, undo.
 after 'deploy:publishing', 'jobs:restart' # I don't know why this needs to be after jobs:restart :(
