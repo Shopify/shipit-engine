@@ -54,7 +54,7 @@ class Stack < ActiveRecord::Base
     recorded_last_deployed_commit = last_deployed_commit
     return if recorded_last_deployed_commit.sha == sha
 
-    until_commit = commits.reachable.where(sha: sha).last
+    until_commit = commits.reachable.where(sha: sha).last!
     deploys.create!(
       until_commit: until_commit,
       since_commit: recorded_last_deployed_commit,
