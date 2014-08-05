@@ -16,6 +16,14 @@ class Stack < ActiveRecord::Base
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
 
+  scope :sharded, -> (shard_count, shard_num) {
+    raise ArgumentError.new("You can not have less that 1 shard") if shard_count < 1
+    if shard_num > (shard_count - 1)
+      raise ArgumentError.new("#{shard_count} shards mean the max shard id is #{shard_count - 1}. Received #{shard_num}")
+    end
+    where('id % ? = ?', shard_count, shard_num)
+  }
+
   def self.refresh_deployed_revisions
     find_each(&:async_refresh_deployed_revision)
   end
