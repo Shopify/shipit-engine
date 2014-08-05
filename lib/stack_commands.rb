@@ -30,6 +30,7 @@ class StackCommands < Commands
     fetch.run!
     Dir.mktmpdir do |dir|
       git('clone', *modern_git_args, '--branch', @stack.branch, @stack.git_path, @stack.repo_name, chdir: dir).run!
+      git('checkout', @stack.head, chdir: File.join(dir, @stack.repo_name)).run!
       yield Pathname.new(File.join(dir, @stack.repo_name))
     end
   end

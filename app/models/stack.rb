@@ -62,6 +62,10 @@ class Stack < ActiveRecord::Base
     )
   end
 
+  def head
+    commits.reachable.first.try(:sha)
+  end
+
   def last_deployed_commit
     if last_deploy = deploys.success.last
       last_deploy.until_commit
