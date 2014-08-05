@@ -19,6 +19,18 @@ $slate: #2e343a;
   }
 }
 
+@mixin disabled {
+  background: transparent;
+  border: 1px solid rgba(#ccc,.7);
+  color: #ccc;
+  pointer-events: none;
+}
+
+@mixin failure {
+  color: $red;
+  border-color: $red;
+}
+
 @mixin flexbox() {
   display: -webkit-box;
   display: -moz-box;
@@ -157,10 +169,7 @@ h5 {
     }
 
     &.disabled {
-      background: transparent;
-      border: 1px solid rgba(#ccc,.7);
-      color: #ccc;
-      pointer-events: none;
+      @include disabled;
     }
 
     &.secondary {
@@ -177,8 +186,7 @@ h5 {
     }
 
     &.failure {
-      color: $red;
-      border-color: $red;
+      @include failure;
     }
 
     &.delete {

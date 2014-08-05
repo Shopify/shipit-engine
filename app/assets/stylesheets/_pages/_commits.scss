@@ -161,3 +161,13 @@
     p { color: #777; }
 
 }
+
+[data-stack-locked='true'] .deploy-action .btn {
+  @include disabled;
+  @include failure;
+
+  span { display: none; }
+  &:after {
+    content: "Locked";
+  }
+}
