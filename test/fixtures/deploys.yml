@@ -3,21 +3,25 @@ shipit:
   until_commit_id: 2 # second
   stack: shipit
   status: success
+  user: walrus
 
 shipit2:
   since_commit_id: 2 # second
   until_commit_id: 3 # third
   stack: shipit
   status: failed
+  user: bob
 
 shipit_pending:
   since_commit_id: 2 # second
   until_commit_id: 4 # fourth
   stack: shipit
   status: pending
+  user: walrus
 
 shipit_running:
   since_commit_id: 3
   until_commit_id: 4
   stack: shipit
   status: running
+  user: anonymous

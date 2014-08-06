@@ -41,8 +41,8 @@ class Deploy < ActiveRecord::Base
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
-    after_transition to: :success, do: :send_success_notification
-    after_transition to: :failed, do: :send_failure_notification
+    after_transition to: :success, do: ->(deploy){ deploy.send_flowdock_notification(:success) }
+    after_transition to: :failed, do: ->(deploy){ deploy.send_flowdock_notification(:failure) }
   end
 
   after_create :broadcast_deploy
@@ -115,9 +115,12 @@ class Deploy < ActiveRecord::Base
   end
 
   def broadcast_deploy
-    url = Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
     payload = { id: id, url: url, commit_ids: commits.map(&:id) }.to_json
     event = Pubsubstub::Event.new(payload, name: "deploy.#{status}")
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
+  end
+
+  def url
+    Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
   end
 end

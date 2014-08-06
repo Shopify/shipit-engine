@@ -3,6 +3,7 @@ require 'test_helper'
 class DeploysTest < ActiveSupport::TestCase
   def setup
     @deploy = deploys(:shipit)
+    Flowdock::Flow.any_instance.stubs(:push_to_team_inbox).returns(true)
   end
 
   test "enqueue" do
@@ -163,16 +164,26 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "#transitioning to success sends a flowdock notification with success message" do
-    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(subject: 'Deployed successfully!'))
-
     deploy = deploys(:shipit_pending)
+    expected_params = {
+      subject: 'Deployed successfully!',
+      link: "https://shipit.shopify.com/shopify/shipit2/production/deploys/#{deploy.id}"
+    }
+
+    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(expected_params))
+
     deploy.run! && deploy.complete!
   end
 
   test "#transitioning to failed sends a flowdock notification with a failure message" do
-    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(subject: 'Deploy failed!'))
-
     deploy = deploys(:shipit_running)
+    expected_params = {
+      subject: 'Deploy failed!',
+      link: "https://shipit.shopify.com/shopify/shipit2/production/deploys/#{deploy.id}"
+    }
+
+    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(expected_params))
+
     deploy.failure!
   end
 

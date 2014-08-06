@@ -8,6 +8,8 @@ begin
 rescue LoadError
 end
 
+Rails.application.secrets.flowdock_api = {'api_token' => 'anything'}
+
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
 

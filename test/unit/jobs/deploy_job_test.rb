@@ -5,6 +5,7 @@ class DeployJobTest < ActiveSupport::TestCase
   setup do
     @job = DeployJob.new
     @deploy = deploys(:shipit_pending)
+    Flowdock::Flow.any_instance.stubs(:push_to_team_inbox).returns(true)
   end
 
   test "#perform fetch commits from the API" do
