@@ -6,6 +6,6 @@ module FlowdockNotifications
       subject: subject,
       content: '<p></p>',
       tags: ["shipit", "@#{user.login}"],
-      link: "https://shipit.shopify.com#{url}"
+      link: "https://shipit.shopify.com#{stack_deploy_path}"
   end
 end
