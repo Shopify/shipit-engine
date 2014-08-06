@@ -4,8 +4,8 @@ module Shipit::Config
     @github_api ||= Octokit::Client.new(credentials.symbolize_keys)
   end
 
-  def flowdock_api(status)
-    address = (status == :success) ? 'gaurav+pass@shopify.com' : 'gaurav+fail@shopify.com'
+  def flowdock_api(success:)
+    address = success ? 'gaurav+pass@shopify.com' : 'gaurav+fail@shopify.com'
 
     Flowdock::Flow.new \
       api_token: Rails.application.secrets.flowdock_api['api_token'],

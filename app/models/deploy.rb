@@ -1,7 +1,7 @@
 require 'fileutils'
 
 class Deploy < ActiveRecord::Base
-  include FlowdockAPI
+  include FlowdockNotifications
 
   belongs_to :user
   belongs_to :stack, touch: true, counter_cache: true
@@ -41,8 +41,8 @@ class Deploy < ActiveRecord::Base
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
-    after_transition to: :success, do: ->(deploy){ deploy.send_flowdock_notification(:success) }
-    after_transition to: :failed, do: ->(deploy){ deploy.send_flowdock_notification(:failure) }
+    after_transition to: :success, do: ->(deploy){ deploy.send_flowdock_notification(success: true) }
+    after_transition to: :failed, do: ->(deploy){ deploy.send_flowdock_notification(success: false) }
   end
 
   after_create :broadcast_deploy
