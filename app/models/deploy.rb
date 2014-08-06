@@ -1,6 +1,8 @@
 require 'fileutils'
 
 class Deploy < ActiveRecord::Base
+  include FlowdockAPI
+
   belongs_to :user
   belongs_to :stack, touch: true, counter_cache: true
   belongs_to :since_commit, class_name: "Commit"
@@ -39,6 +41,8 @@ class Deploy < ActiveRecord::Base
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
+    after_transition to: :success, do: :send_success_notification
+    after_transition to: :failed, do: :send_failure_notification
   end
 
   after_create :broadcast_deploy

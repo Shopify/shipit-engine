@@ -162,6 +162,20 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal 1, stack.undeployed_commits_count
   end
 
+  test "#transitioning to success sends a flowdock notification with success message" do
+    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(subject: 'Deployed successfully!'))
+
+    deploy = deploys(:shipit_pending)
+    deploy.run! && deploy.complete!
+  end
+
+  test "#transitioning to failed sends a flowdock notification with a failure message" do
+    Flowdock::Flow.any_instance.expects(:push_to_team_inbox).with(has_entries(subject: 'Deploy failed!'))
+
+    deploy = deploys(:shipit_running)
+    deploy.failure!
+  end
+
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
