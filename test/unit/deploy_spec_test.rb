@@ -84,6 +84,17 @@ class DeploySpecTest < ActiveSupport::TestCase
     end
   end
 
+  test '#rollback_steps returns `rollback.override` if present' do
+    @spec.stubs(:load_config).returns('rollback' => {'override' => %w(foo bar baz)})
+    assert_equal %w(foo bar baz), @spec.rollback_steps
+  end
+
+  test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
+    @spec.expects(:bundler?).returns(true)
+    @spec.expects(:capistrano?).returns(true)
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], @spec.rollback_steps
+  end
+
   test '#machine_env return an environment hash' do
     @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
     assert_equal({'GLOBAL' => '1'}, @spec.machine_env)

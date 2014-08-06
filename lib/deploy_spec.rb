@@ -27,6 +27,10 @@ class DeploySpec
     config('deploy', 'override') || discover_capistrano || discover_gem || cant_detect_deploy_steps
   end
 
+  def rollback_steps
+    config('rollback', 'override') || discover_cap_rollback
+  end
+
   def fetch_deployed_revision_steps
     config('fetch') || []
   end
@@ -57,6 +61,12 @@ class DeploySpec
     bundle_exec = ''
     bundle_exec = 'bundle exec ' if bundler?
     ["#{bundle_exec}cap $ENVIRONMENT deploy"] if capistrano?
+  end
+
+  def discover_cap_rollback
+    bundle_exec = ''
+    bundle_exec = 'bundle exec ' if bundler?
+    ["#{bundle_exec}cap $ENVIRONMENT deploy:rollback"] if capistrano?
   end
 
   def gem?
