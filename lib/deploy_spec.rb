@@ -58,14 +58,10 @@ class DeploySpec
   end
 
   def discover_capistrano
-    bundle_exec = ''
-    bundle_exec = 'bundle exec ' if bundler?
     ["#{bundle_exec}cap $ENVIRONMENT deploy"] if capistrano?
   end
 
   def discover_cap_rollback
-    bundle_exec = ''
-    bundle_exec = 'bundle exec ' if bundler?
     ["#{bundle_exec}cap $ENVIRONMENT deploy:rollback"] if capistrano?
   end
 
@@ -87,6 +83,10 @@ class DeploySpec
 
   def has_gemfile_lock?
     @app_dir.join('Gemfile.lock').exist?
+  end
+
+  def bundle_exec
+    bundler?? 'bundle exec ' : ''
   end
 
   def frozen_flag
