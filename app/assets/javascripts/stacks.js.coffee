@@ -34,8 +34,19 @@ jQuery ($) ->
 
   onCommitCreate = (message) ->
     loadFragment message, (id, commit) ->
-      $("ul.commit-lst").prepend($timeago(commit))
+      if (previousCommitId = findPreviousCommitId(id)) > 0
+        $("#commit-#{previousCommitId}").before($timeago(commit))
+      else
+        $("ul.commit-lst").append($timeago(commit))
     displayConfigureCiMessage()
+
+  findPreviousCommitId = (id) ->
+    $commits = $(".commit-lst li.commit")
+    ids = $commits.map (_, node) ->
+      nodeId = parseInt(node.id.match /\d+/)
+      nodeId if nodeId < id
+
+    if ids.length > 0 then Math.max(ids...) else 0
 
   onCommitRemove = (message) ->
     json = JSON.parse(message.data)
