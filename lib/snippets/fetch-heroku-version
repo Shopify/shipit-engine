@@ -9,7 +9,7 @@ fi
 
 HEROKU_GIT="git@heroku.com:$HEROKU_APP.git"
 
-REMOTES=`git ls-remote --heads $HEROKU_GIT`;
+REMOTES=`git ls-remote --heads $HEROKU_GIT 2> /dev/null`;
 RET=$?
 
 test 0 -eq $RET || exit $RET
