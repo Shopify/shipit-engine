@@ -41,9 +41,8 @@ class Commit < ActiveRecord::Base
   end
 
   def refresh_status
-    if status = Shipit.github_api.statuses(stack.github_repo_name, sha).first
-      update(state: status.try(:state) || 'unknown')
-    end
+    status = Shipit.github_api.combined_status(stack.github_repo_name, sha)
+    update(state: status.try(:state) || 'unknown')
   end
 
   def children
