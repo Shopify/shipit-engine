@@ -38,3 +38,22 @@
 pre.nowrap {
   white-space: pre;
 }
+
+.deploy-tasks {
+  margin-top: 5px;
+  float:left;
+}
+
+.task-restart {
+  float: left;
+  background-color: #D7EBFF;
+  border-radius: 4px;
+  padding: .20em;
+  margin: .25em;
+  width: 3em;
+  text-align: center;
+}
+
+.task-restart-node {
+  font-weight: bold;
+}

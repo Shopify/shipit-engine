@@ -9,13 +9,15 @@ class ChunkPoller
 
   @init: ->
     pollUrl = $('code').data('next-chunks-url')
-    poller = new ChunkPoller($('body'), pollUrl)
+    tasksView = new DeployTasksView($('.deploy-tasks'))
+    poller = new ChunkPoller($('body'), pollUrl, tasksView)
     $('code').each ->
       $(this).html(poller.colorize(this.innerHTML))
+      tasksView.update(this.innerHTML)
 
     poller.start() if pollUrl
 
-  constructor: ($body, @pollUrl) ->
+  constructor: ($body, @pollUrl, @tasksView) ->
     @$status = $body.find('[data-deploy-status]')
     @$code = $body.find('code')
     @$body = $body
@@ -102,6 +104,7 @@ class ChunkPoller
     return unless chunks.length
 
     text = chunks.map((c) -> c.text).join('')
+    @tasksView.update(text)
     @$code.append(@colorize(text))
 
   colorize: (text) ->
@@ -109,3 +112,44 @@ class ChunkPoller
 
 jQuery ->
   ChunkPoller.init()
+
+class DeployTasksView
+  constructor: (@container) ->
+    @tasks = {}
+
+  getTask: (type, id) ->
+    if @tasks[id] != undefined
+      return @tasks[id]
+    @tasks[id] = new type(@container)
+
+  logSearch: (text, re, callback) ->
+    re.lastIndex = 0
+    while (res = re.exec(text)) != null
+      callback(res)
+    null
+
+  update: (text) ->
+    console.log('lol')
+    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Restarting/gm, (match) => 
+      console.log(match)
+      task = @getTask(RestartTaskView, "restart-"+match[1])
+      task.nodeName = match[1]
+      task.containersUp = match[2]
+      task.containersTotal = match[3]
+      task.update()
+    null
+
+
+class RestartTaskView
+  nodeName: ""
+  containersTotal: 0
+  containersUp: 0
+
+  constructor: (@container) ->
+    @elem = $("<div class='task-restart'><span class='task-restart-node'></span><br><span class='task-restart-up'></span>/<span class='task-restart-total'></span></div>")
+    @elem.appendTo(@container)
+
+  update: ->
+    @elem.find('.task-restart-node').html(@nodeName)
+    @elem.find('.task-restart-up').html(@containersUp)
+    @elem.find('.task-restart-total').html(@containersTotal)
