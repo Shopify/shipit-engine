@@ -55,6 +55,10 @@ pre.nowrap {
   text-align: center;
 }
 
+.task-failed {
+  background-color: #FFE0E0;
+}
+
 .task-restart-node {
   font-weight: bold;
 }
@@ -78,4 +82,8 @@ pre.nowrap {
 
 .box-neutral {
   background-color: #B6BCC0;
+}
+
+.task-failed .box-neutral {
+  background-color: red;
 }

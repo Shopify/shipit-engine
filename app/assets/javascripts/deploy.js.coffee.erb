@@ -131,12 +131,11 @@ class DeployTasksView
   update: (text) ->
     console.log('lol')
     @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Restarting/gm, (match) => 
-      console.log(match)
       task = @getTask(RestartTaskView, "restart-"+match[1])
-      task.nodeName = match[1]
-      task.containersUp = match[2]
-      task.containersTotal = match[3]
-      task.update()
+      task.update(match[1], match[2], match[3])
+    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Unable to restart/gm, (match) => 
+      task = @getTask(RestartTaskView, "restart-"+match[1])
+      task.fail()
     null
 
 
@@ -144,16 +143,25 @@ class RestartTaskView
   nodeName: ""
   containersTotal: 0
   containersUp: 0
+  prevUp: 0
 
   constructor: (@container) ->
     @elem = $("<div class='task-restart'><span class='task-restart-text'><span class='task-restart-node'></span></span><span class='task-restart-boxes'></span></div>")
     @elem.appendTo(@container)
 
-  update: ->
+  update: (@nodeName, containersUp, @containersTotal) ->
+    @prevUp = @containersUp
+    @containersUp = containersUp
+
     @elem.find('.task-restart-node').html(@nodeName)
     boxes = ""
     for i in [1..(+@containersTotal)]
       status = if i <= @containersUp then "up" else "neutral"
       boxes += "<span class='task-restart-box box-"+status+"'></span>"
     @elem.find('.task-restart-boxes').html(boxes)
+
+  fail: ->
+    # if something fails the last couple containers didn't actually restart
+    @update(@nodeName, @prevUp, @containersTotal)
+    @elem.addClass("task-failed")
 
