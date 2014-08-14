@@ -51,9 +51,31 @@ pre.nowrap {
   padding: .20em;
   margin: .25em;
   width: 3em;
+  height: 3.3em;
   text-align: center;
 }
 
 .task-restart-node {
   font-weight: bold;
+}
+
+.task-restart-boxes {
+  float: left;
+  margin-top: 0.05em;
+}
+
+.task-restart-box {
+  float: left;
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 1.5px;
+}
+
+.box-up {
+  background-color: #00B432;
+}
+
+.box-neutral {
+  background-color: #B6BCC0;
 }

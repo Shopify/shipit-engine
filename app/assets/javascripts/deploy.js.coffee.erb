@@ -146,10 +146,14 @@ class RestartTaskView
   containersUp: 0
 
   constructor: (@container) ->
-    @elem = $("<div class='task-restart'><span class='task-restart-node'></span><br><span class='task-restart-up'></span>/<span class='task-restart-total'></span></div>")
+    @elem = $("<div class='task-restart'><span class='task-restart-text'><span class='task-restart-node'></span></span><span class='task-restart-boxes'></span></div>")
     @elem.appendTo(@container)
 
   update: ->
     @elem.find('.task-restart-node').html(@nodeName)
-    @elem.find('.task-restart-up').html(@containersUp)
-    @elem.find('.task-restart-total').html(@containersTotal)
+    boxes = ""
+    for i in [1..(+@containersTotal)]
+      status = if i <= @containersUp then "up" else "neutral"
+      boxes += "<span class='task-restart-box box-"+status+"'></span>"
+    @elem.find('.task-restart-boxes').html(boxes)
+
