@@ -48,10 +48,9 @@ pre.nowrap {
   float: left;
   background-color: #D7EBFF;
   border-radius: 4px;
-  padding: .20em;
-  margin: .25em;
-  width: 3em;
-  height: 3.3em;
+  padding: 4px;
+  margin: 4px;
+  width: 50px;
   text-align: center;
 }
 
@@ -66,14 +65,15 @@ pre.nowrap {
 .task-restart-boxes {
   float: left;
   margin-top: 0.05em;
+  margin-bottom: 0.1em;
 }
 
 .task-restart-box {
   float: left;
   display: block;
-  width: 5px;
-  height: 5px;
-  margin: 1.5px;
+  width: 6px;
+  height: 6px;
+  margin: 2px;
 }
 
 .box-up {
