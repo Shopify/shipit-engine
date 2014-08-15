@@ -110,12 +110,18 @@ class ChunkPoller
   colorize: (text) ->
     @stream.process(text)
 
-jQuery ->
-  ChunkPoller.init()
-
 class DeployTasksView
   constructor: (@container) ->
     @tasks = {}
+    $(window).scroll =>
+      @updatePosition()
+
+  # Scroll the tasks view with the page
+  updatePosition: ->
+    if document.body.scrollTop >= 124
+      @container.css({'position':'fixed', 'top':'10px'})
+    else
+      @container.css({'position':'absolute', 'top':'134px'})
 
   getTask: (type, id) ->
     if @tasks[id] != undefined
@@ -173,4 +179,7 @@ class RestartTaskView
 
   fail: ->
     @elem.addClass("task-failed")
+
+jQuery ->
+  ChunkPoller.init()
 
