@@ -131,7 +131,15 @@ class DeployTasksView
   update: (text) ->
     @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Restarting/gm, (match) => 
       task = @getTask(RestartTaskView, "restart-"+match[1])
-      task.update(match[1], match[2], match[3])
+      task.nodeName = match[1]
+      task.containersRestarted = match[2]
+      task.containersTotal = match[3]
+      task.update()
+    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Successfully Restarted/gm, (match) => 
+      task = @getTask(RestartTaskView, "restart-"+match[1])
+      task.containersUp = match[2]
+      task.containersTotal = match[3]
+      task.update()
     @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Unable to restart/gm, (match) => 
       task = @getTask(RestartTaskView, "restart-"+match[1])
       task.fail()
@@ -141,28 +149,28 @@ class DeployTasksView
 class RestartTaskView
   nodeName: ""
   containersTotal: 0
+  containersRestarted: 0
   containersUp: 0
-  prevUp: 0
 
   constructor: (@container) ->
     @elem = $("<div class='task-restart'><span class='task-restart-text'><span class='task-restart-node'></span></span><span class='task-restart-boxes'></span></div>")
     @elem.appendTo(@container)
 
-  update: (@nodeName, containersUp, @containersTotal) ->
-    @prevUp = @containersUp
-    @containersUp = containersUp
-
+  update: ->
     @elem.find('.task-restart-node').html(@nodeName)
     boxes = document.createDocumentFragment();
     for i in [1..(+@containersTotal)]
-      status = if i <= @containersUp then "up" else "neutral"
+      status = if i <= @containersUp
+        "up"
+      else if i <= @containersRestarted
+        "restarting"
+      else
+        "neutral"
       box = document.createElement("span")
       box.className = "task-restart-box box-"+status
       boxes.appendChild(box)
     @elem.find('.task-restart-boxes').empty().append(boxes)
 
   fail: ->
-    # if something fails the last couple containers didn't actually restart
-    @update(@nodeName, @prevUp, @containersTotal)
     @elem.addClass("task-failed")
 
