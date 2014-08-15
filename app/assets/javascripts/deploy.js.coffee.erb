@@ -129,7 +129,6 @@ class DeployTasksView
     null
 
   update: (text) ->
-    console.log('lol')
     @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Restarting/gm, (match) => 
       task = @getTask(RestartTaskView, "restart-"+match[1])
       task.update(match[1], match[2], match[3])
@@ -154,11 +153,13 @@ class RestartTaskView
     @containersUp = containersUp
 
     @elem.find('.task-restart-node').html(@nodeName)
-    boxes = ""
+    boxes = document.createDocumentFragment();
     for i in [1..(+@containersTotal)]
       status = if i <= @containersUp then "up" else "neutral"
-      boxes += "<span class='task-restart-box box-"+status+"'></span>"
-    @elem.find('.task-restart-boxes').html(boxes)
+      box = document.createElement("span")
+      box.className = "task-restart-box box-"+status
+      boxes.appendChild(box)
+    @elem.find('.task-restart-boxes').empty().append(boxes)
 
   fail: ->
     # if something fails the last couple containers didn't actually restart
