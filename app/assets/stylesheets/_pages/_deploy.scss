@@ -48,7 +48,7 @@ pre.nowrap {
   width: 264px;
 }
 
-.task-restart {
+.task-lights {
   float: left;
   background-color: #424E5A;
   border-radius: 4px;
@@ -62,18 +62,18 @@ pre.nowrap {
   background-color: #FFE0E0;
 }
 
-.task-restart-node {
+.task-lights-node {
   font-weight: bold;
   color: #ececec;
 }
 
-.task-restart-boxes {
+.task-lights-boxes {
   float: left;
   margin-top: 0.05em;
   margin-bottom: 0.1em;
 }
 
-.task-restart-box {
+.task-lights-box {
   float: left;
   display: block;
   width: 6px;
@@ -85,7 +85,7 @@ pre.nowrap {
   background-color: #00B432;
 }
 
-.box-restarting {
+.box-partial {
   background-color: #e6ae00;
 }
 
