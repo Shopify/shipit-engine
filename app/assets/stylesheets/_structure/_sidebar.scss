@@ -12,7 +12,7 @@
 }
 
 .inner-sidebar {
-  padding-bottom: 5rem;
+  padding-bottom: 1rem;
 }
 
   .logo {
@@ -50,4 +50,15 @@
 .stack {
   padding: 2.25rem 0;
   + .stack { border-top: 1px solid rgba(#fff, .1); }
+}
+
+
+.sidebar-plugins.fixed {
+  position: fixed;
+  top: 0px;
+}
+
+.sidebar-plugin {
+  max-width: 300px;
+  padding: 10px;
 }

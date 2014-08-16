@@ -16,6 +16,25 @@
 #= require jquery-notify
 #= require ansi_stream
 #= require_tree .
+#= require_self
+
+
+tasksView = new DeployTasksView($('.deploy-tasks'))
+
+ChunkPoller.registerFormatter (chunck) ->
+  tasksView.update(chunck)
+  false
+
+Sidebar.registerPlugin(tasksView)
+
+stream = new AnsiStream()
+
+ChunkPoller.registerFormatter (chunk) ->
+  stream.process(chunk)
+
+jQuery ->
+  Sidebar.init($(window), $('.sidebar-plugins'))
+  ChunkPoller.init()
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
