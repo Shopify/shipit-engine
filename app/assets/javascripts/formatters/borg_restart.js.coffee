@@ -5,36 +5,26 @@ class @DeployTasksView
   appendTo: (@$container) ->
 
   getTask: (type, id) ->
-    if @tasks[id] != undefined
-      return @tasks[id]
-    @tasks[id] = new type(@$container)
-
-  logSearch: (text, re, callback) ->
-    re.lastIndex = 0
-    while (res = re.exec(text)) != null
-      callback(res)
-    null
+    @tasks[id] ||= new type(@$container)
 
   update: (text) ->
-    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Restarting/gm, (match) => 
-      task = @getTask(LightsTaskView, "restart-"+match[1])
-      task.title = match[1]
-      task.numPartial = match[2]
-      task.numLights = match[3]
-      task.update()
-    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Successfully Restarted/gm, (match) => 
-      task = @getTask(LightsTaskView, "restart-"+match[1])
-      task.numGood = match[2]
-      task.numLights = match[3]
-      task.update()
-    @logSearch text, /^.+(sb\d+).chi.shopify.com\] I.+\[(\d+)\/(\d+)\] Unable to restart/gm, (match) => 
-      task = @getTask(LightsTaskView, "restart-"+match[1])
-      task.fail()
+    new CapistranoParser(text).stream (log) =>
+      if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
+        @getTask(LightsTaskView, "restart-#{log.host}").update
+          host: log.host
+          numPartial: match[1]
+          numLights: match[2]
+      else if match = log.output.match(/\[(\d+)\/(\d+)\] Successfully Restarted/)
+        @getTask(LightsTaskView, "restart-#{log.host}").update
+          host: log.host
+          numGood: match[1]
+          numLights: match[2]
+      else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
+        @getTask(LightsTaskView, "restart-#{log.host}").update(host: log.host).fail()
     null
 
 
 class LightsTaskView
-  title: ""
   numLights: 0
   numPartial: 0
   numGood: 0
@@ -43,8 +33,8 @@ class LightsTaskView
     @elem = $("<div class='task-lights'><span class='task-lights-text'><span class='task-lights-node'></span></span><span class='task-lights-boxes'></span></div>")
     @elem.appendTo(@$container)
 
-  update: ->
-    @elem.find('.task-lights-node').html(@title)
+  update: ({@host, @numGood, @numLights, @numPartial}) ->
+    @updateTitle(@host)
     boxes = document.createDocumentFragment();
     for i in [1..(+@numLights)]
       status = if i <= @numGood
@@ -60,3 +50,7 @@ class LightsTaskView
 
   fail: ->
     @elem.addClass("task-failed")
+
+  updateTitle: (host) ->
+    title = host.split('.')[0]
+    @elem.find('.task-lights-node').text(title)
