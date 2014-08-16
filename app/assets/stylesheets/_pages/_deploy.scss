@@ -41,7 +41,7 @@ pre.nowrap {
 
 .deploy-tasks {
   margin-top: 5px;
-  float:left;
+  float: left;
   position: absolute;
   top: 134px;
   left: 18px;
@@ -59,7 +59,7 @@ pre.nowrap {
 }
 
 .task-failed {
-  background-color: #FFE0E0;
+  background-color: red;
 }
 
 .task-lights-node {

@@ -19,13 +19,13 @@
 #= require_self
 
 
-tasksView = new DeployTasksView($('.deploy-tasks'))
+restartWidget = new ContainersRestartWidget($('.deploy-tasks'))
 
 ChunkPoller.registerFormatter (chunck) ->
-  tasksView.update(chunck)
+  restartWidget.update(chunck)
   false
 
-Sidebar.registerPlugin(tasksView)
+Sidebar.registerPlugin(restartWidget)
 
 stream = new AnsiStream()
 
