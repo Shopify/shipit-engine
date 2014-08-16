@@ -21,6 +21,9 @@ class @ChunkPoller
   @registerFormatter: (formatter) ->
     FORMATTERS.push(formatter)
 
+  @prependFormatter: (formatter) ->
+    FORMATTERS.unshift(formatter)
+
   constructor: ($body, @pollUrl) ->
     @$status = $body.find('[data-deploy-status]')
     @$code = $body.find('code')

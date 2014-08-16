@@ -18,15 +18,6 @@
 #= require_tree .
 #= require_self
 
-
-restartWidget = new ContainersRestartWidget($('.deploy-tasks'))
-
-ChunkPoller.registerFormatter (chunck) ->
-  restartWidget.update(chunck)
-  false
-
-Sidebar.registerPlugin(restartWidget)
-
 stream = new AnsiStream()
 
 ChunkPoller.registerFormatter (chunk) ->

@@ -5,7 +5,7 @@ class @CapistranoParser
   stream: (callback) ->
     PATTERN.lastIndex = 0
     while (match = PATTERN.exec(@text)) != null
-      callback 
+      callback
         source: match[1]
         host: match[2]
         output: match[3] || ''

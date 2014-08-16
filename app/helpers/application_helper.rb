@@ -18,4 +18,23 @@ module ApplicationHelper
   def emoji_tag(emoji)
     image_tag("emoji/#{emoji}.png", height: 20, width: 20, alt: ":#{emoji}:")
   end
+
+  def include_plugins
+    tags = []
+    Rails.application.config.assets.paths.each do |path|
+      Dir[File.join(path, 'plugins/*')].each do |plugin_path|
+        tags << include_plugin_asset_tag(File.basename(plugin_path))
+      end
+    end
+    tags.join.html_safe
+  end
+
+  def include_plugin_asset_tag(plugin)
+    if plugin =~ /^(\w+)(\.js)?(\.coffee)?$/
+      javascript_include_tag "plugins/#{$1}"
+    elsif plugin =~ /^(\w+)(\.css)?(\.scss)?$/
+      stylesheet_link_tag "plugins/#{$1}"
+    end
+  end
+
 end

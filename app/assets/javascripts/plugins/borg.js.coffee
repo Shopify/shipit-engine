@@ -1,4 +1,4 @@
-class @ContainersRestartWidget
+class ContainersRestartWidget
   constructor: ->
     @tasks = {}
 
@@ -56,3 +56,12 @@ class ContainerView
 
   fail: ->
     @$element.addClass('task-failed')
+
+
+restartWidget = new ContainersRestartWidget()
+
+ChunkPoller.prependFormatter (chunck) ->
+  restartWidget.update(chunck)
+  false
+
+Sidebar.registerPlugin(restartWidget)
