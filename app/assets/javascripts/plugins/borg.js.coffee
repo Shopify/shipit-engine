@@ -38,7 +38,7 @@ class ContainerView
   TEMPLATE = $.trim """
     <div class="task-lights">
       <span class="task-lights-text">
-        <span class="task-lights-node"></span>
+        <span class="task-lights-title"></span>
       </span>
       <span class="task-lights-boxes"></span>
     </div>
@@ -50,8 +50,20 @@ class ContainerView
   constructor: (@$container, host) ->
     @$element = $(TEMPLATE)
     title = host.split('.')[0]
-    @$element.find('.task-lights-node').text(title)
-    @$element.appendTo(@$container)
+    @$element.find('.task-lights-title').text(title)
+    @insertSorted(@$element, title)
+
+  insertSorted: (toInsert, title) ->
+    inserted = false
+    $('.task-lights',@$container).each ->
+      title2 = $('.task-lights-title',this).text()
+      # Sort shorter names first, so that the sort ends up 
+      # like [sb1,sb2,sb10] not [sb1,sb10,sb2]
+      if title2.length > title.length || (title2 > title && title2.length == title.length)
+        toInsert.insertBefore(this)
+        inserted = true
+        return false
+    toInsert.appendTo(@$container) unless inserted
 
   update: (attrs) ->
     $.extend(this, attrs)
