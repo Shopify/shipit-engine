@@ -1,4 +1,6 @@
 class ContainersRestartWidget
+  active: false
+
   constructor: ->
     @tasks = {}
 
@@ -7,9 +9,19 @@ class ContainersRestartWidget
   getTask: (host) ->
     @tasks[host] ||= new ContainerView(@$container, host)
 
+  addHeading: ->
+    @heading = $("<h2 class='task-group-heading'>Restarting Containers</h2>")
+    @heading.appendTo(@$container)
+
+  activate: ->
+    return if @active
+    @addHeading()
+    @active = true
+
   update: (text) ->
     new CapistranoParser(text).eachMessage (log) =>
       if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
+        @activate()
         @getTask(log.host).update
           numPending: match[1]
           numLights: match[2]
