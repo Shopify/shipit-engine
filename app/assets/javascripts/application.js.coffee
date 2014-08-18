@@ -15,7 +15,17 @@
 #= require rails-timeago
 #= require jquery-notify
 #= require ansi_stream
-#= require_tree .
+#= require_tree ./application
+#= require_self
+
+stream = new AnsiStream()
+
+ChunkPoller.appendFormatter (chunk) ->
+  stream.process(chunk)
+
+jQuery ->
+  Sidebar.init($(window), $('.sidebar-plugins'))
+  ChunkPoller.init()
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()

@@ -1,4 +1,5 @@
-class ChunkPoller
+class @ChunkPoller
+  FORMATTERS = []
   INTERVAL = 1000
   MAX_RETRIES = 15
   STICKY_SCROLL_TOLERENCE = 200
@@ -8,12 +9,20 @@ class ChunkPoller
     error: '<%= image_path "deploy_error.jpg" %>'
 
   @init: ->
-    pollUrl = $('code').data('next-chunks-url')
+    $output = $('code')
+    pollUrl = $output.data('next-chunks-url')
     poller = new ChunkPoller($('body'), pollUrl)
-    $('code').each ->
-      $(this).html(poller.colorize(this.innerHTML))
 
+    output = $output.html()
+    $output.html('')
+    poller.appendChunks([text: output])
     poller.start() if pollUrl
+
+  @appendFormatter: (formatter) ->
+    FORMATTERS.push(formatter)
+
+  @prependFormatter: (formatter) ->
+    FORMATTERS.unshift(formatter)
 
   constructor: ($body, @pollUrl) ->
     @$status = $body.find('[data-deploy-status]')
@@ -22,7 +31,11 @@ class ChunkPoller
     @$window = $(window)
     @initialScroll = true
     @deployShortSha = $body.find('.short-sha').text()
-    @stream = new AnsiStream()
+
+  formatChunks: (chunk) ->
+    for formatter in FORMATTERS
+      chunk = formatter(chunk) || chunk
+    chunk
 
   poll: =>
     jQuery.ajax @pollUrl,
@@ -102,10 +115,4 @@ class ChunkPoller
     return unless chunks.length
 
     text = chunks.map((c) -> c.text).join('')
-    @$code.append(@colorize(text))
-
-  colorize: (text) ->
-    @stream.process(text)
-
-jQuery ->
-  ChunkPoller.init()
+    @$code.append(@formatChunks(text))

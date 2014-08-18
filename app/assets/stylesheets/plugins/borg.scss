@@ -1,0 +1,54 @@
+.task-group-heading {
+  color: white;
+  margin-left: 3px;
+  margin-bottom: 5px;
+}
+
+.task-lights {
+  float: left;
+  background-color: #424E5A;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 4px;
+  width: 50px;
+  text-align: center;
+}
+
+.task-failed {
+  background-color: #923838;
+}
+
+.task-lights-title {
+  font-weight: bold;
+  color: #ececec;
+}
+
+.task-lights-boxes {
+  float: left;
+  margin-top: 0.05em;
+  margin-bottom: 0.1em;
+}
+
+.task-lights-box {
+  float: left;
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 2px;
+}
+
+.box-up {
+  background-color: #00B432;
+}
+
+.box-partial {
+  background-color: #e6ae00;
+}
+
+.box-neutral {
+  background-color: #B6BCC0;
+}
+
+.task-failed .box-neutral {
+  background-color: red;
+}

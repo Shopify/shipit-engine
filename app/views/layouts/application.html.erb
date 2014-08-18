@@ -4,6 +4,9 @@
   <title>Shipit</title>
   <%= stylesheet_link_tag "master", media: "all" %>
   <%= javascript_include_tag "application" %>
+
+  <%= include_plugins %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -24,6 +27,7 @@
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
         <% end %>
       </div>
+      <div class="sidebar-plugins"></div>
     </header>
     <div class="main">
       <%= yield %>
