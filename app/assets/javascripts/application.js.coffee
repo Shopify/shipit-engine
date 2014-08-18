@@ -20,7 +20,7 @@
 
 stream = new AnsiStream()
 
-ChunkPoller.registerFormatter (chunk) ->
+ChunkPoller.appendFormatter (chunk) ->
   stream.process(chunk)
 
 jQuery ->

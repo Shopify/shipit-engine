@@ -18,7 +18,7 @@ class @ChunkPoller
     poller.appendChunks([text: output])
     poller.start() if pollUrl
 
-  @registerFormatter: (formatter) ->
+  @appendFormatter: (formatter) ->
     FORMATTERS.push(formatter)
 
   @prependFormatter: (formatter) ->
