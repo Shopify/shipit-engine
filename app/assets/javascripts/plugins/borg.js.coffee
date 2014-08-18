@@ -11,14 +11,14 @@ class ContainersRestartWidget
     new CapistranoParser(text).stream (log) =>
       if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
         @getTask(log.host).update
-          numPartial: match[1]
+          numPending: match[1]
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\] Successfully Restarted/)
         @getTask(log.host).update
-          numGood: match[1]
+          numDone: match[1]
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
-        @getTask(log.host).update(numPartial: match[1], numLights: match[2]).fail()
+        @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
     null
 
 
@@ -32,8 +32,8 @@ class ContainerView
     </div>
   """
   numLights: 0
-  numPartial: 0
-  numGood: 0
+  numPending: 0
+  numDone: 0
 
   constructor: (@$container, host) ->
     @$element = $(TEMPLATE)
@@ -45,9 +45,9 @@ class ContainerView
     $.extend(this, attrs)
     boxes = document.createDocumentFragment();
     for i in [1..(+@numLights)]
-      status = if i <= @numGood
+      status = if i <= @numDone
         'up'
-      else if i <= @numPartial
+      else if i <= @numPending
         'partial'
       else
         'neutral'

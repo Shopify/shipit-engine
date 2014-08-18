@@ -30,9 +30,9 @@ module ApplicationHelper
   end
 
   def include_plugin_asset_tag(plugin)
-    if plugin =~ /^(\w+)(\.js)?(\.coffee)?$/
+    if plugin =~ /\A([\-\w]+)(\.js)?(\.coffee)?\Z/
       javascript_include_tag "plugins/#{$1}"
-    elsif plugin =~ /^(\w+)(\.css)?(\.scss)?$/
+    elsif plugin =~ /\A([\-\w]+)(\.css)?(\.scss)?\Z/
       stylesheet_link_tag "plugins/#{$1}"
     end
   end
