@@ -41,7 +41,8 @@ class ContainerView
     @$element.find('.task-lights-node').text(title)
     @$element.appendTo(@$container)
 
-  update: ({@numGood, @numLights, @numPartial}) ->
+  update: (attrs) ->
+    $.extend(this, attrs)
     boxes = document.createDocumentFragment();
     for i in [1..(+@numLights)]
       status = if i <= @numGood
