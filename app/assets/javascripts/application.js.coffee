@@ -15,7 +15,7 @@
 #= require rails-timeago
 #= require jquery-notify
 #= require ansi_stream
-#= require_tree .
+#= require_tree ./application
 #= require_self
 
 stream = new AnsiStream()
