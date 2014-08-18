@@ -8,7 +8,7 @@ class ContainersRestartWidget
     @tasks[host] ||= new ContainerView(@$container, host)
 
   update: (text) ->
-    new CapistranoParser(text).stream (log) =>
+    new CapistranoParser(text).eachMessage (log) =>
       if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
         @getTask(log.host).update
           numPending: match[1]

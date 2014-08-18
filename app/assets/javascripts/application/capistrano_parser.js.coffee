@@ -2,7 +2,7 @@ class @CapistranoParser
   PATTERN = /^\*+ +\[(\w+) :: ([a-zA-Z\d\.]+)\] (.*)$/gm
   constructor: (@text) ->
 
-  stream: (callback) ->
+  eachMessage: (callback) ->
     PATTERN.lastIndex = 0
     while (match = PATTERN.exec(@text)) != null
       callback
