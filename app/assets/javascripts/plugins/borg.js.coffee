@@ -61,8 +61,8 @@ class ContainerView
 
 restartWidget = new ContainersRestartWidget()
 
-ChunkPoller.prependFormatter (chunck) ->
-  restartWidget.update(chunck)
+ChunkPoller.prependFormatter (chunk) ->
+  restartWidget.update(chunk)
   false
 
 Sidebar.registerPlugin(restartWidget)
