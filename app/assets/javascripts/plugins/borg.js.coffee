@@ -7,7 +7,7 @@ class RestartTaskWidget
   appendTo: (@$container) ->
 
   createTask: (host) ->
-    new ContainerView(@$container, host)
+    new LightsTaskView(@$container, host)
 
   getTask: (host) ->
     @tasks[host] ||= @createTask(host)
@@ -69,23 +69,25 @@ class JobServersRestartWidget extends RestartTaskWidget
     @capistranoTask = "jobs:restart"
 
   createTask: (host) ->
-    task = super(host)
-    task.addCustomClass("task-job-server")
-    task
+    new JobServerRestartTaskView(@$container, host)
 
   parse: (parser) ->
     parser.eachMessage (log) =>
       if match = log.output.match(/sv-multi sending graceful_quit to (\d+) services/)
         @getTask(log.host).update
           numLights: match[1]
-      else if match = log.output.match(/ok: run: [\-\w\d]+: \(pid \d+\)/)
+      else if match = log.output.match(/ok: run: ([\-\w\d]+): \(pid \d+\)/)
         task = @getTask(log.host)
-        task.update
-          numDone: task.numDone + 1
+        task.addStatus("up", match[1])
+        task.update {}
+      else if match = log.output.match(/Timeout: ([\-\w\d]+) still running after (\d+) seconds|timeout: run: ([\-\w\d]+): \(pid \d+\) (\d+)s/)
+        task = @getTask(log.host)
+        task.addStatus("partial", "timeout (#{match[2]||match[4]}s): #{match[1]||match[3]}")
+        task.update {}
     null
 
 
-class ContainerView
+class LightsTaskView
   TEMPLATE = $.trim """
     <div class="task-lights">
       <span class="task-lights-text">
@@ -100,12 +102,9 @@ class ContainerView
 
   constructor: (@$container, host) ->
     @$element = $(TEMPLATE)
-    title = host.split('.')[0]
-    @$element.find('.task-lights-title').text(title)
-    @insertSorted(@$element, title)
-
-  addCustomClass: (className) ->
-    @$element.addClass(className)
+    @$title = host.split('.')[0]
+    @$element.find('.task-lights-title').text(@$title)
+    @insertSorted(@$element, @$title)
 
   insertSorted: (toInsert, title) ->
     inserted = false
@@ -119,8 +118,7 @@ class ContainerView
         return false
     toInsert.appendTo(@$container) unless inserted
 
-  update: (attrs) ->
-    $.extend(this, attrs)
+  genBoxes: ->
     boxes = document.createDocumentFragment();
     for i in [1..(+@numLights)]
       status = if i <= @numDone
@@ -130,11 +128,36 @@ class ContainerView
       else
         'neutral'
       $('<span>').addClass("task-lights-box box-#{status}").appendTo(boxes)
-    @$element.find('.task-lights-boxes').empty().append(boxes)
+    boxes
+
+  update: (attrs) ->
+    $.extend(this, attrs)
+    @$element.find('.task-lights-boxes').empty().append(@genBoxes())
     this
 
   fail: ->
     @$element.addClass('task-failed')
+
+class JobServerRestartTaskView extends LightsTaskView
+  constructor: (container, host) ->
+    super container, host
+    @$element.addClass("task-job-server")
+    @statuses = []
+
+  genBoxes: ->
+    boxes = document.createDocumentFragment();
+    for status in @statuses
+      box = $('<span>').addClass("task-lights-box box-#{status[0]}")
+      box.attr('title',status[1])
+      box.appendTo(boxes)
+    for i in [0...(@numLights-@statuses.length)]
+      $('<span>').addClass("task-lights-box box-neutral").appendTo(boxes)
+    boxes
+
+  addStatus: (status, note) ->
+    @statuses.push([status, note])
+
+
 
 
 restartWidget = new ContainersRestartWidget()
