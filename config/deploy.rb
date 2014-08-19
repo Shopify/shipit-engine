@@ -79,6 +79,7 @@ namespace :deploy do
 end
 
 namespace :jobs do
+  desc "restart the job workers"
   task :restart do
     on roles(:app), in: :parallel do
       execute "sv-sudo quit /etc/sv/shipit-*-resque-*"
