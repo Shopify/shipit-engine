@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   def authenticate
     auth_settings = Shipit.authentication
     return if session[:authenticated] || auth_settings.blank?
-    redirect_to authentication_path(provider: auth_settings.provider, origin: request.fullpath)
+    redirect_to authentication_path(provider: auth_settings['provider'], origin: request.fullpath)
   end
 
   # Respond to HTML by default
@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def force_github_authentication
     return unless Shipit.github
-    if !Shipit.github.try(:optional) && !current_user.logged_in?
+    if Shipit.github_required? && !current_user.logged_in?
       redirect_to authentication_path(:github, origin: request.original_url)
       return false
     end

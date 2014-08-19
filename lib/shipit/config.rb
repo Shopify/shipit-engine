@@ -6,6 +6,10 @@ module Shipit::Config
 
   delegate :authentication, :github, :host, to: :secrets
 
+  def github_required?
+    github && !github['optional']
+  end
+
   def github_key
     github && github['key']
   end

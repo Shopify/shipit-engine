@@ -15,7 +15,7 @@ class AuthenticationController < ApplicationController
     end
 
     authenticated = session[:authenticated]
-    authenticated = true if auth['provider'] == Shipit.authentication.provider
+    authenticated = true if auth['provider'] == Shipit.authentication['provider']
     reset_session
     session[:authenticated] = authenticated
     session[:user_id] = user_id
