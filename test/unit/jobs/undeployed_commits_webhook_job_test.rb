@@ -1,20 +1,20 @@
 require 'test_helper'
 
-class NotifyStackUsersJobTest < ActiveSupport::TestCase
+class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
   setup do
-    @job = NotifyStackUsersJob.new
+    @job = UndeployedCommitsWebhookJob.new
     @stack = stacks(:shipit)
     @commit = commits(:first)
   end
 
-  test "#perform calls notify when there are old undeployed commits" do
-    @job.expects(:notify).once
+  test "#perform calls send_reminder when there are old undeployed commits" do
+    @job.expects(:send_reminder).once
     assert_equal @stack.old_undeployed_commits.class, Commit::ActiveRecord_Relation
     @job.perform(stack_id: @stack.id)
   end
 
-  test "#perform does not notify users when the stack doesn't have old undeployed commits" do
-    @job.expects(:notify).never
+  test "#perform does not send_reminder users when the stack doesn't have old undeployed commits" do
+    @job.expects(:send_reminder).never
     Stack.any_instance.expects(:old_undeployed_commits).returns(nil)
     @job.perform(stack_id: @stack.id)
   end
