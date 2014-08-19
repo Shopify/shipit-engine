@@ -5,6 +5,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   end
 
   if github_config = Shipit.github
-    provider :github, github_config['key'], github_config['secret'], scope: 'email'
+    provider :github, Shipit.github_key, Shipit.github_secret, scope: 'email'
   end
 end
