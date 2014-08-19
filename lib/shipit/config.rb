@@ -14,6 +14,11 @@ module Shipit::Config
     github && github['secret']
   end
 
+  def authentication_settings
+    parameters = Array(authentication['parameters'] || authentication['options'])
+    [authentication['provider'], *parameters]
+  end
+
   def extra_env
     secrets.env || {}
   end
