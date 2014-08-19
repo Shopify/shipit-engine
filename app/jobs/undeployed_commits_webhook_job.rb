@@ -22,13 +22,18 @@ class UndeployedCommitsWebhookJob < BackgroundJob
     stack_committer_info.to_json
   end
 
-  def remind(json_output, url)
-    `curl --connect-timeout 5 \
-          --max-time 10 \
-          --retry 3 \
-          --retry-delay 5 \
-          --retry-max-time 30 \
-          -d "json_output=#{json_output}" \
-          #{url}`
+  def send_reminder(stack_committer_info, reminder_url)
+    max_retries = 3
+
+    begin
+      response = Net::HTTP.post_form(
+        URI.parse(reminder_url),
+        {"stack_committer_json" => stack_committer_info }
+      )
+    rescue Timeout::Error, Errno::ETIMEDOUT
+      retry if (max_retries -= 1) > 0
+    rescue StandardError
+    end
+
   end
 end
