@@ -10,13 +10,19 @@ class RestartTaskWidget
     @tasks[host] ||= new ContainerView(@$container, host)
 
   addHeading: ->
-    headingEl = $("<h2 class='task-group-heading'>#{@heading}</h2>")
-    headingEl.appendTo(@$container)
+    @$headingEl = $("<h2 class='task-group-heading'></h2>")
+    @$headingEl.appendTo(@$container)
 
   activate: ->
     return if @active
     @addHeading()
+    @$headingEl.text(@heading)
     @active = true
+
+  finish: ->
+    return unless @active
+    @$headingEl.text(@heading + " \u2713") # add check mark
+    @active = false
   
 
 class ContainersRestartWidget extends RestartTaskWidget
@@ -42,6 +48,9 @@ class ContainersRestartWidget extends RestartTaskWidget
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
         @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
+
+    if parser.findTaskEnd('deploy:restart')
+      @finish()
     null
 
 
