@@ -1,7 +1,7 @@
 class @CapistranoParser
-  LOG_PATTERN = /^\*+ +\[(\w+) :: ([a-zA-Z\d\.]+)\] (.*)$/gm
+  LOG_PATTERN = /^\s*\*+ +\[(\w+) :: ([a-zA-Z\d\.]+)\] (.*)$/gm
   TASK_START_PATTERN = /^\s*\* executing `([^']+)'\s*$/gm
-  TASK_END_PATTERN = /^\s*triggering after callbacks for `([^']+)'\s*$/gm
+  TASK_END_PATTERN = /^\s*triggering after callbacks for `([^']+)'\s*$|^\s*\* Finished (\S+) in /gm
   lastIndex: 0
 
   constructor: (@text) ->
@@ -32,7 +32,7 @@ class @CapistranoParser
   findTaskEnd: (task) ->
     found = false
     @matchPattern TASK_END_PATTERN,(match) ->
-      if match[1] == task
+      if match[1] == task || match[2] == task
         found = true
         return false
     found

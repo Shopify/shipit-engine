@@ -6,8 +6,11 @@ class RestartTaskWidget
 
   appendTo: (@$container) ->
 
+  createTask: (host) ->
+    new ContainerView(@$container, host)
+
   getTask: (host) ->
-    @tasks[host] ||= new ContainerView(@$container, host)
+    @tasks[host] ||= @createTask(host)
 
   addHeading: ->
     @$headingEl = $("<h2 class='task-group-heading'></h2>")
@@ -22,21 +25,30 @@ class RestartTaskWidget
   finish: ->
     return unless @active
     @$headingEl.text(@heading + " \u2713") # add check mark
+    @$container.append("<div style='clear:both;'></div>")
     @active = false
+
+  update: (text) ->
+    parser = new CapistranoParser(text)
+    unless @active
+      res = parser.findTaskStart(@capistranoTask)
+      return unless res
+      @activate()
+
+    @parse(parser)
+
+    if parser.findTaskEnd(@capistranoTask)
+      @finish()
+    null
   
 
 class ContainersRestartWidget extends RestartTaskWidget
   constructor: ->
     super
-    @heading = "Restarting Containers"
+    @heading = "Restarting Servers"
+    @capistranoTask = "deploy:restart"
 
-  update: (text) ->
-    parser = new CapistranoParser(text)
-    unless @active
-      res = parser.findTaskStart('deploy:restart')
-      return unless res
-      @activate()
-
+  parse: (parser) ->
     parser.eachMessage (log) =>
       if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
         @getTask(log.host).update
@@ -48,9 +60,28 @@ class ContainersRestartWidget extends RestartTaskWidget
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
         @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
+    null
 
-    if parser.findTaskEnd('deploy:restart')
-      @finish()
+class JobServersRestartWidget extends RestartTaskWidget
+  constructor: ->
+    super
+    @heading = "Restarting Job Servers"
+    @capistranoTask = "jobs:restart"
+
+  createTask: (host) ->
+    task = super(host)
+    task.addCustomClass("task-job-server")
+    task
+
+  parse: (parser) ->
+    parser.eachMessage (log) =>
+      if match = log.output.match(/sv-multi sending graceful_quit to (\d+) services/)
+        @getTask(log.host).update
+          numLights: match[1]
+      else if match = log.output.match(/ok: run: [\-\w\d]+: \(pid \d+\)/)
+        task = @getTask(log.host)
+        task.update
+          numDone: task.numDone + 1
     null
 
 
@@ -72,6 +103,9 @@ class ContainerView
     title = host.split('.')[0]
     @$element.find('.task-lights-title').text(title)
     @insertSorted(@$element, title)
+
+  addCustomClass: (className) ->
+    @$element.addClass(className)
 
   insertSorted: (toInsert, title) ->
     inserted = false
@@ -104,9 +138,12 @@ class ContainerView
 
 
 restartWidget = new ContainersRestartWidget()
+jobRestartWidget = new JobServersRestartWidget()
 
 ChunkPoller.prependFormatter (chunk) ->
   restartWidget.update(chunk)
+  jobRestartWidget.update(chunk)
   false
 
 Sidebar.registerPlugin(restartWidget)
+Sidebar.registerPlugin(jobRestartWidget)

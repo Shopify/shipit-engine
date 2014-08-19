@@ -52,3 +52,14 @@
 .task-failed .box-neutral {
   background-color: red;
 }
+
+.task-job-server {
+  height: 95px;
+  width: 116px;
+
+  .task-lights-box {
+    width: 6px;
+    height: 6px;
+    margin: 2px;
+  }
+}
