@@ -84,6 +84,10 @@ class JobServersRestartWidget extends RestartTaskWidget
         task = @getTask(log.host)
         task.addStatus("partial", "timeout (#{match[2]||match[4]}s): #{match[1]||match[3]}")
         task.update {}
+      else if match = log.output.match(/(fatal|fail|down):( run:)? ([\-\w\d]+)/)
+        task = @getTask(log.host)
+        task.addStatus("down", "#{match[1]}: #{match[3]}")
+        task.update {}
     null
 
 
