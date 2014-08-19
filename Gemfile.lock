@@ -211,7 +211,6 @@ GEM
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
     securecompare (1.0.0)
-    settingslogic (2.0.9)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -286,7 +285,6 @@ DEPENDENCIES
   safe_yaml
   sass-rails
   securecompare (~> 1.0)
-  settingslogic
   sqlite3
   state_machine
   thin

@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   def can_login?
-    Settings.github && !current_user.logged_in?
+    Shipit.github && !current_user.logged_in?
   end
 
   def emoji_tag(emoji)

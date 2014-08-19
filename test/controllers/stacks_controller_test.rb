@@ -14,7 +14,7 @@ class StacksControllerTest < ActionController::TestCase
 
   test "mandatory GitHub authentication can be disabled" do
     session[:user_id] = nil
-    Settings.github.stubs(:optional).returns(true)
+    Shipit.github.stubs(:optional).returns(true)
     get :index
     assert_response :ok
   end
@@ -61,7 +61,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#index before authentication redirects to authentication" do
-    Settings.stubs(:authentication).returns(stub(provider: 'google_apps'))
+    Shipit.stubs(:authentication).returns(stub(provider: 'google_apps'))
 
     get :index
 
@@ -69,14 +69,14 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#index when authentication is disabled does not redirect" do
-    Settings.stubs(:authentication).returns(false)
+    Shipit.stubs(:authentication).returns(false)
 
     get :index
     assert_response :ok
   end
 
   test "#index when authentication is successful does not redirect" do
-    Settings.stubs(:authentication).returns(stub(provider: 'google_apps'))
+    Shipit.stubs(:authentication).returns(stub(provider: 'google_apps'))
 
     get :index, {}, { authenticated: true }
 

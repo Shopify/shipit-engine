@@ -13,7 +13,7 @@ class Commands
   delegate :git_version, to: :class
 
   def env
-    @env ||= DEFAULT_ENVIRONMENT.merge(Settings['env'] || {})
+    @env ||= DEFAULT_ENVIRONMENT.merge(Shipit.extra_env)
   end
 
   def git(*args)

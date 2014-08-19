@@ -7,7 +7,7 @@ machine:
     version: 0.10.21
 dependencies:
   pre:
-    - cp config/settings.yml.example config/settings.yml
+    - cp config/secrets.yml.example config/secrets.yml
     - mkdir -p tmp/cache/
   bundler:
     without:
