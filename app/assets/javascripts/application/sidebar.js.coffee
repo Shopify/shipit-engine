@@ -1,23 +1,24 @@
 class @Sidebar
-  PLUGINS = []
+  INSTANCE = null
 
-  @registerPlugin: (plugin) ->
-    PLUGINS.push(plugin)
+  @instance: ->
+    INSTANCE ||= new this($(window), $('.sidebar-plugins'))
 
-  @init: ($window, $container) ->
-    new this($window, $container)
+  @newWidgetContainer: ->
+    Sidebar.instance().newWidgetContainer()
 
   constructor: (@$window, @$container) ->
     @saveMinTop()
     @$window.scroll(@updatePosition)
-    for plugin in PLUGINS
-      plugin.appendTo(@appendPluginContainer())
+    @$window.resize(@updatePosition)
+    @$outerContainer = @$container.parent()
 
   updatePosition: =>
-    @$container.toggleClass('fixed', @$window.scrollTop() > @minTop)
+    @$outerContainer.toggleClass('fixed', @$window.scrollTop() > @minTop)
+    @$container.height($(window).height() - @$container[0].getBoundingClientRect().top)
 
-  appendPluginContainer: ->
-    $('<div>').addClass('sidebar-plugin').appendTo(@$container)
+  newWidgetContainer: ->
+    $('<div>').addClass('sidebar-plugin').prependTo(@$container)
 
   saveMinTop: ->
     @minTop = @$container.position()?.top || 0

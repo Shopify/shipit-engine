@@ -4,8 +4,6 @@ class RestartTaskWidget
   constructor: ->
     @tasks = {}
 
-  appendTo: (@$container) ->
-
   createTask: (host) ->
     new LightsTaskView(@$container, host)
 
@@ -18,6 +16,7 @@ class RestartTaskWidget
 
   activate: ->
     return if @active
+    @$container = Sidebar.newWidgetContainer()
     @addHeading()
     @$headingEl.text(@heading)
     @active = true
@@ -170,6 +169,3 @@ ChunkPoller.prependFormatter (chunk) ->
   restartWidget.update(chunk)
   jobRestartWidget.update(chunk)
   false
-
-Sidebar.registerPlugin(restartWidget)
-Sidebar.registerPlugin(jobRestartWidget)

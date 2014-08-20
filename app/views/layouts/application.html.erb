@@ -27,7 +27,9 @@
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
         <% end %>
       </div>
-      <div class="sidebar-plugins"></div>
+      <div class="sidebar-plugins-outer">
+        <div class="sidebar-plugins"></div>
+      </div>
     </header>
     <div class="main">
       <%= yield %>
