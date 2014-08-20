@@ -60,9 +60,12 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal File.join(@expected_base_path, "git"), @stack.git_path
   end
 
-  test "old_undeployed_commits returns undeployed commits older than specified time" do
-    old_undeployed_commits = @stack.old_undeployed_commits(long_time_ago = 3.days.ago)
-    assert_equal [commits(:third).id, commits(:fourth).id], old_undeployed_commits.pluck(:id)
+  test "old_undeployed_commits returns commits that were created before the specified time" do
+    last_commit = Commit.last
+    last_commit.created_at = 4.hours.ago
+    last_commit.save
+    old_undeployed_commits = @stack.old_undeployed_commits(long_time_ago = 3.hours.ago)
+    assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
   end
 
   test "reminder_url cannot be set to an invalid URL" do

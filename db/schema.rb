@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140721232053) do
+ActiveRecord::Schema.define(version: 20140820063056) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -28,9 +28,10 @@ ActiveRecord::Schema.define(version: 20140721232053) do
     t.datetime "committed_at",                                null: false
   end
 
-  add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree
-  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id", using: :btree
-  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id", using: :btree
+  add_index "commits", ["author_id"], name: "index_commits_on_author_id"
+  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id"
+  add_index "commits", ["created_at"], name: "index_commits_on_created_at"
+  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deploys", force: true do |t|
     t.integer  "stack_id",                            null: false

@@ -8,14 +8,14 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
   end
 
   test "#perform calls send_reminder when there are old undeployed commits" do
+    Stack.any_instance.stubs(:old_undeployed_commits).returns(@stack.commits)
     @job.expects(:send_reminder).once
-    assert_equal 3, @stack.old_undeployed_commits.count
     @job.perform(stack_id: @stack.id)
   end
 
   test "#perform does not send_reminder users when the stack doesn't have old undeployed commits" do
+    Stack.any_instance.stubs(:old_undeployed_commits).returns([])
     @job.expects(:send_reminder).never
-    Stack.any_instance.expects(:old_undeployed_commits).returns(nil)
     @job.perform(stack_id: @stack.id)
   end
 
