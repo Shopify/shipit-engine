@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
     )
   end
 
-  def self.all_ids_of_users(ids)
-    where(id: ids).select(:github_id, :name, :email)
+  def identifiers_for_ping
+    {github_id: github_id, name: name, email: email}
   end
 
   def logged_in?

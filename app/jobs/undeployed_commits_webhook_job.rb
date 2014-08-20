@@ -15,10 +15,15 @@ class UndeployedCommitsWebhookJob < BackgroundJob
   end
 
   def build_stack_committer_json(stack, committer_ids)
-    stack_committer_info                = {}
-    stack_committer_info[:repo_name]    = stack.repo_name
-    stack_committer_info[:repo_branch]  = stack.branch
-    stack_committer_info[:authors]      = User.all_ids_of_users(committer_ids)
+    stack_committer_info = {}
+    stack_committer_info[:repo_name] = stack.repo_name
+    stack_committer_info[:repo_branch] = stack.branch
+    stack_committer_info[:authors] = []
+
+    committer_ids.each do |id|
+      stack_committer_info[:authors] << User.find(id).identifiers_for_ping
+    end
+
     stack_committer_info.to_json
   end
 
