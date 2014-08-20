@@ -153,12 +153,7 @@ class Stack < ActiveRecord::Base
   end
 
   def old_undeployed_commits(long_time_ago = 30.minutes.ago)
-    if undeployed_commits?
-      Commit.reachable.where(
-        "stack_id = :stack_id and id > :commit_id and committed_at < :committed_at",
-        stack_id: id, commit_id: last_deployed_commit.id, committed_at: long_time_ago
-      )
-    end
+    undeployed_commits? ? commits.newer_than(last_deployed_commit).where("committed_at < ?", long_time_ago) : []
   end
 
   private

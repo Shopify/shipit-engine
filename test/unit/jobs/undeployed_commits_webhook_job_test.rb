@@ -9,7 +9,7 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
 
   test "#perform calls send_reminder when there are old undeployed commits" do
     @job.expects(:send_reminder).once
-    assert_equal @stack.old_undeployed_commits.class, Commit::ActiveRecord_Relation
+    assert_equal 3, @stack.old_undeployed_commits.count
     @job.perform(stack_id: @stack.id)
   end
 
