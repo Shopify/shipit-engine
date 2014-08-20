@@ -14,18 +14,22 @@ class RestartTaskWidget
     @$headingEl = $("<h2 class='task-group-heading'></h2>")
     @$headingEl.appendTo(@$container)
 
-  activate: ->
-    return if @active
+  newContainer: ->
     @$container = Sidebar.newWidgetContainer()
     @addHeading()
+    @$container.append("<div class='section-bottom'></div>")
+
+  activate: ->
+    return if @active
+    @newContainer()
     @$headingEl.text(@heading)
     @active = true
 
   finish: ->
     return unless @active
     @$headingEl.text(@heading + " \u2713") # add check mark
-    @$container.append("<div style='clear:both;'></div>")
     @active = false
+    @tasks = {}
 
   update: (text) ->
     parser = new CapistranoParser(text)
@@ -112,7 +116,7 @@ class LightsTaskView
 
   insertSorted: (toInsert, title) ->
     inserted = false
-    $('.task-lights',@$container).each ->
+    @$container.find('.task-lights').each ->
       title2 = $('.task-lights-title',this).text()
       # Sort shorter names first, so that the sort ends up 
       # like [sb1,sb2,sb10] not [sb1,sb10,sb2]
@@ -120,7 +124,7 @@ class LightsTaskView
         toInsert.insertBefore(this)
         inserted = true
         return false
-    toInsert.appendTo(@$container) unless inserted
+    toInsert.insertBefore(@$container.find('.section-bottom')) unless inserted
 
   genBoxes: ->
     boxes = document.createDocumentFragment();
