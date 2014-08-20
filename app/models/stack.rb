@@ -28,6 +28,8 @@ class Stack < ActiveRecord::Base
     where('id % ? = ?', shard_count, shard_num)
   }
 
+  scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
+
   def self.refresh_deployed_revisions
     find_each(&:async_refresh_deployed_revision)
   end
@@ -35,8 +37,6 @@ class Stack < ActiveRecord::Base
   def self.send_undeployed_commits_reminders
     with_reminder_webhook.map(&:enqueue_undeployed_commits_job)
   end
-
-  scope :with_reminder_webhook, -> { where.not( reminder_url: '' ) }
 
   def undeployed_commits?
     undeployed_commits_count > 0
