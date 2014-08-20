@@ -31,4 +31,13 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
     actual_values = [json["repo_name"], json["repo_branch"], User.find_by_name(json["authors"].first["name"])]
     assert_equal expected_values, actual_values
   end
+
+  test "#send_reminder posts the stack_committer_json to reminder_url with Faraday" do
+    Stack.any_instance.stubs(:old_undeployed_commits).returns(@stack.commits)
+    @stack.update_attributes(reminder_url: "http://www.example.com")
+    expected_hash = { "stack_committer_json" => @job.build_stack_committer_json(@stack, @stack.commits.pluck(:committer_id).uniq) }
+
+    Faraday.expects(:post).with(@stack.reminder_url, expected_hash).once
+    @job.perform(stack_id: @stack.id)
+  end
 end

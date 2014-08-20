@@ -266,6 +266,7 @@ DEPENDENCIES
   capistrano-rails
   coffee-rails
   faker
+  faraday
   foreman (~> 0.74)
   heroku (~> 3.8.2)
   jquery-rails

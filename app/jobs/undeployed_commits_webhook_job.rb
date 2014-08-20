@@ -26,14 +26,9 @@ class UndeployedCommitsWebhookJob < BackgroundJob
     max_retries = 3
 
     begin
-      response = Net::HTTP.post_form(
-        URI.parse(reminder_url),
-        {"stack_committer_json" => stack_committer_json }
-      )
-    rescue Timeout::Error, Errno::ETIMEDOUT
+      Faraday.post reminder_url, {"stack_committer_json" => stack_committer_json }
+    rescue Faraday::Error
       retry if (max_retries -= 1) > 0
-    rescue StandardError
     end
-
   end
 end
