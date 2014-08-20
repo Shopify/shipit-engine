@@ -20,7 +20,10 @@ class RestartTaskWidget
     @$headingEl.appendTo(@$container)
 
   newContainer: ->
-    @$container = Sidebar.newWidgetContainer()
+    if @$container
+      @$container.empty()
+    else
+      @$container = Sidebar.newWidgetContainer()
     @addHeading()
     @$container.append("<div class='section-bottom'></div>")
 
@@ -89,15 +92,12 @@ class JobServersRestartWidget extends RestartTaskWidget
       else if match = log.output.match(/ok: run: ([\-\w\d]+): \(pid \d+\)/)
         task = @getTask(log.host)
         task.addStatus("up", match[1])
-        task.update {}
       else if match = log.output.match(/Timeout: ([\-\w\d]+) still running after (\d+) seconds|timeout: run: ([\-\w\d]+): \(pid \d+\) (\d+)s/)
         task = @getTask(log.host)
         task.addStatus("partial", "timeout (#{match[2]||match[4]}s): #{match[1]||match[3]}")
-        task.update {}
       else if match = log.output.match(/(fatal|fail|down):( run:)? ([\-\w\d]+)/)
         task = @getTask(log.host)
         task.addStatus("down", "#{match[1]}: #{match[3]}")
-        task.update {}
     null
 
 
