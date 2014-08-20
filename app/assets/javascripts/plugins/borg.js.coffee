@@ -116,7 +116,7 @@ class LightsTaskView
 
   insertSorted: (toInsert, title) ->
     inserted = false
-    $('.task-lights',@$container).each ->
+    @$container.find('.task-lights').each ->
       title2 = $('.task-lights-title',this).text()
       # Sort shorter names first, so that the sort ends up 
       # like [sb1,sb2,sb10] not [sb1,sb10,sb2]
@@ -124,7 +124,7 @@ class LightsTaskView
         toInsert.insertBefore(this)
         inserted = true
         return false
-    toInsert.insertBefore($('.section-bottom',@$container)) unless inserted
+    toInsert.insertBefore(@$container.find('.section-bottom')) unless inserted
 
   genBoxes: ->
     boxes = document.createDocumentFragment();
