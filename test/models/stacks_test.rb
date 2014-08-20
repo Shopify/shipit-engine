@@ -65,6 +65,44 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal [commits(:third).id, commits(:fourth).id], old_undeployed_commits.pluck(:id)
   end
 
+  test "reminder_url cannot be set to an invalid URL" do
+    invalid_urls = %w(
+      example
+      ftp://username@example.com/
+      http://
+      http://test
+      .com
+    )
+
+    invalid_urls.each do |invalid_url|
+      @stack.reminder_url = invalid_url
+      assert_equal false, @stack.valid?
+    end
+  end
+
+  test "reminder_url can be set to a valid URL" do
+    valid_urls = %w(
+      example.com
+      www.example.com
+      http://example.ca
+      http://example-store.ca
+      https://example.com
+      https://example.com/some/path
+      https://example.com:80
+      https://user:password@examine-website.ca:3001
+    )
+
+    valid_urls.each do |valid_url|
+      @stack.reminder_url = valid_url
+      assert_equal true, @stack.valid?
+    end
+  end
+
+  test "reminder_url can set to blank" do
+    @stack.reminder_url = ""
+    assert_equal true, @stack.valid?
+  end
+
   test "#trigger_deploy persist a new deploy" do
     last_commit = commits(:third)
     deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)

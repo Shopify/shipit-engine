@@ -15,6 +15,10 @@ class Stack < ActiveRecord::Base
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
+  validates :reminder_url, format: {
+    with: /\A((http|https):\/\/)?(([a-z0-9]+\:)?[a-z0-9]+\@)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]+)*(([0-9]{1,5})?\/.*)?\z/,
+    allow_blank: true
+  }
 
   scope :sharded, -> (shard_count, shard_num) {
     raise ArgumentError.new("You can not have less that 1 shard") if shard_count < 1
