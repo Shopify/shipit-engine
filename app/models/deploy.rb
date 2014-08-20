@@ -35,7 +35,6 @@ class Deploy < ActiveRecord::Base
     state :success
     state :error
 
-    after_transition from: :running, do: :rollup_chunks
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
