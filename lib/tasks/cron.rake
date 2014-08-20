@@ -3,7 +3,7 @@ namespace :cron do
     Stack.sharded(6, Time.now.min % 6).refresh_deployed_revisions
   end
 
-  task shipit_reminder: :environment do
-    Resque.enqueue(ShipitReminderJob)
+  task send_undeployed_commits_reminders: :environment do
+    Stack.send_undeployed_commits_reminders
   end
 end

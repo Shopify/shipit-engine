@@ -62,8 +62,7 @@ class StacksTest < ActiveSupport::TestCase
 
   test "old_undeployed_commits returns commits that were created before the specified time" do
     last_commit = Commit.last
-    last_commit.created_at = 4.hours.ago
-    last_commit.save
+    last_commit.update_attributes(created_at: 4.hours.ago)
     old_undeployed_commits = @stack.old_undeployed_commits(long_time_ago = 3.hours.ago)
     assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
   end
@@ -214,4 +213,26 @@ class StacksTest < ActiveSupport::TestCase
     end
   end
 
+  test "#enqueue_undeployed_commits_job enqueues an UndeployedCommitsWebhookJob Resque job for the stack" do
+    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
+    @stack.enqueue_undeployed_commits_job
+  end
+
+  test ".send_undeployed_commits_reminders calls enqueue_undeployed_commits_job for stacks that require reminder" do
+    @stack.update_attributes(reminder_url: 'http://www.example.com')
+    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
+    Stack.send_undeployed_commits_reminders
+  end
+
+  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks with a nil reminder_url" do
+    @stack.update_attributes( reminder_url: nil)
+    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
+    Stack.send_undeployed_commits_reminders
+  end
+
+  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks with a reminder_url" do
+    @stack.update_attributes( reminder_url: '')
+    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
+    Stack.send_undeployed_commits_reminders
+  end
 end
