@@ -10,6 +10,11 @@ class RestartTaskWidget
   getTask: (host) ->
     @tasks[host] ||= @createTask(host)
 
+  updateTasksDOM: ->
+    for _, task of @tasks
+      task.updateDOM()
+    null
+
   addHeading: ->
     @$headingEl = $("<h2 class='task-group-heading'></h2>")
     @$headingEl.appendTo(@$container)
@@ -39,6 +44,7 @@ class RestartTaskWidget
       @activate()
 
     @parse(parser)
+    @updateTasksDOM()
 
     if parser.findTaskEnd(@capistranoTask)
       @finish()
@@ -140,6 +146,9 @@ class LightsTaskView
 
   update: (attrs) ->
     $.extend(this, attrs)
+    this
+
+  updateDOM: ->
     @$element.find('.task-lights-boxes').empty().append(@genBoxes())
     this
 
