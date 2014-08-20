@@ -40,7 +40,7 @@ class RestartTaskWidget
     if parser.findTaskEnd(@capistranoTask)
       @finish()
     null
-  
+
 
 class ContainersRestartWidget extends RestartTaskWidget
   constructor: ->
@@ -61,6 +61,7 @@ class ContainersRestartWidget extends RestartTaskWidget
       else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
         @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
     null
+
 
 class JobServersRestartWidget extends RestartTaskWidget
   constructor: ->
@@ -160,9 +161,6 @@ class JobServerRestartTaskView extends LightsTaskView
 
   addStatus: (status, note) ->
     @statuses.push([status, note])
-
-
-
 
 restartWidget = new ContainersRestartWidget()
 jobRestartWidget = new JobServersRestartWidget()
