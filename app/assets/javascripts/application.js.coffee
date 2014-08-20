@@ -24,7 +24,6 @@ ChunkPoller.appendFormatter (chunk) ->
   stream.process(chunk)
 
 jQuery ->
-  Sidebar.init($(window), $('.sidebar-plugins'))
   ChunkPoller.init()
 
 $(document).on 'click', 'a.disabled', (event) ->

@@ -1,6 +1,8 @@
+$sidebar-width: 300px;
+
 .sidebar {
   background-color: #2e343a;
-  width: 300px;
+  width: $sidebar-width;
   box-sizing: border-box;
   @include flex(0 0 300px);
   @include order(-1);
@@ -52,8 +54,21 @@
   + .stack { border-top: 1px solid rgba(#fff, .1); }
 }
 
+.sidebar-plugins-outer {
+  width: $sidebar-width;
+  overflow: hidden;
+}
 
-.sidebar-plugins.fixed {
+.sidebar-plugins {
+  width: $sidebar-width + 15px;
+  overflow-y: auto;
+}
+
+.sidebar-plugins::-webkit-scrollbar { 
+  display: none; 
+}
+
+.sidebar-plugins-outer.fixed {
   position: fixed;
   top: 0px;
 }

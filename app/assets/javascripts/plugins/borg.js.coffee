@@ -4,8 +4,6 @@ class RestartTaskWidget
   constructor: ->
     @tasks = {}
 
-  appendTo: (@$container) ->
-
   createTask: (host) ->
     new LightsTaskView(@$container, host)
 
@@ -18,6 +16,7 @@ class RestartTaskWidget
 
   activate: ->
     return if @active
+    @$container = Sidebar.newWidgetContainer()
     @addHeading()
     @$headingEl.text(@heading)
     @active = true
@@ -155,7 +154,8 @@ class JobServerRestartTaskView extends LightsTaskView
       box = $('<span>').addClass("task-lights-box box-#{status[0]}")
       box.attr('title',status[1])
       box.appendTo(boxes)
-    for i in [0...(@numLights-@statuses.length)]
+    numNeutral = Math.max(@numLights-@statuses.length, 0)
+    for i in [0...numNeutral]
       $('<span>').addClass("task-lights-box box-neutral").appendTo(boxes)
     boxes
 
@@ -169,6 +169,3 @@ ChunkPoller.prependFormatter (chunk) ->
   restartWidget.update(chunk)
   jobRestartWidget.update(chunk)
   false
-
-Sidebar.registerPlugin(restartWidget)
-Sidebar.registerPlugin(jobRestartWidget)
