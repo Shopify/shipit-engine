@@ -12,6 +12,8 @@ class Deploy < ActiveRecord::Base
   scope :completed, -> { where(status: %w(success error failed)) }
   scope :active,    -> { where(status: %w(pending running)) }
 
+  scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running
