@@ -4,6 +4,7 @@
 set -e
 set -x
 
+cp -n config/database.yml.example config/database.yml
 cp -n config/secrets.yml.example config/secrets.yml
 bundle install
 bundle exec rake db:create
