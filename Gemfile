@@ -23,6 +23,7 @@ gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.3'
 gem 'heroku', '~> 3.8.2'
 gem 'faraday'
+gem 'validate_url'
 
 group :production do
   gem 'mysql2'

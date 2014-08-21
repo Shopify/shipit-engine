@@ -68,15 +68,7 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "reminder_url cannot be set to an invalid URL" do
-    invalid_urls = %w(
-      example
-      ftp://username@example.com/
-      http://
-      http://test
-      .com
-    )
-
-    invalid_urls.each do |invalid_url|
+    %w(example ftp://username.example.com/ http:// .com).each do |invalid_url|
       @stack.reminder_url = invalid_url
       assert_equal false, @stack.valid?
     end
@@ -84,8 +76,6 @@ class StacksTest < ActiveSupport::TestCase
 
   test "reminder_url can be set to a valid URL" do
     valid_urls = %w(
-      example.com
-      www.example.com
       http://example.ca
       http://example-store.ca
       https://example.com
