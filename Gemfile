@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.1.1'
+gem 'mysql2'
 gem 'sass-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails'
@@ -23,13 +24,8 @@ gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.3'
 gem 'heroku', '~> 3.8.2'
 
-group :production do
-  gem 'mysql2'
-end
-
 group :development, :test do
   gem 'foreman', '~> 0.74'
-  gem 'sqlite3'
 end
 
 group :test do
