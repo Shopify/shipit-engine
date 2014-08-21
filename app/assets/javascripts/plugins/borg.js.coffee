@@ -10,7 +10,7 @@ class RestartTaskWidget
   getTask: (host) ->
     @tasks[host] ||= @createTask(host)
 
-  updateTasksDOM: ->
+  refresh: ->
     for _, task of @tasks
       task.updateDOM()
     null
@@ -47,7 +47,7 @@ class RestartTaskWidget
       @activate()
 
     @parse(parser)
-    @updateTasksDOM()
+    @refresh()
 
     if parser.findTaskEnd(@capistranoTask)
       @finish()
