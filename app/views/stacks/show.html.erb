@@ -26,6 +26,12 @@
   <section>
     <header class="section-header">
       <h2>Previous Deploys</h2>
+      <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+        <%= hidden_field_tag :deploy_id, @stack.last_deploy.id %>
+        <%= button_tag :name => nil, :class => 'btn delete' do %>
+            <span>Rollback</span>
+        <% end %>
+      <% end %>
     </header>
     <ul class="deploy-lst"><%= render partial: "deploys/deploy", collection: @deploys %></ul>
   </section>

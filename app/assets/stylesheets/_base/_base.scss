@@ -185,6 +185,11 @@ h5 {
       padding: 1.5em 4em;
     }
 
+    &.rollback {
+      padding: 1.5em 4em;
+      background-color: $bright-red;
+    }
+
     &.failure {
       @include failure;
     }
