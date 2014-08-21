@@ -67,6 +67,11 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
   end
 
+  test "old_undeployed_commits returns commits.none when no commits are found" do
+    Stack.any_instance.expects(:undeployed_commits?).returns(false)
+    assert_equal @stack.commits.none, @stack.old_undeployed_commits
+  end
+
   test "reminder_url cannot be set to an invalid URL" do
     %w(example ftp://username.example.com/ http:// .com).each do |invalid_url|
       @stack.reminder_url = invalid_url
