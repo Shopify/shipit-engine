@@ -4,6 +4,22 @@
   margin-bottom: 5px;
 }
 
+.section-bottom {
+  clear: both;
+}
+
+.task-progress-container {
+  height: 20px;
+  background-color: #424E5A;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.task-progress-bar {
+  background-color: #19AD42;
+  height: 100%;
+}
+
 .task-lights {
   float: left;
   background-color: #424E5A;
@@ -66,8 +82,4 @@
     height: 6px;
     margin: 2px;
   }
-}
-
-.section-bottom {
-  clear: both;
 }

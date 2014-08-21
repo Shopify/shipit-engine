@@ -1,19 +1,7 @@
-class RestartTaskWidget
-  active: false
-
+# Abstract, need to implement @refresh and @parse
+class BaseTaskWidget
   constructor: ->
-    @tasks = {}
-
-  createTask: (host) ->
-    new LightsTaskView(@$container, host)
-
-  getTask: (host) ->
-    @tasks[host] ||= @createTask(host)
-
-  refresh: ->
-    for _, task of @tasks
-      task.updateDOM()
-    null
+    @active = false
 
   addHeading: ->
     @$headingEl = $("<h2 class='task-group-heading'></h2>")
@@ -53,6 +41,67 @@ class RestartTaskWidget
       @finish()
     null
 
+# Abstract, need to implement @parse
+class RestartTaskWidget extends BaseTaskWidget
+  constructor: ->
+    super
+    @tasks = {}
+
+  createTask: (host) ->
+    new LightsTaskView(@$container, host)
+
+  getTask: (host) ->
+    @tasks[host] ||= @createTask(host)
+
+  refresh: ->
+    for _, task of @tasks
+      task.updateDOM()
+    null
+
+# Abstract, need to implement @parse
+class ProgressBarTaskWidget extends BaseTaskWidget
+  constructor: ->
+    super
+    @total = 1
+    @done = 0
+
+  newContainer: ->
+    super
+    @$bar = $("<div>").addClass("task-progress-container")
+    @$donePart = $("<div>").addClass("task-progress-bar").appendTo(@$bar)
+    @$bar.insertBefore(@$container.find('.section-bottom'))
+
+  refresh: ->
+    frac = @done / @total
+    doneWidth = @$bar.width() * frac
+    @$donePart.width(doneWidth)
+
+class AssetsUploadWidget extends ProgressBarTaskWidget
+  constructor: ->
+    super
+    @heading = "Uploading Assets"
+    @capistranoTask = "assets:upload"
+
+  update: (text) ->
+    parser = new CapistranoParser(text)
+    unless @active
+      res = parser.findTaskStart(@capistranoTask)
+      return unless res
+      @activate()
+
+    @parse(parser)
+    @refresh()
+
+    if parser.findTaskStart("assets:upload_manifest")
+      @finish()
+    null
+
+  parse: (parser) ->
+    parser.eachMessage (log) =>
+      if match = log.output.match(/S3 assets uploading \[(\d+)\/(\d+)\]/)
+        @done = +(match[1])
+        @total = +(match[2])
+    null
 
 class ContainersRestartWidget extends RestartTaskWidget
   constructor: ->
@@ -175,10 +224,11 @@ class JobServerRestartTaskView extends LightsTaskView
   addStatus: (status, note) ->
     @statuses.push([status, note])
 
-restartWidget = new ContainersRestartWidget()
-jobRestartWidget = new JobServersRestartWidget()
+BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget, JobServersRestartWidget]
+borgWidgetInstances = for widget in BORG_WIDGETS
+  new widget()
 
 ChunkPoller.prependFormatter (chunk) ->
-  restartWidget.update(chunk)
-  jobRestartWidget.update(chunk)
+  for widget in borgWidgetInstances
+    widget.update(chunk)
   false
