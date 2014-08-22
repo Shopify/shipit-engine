@@ -74,12 +74,12 @@ class Stack < ActiveRecord::Base
   end
 
   def last_deploy
-    @last_deploy ||= deploys.success.last
+    deploys.success.last
   end
 
   def last_deployed_commit
-    if last_deploy
-      last_deploy.until_commit
+    if deploy = last_deploy
+      deploy.until_commit
     else
       commits.first
     end
