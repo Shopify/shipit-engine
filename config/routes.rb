@@ -33,6 +33,9 @@ Shipit::Application.routes.draw do
     resources :commits, id: /\d+/, only: :show
 
     resources :deploys, id: /\d+/, only:  [:new, :show, :create] do
+      member do
+        get :rollback
+      end
       resources :chunks, id: /\d+/, only:  [:index], defaults: {format: :json} do
         collection do
           get :tail

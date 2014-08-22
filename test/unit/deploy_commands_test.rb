@@ -79,12 +79,12 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], command.args
   end
 
-  test "#deploy calls cap $environment deploy:rollback for a rollback" do
-    @deploy.update!(rollback: true)
-    commands = @commands.deploy(@deploy.until_commit)
-    assert_equal 1, commands.length
-    command = commands.first
-    assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], command.args
+  test "#deploy calls cap $environment deploy:rollback for a rollback of a capistrano stack" do
+    @deploy.expects(:rollback?).returns(true)
+    steps = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, steps.length
+    step = steps.first
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], step.args
   end
 
   test "#deploy calls cap $environment deploy from the working_directory" do

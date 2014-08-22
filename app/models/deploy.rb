@@ -43,6 +43,15 @@ class Deploy < ActiveRecord::Base
 
   after_create :broadcast_deploy
 
+  def build_rollback
+    Rollback.new(
+      stack_id: stack_id,
+      parent_id: id,
+      since_commit: stack.last_deployed_commit,
+      until_commit: since_commit.previous || since_commit
+    )
+  end
+
   def author
     user || AnonymousUser.new
   end
@@ -51,9 +60,14 @@ class Deploy < ActiveRecord::Base
     !pending? && !running?
   end
 
+  def rollback?
+    false
+  end
+
   def commits
-    return [] unless stack
-    @commits ||= stack.commits.reachable.newer_than(since_commit_id).where('id <= ?', until_commit_id).order(id: :desc)
+    return Commit.none unless stack
+
+    @commits ||= stack.commits.reachable.newer_than(since_commit_id).until(until_commit_id).order(id: :desc)
   end
 
   def since_commit_id

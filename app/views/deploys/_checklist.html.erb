@@ -1,0 +1,16 @@
+<section>
+  <header class="section-header">
+    <h2>Checklist</h2>
+  </header>
+
+  <ul class="checklist">
+    <%- stack.checks.each do |check| -%>
+      <li>
+        <label>
+          <%= check_box_tag :checklist %>
+          <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
+        </label>
+      </li>
+    <%- end -%>
+  </ul>
+</section>

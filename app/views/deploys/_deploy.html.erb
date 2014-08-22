@@ -15,5 +15,7 @@
       </a>
       <span class="event-number"></span>
     </span>
-  </div
+  </div>
+
+  <%= link_to 'Rollback', rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action' %>
 </li>

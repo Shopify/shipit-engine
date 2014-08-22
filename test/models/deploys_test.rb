@@ -162,6 +162,35 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal 1, stack.undeployed_commits_count
   end
 
+  test "#build_rollback return an unsaved record" do
+    assert @deploy.build_rollback.new_record?
+  end
+
+  test "#build_rollback return a rollback" do
+    assert @deploy.build_rollback.rollback?
+  end
+
+  test "#build_rollback set the id of the rollbacked deploy" do
+    rollback = @deploy.build_rollback
+    assert_equal @deploy.id, rollback.parent_id
+  end
+
+  test "#build_rollback set the deploy until_commit as the rollback since_commit" do
+    rollback = @deploy.build_rollback
+    assert_equal @deploy.until_commit, rollback.since_commit
+  end
+
+  test "#build_rollback set the commit right before the deploy's since_commit as the rollback until_commit" do
+    deploy = deploys(:shipit_complete)
+    rollback = deploy.build_rollback
+    assert_equal deploy.since_commit.previous, rollback.until_commit
+  end
+
+  test "#build_rollback set deploy's since_commit as the rollback until_commit if it's the first one" do
+    rollback = @deploy.build_rollback
+    assert_equal @deploy.since_commit, rollback.until_commit
+  end
+
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)

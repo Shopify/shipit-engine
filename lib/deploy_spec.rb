@@ -28,7 +28,7 @@ class DeploySpec
   end
 
   def rollback_steps
-    config('rollback', 'override') || discover_capistrano_rollback
+    config('rollback', 'override') || discover_capistrano_rollback || cant_detect_rollback_steps
   end
 
   def fetch_deployed_revision_steps
@@ -100,6 +100,10 @@ class DeploySpec
 
   def cant_detect_deploy_steps
     raise DeploySpec::Error, 'Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml'
+  end
+
+  def cant_detect_rollback_steps
+    raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
   end
 
   def load_config
