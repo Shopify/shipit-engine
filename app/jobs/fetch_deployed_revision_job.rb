@@ -10,6 +10,7 @@ class FetchDeployedRevisionJob < BackgroundJob
     if sha = commands.fetch_deployed_revision
       stack.update_deployed_revision(sha)
     end
+  rescue ActiveRecord::RecordNotFound
   end
 
 end
