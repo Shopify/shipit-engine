@@ -28,7 +28,7 @@ class DeploySpec
   end
 
   def rollback_steps
-    config('rollback', 'override') || discover_cap_rollback
+    config('rollback', 'override') || discover_capistrano_rollback
   end
 
   def fetch_deployed_revision_steps
@@ -58,11 +58,11 @@ class DeploySpec
   end
 
   def discover_capistrano
-    ["#{bundle_exec}cap $ENVIRONMENT deploy"] if capistrano?
+    [cap('deploy')] if capistrano?
   end
 
-  def discover_cap_rollback
-    ["#{bundle_exec}cap $ENVIRONMENT deploy:rollback"] if capistrano?
+  def discover_capistrano_rollback
+    [cap('deploy:rollback')] if capistrano?
   end
 
   def gem?
@@ -71,6 +71,15 @@ class DeploySpec
 
   def gemspec
     Dir[@app_dir.join('*.gemspec').to_s].first
+  end
+
+  def cap(command)
+    bundle_exec("cap $ENVIRONMENT #{command}")
+  end
+
+  def bundle_exec(command)
+    return command unless bundler?
+    "bundle exec #{command}"
   end
 
   def capistrano?
@@ -83,10 +92,6 @@ class DeploySpec
 
   def has_gemfile_lock?
     @app_dir.join('Gemfile.lock').exist?
-  end
-
-  def bundle_exec
-    bundler?? 'bundle exec ' : ''
   end
 
   def frozen_flag

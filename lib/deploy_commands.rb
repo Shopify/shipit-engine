@@ -24,7 +24,7 @@ class DeployCommands < Commands
       'EMAIL' => @deploy.author.email,
       'BUNDLE_PATH' => BUNDLE_PATH,
     ).merge(deploy_spec.machine_env)
-    steps = @deploy.rollback?? deploy_spec.rollback_steps : deploy_spec.deploy_steps
+    steps = @deploy.rollback? ? deploy_spec.rollback_steps : deploy_spec.deploy_steps
     steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
