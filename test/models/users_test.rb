@@ -41,6 +41,12 @@ class UsersTest < ActiveSupport::TestCase
     assert_equal @github_user.login, user.login
   end
 
+  test "#identifiers_for_ping returns a hash with the user's github_id, name and email" do
+    user = users(:bob)
+    expected_ouput = { github_id: user.github_id, name: user.name, email: user.email }
+    assert_equal expected_ouput, user.identifiers_for_ping
+  end
+
   private
 
   def fetch_user

@@ -23,6 +23,10 @@ class User < ActiveRecord::Base
     )
   end
 
+  def identifiers_for_ping
+    {github_id: github_id, name: name, email: email}
+  end
+
   def logged_in?
     true
   end

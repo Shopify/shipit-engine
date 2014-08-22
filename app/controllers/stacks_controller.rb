@@ -72,6 +72,6 @@ class StacksController < ApplicationController
   end
 
   def update_params
-    params.require(:stack).permit(:checklist, :deploy_url, :deploys_count, :lock_reason, :continuous_deployment)
+    params.require(:stack).permit(:checklist, :deploy_url, :deploys_count, :lock_reason, :continuous_deployment, :reminder_url)
   end
 end

@@ -15,6 +15,7 @@ class Stack < ActiveRecord::Base
 
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
+  validates :reminder_url, url: { allow_blank: true }
 
   scope :sharded, -> (shard_count, shard_num) {
     raise ArgumentError.new("You can not have less that 1 shard") if shard_count < 1
@@ -24,8 +25,14 @@ class Stack < ActiveRecord::Base
     where('id % ? = ?', shard_count, shard_num)
   }
 
+  scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
+
   def self.refresh_deployed_revisions
     find_each(&:async_refresh_deployed_revision)
+  end
+
+  def self.send_undeployed_commits_reminders
+    with_reminder_webhook.map(&:enqueue_undeployed_commits_job)
   end
 
   def undeployed_commits?
@@ -144,6 +151,14 @@ class Stack < ActiveRecord::Base
     after_commit ||= last_deployed_commit
     undeployed_commits = Commit.reachable.where(stack_id: id).select('count(*) as count').where('id > ?', after_commit.id)
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
+  end
+
+  def old_undeployed_commits(long_time_ago = 30.minutes.ago)
+    undeployed_commits? ? commits.newer_than(last_deployed_commit).where("created_at < ?", long_time_ago) : commits.none
+  end
+
+  def enqueue_undeployed_commits_job
+    Resque.enqueue(UndeployedCommitsWebhookJob, stack_id: id)
   end
 
   private
