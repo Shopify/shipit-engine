@@ -16,8 +16,7 @@
   <section class="submit-section">
     <%= form_for [@stack, @deploy] do |f| %>
       <%= f.hidden_field :until_commit_id %>
-      <%= f.hidden_field :parent_id %>
-      <%= f.submit :class => ['btn', 'rollback', 'trigger-deploy'] %>
+      <%= f.submit :class => ['btn', 'primary', 'trigger-deploy'] %>
     <% end %>
   </section>
 </div>

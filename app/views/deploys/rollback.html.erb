@@ -2,13 +2,13 @@
 
 <div class="wrapper">
   <section>
-      <header class="section-header">
-        <h2>Commits included in this rollback</h2>
-      </header>
+    <header class="section-header">
+      <h2>Commits included in this rollback</h2>
+    </header>
 
-      <p><%= link_to_github_deploy(@rollback) %></p>
+    <p><%= link_to_github_deploy(@rollback) %></p>
 
-      <%= render 'deploys/summary', commits: @rollback.commits %>
+    <%= render 'deploys/summary', commits: @rollback.commits %>
   </section>
 
   <%= render_checklist @stack %>

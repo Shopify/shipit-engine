@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20140820220235) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.boolean  "rolled_up",       default: false,     null: false
-    t.string   "type",            default: "Deploy"
+    t.string   "type",            default: "Deploy",  null: false
     t.integer  "parent_id"
   end
 

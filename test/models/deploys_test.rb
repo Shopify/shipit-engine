@@ -166,11 +166,11 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal 1, stack.undeployed_commits_count
   end
 
-  test "#build_rollback return an unsaved record" do
+  test "#build_rollback returns an unsaved record" do
     assert @deploy.build_rollback.new_record?
   end
 
-  test "#build_rollback return a rollback" do
+  test "#build_rollback returns a rollback" do
     assert @deploy.build_rollback.rollback?
   end
 

@@ -5,7 +5,7 @@
     <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
     <span class="deploy-status">
       <% if @deploy.rollback? %>
-        rollbacking to
+        rolling back to
       <% else %>
         deploying
       <% end %>
