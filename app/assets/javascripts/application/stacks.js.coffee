@@ -68,7 +68,7 @@ jQuery ($) ->
 
   onStackUpdate = (message) ->
     json = JSON.parse(message.data)
-    $('[data-stack-locked]').data('stack-locked', json.locked)
+    $('[data-stack-locked]').attr('data-stack-locked', json.locked)
     $('.lock-reason p').text(json.lock_reason)
     $('.lock-reason').toggle(json.locked)
 
