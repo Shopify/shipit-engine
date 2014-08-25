@@ -75,12 +75,8 @@ class Stack < ActiveRecord::Base
   end
 
   def status
-    return :deploying if deploy_in_progress?
+    return :deploying if deploying?
     :default
-  end
-
-  def deploy_in_progress?
-    deploys.active.any?
   end
 
   def last_deploy

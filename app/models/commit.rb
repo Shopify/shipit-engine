@@ -100,7 +100,7 @@ class Commit < ActiveRecord::Base
   end
 
   def deploy_in_progress?
-    stack.deploys.active.any?
+    stack.deploying?
   end
 
   def newer_commit_deployed?

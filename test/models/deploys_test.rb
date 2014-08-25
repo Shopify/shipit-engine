@@ -5,6 +5,10 @@ class DeploysTest < ActiveSupport::TestCase
     @deploy = deploys(:shipit)
   end
 
+  test "#rollback? returns false" do
+    refute @deploy.rollback?
+  end
+
   test "enqueue" do
     Resque.expects(:enqueue).with(DeployJob, deploy_id: @deploy.id, stack_id: @deploy.id)
 
