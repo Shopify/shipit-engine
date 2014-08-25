@@ -15,10 +15,7 @@
 
   <section class="submit-section">
     <%= form_for [@stack, @rollback] do |f| %>
-      <%= f.hidden_field :since_commit_id %>
-      <%= f.hidden_field :until_commit_id %>
       <%= f.hidden_field :parent_id %>
-      <%= f.hidden_field :rollback, value: true %>
       <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'] %>
     <% end %>
   </section>

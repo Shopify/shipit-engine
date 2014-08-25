@@ -4,7 +4,12 @@
   <div class="wrapper">
     <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
     <span class="deploy-status">
-      deploying <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
+      <% if @deploy.rollback? %>
+        rollbacking to
+      <% else %>
+        deploying
+      <% end %>
+      <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
       <%= timeago_tag(@deploy.created_at, force: true) %> at <%= @deploy.created_at %>
     </span>
   </div>

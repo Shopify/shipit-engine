@@ -43,13 +43,21 @@ class Deploy < ActiveRecord::Base
 
   after_create :broadcast_deploy
 
-  def build_rollback
+  def build_rollback(user=nil)
     Rollback.new(
+      user_id: user.try!(:id),
       stack_id: stack_id,
       parent_id: id,
       since_commit: stack.last_deployed_commit,
       until_commit: since_commit.previous || since_commit
     )
+  end
+
+  def trigger_rollback(user)
+    rollback = build_rollback(user)
+    rollback.save!
+    rollback.enqueue
+    rollback
   end
 
   def author
@@ -126,7 +134,7 @@ class Deploy < ActiveRecord::Base
 
   def broadcast_deploy
     url = Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
-    payload = { id: id, url: url, commit_ids: commits.map(&:id) }.to_json
+    payload = { id: id, url: url, commit_ids: commits.map(&:id), stack_status: stack.status, status: status }.to_json
     event = Pubsubstub::Event.new(payload, name: "deploy.#{status}")
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
   end

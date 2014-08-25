@@ -1,4 +1,4 @@
-<li class="deploy" id="deploy-<%= deploy.id %>">
+<li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>">
   <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <i><%= deploy.status %></i>
     <%= github_avatar deploy.user, size: 20 %>
@@ -17,5 +17,6 @@
     </span>
   </div>
 
-  <%= link_to 'Rollback', rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action' %>
+  <a href="#" data-if-stack-status="deploying" data-if-deploy-status="success" class="btn disabled deploy-action">Deploy in progress...</a>
+  <%= link_to 'Rollback', rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action', data: {'if-stack-status' => 'default', 'if-deploy-status' => 'success'} %>
 </li>

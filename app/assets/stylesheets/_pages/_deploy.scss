@@ -38,3 +38,21 @@
 pre.nowrap {
   white-space: pre;
 }
+
+[data-stack-status] {
+  &:not([data-stack-status="deploying"]) [data-if-stack-status="deploying"] {
+   display: none;
+  }
+
+  &:not([data-stack-status="default"]) [data-if-stack-status="default"] {
+    display: none;
+  }
+}
+
+[data-deploy-status] {
+
+  &:not([data-deploy-status="success"]) [data-if-deploy-status="success"] {
+    display: none;
+  }
+
+}

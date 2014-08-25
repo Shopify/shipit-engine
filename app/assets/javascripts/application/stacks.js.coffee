@@ -24,6 +24,10 @@ jQuery ($) ->
     success = (response) -> callback(json.id, response)
     jQuery.ajax(json.url, accepts: 'text/partial+html').success(success).error(-> retry(message, callback, retryCount))
 
+  updateStackStatus = (message) ->
+    json = JSON.parse(message.data)
+    $('[data-stack-status]').attr('data-stack-status', json.stack_status)
+
   removeCommit = (id) ->
     $("#commit-#{id}").remove()
 
@@ -54,15 +58,21 @@ jQuery ($) ->
     displayConfigureCiMessage()
 
   onDeploySuccess = (message) ->
+    updateStackStatus(message)
+
     json = JSON.parse(message.data)
     for id in json.commit_ids
       removeCommit id
 
   onDeployUpdate = (message) ->
+    updateStackStatus(message)
+
     loadFragment message, (id, deploy) ->
       $("#deploy-#{id}").replaceWith($timeago(deploy))
 
   onDeployCreate = (message) ->
+    updateStackStatus(message)
+
     loadFragment message, (id, deploy) ->
       $("ul.deploy-lst").prepend($timeago(deploy))
 
