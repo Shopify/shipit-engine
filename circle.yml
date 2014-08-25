@@ -5,6 +5,10 @@ machine:
     version: ruby-2.1
   node:
     version: 0.10.21
+
+database:
+  pre:
+    - cp config/database.yml.example config/database.yml
 dependencies:
   pre:
     - cp config/secrets.yml.example config/secrets.yml

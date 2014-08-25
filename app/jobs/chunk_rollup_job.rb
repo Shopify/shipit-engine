@@ -23,6 +23,7 @@ class ChunkRollupJob < BackgroundJob
     ActiveRecord::Base.transaction do
       @deploy.chunks.delete_all
       @deploy.write(output)
+      @deploy.update_attribute(:rolled_up, true)
     end
   end
 end

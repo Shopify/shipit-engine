@@ -12,6 +12,8 @@ class Deploy < ActiveRecord::Base
   scope :completed, -> { where(status: %w(success error failed)) }
   scope :active,    -> { where(status: %w(pending running)) }
 
+  scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running
@@ -35,7 +37,6 @@ class Deploy < ActiveRecord::Base
     state :success
     state :error
 
-    after_transition from: :running, do: :rollup_chunks
     after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
