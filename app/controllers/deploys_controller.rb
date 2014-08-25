@@ -6,14 +6,8 @@ class DeploysController < ApplicationController
   before_action :load_until_commit, only: :create
 
   def new
-    if params[:deploy_id]
-      @deploy = @stack.deploys.find(params[:deploy_id]).dup
-      @deploy.parent_id = params[:deploy_id]
-      @deploy.rollback = true
-    else
-      @commit = @stack.commits.by_sha!(params[:sha])
-      @deploy = @stack.deploys.new(until_commit: @commit, since_commit: @stack.last_deployed_commit)
-    end
+    @commit = @stack.commits.by_sha!(params[:sha])
+    @deploy = @stack.deploys.new(until_commit: @commit, since_commit: @stack.last_deployed_commit)
   end
 
   def show
