@@ -22,6 +22,11 @@ class DeploysControllerTest < ActionController::TestCase
     assert_select "li.deploy"
   end
 
+  test ":new is success" do
+    get :new, stack_id: @stack.to_param
+    assert_response :success
+  end
+
   test ":create persists a new deploy" do
     assert_difference '@stack.deploys.count', +1 do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}
