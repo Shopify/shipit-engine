@@ -15,6 +15,20 @@ class DeploySpec
     keys.flatten.reduce(@config) { |h, k| h[k] if h.respond_to?(:[]) }
   end
 
+  def supports_fetch_deployed_revision?
+    fetch_deployed_revision_steps
+    true
+  rescue DeploySpec::Error
+    false
+  end
+
+  def supports_rollback?
+    rollback_steps
+    true
+  rescue DeploySpec::Error
+    false
+  end
+
   def machine_env
     config('machine', 'environment') || {}
   end
@@ -32,7 +46,7 @@ class DeploySpec
   end
 
   def fetch_deployed_revision_steps
-    config('fetch') || []
+    config('fetch') || cant_detect_fetch_deployed_revision_steps
   end
 
   def discover_gem
@@ -103,6 +117,10 @@ class DeploySpec
   end
 
   def cant_detect_rollback_steps
+    raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
+  end
+
+  def cant_detect_fetch_deployed_revision_steps
     raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
   end
 

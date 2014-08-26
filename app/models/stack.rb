@@ -18,18 +18,10 @@ class Stack < ActiveRecord::Base
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
   validates :reminder_url, url: { allow_blank: true }
 
-  scope :sharded, -> (shard_count, shard_num) {
-    raise ArgumentError.new("You can not have less that 1 shard") if shard_count < 1
-    if shard_num > (shard_count - 1)
-      raise ArgumentError.new("#{shard_count} shards mean the max shard id is #{shard_count - 1}. Received #{shard_num}")
-    end
-    where('id % ? = ?', shard_count, shard_num)
-  }
-
   scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
 
   def self.refresh_deployed_revisions
-    find_each(&:async_refresh_deployed_revision)
+    where(supports_fetch_deployed_revision: true).find_each(&:async_refresh_deployed_revision)
   end
 
   def self.send_undeployed_commits_reminders

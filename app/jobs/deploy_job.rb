@@ -17,6 +17,9 @@ class DeployJob < BackgroundJob
     capture commands.fetch
     capture commands.clone
     capture commands.checkout(@deploy.until_commit)
+
+    record_deploy_spec_abilities
+
     Bundler.with_clean_env do
       capture_all commands.install_dependencies
       capture_all commands.deploy(@deploy.until_commit)
@@ -41,6 +44,15 @@ class DeployJob < BackgroundJob
       @deploy.write(line)
     end
     @deploy.write("\n")
+  end
+
+  def record_deploy_spec_abilities
+    spec = DeploySpec.new(@deploy.working_directory, @deploy.stack.environment)
+
+    @deploy.stack.update(
+      supports_rollback: spec.supports_rollback?,
+      supports_fetch_deployed_revision: spec.supports_fetch_deployed_revision?
+    )
   end
 
 end
