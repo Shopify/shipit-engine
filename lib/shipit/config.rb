@@ -27,7 +27,21 @@ module Shipit::Config
     secrets.env || {}
   end
 
+  def revision
+    @revision ||= begin
+      if revision_file.exist?
+        revision_file.read
+      else
+        `git rev-parse HEAD`
+      end.strip
+    end
+  end
+
   protected
+
+  def revision_file
+    Rails.root.join('REVISION')
+  end
 
   def secrets
     Rails.application.secrets
