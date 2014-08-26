@@ -1,6 +1,14 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <div class="wrapper">
+  <section class="warning">
+    <h2>Are you sure it's safe to rollback?</h2>
+    <ul>
+      <li>Does the code you want to rollback contain migrations?</li>
+      <li>If so, is the old code compatible with the new schema?</li>
+    </ul>
+  </section>
+
   <section>
     <header class="section-header">
       <h2>Commits included in this rollback</h2>
@@ -16,7 +24,7 @@
   <section class="submit-section">
     <%= form_for [@stack, @rollback] do |f| %>
       <%= f.hidden_field :parent_id %>
-      <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'] %>
+      <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'], data: {confirm: "Are you really sure it's safe?"} %>
     <% end %>
   </section>
 </div>
