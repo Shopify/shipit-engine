@@ -7,7 +7,12 @@
   </div>
 </section>
 
-<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>" data-stack-locked="<%= @stack.locked? %>">
+<div
+  class="wrapper"
+  data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>"
+  data-stack-locked="<%= @stack.locked? %>"
+  data-stack-status="<%= @stack.status %>"
+>
 
   <section class="lock-reason">
     <div class="wrapper message">

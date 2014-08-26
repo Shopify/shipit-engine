@@ -140,6 +140,18 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 4, @stack.undeployed_commits_count
   end
 
+  test ".by_sha! can match truncated shas" do
+    assert_equal @commit, Commit.by_sha!(@commit.sha[0..7])
+  end
+
+  test "#previous returns the previous reachable commit" do
+    assert_equal commits(:first), commits(:second).previous
+
+    commits(:first).update!(detached: true)
+
+    assert_equal nil, commits(:second).previous
+  end
+
   private
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|

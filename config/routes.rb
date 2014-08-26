@@ -14,7 +14,7 @@ Shipit::Application.routes.draw do
   end
 
   # Robots
-  resources :stacks, only: [:new, :create, :index] do
+  resources :stacks, only: %i(new create index) do
     resource :webhooks, only: [] do
       post :push, :state
     end
@@ -32,8 +32,13 @@ Shipit::Application.routes.draw do
 
     resources :commits, id: /\d+/, only: :show
 
-    resources :deploys, id: /\d+/, only:  [:new, :show, :create] do
-      resources :chunks, id: /\d+/, only:  [:index], defaults: {format: :json} do
+    resources :rollbacks, id: /\d+/, only: %i(create)
+
+    resources :deploys, id: /\d+/, only: %i(new show create) do
+      member do
+        get :rollback
+      end
+      resources :chunks, id: /\d+/, only:  %i(index), defaults: {format: :json} do
         collection do
           get :tail
         end

@@ -6,6 +6,7 @@ class Stack < ActiveRecord::Base
 
   has_many :commits
   has_many :deploys
+  has_many :rollbacks
   has_many :webhooks
 
   before_validation :update_defaults
@@ -73,9 +74,18 @@ class Stack < ActiveRecord::Base
     commits.reachable.first.try(:sha)
   end
 
+  def status
+    return :deploying if deploying?
+    :default
+  end
+
+  def last_successful_deploy
+    deploys.success.last
+  end
+
   def last_deployed_commit
-    if last_deploy = deploys.success.last
-      last_deploy.until_commit
+    if deploy = last_successful_deploy
+      deploy.until_commit
     else
       commits.first
     end

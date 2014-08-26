@@ -21,3 +21,9 @@ shipit_running:
   until_commit_id: 4
   stack: shipit
   status: running
+
+shipit_complete:
+  since_commit_id: 3
+  until_commit_id: 4
+  stack: shipit
+  status: complete

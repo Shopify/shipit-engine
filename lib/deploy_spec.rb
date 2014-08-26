@@ -27,6 +27,10 @@ class DeploySpec
     config('deploy', 'override') || discover_capistrano || discover_gem || cant_detect_deploy_steps
   end
 
+  def rollback_steps
+    config('rollback', 'override') || discover_capistrano_rollback || cant_detect_rollback_steps
+  end
+
   def fetch_deployed_revision_steps
     config('fetch') || []
   end
@@ -54,9 +58,11 @@ class DeploySpec
   end
 
   def discover_capistrano
-    bundle_exec = ''
-    bundle_exec = 'bundle exec ' if bundler?
-    ["#{bundle_exec}cap $ENVIRONMENT deploy"] if capistrano?
+    [cap('deploy')] if capistrano?
+  end
+
+  def discover_capistrano_rollback
+    [cap('deploy:rollback')] if capistrano?
   end
 
   def gem?
@@ -65,6 +71,15 @@ class DeploySpec
 
   def gemspec
     Dir[@app_dir.join('*.gemspec').to_s].first
+  end
+
+  def cap(command)
+    bundle_exec("cap $ENVIRONMENT #{command}")
+  end
+
+  def bundle_exec(command)
+    return command unless bundler?
+    "bundle exec #{command}"
   end
 
   def capistrano?
@@ -85,6 +100,10 @@ class DeploySpec
 
   def cant_detect_deploy_steps
     raise DeploySpec::Error, 'Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml'
+  end
+
+  def cant_detect_rollback_steps
+    raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
   end
 
   def load_config

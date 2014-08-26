@@ -2,11 +2,11 @@ class DeploysController < ApplicationController
   include ChunksHelper
 
   before_action :load_stack
-  before_action :load_deploy, only: :show
+  before_action :load_deploy, only: %i(show rollback)
   before_action :load_until_commit, only: :create
 
   def new
-    @commit = @stack.commits.where(sha: params[:sha]).first!
+    @commit = @stack.commits.by_sha!(params[:sha])
     @deploy = @stack.deploys.new(until_commit: @commit, since_commit: @stack.last_deployed_commit)
   end
 
@@ -21,6 +21,10 @@ class DeploysController < ApplicationController
   def create
     @deploy = @stack.trigger_deploy(@until_commit, current_user)
     respond_with(@deploy.stack, @deploy)
+  end
+
+  def rollback
+    @rollback = @deploy.build_rollback
   end
 
   private

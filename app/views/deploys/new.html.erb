@@ -1,53 +1,17 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <div class="wrapper">
-
   <section>
-
       <header class="section-header">
         <h2>Commits included in this deploy</h2>
       </header>
 
       <p><%= link_to_github_deploy(@deploy) %></p>
 
-      <ul class="commit-lst sub-commits">
-        <% @deploy.commits.each do |commit| %>
-          <li>
-            <div data-tooltip="<%= commit.author.name %>" class="avatar">
-              <%= github_avatar commit.author, size: 24 %>
-            </div>
-            <div class="event">
-              <span class="event-title">
-                <%= render_commit_message commit %>
-              </span>
-            </div>
-            <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued number" data-tooltip="View on GitHub">
-              <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
-            </a>
-          </li>
-        <% end %>
-      </ul>
-
+      <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
 
-  <%- if @stack.checklist? -%>
-    <section>
-      <header class="section-header">
-        <h2>Checklist</h2>
-      </header>
-
-      <ul class="checklist">
-        <%- @stack.checks.each do |check| -%>
-          <li>
-            <label>
-              <%= check_box_tag :checklist %>
-              <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
-            </label>
-          </li>
-        <%- end -%>
-      </ul>
-    </section>
-  <%- end -%>
+  <%= render_checklist @stack %>
 
   <section class="submit-section">
     <%= form_for [@stack, @deploy] do |f| %>
@@ -55,5 +19,4 @@
       <%= f.submit :class => ['btn', 'primary', 'trigger-deploy'] %>
     <% end %>
   </section>
-
 </div>

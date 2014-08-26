@@ -8,6 +8,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     @deploy_spec = stub(
       dependencies_steps: ['bundle install --some-args'],
       deploy_steps: ['bundle exec cap $ENVIRONMENT deploy'],
+      rollback_steps: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
       machine_env: {'GLOBAL' => '1'},
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
@@ -76,6 +77,14 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal 1, commands.length
     command = commands.first
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], command.args
+  end
+
+  test "#deploy calls cap $environment deploy:rollback for a rollback of a capistrano stack" do
+    @deploy.expects(:rollback?).returns(true)
+    steps = @commands.deploy(@deploy.until_commit)
+    assert_equal 1, steps.length
+    step = steps.first
+    assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], step.args
   end
 
   test "#deploy calls cap $environment deploy from the working_directory" do

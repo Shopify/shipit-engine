@@ -1,0 +1,22 @@
+<%= render partial: "stacks/header", locals: { stack: @stack } %>
+
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Commits included in this rollback</h2>
+    </header>
+
+    <p><%= link_to_github_deploy(@rollback) %></p>
+
+    <%= render 'deploys/summary', commits: @rollback.commits %>
+  </section>
+
+  <%= render_checklist @stack %>
+
+  <section class="submit-section">
+    <%= form_for [@stack, @rollback] do |f| %>
+      <%= f.hidden_field :parent_id %>
+      <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'] %>
+    <% end %>
+  </section>
+</div>

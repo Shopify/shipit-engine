@@ -16,11 +16,20 @@ class Commit < ActiveRecord::Base
     id ? where('id > ?', id) : all
   }
 
+  scope :until, -> (commit) {
+    id = commit.try(:id) || commit
+    id ? where('id <= ?', id) : all
+  }
+
   scope :reachable,  -> { where(detached: false) }
   scope :successful, -> { where(state: 'success') }
 
   def self.detach!
     update_all(detached: true)
+  end
+
+  def self.by_sha!(sha)
+    where('sha like ?', "#{sha}%").first!
   end
 
   def self.from_github(commit, status)
@@ -38,6 +47,10 @@ class Commit < ActiveRecord::Base
 
   def self.fetch_target_url(status)
     status && status.rels.try(:[], :target).try(:href)
+  end
+
+  def previous
+    stack.commits.reachable.where('id < ?', id).last
   end
 
   def refresh_status
@@ -87,7 +100,7 @@ class Commit < ActiveRecord::Base
   end
 
   def deploy_in_progress?
-    stack.deploys.active.any?
+    stack.deploying?
   end
 
   def newer_commit_deployed?
