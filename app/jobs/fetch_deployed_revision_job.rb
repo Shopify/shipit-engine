@@ -5,12 +5,24 @@ class FetchDeployedRevisionJob < BackgroundJob
 
   def perform(params)
     stack = Stack.find(params[:stack_id])
+
     return if stack.deploying?
+
     commands = StackCommands.new(stack)
-    if sha = commands.fetch_deployed_revision
-      stack.update_deployed_revision(sha)
+
+    begin
+      sha = commands.fetch_deployed_revision
+    rescue Command::Error
+      stack.update!(supports_fetch_deployed_revision: false)
+      raise
     end
-  rescue ActiveRecord::RecordNotFound
+
+    return unless sha.present?
+
+    begin
+      stack.update_deployed_revision(sha)
+    rescue ActiveRecord::RecordNotFound
+    end
   end
 
 end

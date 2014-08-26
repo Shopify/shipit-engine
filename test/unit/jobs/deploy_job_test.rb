@@ -78,6 +78,8 @@ class DeployJobTest < ActiveSupport::TestCase
     DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)
     DeploySpec.any_instance.expects(:supports_rollback?).returns(true)
 
+    @stack.update!(supports_rollback: false, supports_fetch_deployed_revision: false)
+
     refute @stack.supports_rollback?
     refute @stack.supports_fetch_deployed_revision?
 
