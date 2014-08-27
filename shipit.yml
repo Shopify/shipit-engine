@@ -9,3 +9,5 @@ dependencies:
       - benchmark
       - debug
 
+fetch:
+  - curl --silent https://shipit.shopify.com/status/version
