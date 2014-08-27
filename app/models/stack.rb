@@ -33,7 +33,7 @@ class Stack < ActiveRecord::Base
   end
 
   def self.send_undeployed_commits_reminders
-    with_reminder_webhook.map(&:enqueue_undeployed_commits_job)
+    with_reminder_webhook.reject(&:locked?).map(&:enqueue_undeployed_commits_job)
   end
 
   def undeployed_commits?
