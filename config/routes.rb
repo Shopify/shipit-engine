@@ -25,7 +25,7 @@ Shipit::Application.routes.draw do
   # Humans
   scope '/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
     get '/' => 'stacks#show'
-    put '/' => 'stacks#update'
+    patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
     get :settings, controller: :stacks
     post :sync_commits, controller: :stacks
