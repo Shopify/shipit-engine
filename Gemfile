@@ -28,6 +28,7 @@ gem 'validate_url'
 
 group :development, :test do
   gem 'foreman', '~> 0.74'
+  gem 'rubocop'
 end
 
 group :test do

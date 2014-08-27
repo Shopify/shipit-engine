@@ -7,12 +7,17 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require "mocha/test_unit"
 
+Dir[File.expand_path('../helpers/**/*.rb', __FILE__)].each do |helper|
+  require helper
+end
+
 begin
   require 'pry'
 rescue LoadError
 end
 
 class ActiveSupport::TestCase
+  include PayloadsHelper
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
