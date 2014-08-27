@@ -193,21 +193,6 @@ class StacksTest < ActiveSupport::TestCase
     assert @stack.deploying?
   end
 
-  test ".sharded allow to reduce the set of records based on the primary key" do
-    assert_equal [], Stack.sharded(2, 0).pluck(:id)
-    assert_equal [@stack.id], Stack.sharded(2, 1).pluck(:id)
-  end
-
-  test ".sharded check arguments" do
-    assert_raises ArgumentError do
-      Stack.sharded(2, 2)
-    end
-
-    assert_raises ArgumentError do
-      Stack.sharded(0, 0)
-    end
-  end
-
   test "#enqueue_undeployed_commits_job enqueues an UndeployedCommitsWebhookJob Resque job for the stack" do
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
     @stack.enqueue_undeployed_commits_job

@@ -7,6 +7,29 @@ class DeploySpecTest < ActiveSupport::TestCase
     @spec.stubs(:load_config).returns({})
   end
 
+  test '#supports_fetch_deployed_revision? returns false by default' do
+    refute @spec.supports_fetch_deployed_revision?
+  end
+
+  test '#supports_fetch_deployed_revision? returns true if steps are defined' do
+    @spec.stubs(:load_config).returns('fetch' => ['curl --silent https://example.com/status/version'])
+    assert @spec.supports_fetch_deployed_revision?
+  end
+
+  test '#supports_rollback? returns false by default' do
+    refute @spec.supports_rollback?
+  end
+
+  test '#supports_rollback? returns true if steps are defined' do
+    @spec.stubs(:load_config).returns('rollback' => {'override' => ['rm -rf /usr /lib/nvidia-current/xorg/xorg']})
+    assert @spec.supports_rollback?
+  end
+
+  test '#supports_rollback? returns true if stack is detected as capistrano' do
+    @spec.expects(:capistrano?).returns(true)
+    assert @spec.supports_rollback?
+  end
+
   test '#dependencies_steps returns `dependencies.override` if present' do
     @spec.stubs(:load_config).returns('dependencies' => {'override' => %w(foo bar baz)})
     assert_equal %w(foo bar baz), @spec.dependencies_steps
@@ -18,8 +41,10 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal :bundle_install, @spec.dependencies_steps
   end
 
-  test '#fetch_deployed_revision_steps is empty by default' do
-    assert_equal [], @spec.fetch_deployed_revision_steps
+  test '#fetch_deployed_revision_steps is unknown by default' do
+    assert_raises DeploySpec::Error do
+      @spec.fetch_deployed_revision_steps
+    end
   end
 
   test '#fetch_deployed_revision_steps use `fetch` is present' do

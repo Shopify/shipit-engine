@@ -5,6 +5,7 @@ class DeployJobTest < ActiveSupport::TestCase
   setup do
     @job = DeployJob.new
     @deploy = deploys(:shipit_pending)
+    @stack = stacks(:shipit)
   end
 
   test "#perform fetch commits from the API" do
@@ -60,6 +61,33 @@ class DeployJobTest < ActiveSupport::TestCase
       @job.perform(deploy_id: @deploy.id)
     end
     assert @deploy.reload.error?
+  end
+
+  test "records stack support for rollbacks and fetching deployed revision" do
+    @job.stubs(:capture)
+    @commands = stub(:commands)
+    @commands.stubs(:fetch).returns([])
+    @commands.stubs(:clone).returns([])
+    @commands.stubs(:checkout).returns([])
+    @commands.stubs(:install_dependencies).returns([])
+    @commands.stubs(:deploy).returns([])
+    Deploy.expects(:find).with(@deploy.id).returns(@deploy)
+    DeployCommands.expects(:new).with(@deploy).returns(@commands)
+    @deploy.stubs(:clear_working_directory)
+
+    DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)
+    DeploySpec.any_instance.expects(:supports_rollback?).returns(true)
+
+    @stack.update!(supports_rollback: false, supports_fetch_deployed_revision: false)
+
+    refute @stack.supports_rollback?
+    refute @stack.supports_fetch_deployed_revision?
+
+    @job.perform(deploy_id: @deploy.id)
+    @stack.reload
+
+    assert @stack.supports_rollback?
+    assert @stack.supports_fetch_deployed_revision?
   end
 
 end

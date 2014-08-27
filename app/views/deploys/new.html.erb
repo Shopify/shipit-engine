@@ -2,13 +2,13 @@
 
 <div class="wrapper">
   <section>
-      <header class="section-header">
-        <h2>Commits included in this deploy</h2>
-      </header>
+    <header class="section-header">
+      <h2>Commits included in this deploy</h2>
+    </header>
 
-      <p><%= link_to_github_deploy(@deploy) %></p>
+    <p><%= link_to_github_deploy(@deploy) %></p>
 
-      <%= render 'deploys/summary', commits: @deploy.commits %>
+    <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
 
   <%= render_checklist @stack %>

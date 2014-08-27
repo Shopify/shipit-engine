@@ -1,7 +1,7 @@
 namespace :cron do
   desc "Updates deployed revisions"
   task minutely: :environment do
-    Stack.sharded(6, Time.now.min % 6).refresh_deployed_revisions
+    Stack.refresh_deployed_revisions
   end
 
   task send_undeployed_commits_reminders: :environment do

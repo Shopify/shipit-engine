@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820220235) do
+ActiveRecord::Schema.define(version: 20140826193820) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -62,19 +62,21 @@ ActiveRecord::Schema.define(version: 20140820220235) do
   add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id", using: :btree
 
   create_table "stacks", force: true do |t|
-    t.string   "repo_name",                                       null: false
-    t.string   "repo_owner",                                      null: false
-    t.string   "environment",              default: "production", null: false
+    t.string   "repo_name",                                               null: false
+    t.string   "repo_owner",                                              null: false
+    t.string   "environment",                      default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "branch",                   default: "master",     null: false
+    t.string   "branch",                           default: "master",     null: false
     t.text     "checklist"
     t.string   "deploy_url"
     t.string   "lock_reason"
-    t.integer  "deploys_count",            default: 0,            null: false
-    t.boolean  "continuous_deployment",    default: false,        null: false
-    t.integer  "undeployed_commits_count", default: 0,            null: false
+    t.integer  "deploys_count",                    default: 0,            null: false
+    t.boolean  "continuous_deployment",            default: false,        null: false
+    t.integer  "undeployed_commits_count",         default: 0,            null: false
     t.string   "reminder_url"
+    t.boolean  "supports_fetch_deployed_revision", default: false,        null: false
+    t.boolean  "supports_rollback",                default: false,        null: false
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
