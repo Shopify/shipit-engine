@@ -21,24 +21,27 @@ Shipit::Application.routes.draw do
   end
 
   # Humans
-  resources :stacks, path: "/", id: %r{[^/]+/[^/]+/[^/]+}, only: %i(show destroy update) do
-    member do
-      get :settings
-      post :sync_commits
-      post :refresh_statuses
-      post :sync_webhooks
-      post :clear_git_cache
-    end
+  scope '/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+    get '/' => 'stacks#show'
+    put '/' => 'stacks#update'
+    delete '/' => 'stacks#destroy'
+    get :settings, controller: :stacks
+    post :sync_commits, controller: :stacks
+    post :refresh_statuses, controller: :stacks
+    post :sync_webhooks, controller: :stacks
+    post :clear_git_cache, controller: :stacks
+  end
 
-    resources :commits, id: /\d+/, only: :show
+  scope '/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+    resources :commits, only: :show
 
-    resources :rollbacks, id: /\d+/, only: %i(create)
+    resources :rollbacks, only: %i(create)
 
-    resources :deploys, id: /\d+/, only: %i(new show create) do
+    resources :deploys, only: %i(new show create) do
       member do
         get :rollback
       end
-      resources :chunks, id: /\d+/, only:  %i(index), defaults: {format: :json} do
+      resources :chunks, only:  %i(index), defaults: {format: :json} do
         collection do
           get :tail
         end
