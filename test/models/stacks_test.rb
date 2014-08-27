@@ -199,19 +199,25 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test ".send_undeployed_commits_reminders calls enqueue_undeployed_commits_job for stacks that require reminder" do
-    @stack.update_attributes(reminder_url: 'http://www.example.com')
+    @stack.update_attributes(reminder_url: 'http://www.example.com', lock_reason: nil)
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
     Stack.send_undeployed_commits_reminders
   end
 
   test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks with a nil reminder_url" do
-    @stack.update_attributes( reminder_url: nil)
+    @stack.update_attributes(reminder_url: nil, lock_reason: nil)
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
     Stack.send_undeployed_commits_reminders
   end
 
-  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks with a reminder_url" do
-    @stack.update_attributes( reminder_url: '')
+  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks without a reminder_url" do
+    @stack.update_attributes(reminder_url: '', lock_reason: nil)
+    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
+    Stack.send_undeployed_commits_reminders
+  end
+
+  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks that are locked" do
+    @stack.update_attributes(reminder_url: 'http://www.example.com', lock_reason: "Need to Rollback")
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
     Stack.send_undeployed_commits_reminders
   end
