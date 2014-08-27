@@ -83,27 +83,32 @@ class StacksControllerTest < ActionController::TestCase
     assert_response :ok
   end
 
+  test "#settings is success" do
+    get :settings, id: @stack.to_param
+    assert_response :success
+  end
+
   test "#sync_commits queues a GithubSyncJob" do
     Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
     post :sync_commits, id: @stack.to_param
-    assert_redirected_to settings_stack_path(@stack)
+    assert_redirected_to stack_settings_path(@stack)
   end
 
   test "#refresh_statuses queues a RefreshStatusesJob" do
     Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
     post :refresh_statuses, id: @stack.to_param
-    assert_redirected_to settings_stack_path(@stack)
+    assert_redirected_to stack_settings_path(@stack)
   end
 
   test "#sync_webhooks queues a GithubSetupWeebhookJob" do
     Resque.expects(:enqueue).with(GithubSetupWebhooksJob, stack_id: @stack.id)
     post :sync_webhooks, id: @stack.to_param
-    assert_redirected_to settings_stack_path(@stack)
+    assert_redirected_to stack_settings_path(@stack)
   end
 
   test "#clear_git_cache queues a ClearGitCacheJob" do
     Resque.expects(:enqueue).with(ClearGitCacheJob, stack_id: @stack.id)
     post :clear_git_cache, id: @stack.to_param
-    assert_redirected_to settings_stack_path(@stack)
+    assert_redirected_to stack_settings_path(@stack)
   end
 end

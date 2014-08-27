@@ -38,27 +38,27 @@ class StacksController < ApplicationController
 
   def update
     @stack.update(update_params)
-    redirect_to settings_stack_path(@stack)
+    redirect_to stack_settings_path(@stack)
   end
 
   def sync_commits
     Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
-    redirect_to settings_stack_path(@stack)
+    redirect_to stack_settings_path(@stack)
   end
 
   def refresh_statuses
     Resque.enqueue(RefreshStatusesJob, stack_id: @stack.id)
-    redirect_to settings_stack_path(@stack)
+    redirect_to stack_settings_path(@stack)
   end
 
   def sync_webhooks
     Resque.enqueue(GithubSetupWebhooksJob, stack_id: @stack.id)
-    redirect_to settings_stack_path(@stack)
+    redirect_to stack_settings_path(@stack)
   end
 
   def clear_git_cache
     Resque.enqueue(ClearGitCacheJob, stack_id: @stack.id)
-    redirect_to settings_stack_path(@stack)
+    redirect_to stack_settings_path(@stack)
   end
 
   private
