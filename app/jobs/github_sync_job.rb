@@ -1,5 +1,5 @@
 class GithubSyncJob < BackgroundJob
-  @queue = :default
+  queue_as :default
 
   self.timeout = 60
 

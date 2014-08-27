@@ -107,11 +107,11 @@ class Deploy < ActiveRecord::Base
 
   def enqueue
     raise "only persisted jobs can be enqueued" unless persisted?
-    Resque.enqueue(DeployJob, deploy_id: id, stack_id: stack_id)
+    DeployJob.enqueue(deploy_id: id, stack_id: stack_id)
   end
 
   def rollup_chunks
-    Resque.enqueue(ChunkRollupJob, deploy_id: id)
+    ChunkRollupJob.enqueue(deploy_id: id)
   end
 
   private

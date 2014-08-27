@@ -7,8 +7,8 @@ class WebhooksController < ActionController::Base
     branch = params['ref'].gsub('refs/heads/', '')
 
     if branch == stack.branch
-      Resque.enqueue(GithubSyncJob, stack_id: stack.id)
-      Resque.enqueue(GitMirrorUpdateJob, stack_id: stack.id)
+      GithubSyncJob.enqueue(stack_id: stack.id)
+      GitMirrorUpdateJob.enqueue(stack_id: stack.id)
     end
 
     head :ok

@@ -1,4 +1,4 @@
-class BackgroundJob
+class BackgroundJob < ActiveJob::Base
 
   class << self
 
