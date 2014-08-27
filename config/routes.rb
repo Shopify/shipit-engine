@@ -21,7 +21,7 @@ Shipit::Application.routes.draw do
   end
 
   # Humans
-  resources :stacks, path: "/", id: %r{[^/]+/[^/]+/[^/]+}, only: %i(show destroy update) do
+  resources :stacks, path: '/:repo_owner/:repo_name/:environment', only: %i(show destroy update) do
     member do
       get :settings
       post :sync_commits

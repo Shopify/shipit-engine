@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.1'
+gem 'rails', '4.2.0.beta1'
 gem 'mysql2'
-gem 'sass-rails'
+gem 'sass-rails', '5.0.0.beta1'
+gem 'responders'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails'
 gem 'jquery-rails'

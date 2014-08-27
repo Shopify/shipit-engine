@@ -109,6 +109,7 @@ class Commit < ActiveRecord::Base
 
   def broadcast_event(type)
     url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
+    p url
     payload = {id: id, url: url}.to_json
     event = Pubsubstub::Event.new(payload, name: "commit.#{type}")
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)

@@ -5,12 +5,14 @@ SimpleCov.start 'rails'
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require "mocha/test_unit"
+require 'mocha/mini_test'
 
 begin
   require 'pry'
 rescue LoadError
 end
+
+ActiveJob::Base.queue_adapter = NullQueueAdapter
 
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!

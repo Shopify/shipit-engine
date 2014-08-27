@@ -53,7 +53,7 @@ class Stack < ActiveRecord::Base
   end
 
   def async_refresh_deployed_revision
-    Resque.enqueue(FetchDeployedRevisionJob, stack_id: id)
+    FetchDeployedRevisionJob.enqueue(stack_id: id)
   end
 
   def update_deployed_revision(sha)
@@ -168,21 +168,21 @@ class Stack < ActiveRecord::Base
   end
 
   def enqueue_undeployed_commits_job
-    Resque.enqueue(UndeployedCommitsWebhookJob, stack_id: id)
+    UndeployedCommitsWebhookJob.enqueue(stack_id: id)
   end
 
   private
 
   def setup_webhooks
-    Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)
+    GithubSetupWebhooksJob.enqueue(stack_id: id)
   end
 
   def teardown_webhooks
-    Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
+    GithubTeardownWebhooksJob.enqueue(stack_id: id, github_repo_name: github_repo_name)
   end
 
   def sync_github
-    Resque.enqueue(GithubSyncJob, stack_id: id)
+    GithubSyncJob.enqueue(stack_id: id)
   end
 
   def clear_local_files

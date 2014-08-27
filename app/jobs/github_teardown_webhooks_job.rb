@@ -1,5 +1,5 @@
 class GithubTeardownWebhooksJob < BackgroundJob
-  @queue = :default
+  queue_as :default
 
   extend BackgroundJob::StackExclusive
 
