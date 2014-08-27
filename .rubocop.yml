@@ -1,0 +1,29 @@
+AllCops:
+  Exclude:
+    - lib/snippets/*
+inherit_from:
+  .rubocop_todo.yml
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Lint/HandleExceptions:
+  Enabled: false
+
+# Metrics/LineLength:
+#   Max: 120
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/ClassLength:
+  Max: 400
+
+Style/Documentation:
+  Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Style/RedundantReturn:
+  AllowMultipleReturnValues: true

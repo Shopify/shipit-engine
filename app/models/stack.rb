@@ -112,7 +112,7 @@ class Stack < ActiveRecord::Base
   end
 
   def github_repo_name
-    return [repo_owner, repo_name].join('/')
+    [repo_owner, repo_name].join('/')
   end
 
   def github_repo

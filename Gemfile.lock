@@ -33,6 +33,7 @@ GEM
       multi_json
     ansi_stream (0.0.3)
     arel (5.0.1.20140414130214)
+    ast (2.0.0)
     builder (3.2.2)
     byebug (2.7.0)
       columnize (~> 0.3)
@@ -137,7 +138,11 @@ GEM
       multi_json (~> 1.3)
       oauth2 (~> 0.9.3)
       omniauth (~> 1.2)
+    parser (2.2.0.pre.4)
+      ast (>= 1.1, < 3.0)
+      slop (~> 3.4, >= 3.4.5)
     polyglot (0.3.5)
+    powerpack (0.0.9)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -170,6 +175,7 @@ GEM
       activesupport (= 4.1.5)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    rainbow (2.0.0)
     rake (10.3.2)
     redis (3.0.7)
     redis-actionpack (4.0.0)
@@ -200,6 +206,12 @@ GEM
       resque
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rubocop (0.25.0)
+      parser (>= 2.2.0.pre.4, < 3.0)
+      powerpack (~> 0.0.6)
+      rainbow (>= 1.99.1, < 3.0)
+      ruby-progressbar (~> 1.4)
+    ruby-progressbar (1.5.1)
     rubyzip (1.1.4)
     safe_yaml (1.0.1)
     sass (3.2.19)
@@ -291,6 +303,7 @@ DEPENDENCIES
   redis-rails
   resque (= 1.26.pre.0)
   resque-workers-lock
+  rubocop
   safe_yaml
   sass-rails
   securecompare (~> 1.0)
