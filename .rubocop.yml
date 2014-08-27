@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
-    - lib/snippets/*
+    - lib/snippets/**/*
+    - vendor/**/*
 inherit_from:
   .rubocop_todo.yml
 

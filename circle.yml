@@ -19,3 +19,7 @@ dependencies:
       - deploy
       - production
       - debug
+
+test:
+  post:
+    - bundle exec rubocop
