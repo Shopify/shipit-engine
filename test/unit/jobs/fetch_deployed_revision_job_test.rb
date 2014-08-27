@@ -32,7 +32,7 @@ class FetchDeployedRevisionJobTest < ActiveSupport::TestCase
     Stack.any_instance.expects(:deploying?).returns(false)
     StackCommands.any_instance.expects(:fetch_deployed_revision).raises(Command::Error.new("Missing arguments"))
     Stack.any_instance.expects(:update_deployed_revision).never
-    
+
     assert_raises Command::Error do
       @job.perform(stack_id: @stack.id)
     end
