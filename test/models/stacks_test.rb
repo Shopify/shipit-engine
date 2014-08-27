@@ -220,13 +220,13 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks with a nil reminder_url" do
-    @stack.update_attributes( reminder_url: nil, lock_reason: nil)
+    @stack.update_attributes(reminder_url: nil, lock_reason: nil)
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
     Stack.send_undeployed_commits_reminders
   end
 
   test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks without a reminder_url" do
-    @stack.update_attributes( reminder_url: '', lock_reason: nil)
+    @stack.update_attributes(reminder_url: '', lock_reason: nil)
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
     Stack.send_undeployed_commits_reminders
   end
