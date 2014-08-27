@@ -4,7 +4,8 @@ class UndeployedCommitsWebhookJob < BackgroundJob
   self.timeout = 60
 
   def perform(params)
-    return if (stack = Stack.find(params[:stack_id])).nil? || stack.locked?
+    stack = Stack.find(params[:stack_id]) rescue return
+    return if stack.locked?
 
     old_undeployed_commits = stack.old_undeployed_commits
 
