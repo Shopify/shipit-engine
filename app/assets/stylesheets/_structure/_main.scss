@@ -11,6 +11,17 @@
 
   section {
     margin-top: 3rem;
+
+    &.warning {
+      background-color: orange;
+      padding: 1rem;
+      text-align: center;
+
+      li {
+        list-style-type: none;
+        padding-bottom: 0.5rem;
+      }
+    }
   }
 
   .section-header {
