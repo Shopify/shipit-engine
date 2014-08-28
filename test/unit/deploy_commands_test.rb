@@ -16,32 +16,32 @@ class DeployCommandsTest < ActiveSupport::TestCase
   end
 
   test "#fetch calls git fetch if repository cache already exist" do
-    Dir.expects(:exists?).with(@stack.git_path).returns(true)
+    Dir.expects(:exist?).with(@stack.git_path).returns(true)
     command = @commands.fetch
     assert_equal %w(git fetch origin --tags master), command.args
   end
 
   test "#fetch calls git fetch in git_path directory if repository cache already exist" do
-    Dir.expects(:exists?).with(@stack.git_path).returns(true)
+    Dir.expects(:exist?).with(@stack.git_path).returns(true)
     command = @commands.fetch
     assert_equal @stack.git_path, command.chdir
   end
 
   test "#fetch calls git clone if repository cache do not exist" do
-    Dir.expects(:exists?).with(@stack.git_path).returns(false)
+    Dir.expects(:exist?).with(@stack.git_path).returns(false)
     command = @commands.fetch
     assert_equal ['git', 'clone', '--single-branch', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
   end
 
   test "#fetch does not use --single-branch if git is outdated" do
-    Dir.expects(:exists?).with(@stack.git_path).returns(false)
+    Dir.expects(:exist?).with(@stack.git_path).returns(false)
     StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
     command = @commands.fetch
     assert_equal ['git', 'clone', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
   end
 
   test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
-    Dir.expects(:exists?).with(@stack.git_path).returns(false)
+    Dir.expects(:exist?).with(@stack.git_path).returns(false)
     command = @commands.fetch
     assert_equal @stack.deploys_path, command.chdir
   end

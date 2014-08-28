@@ -39,7 +39,7 @@ class DeployJob < BackgroundJob
   end
 
   def capture(command)
-    @deploy.write("$ #{command.to_s}\n")
+    @deploy.write("$ #{command}\n")
     command.stream!(timeout: COMMAND_TIMEOUT) do |line|
       @deploy.write(line)
     end
