@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - lib/snippets/**/*
     - vendor/**/*
+    - data/**/*
 inherit_from:
   .rubocop_todo.yml
 
@@ -9,6 +10,9 @@ Lint/AssignmentInCondition:
   Enabled: false
 
 Lint/HandleExceptions:
+  Enabled: false
+
+Lint/EndAlignment:
   Enabled: false
 
 # Metrics/LineLength:

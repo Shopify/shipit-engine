@@ -9,30 +9,6 @@ Metrics/LineLength:
   Max: 370
 
 # Offense count: 1
-Lint/AmbiguousOperator:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/BlockAlignment:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/DeprecatedClassMethods:
-  Enabled: false
-
-# Offense count: 1
-# Configuration parameters: AlignWith, SupportedStyles.
-Lint/EndAlignment:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Enabled: false
-
-# Offense count: 1
 Lint/UnderscorePrefixedVariableName:
   Enabled: false
 

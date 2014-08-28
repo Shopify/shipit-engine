@@ -30,7 +30,7 @@ class DeploysControllerTest < ActionController::TestCase
   test ":create persists a new deploy" do
     assert_difference '@stack.deploys.count', +1 do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}
-   end
+    end
   end
 
   test ":create redirects to the new deploy" do

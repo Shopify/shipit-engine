@@ -28,7 +28,7 @@ class Command
   end
 
   def exit_message
-    "#{self.to_s} exited with status #{@code}"
+    "#{self} exited with status #{@code}"
   end
 
   def run(timeout: nil)
