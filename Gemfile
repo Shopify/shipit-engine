@@ -46,4 +46,3 @@ group :deploy do
   gem 'capistrano-rails'
   gem 'whenever'
 end
-

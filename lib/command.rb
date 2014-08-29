@@ -3,7 +3,7 @@ require 'fileutils'
 require 'timeout'
 
 class Command
-  MAX_READ = 2 ** 16
+  MAX_READ = 64.kilobytes
 
   Error = Class.new(StandardError)
 

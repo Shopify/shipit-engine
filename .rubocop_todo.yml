@@ -64,11 +64,6 @@ Style/IndentationWidth:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/LeadingCommentSpace:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/MethodCallParentheses:
@@ -88,20 +83,10 @@ Style/PredicateName:
 Style/RescueModifier:
   Enabled: false
 
-# Offense count: 39
-# Cop supports --auto-correct.
-Style/SingleSpaceBeforeFirstArg:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
-# Offense count: 134
-# Cop supports --auto-correct.
-Style/SpaceAroundOperators:
   Enabled: false
 
 # Offense count: 120
@@ -114,12 +99,6 @@ Style/SpaceInsideHashLiteralBraces:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/StringLiterals:
-  Enabled: false
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/TrailingBlankLines:
   Enabled: false
 
 # Offense count: 12

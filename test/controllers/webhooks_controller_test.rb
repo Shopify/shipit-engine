@@ -80,7 +80,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":push verifies webhook signature" do
-    params = {"ref"=>"refs/heads/master"}
+    params = {"ref" => "refs/heads/master"}
     signature = 'sha1=ad1d939e9acd6bdc2415a2dd5951be0f2a796ce0'
 
     @request.headers['X-Github-Event'] = 'push'

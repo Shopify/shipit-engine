@@ -19,6 +19,10 @@ Style/NumericLiterals:
   Exclude:
     - db/schema.rb
 
+Style/SingleSpaceBeforeFirstArg:
+  Exclude:
+    - db/schema.rb
+
 # Metrics/LineLength:
 #   Max: 120
 

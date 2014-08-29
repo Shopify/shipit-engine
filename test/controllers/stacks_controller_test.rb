@@ -44,7 +44,7 @@ class StacksControllerTest < ActionController::TestCase
     params = {
       stack: {
         repo_owner:  "some",
-        repo_name:   "owner/path" #no good
+        repo_name:   "owner/path" # no good
       }
     }
 
