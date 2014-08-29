@@ -25,7 +25,7 @@ module Shipit
 
     # Compile the correct assets
     config.assets.precompile += %w(master.css)
-    config.assets.precompile << Proc.new do |path|
+    config.assets.precompile << proc do |path|
       path =~ /\Aplugins\/[\-\w]+\.(js|css)\Z/
     end
   end

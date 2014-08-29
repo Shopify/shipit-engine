@@ -59,7 +59,6 @@ class WebhooksControllerTest < ActionController::TestCase
   test ":state returns head :ok if request is ping" do
     @request.headers['X-Github-Event'] = 'ping'
 
-    commit = commits(:first)
     post :state, { stack_id: @stack.id }
     Resque.expects(:enqueue).never
     assert_response :ok

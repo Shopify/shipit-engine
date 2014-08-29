@@ -54,7 +54,7 @@ class DeploySpecTest < ActiveSupport::TestCase
 
   test '#bundle_install return a sane default bundle install command' do
     @spec.stubs(:has_gemfile_lock?).returns(true)
-    command = %Q(
+    command = %(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
       --frozen
@@ -68,7 +68,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
     @spec.stubs(:has_gemfile_lock?).returns(true)
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    command = %Q(
+    command = %(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
       --frozen
