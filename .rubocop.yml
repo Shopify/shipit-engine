@@ -15,6 +15,10 @@ Lint/HandleExceptions:
 Lint/EndAlignment:
   Enabled: false
 
+Style/NumericLiterals:
+  Exclude:
+    - db/schema.rb
+
 # Metrics/LineLength:
 #   Max: 120
 
@@ -25,6 +29,12 @@ Metrics/ClassLength:
   Max: 400
 
 Style/Documentation:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/SignalException:
   Enabled: false
 
 Style/RaiseArgs:

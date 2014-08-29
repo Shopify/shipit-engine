@@ -4,7 +4,7 @@ class Commit < ActiveRecord::Base
 
   after_create  { broadcast_event('create') }
   after_destroy { broadcast_event('remove') }
-  after_update  { broadcast_update('update') }
+  after_update  { broadcast_update }
   after_update :schedule_continuous_delivery
   after_create { stack.update_undeployed_commits_count }
 
@@ -114,7 +114,7 @@ class Commit < ActiveRecord::Base
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
   end
 
-  def broadcast_update(type)
+  def broadcast_update
     if detached_changed? && detached?
       broadcast_event('remove')
     else

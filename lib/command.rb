@@ -9,7 +9,7 @@ class Command
 
   attr_reader :out, :code, :chdir, :env, :args
 
-  def initialize(*args, env: {}, chdir: )
+  def initialize(*args, env: {}, chdir:)
     @args = args
     @env = env
     @chdir = chdir.to_s
@@ -57,10 +57,10 @@ class Command
 
   def stream(timeout: nil, &block)
     FileUtils.mkdir_p(@chdir)
-    _in, @out, @subprocess = []
+    child_in = @out = @subprocess = nil
     with_full_path do
-      _in, @out, @subprocess = Open3.popen2e(@env, *@args, chdir: @chdir)
-      _in.close
+      child_in, @out, @subprocess = Open3.popen2e(@env, *@args, chdir: @chdir)
+      child_in.close
       begin
         read_stream(@out, timeout: timeout, &block)
       rescue Timeout::Error => error
@@ -87,7 +87,7 @@ class Command
     self
   end
 
-  def read_stream(io, timeout: timeout, &block)
+  def read_stream(io, timeout: timeout)
     loop do
       with_timeout(timeout) do
         yield io.readpartial(MAX_READ)

@@ -8,28 +8,6 @@
 Metrics/LineLength:
   Max: 370
 
-# Offense count: 1
-Lint/UnderscorePrefixedVariableName:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/UnusedMethodArgument:
-  Enabled: false
-
-# Offense count: 5
-Lint/UselessAssignment:
-  Enabled: false
-
-# Offense count: 8
-# Configuration parameters: CountComments.
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/BarePercentLiterals:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/Blocks:
@@ -48,11 +26,6 @@ Style/ClassAndModuleChildren:
 
 # Offense count: 2
 Style/DoubleNegation:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundAccessModifier:
   Enabled: false
 
 # Offense count: 56
@@ -101,17 +74,6 @@ Style/LeadingCommentSpace:
 Style/MethodCallParentheses:
   Enabled: false
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 15
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredDelimiters.
-Style/PercentLiteralDelimiters:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
@@ -122,29 +84,8 @@ Style/PerlBackrefs:
 Style/PredicateName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/Proc:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Enabled: false
-
 # Offense count: 2
 Style/RescueModifier:
-  Enabled: false
-
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SignalException:
-  Enabled: false
-
-# Offense count: 1
-# Configuration parameters: Methods.
-Style/SingleLineBlockParams:
   Enabled: false
 
 # Offense count: 39
@@ -169,11 +110,6 @@ Style/SpaceAroundOperators:
 Style/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/SpaceInsideParens:
-  Enabled: false
-
 # Offense count: 607
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -190,12 +126,7 @@ Style/TrailingBlankLines:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
 Style/TrailingComma:
-  Enabled: false
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/UnneededPercentQ:
-  Enabled: false
+  Enabled: False
 
 # Offense count: 3
 # Cop supports --auto-correct.

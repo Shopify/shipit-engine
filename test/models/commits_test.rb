@@ -153,6 +153,7 @@ class CommitsTest < ActiveSupport::TestCase
   end
 
   private
+
   def assert_event(type)
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)

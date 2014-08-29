@@ -63,7 +63,7 @@ class StacksTest < ActiveSupport::TestCase
   test "old_undeployed_commits returns commits that were created before the specified time" do
     last_commit = Commit.last
     last_commit.update_attributes(created_at: 4.hours.ago)
-    old_undeployed_commits = @stack.old_undeployed_commits(long_time_ago = 3.hours.ago)
+    old_undeployed_commits = @stack.old_undeployed_commits(3.hours.ago)
     assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
   end
 
@@ -165,7 +165,7 @@ class StacksTest < ActiveSupport::TestCase
   test "#create queues a GithubSetupWebhooksJob and a GithubSyncJob" do
     Resque.expects(:enqueue).with(GithubSetupWebhooksJob, has_key(:stack_id))
     Resque.expects(:enqueue).with(GithubSyncJob, has_key(:stack_id))
-    Stack.create( repo_name: 'rails', repo_owner: 'rails' )
+    Stack.create(repo_name: 'rails', repo_owner: 'rails')
   end
 
   test "#destroy queues a GithubTeardownWebhooksJob" do
