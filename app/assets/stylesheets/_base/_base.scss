@@ -210,6 +210,7 @@ h5 {
 .ico-github {
   @extend .ico;
   background-image: asset-data-url('github.svg');
+  background-size: 22px auto;
   width: 18px; height: 18px;
 }
 
