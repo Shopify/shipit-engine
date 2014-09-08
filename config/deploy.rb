@@ -28,7 +28,7 @@ set :deploy_to, '/u/apps/shipit'
 set :linked_files, %w(config/database.yml config/secrets.yml config/settings.yml)
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w(bin data log tmp vendor/bundle public/system)
+set :linked_dirs, %w(bin data log tmp vendor/bundle public/system public/assets)
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
