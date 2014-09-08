@@ -8,6 +8,7 @@ class Stack < ActiveRecord::Base
   has_many :deploys
   has_many :rollbacks
   has_many :webhooks
+  has_many :remote_webhooks
 
   before_validation :update_defaults
   after_create :setup_webhooks, :sync_github

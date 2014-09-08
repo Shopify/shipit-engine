@@ -6,6 +6,20 @@
       <h2>Settings</h2>
     </header>
     <div class="setting-section">
+      <h5>Remote webhooks</h5>
+      <%= form_for [@stack, RemoteWebhook.new] do |f| %>
+        <p><%= f.text_field :endpoint, placeholder: 'https://' %></p>
+        <p><%= f.text_field :action %></p>
+        <p><%= f.submit class: "btn" %></p>
+      <%- end -%>
+      <table>
+        <tr>
+          <td>
+          <td>
+        </tr>
+      </table>
+    </div>
+    <div class="setting-section">
       <%= form_for @stack do |f| %>
         <p>Checklist (Leave a blank line between items, HTML &lt;a&gt; and &lt;strong&gt; elements are authorized)</p>
         <p><%= f.text_area :checklist %></p>

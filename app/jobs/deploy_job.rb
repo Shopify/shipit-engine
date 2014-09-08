@@ -24,6 +24,8 @@ class DeployJob < BackgroundJob
       capture_all commands.install_dependencies
       capture_all commands.deploy(@deploy.until_commit)
     end
+
+    Resque.enqueue(RemoteWebhookJob, deploy_id: @deploy.id)
     @deploy.complete!
   rescue Command::Error
     @deploy.failure!

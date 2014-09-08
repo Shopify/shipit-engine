@@ -39,6 +39,8 @@ Shipit::Application.routes.draw do
 
     resources :rollbacks, only: %i(create)
 
+    resources :remote_webhooks, only: %i(create)
+
     resources :deploys, only: %i(new show create) do
       member do
         get :rollback

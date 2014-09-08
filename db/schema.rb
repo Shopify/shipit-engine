@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140826193820) do
+ActiveRecord::Schema.define(version: 20140904172530) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -41,9 +41,9 @@ ActiveRecord::Schema.define(version: 20140826193820) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.boolean  "rolled_up",       default: false,     null: false
     t.string   "type",            default: "Deploy",  null: false
     t.integer  "parent_id"
+    t.boolean  "rolled_up",       default: false,     null: false
   end
 
   add_index "deploys", ["rolled_up", "created_at", "status"], name: "index_deploys_on_rolled_up_and_created_at_and_status", using: :btree
@@ -60,6 +60,16 @@ ActiveRecord::Schema.define(version: 20140826193820) do
   end
 
   add_index "output_chunks", ["deploy_id"], name: "index_output_chunks_on_deploy_id", using: :btree
+
+  create_table "remote_webhooks", force: true do |t|
+    t.integer  "stack_id",   null: false
+    t.string   "endpoint"
+    t.string   "action"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "remote_webhooks", ["stack_id"], name: "index_remote_webhooks_on_stack_id", using: :btree
 
   create_table "stacks", force: true do |t|
     t.string   "repo_name",                                               null: false
