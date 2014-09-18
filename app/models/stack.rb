@@ -14,6 +14,7 @@ class Stack < ActiveRecord::Base
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :broadcast_update, on: :update
 
+  validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
   validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
   validates :reminder_url, url: { allow_blank: true }

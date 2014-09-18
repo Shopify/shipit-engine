@@ -6,6 +6,12 @@ class StacksTest < ActiveSupport::TestCase
     @expected_base_path = File.join(Rails.root, "data", "stacks", @stack.repo_owner, @stack.repo_name, @stack.environment)
   end
 
+  test "repo_owner, repo_name and environment uniqueness is enforced" do
+    clone = Stack.new(@stack.attributes.except('id'))
+    refute clone.save
+    assert_equal ["has already been taken"], clone.errors[:repo_name]
+  end
+
   test "repo_owner is automatically downcased" do
     @stack.repo_owner = 'George'
     assert_equal 'george', @stack.repo_owner
