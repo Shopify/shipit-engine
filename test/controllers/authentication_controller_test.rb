@@ -24,6 +24,16 @@ class AuthenticationControllerTest < ActionController::TestCase
     assert_redirected_to stack_path(stack)
   end
 
+  test ":callback refuses authentication if the email domain doesn't match" do
+    Shipit.stubs(:authentication).returns('provider' => 'google_oauth2', 'email_domain' => 'shopify.com')
+    @request.env['omniauth.auth'] = { 'info' => { 'email' => 'bob@toto.com' }, 'provider' => 'google_oauth2' }
+    stack = stacks(:shipit)
+
+    post :callback, provider: :google_apps, origin: stack_path(stack)
+    assert_redirected_to stack_path(stack)
+    refute session[:authenticated]
+  end
+
   test ":callback can sign in to github" do
     @controller.expects(:reset_session)
 
