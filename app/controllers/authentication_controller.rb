@@ -14,8 +14,8 @@ class AuthenticationController < ApplicationController
       return redirect_to return_url
     end
 
-    authenticated = session[:authenticated]
-    authenticated = true if auth['provider'] == Shipit.authentication['provider']
+    authenticated = valid_provider_auth?(auth)
+
     reset_session
     session[:authenticated] = authenticated
     session[:user_id] = user_id
@@ -29,6 +29,14 @@ class AuthenticationController < ApplicationController
   end
 
   private
+
+  def valid_provider_auth?(auth)
+    return false unless auth['provider'] == Shipit.authentication['provider']
+
+    email_domain = Shipit.authentication['email_domain'] || "shopify.com"
+
+    auth['info']['email'].match(/@#{Regexp.escape(email_domain)}\z/).present?
+  end
 
   def sign_in_github(auth)
     return unless auth[:provider] == 'github'
