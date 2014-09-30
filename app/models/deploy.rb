@@ -50,7 +50,7 @@ class Deploy < ActiveRecord::Base
       stack_id: stack_id,
       parent_id: id,
       since_commit: stack.last_deployed_commit,
-      until_commit: since_commit.previous || since_commit
+      until_commit: since_commit
     )
   end
 
