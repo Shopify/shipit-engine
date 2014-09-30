@@ -181,7 +181,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "#build_rollback set the commit right before the deploy's since_commit as the rollback until_commit" do
     deploy = deploys(:shipit_complete)
     rollback = deploy.build_rollback
-    assert_equal deploy.since_commit.previous, rollback.until_commit
+    assert_equal deploy.since_commit, rollback.until_commit
   end
 
   test "#build_rollback set deploy's since_commit as the rollback until_commit if it's the first one" do

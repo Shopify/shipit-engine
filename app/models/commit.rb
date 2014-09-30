@@ -49,10 +49,6 @@ class Commit < ActiveRecord::Base
     status && status.rels.try(:[], :target).try(:href)
   end
 
-  def previous
-    stack.commits.reachable.where('id < ?', id).last
-  end
-
   def refresh_status
     if status = Shipit.github_api.statuses(stack.github_repo_name, sha).first
       update(state: status.try(:state) || 'unknown')
