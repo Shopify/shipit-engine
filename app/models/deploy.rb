@@ -59,7 +59,7 @@ class Deploy < ActiveRecord::Base
     rollback.save!
     rollback.enqueue
 
-    lock_reason = "A rollback for #{since_commit} has been triggered. " \
+    lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
       "Please make sure the reason for the rollback has been addressed before deploying again."
     stack.update_attribute(:lock_reason, lock_reason)
 
