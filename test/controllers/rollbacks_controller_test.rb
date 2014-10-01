@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class RollbacksControllerTest < ActionController::TestCase
-
   setup do
     Deploy.where(status: %w(running pending)).update_all(status: 'success')
     @stack = stacks(:shipit)
@@ -20,4 +19,8 @@ class RollbacksControllerTest < ActionController::TestCase
     assert_redirected_to stack_deploy_path(@stack, Rollback.last)
   end
 
+  test ":create locks deploys" do
+    post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}
+    assert @stack.reload.locked?
+  end
 end

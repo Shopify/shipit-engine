@@ -58,6 +58,11 @@ class Deploy < ActiveRecord::Base
     rollback = build_rollback(user)
     rollback.save!
     rollback.enqueue
+
+    lock_reason = "A rollback for #{since_commit} has been triggered. " \
+      "Please make sure the reason for the rollback has been addressed before deploying again."
+    stack.update_attribute(:lock_reason, lock_reason)
+
     rollback
   end
 
