@@ -17,7 +17,7 @@
     </span>
     <span class="event-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">
-        <%= deploy.until_commit.message %>
+        <%= render_commit_message deploy.until_commit %>
       </a>
       <span class="event-number"></span>
     </span>
