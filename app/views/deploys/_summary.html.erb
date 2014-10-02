@@ -6,7 +6,7 @@
       </div>
       <div class="event">
         <span class="event-title">
-          <%= render_commit_message commit %>
+          <%= render_commit_message_with_link commit %>
         </span>
       </div>
       <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued number" data-tooltip="View on GitHub">
