@@ -11,7 +11,7 @@
       <% else %>
         deployed
       <% end %>
-      
+
       <%= link_to_github_deploy(deploy) %> <%= timeago_tag(deploy.created_at, force: true) %>
       <span class="event-time">at <%= deploy.created_at %></span>
     </span>

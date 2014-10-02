@@ -14,7 +14,7 @@
       <span class="event-time">at <%= commit.committed_at %></span>
     </span>
     <span class="event-title">
-      <%= render_commit_message commit %>
+      <%= render_commit_message_with_link commit %>
     </span>
   </div>
   <% if commit.state == 'success' %>
