@@ -11,13 +11,12 @@
     <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
 
-  <section>
-    <header class="section-header">
-      <h2>Commits NOT included in this deploy</h2>
-    </header>
+  <section class="less-important">
 
-    <p>Please double-check that none of these commits are a necessary part of
-       what <strong>is</strong> being deployed.</p>
+    <p>The following commits are <strong>not</strong> included in this deploy.
+    Please ensure that none of these commits are needed for what
+    <strong>is</strong> being deployed (for example, if they contain the revert
+    of a broken change).</p>
 
     <%= render 'deploys/summary', commits: @deploy.commits_since %>
   </section>
