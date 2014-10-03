@@ -1,6 +1,7 @@
 class Commit < ActiveRecord::Base
   belongs_to :stack, touch: true
   has_many :deploys
+  has_many :statuses
 
   after_create  { broadcast_event('create') }
   after_destroy { broadcast_event('remove') }
@@ -53,6 +54,11 @@ class Commit < ActiveRecord::Base
     if status = Shipit.github_api.statuses(stack.github_repo_name, sha).first
       update(state: status.try(:state) || 'unknown')
     end
+  end
+
+  def denormalize_state
+    latest_status = statuses.order(:created_at => :desc).first
+    update!(state: latest_status.state)
   end
 
   def children

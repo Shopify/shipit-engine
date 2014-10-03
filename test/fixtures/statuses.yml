@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+first_pending:
+  commit_id: 1 # first
+  description: "lets go"
+  context: "shipit"
+  created_at: <%= 10.days.ago.to_s(:db) %>
+  state: pending
+  target_url: "http://www.example.com"

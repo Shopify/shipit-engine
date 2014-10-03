@@ -16,11 +16,8 @@ class WebhooksController < ActionController::Base
 
   def state
     commit = stack.commits.find_by_sha!(params['sha'])
-    attributes = {
-      state: params['state']
-    }
-    attributes.merge!(target_url: params['target_url']) if params['target_url'].present?
-    commit.update_attributes(attributes)
+    attributes = params.permit(:description, :context, :state, :target_url, :created_at, :updated_at)
+    commit.statuses.create!(attributes)
     head :ok
   end
 
