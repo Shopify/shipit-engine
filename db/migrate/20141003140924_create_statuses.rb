@@ -4,7 +4,7 @@ class CreateStatuses < ActiveRecord::Migration
       t.string :state
       t.string :target_url
       t.text :description
-      t.string :context
+      t.string :context, default: 'default', null: false
       t.references :commit, index: true
 
       t.timestamps

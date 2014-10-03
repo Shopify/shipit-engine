@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20141003140924) do
     t.string   "state"
     t.string   "target_url"
     t.text     "description"
-    t.string   "context"
+    t.string   "context",     default: "default", null: false
     t.integer  "commit_id"
     t.datetime "created_at"
     t.datetime "updated_at"

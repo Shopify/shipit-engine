@@ -11,4 +11,4 @@ require File.expand_path('../config/application', __FILE__)
 
 Shipit::Application.load_tasks
 
-task default: %i(rubocop test)
+task default: %i(test rubocop)

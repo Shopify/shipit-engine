@@ -52,7 +52,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.deploys.destroy_all
 
     assert_difference "Deploy.count" do
-      @commit.update(state: 'success')
+      @commit.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
 
@@ -119,11 +119,13 @@ class CommitsTest < ActiveSupport::TestCase
                           message: "more fish!")
   end
 
-  test "refresh_status pull state from github" do
-    status = mock(state: 'success')
+  test "refresh_statuses pull state from github" do
+    status = mock(state: 'success', description: nil, context: 'default', target_url: 'http://example.com', created_at: 1.day.ago.as_json)
     Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
-    @commit.refresh_status
-    assert_equal 'success', @commit.state
+    assert_difference '@commit.statuses.count', +1 do
+      @commit.refresh_statuses
+    end
+    assert_equal 'success', @commit.statuses.first.state
   end
 
   test "#creating a commit update the undeployed_commits_count" do
@@ -142,6 +144,22 @@ class CommitsTest < ActiveSupport::TestCase
 
   test ".by_sha! can match truncated shas" do
     assert_equal @commit, Commit.by_sha!(@commit.sha[0..7])
+  end
+
+  test "#state is `unknown` by default" do
+    assert_equal 'unknown', Commit.new.state
+  end
+
+  test "#state is `success` if all most recent the statuses are `success`" do
+    assert_equal 'success', commits(:third).state
+  end
+
+  test "#state is `failure` one of the most recent the statuses is `failure`" do
+    assert_equal 'failure', commits(:second).state
+  end
+
+  test "#state is `pending` one of the most recent the statuses is `pending` and none is `failure` or `error`" do
+    assert_equal 'pending', commits(:fourth).state
   end
 
   private

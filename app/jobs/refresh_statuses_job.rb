@@ -5,7 +5,7 @@ class RefreshStatusesJob < BackgroundJob
 
   def perform(params)
     stack = Stack.find(params[:stack_id])
-    stack.commits.order(id: :desc).limit(30).each(&:refresh_status)
+    stack.commits.order(id: :desc).limit(30).each(&:refresh_statuses)
   end
 
 end

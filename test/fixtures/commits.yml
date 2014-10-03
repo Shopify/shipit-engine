@@ -7,7 +7,6 @@ first:
   committer: walrus
   authored_at: <%= 10.days.ago.to_s(:db) %>
   committed_at: <%= 9.days.ago.to_s(:db) %>
-  state: pending
 
 second:
   id: 2

@@ -2,8 +2,72 @@
 
 first_pending:
   commit_id: 1 # first
-  description: "lets go"
-  context: "shipit"
+  description: lets go
+  context: ci/travis
   created_at: <%= 10.days.ago.to_s(:db) %>
   state: pending
+  target_url: "http://www.example.com"
+
+second_pending_travis:
+  commit_id: 2 # second
+  description: lets go
+  context: ci/travis
+  created_at: <%= 10.days.ago.to_s(:db) %>
+  state: pending
+  target_url: "http://www.example.com"
+
+second_pending_coveralls:
+  commit_id: 2 # second
+  description: lets go
+  context: metrics/coveralls
+  created_at: <%= 10.days.ago.to_s(:db) %>
+  state: pending
+  target_url: "http://www.example.com"
+
+second_success_travis:
+  commit_id: 2 # second
+  description: lets go
+  context: ci/travis
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"
+
+second_failure_coveralls:
+  commit_id: 2 # second
+  description: lets go
+  context: metrics/coveralls
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: failure
+  target_url: "http://www.example.com"
+
+third_success_travis:
+  commit_id: 3 # third
+  description: lets go
+  context: ci/travis
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"
+
+third_success_coveralls:
+  commit_id: 3 # third
+  description: lets go
+  context: metrics/coveralls
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"
+
+fourth_pending_travis:
+  commit_id: 4 # fourth
+  description: lets go
+  context: ci/travis
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: pending
+  target_url: "http://www.example.com"
+
+fourth_success_coveralls:
+  commit_id: 4 # fourth
+  description: lets go
+  context: metrics/coveralls
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: success
   target_url: "http://www.example.com"

@@ -16,7 +16,10 @@ class WebhooksController < ActionController::Base
 
   def state
     commit = stack.commits.find_by_sha!(params['sha'])
-    attributes = params.permit(:description, :context, :state, :target_url, :created_at, :updated_at)
+    attributes = params.permit(:description, :context, :state, :target_url)
+    %i(created_at updated_at).each do |attr|
+      attributes[attr] = DateTime.iso8601(params[attr])
+    end
     commit.statuses.create!(attributes)
     head :ok
   end

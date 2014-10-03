@@ -31,22 +31,18 @@ class WebhooksControllerTest < ActionController::TestCase
 
     request.headers['X-Github-Event'] = 'status'
     params = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output",
-      "description" => "This is a description", "context" => "Context", "created_at" => 10.days.ago.to_json, "updated_at" => 10.days.ago.to_json}
+      "description" => "This is a description", "context" => "Context", "created_at" => 10.days.ago.as_json, "updated_at" => 10.days.ago.as_json}
 
     assert_difference 'commit.statuses.count', +1 do
       post :state, { stack_id: @stack.id }.merge(params)
     end
 
-    status = Status.last()
+    status = Status.last
     assert_equal 'pending', status.state
     assert_equal 'https://ci.example.com/1000/output', status.target_url
     assert_equal "This is a description", status.description
     assert_equal "Context", status.context
     assert_equal 10.days.ago.to_s, status.created_at.to_s
-
-    # commit.reload
-    assert_equal 'pending', commit.state
-    # assert_equal "https://ci.example.com/1000/output", commit.target_url
   end
 
   test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do
