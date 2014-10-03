@@ -11,6 +11,17 @@
     <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
 
+  <section>
+    <header class="section-header">
+      <h2>Commits NOT included in this deploy</h2>
+    </header>
+
+    <p>Please double-check that none of these commits are a necessary part of
+       what <strong>is</strong> being deployed.</p>
+
+    <%= render 'deploys/summary', commits: @deploy.commits_since %>
+  </section>
+
   <%= render_checklist @stack %>
 
   <section class="submit-section">
