@@ -190,6 +190,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   def expect_event(deploy, status)
+    Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
       channel == "stack.#{deploy.stack.id}" &&

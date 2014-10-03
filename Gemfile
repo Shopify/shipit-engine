@@ -32,6 +32,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'test_after_commit'
   gem 'mocha'
   gem 'simplecov', require: false
 end
