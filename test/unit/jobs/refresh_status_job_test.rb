@@ -7,7 +7,7 @@ class RefreshStatusesJobTest < ActiveSupport::TestCase
   end
 
   test "#perform call #refresh_status on the last 30 commits of the stack" do
-    Commit.any_instance.expects(:refresh_status).times(@stack.commits.count)
+    Commit.any_instance.expects(:refresh_statuses).times(@stack.commits.count)
 
     @job.perform(stack_id: @stack.id)
   end

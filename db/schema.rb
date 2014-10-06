@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140826193820) do
+ActiveRecord::Schema.define(version: 20141003140924) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
@@ -80,6 +80,18 @@ ActiveRecord::Schema.define(version: 20140826193820) do
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
+
+  create_table "statuses", force: true do |t|
+    t.string   "state"
+    t.string   "target_url"
+    t.text     "description"
+    t.string   "context",     default: "default", null: false
+    t.integer  "commit_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id", using: :btree
 
   create_table "users", force: true do |t|
     t.integer  "github_id"
