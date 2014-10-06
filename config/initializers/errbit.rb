@@ -7,3 +7,9 @@ Airbrake.configure do |config|
     config.rake_environment_filters << filtered_key
   end
 end
+
+require 'resque/failure/multiple'
+require 'resque/failure/airbrake'
+
+Resque::Failure::Multiple.classes = [Resque::Failure.backend, Resque::Failure::Airbrake]
+Resque::Failure.backend = Resque::Failure::Multiple
