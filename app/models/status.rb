@@ -14,7 +14,7 @@ class Status < ActiveRecord::Base
       description: github_status.description,
       target_url: github_status.target_url,
       context: github_status.context,
-      created_at: DateTime.iso8601(github_status.created_at),
+      created_at: github_status.created_at,
     )
   end
 

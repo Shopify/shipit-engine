@@ -12,4 +12,10 @@ class RefreshStatusesJobTest < ActiveSupport::TestCase
     @job.perform(stack_id: @stack.id)
   end
 
+  test "if :commit_id param is present only this commit is refreshed" do
+    Commit.any_instance.expects(:refresh_statuses).once
+
+    @job.perform(stack_id: @stack.id, commit_id: commits(:first).id)
+  end
+
 end
