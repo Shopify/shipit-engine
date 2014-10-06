@@ -44,7 +44,7 @@ after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
   task :use_deploy_log do
     on roles(:app), in: :parallel do
-      within fetch(:latest_release_directory) do
+      within release_path do
         execute "ln -nsfT #{shared_path}/deploy_log ./log"
       end
     end
@@ -52,7 +52,7 @@ namespace :deploy do
 
   task :use_runtime_log do
     on roles(:app), in: :parallel do
-      within fetch(:latest_release_directory) do
+      within release_path do
         execute "ln -nsfT #{shared_path}/log ./log"
       end
     end
