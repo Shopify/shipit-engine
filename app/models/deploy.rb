@@ -84,6 +84,12 @@ class Deploy < ActiveRecord::Base
     @commits ||= stack.commits.reachable.newer_than(since_commit_id).until(until_commit_id).order(id: :desc)
   end
 
+  def commits_since
+    return Commit.none unless stack
+
+    @commits_since ||= stack.commits.reachable.newer_than(until_commit_id).order(id: :desc)
+  end
+
   def since_commit_id
     if value = read_attribute(:since_commit_id)
       value
