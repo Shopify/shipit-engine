@@ -45,7 +45,7 @@ namespace :deploy do
   task :use_deploy_log do
     on roles(:app), in: :parallel do
       within release_path do
-        execute "ln -nsfT #{shared_path}/deploy_log ./log"
+        execute(*%W(ln -nsfT #{shared_path}/deploy_log ./log))
       end
     end
   end
@@ -53,7 +53,7 @@ namespace :deploy do
   task :use_runtime_log do
     on roles(:app), in: :parallel do
       within release_path do
-        execute "ln -nsfT #{shared_path}/log ./log"
+        execute(*%W(ln -nsfT #{shared_path}/log ./log))
       end
     end
   end
