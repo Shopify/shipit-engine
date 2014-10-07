@@ -14,10 +14,13 @@ class GithubSyncJob < BackgroundJob
 
     new_commits, shared_parent = fetch_missing_commits(@stack.github_commits)
 
+    new_commit_ids = []
+
     @stack.transaction do
       shared_parent.try(:detach_children!)
       new_commits.each do |gh_commit|
-        @stack.commits.from_github(gh_commit, fetch_status(gh_commit)).save!
+        commit = @stack.commits.from_github(gh_commit).save!
+        commit.refresh_statuses
       end
     end
   end
@@ -35,10 +38,6 @@ class GithubSyncJob < BackgroundJob
   end
 
   protected
-
-  def fetch_status(commit)
-    Shipit.github_api.statuses(@stack.github_repo_name, commit.sha).first
-  end
 
   def lookup_commit(sha)
     @stack.commits.find_by_sha(sha)

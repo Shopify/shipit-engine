@@ -35,7 +35,7 @@ class Commit < ActiveRecord::Base
     where('sha like ?', "#{sha}%").first!
   end
 
-  def self.from_github(commit, status)
+  def self.from_github(commit)
     new(
       sha: commit.sha,
       message: commit.commit.message,
