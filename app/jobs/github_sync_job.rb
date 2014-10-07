@@ -14,8 +14,6 @@ class GithubSyncJob < BackgroundJob
 
     new_commits, shared_parent = fetch_missing_commits(@stack.github_commits)
 
-    new_commit_ids = []
-
     @stack.transaction do
       shared_parent.try(:detach_children!)
       new_commits.each do |gh_commit|
