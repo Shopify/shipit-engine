@@ -6,7 +6,7 @@ class Status < ActiveRecord::Base
 
   validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 
-  after_commit :schedule_continuous_delivery, on: :create
+  after_commit :schedule_continuous_delivery, :broadcast_commit_update, on: :create
 
   def self.replicate_from_github!(github_status)
     find_or_create_by!(
@@ -19,6 +19,10 @@ class Status < ActiveRecord::Base
   end
 
   private
+
+  def broadcast_commit_update
+    commit.broadcast_update
+  end
 
   def schedule_continuous_delivery
     commit.schedule_continuous_delivery

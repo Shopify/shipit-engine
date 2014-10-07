@@ -105,6 +105,14 @@ class Commit < ActiveRecord::Base
     stack.trigger_deploy(self, committer)
   end
 
+  def broadcast_update
+    if detached_changed? && detached?
+      broadcast_event('remove')
+    else
+      broadcast_event('update')
+    end
+  end
+
   private
 
   def significant_status
@@ -128,13 +136,5 @@ class Commit < ActiveRecord::Base
     payload = {id: id, url: url}.to_json
     event = Pubsubstub::Event.new(payload, name: "commit.#{type}")
     Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
-  end
-
-  def broadcast_update
-    if detached_changed? && detached?
-      broadcast_event('remove')
-    else
-      broadcast_event('update')
-    end
   end
 end
