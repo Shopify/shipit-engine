@@ -12,7 +12,7 @@ class Status < ActiveRecord::Base
     find_or_create_by!(
       state: github_status.state,
       description: github_status.description,
-      target_url: github_status.target_url,
+      target_url: github_status.rels.try(:[], :target).try(:href),
       context: github_status.context,
       created_at: github_status.created_at,
     )
