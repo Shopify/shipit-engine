@@ -1,4 +1,5 @@
 class LegacyCommitStatusesMaintenanceJob < BackgroundJob
+  @queue = :default
 
   def perform(_ = nil)
     Commit.preload(:statuses).find_each do |commit|

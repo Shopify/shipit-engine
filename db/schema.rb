@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141003140924) do
+ActiveRecord::Schema.define(version: 20141007150959) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                    null: false
