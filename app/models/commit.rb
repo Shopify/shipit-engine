@@ -38,17 +38,12 @@ class Commit < ActiveRecord::Base
   def self.from_github(commit, status)
     new(
       sha: commit.sha,
-      target_url: fetch_target_url(status),
       message: commit.commit.message,
       author: User.find_or_create_from_github(commit.author || commit.commit.author),
       committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
       committed_at: commit.commit.committer.date,
       authored_at: commit.commit.author.date,
     )
-  end
-
-  def self.fetch_target_url(status)
-    status && status.rels.try(:[], :target).try(:href)
   end
 
   def refresh_statuses
