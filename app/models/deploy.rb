@@ -66,6 +66,22 @@ class Deploy < ActiveRecord::Base
     rollback
   end
 
+  def pid
+    Rails.cache.read("deploy:#{id}:pid")
+  end
+
+  def pid=(pid)
+    Rails.cache.write("deploy:#{id}:pid", pid, expires_in: 1.hour)
+  end
+
+  def abort!
+    target_pid = pid
+    return unless target_pid.present?
+    Process.kill('TERM', target_pid)
+  rescue Errno::ESRCH
+    true
+  end
+
   def author
     user || AnonymousUser.new
   end

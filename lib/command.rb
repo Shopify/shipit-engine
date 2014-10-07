@@ -8,6 +8,7 @@ class Command
   Error = Class.new(StandardError)
 
   attr_reader :out, :code, :chdir, :env, :args
+  delegate :pid, to: :@subprocess, allow_nil: true
 
   def initialize(*args, env: {}, chdir:)
     @args = args
@@ -55,24 +56,31 @@ class Command
     ENV['PATH'] = old_path
   end
 
-  def stream(timeout: nil, &block)
-    FileUtils.mkdir_p(@chdir)
+  def start
+    return if @started
     child_in = @out = @subprocess = nil
+    FileUtils.mkdir_p(@chdir)
     with_full_path do
       child_in, @out, @subprocess = Open3.popen2e(@env, *@args, chdir: @chdir)
       child_in.close
-      begin
-        read_stream(@out, timeout: timeout, &block)
-      rescue Timeout::Error => error
-        @subprocess.kill
-        @code = 'timeout'
-        yield red("No output received in the last #{timeout} seconds.") + "\n"
-        terminate!(&block)
-        raise error
-      else
-        @code = @subprocess.value
-        yield exit_message + "\n" unless success?
-      end
+    end
+    @started = true
+    self
+  end
+
+  def stream(timeout: nil, &block)
+    start
+    begin
+      read_stream(@out, timeout: timeout, &block)
+    rescue Timeout::Error => error
+      @subprocess.kill
+      @code = 'timeout'
+      yield red("No output received in the last #{timeout} seconds.") + "\n"
+      terminate!(&block)
+      raise error
+    else
+      @code = @subprocess.value
+      yield exit_message + "\n" unless success?
     end
     self
   end

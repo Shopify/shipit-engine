@@ -39,7 +39,9 @@ class DeployJob < BackgroundJob
   end
 
   def capture(command)
-    @deploy.write("$ #{command}\n")
+    command.start
+    @deploy.write("$ #{command}\npid: #{command.pid}\n")
+    @deploy.pid = command.pid
     command.stream!(timeout: COMMAND_TIMEOUT) do |line|
       @deploy.write(line)
     end
