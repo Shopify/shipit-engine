@@ -61,7 +61,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.trigger_deploy(@commit, @commit.committer)
 
     assert_no_difference "Deploy.count" do
-      @commit.update(state: 'success')
+      @commit.statuses.create!(state: 'success')
     end
   end
 
@@ -87,7 +87,7 @@ class CommitsTest < ActiveSupport::TestCase
     )
 
     assert_no_difference "Deploy.count" do
-      @commit.update(state: 'success')
+      @commit.statuses.create!(state: 'success')
     end
   end
 
@@ -95,7 +95,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.reload.deploys.destroy_all
 
     assert_no_difference "Deploy.count" do
-      @commit.update(state: 'success')
+      @commit.statuses.create!(state: 'success')
     end
   end
 
@@ -104,7 +104,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.deploys.destroy_all
 
     assert_no_difference "Deploy.count" do
-      @commit.update(state: 'unknown')
+      @commit.statuses.create!(state: 'failure')
     end
   end
 

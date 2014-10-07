@@ -1,0 +1,16 @@
+<% if commit.success? %>
+  <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+    <%= hidden_field_tag :sha, commit.sha %>
+    <%= button_tag :name => nil, :class => 'btn' do %>
+        <span>Deploy</span>
+    <% end %>
+  <% end %>
+<% elsif commit.pending? %>
+  <a href="#" class="btn disabled deploy-action">Pending...</a>
+<% elsif commit.failure? %>
+  <a href="#" class="btn disabled failure deploy-action">Failure</a>
+<% elsif commit.error? %>
+  <a href="#" class="btn disabled error deploy-action">Error</a>
+<% else %>
+  <a href="#" class="btn disabled unknown deploy-action">Not Run</a>
+<% end %>

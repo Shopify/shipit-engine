@@ -1,5 +1,4 @@
 class Commit < ActiveRecord::Base
-  UNKNOWN_STATE = 'unknown'.freeze
   belongs_to :stack, touch: true
   has_many :deploys
   has_many :statuses, -> { order(created_at: :desc) }
@@ -23,7 +22,10 @@ class Commit < ActiveRecord::Base
   }
 
   scope :reachable,  -> { where(detached: false) }
-  scope :successful, -> { where(state: 'success') }
+
+  def self.successful
+    preload(:statuses).to_a.select(&:success?)
+  end
 
   def self.detach!
     update_all(detached: true)
@@ -55,16 +57,11 @@ class Commit < ActiveRecord::Base
     end
   end
 
-  def state
-    significant_status.try!(:state) || read_attribute(:state) || UNKNOWN_STATE
-  end
-
-  def target_url
-    significant_status.try!(:target_url) || read_attribute(:target_url)
-  end
+  delegate :pending?, :success?, :error?, :failure?, to: :significant_status
+  delegate :state, to: :significant_status # deprecated
 
   def last_statuses
-    statuses.each_with_object({}) { |s, h| h[s.context] ||= s }.values.sort_by(&:context)
+    statuses.each_with_object({}) { |s, h| h[s.context] ||= s }.values.sort_by(&:context).presence || [UnknownStatus.new(self)]
   end
 
   def children
@@ -120,7 +117,7 @@ class Commit < ActiveRecord::Base
     return nil if statuses.empty?
     return statuses.first if statuses.all?(&:success?)
     non_success_statuses = statuses.reject(&:success?)
-    non_success_statuses.reject(&:pending?).first || non_success_statuses.first
+    non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
   end
 
   def deploy_in_progress?

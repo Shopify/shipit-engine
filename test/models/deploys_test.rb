@@ -119,7 +119,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "transitioning to success triggers next deploy when stack uses CD" do
-    commits(:fifth).update_column(:state, 'success')
+    commits(:fifth).statuses.create!(state: 'success')
 
     deploy = deploys(:shipit_running)
     deploy.stack.update(continuous_deployment: true)
@@ -130,7 +130,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "transitioning to success skips CD deploy when stack doesn't use it" do
-    commits(:fifth).update_column(:state, 'success')
+    commits(:fifth).statuses.create!(state: 'success')
 
     deploy = deploys(:shipit_running)
 

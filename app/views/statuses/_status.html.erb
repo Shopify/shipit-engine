@@ -1,0 +1,6 @@
+<div class="status <%= status.state %>" data-tooltip="<%= status.description.presence || status.state.capitalize %>">
+  <a href="<%= status.target_url%>" class="<%= :disabled unless status.target_url.present? %>" target="_blank">
+    <i><%= status.state %></i>
+    <%= github_avatar status.commit.author, size: 20 %>
+  </a>
+</div>

@@ -1,10 +1,5 @@
 <li class="commit" id="commit-<%= commit.id %>">
-  <div class="status <%= commit.state || 'unknown' %>" data-tooltip="<%= commit.state.capitalize %>">
-    <a href="<%= commit.target_url%>" class="<%= :disabled unless commit.target_url.present? %>" target="_blank">
-      <i><%= commit.state %></i>
-      <%= github_avatar commit.author, size: 20 %>
-    </a>
-  </div>
+  <%= render commit.last_statuses %>
   <div class="event">
     <span class="event-meta">
       <a href="<%= github_user_url(commit.author.login) %>" class="user main-user">
@@ -17,18 +12,6 @@
       <%= render_commit_message_with_link commit %>
     </span>
   </div>
-  <% if commit.state == 'success' %>
-    <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
-      <%= hidden_field_tag :sha, commit.sha %>
-      <%= button_tag :name => nil, :class => 'btn' do %>
-          <span>Deploy</span>
-      <% end %>
-    <% end %>
-  <% elsif commit.state == 'pending' %>
-    <a href="#" class="btn disabled deploy-action">Pending...</a>
-  <% elsif commit.state == 'failure' %>
-    <a href="#" class="btn disabled failure deploy-action">Failure</a>
-  <% else %>
-    <a href="#" class="btn disabled unknown deploy-action">Not Run</a>
-  <% end %>
+
+  <%= render 'commits/deploy_button', commit: commit %>
 </li>
