@@ -32,6 +32,7 @@ Shipit::Application.routes.draw do
     post :refresh_statuses, controller: :stacks
     post :sync_webhooks, controller: :stacks
     post :clear_git_cache, controller: :stacks
+    post :fixit, controller: :stacks
   end
 
   scope '/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do

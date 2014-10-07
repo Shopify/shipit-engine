@@ -61,6 +61,14 @@ class StacksController < ApplicationController
     redirect_to stack_settings_path(@stack)
   end
 
+  def fixit
+    Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
+    Resque.enqueue(RefreshStatusesJob, stack_id: @stack.id)
+    Resque.enqueue(GithubSetupWebhooksJob, stack_id: @stack.id)
+    Resque.enqueue(ClearGitCacheJob, stack_id: @stack.id)
+    redirect_to stack_settings_path(@stack)
+  end
+
   private
 
   def load_stack
