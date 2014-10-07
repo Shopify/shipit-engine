@@ -60,15 +60,6 @@
       height: 2.25rem;
       display: block;
     }
-
-    img {
-      width: 1rem;
-      height: 1rem;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      position: absolute; bottom: -0.55rem; right: -0.25rem;
-    }
-
   }
 
   .event {
@@ -86,6 +77,16 @@
       color: #999;
 
       .user {
+
+        img {
+          width: 1rem;
+          height: 1rem;
+          border-radius: 50%;
+          border: 2px solid #fff;
+          position: relative;
+          bottom: -0.25rem;
+        }
+
         font-weight: 500;
         color: #777;
           &:hover { color: $blue; }

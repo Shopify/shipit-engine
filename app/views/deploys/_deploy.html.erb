@@ -1,11 +1,15 @@
 <li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>">
   <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
-    <i><%= deploy.status %></i>
-    <%= github_avatar deploy.user, size: 20 %>
+    <%= link_to stack_deploy_path(@stack, deploy) do %>
+      <i><%= deploy.status %></i>
+    <% end %>
   </div>
   <div class="event">
     <span class="event-meta">
-      <a href="#" class="user main-user disabled"><%= deploy.author.name %></a>
+      <a href="<%= github_user_url(deploy.author.login) %>" class="user main-user">
+        <%= github_avatar deploy.user, size: 20 %>
+        <%= deploy.author.name %>
+      </a>
       <% if deploy.rollback? %>
         rolled back to
       <% else %>
