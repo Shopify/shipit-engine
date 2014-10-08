@@ -11,15 +11,17 @@
     <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
 
-  <section class="less-important">
+  <% unless @deploy.commits_since.empty?  %>
+    <section class="less-important">
 
-    <p>The following commits are <strong>not</strong> included in this deploy.
-    Please ensure that none of these commits are needed for what
-    <strong>is</strong> being deployed (for example, if they contain the revert
-    of a broken change).</p>
+      <p>The following commits are <strong>not</strong> included in this deploy.
+      Please ensure that none of these commits are needed for what
+      <strong>is</strong> being deployed (for example, if they contain the revert
+      of a broken change).</p>
 
-    <%= render 'deploys/summary', commits: @deploy.commits_since %>
-  </section>
+      <%= render 'deploys/summary', commits: @deploy.commits_since %>
+    </section>
+  <% end %>
 
   <%= render_checklist @stack %>
 
