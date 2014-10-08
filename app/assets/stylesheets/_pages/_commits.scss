@@ -9,7 +9,7 @@
 }
 
 .commit-lst:empty:before {
-  content: "No undeployed commit, Walrus is happy.";
+  content: "No undeployed commits, Walrus is happy.";
 }
 
   .commit-lst li, .deploy-lst li {
