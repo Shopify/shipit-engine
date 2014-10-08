@@ -31,7 +31,7 @@ $ script/bootstrap
 
 ## Local Development/Testing
 
-- Create a public github repository like https://github.com/byroot/junk that
+- Create a **public** github repository like https://github.com/byroot/junk that
   contains a similar dummy `shipit.yml` file.
 - Create an API key (https://github.com/settings/tokens/new) that has only
   public_repo permissions (Shipit doesn't need anything else) and add it in
@@ -46,7 +46,7 @@ $ script/bootstrap
 
 ```shell
 # run workers for deploy jobs
-QUEUE=deploys bundle exec rake resque:work
+QUEUE=* bundle exec rake resque:work
 
 # start-stop resque-web
 resque-web
