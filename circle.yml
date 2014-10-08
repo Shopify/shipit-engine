@@ -7,8 +7,8 @@ machine:
     version: 0.10.21
 
 database:
-  pre:
-    - cp config/database.yml.example config/database.yml
+  override:
+    - script/bootstrap
 dependencies:
   pre:
     - cp config/secrets.yml.example config/secrets.yml
