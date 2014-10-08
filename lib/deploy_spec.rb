@@ -121,7 +121,7 @@ class DeploySpec
   end
 
   def cant_detect_fetch_deployed_revision_steps
-    raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
+    raise DeploySpec::Error, 'Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml'
   end
 
   def load_config
