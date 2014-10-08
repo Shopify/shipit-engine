@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 20141007172501) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.boolean  "rolled_up",       default: false,     null: false
     t.string   "type",            default: "Deploy",  null: false
     t.integer  "parent_id"
+    t.boolean  "rolled_up",       default: false,     null: false
   end
 
   add_index "deploys", ["rolled_up", "created_at", "status"], name: "index_deploys_on_rolled_up_and_created_at_and_status", using: :btree

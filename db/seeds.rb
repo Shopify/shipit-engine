@@ -20,15 +20,21 @@ stacks.each do |stack|
   20.times do
     user = users.sample
 
-    Commit.create!(
+    commit = Commit.create!(
       stack_id:     stack.id,
       author_id:    user.id,
       committer_id: user.id,
       sha:          SecureRandom.hex(20),
       message:      Faker::Company.catch_phrase,
-      state:        %w(pending success error failure).sample,
       authored_at:  Time.now,
       committed_at: Time.now,
+    )
+
+    Status.create!(
+      state: %w(pending success error failure).sample,
+      commit_id: commit.id,
+      created_at: Time.now,
+      updated_at: Time.now
     )
   end
 end
