@@ -38,4 +38,11 @@ class DeploysControllerTest < ActionController::TestCase
     new_deploy = Deploy.last
     assert_redirected_to stack_deploy_path(@stack, new_deploy)
   end
+
+  test ":abort call abort! on the deploy" do
+    Deploy.any_instance.expects(:abort!)
+    post :abort, stack_id: @stack.to_param, id: @deploy.id
+    assert_response :success
+  end
+
 end

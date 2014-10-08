@@ -2,7 +2,7 @@ class DeploysController < ApplicationController
   include ChunksHelper
 
   before_action :load_stack
-  before_action :load_deploy, only: %i(show rollback)
+  before_action :load_deploy, only: %i(show rollback abort)
   before_action :load_until_commit, only: :create
 
   def new
@@ -25,6 +25,11 @@ class DeploysController < ApplicationController
 
   def rollback
     @rollback = @deploy.build_rollback
+  end
+
+  def abort
+    @deploy.abort!
+    head :ok
   end
 
   private

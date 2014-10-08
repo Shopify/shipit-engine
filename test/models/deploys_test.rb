@@ -189,6 +189,34 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal @deploy.since_commit, rollback.until_commit
   end
 
+  test "pid is persisted" do
+    @deploy.pid = 42
+    clone = Deploy.find(@deploy)
+    assert_equal 42, clone.pid
+  end
+
+  test "abort! sends a SIGTERM to the recorded PID" do
+    Process.expects(:kill).with('TERM', 42)
+    @deploy.pid = 42
+    @deploy.abort!
+  end
+
+  test "abort! still succeeds if the process is already dead" do
+    Process.expects(:kill).with('TERM', 42).raises(Errno::ESRCH)
+    @deploy.pid = 42
+    assert_nothing_raised do
+      @deploy.abort!
+    end
+  end
+
+  test "abort! bails out if the PID is nil" do
+    Process.expects(:kill).never
+    @deploy.pid = nil
+    assert_nothing_raised do
+      @deploy.abort!
+    end
+  end
+
   def expect_event(deploy, status)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|

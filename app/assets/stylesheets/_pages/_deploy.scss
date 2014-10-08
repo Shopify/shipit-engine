@@ -1,3 +1,24 @@
+.deploy-abort {
+  display: none;
+  &[data-deploy-status="running"] { display: block; }
+
+  text-align: center;
+  .deploy-action {
+    float: none;
+    width: 50%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    &.pending {
+      .ready { display: none; }
+      .disabled { display: inline; }
+    }
+    .ready { display: inline; }
+    .disabled { display: none; }
+  }
+}
+
 .deploy-banner {
   background-color: #f0f4f7;
   overflow: hidden;

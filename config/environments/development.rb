@@ -28,4 +28,5 @@ Shipit::Application.configure do
   config.assets.debug = true
 
   config.session_store :redis_store, {db: 2}
+  config.cache_store = :redis_store, {db: 3}
 end
