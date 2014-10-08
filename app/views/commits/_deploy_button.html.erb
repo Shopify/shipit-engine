@@ -1,8 +1,12 @@
 <% if commit.success? %>
-  <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
-    <%= hidden_field_tag :sha, commit.sha %>
-    <%= button_tag :name => nil, :class => 'btn' do %>
+  <% if @stack.deploying? %>
+    <a href="#" class="btn disabled deploy-action">Deploy in progress...</a>
+  <% else %>
+    <%= form_tag new_stack_deploy_path(@stack), :method => :get, :class => 'deploy-action' do %>
+      <%= hidden_field_tag :sha, commit.sha %>
+      <%= button_tag :name => nil, :class => 'btn' do %>
         <span>Deploy</span>
+      <% end %>
     <% end %>
   <% end %>
 <% elsif commit.pending? %>
