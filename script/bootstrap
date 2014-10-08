@@ -4,9 +4,7 @@
 set -e
 set -x
 
-cp -n config/database.yml.example config/database.yml
-cp -n config/secrets.yml.example config/secrets.yml
+cp -n config/database.yml.example config/database.yml || true
+cp -n config/secrets.yml.example config/secrets.yml || true
 bundle install
-bundle exec rake db:create
-bundle exec rake db:migrate
-bundle exec rake db:seed
+bundle exec rake db:create db:schema:load db:seed
