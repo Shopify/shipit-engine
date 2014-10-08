@@ -25,6 +25,15 @@ class DeployJobTest < ActiveSupport::TestCase
     @job.perform(deploy_id: @deploy.id)
   end
 
+  test "#perform enqueues a FetchDeployedRevisionJob" do
+    Dir.stubs(:chdir).yields
+    DeployCommands.any_instance.stubs(:deploy).returns([])
+    @job.stubs(:capture)
+
+    Resque.expects(:enqueue).with(FetchDeployedRevisionJob, stack_id: @deploy.stack_id)
+    @job.perform(deploy_id: @deploy.id)
+  end
+
   test "marks deploy as successful" do
     Dir.stubs(:chdir).yields
     DeployCommands.any_instance.stubs(:deploy).returns([])

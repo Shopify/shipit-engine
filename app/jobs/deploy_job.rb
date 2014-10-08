@@ -31,6 +31,7 @@ class DeployJob < BackgroundJob
     @deploy.error!
     raise
   ensure
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: @deploy.stack_id)
     @deploy.clear_working_directory
   end
 
