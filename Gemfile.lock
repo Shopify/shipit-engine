@@ -152,6 +152,8 @@ GEM
       eventmachine (~> 1.0)
       redis (~> 3.0)
       sinatra (~> 1.4)
+    quiet_assets (1.0.3)
+      railties (>= 3.1, < 5.0)
     rack (1.5.2)
     rack-protection (1.5.2)
       rack
@@ -300,6 +302,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   pry
   pubsubstub (~> 0.0.7)
+  quiet_assets
   rails (~> 4.1.1)
   rails-timeago (~> 2.0)
   redis-rails

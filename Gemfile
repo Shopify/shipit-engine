@@ -26,6 +26,10 @@ gem 'heroku', '~> 3.8.2'
 gem 'faraday'
 gem 'validate_url'
 
+group :development do
+  gem 'quiet_assets'
+end
+
 group :development, :test do
   gem 'foreman', '~> 0.74'
   gem 'rubocop'
