@@ -5,21 +5,11 @@ set :bundle_bins, fetch(:bundle_bins, []).push('whenever')
 
 set :application, 'shipit'
 set :repo_url, 'git@shipit2.github.shopify.com:Shopify/shipit2.git'
-
-# Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
+set :branch, ENV['REVISION'] || ENV['BRANCH_NAME'] || 'master'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/u/apps/shipit'
-
-# Default value for :scm is :git
-# set :scm, :git
-
-# Default value for :format is :pretty
-# set :format, :pretty
-
-# Default value for :log_level is :debug
-# set :log_level, :debug
+set :format, :pretty
 
 # Default value for :pty is false
 # set :pty, true

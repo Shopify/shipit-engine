@@ -19,6 +19,7 @@ class DeployCommands < Commands
     normalized_name = ActiveSupport::Inflector.transliterate(@deploy.author.name)
     env = self.env.merge(
       'SHA' => commit.sha,
+      'REVISION' => commit.sha,
       'ENVIRONMENT' => @stack.environment,
       'USER' => "#{@deploy.author.login} (#{normalized_name}) via Shipit 2",
       'EMAIL' => @deploy.author.email,
