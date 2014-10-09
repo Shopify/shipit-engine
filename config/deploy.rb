@@ -66,6 +66,14 @@ namespace :deploy do
     end
   end
 
+  desc "Store the deployed revision in a REVISION file"
+  task :write_revision do
+    on roles(:app), in: :parallel do
+      within release_path do
+        execute 'echo', fetch(:current_revision), '> REVISION'
+      end
+    end
+  end
 end
 
 namespace :jobs do
@@ -80,3 +88,4 @@ end
 before 'deploy:finishing', 'deploy:cron'
 after 'deploy:finishing_rollback', 'deploy:cron' # If anything goes wrong, undo.
 after 'deploy:publishing', 'jobs:restart' # I don't know why this needs to be after jobs:restart :(
+after 'deploy:log_revision', 'deploy:write_revision'
