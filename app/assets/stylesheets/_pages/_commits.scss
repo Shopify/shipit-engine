@@ -33,7 +33,7 @@
         border: 2px solid #ccc;
         i { background: asset-data-url("pending.gif") center center no-repeat; background-size: 21px 5px; }
       }
-      &.deploying, &[data-deploy-status=running] {
+      &.running, &[data-deploy-status=running] {
         border: 2px solid $blue;
         i { background: asset-data-url("deploying.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
       }
