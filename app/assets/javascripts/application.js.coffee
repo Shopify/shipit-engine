@@ -18,10 +18,21 @@
 #= require_tree ./application
 #= require_self
 
+entityMap =
+ "&": "&amp;"
+ "<": "&lt;"
+ ">": "&gt;"
+ '"': '&quot;'
+ "'": '&#39;'
+ "/": '&#x2F;'
+
+escapeHtml = (string) ->
+  String(string).replace(/[&<>"'\/]/g, (s) -> entityMap[s])
+
 stream = new AnsiStream()
 
 ChunkPoller.appendFormatter (chunk) ->
-  stream.process(chunk)
+  stream.process(escapeHtml(chunk))
 
 jQuery ->
   ChunkPoller.init()
@@ -38,4 +49,4 @@ jQuery ->
       $.notifyRequest()
       $notificationNotice.addClass('hidden')
     $notificationNotice.removeClass('hidden')
-    
+
