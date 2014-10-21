@@ -17,7 +17,8 @@ class GithubSyncJob < BackgroundJob
     @stack.transaction do
       shared_parent.try(:detach_children!)
       new_commits.each do |gh_commit|
-        commit = @stack.commits.from_github(gh_commit)
+        full_commit = gh_commit.rels[:self].get.data # Sadly necessary to access commit stats
+        commit = @stack.commits.from_github(full_commit)
         commit.save!
         commit.refresh_statuses
       end

@@ -18,6 +18,10 @@
 
       <%= link_to_github_deploy(deploy) %> <%= timeago_tag(deploy.created_at, force: true) %>
       <span class="event-time">at <%= deploy.created_at %></span>
+      <span class="event-stats">
+        <span class="event-additions">+<%= deploy.additions %></span>
+        <span class="event-deletions">-<%= deploy.deletions %></span>
+      </span>
     </span>
     <span class="event-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">

@@ -110,6 +110,20 @@
       color: #BBB;
     }
 
+    .event-stats {
+      display: inline-block;
+      margin-left: 3px;
+      font-weight: bold;
+    }
+
+    .event-additions {
+      color: #55a532; // From GitHub CSS
+    }
+
+    .event-deletions {
+      color: #bd2c00; // From GitHub CSS
+    }
+
   .deploy-action {
     margin: 0;
     float: right;
@@ -129,6 +143,7 @@
       font-size: 1rem;
       font-weight: normal;
     }
+
     .accessory {
       float: right;
       font-size: .875rem;

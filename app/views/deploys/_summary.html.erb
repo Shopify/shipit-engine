@@ -10,6 +10,10 @@
         </span>
       </div>
       <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued number" data-tooltip="View on GitHub">
+        <span class="event-stats">
+          <span class="event-additions">+<%= commit.additions %></span>
+          <span class="event-deletions">-<%= commit.deletions %></span>
+        </span>
         <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
       </a>
     </li>
