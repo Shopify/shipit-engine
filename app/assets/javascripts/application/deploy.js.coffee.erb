@@ -22,7 +22,7 @@ class @ChunkPoller
     pollUrl = $output.data('next-chunks-url')
     poller = new ChunkPoller($('body'), pollUrl)
 
-    output = $output.html()
+    output = $output.text()
     $output.html('')
     poller.appendChunks([text: output])
     poller.start() if pollUrl
