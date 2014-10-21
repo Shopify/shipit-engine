@@ -7,6 +7,8 @@ first:
   committer: walrus
   authored_at: <%= 10.days.ago.to_s(:db) %>
   committed_at: <%= 9.days.ago.to_s(:db) %>
+  additions: 42
+  deletions: 24
 
 second:
   id: 2
@@ -17,6 +19,8 @@ second:
   committer: walrus
   authored_at: <%= 8.days.ago.to_s(:db) %>
   committed_at: <%= 7.days.ago.to_s(:db) %>
+  additions: 1
+  deletions: 1
 
 third:
   id: 3
@@ -27,6 +31,8 @@ third:
   committer: walrus
   authored_at: <%= 6.days.ago.to_s(:db) %>
   committed_at: <%= 5.days.ago.to_s(:db) %>
+  additions: 12
+  deletions: 64
 
 fourth:
   id: 4
@@ -37,6 +43,8 @@ fourth:
   committer: walrus
   authored_at: <%= 4.days.ago.to_s(:db) %>
   committed_at: <%= 3.days.ago.to_s(:db) %>
+  additions: 420
+  deletions: 342
 
 fifth:
   id: 5
@@ -47,3 +55,5 @@ fifth:
   committer: walrus
   authored_at: <%= 2.days.ago.to_s(:db) %>
   committed_at: <%= 1.days.ago.to_s(:db) %>
+  additions: 1
+  deletions: 24

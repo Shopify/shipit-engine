@@ -3,27 +3,37 @@ shipit:
   until_commit_id: 2 # second
   stack: shipit
   status: success
+  additions: 1
+  deletions: 1
 
 shipit2:
   since_commit_id: 2 # second
   until_commit_id: 3 # third
   stack: shipit
   status: failed
+  additions: 12
+  deletions: 64
 
 shipit_pending:
   since_commit_id: 2 # second
   until_commit_id: 4 # fourth
   stack: shipit
   status: pending
+  additions: 432
+  deletions: 406
 
 shipit_running:
   since_commit_id: 3
   until_commit_id: 4
   stack: shipit
   status: running
+  additions: 420
+  deletions: 342
 
 shipit_complete:
   since_commit_id: 3
   until_commit_id: 4
   stack: shipit
   status: complete
+  additions: 420
+  deletions: 342

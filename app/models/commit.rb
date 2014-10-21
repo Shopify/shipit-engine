@@ -43,6 +43,8 @@ class Commit < ActiveRecord::Base
       committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
       committed_at: commit.commit.committer.date,
       authored_at: commit.commit.author.date,
+      additions: commit.stats.additions,
+      deletions: commit.stats.deletions,
     )
   end
 

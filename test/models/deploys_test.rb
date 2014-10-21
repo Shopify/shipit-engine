@@ -45,6 +45,20 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal [], @deploy.commits
   end
 
+  test "additions and deletions are denormalized on before create" do
+    stack = stacks(:shipit)
+    first = commits(:first)
+    third  = commits(:third)
+
+    deploy = stack.deploys.create!(
+      :since_commit => first,
+      :until_commit => third
+    )
+
+    assert_equal 13, deploy.additions
+    assert_equal 65, deploy.deletions
+  end
+
   test "#commits returns the commits in the id range" do
     stack = stacks(:shipit)
     first = commits(:first)

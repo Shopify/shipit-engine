@@ -42,6 +42,7 @@ class Deploy < ActiveRecord::Base
     after_transition to: :success, do: :update_undeployed_commits_count
   end
 
+  before_create :denormalize_commit_stats
   after_create :broadcast_deploy
 
   def build_rollback(user=nil)
@@ -142,6 +143,11 @@ class Deploy < ActiveRecord::Base
   end
 
   private
+
+  def denormalize_commit_stats
+    self.additions = commits.map(&:additions).sum
+    self.deletions = commits.map(&:deletions).sum
+  end
 
   def schedule_continuous_delivery
     return unless stack.continuous_deployment?
