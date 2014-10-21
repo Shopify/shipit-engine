@@ -25,16 +25,23 @@ class WebhooksControllerTest < ActionController::TestCase
     post :push, { stack_id: @stack.id }.merge(params)
   end
 
-  test ":state trigger a RefreshStatusesJob for the specific commit" do
+  test ":state create a Status for the specific commit" do
     Webhook.any_instance.expects(:verify_signature).returns(true)
+    request.headers['X-Github-Event'] = 'status'
+
+    status_payload = payload(:status)
     commit = commits(:first)
 
-    Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id, commit_id: commit.id)
+    assert_difference 'commit.statuses.count', +1 do
+      post :state, { stack_id: @stack.id }.merge(status_payload)
+    end
 
-    request.headers['X-Github-Event'] = 'status'
-    params = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output",
-      "description" => "This is a description", "context" => "Context"}
-    post :state, { stack_id: @stack.id }.merge(params)
+    status = commit.statuses.last
+    assert_equal status_payload['target_url'], status.target_url
+    assert_equal status_payload['state'], status.state
+    assert_equal status_payload['description'], status.description
+    assert_equal status_payload['context'], status.context
+    assert_equal status_payload['created_at'], status.created_at.iso8601
   end
 
   test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do

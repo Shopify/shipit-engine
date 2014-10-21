@@ -15,8 +15,8 @@ class WebhooksController < ActionController::Base
   end
 
   def state
-    commit = stack.commits.find_by_sha!(params['sha'])
-    Resque.enqueue(RefreshStatusesJob, stack_id: commit.stack_id, commit_id: commit.id)
+    commit = stack.commits.find_by_sha!(params[:sha])
+    commit.statuses.create!(params.permit(:state, :description, :target_url, :context, :created_at))
     head :ok
   end
 
