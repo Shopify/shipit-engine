@@ -1,15 +1,58 @@
-jQuery ($) ->
+class CommitList
+  @insert: (commit) ->
+    commit.getContent (content) =>
+      if previousCommitId = @findPreviousCommitId(commit.id))
+        $("#commit-#{previousCommitId}").before(content)
+      else
+        $("ul.commit-lst").append(content)
+
+  @findPreviousCommitId: (id) ->
+    $commits = $(".commit-lst li.commit")
+    ids = $commits.map (_, node) ->
+      nodeId = parseInt(node.id.match /\d+/)
+      nodeId if nodeId < id
+    Math.max(ids...)
+
+
+class Commit
   MAX_RETRY = 4
 
-  $timeago = (html) ->
+  @fromJSON: (message) ->
+    json = JSON.parse(message)
+    new this(json)
+
+  constructor: ({@id, @url}) ->
+    @$element = $("#commit-#{@id}")
+
+    #@previous = new Commit(findPreviousCommitId(id))
+
+  update: () ->
+    @getContent (content) =>
+      @$element.replaceWith(content)
+
+  remove: ->
+    @$element.remove()
+
+  getContent: (callback) ->
+    @loadFragment (rawContent) => callback(@$timeago(rawContent))
+
+  $timeago: (html) ->
     $element = $(html)
     $element.find('time[data-time-ago]').timeago()
     $element
 
-  retry = (message, callback, retryCount=0) ->
+  loadFragment: (callback, retryCount=0) ->
+    jQuery.ajax(@url, accepts: 'text/partial+html').success(callback).error =>
+      @retry(callback, retryCount)
+
+  retry: (callback, retryCount=0) ->
     retryCount += 1
     return if retryCount >= MAX_RETRY
-    setTimeout((-> loadFragment(message, callback, retryCount)), 1000 * retryCount)
+    setTimeout((=> @loadFragment(callback, retryCount)), 1000 * retryCount)
+
+
+jQuery ($) ->
+
 
   displayConfigureCiMessage = ->
     commits = $('.commit')
@@ -19,10 +62,7 @@ jQuery ($) ->
 
   displayConfigureCiMessage()
 
-  loadFragment = (message, callback, retryCount=0) ->
-    json = JSON.parse(message.data)
-    success = (response) -> callback(json.id, response)
-    jQuery.ajax(json.url, accepts: 'text/partial+html').success(success).error(-> retry(message, callback, retryCount))
+
 
   updateStackStatus = (message) ->
     json = JSON.parse(message.data)
@@ -32,29 +72,18 @@ jQuery ($) ->
     $("#commit-#{id}").remove()
 
   onCommitUpdate = (message) ->
-    loadFragment message, (id, commit) ->
-      $("#commit-#{id}").replaceWith($timeago(commit))
+    Commit.fromJSON(message.data).update()
     displayConfigureCiMessage()
 
   onCommitCreate = (message) ->
-    loadFragment message, (id, commit) ->
-      if (previousCommitId = findPreviousCommitId(id)) > 0
-        $("#commit-#{previousCommitId}").before($timeago(commit))
-      else
-        $("ul.commit-lst").append($timeago(commit))
+    CommitList.insert(Commit.fromJSON(message.data))
+
     displayConfigureCiMessage()
 
-  findPreviousCommitId = (id) ->
-    $commits = $(".commit-lst li.commit")
-    ids = $commits.map (_, node) ->
-      nodeId = parseInt(node.id.match /\d+/)
-      nodeId if nodeId < id
 
-    if ids.length > 0 then Math.max(ids...) else 0
 
   onCommitRemove = (message) ->
-    json = JSON.parse(message.data)
-    removeCommit id
+    Commit.fromJSON(message.data).remove()
     displayConfigureCiMessage()
 
   onDeploySuccess = (message) ->
