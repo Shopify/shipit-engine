@@ -10,7 +10,7 @@ class DeployCommands < Commands
 
   def install_dependencies
     env = self.env.merge(deploy_spec.machine_env)
-    deploy_spec.dependencies_steps.map do |command_line|
+    deploy_spec.dependencies_steps!.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end
   end
@@ -26,7 +26,7 @@ class DeployCommands < Commands
       'BUNDLE_PATH' => BUNDLE_PATH,
     ).merge(deploy_spec.machine_env)
 
-    steps = @deploy.rollback? ? deploy_spec.rollback_steps : deploy_spec.deploy_steps
+    steps = @deploy.rollback? ? deploy_spec.rollback_steps! : deploy_spec.deploy_steps!
     steps.map do |command_line|
       Command.new(command_line, env: env, chdir: @deploy.working_directory)
     end

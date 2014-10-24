@@ -26,6 +26,12 @@ class StackCommands < Commands
     end
   end
 
+  def build_cacheable_deploy_spec
+    with_temporary_working_directory do |dir|
+      DeploySpec::FileSystem.new(dir, @stack.environment).cacheable
+    end
+  end
+
   def with_temporary_working_directory
     fetch.run!
     git('checkout', '--force', "origin/#{@stack.branch}", env: env, chdir: @stack.git_path).run!

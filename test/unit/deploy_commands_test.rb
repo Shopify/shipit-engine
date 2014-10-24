@@ -6,9 +6,9 @@ class DeployCommandsTest < ActiveSupport::TestCase
     @deploy = deploys(:shipit_pending)
     @commands = DeployCommands.new(@deploy)
     @deploy_spec = stub(
-      dependencies_steps: ['bundle install --some-args'],
-      deploy_steps: ['bundle exec cap $ENVIRONMENT deploy'],
-      rollback_steps: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
+      dependencies_steps!: ['bundle install --some-args'],
+      deploy_steps!: ['bundle exec cap $ENVIRONMENT deploy'],
+      rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
       machine_env: {'GLOBAL' => '1'},
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)

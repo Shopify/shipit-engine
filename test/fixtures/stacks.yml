@@ -6,5 +6,4 @@ shipit:
   deploys_count: 3
   undeployed_commits_count: 3
   checklist: "foo\n\nbar\n\nbaz"
-  supports_fetch_deployed_revision: true
-  supports_rollback: true
+  cached_deploy_spec: '{"machine":{"environment":{}},"dependencies":{"override":[]},"deploy":{"override":null},"rollback":{"override":["echo \"Rollback!\""]},"fetch":["echo \"42\""]}'

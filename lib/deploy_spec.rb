@@ -3,9 +3,33 @@ require 'pathname'
 class DeploySpec
   BUNDLE_PATH = File.join(Rails.root, 'data', 'bundler')
   Error = Class.new(StandardError)
+  SPEC_HINTS = {
+    deploy: 'Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml',
+    rollback: 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml',
+    fetch: 'Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml',
+  }
+
+  class << self
+
+    def load(json)
+      if json.present?
+        new(JSON.parse(json))
+      end
+    end
+
+    def dump(spec)
+      return unless spec
+      JSON.dump(spec.cacheable.config)
+    end
+
+  end
 
   def initialize(config)
     @config = config
+  end
+
+  def cacheable
+    self
   end
 
   def config(*keys)
@@ -13,17 +37,11 @@ class DeploySpec
   end
 
   def supports_fetch_deployed_revision?
-    fetch_deployed_revision_steps
-    true
-  rescue DeploySpec::Error
-    false
+    fetch_deployed_revision_steps.present?
   end
 
   def supports_rollback?
-    rollback_steps
-    true
-  rescue DeploySpec::Error
-    false
+    rollback_steps.present?
   end
 
   def machine_env
@@ -33,47 +51,47 @@ class DeploySpec
   def dependencies_steps
     config('dependencies', 'override') || discover_dependencies_steps || []
   end
+  alias_method :dependencies_steps!, :dependencies_steps
 
   def deploy_steps
-    config('deploy', 'override') || discover_deploy_steps || cant_detect_deploy_steps
+    config('deploy', 'override') || discover_deploy_steps
+  end
+
+  def deploy_steps!
+    deploy_steps || cant_detect!(:deploy)
   end
 
   def rollback_steps
-    config('rollback', 'override') || discover_rollback_steps || cant_detect_rollback_steps
+    config('rollback', 'override') || discover_rollback_steps
+  end
+
+  def rollback_steps!
+    rollback_steps || cant_detect!(:rollback)
   end
 
   def fetch_deployed_revision_steps
-    config('fetch') || discover_fetch_deployed_revision_steps || cant_detect_fetch_deployed_revision_steps
+    config('fetch') || discover_fetch_deployed_revision_steps
+  end
+
+  def fetch_deployed_revision_steps!
+    fetch_deployed_revision_steps || cant_detect!(:fetch)
   end
 
   private
 
   def discover_dependencies_steps
-    nil
   end
 
   def discover_deploy_steps
-    nil
   end
 
   def discover_rollback_steps
-    nil
   end
 
   def discover_fetch_deployed_revision_steps
-    nil
   end
 
-  def cant_detect_deploy_steps
-    raise DeploySpec::Error, 'Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml'
+  def cant_detect!(type)
+    raise DeploySpec::Error.new(SPEC_HINTS[type])
   end
-
-  def cant_detect_rollback_steps
-    raise DeploySpec::Error, 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml'
-  end
-
-  def cant_detect_fetch_deployed_revision_steps
-    raise DeploySpec::Error, 'Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml'
-  end
-
 end
