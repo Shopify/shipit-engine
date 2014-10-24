@@ -3,7 +3,7 @@ require 'test_helper'
 class DeploySpecTest < ActiveSupport::TestCase
 
   setup do
-    @spec = DeploySpec.new('/tmp/', 'env')
+    @spec = DeploySpec::FileSystem.new('/tmp/', 'env')
     @spec.stubs(:load_config).returns({})
   end
 
@@ -129,8 +129,8 @@ class DeploySpecTest < ActiveSupport::TestCase
     config = {}
     config.expects(:exist?).returns(true)
     config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
-    spec = DeploySpec.new('.', 'staging')
-    spec.expects(:shipit_env_yml).twice.returns(config)
+    spec = DeploySpec::FileSystem.new('.', 'staging')
+    spec.expects(:file).with('shipit.staging.yml').returns(config)
     assert_equal %w(foo bar baz), spec.dependencies_steps
   end
 
@@ -142,14 +142,14 @@ class DeploySpecTest < ActiveSupport::TestCase
     config.expects(:exist?).returns(true)
     config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
 
-    spec = DeploySpec.new('.', 'staging')
-    spec.expects(:shipit_env_yml).once.returns(not_config)
-    spec.expects(:shipit_yml).twice.returns(config)
+    spec = DeploySpec::FileSystem.new('.', 'staging')
+    spec.expects(:file).with('shipit.staging.yml').returns(not_config)
+    spec.expects(:file).with('shipit.yml').returns(config)
     assert_equal %w(foo bar baz), spec.dependencies_steps
   end
 
   test '#gemspec gives the path of the repo gemspec if present' do
-    spec = DeploySpec.new('foobar/', 'production')
+    spec = DeploySpec::FileSystem.new('foobar/', 'production')
     Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])
     assert_equal 'foobar/foobar.gemspec', spec.gemspec
   end

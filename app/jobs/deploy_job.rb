@@ -50,7 +50,7 @@ class DeployJob < BackgroundJob
   end
 
   def record_deploy_spec_abilities
-    spec = DeploySpec.new(@deploy.working_directory, @deploy.stack.environment)
+    spec = DeploySpec::FileSystem.new(@deploy.working_directory, @deploy.stack.environment)
 
     @deploy.stack.update(
       supports_rollback: spec.supports_rollback?,

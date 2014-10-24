@@ -1,17 +1,14 @@
 require 'pathname'
 
 class DeploySpec
-  BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
-  DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug)
+  BUNDLE_PATH = File.join(Rails.root, 'data', 'bundler')
   Error = Class.new(StandardError)
 
-  def initialize(app_dir, env)
-    @app_dir = Pathname(app_dir)
-    @env = env
+  def initialize(config)
+    @config = config
   end
 
   def config(*keys)
-    @config ||= load_config
     keys.flatten.reduce(@config) { |h, k| h[k] if h.respond_to?(:[]) }
   end
 
@@ -34,82 +31,37 @@ class DeploySpec
   end
 
   def dependencies_steps
-    config('dependencies', 'override') || discover_bundler || []
+    config('dependencies', 'override') || discover_dependencies_steps || []
   end
 
   def deploy_steps
-    config('deploy', 'override') || discover_capistrano || discover_gem || cant_detect_deploy_steps
+    config('deploy', 'override') || discover_deploy_steps || cant_detect_deploy_steps
   end
 
   def rollback_steps
-    config('rollback', 'override') || discover_capistrano_rollback || cant_detect_rollback_steps
+    config('rollback', 'override') || discover_rollback_steps || cant_detect_rollback_steps
   end
 
   def fetch_deployed_revision_steps
-    config('fetch') || cant_detect_fetch_deployed_revision_steps
+    config('fetch') || discover_fetch_deployed_revision_steps || cant_detect_fetch_deployed_revision_steps
   end
 
-  def discover_gem
-    publish_gem if gem?
+  private
+
+  def discover_dependencies_steps
+    nil
   end
 
-  def publish_gem
-    ["assert-gem-version-tag #{gemspec}", 'bundle exec rake release']
+  def discover_deploy_steps
+    nil
   end
 
-  def discover_bundler
-    bundle_install if bundler?
+  def discover_rollback_steps
+    nil
   end
 
-  def bundle_install
-    bundle = %(bundle check --path=#{BUNDLE_PATH} || bundle install #{frozen_flag} --path=#{BUNDLE_PATH} --retry=2)
-    bundle += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
-    [bundle]
-  end
-
-  def bundler_without
-    config('dependencies', 'bundler', 'without') || (gem? ? [] : DEFAULT_BUNDLER_WITHOUT)
-  end
-
-  def discover_capistrano
-    [cap('deploy')] if capistrano?
-  end
-
-  def discover_capistrano_rollback
-    [cap('deploy:rollback')] if capistrano?
-  end
-
-  def gem?
-    !!gemspec
-  end
-
-  def gemspec
-    Dir[@app_dir.join('*.gemspec').to_s].first
-  end
-
-  def cap(command)
-    bundle_exec("cap $ENVIRONMENT #{command}")
-  end
-
-  def bundle_exec(command)
-    return command unless bundler?
-    "bundle exec #{command}"
-  end
-
-  def capistrano?
-    @app_dir.join('Capfile').exist?
-  end
-
-  def bundler?
-    @app_dir.join('Gemfile').exist?
-  end
-
-  def has_gemfile_lock?
-    @app_dir.join('Gemfile.lock').exist?
-  end
-
-  def frozen_flag
-    '--frozen' if has_gemfile_lock?
+  def discover_fetch_deployed_revision_steps
+    nil
   end
 
   def cant_detect_deploy_steps
@@ -122,24 +74,6 @@ class DeploySpec
 
   def cant_detect_fetch_deployed_revision_steps
     raise DeploySpec::Error, 'Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml'
-  end
-
-  def load_config
-    if shipit_env_yml.exist?
-      SafeYAML.load(shipit_env_yml.read)
-    elsif shipit_yml.exist?
-      SafeYAML.load(shipit_yml.read)
-    else
-      {}
-    end
-  end
-
-  def shipit_env_yml
-    @app_dir.join("shipit.#{@env}.yml")
-  end
-
-  def shipit_yml
-    @app_dir.join('shipit.yml')
   end
 
 end
