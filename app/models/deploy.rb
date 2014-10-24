@@ -45,6 +45,10 @@ class Deploy < ActiveRecord::Base
   before_create :denormalize_commit_stats
   after_create :broadcast_deploy
 
+  def spec
+    @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
+  end
+
   def build_rollback(user=nil)
     Rollback.new(
       user_id: user.try!(:id),

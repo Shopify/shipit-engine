@@ -18,7 +18,7 @@ class DeployJob < BackgroundJob
     capture commands.clone
     capture commands.checkout(@deploy.until_commit)
 
-    record_deploy_spec_abilities
+    record_deploy_spec!
 
     Bundler.with_clean_env do
       capture_all commands.install_dependencies
@@ -49,13 +49,8 @@ class DeployJob < BackgroundJob
     @deploy.write("\n")
   end
 
-  def record_deploy_spec_abilities
-    spec = DeploySpec::FileSystem.new(@deploy.working_directory, @deploy.stack.environment)
-
-    @deploy.stack.update(
-      supports_rollback: spec.supports_rollback?,
-      supports_fetch_deployed_revision: spec.supports_fetch_deployed_revision?
-    )
+  def record_deploy_spec!
+    @deploy.stack.update(cached_deploy_spec: @deploy.spec)
   end
 
 end

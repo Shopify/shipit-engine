@@ -41,9 +41,9 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal :bundle_install, @spec.dependencies_steps
   end
 
-  test '#fetch_deployed_revision_steps is unknown by default' do
+  test '#fetch_deployed_revision_steps! is unknown by default' do
     assert_raises DeploySpec::Error do
-      @spec.fetch_deployed_revision_steps
+      @spec.fetch_deployed_revision_steps!
     end
   end
 
@@ -102,10 +102,10 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
   end
 
-  test '#deploy_steps raise a DeploySpec::Error if it dont know how to deploy the app' do
+  test '#deploy_steps raise a DeploySpec::Error! if it dont know how to deploy the app' do
     @spec.expects(:capistrano?).returns(false)
     assert_raise DeploySpec::Error do
-      @spec.deploy_steps
+      @spec.deploy_steps!
     end
   end
 
@@ -168,6 +168,19 @@ class DeploySpecTest < ActiveSupport::TestCase
     @spec.stubs(:gemspec).returns('/tmp/shipit.gemspec')
     refute @spec.capistrano?
     assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
+  end
+
+  test '#cacheable returns a DeploySpec instance that can be serialized' do
+    assert_instance_of DeploySpec::FileSystem, @spec
+    assert_instance_of DeploySpec, @spec.cacheable
+    config = {
+      'machine' => {'environment' => {}},
+      'dependencies' => {'override' => []},
+      'deploy' => {'override' => nil},
+      'rollback' => {'override' => nil},
+      'fetch' => nil
+    }
+    assert_equal config, @spec.cacheable.config
   end
 
 end

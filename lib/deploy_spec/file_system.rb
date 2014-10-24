@@ -9,7 +9,21 @@ class DeploySpec
       @env = env
     end
 
+    def cacheable
+      DeploySpec.new(cacheable_config)
+    end
+
     private
+
+    def cacheable_config
+      (config || {}).deep_merge(
+        'machine' => {'environment' => machine_env},
+        'dependencies' => {'override' => dependencies_steps},
+        'deploy' => {'override' => deploy_steps},
+        'rollback' => {'override' => rollback_steps},
+        'fetch' => fetch_deployed_revision_steps,
+      )
+    end
 
     def config(*)
       @config ||= load_config

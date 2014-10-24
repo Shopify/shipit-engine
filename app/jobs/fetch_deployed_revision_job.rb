@@ -12,9 +12,7 @@ class FetchDeployedRevisionJob < BackgroundJob
 
     begin
       sha = commands.fetch_deployed_revision
-    rescue Command::Error, DeploySpec::Error
-      stack.update!(supports_fetch_deployed_revision: false)
-      raise
+    rescue DeploySpec::Error
     end
 
     return unless sha.present?
