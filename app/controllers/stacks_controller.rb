@@ -8,7 +8,7 @@ class StacksController < ApplicationController
   def index
     @user_stacks = current_user.stacks_contributed_to
 
-    @stacks = Stack.order('(undeployed_commits_count > 0) desc', deploys_count: :desc)
+    @stacks = Stack.order('(undeployed_commits_count > 0) desc', tasks_count: :desc)
   end
 
   def show
@@ -72,6 +72,6 @@ class StacksController < ApplicationController
   end
 
   def update_params
-    params.require(:stack).permit(:checklist, :deploy_url, :deploys_count, :lock_reason, :continuous_deployment, :reminder_url)
+    params.require(:stack).permit(:checklist, :deploy_url, :lock_reason, :continuous_deployment, :reminder_url)
   end
 end

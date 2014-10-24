@@ -3,7 +3,7 @@ shipit:
   repo_name: "shipit2"
   environment: "production"
   branch: master
-  deploys_count: 3
+  tasks_count: 3
   undeployed_commits_count: 3
   checklist: "foo\n\nbar\n\nbaz"
   cached_deploy_spec: '{"machine":{"environment":{}},"dependencies":{"override":[]},"deploy":{"override":null},"rollback":{"override":["echo \"Rollback!\""]},"fetch":["echo \"42\""]}'

@@ -1,25 +1,25 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 shipit:
-  deploy: shipit
+  task: shipit
   text: "deploy deploy deploy, faiiil"
 
 shipit2:
-  deploy: shipit
+  task: shipit
   text: "Migrating some stuff"
 
 shipit3:
-  deploy: shipit
+  task: shipit
   text: "Compiling all the sass"
 
 shipit4:
-  deploy: shipit
+  task: shipit
   text: "Making ops cry"
 
 shipit5:
-  deploy: shipit
+  task: shipit
   text: "sudo rm -rf /"
 
 shipit6:
-  deploy: shipit
+  task: shipit
   text: "sudo chmod -R 777 /"

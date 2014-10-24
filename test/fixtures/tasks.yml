@@ -1,6 +1,7 @@
 shipit:
   since_commit_id: 1 # first
   until_commit_id: 2 # second
+  type: Deploy
   stack: shipit
   status: success
   additions: 1
@@ -9,6 +10,7 @@ shipit:
 shipit2:
   since_commit_id: 2 # second
   until_commit_id: 3 # third
+  type: Deploy
   stack: shipit
   status: failed
   additions: 12
@@ -17,6 +19,7 @@ shipit2:
 shipit_pending:
   since_commit_id: 2 # second
   until_commit_id: 4 # fourth
+  type: Deploy
   stack: shipit
   status: pending
   additions: 432
@@ -25,6 +28,7 @@ shipit_pending:
 shipit_running:
   since_commit_id: 3
   until_commit_id: 4
+  type: Deploy
   stack: shipit
   status: running
   additions: 420
@@ -33,6 +37,7 @@ shipit_running:
 shipit_complete:
   since_commit_id: 3
   until_commit_id: 4
+  type: Deploy
   stack: shipit
   status: complete
   additions: 420

@@ -3,7 +3,7 @@ require 'test_helper'
 class OutputChunkTest < ActiveSupport::TestCase
   def setup
     @deploy = deploys(:shipit)
-    @chunks = 3.times.map { OutputChunk.create!(text: 'bla', deploy: @deploy) }
+    @chunks = 3.times.map { OutputChunk.create!(text: 'bla', task: @deploy) }
   end
 
   test "tail" do
