@@ -77,6 +77,14 @@ class DeploySpec
     fetch_deployed_revision_steps || cant_detect!(:fetch)
   end
 
+  def task_definitions
+    (config('tasks') || {}).map { |name, definition| TaskDefinition.new(name, definition) }
+  end
+
+  def find_task_definition(id)
+    TaskDefinition.new(id, config('tasks', id) || task_not_found!(id))
+  end
+
   private
 
   def discover_dependencies_steps
@@ -89,6 +97,10 @@ class DeploySpec
   end
 
   def discover_fetch_deployed_revision_steps
+  end
+
+  def task_not_found!(id)
+    raise TaskDefinition::NotFound.new("No definition for task #{id.inspect}")
   end
 
   def cant_detect!(type)

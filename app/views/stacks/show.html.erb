@@ -1,3 +1,15 @@
+<% unless @stack.task_definitions.empty? %>
+  <% content_for :inner_sidebar do %>
+    <div class="stack-actions">
+      <ul>
+        <% @stack.task_definitions.each do |definition| %>
+          <%= link_to definition.action, new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn trigger-deploy) %>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
+
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <section>
@@ -32,6 +44,6 @@
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="deploy-lst"><%= render partial: "deploys/deploy", collection: @deploys %></ul>
+    <ul class="deploy-lst"><%= render @tasks %></ul>
   </section>
 </div>

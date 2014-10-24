@@ -23,7 +23,7 @@ class Stack < ActiveRecord::Base
   scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
 
   serialize :cached_deploy_spec, DeploySpec
-  delegate :supports_rollback?, :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
+  delegate :find_task_definition, :supports_rollback?, :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
 
   def self.refresh_deployed_revisions
     find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
@@ -35,6 +35,18 @@ class Stack < ActiveRecord::Base
 
   def undeployed_commits?
     undeployed_commits_count > 0
+  end
+
+  def trigger_task(definition_id, user)
+    commit = last_deployed_commit
+    task = tasks.create(
+      user_id: user.id,
+      definition: find_task_definition(definition_id),
+      until_commit_id: commit.id,
+      since_commit_id: commit.id,
+    )
+    task.enqueue
+    task
   end
 
   def trigger_deploy(until_commit, user)
@@ -66,6 +78,10 @@ class Stack < ActiveRecord::Base
       since_commit: recorded_last_deployed_commit,
       status: 'success',
     )
+  end
+
+  def task_definitions
+    cached_deploy_spec.try!(:task_definitions) || []
   end
 
   def head

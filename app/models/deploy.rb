@@ -1,8 +1,6 @@
 require 'fileutils'
 
 class Deploy < Task
-  belongs_to :since_commit, class_name: 'Commit'
-
   state_machines[:status].tap do |status|
     status.after_transition :broadcast_deploy
     status.after_transition to: :success, do: :schedule_continuous_delivery

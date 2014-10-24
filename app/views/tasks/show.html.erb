@@ -1,0 +1,16 @@
+<%= render partial: "stacks/header", locals: { stack: @stack } %>
+
+<span class="deploy-tasks"></span>
+<div class="deploy-banner <%= @task.status %>" data-deploy-status="<%= @task.status %>">
+  <div class="wrapper">
+    <a href="#" class="user main-user disabled"><%= @task.author.name %></a>
+    <span class="deploy-status">
+      executing <%= @task.definition.id %>
+      <%= timeago_tag(@task.created_at, force: true) %> at <%= @task.created_at %>
+    </span>
+  </div>
+</div>
+
+<pre class="nowrap">
+  <code data-next-chunks-url="<%= next_chunks_url(@task) %>"><%= @task.chunk_output %></code>
+</pre>

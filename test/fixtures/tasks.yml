@@ -16,6 +16,22 @@ shipit2:
   additions: 12
   deletions: 64
 
+shipit_restart:
+  since_commit_id: 2 # second
+  until_commit_id: 2 # second
+  type: Task
+  stack: shipit
+  status: success
+  definition: >
+    {
+      "id": "restart",
+      "action": "Restart application",
+      "description": "Restart app and job servers",
+      "steps": [
+        "cap $ENVIRONMENT deploy:restart"
+      ]
+    }
+
 shipit_pending:
   since_commit_id: 2 # second
   until_commit_id: 4 # fourth

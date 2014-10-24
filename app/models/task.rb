@@ -2,7 +2,11 @@ class Task < ActiveRecord::Base
   belongs_to :user
   belongs_to :stack, touch: true, counter_cache: true
   belongs_to :until_commit, class_name: 'Commit'
+  belongs_to :since_commit, class_name: 'Commit'
+
   has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
+
+  serialize :definition, TaskDefinition
 
   scope :success,   -> { where(status: 'success') }
   scope :completed, -> { where(status: %w(success error failed)) }
