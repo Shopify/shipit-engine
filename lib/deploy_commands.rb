@@ -1,51 +1,15 @@
-class DeployCommands < Commands
-  BUNDLE_PATH = File.join(Rails.root, "data", "bundler")
+class DeployCommands < TaskCommands
 
-  delegate :fetch, to: :stack_commands
-
-  def initialize(deploy)
-    @deploy = deploy
-    @stack = deploy.stack
+  def steps
+    deploy_spec.deploy_steps!
   end
 
-  def install_dependencies
-    env = self.env.merge(deploy_spec.machine_env)
-    deploy_spec.dependencies_steps!.map do |command_line|
-      Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end
-  end
-
-  def deploy(commit)
-    normalized_name = ActiveSupport::Inflector.transliterate(@deploy.author.name)
-    env = self.env.merge(
+  def env
+    commit = @task.until_commit
+    super.merge(
       'SHA' => commit.sha,
       'REVISION' => commit.sha,
-      'ENVIRONMENT' => @stack.environment,
-      'USER' => "#{@deploy.author.login} (#{normalized_name}) via Shipit 2",
-      'EMAIL' => @deploy.author.email,
-      'BUNDLE_PATH' => BUNDLE_PATH,
-    ).merge(deploy_spec.machine_env)
-
-    steps = @deploy.rollback? ? deploy_spec.rollback_steps! : deploy_spec.deploy_steps!
-    steps.map do |command_line|
-      Command.new(command_line, env: env, chdir: @deploy.working_directory)
-    end
-  end
-
-  def checkout(commit)
-    git("checkout", "-q", commit.sha, chdir: @deploy.working_directory)
-  end
-
-  def clone
-    git("clone", "--local", @stack.git_path, @deploy.working_directory, chdir: @stack.deploys_path)
-  end
-
-  def deploy_spec
-    @deploy_spec ||= DeploySpec::FileSystem.new(@deploy.working_directory, @stack.environment)
-  end
-
-  def stack_commands
-    @stack_commands = StackCommands.new(@stack)
+    )
   end
 
 end

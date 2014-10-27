@@ -1,6 +1,7 @@
 class Task < ActiveRecord::Base
   belongs_to :user
   belongs_to :stack, touch: true, counter_cache: true
+  belongs_to :until_commit, class_name: 'Commit'
   has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk'
 
   scope :success,   -> { where(status: 'success') }
@@ -31,6 +32,15 @@ class Task < ActiveRecord::Base
     state :failed
     state :success
     state :error
+  end
+
+  def spec
+    @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
+  end
+
+  def enqueue
+    raise "only persisted jobs can be enqueued" unless persisted?
+    Resque.enqueue(PerformTaskJob, task_id: id, stack_id: stack_id)
   end
 
   def rollup_chunks
@@ -71,6 +81,14 @@ class Task < ActiveRecord::Base
     Process.kill('TERM', target_pid)
   rescue Errno::ESRCH
     true
+  end
+
+  def working_directory
+    File.join(stack.deploys_path, id.to_s)
+  end
+
+  def clear_working_directory
+    FileUtils.rm_rf(working_directory)
   end
 
 end

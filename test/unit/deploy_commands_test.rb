@@ -12,6 +12,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
       machine_env: {'GLOBAL' => '1'},
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
+
     StackCommands.stubs(git_version: Gem::Version.new('1.8.4.3'))
   end
 
@@ -72,59 +73,59 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @deploy.working_directory, command.chdir
   end
 
-  test "#deploy calls cap $environment deploy" do
-    commands = @commands.deploy(@deploy.until_commit)
+  test "#perform calls cap $environment deploy" do
+    commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
     assert_equal ['bundle exec cap $ENVIRONMENT deploy'], command.args
   end
 
-  test "#deploy calls cap $environment deploy:rollback for a rollback of a capistrano stack" do
-    @deploy.expects(:rollback?).returns(true)
-    steps = @commands.deploy(@deploy.until_commit)
+  test "#perform calls cap $environment deploy:rollback for a rollback of a capistrano stack" do
+    @commands = Commands.for(@deploy.build_rollback)
+    @commands.stubs(:deploy_spec).returns(@deploy_spec)
+
+    steps = @commands.perform
     assert_equal 1, steps.length
     step = steps.first
     assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], step.args
   end
 
-  test "#deploy calls cap $environment deploy from the working_directory" do
-    commands = @commands.deploy(@deploy.until_commit)
+  test "#perform calls cap $environment deploy from the working_directory" do
+    commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @deploy.working_directory, command.chdir
   end
 
-  test "#deploy calls cap $environment deploy with the SHA in the environment" do
-    commands = @commands.deploy(@deploy.until_commit)
+  test "#perform calls cap $environment deploy with the SHA in the environment" do
+    commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @deploy.until_commit.sha, command.env['SHA']
   end
 
-  test "#deploy transliterates the user name" do
+  test "#perform transliterates the user name" do
     @deploy.user = User.new(login: 'Sirupsen', name: "Simon Hørup Eskildsen")
-    commands = @commands.deploy(@deploy.until_commit)
+    commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
     assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipit 2", command.env['USER']
   end
 
-  test "#deploy calls cap $environment deploy with the ENVIRONMENT in the environment" do
-    commands = @commands.deploy(@deploy.until_commit)
+  test "#perform calls cap $environment deploy with the ENVIRONMENT in the environment" do
+    commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @stack.environment, command.env['ENVIRONMENT']
   end
 
-  test "#deploy merges Shipit.extra_env in ENVIRONMENT" do
+  test "#perform merges Shipit.extra_env in ENVIRONMENT" do
     Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
-    command = @commands.deploy(@deploy.until_commit).first
-    assert_equal 5, command.env["SPECIFIC_CONFIG"]
+    assert_equal 5, @commands.env["SPECIFIC_CONFIG"]
   end
 
-  test "#deploy merges shipit.yml machine_env in ENVIRONMENT" do
-    command = @commands.deploy(@deploy.until_commit).first
-    assert_equal '1', command.env['GLOBAL']
+  test "#perform merges shipit.yml machine_env in ENVIRONMENT" do
+    assert_equal '1', @commands.env['GLOBAL']
   end
 
   test "#install_dependencies calls bundle install" do

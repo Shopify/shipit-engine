@@ -1,5 +1,6 @@
 module ChunksHelper
-  def next_chunks_url
-    tail_stack_deploy_chunks_path(@stack, @deploy, last_id: @deploy.chunks.last) unless @deploy.finished?
+  def next_chunks_url(task)
+    return if task.finished?
+    tail_stack_task_chunks_path(task.stack, task, last_id: task.chunks.last)
   end
 end

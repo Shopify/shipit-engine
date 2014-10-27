@@ -38,16 +38,18 @@ Shipit::Application.routes.draw do
     resources :commits, only: :show
 
     resources :rollbacks, only: %i(create)
+    resources :tasks, only: [] do
+      resources :chunks, only:  %i(index), defaults: {format: :json} do
+        collection do
+          get :tail
+        end
+      end
+    end
 
     resources :deploys, only: %i(new show create) do
       member do
         get :rollback
         post :abort
-      end
-      resources :chunks, only:  %i(index), defaults: {format: :json} do
-        collection do
-          get :tail
-        end
       end
     end
   end

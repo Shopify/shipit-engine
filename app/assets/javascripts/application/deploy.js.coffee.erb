@@ -60,9 +60,9 @@ class @ChunkPoller
     @pollUrl = response.url
     @restoreBrowserScroll =>
       @appendChunks(response.chunks)
-    @updateDeployStatus(response.deploy)
-    if @deployIsFinished(response.deploy)
-      @notifyFinishedDeploy(response.deploy)
+    @updateDeployStatus(response.task)
+    if @deployIsFinished(response.task)
+      @notifyFinishedDeploy(response.task)
     else
       @start()
 

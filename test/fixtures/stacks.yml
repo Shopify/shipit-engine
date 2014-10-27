@@ -6,4 +6,20 @@ shipit:
   tasks_count: 3
   undeployed_commits_count: 3
   checklist: "foo\n\nbar\n\nbaz"
-  cached_deploy_spec: '{"machine":{"environment":{}},"dependencies":{"override":[]},"deploy":{"override":null},"rollback":{"override":["echo \"Rollback!\""]},"fetch":["echo \"42\""]}'
+  cached_deploy_spec: >
+    {
+      "machine": {"environment": {}},
+      "dependencies": {"override": []},
+      "deploy": {"override": null},
+      "rollback": {"override": ["echo 'Rollback!'"]},
+      "fetch": ["echo '42'"],
+      "tasks": {
+        "restart": {
+          "action": "Restart application",
+          "description": "Restart app and job servers",
+          "steps": [
+            "cap $ENVIRONMENT deploy:restart"
+          ]
+        }
+      }
+    }
