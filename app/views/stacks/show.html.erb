@@ -4,7 +4,7 @@
       <ul>
         <% @stack.task_definitions.each do |definition| %>
           <li class="stack-action">
-            <%= link_to definition.action, new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn trigger-deploy) %>
+            <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn trigger-deploy) %>
           </li>
         <% end %>
       </ul>
