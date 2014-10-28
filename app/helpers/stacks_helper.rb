@@ -13,8 +13,16 @@ module StacksHelper
   end
 
   def render_commit_id_link(commit)
-    github_id = commit.pull_request? ? "##{commit.pull_request_id}" : commit.short_sha
-    link_to(github_id, github_change_url(commit), target: '_blank', class: 'number')
+    if commit.pull_request?
+      link_to("##{commit.pull_request_id}", commit.pull_request_url, target: '_blank', class: 'number') +
+      "&nbsp;(#{render_raw_commit_id_link(commit)})".html_safe
+    else
+      render_raw_commit_id_link(commit)
+    end
+  end
+
+  def render_raw_commit_id_link(commit)
+    link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
   end
 
 end
