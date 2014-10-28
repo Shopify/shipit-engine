@@ -22,7 +22,12 @@ class DeploySpec
         'deploy' => {'override' => deploy_steps},
         'rollback' => {'override' => rollback_steps},
         'fetch' => fetch_deployed_revision_steps,
+        'tasks' => cacheable_tasks,
       )
+    end
+
+    def cacheable_tasks
+      (config('tasks') || {}).map { |k, c| [k, coerce_task_definition(c)] }.to_h
     end
 
     def config(*)

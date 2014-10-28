@@ -178,7 +178,8 @@ class DeploySpecTest < ActiveSupport::TestCase
       'dependencies' => {'override' => []},
       'deploy' => {'override' => nil},
       'rollback' => {'override' => nil},
-      'fetch' => nil
+      'fetch' => nil,
+      'tasks' => {},
     }
     assert_equal config, @spec.cacheable.config
   end
@@ -188,6 +189,15 @@ class DeploySpecTest < ActiveSupport::TestCase
     @spec.expects(:bundler?).returns(true).at_least_once
     definition = @spec.find_task_definition('restart')
 
+    assert_equal ['bundle exec foo'], definition.steps
+  end
+
+  test "task definitions prepend bundle exec before serialization" do
+    @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+    @spec.expects(:bundler?).returns(true).at_least_once
+
+    cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
+    definition = cached_spec.find_task_definition('restart')
     assert_equal ['bundle exec foo'], definition.steps
   end
 
