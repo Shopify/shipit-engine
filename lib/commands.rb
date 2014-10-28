@@ -1,6 +1,9 @@
 class Commands
-
   DEFAULT_ENVIRONMENT = {'SHIPIT' => '1'}.freeze
+
+  def self.for(model)
+    "#{model.class.name}Commands".constantize.new(model)
+  end
 
   def self.git_version
     @git_version ||= begin

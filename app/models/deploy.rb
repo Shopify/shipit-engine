@@ -2,7 +2,6 @@ require 'fileutils'
 
 class Deploy < Task
   belongs_to :since_commit, class_name: 'Commit'
-  belongs_to :until_commit, class_name: 'Commit'
 
   state_machines[:status].tap do |status|
     status.after_transition :broadcast_deploy
@@ -12,10 +11,6 @@ class Deploy < Task
 
   before_create :denormalize_commit_stats
   after_create :broadcast_deploy
-
-  def spec
-    @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
-  end
 
   def build_rollback(user=nil)
     Rollback.new(
@@ -63,19 +58,6 @@ class Deploy < Task
     else
       nil
     end
-  end
-
-  def working_directory
-    File.join(stack.deploys_path, id.to_s)
-  end
-
-  def clear_working_directory
-    FileUtils.rm_rf(working_directory)
-  end
-
-  def enqueue
-    raise "only persisted jobs can be enqueued" unless persisted?
-    Resque.enqueue(DeployJob, deploy_id: id, stack_id: stack_id)
   end
 
   private

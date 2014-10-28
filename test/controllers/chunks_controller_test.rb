@@ -10,20 +10,20 @@ class ChunksControllerTest < ActionController::TestCase
   end
 
   test ":index is success" do
-    get :index, stack_id: @stack.to_param, deploy_id: @deploy.id, format: :json
+    get :index, stack_id: @stack.to_param, task_id: @deploy.id, format: :json
     assert_response :success
     assert_equal @response.body, @deploy.chunks.to_json
   end
 
   test ":index with last_id" do
-    get :index, stack_id: @stack.to_param, deploy_id: @deploy.id, last_id: @last_chunk.id, format: :json
+    get :index, stack_id: @stack.to_param, task_id: @deploy.id, last_id: @last_chunk.id, format: :json
     assert_response :success
     assert_equal @response.body, '[]'
   end
 
   test ":tail" do
-    get :tail, stack_id: @stack.to_param, deploy_id: @deploy.id, last_id: @last_chunk.id, format: :json
+    get :tail, stack_id: @stack.to_param, task_id: @deploy.id, last_id: @last_chunk.id, format: :json
     assert_response :success
-    assert_equal JSON.parse(@response.body).keys, ['url', 'deploy', 'chunks']
+    assert_equal JSON.parse(@response.body).keys, ['url', 'task', 'chunks']
   end
 end

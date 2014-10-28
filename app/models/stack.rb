@@ -5,6 +5,7 @@ class Stack < ActiveRecord::Base
   REQUIRED_HOOKS = %i( push status )
 
   has_many :commits
+  has_many :tasks
   has_many :deploys
   has_many :rollbacks
   has_many :webhooks
