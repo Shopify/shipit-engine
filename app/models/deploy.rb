@@ -1,10 +1,10 @@
 require 'fileutils'
 
 class Deploy < Task
-  state_machines[:status].tap do |status|
-    status.after_transition :broadcast_deploy
-    status.after_transition to: :success, do: :schedule_continuous_delivery
-    status.after_transition to: :success, do: :update_undeployed_commits_count
+  state_machine :status do
+    after_transition :broadcast_deploy
+    after_transition to: :success, do: :schedule_continuous_delivery
+    after_transition to: :success, do: :update_undeployed_commits_count
   end
 
   before_create :denormalize_commit_stats
