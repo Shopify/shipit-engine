@@ -11,3 +11,10 @@ dependencies:
 
 fetch:
   - curl --silent https://shipit.shopify.com/status/version
+
+tasks:
+  restart:
+    action: Restart application
+    description: Restart Thin and Resque.
+    steps:
+      - cap $ENVIRONMENT deploy:restart
