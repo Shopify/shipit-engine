@@ -183,4 +183,12 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal config, @spec.cacheable.config
   end
 
+  test "task definitions prepend bundle exec if necessary" do
+    @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+    @spec.expects(:bundler?).returns(true).at_least_once
+    definition = @spec.find_task_definition('restart')
+
+    assert_equal ['bundle exec foo'], definition.steps
+  end
+
 end

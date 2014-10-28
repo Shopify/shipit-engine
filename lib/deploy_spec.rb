@@ -78,14 +78,18 @@ class DeploySpec
   end
 
   def task_definitions
-    (config('tasks') || {}).map { |name, definition| TaskDefinition.new(name, definition) }
+    (config('tasks') || {}).map { |name, definition| TaskDefinition.new(name, coerce_task_definition(definition)) }
   end
 
   def find_task_definition(id)
-    TaskDefinition.new(id, config('tasks', id) || task_not_found!(id))
+    TaskDefinition.new(id, coerce_task_definition(config('tasks', id)) || task_not_found!(id))
   end
 
   private
+
+  def coerce_task_definition(config)
+    config
+  end
 
   def discover_dependencies_steps
   end

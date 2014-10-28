@@ -37,5 +37,12 @@ class DeploySpec
       file('Gemfile.lock').exist?
     end
 
+    def coerce_task_definition(config)
+      return super unless bundler?
+      config['steps'] ||= []
+      config['steps'] = config['steps'].map(&method(:bundle_exec))
+      config
+    end
+
   end
 end
