@@ -28,7 +28,7 @@ class Task < ActiveRecord::Base
     end
 
     event :error do
-      transition running: :error
+      transition all => :error
     end
 
     state :pending
