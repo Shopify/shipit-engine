@@ -35,8 +35,6 @@ Shipit::Application.routes.draw do
   end
 
   scope '/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
-    resources :commits, only: :show
-
     resources :rollbacks, only: %i(create)
     resources :tasks, only: %i(show) do
       collection do

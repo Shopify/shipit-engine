@@ -3,9 +3,7 @@ class Commit < ActiveRecord::Base
   has_many :deploys
   has_many :statuses, -> { order(created_at: :desc) }
 
-  after_create  { broadcast_event('create') }
-  after_destroy { broadcast_event('remove') }
-  after_update  { broadcast_update }
+  after_commit  { broadcast_update }
   after_create { stack.update_undeployed_commits_count }
 
   belongs_to :author, class_name: "User"
@@ -22,6 +20,8 @@ class Commit < ActiveRecord::Base
   }
 
   scope :reachable,  -> { where(detached: false) }
+
+  delegate :broadcast_update, to: :stack
 
   def self.successful
     preload(:statuses).to_a.select(&:success?)
@@ -99,14 +99,6 @@ class Commit < ActiveRecord::Base
     stack.trigger_deploy(self, committer)
   end
 
-  def broadcast_update
-    if detached_changed? && detached?
-      broadcast_event('remove')
-    else
-      broadcast_event('update')
-    end
-  end
-
   private
 
   def significant_status
@@ -123,12 +115,5 @@ class Commit < ActiveRecord::Base
 
   def newer_commit_deployed?
     stack.last_deployed_commit.id > id
-  end
-
-  def broadcast_event(type)
-    url = Rails.application.routes.url_helpers.stack_commit_path(stack, self)
-    payload = {id: id, url: url}.to_json
-    event = Pubsubstub::Event.new(payload, name: "commit.#{type}")
-    Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
   end
 end

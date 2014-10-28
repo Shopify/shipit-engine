@@ -92,7 +92,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to success causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
-    expect_event(deploy, "success")
+    expect_event(deploy)
     deploy.status = 'running'
     deploy.complete!
   end
@@ -100,7 +100,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to failed causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
-    expect_event(deploy, "failed")
+    expect_event(deploy)
     deploy.status = 'running'
     deploy.failure!
   end
@@ -108,7 +108,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to error causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
-    expect_event(deploy, "error")
+    expect_event(deploy)
     deploy.status = 'running'
     deploy.error!
   end
@@ -116,7 +116,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to running causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
-    expect_event(deploy, "running")
+    expect_event(deploy)
     deploy.status = 'pending'
     deploy.run!
   end
@@ -128,7 +128,7 @@ class DeploysTest < ActiveSupport::TestCase
       until_commit: shipit.commits.last
     )
 
-    expect_event(deploy, "pending")
+    expect_event(deploy)
     deploy.save!
   end
 
@@ -231,14 +231,12 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
-  def expect_event(deploy, status)
+  def expect_event(deploy)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
       channel == "stack.#{deploy.stack.id}" &&
-      event.name == "deploy.#{status}" &&
-      data['url'].match(%r{#{deploy.stack.to_param}/deploys/#{deploy.id || "\\d"}}) &&
-      data['commit_ids'] == deploy.commits.pluck(:id)
+      data['url'] == "/#{deploy.stack.to_param}"
     end
   end
 end

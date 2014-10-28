@@ -18,18 +18,20 @@ class StatusTest < ActiveSupport::TestCase
     end
   end
 
-  test "once created a commit update event is broadcasted" do
-    assert_event('update')
+  test "once created a commit broadcasts an update event" do
+    expect_event(@stack)
     @commit.statuses.create!(state: 'success')
   end
 
   private
 
-  def assert_event(type)
+  def expect_event(stack)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
-      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}" && data['url'].match(%r{#{@stack.to_param}/commits/\d+})
+      event.name == 'stack.update' &&
+      channel == "stack.#{stack.id}" &&
+      data['url'] == "/#{stack.to_param}"
     end
   end
 

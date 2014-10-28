@@ -2,13 +2,14 @@ require 'fileutils'
 
 class Deploy < Task
   state_machine :status do
-    after_transition :broadcast_deploy
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
   end
 
   before_create :denormalize_commit_stats
-  after_create :broadcast_deploy
+  after_commit :broadcast_update
+
+  delegate :broadcast_update, to: :stack
 
   def build_rollback(user=nil)
     Rollback.new(
@@ -80,12 +81,5 @@ class Deploy < Task
 
   def update_undeployed_commits_count
     stack.update_undeployed_commits_count(until_commit)
-  end
-
-  def broadcast_deploy
-    url = Rails.application.routes.url_helpers.stack_deploy_path(stack, self)
-    payload = { id: id, url: url, commit_ids: commits.map(&:id), stack_status: stack.status, status: status }.to_json
-    event = Pubsubstub::Event.new(payload, name: "deploy.#{status}")
-    Pubsubstub::RedisPubSub.publish("stack.#{stack_id}", event)
   end
 end

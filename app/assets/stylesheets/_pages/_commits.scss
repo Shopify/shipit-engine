@@ -178,7 +178,7 @@
 
 }
 
-[data-stack-locked='true'] .deploy-action.btn {
+[disabled].deploy-action.btn {
   @include disabled;
   @include failure;
 

@@ -21,19 +21,15 @@
   </div>
 </section>
 
-<div
-  class="wrapper"
-  data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>"
-  data-stack-locked="<%= @stack.locked? %>"
-  data-stack-status="<%= @stack.status %>"
->
-
-  <section class="lock-reason">
-    <div class="wrapper message">
-      <h2>Deploys are locked</h2>
-      <p><%= @stack.lock_reason %></p>
-    </div>
-  </section>
+<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
+  <% if @stack.locked? %>
+    <section class="lock-reason">
+      <div class="wrapper message">
+        <h2>Deploys are locked</h2>
+        <p><%= @stack.lock_reason %></p>
+      </div>
+    </section>
+  <% end %>
 
   <section>
     <header class="section-header">
