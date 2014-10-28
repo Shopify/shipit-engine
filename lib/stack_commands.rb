@@ -19,7 +19,7 @@ class StackCommands < Commands
   def fetch_deployed_revision
     with_temporary_working_directory do |dir|
       spec = DeploySpec::FileSystem.new(dir, @stack.environment)
-      outputs = spec.fetch_deployed_revision_steps.map do |command_line|
+      outputs = spec.fetch_deployed_revision_steps!.map do |command_line|
         Command.new(command_line, env: env, chdir: dir).run!
       end
       outputs.find(&:present?).try(:strip)
