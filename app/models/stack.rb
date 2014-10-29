@@ -185,6 +185,12 @@ class Stack < ActiveRecord::Base
     Resque.enqueue(UndeployedCommitsWebhookJob, stack_id: id)
   end
 
+  def broadcast_update
+    payload = {url: Rails.application.routes.url_helpers.stack_path(self)}.to_json
+    event = Pubsubstub::Event.new(payload, name: "stack.update")
+    Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
+  end
+
   private
 
   def setup_webhooks
@@ -201,12 +207,6 @@ class Stack < ActiveRecord::Base
 
   def clear_local_files
     FileUtils.rm_rf(base_path)
-  end
-
-  def broadcast_update
-    payload = {id: id, locked: locked?, lock_reason: lock_reason}.to_json
-    event = Pubsubstub::Event.new(payload, name: "stack.update")
-    Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
   end
 
   def update_defaults

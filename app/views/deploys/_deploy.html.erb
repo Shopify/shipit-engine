@@ -32,9 +32,10 @@
   </div>
 
   <% if deploy.stack.supports_rollback? %>
-    <a href="#" data-if-stack-status="deploying" data-if-deploy-status="success" class="btn disabled deploy-action"><span>Deploy in progress...</span></a>
-    <%= link_to rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action', data: {'if-stack-status' => 'default', 'if-deploy-status' => 'success'} do %>
-      <span>Rollback</span>
+    <% if deploy.stack.deploying? %>
+      <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
+    <% else %>
+      <%= link_to 'Rollback', rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action' %>
     <% end %>
   <% end %>
 </li>

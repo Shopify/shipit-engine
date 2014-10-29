@@ -32,18 +32,18 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal @stack.commits.all.to_a, @stack.commits.newer_than(nil).to_a
   end
 
-  test "updating to detached broadcasts a 'remove' event" do
-    assert_event('remove')
+  test "updating to detached broadcasts an update event" do
+    expect_event(@stack)
     @commit.update(detached: true)
   end
 
-  test "#destroy broadcasts a 'remove' event" do
-    assert_event('remove')
+  test "#destroy broadcasts an update event" do
+    expect_event(@stack)
     @commit.destroy
   end
 
-  test "updating broadcasts an 'update' event" do
-    assert_event('update')
+  test "updating broadcasts an update event" do
+    expect_event(@stack)
     @commit.update_attributes(message: "toto")
   end
 
@@ -108,8 +108,8 @@ class CommitsTest < ActiveSupport::TestCase
     end
   end
 
-  test "creating broadcasts a 'create' event" do
-    assert_event('create')
+  test "creating broadcasts an update event" do
+    expect_event(@stack)
     walrus = users(:walrus)
     @stack.commits.create(author: walrus,
                           committer: walrus,
@@ -164,11 +164,12 @@ class CommitsTest < ActiveSupport::TestCase
 
   private
 
-  def assert_event(type)
+  def expect_event(stack)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
-      event.name == "commit.#{type}" && channel == "stack.#{@stack.id}" && data['url'].match(%r{#{@stack.to_param}/commits/\d+})
+      channel == "stack.#{stack.id}" &&
+      data['url'] == "/#{stack.to_param}"
     end
   end
 end
