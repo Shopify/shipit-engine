@@ -1,4 +1,5 @@
 require 'open3'
+require 'shellwords'
 require 'fileutils'
 require 'timeout'
 
@@ -18,6 +19,15 @@ class Command
 
   def to_s
     "#{format_env} #{@args.join(' ')}"
+  end
+
+  def interpolate_environment_variables(argument)
+    return argument.map { |a| interpolate_environment_variables(a) } if argument.is_a?(Array)
+
+    argument.gsub(/(\$\w+)/) do |variable|
+      variable.sub!('$', '')
+      Shellwords.escape(@env.fetch(variable) { ENV[variable] })
+    end
   end
 
   def format_env
@@ -56,12 +66,16 @@ class Command
     ENV['PATH'] = old_path
   end
 
+  def interpolated_arguments
+    interpolate_environment_variables(@args)
+  end
+
   def start
     return if @started
     child_in = @out = @subprocess = nil
     FileUtils.mkdir_p(@chdir)
     with_full_path do
-      child_in, @out, @subprocess = Open3.popen2e(@env, *@args, chdir: @chdir)
+      child_in, @out, @subprocess = Open3.popen2e(@env, *interpolated_arguments, chdir: @chdir)
       child_in.close
     end
     @started = true
