@@ -81,9 +81,12 @@ class Task < ActiveRecord::Base
 
   def abort!
     target_pid = pid
-    return unless target_pid.present?
+    return write("Abort: failed, PID unknown\n") unless target_pid.present?
+
+    write("Abort: sending SIGTERM to pid #{target_pid}\n")
     Process.kill('TERM', target_pid)
   rescue Errno::ESRCH
+    write("Abort: PID #{target_pid} ESRCH: No such process\n")
     true
   end
 
