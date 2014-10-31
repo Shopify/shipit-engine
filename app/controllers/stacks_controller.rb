@@ -1,5 +1,5 @@
 class StacksController < ApplicationController
-  before_action :load_stack, only: %i(update destroy settings sync_webhooks sync_commits clear_git_cache refresh_statuses)
+  before_action :load_stack, only: %i(update destroy settings sync_webhooks clear_git_cache refresh)
 
   def new
     @stack = Stack.new
@@ -13,7 +13,9 @@ class StacksController < ApplicationController
 
   def show
     @stack = Stack.from_param(params[:id])
-    return unless stale?(last_modified: @stack.updated_at)
+    if flash.empty?
+      return unless stale?(last_modified: @stack.updated_at)
+    end
 
     @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
     @commits = @stack.commits.reachable.preload(:author, :statuses).order(id: :desc)
@@ -36,18 +38,15 @@ class StacksController < ApplicationController
   def settings
   end
 
+  def refresh
+    Resque.enqueue(RefreshStatusesJob, stack_id: @stack.id)
+    Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
+    flash[:success] = 'Refresh scheduled'
+    redirect_to :back
+  end
+
   def update
     @stack.update(update_params)
-    redirect_to stack_settings_path(@stack)
-  end
-
-  def sync_commits
-    Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
-    redirect_to stack_settings_path(@stack)
-  end
-
-  def refresh_statuses
-    Resque.enqueue(RefreshStatusesJob, stack_id: @stack.id)
     redirect_to stack_settings_path(@stack)
   end
 
