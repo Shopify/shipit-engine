@@ -111,4 +111,14 @@ class StacksControllerTest < ActionController::TestCase
     post :clear_git_cache, id: @stack.to_param
     assert_redirected_to stack_settings_path(@stack)
   end
+
+  test "#fixit queues GithubSyncJob, RefreshStatusesJob, GithubSetupWebhooksJob and ClearGitCacheJob" do
+    Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
+    Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
+    Resque.expects(:enqueue).with(GithubSetupWebhooksJob, stack_id: @stack.id)
+    Resque.expects(:enqueue).with(ClearGitCacheJob, stack_id: @stack.id)
+
+    post :fixit, id: @stack.to_param
+    assert_redirected_to stack_settings_path(@stack)
+  end
 end

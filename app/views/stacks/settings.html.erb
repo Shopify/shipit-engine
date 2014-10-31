@@ -50,6 +50,10 @@
           <td><%= button_to "Clear Git Cache", stack_clear_git_cache_path(@stack), class: "btn", method: "post" %></td>
           <td>Delete the local git mirror in case it's in a bad state.</td>
         </tr>
+        <tr>
+          <td><%= button_to "Fixit!", stack_fixit_path(@stack), class: "btn", method: "post" %></td>
+          <td>Do all of the above. Works every time.</td>
+        </tr>
       </table>
     </div>
 
