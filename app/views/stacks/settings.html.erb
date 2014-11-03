@@ -39,12 +39,8 @@
           <td>Ensure that all required webhooks have been created.</td>
         </tr>
         <tr>
-          <td><%= button_to "Commits", stack_sync_commits_path(@stack), class: "btn", method: "post" %></td>
-          <td>Force synchronization of new commits in case webhooks haven't been triggered correctly.</td>
-        </tr>
-        <tr>
-          <td><%= button_to "Refresh statuses", stack_refresh_statuses_path(@stack), class: "btn", method: "post" %></td>
-          <td>Force synchronization of last 30 commits CI status, in case webhooks have been lost or are slow.</td>
+          <td><%= button_to "Refresh Statuses And Commits", stack_refresh_path(@stack), class: "btn", method: "post" %></td>
+          <td>Force synchronization of new commits and last 30 commits CI status, in case webhooks have been lost or are slow.</td>
         </tr>
         <tr>
           <td><%= button_to "Clear Git Cache", stack_clear_git_cache_path(@stack), class: "btn", method: "post" %></td>

@@ -8,8 +8,9 @@
       <% end %>
     </div>
     <div class="header-accessory">
-      <a href="<%= github_repo_url(stack.repo_owner, stack.repo_name) %>" class="ico-github" data-tooltip="View repo on Github">Github Repo</a>
-      <a href="<%= stack_settings_path(stack) %>" class="ico-settings" data-tooltip="Settings">Settings</a>
+      <%= link_to 'Refresh statuses and commits', stack_refresh_path(@stack), method: 'post', class: 'ico-refresh', data: {tooltip: 'Refresh statuses and commits'} %>
+      <%= link_to 'Github Repo', github_repo_url(stack.repo_owner, stack.repo_name), class: 'ico-github', data: {tooltip: 'View repo on Github'} %>
+      <%= link_to 'Settings', stack_settings_path(stack), class: 'ico-settings', data: {tooltip: 'Settings'} %>
     </div>
   </div>
 </header>

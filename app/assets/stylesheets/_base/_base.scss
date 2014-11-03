@@ -207,6 +207,21 @@ h5 {
   text-indent: -99999px;
 }
 
+.ico-refresh-wrapper {
+  display: inline-block;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.ico-refresh {
+  @extend .ico;
+  background-image: asset-data-url('refresh.svg');
+  background-size: 24px auto;
+  width: 18px; height: 18px;
+  border:none;
+  background-color: transparent;
+}
+
 .ico-github {
   @extend .ico;
   background-image: asset-data-url('github.svg');
@@ -325,4 +340,19 @@ a.disabled {
 
 .hidden {
   display: none;
+}
+
+
+.flash {
+  transform: translateX(-50%);
+  left: 50%;
+  position: fixed;
+  padding: 1em;
+  border-radius: 4px;
+  min-width: 30%;
+  text-align: center;
+}
+
+.flash-success {
+  background-color: #E2F1FF;
 }

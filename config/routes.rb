@@ -28,8 +28,8 @@ Shipit::Application.routes.draw do
     patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
     get :settings, controller: :stacks
-    post :sync_commits, controller: :stacks
-    post :refresh_statuses, controller: :stacks
+    post :refresh, controller: :stacks
+    get :refresh, controller: :stacks # For easier design, sorry :/
     post :sync_webhooks, controller: :stacks
     post :clear_git_cache, controller: :stacks
   end

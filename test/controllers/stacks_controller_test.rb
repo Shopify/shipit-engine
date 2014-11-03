@@ -88,15 +88,12 @@ class StacksControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "#sync_commits queues a GithubSyncJob" do
-    Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
-    post :sync_commits, id: @stack.to_param
-    assert_redirected_to stack_settings_path(@stack)
-  end
-
-  test "#refresh_statuses queues a RefreshStatusesJob" do
+  test "#refresh queues a RefreshStatusesJob and a GithubSyncJob" do
     Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
-    post :refresh_statuses, id: @stack.to_param
+    Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
+    request.env['HTTP_REFERER'] = stack_settings_path(@stack)
+
+    post :refresh, id: @stack.to_param
     assert_redirected_to stack_settings_path(@stack)
   end
 
