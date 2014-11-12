@@ -1,11 +1,4 @@
 jQuery ($) ->
-  MAX_RETRY = 4
-
-  retry = (message, callback, retryCount=0) ->
-    retryCount += 1
-    return if retryCount >= MAX_RETRY
-    setTimeout((-> loadFragment(message, callback, retryCount)), 1000 * retryCount)
-
   displayConfigureCiMessage = ->
     commits = $('.commit')
     ciConfigured = !commits.length || commits.length != commits.find('div.unknown').length
