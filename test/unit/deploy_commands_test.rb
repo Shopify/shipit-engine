@@ -65,7 +65,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
 
   test "#checkout checks out the deployed commit" do
     command = @commands.checkout(@deploy.until_commit)
-    assert_equal ['git', 'checkout', '-q', @deploy.until_commit.sha], command.args
+    assert_equal ['git', 'checkout', @deploy.until_commit.sha], command.args
   end
 
   test "#checkout checks out the deployed commit from the working directory" do

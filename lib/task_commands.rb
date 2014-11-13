@@ -39,7 +39,7 @@ class TaskCommands < Commands
   end
 
   def checkout(commit)
-    git('checkout', '-q', commit.sha, chdir: @task.working_directory)
+    git('checkout', commit.sha, chdir: @task.working_directory)
   end
 
   def clone
