@@ -56,7 +56,7 @@ class Task < ActiveRecord::Base
   end
 
   def chunk_output
-    chunks.pluck(:text).join("\n")
+    chunks.pluck(:text).join
   end
 
   def rollback?
