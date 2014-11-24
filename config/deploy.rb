@@ -60,7 +60,9 @@ namespace :deploy do
     on roles(:db) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute 'whenever', '--write-crontab'
+          as 'shipit' do
+            execute 'whenever', '--update-crontab'
+          end
         end
       end
     end
