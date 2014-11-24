@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class DeploySpecTest < ActiveSupport::TestCase
-
   setup do
     @spec = DeploySpec::FileSystem.new('/tmp/', 'env')
     @spec.stubs(:load_config).returns({})
@@ -200,5 +199,4 @@ class DeploySpecTest < ActiveSupport::TestCase
     definition = cached_spec.find_task_definition('restart')
     assert_equal ['bundle exec foo'], definition.steps
   end
-
 end

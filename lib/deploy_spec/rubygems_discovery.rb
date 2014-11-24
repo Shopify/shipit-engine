@@ -1,6 +1,5 @@
 class DeploySpec
   module RubygemsDiscovery
-
     def discover_deploy_steps
       discover_gem || super
     end
@@ -20,6 +19,5 @@ class DeploySpec
     def publish_gem
       ["assert-gem-version-tag #{gemspec}", 'bundle exec rake release']
     end
-
   end
 end

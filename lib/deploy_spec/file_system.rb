@@ -46,6 +46,5 @@ class DeploySpec
     def file(path)
       @app_dir.join(path)
     end
-
   end
 end

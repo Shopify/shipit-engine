@@ -1,5 +1,4 @@
 module StacksHelper
-
   def github_change_url(commit)
     commit.pull_request_url || github_commit_url(commit)
   end
@@ -24,5 +23,4 @@ module StacksHelper
   def render_raw_commit_id_link(commit)
     link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
   end
-
 end

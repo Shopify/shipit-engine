@@ -2,7 +2,6 @@ require 'pathname'
 require 'fileutils'
 
 class StackCommands < Commands
-
   def initialize(stack)
     @stack = stack
   end
@@ -49,5 +48,4 @@ class StackCommands < Commands
   def create_directories
     FileUtils.mkdir_p(@stack.deploys_path)
   end
-
 end

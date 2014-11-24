@@ -27,5 +27,4 @@ class FetchDeployedRevisionJobTest < ActiveSupport::TestCase
     Stack.any_instance.expects(:update_deployed_revision).with(@commit.sha)
     @job.perform(stack_id: @stack.id)
   end
-
 end

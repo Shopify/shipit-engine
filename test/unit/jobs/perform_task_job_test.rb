@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class PerformTaskJobTest < ActiveSupport::TestCase
-
   setup do
     @job = PerformTaskJob.new
     @deploy = deploys(:shipit_pending)
@@ -100,5 +99,4 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     assert @stack.supports_rollback?
     assert @stack.supports_fetch_deployed_revision?
   end
-
 end

@@ -8,5 +8,4 @@ class GitMirrorUpdateJob < BackgroundJob
     commands = StackCommands.new(stack)
     commands.fetch.run!
   end
-
 end

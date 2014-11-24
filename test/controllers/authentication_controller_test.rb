@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class AuthenticationControllerTest < ActionController::TestCase
-
   setup do
     Shipit.stubs(:authentication).returns('provider' => 'google_oauth2')
   end

@@ -36,5 +36,4 @@ module ApplicationHelper
       stylesheet_link_tag "plugins/#{$1}"
     end
   end
-
 end

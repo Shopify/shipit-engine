@@ -51,5 +51,4 @@ class PerformTaskJob < BackgroundJob
   def record_deploy_spec!
     @task.stack.update(cached_deploy_spec: @task.spec)
   end
-
 end

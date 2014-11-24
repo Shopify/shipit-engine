@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class GithubSyncJobTest < ActiveSupport::TestCase
-
   setup do
     @job = GithubSyncJob.new
     @stack = stacks(:shipit)

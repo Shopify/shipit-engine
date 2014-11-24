@@ -49,5 +49,4 @@ class TaskCommands < Commands
   def stack_commands
     @stack_commands = StackCommands.new(@stack)
   end
-
 end

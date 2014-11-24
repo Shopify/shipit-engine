@@ -1,6 +1,5 @@
 class DeploySpec
   module CapistranoDiscovery
-
     def discover_deploy_steps
       discover_capistrano || super
     end
@@ -24,6 +23,5 @@ class DeploySpec
     def capistrano?
       file('Capfile').exist?
     end
-
   end
 end

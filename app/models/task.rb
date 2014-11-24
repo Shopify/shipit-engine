@@ -97,5 +97,4 @@ class Task < ActiveRecord::Base
   def clear_working_directory
     FileUtils.rm_rf(working_directory)
   end
-
 end

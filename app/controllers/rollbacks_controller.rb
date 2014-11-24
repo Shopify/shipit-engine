@@ -1,5 +1,4 @@
 class RollbacksController < ApplicationController
-
   before_action :load_stack
   before_action :load_deploy
   before_action :ensure_stack_is_not_being_deployed
@@ -28,5 +27,4 @@ class RollbacksController < ApplicationController
   def rollback_params
     params.require(:rollback).permit(:parent_id)
   end
-
 end

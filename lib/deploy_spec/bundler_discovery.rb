@@ -47,6 +47,5 @@ class DeploySpec
       config['steps'] = config['steps'].map(&method(:bundle_exec))
       config
     end
-
   end
 end

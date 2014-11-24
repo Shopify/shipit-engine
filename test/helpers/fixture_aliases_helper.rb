@@ -1,5 +1,4 @@
 module FixtureAliasesHelper
-
   def deploys(*args)
     tasks(*args)
   end
@@ -7,5 +6,4 @@ module FixtureAliasesHelper
   def rollbacks(*args)
     tasks(*args)
   end
-
 end

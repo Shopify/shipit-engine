@@ -22,5 +22,4 @@ class FetchDeployedRevisionJob < BackgroundJob
     rescue ActiveRecord::RecordNotFound
     end
   end
-
 end

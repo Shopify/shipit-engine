@@ -20,5 +20,4 @@ class TasksController < ApplicationController
   def load_stack
     @stack ||= Stack.from_param(params[:stack_id])
   end
-
 end

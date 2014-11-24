@@ -1,5 +1,4 @@
 class DeployCommands < TaskCommands
-
   def steps
     deploy_spec.deploy_steps!
   end
@@ -11,5 +10,4 @@ class DeployCommands < TaskCommands
       'REVISION' => commit.sha,
     )
   end
-
 end

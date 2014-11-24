@@ -17,5 +17,4 @@ class RefreshStatusesJobTest < ActiveSupport::TestCase
 
     @job.perform(stack_id: @stack.id, commit_id: commits(:first).id)
   end
-
 end

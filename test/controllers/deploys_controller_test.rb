@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class DeploysControllerTest < ActionController::TestCase
-
   setup do
     @stack = stacks(:shipit)
     @deploy = deploys(:shipit)
@@ -44,5 +43,4 @@ class DeploysControllerTest < ActionController::TestCase
     post :abort, stack_id: @stack.to_param, id: @deploy.id
     assert_response :success
   end
-
 end

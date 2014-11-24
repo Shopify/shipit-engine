@@ -34,5 +34,4 @@ class StatusTest < ActiveSupport::TestCase
       data['url'] == "/#{stack.to_param}"
     end
   end
-
 end

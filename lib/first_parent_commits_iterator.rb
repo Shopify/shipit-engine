@@ -1,5 +1,4 @@
 class FirstParentCommitsIterator < CommitsIterator
-
   def each
     last_ancestor = nil
     super do |commit|
@@ -13,5 +12,4 @@ class FirstParentCommitsIterator < CommitsIterator
       end
     end
   end
-
 end

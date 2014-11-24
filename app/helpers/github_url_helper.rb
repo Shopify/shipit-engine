@@ -44,5 +44,4 @@ module GithubUrlHelper
     text = "#{deploy.since_commit.short_sha}...#{deploy.until_commit.short_sha}"
     link_to(text, url, class: 'number')
   end
-
 end

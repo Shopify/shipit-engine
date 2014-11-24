@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ChunksControllerTest < ActionController::TestCase
-
   setup do
     @stack = stacks(:shipit)
     @deploy = deploys(:shipit)

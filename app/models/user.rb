@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-
   def self.find_or_create_from_github(github_user)
     find_from_github(github_user) || create_from_github!(github_user)
   end

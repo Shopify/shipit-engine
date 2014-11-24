@@ -40,5 +40,4 @@ class UnknownStatus
   def to_partial_path
     'statuses/status'
   end
-
 end

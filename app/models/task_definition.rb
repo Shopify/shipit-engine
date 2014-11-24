@@ -2,7 +2,6 @@ class TaskDefinition
   NotFound = Class.new(StandardError)
 
   class << self
-
     def load(payload)
       return unless payload.present?
       json = JSON.parse(payload)
@@ -13,7 +12,6 @@ class TaskDefinition
       return unless definition.present?
       JSON.dump(definition.as_json)
     end
-
   end
 
   attr_reader :id, :action, :description, :steps
@@ -33,5 +31,4 @@ class TaskDefinition
       steps: steps,
     }
   end
-
 end

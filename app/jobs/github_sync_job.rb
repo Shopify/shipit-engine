@@ -42,5 +42,4 @@ class GithubSyncJob < BackgroundJob
   def lookup_commit(sha)
     @stack.commits.find_by_sha(sha)
   end
-
 end

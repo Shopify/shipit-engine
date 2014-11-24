@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ConfigTest < ActiveSupport::TestCase
-
   setup do
     @config = Object.new.extend(Shipit::Config)
     @revision_file = Rails.root.join('REVISION')
@@ -20,5 +19,4 @@ class ConfigTest < ActiveSupport::TestCase
     @config.expects(:`).with('git rev-parse HEAD').returns("bar\n")
     assert_equal "bar", @config.revision
   end
-
 end

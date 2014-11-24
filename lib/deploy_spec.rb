@@ -10,7 +10,6 @@ class DeploySpec
   }
 
   class << self
-
     def load(json)
       if json.present?
         new(JSON.parse(json))
@@ -21,7 +20,6 @@ class DeploySpec
       return unless spec
       JSON.dump(spec.cacheable.config)
     end
-
   end
 
   def initialize(config)

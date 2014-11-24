@@ -15,5 +15,4 @@ class RefreshStatusesJob < BackgroundJob
 
     commits.each(&:refresh_statuses)
   end
-
 end

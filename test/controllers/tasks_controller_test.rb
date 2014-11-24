@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class TasksControllerTest < ActionController::TestCase
-
   setup do
     @stack = stacks(:shipit)
     @definition = @stack.find_task_definition('restart')
@@ -26,5 +25,4 @@ class TasksControllerTest < ActionController::TestCase
     get :show, stack_id: @stack, id: @task.id
     assert_response :ok
   end
-
 end

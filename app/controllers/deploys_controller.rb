@@ -49,5 +49,4 @@ class DeploysController < ApplicationController
   def deploy_params
     @deploy_params ||= params.require(:deploy).permit(:until_commit_id)
   end
-
 end

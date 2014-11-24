@@ -19,5 +19,4 @@ class CommitsIterator
       resource = resource.rels[:next].get
     end
   end
-
 end

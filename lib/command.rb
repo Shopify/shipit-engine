@@ -148,5 +148,4 @@ class Command
     yield red("Sending SIG#{sig} to PID #{@subprocess.pid}\n")
     Process.kill(sig, @subprocess.pid)
   end
-
 end

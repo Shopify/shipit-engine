@@ -46,5 +46,4 @@ module Shipit::Config
   def secrets
     Rails.application.secrets
   end
-
 end

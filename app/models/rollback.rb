@@ -1,5 +1,4 @@
 class Rollback < Deploy
-
   def rollback?
     true
   end
@@ -13,5 +12,4 @@ class Rollback < Deploy
   def to_partial_path
     'deploys/deploy'
   end
-
 end

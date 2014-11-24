@@ -1,7 +1,5 @@
 class BackgroundJob
-
   class << self
-
     attr_accessor :timeout
 
     def perform(*args)
@@ -20,7 +18,6 @@ class BackgroundJob
       return yield unless timeout
       Timeout.timeout(timeout, &block)
     end
-
   end
 
   def logger

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class UsersTest < ActiveSupport::TestCase
-
   setup do
     rels = {self: stub(href: 'https://api.github.com/user/george')}
     @github_user = stub(id: 42, name: 'George Abitbol', login: 'george', email: 'george@cyclim.se', rels: rels)
@@ -52,5 +51,4 @@ class UsersTest < ActiveSupport::TestCase
   def fetch_user
     User.find_or_create_from_github(@github_user)
   end
-
 end

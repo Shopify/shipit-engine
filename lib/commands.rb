@@ -22,5 +22,4 @@ class Commands
   def git(*args)
     Command.new("git", *args)
   end
-
 end

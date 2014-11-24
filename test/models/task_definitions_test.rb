@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class TaskDefinitionsTest < ActiveSupport::TestCase
-
   setup do
     @definition = TaskDefinition.new(
       'restart',
@@ -24,5 +23,4 @@ class TaskDefinitionsTest < ActiveSupport::TestCase
     as_json = {id: 'restart', action: 'Restart application', description: 'Restart app and job servers', steps: ['touch tmp/restart']}
     assert_equal(as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json)
   end
-
 end
