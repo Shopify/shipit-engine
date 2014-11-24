@@ -62,7 +62,7 @@ class DeploySpecTest < ActiveSupport::TestCase
       --retry=2
       --without=default:production:development:test:staging:benchmark:debug
     ).gsub(/\s+/, ' ').strip
-    assert_equal command, @spec.bundle_install.first
+    assert_equal command, @spec.bundle_install.last
   end
 
   test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
@@ -76,19 +76,19 @@ class DeploySpecTest < ActiveSupport::TestCase
       --retry=2
       --without=some:custom:groups
     ).gsub(/\s+/, ' ').strip
-    assert_equal command, @spec.bundle_install.first
+    assert_equal command, @spec.bundle_install.last
   end
 
   test '#bundle_install has --frozen option if Gemfile.lock is present' do
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     @spec.stubs(:has_gemfile_lock?).returns(true)
-    assert @spec.bundle_install.first.include?('--frozen')
+    assert @spec.bundle_install.last.include?('--frozen')
   end
 
   test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     @spec.stubs(:has_gemfile_lock?).returns(false)
-    refute @spec.bundle_install.first.include?('--frozen')
+    refute @spec.bundle_install.last.include?('--frozen')
   end
 
   test '#deploy_steps returns `deploy.override` if present' do

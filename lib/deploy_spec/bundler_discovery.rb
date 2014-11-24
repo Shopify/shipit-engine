@@ -18,7 +18,11 @@ class DeploySpec
     def bundle_install
       bundle = %(bundle check --path=#{BUNDLE_PATH} || bundle install #{frozen_flag} --path=#{BUNDLE_PATH} --retry=2)
       bundle += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
-      [bundle]
+      [remove_ruby_version_from_gemfile, bundle]
+    end
+
+    def remove_ruby_version_from_gemfile
+      %q(sed -i '/^ruby\s/d' Gemfile) # Heroku apps often specify a ruby version.
     end
 
     def frozen_flag
