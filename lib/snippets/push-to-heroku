@@ -11,7 +11,7 @@ function yellow() {
 }
 
 HEROKU_APP=$1
-HEROKU_RELEASES=`heroku releases --app $HEROKU_APP 2>/dev/null`
+HEROKU_RELEASES=`heroku releases --app $HEROKU_APP 2>&1`
 GIT_COMMAND=${GIT_COMMAND:="git push git@heroku.com:$HEROKU_APP.git $SHA:master $GIT_FLAGS"}
 
 if [ -z $HEROKU_APP ]; then
@@ -27,6 +27,8 @@ echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | grep '^\(v[0-9]\+\)' >/dev/null
 if [ $? -ne 0 ]; then
   red "Error detecting current heroku release. Message from 'heroku releases':"
   echo "$HEROKU_RELEASES"
+  red "Please contact a heroku collaborator for $HEROKU_APP:"
+  heroku sharing --app $HEROKU_APP
   exit 1;
 fi
 
