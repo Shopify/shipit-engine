@@ -14,6 +14,7 @@ class Stack < ActiveRecord::Base
   after_create :setup_webhooks, :sync_github
   after_destroy :teardown_webhooks, :clear_local_files
   after_commit :broadcast_update, on: :update
+  after_touch :clear_cache
 
   validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
@@ -147,7 +148,8 @@ class Stack < ActiveRecord::Base
   end
 
   def deploying?
-    deploys.active.any?
+    return @deploying if defined?(@deploying)
+    @deploying = deploys.active.any?
   end
 
   def locked?
@@ -192,6 +194,10 @@ class Stack < ActiveRecord::Base
   end
 
   private
+
+  def clear_cache
+    remove_instance_variable(:@deploying) if defined?(@deploying)
+  end
 
   def setup_webhooks
     Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)

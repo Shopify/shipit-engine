@@ -212,6 +212,22 @@ class StacksTest < ActiveSupport::TestCase
     assert @stack.deploying?
   end
 
+  test "#deploying? is memoized" do
+    assert_queries(1) do
+      10.times { @stack.deploying? }
+    end
+  end
+
+  test "#deploying? cache is cleared if a deploy change state" do
+    assert_queries(1) do
+      10.times { @stack.deploying? }
+    end
+    @stack.tasks.where(status: 'running').first.error!
+    assert_queries(1) do
+      10.times { @stack.deploying? }
+    end
+  end
+
   test "#enqueue_undeployed_commits_job enqueues an UndeployedCommitsWebhookJob Resque job for the stack" do
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
     @stack.enqueue_undeployed_commits_job
