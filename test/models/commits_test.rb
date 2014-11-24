@@ -167,8 +167,7 @@ class CommitsTest < ActiveSupport::TestCase
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
-      channel == "stack.#{stack.id}" &&
-      data['url'] == "/#{stack.to_param}"
+      channel == "stack.#{stack.id}" && data['url'] == "/#{stack.to_param}"
     end
   end
 end

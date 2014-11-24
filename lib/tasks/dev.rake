@@ -4,11 +4,8 @@ namespace :dev do
     require 'faker'
     logger = Logger.new(STDOUT)
 
-    deploy = if ENV['DEPLOY']
-      Deploy.find(ENV['DEPLOY'])
-    else
-      Deploy.last
-    end
+    deploy = Deploy.find(ENV['DEPLOY']) if ENV['DEPLOY']
+    deploy ||= Deploy.last
 
     raise "Couldn't find Deploy" unless deploy
 

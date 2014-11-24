@@ -13,11 +13,14 @@ module StacksHelper
 
   def render_commit_id_link(commit)
     if commit.pull_request?
-      link_to("##{commit.pull_request_id}", commit.pull_request_url, target: '_blank', class: 'number') +
-      "&nbsp;(#{render_raw_commit_id_link(commit)})".html_safe
+      (pull_request_link(commit) + "&nbsp;(#{render_raw_commit_id_link(commit)})").html_safe
     else
       render_raw_commit_id_link(commit)
     end
+  end
+
+  def pull_request_link(commit)
+    link_to("##{commit.pull_request_id}", commit.pull_request_url, target: '_blank', class: 'number')
   end
 
   def render_raw_commit_id_link(commit)
