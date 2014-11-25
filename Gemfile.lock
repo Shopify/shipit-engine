@@ -240,7 +240,7 @@ GEM
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     slop (3.6.0)
-    sprockets (2.11.3)
+    sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
@@ -311,10 +311,10 @@ DEPENDENCIES
   sass-rails
   securecompare (~> 1.0)
   simplecov
-  sprockets (~> 2.11.3)
+  sprockets
   state_machine
   test_after_commit
   thin
-  uglifier (>= 1.3.0)
+  uglifier
   validate_url
   whenever
