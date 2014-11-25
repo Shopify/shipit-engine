@@ -61,7 +61,7 @@ namespace :deploy do
       within release_path do
         with rails_env: fetch(:rails_env) do
           as 'shipit' do
-            execute 'whenever', '--update-crontab'
+            execute 'whenever', '--write-crontab'
           end
         end
       end
