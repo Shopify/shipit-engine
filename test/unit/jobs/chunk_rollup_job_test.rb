@@ -2,19 +2,19 @@ require 'test_helper'
 
 class ChunkRollupJobTest < ActiveSupport::TestCase
   setup do
-    @deploy = deploys(:shipit)
+    @task = tasks(:shipit)
     @job = ChunkRollupJob.new
   end
 
   test "#perform combines all the chunks into a new one and sets rolled_up to true" do
-    expected_output = @deploy.chunk_output
+    expected_output = @task.chunk_output
 
-    @job.perform(deploy_id: @deploy.id)
+    @job.perform(task_id: @task.id)
 
-    @deploy.reload
-    assert_equal 1, @deploy.chunks.count
-    assert_equal expected_output, @deploy.chunk_output
-    assert @deploy.rolled_up
+    @task.reload
+    assert_equal 1, @task.chunks.count
+    assert_equal expected_output, @task.chunk_output
+    assert @task.rolled_up
   end
 
   test "#peform ignores non-finished jobs" do
@@ -22,18 +22,18 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
     logger.expects(:error).once
     @job.stubs(logger: logger)
 
-    @deploy.update_attribute(:status, :pending)
+    @task.update_attribute(:status, :pending)
 
-    @job.perform(deploy_id: @deploy.id)
+    @job.perform(task_id: @task.id)
   end
 
-  test "#perform ignores deploys with zero or one chunk" do
+  test "#perform ignores tasks with zero or one chunk" do
     logger = mock
     logger.expects(:error).once
     @job.stubs(logger: logger)
 
-    @deploy.chunks.delete_all
+    @task.chunks.delete_all
 
-    @job.perform(deploy_id: @deploy.id)
+    @job.perform(task_id: @task.id)
   end
 end

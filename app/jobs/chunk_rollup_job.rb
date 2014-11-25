@@ -4,26 +4,26 @@ class ChunkRollupJob < BackgroundJob
   extend BackgroundJob::DeployExclusive
 
   def perform(params)
-    @deploy = Deploy.find(params[:deploy_id])
+    @task = Task.find(params[:task_id])
 
-    unless @deploy.finished?
-      logger.error("Deploy ##{@deploy.id} is not finished (current state: #{@deploy.status}). Aborting.")
+    unless @task.finished?
+      logger.error("Task ##{@task.id} is not finished (current state: #{@task.status}). Aborting.")
       return
     end
 
-    chunk_count = @deploy.chunks.count
+    chunk_count = @task.chunks.count
 
     unless chunk_count > 1
-      logger.error("Deploy ##{@deploy.id} only has #{chunk_count} chunks. Aborting.")
+      logger.error("Task ##{@task.id} only has #{chunk_count} chunks. Aborting.")
       return
     end
 
-    output = @deploy.chunk_output
+    output = @task.chunk_output
 
     ActiveRecord::Base.transaction do
-      @deploy.chunks.delete_all
-      @deploy.write(output)
-      @deploy.update_attribute(:rolled_up, true)
+      @task.chunks.delete_all
+      @task.write(output)
+      @task.update_attribute(:rolled_up, true)
     end
   end
 end

@@ -48,7 +48,7 @@ class Task < ActiveRecord::Base
   end
 
   def rollup_chunks
-    Resque.enqueue(ChunkRollupJob, deploy_id: id)
+    Resque.enqueue(ChunkRollupJob, task_id: id)
   end
 
   def write(text)
