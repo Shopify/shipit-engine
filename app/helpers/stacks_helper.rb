@@ -13,7 +13,7 @@ module StacksHelper
 
   def render_commit_id_link(commit)
     if commit.pull_request?
-      (pull_request_link(commit) + "&nbsp;(#{render_raw_commit_id_link(commit)})").html_safe
+      pull_request_link(commit) + "&nbsp;(#{render_raw_commit_id_link(commit)})".html_safe
     else
       render_raw_commit_id_link(commit)
     end
