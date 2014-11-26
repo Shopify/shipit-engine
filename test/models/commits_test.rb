@@ -60,7 +60,16 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.trigger_deploy(@commit, @commit.committer)
 
     assert_no_difference "Deploy.count" do
-      @commit.statuses.create!(state: 'success')
+      @commit.statuses.create!(state: 'success', context: 'ci/travis')
+    end
+  end
+
+  test "updating state to success skips deploy when stack has CD but the stack is locked" do
+    @stack.deploys.destroy_all
+    @stack.reload.update!(continuous_deployment: true, lock_reason: "Maintenance ongoing")
+
+    assert_no_difference "Deploy.count" do
+      @commit.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
 
