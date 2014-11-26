@@ -228,6 +228,21 @@ class StacksTest < ActiveSupport::TestCase
     end
   end
 
+  test "#deployable? returns true if stack is not locked and is not deploying" do
+    @stack.deploys.destroy_all
+    assert @stack.deployable?
+  end
+
+  test "#deployable? returns false if stack is locked" do
+    @stack.update!(lock_reason: 'Maintenance operation')
+    refute @stack.deployable?
+  end
+
+  test "#deployable? returns false if stack is deploying" do
+    @stack.trigger_deploy(commits(:third), AnonymousUser.new)
+    refute @stack.deployable?
+  end
+
   test "#enqueue_undeployed_commits_job enqueues an UndeployedCommitsWebhookJob Resque job for the stack" do
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
     @stack.enqueue_undeployed_commits_job

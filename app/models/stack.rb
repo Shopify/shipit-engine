@@ -106,6 +106,10 @@ class Stack < ActiveRecord::Base
     end
   end
 
+  def deployable?
+    !locked? && !deploying?
+  end
+
   def repo_name=(name)
     super(name.try(:downcase))
   end

@@ -95,7 +95,8 @@ class Commit < ActiveRecord::Base
 
   def schedule_continuous_delivery
     return unless state == 'success' && stack.continuous_deployment?
-    return if stack_locked? || deploy_in_progress? || newer_commit_deployed?
+    return unless stack.deployable?
+    return if newer_commit_deployed?
     stack.trigger_deploy(self, committer)
   end
 
@@ -107,12 +108,6 @@ class Commit < ActiveRecord::Base
     return statuses.first if statuses.all?(&:success?)
     non_success_statuses = statuses.reject(&:success?)
     non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
-  end
-
-  delegate :locked?, to: :stack, prefix: true
-
-  def deploy_in_progress?
-    stack.deploying?
   end
 
   def newer_commit_deployed?
