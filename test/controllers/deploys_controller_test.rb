@@ -13,14 +13,6 @@ class DeploysControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test ":show renders a partial" do
-    @request.headers['Accept'] = "text/partial+html"
-    get :show, stack_id: @stack.to_param, id: @deploy.id
-
-    assert_select "html", false
-    assert_select "li.deploy"
-  end
-
   test ":new is success" do
     get :new, stack_id: @stack.to_param
     assert_response :success

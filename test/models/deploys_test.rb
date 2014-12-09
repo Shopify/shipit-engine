@@ -205,7 +205,7 @@ class DeploysTest < ActiveSupport::TestCase
 
   test "pid is persisted" do
     @deploy.pid = 42
-    clone = Deploy.find(@deploy)
+    clone = Deploy.find(@deploy.id)
     assert_equal 42, clone.pid
   end
 

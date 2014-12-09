@@ -5,7 +5,7 @@ SimpleCov.start 'rails'
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require "mocha/test_unit"
+require "mocha/mini_test"
 
 Dir[File.expand_path('../helpers/**/*.rb', __FILE__)].each do |helper|
   require helper
