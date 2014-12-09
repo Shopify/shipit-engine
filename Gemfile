@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2.0.rc1', github: 'rails/rails', branch: '4-2-stable', ref: '406c9082782d9a9cd3cd8a835e41632524b79544'
+gem 'rails', '~> 4.2.0.rc2'
 gem 'responders'
 gem 'sprockets'
 gem 'mysql2'
