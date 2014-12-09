@@ -28,7 +28,7 @@ class PerformTaskJob < BackgroundJob
     @task.failure!
   rescue StandardError => error
     @task.error!
-    @task.write("#{error.class}: #{error.message.scrub}\n\t#{error.backtrace.join("\t")}\n")
+    @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
   ensure
     Resque.enqueue(FetchDeployedRevisionJob, stack_id: @task.stack_id)
     @task.clear_working_directory
