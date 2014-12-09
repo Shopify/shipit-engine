@@ -7,7 +7,7 @@
 
 # Offense count: 8
 Metrics/AbcSize:
-  Max: 34
+  Max: 35
 
 # Offense count: 243
 # Configuration parameters: AllowURI, URISchemes.
