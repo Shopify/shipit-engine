@@ -10,4 +10,10 @@ class DeployCommands < TaskCommands
       'REVISION' => commit.sha,
     )
   end
+
+  protected
+
+  def logs_url
+    Rails.application.routes.url_helpers.stack_deploy_url(@stack, @task)
+  end
 end
