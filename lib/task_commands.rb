@@ -35,7 +35,7 @@ class TaskCommands < Commands
       'USER' => "#{@task.author.login} (#{normalized_name}) via Shipit 2",
       'EMAIL' => @task.author.email,
       'BUNDLE_PATH' => BUNDLE_PATH,
-      'LOGS_URL' => logs_url,
+      'SHIPIT_LINK' => permalink,
     ).merge(deploy_spec.machine_env)
   end
 
@@ -53,7 +53,7 @@ class TaskCommands < Commands
 
   protected
 
-  def logs_url
+  def permalink
     Rails.application.routes.url_helpers.stack_task_url(@stack, @task)
   end
 end
