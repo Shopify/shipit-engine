@@ -9,6 +9,7 @@ $blue: #248af2;
 $green: #67ca8b;
 $red: #f39494;
 $bright-red: #f37272;
+$light-red: lighten($bright-red, 10%);
 $slate: #2e343a;
 
 @mixin clearfix {
