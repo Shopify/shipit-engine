@@ -81,7 +81,9 @@ class DeployCommandsTest < ActiveSupport::TestCase
   end
 
   test "#perform calls cap $environment deploy:rollback for a rollback of a capistrano stack" do
-    @commands = Commands.for(@deploy.build_rollback)
+    @rollback = @deploy.build_rollback
+    @rollback.save!
+    @commands = Commands.for(@rollback)
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
 
     steps = @commands.perform
@@ -102,6 +104,13 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @deploy.until_commit.sha, command.env['SHA']
+  end
+
+  test "#perform calls cap $environment deploy with the SHIPIT_LINK in the environment" do
+    commands = @commands.perform
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal "https://example.com/shopify/shipit2/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
   end
 
   test "#perform transliterates the user name" do

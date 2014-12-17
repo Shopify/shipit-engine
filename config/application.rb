@@ -30,5 +30,7 @@ module Shipit
     end
 
     config.active_record.raise_in_transactional_callbacks = true
+
+    Rails.application.routes.default_url_options[:host] = Rails.application.secrets.host
   end
 end
