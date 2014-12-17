@@ -1,3 +1,21 @@
+class RollbackPreview
+  @for: (element) ->
+    $element = $(element)
+    unless instance = $element.data('rollback-preview')
+      instance = new RollbackPreview($element)
+      $element.data('rollback-preview', instance)
+    instance
+
+  constructor: (@$button) ->
+    $rollbackable = @$button.closest('[data-rollbackable]')
+    @$scope = $rollbackable.add($rollbackable.prevAll('[data-rollbackable]'))
+
+  toggle: (show) ->
+    @$scope.toggleClass('rolling-back', show)
+
+$(document).on 'mouseenter mouseleave', '.rollback-action', (event) ->
+  RollbackPreview.for(this).toggle(event.type == 'mouseenter')
+
 jQuery ($) ->
   displayConfigureCiMessage = ->
     commits = $('.commit')

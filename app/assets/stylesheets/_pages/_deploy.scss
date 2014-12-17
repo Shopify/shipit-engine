@@ -1,3 +1,7 @@
+.rolling-back {
+  background-color: $light-red;
+}
+
 .deploy-abort {
   display: none;
   &[data-deploy-status="running"] { display: block; }
