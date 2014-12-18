@@ -3,6 +3,7 @@ AllCops:
     - lib/snippets/**/*
     - vendor/**/*
     - data/**/*
+    - db/schema.rb
 inherit_from:
   .rubocop_todo.yml
 

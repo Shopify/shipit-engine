@@ -54,8 +54,6 @@ class Deploy < Task
       value
     elsif stack
       @default_since_commit_id ||= last_successful_deploy.try(:until_commit_id)
-    else
-      nil
     end
   end
 
