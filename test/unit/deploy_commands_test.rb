@@ -118,7 +118,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
-    assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipit 2", command.env['USER']
+    assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipit", command.env['USER']
   end
 
   test "#perform calls cap $environment deploy with the ENVIRONMENT in the environment" do
