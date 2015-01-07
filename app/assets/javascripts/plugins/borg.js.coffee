@@ -1,3 +1,6 @@
+filterAshburn = (text) ->
+  String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace('[chi]','')
+    
 # Abstract, need to implement @refresh and @parse
 class BaseTaskWidget
   constructor: ->
@@ -28,7 +31,7 @@ class BaseTaskWidget
     @tasks = {}
 
   update: (text) ->
-    parser = new CapistranoParser(text)
+    parser = new CapistranoParser(filterAshburn(text))
     unless @active
       res = parser.findTaskStart(@capistranoTask)
       return unless res
@@ -83,7 +86,7 @@ class AssetsUploadWidget extends ProgressBarTaskWidget
     @capistranoTask = "assets:upload"
 
   update: (text) ->
-    parser = new CapistranoParser(text)
+    parser = new CapistranoParser(filterAshburn(text))
     unless @active
       res = parser.findTaskStart(@capistranoTask)
       return unless res
