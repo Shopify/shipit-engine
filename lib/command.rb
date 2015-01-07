@@ -90,11 +90,17 @@ class Command
       yield red("No output received in the last #{timeout} seconds.") + "\n"
       terminate!(&block)
       raise error
-    else
-      @code = PTY.check(@pid).try!(:exitstatus)
-      yield exit_message + "\n" unless success?
+    rescue Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
     end
+
+    Process.wait(@pid)
+    @code = $CHILD_STATUS.exitstatus
+    yield exit_message + "\n" unless success?
+
     self
+  end
+
+  def check_status
   end
 
   def red(text)
