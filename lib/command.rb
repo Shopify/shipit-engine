@@ -94,7 +94,7 @@ class Command
     end
 
     Process.wait(@pid)
-    @code = $CHILD_STATUS.exitstatus
+    @code = $CHILD_STATUS ? $CHILD_STATUS.exitstatus : 0
     yield exit_message + "\n" unless success?
 
     self
