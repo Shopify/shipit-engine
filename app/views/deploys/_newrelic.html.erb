@@ -1,0 +1,8 @@
+<% if @stack.repo_name == 'shopify' %>
+  <section>
+    <header class="section-header">
+      <h2>New Relic</h2>
+    </header>
+    <%= image_tag "https://shopify-snap.herokuapp.com/image.png?width=600&height=300&url=#{URI.escape('https://rpm.newrelic.com/public/charts/7JGEJ0rfzWw')}", alt: 'New Relic image' %>
+  </section>
+<% end %>
