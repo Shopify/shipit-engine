@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141027175544) do
+ActiveRecord::Schema.define(version: 20150108192212) do
 
   create_table "commits", force: true do |t|
     t.integer  "stack_id",                                null: false
@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 20141027175544) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "branch",                   default: "master",     null: false
-    t.text     "checklist"
     t.string   "deploy_url"
     t.string   "lock_reason"
     t.integer  "tasks_count",              default: 0,            null: false
