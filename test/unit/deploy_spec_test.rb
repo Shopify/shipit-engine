@@ -174,6 +174,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_instance_of DeploySpec, @spec.cacheable
     config = {
       'machine' => {'environment' => {}},
+      'review' => {'checklist' => []},
       'dependencies' => {'override' => []},
       'deploy' => {'override' => nil},
       'rollback' => {'override' => nil},

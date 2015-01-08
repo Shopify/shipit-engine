@@ -84,13 +84,16 @@ class DeploySpec
   end
 
   def review_checklist
-    config('review', 'checklist') || []
+    config('review', 'checklist') || discover_review_checklist || []
   end
 
   private
 
   def coerce_task_definition(config)
     config
+  end
+
+  def discover_review_checklist
   end
 
   def discover_dependencies_steps

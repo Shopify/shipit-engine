@@ -18,6 +18,7 @@ class DeploySpec
     def cacheable_config
       (config || {}).deep_merge(
         'machine' => {'environment' => machine_env},
+        'review' => {'checklist' => review_checklist},
         'dependencies' => {'override' => dependencies_steps},
         'deploy' => {'override' => deploy_steps},
         'rollback' => {'override' => rollback_steps},
