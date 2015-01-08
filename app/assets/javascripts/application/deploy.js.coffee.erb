@@ -33,6 +33,9 @@ class @ChunkPoller
   @prependFormatter: (formatter) ->
     FORMATTERS.unshift(formatter)
 
+  @stripANSICodes: (text) ->
+    text.replace(/(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g, '')
+
   constructor: ($body, @pollUrl) ->
     @$status = $body.find('[data-deploy-status]')
     @$code = $body.find('code')

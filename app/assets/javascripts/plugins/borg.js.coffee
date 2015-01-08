@@ -230,5 +230,5 @@ borgWidgetInstances = for widget in BORG_WIDGETS
 
 ChunkPoller.prependFormatter (chunk) ->
   for widget in borgWidgetInstances
-    widget.update(chunk)
+    widget.update(ChunkPoller.stripANSICodes(chunk))
   false
