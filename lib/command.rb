@@ -93,8 +93,8 @@ class Command
     rescue Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
     end
 
-    Process.wait(@pid)
-    @code = $CHILD_STATUS ? $CHILD_STATUS.exitstatus : 0
+    _, status = Process.waitpid2(@pid)
+    @code = status.exitstatus
     yield exit_message + "\n" unless success?
 
     self
