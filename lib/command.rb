@@ -1,4 +1,4 @@
-require 'open3'
+require 'pty'
 require 'shellwords'
 require 'fileutils'
 require 'timeout'
@@ -8,8 +8,7 @@ class Command
 
   Error = Class.new(StandardError)
 
-  attr_reader :out, :code, :chdir, :env, :args
-  delegate :pid, to: :@subprocess, allow_nil: true
+  attr_reader :out, :code, :chdir, :env, :args, :pid
 
   def initialize(*args, env: {}, chdir:)
     @args = args
@@ -72,10 +71,10 @@ class Command
 
   def start
     return if @started
-    child_in = @out = @subprocess = nil
+    child_in = @out = @pid = nil
     FileUtils.mkdir_p(@chdir)
     with_full_path do
-      child_in, @out, @subprocess = Open3.popen2e(@env, *interpolated_arguments, chdir: @chdir)
+      @out, child_in, @pid = PTY.spawn(@env, *interpolated_arguments, chdir: @chdir)
       child_in.close
     end
     @started = true
@@ -87,16 +86,21 @@ class Command
     begin
       read_stream(@out, timeout: timeout, &block)
     rescue Timeout::Error => error
-      @subprocess.kill
       @code = 'timeout'
       yield red("No output received in the last #{timeout} seconds.") + "\n"
       terminate!(&block)
       raise error
-    else
-      @code = @subprocess.value
-      yield exit_message + "\n" unless success?
+    rescue Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
     end
+
+    Process.wait(@pid)
+    @code = $CHILD_STATUS.exitstatus
+    yield exit_message + "\n" unless success?
+
     self
+  end
+
+  def check_status
   end
 
   def red(text)
