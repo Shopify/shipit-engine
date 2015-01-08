@@ -5,10 +5,10 @@ shipit:
   branch: master
   tasks_count: 3
   undeployed_commits_count: 3
-  checklist: "foo\n\nbar\n\nbaz"
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
+      "review": {"checklist": ["foo", "bar", "baz"]},
       "dependencies": {"override": []},
       "deploy": {"override": null},
       "rollback": {"override": ["echo 'Rollback!'"]},
