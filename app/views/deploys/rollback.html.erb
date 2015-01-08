@@ -19,6 +19,8 @@
     <%= render 'deploys/summary', commits: @rollback.commits %>
   </section>
 
+  <%= render_monitoring @stack %>
+
   <%= render_checklist @stack %>
 
   <section class="submit-section">

@@ -271,4 +271,13 @@ class StacksTest < ActiveSupport::TestCase
     Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
     Stack.send_undeployed_commits_reminders
   end
+
+  test "#monitoring is empty if cached_deploy_spec is blank" do
+    @stack.cached_deploy_spec = nil
+    assert_equal [], @stack.monitoring
+  end
+
+  test "#monitoring returns deploy_spec's content" do
+    assert_equal [{'image' => 'https://example.com/monitor.png', 'width' => 200, 'height' => 300}], @stack.monitoring
+  end
 end

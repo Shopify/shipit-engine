@@ -1,0 +1,13 @@
+<section>
+  <header class="section-header">
+    <h2>Monitoring</h2>
+  </header>
+
+  <div class="monitoring">
+    <%- stack.monitoring.each do |panel_spec| -%>
+      <div class="monitoring-panel">
+        <%= render_monitoring_panel panel_spec %>
+      </div>
+    <%- end -%>
+  </div>
+</section>

@@ -87,6 +87,10 @@ class DeploySpec
     config('review', 'checklist') || discover_review_checklist || []
   end
 
+  def review_monitoring
+    config('review', 'monitoring') || []
+  end
+
   private
 
   def coerce_task_definition(config)
