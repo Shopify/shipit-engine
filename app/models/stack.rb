@@ -174,11 +174,11 @@ class Stack < ActiveRecord::Base
   end
 
   def checklist?
-    return [] unless cached_deploy_spec
-    cached_deploy_spec.review_checklist.any?(&:present?)
+    checklist.present?
   end
 
   def checklist
+    return [] unless cached_deploy_spec
     cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
   end
 
