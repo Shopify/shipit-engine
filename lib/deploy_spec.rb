@@ -83,6 +83,10 @@ class DeploySpec
     TaskDefinition.new(id, coerce_task_definition(config('tasks', id)) || task_not_found!(id))
   end
 
+  def review_checklist
+    config('review', 'checklist') || []
+  end
+
   private
 
   def coerce_task_definition(config)

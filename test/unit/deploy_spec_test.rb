@@ -199,4 +199,13 @@ class DeploySpecTest < ActiveSupport::TestCase
     definition = cached_spec.find_task_definition('restart')
     assert_equal ['bundle exec foo'], definition.steps
   end
+
+  test "#review_checklist returns an array" do
+    @spec.expects(:load_config).returns('review' => {'checklist' => %w(foo bar)})
+    assert_equal %w(foo bar), @spec.review_checklist
+  end
+
+  test "#review_checklist returns an empty array if the section is missing" do
+    assert_equal [], @spec.review_checklist
+  end
 end

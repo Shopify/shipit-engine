@@ -173,8 +173,17 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
-  def checks
-    checklist.to_s.lines.map(&:strip).select(&:present?)
+  def checklist?
+    cached_deploy_spec.review_checklist.any?(&:present?) || super
+  end
+
+  def checklist
+    if cached_deploy_spec.review_checklist.empty?
+      # Temporary keep the old implementation
+      super.to_s.lines.map(&:strip).select(&:present?)
+    else
+      cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
+    end
   end
 
   def update_undeployed_commits_count(after_commit=nil)

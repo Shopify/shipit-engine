@@ -7,8 +7,6 @@
     </header>
     <div class="setting-section">
       <%= form_for @stack do |f| %>
-        <p>Checklist (Leave a blank line between items, HTML &lt;a&gt; and &lt;strong&gt; elements are authorized)</p>
-        <p><%= f.text_area :checklist %></p>
         <p>Deploy URL (Where is this stack deployed to?)</p>
         <p><%= f.text_field :deploy_url, placeholder: 'https://' %></p>
         <p>Continuous Deployment? <%= f.check_box :continuous_deployment %></p>
