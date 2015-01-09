@@ -8,7 +8,12 @@ shipit:
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
-      "review": {"checklist": ["foo", "bar", "baz"]},
+      "review": {
+        "checklist": ["foo", "bar", "baz"],
+        "monitoring": [
+          {"image": "https://example.com/monitor.png", "width": 200, "height": 300}
+        ]
+      },
       "dependencies": {"override": []},
       "deploy": {"override": null},
       "rollback": {"override": ["echo 'Rollback!'"]},

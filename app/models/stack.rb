@@ -173,6 +173,15 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
+  def monitoring?
+    monitoring.present?
+  end
+
+  def monitoring
+    return [] unless cached_deploy_spec
+    cached_deploy_spec.review_monitoring.select(&:present?)
+  end
+
   def checklist?
     checklist.present?
   end
