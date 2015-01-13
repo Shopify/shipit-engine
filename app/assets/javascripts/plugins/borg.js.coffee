@@ -1,5 +1,5 @@
 filterAshburn = (text) ->
-  String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace('[chi]','')
+  String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace(/\[chi\]/mg,'')
     
 # Abstract, need to implement @refresh and @parse
 class BaseTaskWidget
