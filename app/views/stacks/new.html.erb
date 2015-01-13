@@ -11,8 +11,8 @@
         </p>
         <p>
           <%= f.label :repo_name %>
-          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_]+$" %>
-          <span class="form-hint">Only letters, numbers, underscores and dashes</span>
+          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_\.]+$" %>
+          <span class="form-hint">Only letters, numbers, underscores, periods and dashes</span>
         </p>
         <p>
           <%= f.label :branch %>
