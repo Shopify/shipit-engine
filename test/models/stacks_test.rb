@@ -34,6 +34,12 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal 'production', @stack.environment
   end
 
+  test "environment can contain a `:`" do
+    @stack.environment = 'foo:bar'
+    assert @stack.save
+    assert_equal 'foo:bar', @stack.environment
+  end
+
   test "repo_owner cannot contain a `/`" do
     assert @stack.valid?
     @stack.repo_owner = 'foo/bar'

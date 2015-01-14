@@ -18,7 +18,7 @@ class Stack < ActiveRecord::Base
 
   validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
   validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
-  validates :environment, presence: true, format: {with: /\A[a-z0-9\-_]+\z/}
+  validates :environment, presence: true, format: {with: /\A[a-z0-9\-_\:]+\z/}
   validates :reminder_url, url: { allow_blank: true }
 
   scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
