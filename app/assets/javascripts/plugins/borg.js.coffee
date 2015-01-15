@@ -152,6 +152,20 @@ class JobServersRestartWidget extends RestartTaskWidget
       else if match = log.output.match(/(fatal|fail|down):( run:)? ([\-\w\d]+)/)
         task = @getTask(log.host)
         task.addStatus("down", "#{match[1]}: #{match[3]}")
+        # Legacy jobservers --^, borg jobservers --V
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* restarting/i)
+        @getTask(log.host).update
+          numPending: match[1]
+          numLights: match[2]
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* successfully restarted/i)
+        task = @getTask(log.host)
+        task.addStatus("up", match[1])
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* did not restart in time/i)
+        task = @getTask(log.host)
+        task.addStatus("partial", "timeout: #{match[1]}")
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (failed to restart|unable to restart)/i)
+        task = @getTask(log.host)
+        task.addStatus("down", "fail: #{match[1]}")
     null
 
 
