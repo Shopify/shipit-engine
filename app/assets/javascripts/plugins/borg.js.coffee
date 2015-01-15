@@ -114,15 +114,17 @@ class ContainersRestartWidget extends RestartTaskWidget
 
   parse: (parser) ->
     parser.eachMessage (log) =>
-      if match = log.output.match(/\[(\d+)\/(\d+)\] Restarting/)
+      if match = log.output.match(/\[(\d+)\/(\d+)\].* restarting/i)
         @getTask(log.host).update
           numPending: match[1]
           numLights: match[2]
-      else if match = log.output.match(/\[(\d+)\/(\d+)\] Successfully Restarted/)
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* successfully restarted/i)
         @getTask(log.host).update
           numDone: match[1]
           numLights: match[2]
-      else if match = log.output.match(/\[(\d+)\/(\d+)\] Unable to restart/)
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* did not restart in time/i)
+        @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (failed to restart|unable to restart)/i)
         @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
     null
 
