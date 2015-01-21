@@ -6,10 +6,7 @@
   </div>
   <div class="event">
     <span class="event-meta">
-      <a href="<%= github_user_url(task.author.login) %>" class="user main-user">
-        <%= github_avatar task.user, size: 20 %>
-        <%= task.author.name %>
-      </a>
+      <%= render_github_user(task.author) %>
       ran a command
       <%= timeago_tag(task.created_at, force: true) %>
       <span class="event-time">at <%= task.created_at %></span>

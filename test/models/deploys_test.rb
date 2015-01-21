@@ -3,6 +3,8 @@ require 'test_helper'
 class DeploysTest < ActiveSupport::TestCase
   def setup
     @deploy = deploys(:shipit)
+    @stack = stacks(:shipit)
+    @user = users(:walrus)
   end
 
   test "#rollback? returns false" do
@@ -201,6 +203,24 @@ class DeploysTest < ActiveSupport::TestCase
   test "#build_rollback set deploy's since_commit as the rollback until_commit if it's the first one" do
     rollback = @deploy.build_rollback
     assert_equal @deploy.since_commit, rollback.until_commit
+  end
+
+  test "#trigger_rollback creates a new Rollback" do
+    assert_difference -> { Rollback.count }, +1 do
+      @deploy.trigger_rollback(@user)
+    end
+  end
+
+  test "#trigger_rollback schedule the task" do
+    Resque.expects(:enqueue).with(PerformTaskJob, has_key(:task_id))
+    @deploy.trigger_rollback(@user)
+  end
+
+  test "#trigger_rollback locks the stack" do
+    refute @stack.locked?
+    @deploy.trigger_rollback(@user)
+    assert @stack.reload.locked?
+    assert_equal @user, @stack.lock_author
   end
 
   test "pid is persisted" do

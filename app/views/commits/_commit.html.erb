@@ -2,10 +2,7 @@
   <%= render commit.last_statuses %>
   <div class="event">
     <span class="event-meta">
-      <a href="<%= github_user_url(commit.author.login) %>" class="user main-user">
-        <%= github_avatar commit.author, size: 20 %>
-        <%= commit.author.name %>
-      </a>
+      <%= render_github_user(commit.author) %>
       merged <%= render_commit_id_link(commit) %> <%= timeago_tag(commit.committed_at, force: true) %>
       <span class="event-time">at <%= commit.committed_at %></span>
       <span class="event-stats">

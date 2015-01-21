@@ -71,6 +71,8 @@ class StacksController < ApplicationController
   end
 
   def update_params
-    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment, :reminder_url)
+    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment, :reminder_url).tap do |params|
+      params[:lock_author_id] = params[:lock_reason].present? ? current_user.id : nil
+    end
   end
 end
