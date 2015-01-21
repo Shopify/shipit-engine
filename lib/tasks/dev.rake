@@ -16,7 +16,7 @@ namespace :dev do
     loop do
       sentence = Faker::Lorem.sentence.split.map do |word|
         if rand(4) == 0
-         "\e[#{rand(30..37)}m#{word}\e[0m"
+          "\e[#{rand(30..37)}m#{word}\e[0m"
         else
           word
         end
