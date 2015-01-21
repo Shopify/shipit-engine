@@ -1,4 +1,4 @@
-<li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>" data-rollbackable>
+<li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>">
   <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <%= link_to stack_deploy_path(@stack, deploy) do %>
       <i><%= deploy.status %></i>
