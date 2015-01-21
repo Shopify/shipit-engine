@@ -12,7 +12,7 @@ Metrics/AbcSize:
 # Offense count: 243
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:
-  Max: 336
+  Max: 140
 
 # Offense count: 2
 # Cop supports --auto-correct.
