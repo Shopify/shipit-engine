@@ -41,11 +41,6 @@ Style/IndentHash:
 Style/Lambda:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/MethodCallParentheses:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
