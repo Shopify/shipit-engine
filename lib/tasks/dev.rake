@@ -14,13 +14,13 @@ namespace :dev do
     logger.info "Starting to stream data to deploy ##{deploy.id}"
 
     loop do
-      sentence = Faker::Lorem.sentence.split.map { |word|
+      sentence = Faker::Lorem.sentence.split.map do |word|
         if rand(4) == 0
          "\e[#{rand(30..37)}m#{word}\e[0m"
         else
           word
         end
-      }.join(" ")
+      end.join(' ')
 
       logger.error sentence
 

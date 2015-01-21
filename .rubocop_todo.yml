@@ -14,11 +14,6 @@ Metrics/AbcSize:
 Metrics/LineLength:
   Max: 140
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/Blocks:
-  Enabled: false
-
 # Offense count: 9
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
