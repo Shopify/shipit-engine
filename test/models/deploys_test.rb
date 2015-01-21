@@ -189,20 +189,15 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal @deploy.id, rollback.parent_id
   end
 
-  test "#build_rollback set the deploy until_commit as the rollback since_commit" do
+  test "#build_rollback set the last_deployed_commit as the rollback since_commit" do
     rollback = @deploy.build_rollback
-    assert_equal @deploy.until_commit, rollback.since_commit
+    assert_equal @stack.last_deployed_commit, rollback.since_commit
   end
 
-  test "#build_rollback set the commit right before the deploy's since_commit as the rollback until_commit" do
+  test "#build_rollback set the deploy's until_commit as the rollback until_commit" do
     deploy = deploys(:shipit_complete)
     rollback = deploy.build_rollback
-    assert_equal deploy.since_commit, rollback.until_commit
-  end
-
-  test "#build_rollback set deploy's since_commit as the rollback until_commit if it's the first one" do
-    rollback = @deploy.build_rollback
-    assert_equal @deploy.since_commit, rollback.until_commit
+    assert_equal deploy.until_commit, rollback.until_commit
   end
 
   test "#trigger_rollback creates a new Rollback" do

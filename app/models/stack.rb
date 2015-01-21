@@ -95,6 +95,10 @@ class Stack < ActiveRecord::Base
     :default
   end
 
+  def last_deploy
+    @last_deploy ||= deploys.last
+  end
+
   def last_successful_deploy
     deploys.success.last
   end

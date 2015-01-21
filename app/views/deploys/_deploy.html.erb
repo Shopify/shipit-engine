@@ -1,4 +1,4 @@
-<li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>" data-rollbackable>
+<li class="deploy" id="deploy-<%= deploy.id %>" data-deploy-status="<%= deploy.status %>">
   <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <%= link_to stack_deploy_path(@stack, deploy) do %>
       <i><%= deploy.status %></i>
@@ -28,11 +28,11 @@
     </span>
   </div>
 
-  <% if deploy.stack.supports_rollback? %>
+  <% if deploy.rollbackable? %>
     <% if deploy.stack.deploying? %>
       <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
-    <% else %>
-      <%= link_to "Rollback to #{deploy.since_commit.short_sha}", rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action rollback-action' %>
+    <% else  %>
+      <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action rollback-action' %>
     <% end %>
   <% end %>
 </li>
