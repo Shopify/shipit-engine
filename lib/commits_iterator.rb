@@ -2,7 +2,7 @@ class CommitsIterator
   include Enumerable
   MAX_PAGES = 2
 
-  def initialize(commits_relation, max_pages=MAX_PAGES)
+  def initialize(commits_relation, max_pages = MAX_PAGES)
     @relation = commits_relation
     @max_pages = max_pages
   end

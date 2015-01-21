@@ -192,7 +192,7 @@ class Stack < ActiveRecord::Base
     cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
   end
 
-  def update_undeployed_commits_count(after_commit=nil)
+  def update_undeployed_commits_count(after_commit = nil)
     after_commit ||= last_deployed_commit
     undeployed_commits = Commit.reachable.where(stack_id: id).select('count(*) as count').where('id > ?', after_commit.id)
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")

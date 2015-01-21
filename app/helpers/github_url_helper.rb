@@ -5,7 +5,7 @@ module GithubUrlHelper
     "https://github.com"
   end
 
-  def github_avatar(user, options={})
+  def github_avatar(user, options = {})
     uri = URI.parse(user.avatar_url) rescue DEFAULT_AVATAR.dup
     attributes = {alt: user.try(:name)}
     if options[:size]
