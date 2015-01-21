@@ -63,6 +63,10 @@ class Task < ActiveRecord::Base
     false
   end
 
+  def rollbackable?
+    false
+  end
+
   def author
     user || AnonymousUser.new
   end

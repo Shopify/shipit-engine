@@ -17,7 +17,7 @@ class Deploy < Task
       stack_id: stack_id,
       parent_id: id,
       since_commit: stack.last_deployed_commit,
-      until_commit: since_commit
+      until_commit: until_commit
     )
   end
 
@@ -35,6 +35,10 @@ class Deploy < Task
 
   def rollback?
     false
+  end
+
+  def rollbackable?
+    stack.supports_rollback? && success? && self != stack.last_deploy
   end
 
   def commits
