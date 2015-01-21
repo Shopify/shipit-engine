@@ -77,11 +77,6 @@ Style/PerlBackrefs:
   Enabled: false
 
 # Offense count: 2
-# Configuration parameters: NamePrefix, NamePrefixBlacklist.
-Style/PredicateName:
-  Enabled: false
-
-# Offense count: 2
 Style/RescueModifier:
   Enabled: false
 

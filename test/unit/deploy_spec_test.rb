@@ -52,7 +52,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#bundle_install return a sane default bundle install command' do
-    @spec.stubs(:has_gemfile_lock?).returns(true)
+    @spec.stubs(:gemfile_lock_exists?).returns(true)
     command = %(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
       bundle install
@@ -65,7 +65,7 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
-    @spec.stubs(:has_gemfile_lock?).returns(true)
+    @spec.stubs(:gemfile_lock_exists?).returns(true)
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     command = %(
       bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
@@ -80,13 +80,13 @@ class DeploySpecTest < ActiveSupport::TestCase
 
   test '#bundle_install has --frozen option if Gemfile.lock is present' do
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    @spec.stubs(:has_gemfile_lock?).returns(true)
+    @spec.stubs(:gemfile_lock_exists?).returns(true)
     assert @spec.bundle_install.last.include?('--frozen')
   end
 
   test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    @spec.stubs(:has_gemfile_lock?).returns(false)
+    @spec.stubs(:gemfile_lock_exists?).returns(false)
     refute @spec.bundle_install.last.include?('--frozen')
   end
 

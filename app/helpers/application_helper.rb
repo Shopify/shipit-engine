@@ -7,10 +7,6 @@ module ApplicationHelper
     @stacks_by_owner ||= stacks.group_by(&:repo_owner)
   end
 
-  def is_current_stack?(stack)
-    @stack == stack
-  end
-
   def can_login?
     Shipit.github && !current_user.logged_in?
   end

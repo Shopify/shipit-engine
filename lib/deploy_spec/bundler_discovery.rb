@@ -26,7 +26,7 @@ class DeploySpec
     end
 
     def frozen_flag
-      '--frozen' if has_gemfile_lock?
+      '--frozen' if gemfile_lock_exists?
     end
 
     def bundler_without
@@ -37,7 +37,7 @@ class DeploySpec
       file('Gemfile').exist?
     end
 
-    def has_gemfile_lock?
+    def gemfile_lock_exists?
       file('Gemfile.lock').exist?
     end
 
