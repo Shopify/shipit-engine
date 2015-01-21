@@ -9,6 +9,7 @@ class Stack < ActiveRecord::Base
   has_many :deploys
   has_many :rollbacks
   has_many :webhooks
+  belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults
   after_create :setup_webhooks, :sync_github

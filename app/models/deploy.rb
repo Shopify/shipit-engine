@@ -11,7 +11,7 @@ class Deploy < Task
 
   delegate :broadcast_update, to: :stack
 
-  def build_rollback(user=nil)
+  def build_rollback(user = nil)
     Rollback.new(
       user_id: user.try!(:id),
       stack_id: stack_id,
@@ -28,7 +28,7 @@ class Deploy < Task
 
     lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
       "Please make sure the reason for the rollback has been addressed before deploying again."
-    stack.update_attribute(:lock_reason, lock_reason)
+    stack.update!(lock_reason: lock_reason, lock_author_id: user.id)
 
     rollback
   end

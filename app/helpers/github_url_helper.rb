@@ -26,6 +26,12 @@ module GithubUrlHelper
     [github_url, user].join("/")
   end
 
+  def render_github_user(user)
+    link_to(github_user_url(user.login), class: 'user main-user') do
+      github_avatar(user, size: 20) + user.name
+    end
+  end
+
   def github_repo_url(owner, repo)
     [github_user_url(owner), repo].join("/")
   end

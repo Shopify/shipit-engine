@@ -88,6 +88,25 @@ class StacksControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "#update allows to lock the stack" do
+    refute @stack.locked?
+
+    patch :update, id: @stack.to_param, stack: {lock_reason: 'Went out to eat some chips!'}
+    @stack.reload
+    assert @stack.locked?
+    assert_equal users(:walrus), @stack.lock_author
+  end
+
+  test "#update allows to unlock the stack" do
+    @stack.update!(lock_reason: 'Went out to eat some chips!')
+    assert @stack.locked?
+
+    patch :update, id: @stack.to_param, stack: {lock_reason: ''}
+    @stack.reload
+    refute @stack.locked?
+    assert_nil @stack.lock_author
+  end
+
   test "#refresh queues a RefreshStatusesJob and a GithubSyncJob" do
     Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
     Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)

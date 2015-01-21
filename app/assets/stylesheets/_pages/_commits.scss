@@ -75,22 +75,6 @@
       font-size: .75rem;
       display: block;
       color: #999;
-
-      .user {
-
-        img {
-          width: 1rem;
-          height: 1rem;
-          border-radius: 50%;
-          border: 2px solid #fff;
-          position: relative;
-          bottom: -0.25rem;
-        }
-
-        font-weight: 500;
-        color: #777;
-          &:hover { color: $blue; }
-      }
     }
 
     .event-title {
@@ -176,4 +160,20 @@
 
     p { color: #777; }
 
+}
+
+.user {
+
+  img {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    position: relative;
+    bottom: -0.25rem;
+  }
+
+  font-weight: 500;
+  color: #777;
+    &:hover { color: $blue; }
 }
