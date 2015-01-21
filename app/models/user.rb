@@ -9,9 +9,7 @@ class User < ActiveRecord::Base
   end
 
   def self.create_from_github!(github_user)
-    unless github_user.name
-      github_user = github_user.rels[:self].get.data
-    end
+    github_user = github_user.rels[:self].get.data unless github_user.name
     create!(
       github_id: github_user.id,
       name: github_user.name || github_user.login, # Name is not mandatory on GitHub

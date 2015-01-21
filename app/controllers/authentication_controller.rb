@@ -10,16 +10,7 @@ class AuthenticationController < ApplicationController
     user_id = sign_in_github(auth) || session[:user_id]
     session[:user_id] = user_id
 
-    if Shipit.authentication.blank?
-      return redirect_to return_url
-    end
-
-    authenticated = valid_provider_auth?(auth)
-
-    reset_session
-    session[:authenticated] = authenticated
-    session[:user_id] = user_id
-
+    authenticate_user(auth, user_id)
     redirect_to return_url
   end
 
@@ -29,6 +20,14 @@ class AuthenticationController < ApplicationController
   end
 
   private
+
+  def authenticate_user(auth, user_id)
+    return if Shipit.authentication.blank?
+
+    reset_session
+    session[:authenticated] = valid_provider_auth?(auth)
+    session[:user_id] = user_id
+  end
 
   def valid_provider_auth?(auth)
     return false unless auth['provider'] == Shipit.authentication['provider']
