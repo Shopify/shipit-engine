@@ -13,7 +13,7 @@ class StacksController < ApplicationController
 
   def show
     @stack = Stack.from_param(params[:id])
-    return if flash.empty? && fresh?(last_modified: @stack.updated_at)
+    return if flash.empty? && !stale?(last_modified: @stack.updated_at)
 
     @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
     @commits = @stack.commits.reachable.preload(:author, :statuses).order(id: :desc)
