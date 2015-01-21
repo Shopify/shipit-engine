@@ -8,11 +8,10 @@ class UndeployedCommitsWebhookJob < BackgroundJob
     return if stack.locked?
 
     old_undeployed_commits = stack.old_undeployed_commits
+    return unless old_undeployed_commits.present?
 
-    if old_undeployed_commits.present?
-      committer_ids = old_undeployed_commits.pluck(:committer_id).uniq
-      send_reminder(build_stack_committer_json(stack, committer_ids), stack.reminder_url)
-    end
+    committer_ids = old_undeployed_commits.pluck(:committer_id).uniq
+    send_reminder(build_stack_committer_json(stack, committer_ids), stack.reminder_url)
   end
 
   def build_stack_committer_json(stack, committer_ids)

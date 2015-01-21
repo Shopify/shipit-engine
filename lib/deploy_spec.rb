@@ -11,14 +11,11 @@ class DeploySpec
 
   class << self
     def load(json)
-      if json.present?
-        new(JSON.parse(json))
-      end
+      new(JSON.parse(json)) if json.present?
     end
 
     def dump(spec)
-      return unless spec
-      JSON.dump(spec.cacheable.config)
+      JSON.dump(spec.cacheable.config) if spec
     end
   end
 

@@ -18,10 +18,11 @@ class ApplicationController < ActionController::Base
 
   def force_github_authentication
     return unless Shipit.github
-    if Shipit.github_required? && !current_user.logged_in?
-      redirect_to authentication_path(:github, origin: request.original_url)
-      return false
-    end
+    return unless Shipit.github_required?
+    return if current_user.logged_in?
+
+    redirect_to authentication_path(:github, origin: request.original_url)
+    false
   end
 
   def current_user
@@ -36,9 +37,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_variant
-    if request.negotiate_mime('text/partial+html')
-      request.format = :html
-      request.variant = :partial
-    end
+    return unless request.negotiate_mime('text/partial+html')
+
+    request.format = :html
+    request.variant = :partial
   end
 end

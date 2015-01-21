@@ -68,9 +68,9 @@ class Deploy < Task
     return unless stack.continuous_deployment?
 
     to_deploy = stack.commits.order(:id).newer_than(until_commit).successful.last
-    if to_deploy
-      stack.trigger_deploy(to_deploy, to_deploy.committer)
-    end
+    return unless to_deploy
+
+    stack.trigger_deploy(to_deploy, to_deploy.committer)
   end
 
   def last_successful_deploy
