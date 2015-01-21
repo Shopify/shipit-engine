@@ -24,6 +24,9 @@ Style/SingleSpaceBeforeFirstArg:
   Exclude:
     - db/schema.rb
 
+Style/DoubleNegation:
+  Enabled: false
+
 # Metrics/LineLength:
 #   Max: 120
 

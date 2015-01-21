@@ -25,10 +25,6 @@ Style/BracesAroundHashParameters:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-# Offense count: 2
-Style/DoubleNegation:
-  Enabled: false
-
 # Offense count: 5
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
