@@ -5,7 +5,7 @@ class UndeployedCommitsWebhookJob < BackgroundJob
 
   def perform(params)
     return unless stack = Stack.find_by_id(params[:stack_id])
-    return if stack.locked?
+    return if stack.locked? || stack.deploying?
 
     old_undeployed_commits = stack.old_undeployed_commits
     return unless old_undeployed_commits.present?
