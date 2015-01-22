@@ -7,20 +7,29 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
     @commit = commits(:first)
   end
 
-  test "#perform calls #send_reminder when there are old undeployed commits" do
+  test "#perform calls #send_reminder when there are old undeployed commits and no deploy" do
     Stack.any_instance.expects(:old_undeployed_commits).returns(@stack.commits)
+    Stack.any_instance.expects(:deploying?).returns(false)
     @job.expects(:send_reminder).once
     @job.perform(stack_id: @stack.id)
   end
 
   test "#perform does not call #send_reminder when the stack doesn't have old undeployed commits" do
     Stack.any_instance.expects(:old_undeployed_commits).returns([])
+    Stack.any_instance.expects(:deploying?).returns(false)
     @job.expects(:send_reminder).never
     @job.perform(stack_id: @stack.id)
   end
 
   test "#perform does not call #send_reminder when the stack is locked" do
     Stack.any_instance.expects(:locked?).returns(true)
+    Stack.any_instance.stubs(:old_undeployed_commits).returns(@stack.commits)
+    @job.expects(:send_reminder).never
+    @job.perform(stack_id: @stack.id)
+  end
+
+  test "#perform does not call #send_reminder when the stack is deploying" do
+    Stack.any_instance.expects(:deploying?).returns(true)
     Stack.any_instance.stubs(:old_undeployed_commits).returns(@stack.commits)
     @job.expects(:send_reminder).never
     @job.perform(stack_id: @stack.id)
@@ -43,6 +52,7 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
     @stack.update_attributes(reminder_url: "http://www.example.com")
     expected_hash = { "stack_committer_json" => @job.build_stack_committer_json(@stack, @stack.commits.pluck(:committer_id).uniq) }
     Stack.any_instance.expects(:old_undeployed_commits).returns(@stack.commits)
+    Stack.any_instance.expects(:deploying?).returns(false)
     Faraday.expects(:post).with(@stack.reminder_url, expected_hash).once
     @job.perform(stack_id: @stack.id)
   end
