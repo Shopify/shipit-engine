@@ -202,7 +202,7 @@ class Stack < ActiveRecord::Base
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
 
-  def old_undeployed_commits(long_time_ago = 30.minutes.ago)
+  def old_undeployed_commits(long_time_ago = 20.minutes.ago)
     undeployed_commits? ? commits.newer_than(last_deployed_commit).where("created_at < ?", long_time_ago) : commits.none
   end
 
