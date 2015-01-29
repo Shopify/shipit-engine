@@ -2,6 +2,7 @@ require 'test_helper'
 
 class UsersTest < ActiveSupport::TestCase
   setup do
+    @user = users(:walrus)
     rels = {self: stub(href: 'https://api.github.com/user/george')}
     @github_user = stub(id: 42, name: 'George Abitbol', login: 'george', email: 'george@cyclim.se', rels: rels)
   end
@@ -44,6 +45,15 @@ class UsersTest < ActiveSupport::TestCase
     user = users(:bob)
     expected_ouput = { github_id: user.github_id, name: user.name, email: user.email, github_login: user.login}
     assert_equal expected_ouput, user.identifiers_for_ping
+  end
+
+  test "#refresh_from_github! update the user with the latest data from GitHub's API" do
+    Shipit.github_api.expects(:user).with('walrus').returns(@github_user)
+    @user.refresh_from_github!
+    @user.reload
+
+    assert_equal 'George Abitbol', @user.name
+    assert_equal 'george@cyclim.se', @user.email
   end
 
   private

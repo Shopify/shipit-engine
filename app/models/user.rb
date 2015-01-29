@@ -9,15 +9,13 @@ class User < ActiveRecord::Base
   end
 
   def self.create_from_github!(github_user)
-    github_user = github_user.rels[:self].get.data unless github_user.name
-    create!(
-      github_id: github_user.id,
-      name: github_user.name || github_user.login, # Name is not mandatory on GitHub
-      email: github_user.email,
-      login: github_user.login,
-      avatar_url: github_user.rels[:avatar].try(:href),
-      api_url: github_user.rels[:self].try(:href),
-    )
+    create!(github_user: github_user)
+  end
+
+  def self.refresh_shard(shard_index, shards_count)
+    where.not(login: nil).where('id % ? = ?', shards_count, shard_index).find_each do |user|
+      Resque.enqueue(RefreshGithubUserJob, user_id: user.id)
+    end
   end
 
   def identifiers_for_ping
@@ -31,5 +29,21 @@ class User < ActiveRecord::Base
   def stacks_contributed_to
     return [] unless id
     Commit.where('author_id = :id or committer_id = :id', id: id).uniq.pluck(:stack_id)
+  end
+
+  def refresh_from_github!
+    update!(github_user: Shipit.github_api.user(login))
+  end
+
+  def github_user=(github_user)
+    github_user = github_user.rels[:self].get.data unless github_user.name
+    assign_attributes(
+      github_id: github_user.id,
+      name: github_user.name || github_user.login, # Name is not mandatory on GitHub
+      email: github_user.email,
+      login: github_user.login,
+      avatar_url: github_user.rels[:avatar].try(:href),
+      api_url: github_user.rels[:self].try(:href),
+    )
   end
 end
