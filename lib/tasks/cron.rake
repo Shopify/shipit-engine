@@ -12,4 +12,8 @@ namespace :cron do
   task rollup: :environment do
     Task.due_for_rollup.find_each(&:rollup_chunks)
   end
+
+  task refresh_users: :environment do
+    User.refresh_shard(Time.now.hour % 6, 6)
+  end
 end
