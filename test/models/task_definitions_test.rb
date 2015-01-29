@@ -20,7 +20,12 @@ class TaskDefinitionsTest < ActiveSupport::TestCase
   end
 
   test "serialization works" do
-    as_json = {id: 'restart', action: 'Restart application', description: 'Restart app and job servers', steps: ['touch tmp/restart']}
-    assert_equal(as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json)
+    as_json = {
+      id: 'restart',
+      action: 'Restart application',
+      description: 'Restart app and job servers',
+      steps: ['touch tmp/restart'],
+    }
+    assert_equal as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json
   end
 end

@@ -3,11 +3,6 @@ require 'pathname'
 class DeploySpec
   BUNDLE_PATH = File.join(Rails.root, 'data', 'bundler')
   Error = Class.new(StandardError)
-  SPEC_HINTS = {
-    deploy: 'Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml',
-    rollback: 'Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml',
-    fetch: 'Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml',
-  }
 
   class << self
     def load(json)
@@ -114,6 +109,6 @@ class DeploySpec
   end
 
   def cant_detect!(type)
-    raise DeploySpec::Error.new(SPEC_HINTS[type])
+    raise DeploySpec::Error.new(I18n.t("deploy_spec.hint.#{type}"))
   end
 end

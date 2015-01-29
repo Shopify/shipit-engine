@@ -25,7 +25,8 @@ class Stack < ActiveRecord::Base
   scope :with_reminder_webhook, -> { where.not(reminder_url: '') }
 
   serialize :cached_deploy_spec, DeploySpec
-  delegate :find_task_definition, :supports_rollback?, :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
+  delegate :find_task_definition, :supports_rollback?,
+           :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
 
   def self.refresh_deployed_revisions
     find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)

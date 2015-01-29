@@ -11,7 +11,7 @@ class StackCommands < Commands
     if Dir.exist?(@stack.git_path)
       git('fetch', 'origin', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
     else
-      git('clone', *modern_git_args, '--branch', @stack.branch, @stack.repo_git_url, @stack.git_path, env: env, chdir: @stack.deploys_path)
+      git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
     end
   end
 
@@ -38,6 +38,10 @@ class StackCommands < Commands
       git('clone', @stack.git_path, @stack.repo_name, chdir: dir).run!
       yield Pathname.new(File.join(dir, @stack.repo_name))
     end
+  end
+
+  def git_clone(url, path, branch: 'master', **kwargs)
+    git('clone', *modern_git_args, '--branch', branch, url, path, **kwargs)
   end
 
   def modern_git_args

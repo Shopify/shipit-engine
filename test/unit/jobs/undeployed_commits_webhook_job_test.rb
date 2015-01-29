@@ -50,10 +50,10 @@ class UndeployedCommitsWebhookJobTest < ActiveSupport::TestCase
 
   test "#send_reminder posts the stack_committer_json to reminder_url with Faraday" do
     @stack.update_attributes(reminder_url: "http://www.example.com")
-    expected_hash = { "stack_committer_json" => @job.build_stack_committer_json(@stack, @stack.commits.pluck(:committer_id).uniq) }
     Stack.any_instance.expects(:old_undeployed_commits).returns(@stack.commits)
     Stack.any_instance.expects(:deploying?).returns(false)
-    Faraday.expects(:post).with(@stack.reminder_url, expected_hash).once
+    stack_committer_json = @job.build_stack_committer_json(@stack, @stack.commits.pluck(:committer_id).uniq)
+    Faraday.expects(:post).with(@stack.reminder_url, 'stack_committer_json' => stack_committer_json).once
     @job.perform(stack_id: @stack.id)
   end
 end
