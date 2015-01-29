@@ -3,7 +3,7 @@ require 'test_helper'
 class StacksTest < ActiveSupport::TestCase
   def setup
     @stack = stacks(:shipit)
-    @expected_base_path = File.join(Rails.root, "data", "stacks", @stack.repo_owner, @stack.repo_name, @stack.environment)
+    @expected_base_path = Rails.root.join('data/stacks', @stack.to_param).to_s
   end
 
   test "repo_owner, repo_name and environment uniqueness is enforced" do

@@ -13,7 +13,7 @@ class RollbacksController < ApplicationController
   def ensure_stack_is_not_being_deployed
     return unless @stack.deploying?
 
-    redirect_to rollback_stack_deploy_path(@stack, @deploy), error: "Rollbacks can't be triggered if a deploy is in progress"
+    redirect_to rollback_stack_deploy_path(@stack, @deploy), error: t('error.deploy_in_progress')
   end
 
   def load_stack
