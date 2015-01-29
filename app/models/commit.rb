@@ -58,7 +58,7 @@ class Commit < ActiveRecord::Base
   delegate :state, to: :significant_status # deprecated
 
   def last_statuses
-    statuses.each_with_object({}) { |s, h| h[s.context] ||= s }.values.sort_by(&:context).presence || [UnknownStatus.new(self)]
+    statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
   end
 
   def children

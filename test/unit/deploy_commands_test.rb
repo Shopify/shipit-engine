@@ -31,7 +31,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
   test "#fetch calls git clone if repository cache do not exist" do
     Dir.expects(:exist?).with(@stack.git_path).returns(false)
     command = @commands.fetch
-    assert_equal ['git', 'clone', '--single-branch', '--branch', 'master', @stack.repo_git_url, @stack.git_path], command.args
+    assert_equal %W(git clone --single-branch --branch master #{@stack.repo_git_url} #{@stack.git_path}), command.args
   end
 
   test "#fetch does not use --single-branch if git is outdated" do

@@ -3,7 +3,8 @@ require 'test_helper'
 class CommitsTest < ActiveSupport::TestCase
   setup do
     @stack = stacks(:shipit)
-    @pr = @stack.commits.new(message: "Merge pull request #31 from Shopify/improve-polling\n\nSeveral improvements to polling")
+    @pr = @stack.commits.new
+    @pr.message = "Merge pull request #31 from Shopify/improve-polling\n\nSeveral improvements to polling"
     @commit = commits(:first)
   end
 
