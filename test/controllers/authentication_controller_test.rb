@@ -15,20 +15,22 @@ class AuthenticationControllerTest < ActionController::TestCase
   end
 
   test ":callback redirects to params[:origin] if auth is ok" do
+    stack = stacks(:shipit)
     @controller.expects(:reset_session)
     @request.env['omniauth.auth'] = { 'info' => { 'email' => 'bob@toto.com' } }
-    stack = stacks(:shipit)
+    @request.env['omniauth.origin'] = stack_path(stack)
 
-    post :callback, provider: :google_apps, origin: stack_path(stack)
+    post :callback, provider: :google_apps
     assert_redirected_to stack_path(stack)
   end
 
   test ":callback refuses authentication if the email domain doesn't match" do
+    stack = stacks(:shipit)
     Shipit.stubs(:authentication).returns('provider' => 'google_oauth2', 'email_domain' => 'shopify.com')
     @request.env['omniauth.auth'] = { 'info' => { 'email' => 'bob@toto.com' }, 'provider' => 'google_oauth2' }
-    stack = stacks(:shipit)
+    @request.env['omniauth.origin'] = stack_path(stack)
 
-    post :callback, provider: :google_apps, origin: stack_path(stack)
+    post :callback, provider: :google_apps
     assert_redirected_to stack_path(stack)
     refute session[:authenticated]
   end
