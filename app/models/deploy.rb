@@ -54,14 +54,15 @@ class Deploy < Task
   end
 
   def since_commit_id
-    if value = read_attribute(:since_commit_id)
-      value
-    elsif stack
-      @default_since_commit_id ||= last_successful_deploy.try(:until_commit_id)
-    end
+    super || default_since_commit_id
   end
 
   private
+
+  def default_since_commit_id
+    return unless stack
+    @default_since_commit_id ||= last_successful_deploy.try!(:until_commit_id)
+  end
 
   def denormalize_commit_stats
     self.additions = commits.map(&:additions).sum

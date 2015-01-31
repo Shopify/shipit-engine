@@ -1,5 +1,5 @@
 class WebhooksController < ActionController::Base
-  before_filter :check_if_ping, :verify_signature
+  before_action :check_if_ping, :verify_signature
 
   respond_to :json
 

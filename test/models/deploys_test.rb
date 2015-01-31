@@ -26,7 +26,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "#since_commit_id returns the database value if present" do
-    @deploy.expects(:read_attribute).with(:since_commit_id).returns(1)
+    @deploy.since_commit_id = 1
     assert_equal 1, @deploy.since_commit_id
   end
 
