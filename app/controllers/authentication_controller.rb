@@ -1,5 +1,5 @@
 class AuthenticationController < ApplicationController
-  skip_before_action :authenticate, :force_github_authentication, :verify_authenticity_token, :only => :callback
+  skip_before_action :authenticate, :force_github_authentication, :verify_authenticity_token, only: :callback
 
   def callback
     return_url = request.env['omniauth.origin'] || root_path

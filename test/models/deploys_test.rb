@@ -53,8 +53,8 @@ class DeploysTest < ActiveSupport::TestCase
     third  = commits(:third)
 
     deploy = stack.deploys.create!(
-      :since_commit => first,
-      :until_commit => third
+      since_commit: first,
+      until_commit: third
     )
 
     assert_equal 13, deploy.additions
@@ -67,8 +67,8 @@ class DeploysTest < ActiveSupport::TestCase
     last  = commits(:third)
 
     deploy = stack.deploys.new(
-      :since_commit => first,
-      :until_commit => last
+      since_commit: first,
+      until_commit: last
     )
 
     commits = deploy.commits
@@ -84,8 +84,8 @@ class DeploysTest < ActiveSupport::TestCase
     last  = commits(:fourth)
 
     deploy = stack.deploys.new(
-      :since_commit => first,
-      :until_commit => last
+      since_commit: first,
+      until_commit: last
     )
 
     assert_equal [4, 3, 2], deploy.commits.pluck(:id)

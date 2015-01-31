@@ -27,10 +27,10 @@ class StacksControllerTest < ActionController::TestCase
   test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
     params = {}
     params[:stack] = {
-      :repo_name   => "rails",
-      :repo_owner  => "rails",
-      :environment => "staging",
-      :branch      => "staging"
+      repo_name: "rails",
+      repo_owner: "rails",
+      environment: "staging",
+      branch: "staging"
     }
 
     assert_difference "Stack.count" do
@@ -56,7 +56,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#destroy behaves correctly" do
-    delete :destroy, :id => @stack.to_param
+    delete :destroy, id: @stack.to_param
     assert_redirected_to stacks_path
   end
 

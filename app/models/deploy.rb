@@ -79,7 +79,7 @@ class Deploy < Task
   end
 
   def last_successful_deploy
-    stack.deploys.where(:status => "success").last
+    stack.deploys.where(status: "success").last
   end
 
   def update_undeployed_commits_count
