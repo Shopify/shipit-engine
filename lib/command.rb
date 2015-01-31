@@ -137,7 +137,10 @@ class Command
   rescue Errno::ECHILD
     true # much success
   ensure
-    read_stream(@out, timeout: 1, &block) rescue nil
+    begin
+      read_stream(@out, timeout: 1, &block)
+    rescue
+    end
   end
 
   def kill_and_wait(sig, wait, &block)

@@ -6,7 +6,7 @@ module GithubUrlHelper
   end
 
   def github_avatar(user, options = {})
-    uri = URI.parse(user.avatar_url) rescue DEFAULT_AVATAR.dup
+    uri = parse_user_avatar_uri(user)
     attributes = {alt: user.try(:name)}
     if options[:size]
       uri.query ||= ''
@@ -48,5 +48,13 @@ module GithubUrlHelper
     url = github_commit_range_url(deploy.stack, deploy.since_commit, deploy.until_commit)
     text = "#{deploy.since_commit.short_sha}...#{deploy.until_commit.short_sha}"
     link_to(text, url, class: 'number')
+  end
+
+  private
+
+  def parse_user_avatar_uri(user)
+    URI.parse(user.avatar_url)
+  rescue URI::InvalidURIError
+    DEFAULT_AVATAR.dup
   end
 end
