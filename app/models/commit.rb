@@ -14,13 +14,13 @@ class Commit < ActiveRecord::Base
   delegate :broadcast_update, to: :stack
 
   def self.newer_than(commit)
-    id = commit.try!(:id) || commit
-    id ? where('id > ?', id) : all
+    return all unless commit
+    where('id > ?', commit.is_a?(Commit) ? commit.id : commit)
   end
 
   def self.until(commit)
-    id = commit.try!(:id) || commit
-    id ? where('id <= ?', id) : all
+    return all unless commit
+    where('id <= ?', commit.is_a?(Commit) ? commit.id : commit)
   end
 
   def self.successful
