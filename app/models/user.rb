@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
+
   def self.find_or_create_from_github(github_user)
     find_from_github(github_user) || create_from_github!(github_user)
   end
@@ -45,5 +47,11 @@ class User < ActiveRecord::Base
       avatar_url: github_user.rels[:avatar].try(:href),
       api_url: github_user.rels[:self].try(:href),
     )
+  end
+
+  def avatar_uri
+    URI.parse(avatar_url)
+  rescue URI::InvalidURIError
+    DEFAULT_AVATAR.dup
   end
 end

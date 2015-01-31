@@ -21,4 +21,8 @@ class AnonymousUser
   def stacks_contributed_to
     []
   end
+
+  def avatar_uri
+    User::DEFAULT_AVATAR.dup
+  end
 end
