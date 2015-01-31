@@ -52,3 +52,6 @@ Style/RaiseArgs:
 
 Style/RedundantReturn:
   AllowMultipleReturnValues: true
+
+Style/IndentHash:
+  Enabled: false
