@@ -15,11 +15,6 @@ Metrics/AbcSize:
 Style/BracesAroundHashParameters:
   Enabled: false
 
-# Offense count: 5
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/PerlBackrefs:

@@ -58,3 +58,6 @@ Style/IndentHash:
 
 Style/TrailingComma:
   EnforcedStyleForMultiline: comma
+
+Style/ClassAndModuleChildren:
+  Enabled: false
