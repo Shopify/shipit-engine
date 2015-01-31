@@ -85,14 +85,14 @@ class CommitsTest < ActiveSupport::TestCase
       author: walrus,
       committer: walrus,
       authored_at: Time.now,
-      committed_at: Time.now
+      committed_at: Time.now,
     )
 
     @stack.deploys.create!(
       user_id: walrus.id,
       since_commit: @stack.last_deployed_commit,
       until_commit: new_commit,
-      status: 'success'
+      status: 'success',
     )
 
     assert_no_difference "Deploy.count" do

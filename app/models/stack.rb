@@ -58,7 +58,7 @@ class Stack < ActiveRecord::Base
     deploy = deploys.create(
       user_id: user.id,
       until_commit: until_commit,
-      since_commit: since_commit
+      since_commit: since_commit,
     )
     deploy.enqueue
     deploy
@@ -175,7 +175,7 @@ class Stack < ActiveRecord::Base
     where(
       repo_owner: repo_owner.downcase,
       repo_name: repo_name.downcase,
-      environment: environment
+      environment: environment,
     ).first!
   end
 

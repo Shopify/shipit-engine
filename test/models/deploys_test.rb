@@ -54,7 +54,7 @@ class DeploysTest < ActiveSupport::TestCase
 
     deploy = stack.deploys.create!(
       since_commit: first,
-      until_commit: third
+      until_commit: third,
     )
 
     assert_equal 13, deploy.additions
@@ -68,7 +68,7 @@ class DeploysTest < ActiveSupport::TestCase
 
     deploy = stack.deploys.new(
       since_commit: first,
-      until_commit: last
+      until_commit: last,
     )
 
     commits = deploy.commits
@@ -85,7 +85,7 @@ class DeploysTest < ActiveSupport::TestCase
 
     deploy = stack.deploys.new(
       since_commit: first,
-      until_commit: last
+      until_commit: last,
     )
 
     assert_equal [4, 3, 2], deploy.commits.pluck(:id)
@@ -127,7 +127,7 @@ class DeploysTest < ActiveSupport::TestCase
     shipit = stacks(:shipit)
     deploy = shipit.deploys.build(
       since_commit: shipit.commits.first,
-      until_commit: shipit.commits.last
+      until_commit: shipit.commits.last,
     )
 
     expect_event(deploy)

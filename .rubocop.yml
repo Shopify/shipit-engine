@@ -55,3 +55,6 @@ Style/RedundantReturn:
 
 Style/IndentHash:
   Enabled: false
+
+Style/TrailingComma:
+  EnforcedStyleForMultiline: comma

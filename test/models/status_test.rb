@@ -12,7 +12,7 @@ class StatusTest < ActiveSupport::TestCase
       description: 'This is a description',
       context: 'default',
       target_url: 'http://example.com',
-      created_at: 1.day.ago.to_time
+      created_at: 1.day.ago.to_time,
     )
 
     assert_difference '@commit.statuses.count', +1 do
