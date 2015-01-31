@@ -3,25 +3,25 @@ class Commit < ActiveRecord::Base
   has_many :deploys
   has_many :statuses, -> { order(created_at: :desc) }
 
-  after_commit  { broadcast_update }
+  after_commit { broadcast_update }
   after_create { stack.update_undeployed_commits_count }
 
   belongs_to :author, class_name: "User"
   belongs_to :committer, class_name: "User"
 
-  scope :newer_than, -> (commit) {
-    id = commit.try(:id) || commit
-    id ? where('id > ?', id) : all
-  }
-
-  scope :until, -> (commit) {
-    id = commit.try(:id) || commit
-    id ? where('id <= ?', id) : all
-  }
-
   scope :reachable,  -> { where(detached: false) }
 
   delegate :broadcast_update, to: :stack
+
+  def self.newer_than(commit)
+    id = commit.try!(:id) || commit
+    id ? where('id > ?', id) : all
+  end
+
+  def self.until(commit)
+    id = commit.try!(:id) || commit
+    id ? where('id <= ?', id) : all
+  end
 
   def self.successful
     preload(:statuses).to_a.select(&:success?)

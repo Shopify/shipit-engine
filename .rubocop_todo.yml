@@ -26,10 +26,6 @@ Style/ClassAndModuleChildren:
 Style/HashSyntax:
   Enabled: false
 
-# Offense count: 2
-Style/Lambda:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
