@@ -9,16 +9,14 @@ class GithubSyncJob < BackgroundJob
     "github-sync-#{params[:stack_id]}"
   end
 
-  def perform(params)
-    @stack = Stack.find(params[:stack_id])
+  def perform
+    new_commits, shared_parent = fetch_missing_commits(stack.github_commits)
 
-    new_commits, shared_parent = fetch_missing_commits(@stack.github_commits)
-
-    @stack.transaction do
+    stack.transaction do
       shared_parent.try(:detach_children!)
       new_commits.each do |gh_commit|
         full_commit = gh_commit.rels[:self].get.data # Sadly necessary to access commit stats
-        commit = @stack.commits.from_github(full_commit)
+        commit = stack.commits.from_github(full_commit)
         commit.save!
         commit.refresh_statuses
       end
@@ -41,5 +39,9 @@ class GithubSyncJob < BackgroundJob
 
   def lookup_commit(sha)
     @stack.commits.find_by_sha(sha)
+  end
+
+  def stack
+    @stack ||= Stack.find(params[:stack_id])
   end
 end

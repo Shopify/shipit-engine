@@ -3,9 +3,7 @@ class RefreshStatusesJob < BackgroundJob
 
   self.timeout = 60
 
-  def perform(params)
-    stack = Stack.find(params[:stack_id])
-
+  def perform
     commits = stack.commits.order(id: :desc)
     if params[:commit_id]
       commits = commits.where(id: params[:commit_id])
@@ -14,5 +12,9 @@ class RefreshStatusesJob < BackgroundJob
     end
 
     commits.each(&:refresh_statuses)
+  end
+
+  def stack
+    @stack ||= Stack.find(params[:stack_id])
   end
 end

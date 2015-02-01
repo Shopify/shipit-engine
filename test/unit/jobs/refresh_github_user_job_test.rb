@@ -3,7 +3,7 @@ require 'test_helper'
 class RefreshGithubUserJobTest < ActiveSupport::TestCase
   setup do
     @user = users(:walrus)
-    @job = RefreshGithubUserJob.new
+    @job = RefreshGithubUserJob
   end
 
   test "#perform call #refresh_from_github! on the provided user" do

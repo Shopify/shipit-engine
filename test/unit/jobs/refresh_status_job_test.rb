@@ -3,7 +3,7 @@ require 'test_helper'
 class RefreshStatusesJobTest < ActiveSupport::TestCase
   setup do
     @stack = stacks(:shipit)
-    @job = RefreshStatusesJob.new
+    @job = RefreshStatusesJob
   end
 
   test "#perform call #refresh_status on the last 30 commits of the stack" do

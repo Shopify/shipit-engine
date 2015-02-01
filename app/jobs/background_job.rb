@@ -8,7 +8,7 @@ class BackgroundJob
       end
 
       with_timeout do
-        new.perform(*args)
+        new(*args).perform
       end
     end
 
@@ -18,6 +18,12 @@ class BackgroundJob
       return yield unless timeout
       Timeout.timeout(timeout, &block)
     end
+  end
+
+  attr_reader :params
+
+  def initialize(params = {})
+    @params = params
   end
 
   def logger

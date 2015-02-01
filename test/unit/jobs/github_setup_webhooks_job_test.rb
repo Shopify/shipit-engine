@@ -2,15 +2,14 @@ require 'test_helper'
 
 class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   setup do
-    @job = GithubSetupWebhooksJob.new
+    @job = GithubSetupWebhooksJob
     @stack = stacks(:shipit)
 
     SecureRandom.stubs(:hex).returns('1234')
   end
 
   test "#perform calls GithubTeardownWebhooksJob" do
-    GithubTeardownWebhooksJob.any_instance.expects(:perform).with(has_entry(:stack_id, @stack.id))
-
+    GithubTeardownWebhooksJob.any_instance.expects(:perform).once
     Shipit.github_api.expects(:create_hook).at_least(0).returns(stub(id: 121))
     @job.perform(stack_id: @stack.id, hostname: "example.com")
   end

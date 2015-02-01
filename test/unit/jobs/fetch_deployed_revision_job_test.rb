@@ -3,7 +3,7 @@ require 'test_helper'
 class FetchDeployedRevisionJobTest < ActiveSupport::TestCase
   setup do
     @stack = stacks(:shipit)
-    @job = FetchDeployedRevisionJob.new
+    @job = FetchDeployedRevisionJob
     @commit = commits(:fifth)
   end
 

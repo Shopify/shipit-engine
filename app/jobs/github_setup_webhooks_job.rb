@@ -3,19 +3,17 @@ class GithubSetupWebhooksJob < BackgroundJob
 
   extend BackgroundJob::StackExclusive
 
-  def perform(params)
-    stack = Stack.find(params[:stack_id])
+  def perform
+    GithubTeardownWebhooksJob.new(stack_id: stack.id, github_repo_name: stack.github_repo_name).perform
 
-    GithubTeardownWebhooksJob.new.perform(stack_id: stack.id, github_repo_name: stack.github_repo_name)
-
-    webhook_urls(stack).slice(*Stack::REQUIRED_HOOKS).each do |event, url|
-      create_webhook(stack, event, url)
+    webhook_urls.slice(*Stack::REQUIRED_HOOKS).each do |event, url|
+      create_webhook(event, url)
     end
   end
 
   private
 
-  def create_webhook(stack, event, url)
+  def create_webhook(event, url)
     secret = SecureRandom.hex
     github_hook = Shipit.github_api.create_hook(stack.github_repo_name, 'web', {
       url: url,
@@ -26,7 +24,7 @@ class GithubSetupWebhooksJob < BackgroundJob
     stack.webhooks.create!(github_id: github_hook.id, event: event, secret: secret)
   end
 
-  def webhook_urls(stack)
+  def webhook_urls
     url_helpers = Rails.application.routes.url_helpers
     {
       push: url_helpers.push_stack_webhooks_url(stack.id, host: host),
@@ -36,5 +34,9 @@ class GithubSetupWebhooksJob < BackgroundJob
 
   def host
     Shipit.host
+  end
+
+  def stack
+    @stack ||= Stack.find(params[:stack_id])
   end
 end

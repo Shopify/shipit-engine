@@ -4,28 +4,24 @@ class PerformTaskJob < BackgroundJob
 
   extend BackgroundJob::StackExclusive
 
-  def perform(params)
-    @task = Task.find(params[:task_id])
-    unless @task.pending?
-      logger.error("Task ##{@task.id} already in `#{@task.status}` state. Aborting.")
-      return
-    end
+  def perform
+    return unless task_pending?
     run_task!
   rescue Command::Error
-    @task.failure!
+    task.failure!
   rescue StandardError => error
-    @task.error!
-    @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
+    task.error!
+    task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
   ensure
-    Resque.enqueue(FetchDeployedRevisionJob, stack_id: @task.stack_id)
-    @task.clear_working_directory
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: task.stack_id)
+    task.clear_working_directory
   end
 
   def run_task!
-    @task.run!
+    task.run!
     capture commands.fetch
     capture commands.clone
-    capture commands.checkout(@task.until_commit)
+    capture commands.checkout(task.until_commit)
 
     record_deploy_spec!
 
@@ -33,11 +29,21 @@ class PerformTaskJob < BackgroundJob
       capture_all commands.install_dependencies
       capture_all commands.perform
     end
-    @task.complete!
+    task.complete!
+  end
+
+  def task_pending?
+    return true if task.pending?
+    logger.error("Task ##{task.id} already in `#{task.status}` state. Aborting.")
+    false
+  end
+
+  def task
+    @task ||= Task.find(params[:task_id])
   end
 
   def commands
-    @commands ||= Command.for(@task)
+    @commands ||= Commands.for(task)
   end
 
   def capture_all(commands)
@@ -46,15 +52,15 @@ class PerformTaskJob < BackgroundJob
 
   def capture(command)
     command.start
-    @task.write("$ #{command}\npid: #{command.pid}\n")
-    @task.pid = command.pid
+    task.write("$ #{command}\npid: #{command.pid}\n")
+    task.pid = command.pid
     command.stream!(timeout: COMMAND_TIMEOUT) do |line|
-      @task.write(line)
+      task.write(line)
     end
-    @task.write("\n")
+    task.write("\n")
   end
 
   def record_deploy_spec!
-    @task.stack.update(cached_deploy_spec: @task.spec)
+    task.stack.update(cached_deploy_spec: task.spec)
   end
 end

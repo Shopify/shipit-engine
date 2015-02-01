@@ -3,7 +3,7 @@ require 'test_helper'
 class ChunkRollupJobTest < ActiveSupport::TestCase
   setup do
     @task = tasks(:shipit)
-    @job = ChunkRollupJob.new
+    @job = ChunkRollupJob
   end
 
   test "#perform combines all the chunks into a new one and sets rolled_up to true" do
@@ -20,7 +20,7 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
   test "#peform ignores non-finished jobs" do
     logger = mock
     logger.expects(:error).once
-    @job.stubs(logger: logger)
+    @job.any_instance.stubs(logger: logger)
 
     @task.update_attribute(:status, :pending)
 
@@ -30,7 +30,7 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
   test "#perform ignores tasks with zero or one chunk" do
     logger = mock
     logger.expects(:error).once
-    @job.stubs(logger: logger)
+    @job.any_instance.stubs(logger: logger)
 
     @task.chunks.delete_all
 

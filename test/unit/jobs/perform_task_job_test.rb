@@ -2,13 +2,13 @@ require 'test_helper'
 
 class PerformTaskJobTest < ActiveSupport::TestCase
   setup do
-    @job = PerformTaskJob.new
+    @job = PerformTaskJob
     @deploy = deploys(:shipit_pending)
     @stack = stacks(:shipit)
   end
 
   test "#perform fetch commits from the API" do
-    @job.stubs(:capture)
+    @job.any_instance.stubs(:capture)
     @commands = stub(:commands)
     Task.expects(:find).with(@deploy.id).returns(@deploy)
     Commands.expects(:for).with(@deploy).returns(@commands)
@@ -27,7 +27,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
   test "#perform enqueues a FetchDeployedRevisionJob" do
     Dir.stubs(:chdir).yields
     DeployCommands.any_instance.expects(:perform).returns([])
-    @job.stubs(:capture)
+    @job.any_instance.stubs(:capture)
 
     Resque.expects(:enqueue).with(FetchDeployedRevisionJob, stack_id: @deploy.stack_id)
     @job.perform(task_id: @deploy.id)
@@ -36,14 +36,14 @@ class PerformTaskJobTest < ActiveSupport::TestCase
   test "marks deploy as successful" do
     Dir.stubs(:chdir).yields
     DeployCommands.any_instance.expects(:perform).returns([])
-    @job.stubs(:capture)
+    @job.any_instance.stubs(:capture)
 
     @job.perform(task_id: @deploy.id)
     assert_equal 'success', @deploy.reload.status
   end
 
   test "marks deploy as `error` if any application error is raised" do
-    @job.expects(:capture).raises("some error")
+    @job.any_instance.expects(:capture).raises("some error")
     assert_nothing_raised do
       @job.perform(task_id: @deploy.id)
     end
@@ -52,14 +52,14 @@ class PerformTaskJobTest < ActiveSupport::TestCase
   end
 
   test "marks deploy as `failed` if a command exit with an error code" do
-    @job.expects(:capture).raises(Command::Error.new('something'))
+    @job.any_instance.expects(:capture).raises(Command::Error.new('something'))
     @job.perform(task_id: @deploy.id)
     assert_equal 'failed', @deploy.reload.status
   end
 
   test "bail out if deploy is not pending" do
     @deploy.run!
-    @job.expects(:capture).never
+    @job.any_instance.expects(:capture).never
     @job.perform(task_id: @deploy.id)
   end
 
@@ -74,7 +74,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
   end
 
   test "records stack support for rollbacks and fetching deployed revision" do
-    @job.stubs(:capture)
+    @job.any_instance.stubs(:capture)
     @commands = stub(:commands)
     @commands.stubs(:fetch).returns([])
     @commands.stubs(:clone).returns([])
@@ -82,7 +82,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     @commands.stubs(:install_dependencies).returns([])
     @commands.stubs(:perform).returns([])
     Task.expects(:find).with(@deploy.id).returns(@deploy)
-    DeployCommands.expects(:new).with(@deploy).returns(@commands)
+    Commands.expects(:for).with(@deploy).returns(@commands)
     @deploy.stubs(:clear_working_directory)
 
     DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)

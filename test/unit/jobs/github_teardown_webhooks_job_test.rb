@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GithubTeardownWebhooksJobTest < ActiveSupport::TestCase
   setup do
-    @job = GithubTeardownWebhooksJob.new
+    @job = GithubTeardownWebhooksJob
     @stack = stacks(:shipit)
     @stack.webhooks.destroy_all
   end

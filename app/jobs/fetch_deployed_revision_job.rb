@@ -3,12 +3,8 @@ class FetchDeployedRevisionJob < BackgroundJob
 
   extend BackgroundJob::StackExclusive
 
-  def perform(params)
-    stack = Stack.find(params[:stack_id])
-
+  def perform
     return if stack.deploying?
-
-    commands = StackCommands.new(stack)
 
     begin
       sha = commands.fetch_deployed_revision
@@ -21,5 +17,13 @@ class FetchDeployedRevisionJob < BackgroundJob
       stack.update_deployed_revision(sha)
     rescue ActiveRecord::RecordNotFound
     end
+  end
+
+  def stack
+    @stack ||= Stack.find(params[:stack_id])
+  end
+
+  def commands
+    @commands ||= StackCommands.new(stack)
   end
 end

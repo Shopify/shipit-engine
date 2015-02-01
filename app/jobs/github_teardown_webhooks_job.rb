@@ -3,7 +3,7 @@ class GithubTeardownWebhooksJob < BackgroundJob
 
   extend BackgroundJob::StackExclusive
 
-  def perform(params)
+  def perform
     Shipit.github_api.hooks(params[:github_repo_name]).each do |hook|
       if hook.last_response.status == 'misconfigured'
         Rails.logger.info "removing misconfigured #{hook.id}"

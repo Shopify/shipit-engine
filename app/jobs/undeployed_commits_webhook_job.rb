@@ -3,18 +3,17 @@ class UndeployedCommitsWebhookJob < BackgroundJob
 
   self.timeout = 60
 
-  def perform(params)
-    return unless stack = Stack.find_by_id(params[:stack_id])
+  def perform
     return if stack.locked? || stack.deploying?
 
     old_undeployed_commits = stack.old_undeployed_commits
     return unless old_undeployed_commits.present?
 
     committer_ids = old_undeployed_commits.pluck(:committer_id).uniq
-    send_reminder(build_stack_committer_json(stack, committer_ids), stack.reminder_url)
+    send_reminder(build_stack_committer_json(committer_ids))
   end
 
-  def build_stack_committer_json(stack, committer_ids)
+  def build_stack_committer_json(committer_ids)
     stack_committer_info = {}
     stack_committer_info[:repo_name] = stack.repo_name
     stack_committer_info[:repo_branch] = stack.branch
@@ -22,13 +21,19 @@ class UndeployedCommitsWebhookJob < BackgroundJob
     stack_committer_info.to_json
   end
 
-  def send_reminder(stack_committer_json, reminder_url)
+  def send_reminder(stack_committer_json)
     max_retries = 3
 
     begin
-      Faraday.post reminder_url, {"stack_committer_json" => stack_committer_json }
+      Faraday.post(stack.reminder_url, {"stack_committer_json" => stack_committer_json })
     rescue Faraday::Error
       retry if (max_retries -= 1) > 0
     end
+  end
+
+  private
+
+  def stack
+    @stack ||= Stack.find(params[:stack_id])
   end
 end
