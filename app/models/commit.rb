@@ -6,12 +6,12 @@ class Commit < ActiveRecord::Base
   after_commit { broadcast_update }
   after_create { stack.update_undeployed_commits_count }
 
-  belongs_to :author, class_name: "User"
-  belongs_to :committer, class_name: "User"
+  belongs_to :author, class_name: 'User', inverse_of: :authored_commits
+  belongs_to :committer, class_name: 'User', inverse_of: :commits
 
   scope :reachable,  -> { where(detached: false) }
 
-  delegate :broadcast_update, to: :stack
+  delegate :broadcast_update, :github_repo_name, to: :stack
 
   def self.newer_than(commit)
     return all unless commit
@@ -49,7 +49,7 @@ class Commit < ActiveRecord::Base
   end
 
   def refresh_statuses
-    Shipit.github_api.statuses(stack.github_repo_name, sha).each do |status|
+    Shipit.github_api.statuses(github_repo_name, sha).each do |status|
       statuses.replicate_from_github!(status)
     end
   end
@@ -98,6 +98,10 @@ class Commit < ActiveRecord::Base
     return unless stack.deployable?
     return if newer_commit_deployed?
     stack.trigger_deploy(self, committer)
+  end
+
+  def github_commit
+    Shipit.github_api.commit(github_repo_name, sha)
   end
 
   private

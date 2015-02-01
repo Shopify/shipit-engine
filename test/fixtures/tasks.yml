@@ -1,4 +1,5 @@
 shipit:
+  user: walrus
   since_commit_id: 1 # first
   until_commit_id: 2 # second
   type: Deploy
@@ -8,6 +9,7 @@ shipit:
   deletions: 1
 
 shipit2:
+  user: walrus
   since_commit_id: 2 # second
   until_commit_id: 3 # third
   type: Deploy
@@ -17,6 +19,7 @@ shipit2:
   deletions: 64
 
 shipit_restart:
+  user: walrus
   since_commit_id: 2 # second
   until_commit_id: 2 # second
   type: Task
@@ -42,6 +45,7 @@ shipit_pending:
   deletions: 406
 
 shipit_running:
+  user: walrus
   since_commit_id: 3
   until_commit_id: 4
   type: Deploy
@@ -51,6 +55,7 @@ shipit_running:
   deletions: 342
 
 shipit_complete:
+  user: bob
   since_commit_id: 3
   until_commit_id: 4
   type: Deploy

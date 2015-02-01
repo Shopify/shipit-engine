@@ -57,3 +57,16 @@ fifth:
   committed_at: <%= 1.days.ago.to_s(:db) %>
   additions: 1
   deletions: 24
+
+
+cyclimse_first:
+  id: 6
+  sha: 8e859b4c19ea7638443d43d612086948bce51701
+  message: "Chips!"
+  stack: cyclimse
+  author: bob
+  committer: bob
+  authored_at: <%= 2.days.ago.to_s(:db) %>
+  committed_at: <%= 1.days.ago.to_s(:db) %>
+  additions: 1
+  deletions: 24

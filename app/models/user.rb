@@ -1,6 +1,10 @@
 class User < ActiveRecord::Base
   DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
 
+  has_many :authored_commits, class_name: :Commit, foreign_key: :author_id, inverse_of: :author
+  has_many :commits, foreign_key: :committer_id, inverse_of: :committer
+  has_many :tasks
+
   def self.find_or_create_from_github(github_user)
     find_from_github(github_user) || create_from_github!(github_user)
   end
@@ -36,7 +40,7 @@ class User < ActiveRecord::Base
   def refresh_from_github!
     update!(github_user: Shipit.github_api.user(login))
   rescue Octokit::NotFound
-    false
+    identify_renamed_user!
   end
 
   def github_user=(github_user)
@@ -55,5 +59,16 @@ class User < ActiveRecord::Base
     URI.parse(avatar_url)
   rescue URI::InvalidURIError
     DEFAULT_AVATAR.dup
+  end
+
+  private
+
+  def identify_renamed_user!
+    last_commit = commits.last
+    return unless last_commit
+    github_author = last_commit.github_commit.author
+    update!(github_user: github_author)
+  rescue Octokit::NotFound
+    false
   end
 end

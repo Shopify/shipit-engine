@@ -56,6 +56,24 @@ class UsersTest < ActiveSupport::TestCase
     assert_equal 'george@cyclim.se', @user.email
   end
 
+  test "#refresh_from_github! can identify renamed users and update commits and tasks accordingly" do
+    user = users(:bob)
+    user.update!(github_id: @github_user.id)
+    commit = user.authored_commits.last
+
+    Shipit.github_api.expects(:user).with(user.login).raises(Octokit::NotFound)
+    Shipit.github_api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
+
+    assert_equal 'bob', user.login
+
+    user.refresh_from_github!
+    user.reload
+
+    assert_equal 'george', user.login
+    assert_equal 'George Abitbol', user.name
+    assert_equal 'george@cyclim.se', user.email
+  end
+
   private
 
   def fetch_user

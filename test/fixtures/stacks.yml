@@ -28,3 +28,34 @@ shipit:
         }
       }
     }
+
+cyclimse:
+  repo_owner: george
+  repo_name: cyclimse
+  environment: production
+  branch: master
+  tasks_count: 0
+  undeployed_commits_count: 1
+  cached_deploy_spec: >
+    {
+      "machine": {"environment": {}},
+      "review": {
+        "checklist": ["foo", "bar", "baz"],
+        "monitoring": [
+          {"image": "https://example.com/monitor.png", "width": 200, "height": 300}
+        ]
+      },
+      "dependencies": {"override": []},
+      "deploy": {"override": null},
+      "rollback": {"override": ["echo 'Rollback!'"]},
+      "fetch": ["echo '42'"],
+      "tasks": {
+        "restart": {
+          "action": "Restart application",
+          "description": "Restart app and job servers",
+          "steps": [
+            "cap $ENVIRONMENT deploy:restart"
+          ]
+        }
+      }
+    }

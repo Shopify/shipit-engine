@@ -73,7 +73,7 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "old_undeployed_commits returns commits that were created before the specified time" do
-    last_commit = Commit.last
+    last_commit = @stack.commits.last
     last_commit.update_attributes(created_at: 4.hours.ago)
     old_undeployed_commits = @stack.old_undeployed_commits(3.hours.ago)
     assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
