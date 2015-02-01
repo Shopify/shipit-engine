@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
 
   def refresh_from_github!
     update!(github_user: Shipit.github_api.user(login))
+  rescue Octokit::NotFound
+    false
   end
 
   def github_user=(github_user)
