@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150121183257) do
+ActiveRecord::Schema.define(version: 20150201214637) do
 
   create_table "commits", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4,                     null: false
@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 20150121183257) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "branch",                   limit: 255,   default: "master",     null: false
-    t.text     "checklist",                limit: 65535
     t.string   "deploy_url",               limit: 255
     t.string   "lock_reason",              limit: 255
     t.integer  "tasks_count",              limit: 4,     default: 0,            null: false
@@ -82,9 +81,9 @@ ActiveRecord::Schema.define(version: 20150121183257) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id",         limit: 4
+    t.boolean  "rolled_up",       limit: 1,     default: false,     null: false
     t.string   "type",            limit: 255
     t.integer  "parent_id",       limit: 4
-    t.boolean  "rolled_up",       limit: 1,     default: false,     null: false
     t.integer  "additions",       limit: 4,     default: 0
     t.integer  "deletions",       limit: 4,     default: 0
     t.text     "definition",      limit: 65535

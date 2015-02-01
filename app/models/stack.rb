@@ -4,11 +4,11 @@ class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
   REQUIRED_HOOKS = %i( push status )
 
-  has_many :commits
-  has_many :tasks
+  has_many :commits, dependent: :destroy
+  has_many :tasks, dependent: :destroy
   has_many :deploys
   has_many :rollbacks
-  has_many :webhooks
+  has_many :webhooks, dependent: :destroy
   belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults

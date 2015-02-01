@@ -286,4 +286,22 @@ class StacksTest < ActiveSupport::TestCase
   test "#monitoring returns deploy_spec's content" do
     assert_equal [{'image' => 'https://example.com/monitor.png', 'width' => 200, 'height' => 300}], @stack.monitoring
   end
+
+  test "#destroy deletes the related commits" do
+    assert_difference -> { @stack.commits.count }, -@stack.commits.count do
+      @stack.destroy
+    end
+  end
+
+  test "#destroy deletes the related tasks" do
+    assert_difference -> { @stack.tasks.count }, -@stack.tasks.count do
+      @stack.destroy
+    end
+  end
+
+  test "#destroy deletes the related webhooks" do
+    assert_difference -> { @stack.webhooks.count }, -@stack.webhooks.count do
+      @stack.destroy
+    end
+  end
 end

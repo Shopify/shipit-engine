@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
   end
 
   def github_user=(github_user)
+    return unless github_user
     github_user = github_user.rels[:self].get.data unless github_user.name
     assign_attributes(
       github_id: github_user.id,

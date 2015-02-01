@@ -246,6 +246,12 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  test "destroy deletes the related output chunks" do
+    assert_difference -> { @deploy.chunks.count }, -@deploy.chunks.count do
+      @deploy.destroy
+    end
+  end
+
   def expect_event(deploy)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
