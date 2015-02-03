@@ -36,6 +36,14 @@ class Commit < ActiveRecord::Base
   end
 
   def self.from_github(commit)
+    additions = 0
+    deletions = 0
+    begin
+      additions = commit.stats.additions
+      deletions = commit.stats.deletions
+    rescue StandardError => error
+      Rails.logger.info("[WTF] The commit had no stats: #{error.class.name}: #{error.message}, #{commit.inspect}")
+    end
     new(
       sha: commit.sha,
       message: commit.commit.message,
@@ -43,8 +51,8 @@ class Commit < ActiveRecord::Base
       committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
       committed_at: commit.commit.committer.date,
       authored_at: commit.commit.author.date,
-      additions: commit.stats.additions,
-      deletions: commit.stats.deletions,
+      additions: additions,
+      deletions: deletions,
     )
   end
 
