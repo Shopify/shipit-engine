@@ -7,7 +7,7 @@
 
 # Offense count: 8
 Metrics/AbcSize:
-  Max: 30
+  Max: 34
 
 # Offense count: 9
 # Cop supports --auto-correct.

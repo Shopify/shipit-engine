@@ -10,19 +10,9 @@ class PerformTaskJob < BackgroundJob
       logger.error("Task ##{@task.id} already in `#{@task.status}` state. Aborting.")
       return
     end
-    run_task!
-  rescue Command::Error
-    @task.failure!
-  rescue StandardError => error
-    @task.error!
-    @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
-  ensure
-    Resque.enqueue(FetchDeployedRevisionJob, stack_id: @task.stack_id)
-    @task.clear_working_directory
-  end
 
-  def run_task!
     @task.run!
+    commands = Commands.for(@task)
     capture commands.fetch
     capture commands.clone
     capture commands.checkout(@task.until_commit)
@@ -34,10 +24,14 @@ class PerformTaskJob < BackgroundJob
       capture_all commands.perform
     end
     @task.complete!
-  end
-
-  def commands
-    @commands ||= Command.for(@task)
+  rescue Command::Error
+    @task.failure!
+  rescue StandardError => error
+    @task.error!
+    @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
+  ensure
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: @task.stack_id)
+    @task.clear_working_directory
   end
 
   def capture_all(commands)
