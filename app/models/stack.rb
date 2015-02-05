@@ -32,10 +32,6 @@ class Stack < ActiveRecord::Base
     find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
   end
 
-  def self.send_undeployed_commits_reminders
-    with_reminder_webhook.reject(&:locked?).map(&:enqueue_undeployed_commits_job)
-  end
-
   def undeployed_commits?
     undeployed_commits_count > 0
   end
@@ -201,10 +197,6 @@ class Stack < ActiveRecord::Base
     after_commit ||= last_deployed_commit
     undeployed_commits = commits.reachable.select('count(*) as count').where('id > ?', after_commit.id)
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
-  end
-
-  def old_undeployed_commits(long_time_ago = 30.minutes.ago)
-    undeployed_commits? ? commits.newer_than(last_deployed_commit).where("created_at < ?", long_time_ago) : commits.none
   end
 
   def enqueue_undeployed_commits_job
