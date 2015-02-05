@@ -72,18 +72,6 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal File.join(@expected_base_path, "git"), @stack.git_path
   end
 
-  test "old_undeployed_commits returns commits that were created before the specified time" do
-    last_commit = @stack.commits.last
-    last_commit.update_attributes(created_at: 4.hours.ago)
-    old_undeployed_commits = @stack.old_undeployed_commits(3.hours.ago)
-    assert_equal [last_commit.id], old_undeployed_commits.pluck(:id)
-  end
-
-  test "old_undeployed_commits returns commits.none when no commits are found" do
-    Stack.any_instance.expects(:undeployed_commits?).returns(false)
-    assert_equal @stack.commits.none, @stack.old_undeployed_commits
-  end
-
   test "reminder_url cannot be set to an invalid URL" do
     %w(example ftp://username.example.com/ http:// .com).each do |invalid_url|
       @stack.reminder_url = invalid_url
@@ -247,35 +235,6 @@ class StacksTest < ActiveSupport::TestCase
   test "#deployable? returns false if stack is deploying" do
     @stack.trigger_deploy(commits(:third), AnonymousUser.new)
     refute @stack.deployable?
-  end
-
-  test "#enqueue_undeployed_commits_job enqueues an UndeployedCommitsWebhookJob Resque job for the stack" do
-    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
-    @stack.enqueue_undeployed_commits_job
-  end
-
-  test ".send_undeployed_commits_reminders calls enqueue_undeployed_commits_job for stacks that require reminder" do
-    @stack.update_attributes(reminder_url: 'http://www.example.com', lock_reason: nil)
-    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).once
-    Stack.send_undeployed_commits_reminders
-  end
-
-  test ".send_undeployed_commits_reminders ignores stacks without a reminder_url" do
-    @stack.update_attributes(reminder_url: nil, lock_reason: nil)
-    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
-    Stack.send_undeployed_commits_reminders
-  end
-
-  test ".send_undeployed_commits_reminders ignores stacks with an empty reminder_url" do
-    @stack.update_attributes(reminder_url: '', lock_reason: nil)
-    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
-    Stack.send_undeployed_commits_reminders
-  end
-
-  test ".send_undeployed_commits_reminders does not call enqueue_undeployed_commits_job for stacks that are locked" do
-    @stack.update_attributes(reminder_url: 'http://www.example.com', lock_reason: "Need to Rollback")
-    Resque.expects(:enqueue).with(UndeployedCommitsWebhookJob, stack_id: @stack.id).never
-    Stack.send_undeployed_commits_reminders
   end
 
   test "#monitoring is empty if cached_deploy_spec is blank" do

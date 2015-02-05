@@ -3,10 +3,6 @@ every 1.minute do
 end
 
 every 1.hour do
-  rake 'cron:send_undeployed_commits_reminders'
-end
-
-every 1.hour do
   rake 'cron:rollup'
 end
 
