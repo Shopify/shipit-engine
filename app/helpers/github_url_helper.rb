@@ -43,8 +43,8 @@ module GithubUrlHelper
   end
 
   def link_to_github_deploy(deploy)
-    url = github_commit_range_url(deploy.stack, deploy.since_commit, deploy.until_commit)
-    text = "#{deploy.since_commit.short_sha}...#{deploy.until_commit.short_sha}"
+    url = github_commit_range_url(deploy.stack, *deploy.commit_range)
+    text = deploy.commit_range.map(&:short_sha).join('...')
     link_to(text, url, class: 'number')
   end
 end

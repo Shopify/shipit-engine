@@ -37,6 +37,10 @@ class Deploy < Task
     false
   end
 
+  def commit_range
+    [since_commit, until_commit]
+  end
+
   def rollbackable?
     stack.supports_rollback? && success? && self != stack.last_deploy
   end
