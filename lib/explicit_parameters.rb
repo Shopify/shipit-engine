@@ -1,6 +1,5 @@
 module ExplicitParameters
   BaseError = Class.new(StandardError)
-  MissingParameter = Class.new(BaseError)
   InvalidParameters = Class.new(BaseError)
   MissingParametersDeclaration = Class.new(BaseError)
 

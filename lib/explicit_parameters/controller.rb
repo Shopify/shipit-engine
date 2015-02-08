@@ -17,11 +17,12 @@ module ExplicitParameters
       def method_added(action)
         return unless Controller.last_parameters
         parameters[action.to_s] = Controller.last_parameters
+        const_set("#{action.to_s.camelize}Parameters", Controller.last_parameters)
         Controller.last_parameters = nil
       end
 
       def params(&block)
-        Controller.last_parameters = ExplicitParameters::Parser.new(&block)
+        Controller.last_parameters = ExplicitParameters::Parameters.define(&block)
       end
 
       def parameters_for(action)
@@ -29,7 +30,7 @@ module ExplicitParameters
       end
 
       def parse_parameters_for(action_name, params)
-        parameters_for(action_name).from_param(params)
+        parameters_for(action_name).parse!(params)
       end
     end
 

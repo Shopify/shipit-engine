@@ -27,6 +27,7 @@ gem 'ansi_stream', '~> 0.0.4'
 gem 'heroku'
 gem 'faraday'
 gem 'validate_url'
+gem 'virtus'
 
 group :development do
   gem 'quiet_assets'

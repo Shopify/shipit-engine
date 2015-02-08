@@ -9,6 +9,7 @@ class ApiController < ActionController::Base
 
   params do
     requires :id, Integer
+    requires :name, String
     accepts :count, Integer
     accepts :page_size, Integer, default: 100
   end
