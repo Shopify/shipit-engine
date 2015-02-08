@@ -21,7 +21,11 @@ module Shipit
     # config.i18n.default_locale = :de
 
     # Autoload lib/
-    config.autoload_paths += Dir["#{config.root}/lib", "#{config.root}/lib/**/"]
+    config.autoload_paths += Dir[*%W(
+      #{config.root}/lib
+      #{config.root}/lib/**/
+      #{config.root}/app/serializers/**/
+    )]
 
     # Compile the correct assets
     config.assets.precompile += %w(master.css)
@@ -32,5 +36,8 @@ module Shipit
     config.active_record.raise_in_transactional_callbacks = true
 
     Rails.application.routes.default_url_options[:host] = Rails.application.secrets.host
+
+    ActiveModel::Serializer._root = false
+    ActiveModel::ArraySerializer._root = false
   end
 end

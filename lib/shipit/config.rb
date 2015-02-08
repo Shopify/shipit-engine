@@ -4,6 +4,10 @@ module Shipit::Config
     @github_api ||= Octokit::Client.new(credentials.symbolize_keys)
   end
 
+  def api_clients_secret
+    Rails.application.secrets.api_clients_secret || ''
+  end
+
   delegate :authentication, :github, :host, to: :secrets
 
   def github_required?

@@ -61,3 +61,7 @@ Style/TrailingComma:
 
 Style/ClassAndModuleChildren:
   Enabled: false
+
+Style/PredicateName:
+  Exclude:
+    - app/serializers/**/*
