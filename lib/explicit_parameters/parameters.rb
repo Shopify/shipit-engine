@@ -24,12 +24,15 @@ module ExplicitParameters
         Class.new(self, &block)
       end
 
-      def requires(name, type, options = {})
+      def requires(name, type, options = {}, &block)
         accepts(name, type, options.merge(required: true))
       end
 
-      def accepts(name, type, options = {})
-        attribute(name, type, options.slice(:default))
+      def accepts(name, type, options = {}, &block)
+        if type < ActiveRecord::Base || type.is_a?(ActiveRecord::Relation)
+          type = ScopeAttribute.for(type)
+        end
+        attribute(name, type, options.slice(:default, :required))
         validations = options.except(:default)
         validations[:coercion] = true
         validates(name, validations)
@@ -40,8 +43,8 @@ module ExplicitParameters
       end
     end
 
-    def initialize(attributes = nil)
-      record_missing_attributes(attributes) if attributes
+    def initialize(attributes = {})
+      @original_attributes = attributes.stringify_keys
       super
     end
 
@@ -51,24 +54,25 @@ module ExplicitParameters
     end
 
     def validate_attribute_provided!(attribute_name, value)
-      errors.add attribute_name, "is required" if @missing_attributes.include?(attribute_name)
+      errors.add attribute_name, "is required" unless @original_attributes.key?(attribute_name.to_s)
     end
 
     def validate_attribute_coercion!(attribute_name, value)
+      return unless @original_attributes.key?(attribute_name.to_s)
       attribute = attribute_set[attribute_name]
-      return if value.nil?
+      return if value.nil? && !attribute.required?
       return if attribute.value_coerced?(value)
-      errors.add attribute_name, "#{value.inspect} is not a valid #{attribute.type.name.demodulize}"
+      errors.add attribute_name, "#{@original_attributes[attribute_name].inspect} is not a valid #{attribute.type.name.demodulize}"
     end
 
     def to_hash
-      super.except(*@missing_attributes)
+      super.except(*missing_attributes)
     end
 
     private
 
-    def record_missing_attributes(attributes)
-      @missing_attributes = (attribute_set.map(&:name).map(&:to_s) - attributes.keys.map(&:to_s)).map(&:to_sym)
+    def missing_attributes
+      @missing_attributes ||= (attribute_set.map(&:name).map(&:to_s) - @original_attributes.keys).map(&:to_sym)
     end
   end
 end

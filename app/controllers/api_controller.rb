@@ -9,12 +9,18 @@ class ApiController < ActionController::Base
 
   params do
     requires :id, Integer
-    requires :name, String
+    requires :author, User.where('id > 2')
     accepts :count, Integer
     accepts :page_size, Integer, default: 100
   end
   def show
     render json: params
+  end
+
+  private
+
+  def active_users
+    User.all
   end
 
 end
