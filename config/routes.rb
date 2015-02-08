@@ -6,6 +6,8 @@ Shipit::Application.routes.draw do
   mount UserRequiredMiddleware.new(Resque::Server.new), at: "/resque"
   mount UserRequiredMiddleware.new(Pubsubstub::StreamAction.new), at: "/events", as: :events
 
+  resources :api
+
   get '/status/version' => 'status#version', as: :version
 
   scope '/auth/:provider', as: :authentication, controller: :authentication do
