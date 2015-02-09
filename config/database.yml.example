@@ -3,6 +3,9 @@ development:
   database: shipit_development
   encoding: utf8
   strict: true
+  semian:
+    tickets: 5
+    error_timeout: 60
 
 test:
   adapter: mysql2

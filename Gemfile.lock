@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/Shopify/semian.git
+  revision: 182940f7c486cb5f9686821822c200ff60c72d38
+  branch: mysql-client
+  specs:
+    semian (0.0.8)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -337,6 +344,7 @@ DEPENDENCIES
   safe_yaml
   sass-rails
   securecompare (~> 1.0)
+  semian!
   simplecov
   sprockets
   state_machine
