@@ -10,6 +10,6 @@ namespace :cron do
   end
 
   task refresh_users: :environment do
-    User.refresh_shard(Time.now.hour % 6, 6)
+    User.refresh_shard(Time.now.hour % 24, 24)
   end
 end
