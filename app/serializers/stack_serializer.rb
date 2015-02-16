@@ -1,14 +1,19 @@
 class StackSerializer < ActiveModel::Serializer
   include ConditionalAttributes
 
-  attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :is_locked, :lock_reason
+  attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url,
+             :is_locked, :lock_reason, :created_at, :updated_at
 
   def url
-    api_stacks_url(object)
+    api_stack_url(object)
   end
 
   def html_url
-    stacks_url(object)
+    stack_url(object)
+  end
+
+  def tasks_url
+    api_stack_tasks_url(object)
   end
 
   def is_locked

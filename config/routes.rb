@@ -60,6 +60,12 @@ Shipit::Application.routes.draw do
   # API
   namespace :api do
     root to: 'base#index'
-    resources :stacks
+    resources :stacks, only: :index
+    scope '/stacks/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+      get '/' => 'stacks#show'
+    end
+    scope '/stacks/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+      resources :tasks, only: %i(index show)
+    end
   end
 end

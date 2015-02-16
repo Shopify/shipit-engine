@@ -1,5 +1,8 @@
 module Api
   class BaseController < ActionController::Base
+    include Cacheable
+    include Paginable
+
     before_action :authenticate_api_client
 
     def index
