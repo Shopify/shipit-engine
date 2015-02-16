@@ -56,4 +56,10 @@ Shipit::Application.routes.draw do
       end
     end
   end
+
+  # API
+  namespace :api do
+    root to: 'base#index'
+    resources :stacks
+  end
 end
