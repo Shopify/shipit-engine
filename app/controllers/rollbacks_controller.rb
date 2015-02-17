@@ -17,7 +17,7 @@ class RollbacksController < ApplicationController
   end
 
   def load_stack
-    @stack ||= Stack.from_param(params[:stack_id])
+    @stack ||= Stack.from_param!(params[:stack_id])
   end
 
   def load_deploy

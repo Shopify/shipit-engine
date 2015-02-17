@@ -166,7 +166,7 @@ class Stack < ActiveRecord::Base
     [repo_owner, repo_name, environment].join('/')
   end
 
-  def self.from_param(param)
+  def self.from_param!(param)
     repo_owner, repo_name, environment = param.split('/')
     where(
       repo_owner: repo_owner.downcase,

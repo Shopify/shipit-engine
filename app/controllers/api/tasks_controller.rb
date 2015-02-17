@@ -13,7 +13,7 @@ module Api
     private
 
     def load_stack
-      @stack = Stack.from_param(params[:stack_id])
+      @stack = Stack.from_param!(params[:stack_id])
     end
   end
 end

@@ -12,7 +12,7 @@ class StacksController < ApplicationController
   end
 
   def show
-    @stack = Stack.from_param(params[:id])
+    @stack = Stack.from_param!(params[:id])
     return if flash.empty? && !stale?(last_modified: @stack.updated_at)
 
     @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
@@ -61,7 +61,7 @@ class StacksController < ApplicationController
   private
 
   def load_stack
-    @stack = Stack.from_param(params[:id])
+    @stack = Stack.from_param!(params[:id])
   end
 
   def create_params
