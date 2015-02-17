@@ -20,6 +20,9 @@ class ActiveSupport::TestCase
   include PayloadsHelper
   include FixtureAliasesHelper
   include QueriesHelper
+  include JSONHelper
+  include LinksHelper
+  include ApiHelper
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
