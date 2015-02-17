@@ -24,4 +24,9 @@ class Api::StacksControllerTest < ActionController::TestCase
       assert_link 'first', api_stacks_url(page_size: 1)
     end
   end
+
+  test "the `next` link is not provided when the last page is reached" do
+    get :index, page_size: Stack.count
+    assert_no_link 'next'
+  end
 end

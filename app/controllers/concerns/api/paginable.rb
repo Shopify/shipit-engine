@@ -40,12 +40,12 @@ module Api
       end
 
       def to_a
-        @resources
+        @resources[0, @page_size]
       end
 
       def links
         links = [link_to(:first, since: nil, page_size: (page_size if page_size != @default_page_size))]
-        links << link_to(:next, since: to_a.last.id) unless to_a.size < page_size
+        links << link_to(:next, since: to_a.last.id) unless @resources.size < (page_size + 1)
         links.join(', ')
       end
 
@@ -59,7 +59,7 @@ module Api
       end
 
       def fetch(resources)
-        scope = resources.order(order).limit(page_size)
+        scope = resources.order(order).limit(page_size + 1)
 
         if since
           column = scope.model.arel_table[order_column]
