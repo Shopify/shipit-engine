@@ -8,10 +8,11 @@ class Command
 
   Error = Class.new(StandardError)
 
-  attr_reader :out, :code, :chdir, :env, :args, :pid
+  attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
 
-  def initialize(*args, env: {}, chdir:)
-    @args = args
+  def initialize(*args, default_timeout: 5.minutes.to_i, env: {}, chdir:)
+    @args, options = parse_arguments(args)
+    @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
     @env = env
     @chdir = chdir.to_s
   end
@@ -41,17 +42,17 @@ class Command
     "#{self} exited with status #{@code}"
   end
 
-  def run(timeout: nil)
+  def run
     output = []
-    stream(timeout: timeout) do |out|
+    stream do |out|
       output << out
     end
     output.join
   end
 
-  def run!(timeout: nil)
+  def run!
     output = []
-    stream!(timeout: timeout) do |out|
+    stream! do |out|
       output << out
     end
     output.join
@@ -81,10 +82,10 @@ class Command
     self
   end
 
-  def stream(timeout: nil, &block)
+  def stream(&block)
     start
     begin
-      read_stream(@out, timeout: timeout, &block)
+      read_stream(@out, &block)
     rescue Timeout::Error => error
       @code = 'timeout'
       yield red("No output received in the last #{timeout} seconds.") + "\n"
@@ -107,22 +108,22 @@ class Command
     "\033[1;31m#{text}\033[0m"
   end
 
-  def stream!(timeout: nil, &block)
-    stream(timeout: timeout, &block)
+  def stream!(&block)
+    stream(&block)
     raise Command::Error.new(exit_message) unless success?
     self
   end
 
-  def read_stream(io, timeout: timeout)
+  def read_stream(io)
     loop do
-      with_timeout(timeout) do
+      with_timeout do
         yield io.readpartial(MAX_READ)
       end
     end
   rescue EOFError
   end
 
-  def with_timeout(timeout, &block)
+  def with_timeout(&block)
     return yield unless timeout
 
     Timeout.timeout(timeout, &block)
@@ -138,7 +139,7 @@ class Command
     true # much success
   ensure
     begin
-      read_stream(@out, timeout: 1, &block)
+      read_stream(@out, &block)
     rescue
     end
   end
@@ -154,5 +155,19 @@ class Command
   def kill(sig)
     yield red("Sending SIG#{sig} to PID #{@subprocess.pid}\n")
     Process.kill(sig, @subprocess.pid)
+  end
+
+  def parse_arguments(arguments)
+    options = {}
+    args = arguments.flatten.map do |argument|
+      case argument
+      when Hash
+        options.merge!(argument.values.first)
+        argument.keys.first
+      else
+        argument
+      end
+    end
+    return args, options
   end
 end

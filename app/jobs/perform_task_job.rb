@@ -1,5 +1,4 @@
 class PerformTaskJob < BackgroundJob
-  COMMAND_TIMEOUT = 5.minutes.to_i
   @queue = :deploys
 
   extend BackgroundJob::StackExclusive
@@ -42,7 +41,7 @@ class PerformTaskJob < BackgroundJob
     command.start
     @task.write("$ #{command}\npid: #{command.pid}\n")
     @task.pid = command.pid
-    command.stream!(timeout: COMMAND_TIMEOUT) do |line|
+    command.stream! do |line|
       @task.write(line)
     end
     @task.write("\n")
