@@ -153,8 +153,8 @@ class Command
   end
 
   def kill(sig)
-    yield red("Sending SIG#{sig} to PID #{@subprocess.pid}\n")
-    Process.kill(sig, @subprocess.pid)
+    yield red("Sending SIG#{sig} to PID #{@pid}\n")
+    Process.kill(sig, @pid)
   end
 
   def parse_arguments(arguments)
