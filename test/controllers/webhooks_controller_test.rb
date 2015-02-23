@@ -29,7 +29,7 @@ class WebhooksControllerTest < ActionController::TestCase
     Webhook.any_instance.expects(:verify_signature).returns(true)
     request.headers['X-Github-Event'] = 'status'
 
-    status_payload = payload(:status)
+    status_payload = payload(:status_master)
     commit = commits(:first)
 
     assert_difference 'commit.statuses.count', +1 do
@@ -48,10 +48,19 @@ class WebhooksControllerTest < ActionController::TestCase
     Webhook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'status'
-    params = {"sha" => "notarealcommit", "state" => "pending"}
+    params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
     assert_raises ActiveRecord::RecordNotFound do
       post :state, { stack_id: @stack.id }.merge(params)
     end
+  end
+
+  test ":state in an untracked branche bails out" do
+    Webhook.any_instance.expects(:verify_signature).returns(true)
+
+    request.headers['X-Github-Event'] = 'status'
+    params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
+    post :state, { stack_id: @stack.id }.merge(params)
+    assert_response :ok
   end
 
   test ":push returns head :ok if request is ping" do
