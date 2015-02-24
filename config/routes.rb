@@ -65,7 +65,9 @@ Shipit::Application.routes.draw do
       get '/' => 'stacks#show'
     end
     scope '/stacks/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
-      resources :tasks, only: %i(index show)
+      resources :tasks, only: %i(index show) do
+        resource :output, only: :show
+      end
     end
   end
 end
