@@ -38,6 +38,10 @@ class DeploySpec
     config('machine', 'environment') || {}
   end
 
+  def directory
+    config('machine', 'directory')
+  end
+
   def dependencies_steps
     config('dependencies', 'override') || discover_dependencies_steps || []
   end

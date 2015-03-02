@@ -14,13 +14,13 @@ class TaskCommands < Commands
 
   def install_dependencies
     deploy_spec.dependencies_steps!.map do |command_line|
-      Command.new(command_line, env: env, chdir: @task.working_directory)
+      Command.new(command_line, env: env, chdir: steps_directory)
     end
   end
 
   def perform
     steps.map do |command_line|
-      Command.new(command_line, env: env, chdir: @task.working_directory)
+      Command.new(command_line, env: env, chdir: steps_directory)
     end
   end
 
@@ -52,6 +52,14 @@ class TaskCommands < Commands
   end
 
   protected
+
+  def steps_directory
+    if sub_directory = deploy_spec.directory.presence
+      File.join(@task.working_directory, sub_directory)
+    else
+      @task.working_directory
+    end
+  end
 
   def permalink
     Rails.application.routes.url_helpers.stack_task_url(@stack, @task)

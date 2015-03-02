@@ -196,7 +196,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_instance_of DeploySpec::FileSystem, @spec
     assert_instance_of DeploySpec, @spec.cacheable
     config = {
-      'machine' => {'environment' => {}},
+      'machine' => {'environment' => {}, 'directory' => nil},
       'review' => {'checklist' => []},
       'dependencies' => {'override' => []},
       'deploy' => {'override' => nil},

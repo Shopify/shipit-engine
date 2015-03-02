@@ -10,6 +10,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
       deploy_steps!: ['bundle exec cap $ENVIRONMENT deploy'],
       rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
       machine_env: {'GLOBAL' => '1'},
+      directory: nil,
     )
     @commands.stubs(:deploy_spec).returns(@deploy_spec)
 
@@ -97,6 +98,14 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal 1, commands.length
     command = commands.first
     assert_equal @deploy.working_directory, command.chdir
+  end
+
+  test "the working_directory can be overriten in the spec" do
+    @deploy_spec.stubs(:directory).returns('my_directory')
+    commands = @commands.perform
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal File.join(@deploy.working_directory, 'my_directory'), command.chdir
   end
 
   test "#perform calls cap $environment deploy with the SHA in the environment" do
