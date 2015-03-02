@@ -1,8 +1,9 @@
 class DeploySpec
   class FileSystem < DeploySpec
-    include BundlerDiscovery
-    include CapistranoDiscovery
+    include PypiDiscovery
     include RubygemsDiscovery
+    include CapistranoDiscovery
+    include BundlerDiscovery
 
     def initialize(app_dir, env)
       @app_dir = Pathname(app_dir)

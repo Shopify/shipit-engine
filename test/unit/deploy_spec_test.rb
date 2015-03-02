@@ -169,6 +169,29 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
   end
 
+  test '#setup_dot_py gives the path of the repo setup.py if present' do
+    spec = DeploySpec::FileSystem.new('foobar/', 'production')
+    assert_equal Pathname.new('foobar/setup.py'), spec.setup_dot_py
+  end
+
+  test '#egg? is true if a setup.py is present' do
+    @spec.expects(:setup_dot_py).returns(Rails.root.join('Gemfile'))
+    assert @spec.egg?
+  end
+
+  test '#egg? is false if there is no setup.py' do
+    @spec.expects(:setup_dot_py).returns(Rails.root.join("tmp-#{SecureRandom.hex}"))
+    refute @spec.egg?
+  end
+
+  test '#publish_egg first check if version tag have been created, and then invoke bundler release task' do
+    file = Pathname.new('/tmp/fake_setup.py')
+    file.write('foo')
+    @spec.stubs(:setup_dot_py).returns(file)
+    steps = ['assert-egg-version-tag /tmp/fake_setup.py', 'python setup.py register sdist upload']
+    assert_equal steps, @spec.deploy_steps
+  end
+
   test '#cacheable returns a DeploySpec instance that can be serialized' do
     assert_instance_of DeploySpec::FileSystem, @spec
     assert_instance_of DeploySpec, @spec.cacheable

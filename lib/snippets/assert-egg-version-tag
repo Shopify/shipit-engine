@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+SETUP_DOT_PY=$1
+VERSION=`extract-egg-version $SETUP_DOT_PY`
+
+echo -e "\033[0;32mTrying to publish version $VERSION\033[0m"
+
+git tag | grep "^v$VERSION$" > /dev/null
+if [ $? != '0' ]; then
+  echo -e "\033[1;31mYou need to create the \033[0;33mv$VERSION\033[1;31m tag first.\033[0m"
+  exit 1
+fi
+
+TAG_REV=`git rev-list -n1 v$VERSION`
+HEAD_REV=`git rev-parse HEAD`
+
+if [ $TAG_REV != $HEAD_REV ]; then
+  echo -e "\033[1;31mYou're attempting to publish \033[0;33m$HEAD_REV\033[1;31m as \033[0;33mv$VERSION\033[1;31m but it already points to \033[0;33m$TAG_REV\033[1;31m.\033[0m"
+  exit 1
+fi
+
+echo -e "\033[0;32mAll clear!\033[0m"
+exit 0
