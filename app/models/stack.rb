@@ -199,10 +199,6 @@ class Stack < ActiveRecord::Base
     self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
   end
 
-  def enqueue_undeployed_commits_job
-    Resque.enqueue(UndeployedCommitsWebhookJob, stack_id: id)
-  end
-
   def broadcast_update
     payload = {url: Rails.application.routes.url_helpers.stack_path(self)}.to_json
     event = Pubsubstub::Event.new(payload, name: "stack.update")
