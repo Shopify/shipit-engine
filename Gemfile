@@ -52,6 +52,6 @@ end
 group :deploy do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
-  gem 'capistrano', '3.1.0'
+  gem 'capistrano'
   gem 'whenever'
 end
