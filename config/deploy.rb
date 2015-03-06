@@ -6,24 +6,13 @@ set :application, 'shipit'
 set :repo_url, 'git@shipit2.github.shopify.com:Shopify/shipit2.git'
 set :branch, ENV['REVISION'] || ENV['BRANCH_NAME'] || 'master'
 
-# Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/u/apps/shipit'
 set :format, :pretty
 
-# Default value for :pty is false
-# set :pty, true
-
-# Default value for :linked_files is []
 set :linked_files, %w(config/database.yml config/secrets.yml)
-
-# Default value for linked_dirs is []
 set :linked_dirs, %w(bin data log tmp vendor/bundle public/system public/assets)
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
-
-# Default value for keep_releases is 5
-set :keep_releases, 50
+set :keep_releases, 10
 
 before 'deploy:assets:precompile', 'deploy:use_deploy_log'
 before 'deploy:symlink:release', 'deploy:use_runtime_log'
@@ -32,25 +21,25 @@ after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
   task :use_deploy_log do
-    on roles(:app), in: :parallel do
+    on roles(:app) do
       within release_path do
-        execute(*%W(ln -nsfT #{shared_path}/deploy_log ./log))
+        execute :ln, '-nsfT', shared_path.join('deploy_log'), './log'
       end
     end
   end
 
   task :use_runtime_log do
-    on roles(:app), in: :parallel do
+    on roles(:app) do
       within release_path do
-        execute(*%W(ln -nsfT #{shared_path}/log ./log))
+        execute :ln, '-nsfT', shared_path.join('log'), './log'
       end
     end
   end
 
   desc "Signal Thin services to restart the application"
   task :restart do
-    on roles(:app), in: :parallel do
-      execute "sv-sudo hup /etc/sv/shipit-thin-*"
+    on roles(:app) do
+      execute 'sv-sudo', 'hup', '/etc/sv/shipit-thin-*'
     end
   end
 
@@ -69,7 +58,7 @@ namespace :deploy do
 
   desc "Store the deployed revision in a REVISION file"
   task :write_revision do
-    on roles(:app), in: :parallel do
+    on roles(:app) do
       within release_path do
         execute 'echo', fetch(:current_revision), '> REVISION'
       end
@@ -80,8 +69,8 @@ end
 namespace :jobs do
   desc "restart the job workers"
   task :restart do
-    on roles(:app), in: :parallel do
-      execute "sv-sudo quit /etc/sv/shipit-*-resque-*"
+    on roles(:app) do
+      execute 'sv-sudo', 'quit', '/etc/sv/shipit-*-resque-*'
     end
   end
 end
