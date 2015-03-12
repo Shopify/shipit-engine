@@ -1,7 +1,7 @@
 class ApiClient < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
 
-  validates :creator, presence: true
+  validates :creator, :name, presence: true
 
   serialize :permissions, Array
 
