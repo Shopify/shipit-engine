@@ -1,4 +1,6 @@
 class Commit < ActiveRecord::Base
+  AmbiguousRevision = Class.new(StandardError)
+
   belongs_to :stack, touch: true
   has_many :deploys
   has_many :statuses, -> { order(created_at: :desc) }
@@ -31,8 +33,18 @@ class Commit < ActiveRecord::Base
     update_all(detached: true)
   end
 
+  def self.by_sha(sha)
+    if sha.to_s.size < 6
+      raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (too short)"
+    end
+
+    commits = where('sha like ?', "#{sha}%").take(2)
+    raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+    commits.first
+  end
+
   def self.by_sha!(sha)
-    where('sha like ?', "#{sha}%").first!
+    by_sha(sha) || raise(ActiveRecord::RecordNotFound, "Couldn't find commit with sha #{sha}")
   end
 
   def self.from_github(commit)

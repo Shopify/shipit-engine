@@ -152,8 +152,24 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 4, @stack.undeployed_commits_count
   end
 
-  test ".by_sha! can match truncated shas" do
+  test ".by_sha! can match sha prefixes" do
     assert_equal @commit, Commit.by_sha!(@commit.sha[0..7])
+  end
+
+  test ".by_sha! raises on ambigous sha prefixes" do
+    assert_raises Commit::AmbiguousRevision do
+      Commit.by_sha!(@commit.sha[0..3])
+    end
+  end
+
+  test ".by_sha! raises if the sha prefix matches multiple commits" do
+    clone = Commit.new(@commit.attributes.except('id'))
+    clone.sha[8..-1] = 'abc12'
+    clone.save!
+
+    assert_raises Commit::AmbiguousRevision do
+      Commit.by_sha!(@commit.sha[0..7])
+    end
   end
 
   test "#state is `unknown` by default" do

@@ -14,7 +14,7 @@ class DeploysControllerTest < ActionController::TestCase
   end
 
   test ":new is success" do
-    get :new, stack_id: @stack.to_param
+    get :new, stack_id: @stack.to_param, sha: @commit.sha
     assert_response :success
   end
 
