@@ -1,7 +1,11 @@
 module Shipit::Config
   def github_api
-    credentials = Rails.application.secrets.github_credentials || {}
-    @github_api ||= Octokit::Client.new(credentials.symbolize_keys)
+    @github_api ||= begin
+      credentials = Rails.application.secrets.github_credentials || {}
+      client = Octokit::Client.new(credentials.symbolize_keys)
+      client.middleware.use(Faraday::HttpCache, shared_cache: false, store: Rails.cache, logger: Rails.logger)
+      client
+    end
   end
 
   def api_clients_secret

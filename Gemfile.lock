@@ -88,6 +88,8 @@ GEM
       i18n (~> 0.5)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    faraday-http-cache (1.0.1)
+      faraday (~> 0.8)
     foreman (0.77.0)
       dotenv (~> 1.0.2)
       thor (~> 0.19.1)
@@ -317,6 +319,7 @@ DEPENDENCIES
   coffee-rails
   faker
   faraday
+  faraday-http-cache
   foreman (~> 0.74)
   heroku
   jquery-rails

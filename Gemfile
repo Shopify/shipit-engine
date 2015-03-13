@@ -26,6 +26,7 @@ gem 'rails-timeago', '~> 2.0'
 gem 'ansi_stream', '~> 0.0.4'
 gem 'heroku'
 gem 'faraday'
+gem 'faraday-http-cache'
 gem 'validate_url'
 gem 'active_model_serializers'
 
