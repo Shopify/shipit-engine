@@ -14,6 +14,8 @@ set :linked_dirs, %w(bin data log tmp vendor/bundle public/system public/assets)
 
 set :keep_releases, 10
 
+set :bugsnag_api_key, '8f5ef714c28f7ea7b5c1fde664d3dc7a'
+
 before 'deploy:assets:precompile', 'deploy:use_deploy_log'
 before 'deploy:symlink:release', 'deploy:use_runtime_log'
 
