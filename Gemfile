@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2.1.rc1'
+gem 'rails', '~> 4.2.1.rc4'
 gem 'responders'
 gem 'sprockets'
 gem 'mysql2'
