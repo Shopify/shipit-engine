@@ -19,5 +19,16 @@ module Api
       headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'
       render json: {message: 'Bad credentials'}, status: :unauthorized
     end
+
+    attr_reader :current_api_client
+
+    def current_user
+      @current_user ||= identify_user || AnonymousUser.new
+    end
+
+    def identify_user
+      user_login = request.headers['X-Shipit-User'].presence
+      User.find_by(login: user_login) if user_login
+    end
   end
 end

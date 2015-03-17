@@ -64,10 +64,12 @@ Shipit::Application.routes.draw do
     scope '/stacks/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
       get '/' => 'stacks#show'
     end
+
     scope '/stacks/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
       resources :tasks, only: %i(index show) do
         resource :output, only: :show
       end
+      resources :deploys, only: %i(create)
     end
   end
 end

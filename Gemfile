@@ -30,6 +30,7 @@ gem 'faraday'
 gem 'faraday-http-cache'
 gem 'validate_url'
 gem 'active_model_serializers'
+gem 'explicit-parameters'
 
 group :development do
   gem 'quiet_assets'

@@ -3,6 +3,7 @@ require 'test_helper'
 class Api::StacksControllerTest < ActionController::TestCase
   setup do
     authenticate!
+    @stack = stacks(:shipit)
   end
 
   test "#index returns a list of stacks" do

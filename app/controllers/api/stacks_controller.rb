@@ -5,7 +5,13 @@ module Api
     end
 
     def show
-      render json: Stack.from_param!(params[:id])
+      render json: stack
+    end
+
+    private
+
+    def stack
+      @stack ||= Stack.from_param!(params[:id])
     end
   end
 end
