@@ -23,7 +23,7 @@ class GithubSetupWebhooksJob < BackgroundJob
       secret: secret,
     }, { events: [event.to_s], active: true })
 
-    stack.hooks.create!(github_id: github_hook.id, event: event, secret: secret)
+    stack.github_hooks.create!(github_id: github_hook.id, event: event, secret: secret)
   end
 
   def webhook_urls(stack)

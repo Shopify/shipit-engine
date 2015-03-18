@@ -259,7 +259,7 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#destroy deletes the related webhooks" do
-    assert_difference -> { @stack.hooks.count }, -@stack.hooks.count do
+    assert_difference -> { @stack.github_hooks.count }, -@stack.github_hooks.count do
       @stack.destroy
     end
   end

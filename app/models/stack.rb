@@ -8,7 +8,7 @@ class Stack < ActiveRecord::Base
   has_many :tasks, dependent: :destroy
   has_many :deploys
   has_many :rollbacks
-  has_many :hooks, dependent: :destroy, class_name: 'GithubHook'
+  has_many :github_hooks, dependent: :destroy
   belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults
