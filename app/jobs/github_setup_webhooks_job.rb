@@ -9,13 +9,13 @@ class GithubSetupWebhooksJob < BackgroundJob
     GithubTeardownWebhooksJob.new.perform(stack_id: stack.id, github_repo_name: stack.github_repo_name)
 
     webhook_urls(stack).slice(*Stack::REQUIRED_HOOKS).each do |event, url|
-      create_webhook(stack, event, url)
+      create_github_hook(stack, event, url)
     end
   end
 
   private
 
-  def create_webhook(stack, event, url)
+  def create_github_hook(stack, event, url)
     secret = SecureRandom.hex
     github_hook = Shipit.github_api.create_hook(stack.github_repo_name, 'web', {
       url: url,
@@ -23,7 +23,7 @@ class GithubSetupWebhooksJob < BackgroundJob
       secret: secret,
     }, { events: [event.to_s], active: true })
 
-    stack.webhooks.create!(github_id: github_hook.id, event: event, secret: secret)
+    stack.hooks.create!(github_id: github_hook.id, event: event, secret: secret)
   end
 
   def webhook_urls(stack)

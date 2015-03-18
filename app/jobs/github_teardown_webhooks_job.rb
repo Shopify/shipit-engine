@@ -13,12 +13,12 @@ class GithubTeardownWebhooksJob < BackgroundJob
       end
     end
 
-    Webhook.where(stack_id: params[:stack_id]).each do |webhook|
+    GithubHook.where(stack_id: params[:stack_id]).each do |hook|
       begin
-        Shipit.github_api.remove_hook(params[:github_repo_name], webhook.github_id)
+        Shipit.github_api.remove_hook(params[:github_repo_name], hook.github_id)
       rescue
       end
-      webhook.destroy
+      hook.destroy
     end
   end
 end

@@ -8,12 +8,12 @@ class Stack < ActiveRecord::Base
   has_many :tasks, dependent: :destroy
   has_many :deploys
   has_many :rollbacks
-  has_many :webhooks, dependent: :destroy
+  has_many :hooks, dependent: :destroy, class_name: 'GithubHook'
   belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults
-  after_create :setup_webhooks, :sync_github
-  after_destroy :teardown_webhooks, :clear_local_files
+  after_create :setup_hooks, :sync_github
+  after_destroy :teardown_hooks, :clear_local_files
   after_commit :broadcast_update, on: :update
   after_touch :clear_cache
 
@@ -211,11 +211,11 @@ class Stack < ActiveRecord::Base
     remove_instance_variable(:@deploying) if defined?(@deploying)
   end
 
-  def setup_webhooks
+  def setup_hooks
     Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)
   end
 
-  def teardown_webhooks
+  def teardown_hooks
     Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
   end
 

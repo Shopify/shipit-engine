@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class WebhookTest < ActiveSupport::TestCase
+class GithubHookTest < ActiveSupport::TestCase
   def setup
-    @webhook = Webhook.new(secret: '1234')
+    @webhook = GithubHook.new(secret: '1234')
   end
 
   test "#verify_signature is true if the signature matches" do

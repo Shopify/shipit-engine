@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317173155) do
+ActiveRecord::Schema.define(version: 20150318173450) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -42,6 +42,15 @@ ActiveRecord::Schema.define(version: 20150317173155) do
   add_index "commits", ["committer_id"], name: "index_commits_on_committer_id", using: :btree
   add_index "commits", ["created_at"], name: "index_commits_on_created_at", using: :btree
   add_index "commits", ["stack_id"], name: "index_commits_on_stack_id", using: :btree
+
+  create_table "github_hooks", force: :cascade do |t|
+    t.integer  "stack_id",   limit: 4,   null: false
+    t.integer  "github_id",  limit: 4
+    t.string   "event",      limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "secret",     limit: 255
+  end
 
   create_table "output_chunks", force: :cascade do |t|
     t.integer  "task_id",    limit: 4
@@ -117,14 +126,5 @@ ActiveRecord::Schema.define(version: 20150317173155) do
   end
 
   add_index "users", ["login"], name: "index_users_on_login", using: :btree
-
-  create_table "webhooks", force: :cascade do |t|
-    t.integer  "stack_id",   limit: 4,   null: false
-    t.integer  "github_id",  limit: 4
-    t.string   "event",      limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "secret",     limit: 255
-  end
 
 end

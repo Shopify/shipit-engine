@@ -9,7 +9,7 @@ class WebhooksControllerTest < ActionController::TestCase
     Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
     Resque.expects(:enqueue).with(GitMirrorUpdateJob, stack_id: @stack.id)
 
-    Webhook.any_instance.expects(:verify_signature).returns(true)
+    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_master)
@@ -18,7 +18,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
   test ":push does not enqueue a job if not the target branch" do
     Resque.expects(:enqueue).never
-    Webhook.any_instance.expects(:verify_signature).returns(true)
+    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_not_master)
@@ -26,7 +26,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state create a Status for the specific commit" do
-    Webhook.any_instance.expects(:verify_signature).returns(true)
+    GithubHook.any_instance.expects(:verify_signature).returns(true)
     request.headers['X-Github-Event'] = 'status'
 
     status_payload = payload(:status_master)
@@ -45,7 +45,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do
-    Webhook.any_instance.expects(:verify_signature).returns(true)
+    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
@@ -55,7 +55,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state in an untracked branche bails out" do
-    Webhook.any_instance.expects(:verify_signature).returns(true)
+    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
@@ -88,7 +88,7 @@ class WebhooksControllerTest < ActionController::TestCase
     @request.headers['X-Github-Event'] = 'push'
     @request.headers['X-Hub-Signature'] = signature
 
-    Webhook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
+    GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
     post :push, { stack_id: @stack.id }.merge(params)
     assert_response :unprocessable_entity
@@ -101,7 +101,7 @@ class WebhooksControllerTest < ActionController::TestCase
     @request.headers['X-Github-Event'] = 'push'
     @request.headers['X-Hub-Signature'] = signature
 
-    Webhook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
+    GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
     post :push, { stack_id: @stack.id }.merge(params)
     assert_response :unprocessable_entity

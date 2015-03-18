@@ -16,7 +16,7 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
   end
 
   test "#perform creates webhooks for push and status" do
-    @stack.webhooks.destroy_all
+    @stack.hooks.destroy_all
 
     Shipit.github_api.expects(:hooks).with('shopify/shipit2').returns([])
 
@@ -32,10 +32,10 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
       secret: '1234',
     }, { events: ['status'], active: true }).returns(stub(id: 123))
 
-    assert_difference 'Webhook.count', +2 do
+    assert_difference -> { GithubHook.count }, +2 do
       @job.perform(stack_id: @stack.id, hostname: "example.com")
     end
 
-    assert_equal Stack::REQUIRED_HOOKS.map(&:to_s), @stack.webhooks.pluck(:event).sort
+    assert_equal Stack::REQUIRED_HOOKS.map(&:to_s), @stack.hooks.pluck(:event).sort
   end
 end

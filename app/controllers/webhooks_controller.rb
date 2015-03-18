@@ -39,7 +39,7 @@ class WebhooksController < ActionController::Base
   end
 
   def webhook
-    @webhook ||= stack.webhooks.where(event: event).first!
+    @webhook ||= stack.hooks.where(event: event).first!
   end
 
   def event
