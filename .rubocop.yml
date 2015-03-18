@@ -50,6 +50,9 @@ Style/SignalException:
 Style/RaiseArgs:
   Enabled: false
 
+Style/ModuleFunction:
+  Enabled: false
+
 Style/RedundantReturn:
   AllowMultipleReturnValues: true
 

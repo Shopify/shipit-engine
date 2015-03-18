@@ -101,6 +101,7 @@ GEM
       virtus (~> 1.0)
     faker (1.4.3)
       i18n (~> 0.5)
+    fakeweb (1.3.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.0.1)
@@ -341,6 +342,7 @@ DEPENDENCIES
   coffee-rails
   explicit-parameters
   faker
+  fakeweb
   faraday
   faraday-http-cache
   foreman (~> 0.74)
