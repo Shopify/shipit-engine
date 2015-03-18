@@ -29,6 +29,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     DeployCommands.any_instance.expects(:perform).returns([])
     @job.stubs(:capture)
 
+    Hook.expects(:emit).twice
     Resque.expects(:enqueue).with(FetchDeployedRevisionJob, stack_id: @deploy.stack_id)
     @job.perform(task_id: @deploy.id)
   end

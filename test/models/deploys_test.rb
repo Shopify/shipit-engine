@@ -94,6 +94,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to success causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
+    expect_hook(:deploy, deploy.stack, status: 'success', deploy: deploy, stack: deploy.stack)
     expect_event(deploy)
     deploy.status = 'running'
     deploy.complete!
@@ -102,6 +103,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to failed causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
+    expect_hook(:deploy, deploy.stack, status: 'failed', deploy: deploy, stack: deploy.stack)
     expect_event(deploy)
     deploy.status = 'running'
     deploy.failure!
@@ -110,6 +112,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to error causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
+    expect_hook(:deploy, deploy.stack, status: 'error', deploy: deploy, stack: deploy.stack)
     expect_event(deploy)
     deploy.status = 'running'
     deploy.error!
@@ -118,6 +121,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "transitioning to running causes an event to be broadcasted" do
     deploy = deploys(:shipit_pending)
 
+    expect_hook(:deploy, deploy.stack, status: 'running', deploy: deploy, stack: deploy.stack)
     expect_event(deploy)
     deploy.status = 'pending'
     deploy.run!
@@ -252,11 +256,17 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  private
+
   def expect_event(deploy)
     Pubsubstub::RedisPubSub.expects(:publish).at_least_once
     Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
       data = JSON.load(event.data)
       channel == "stack.#{deploy.stack.id}" && data['url'] == "/#{deploy.stack.to_param}"
     end
+  end
+
+  def expect_hook(event, stack, payload)
+    Hook.expects(:emit).with(event, stack, payload)
   end
 end
