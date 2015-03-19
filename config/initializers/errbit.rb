@@ -11,5 +11,5 @@ end
 require 'resque/failure/multiple'
 require 'resque/failure/airbrake'
 
-Resque::Failure::Multiple.classes = [Resque::Failure.backend, Resque::Failure::Airbrake]
+Resque::Failure::Multiple.classes += [Resque::Failure::Airbrake]
 Resque::Failure.backend = Resque::Failure::Multiple
