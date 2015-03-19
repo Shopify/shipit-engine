@@ -30,7 +30,6 @@ gem 'faraday-http-cache'
 gem 'validate_url'
 gem 'active_model_serializers'
 gem 'explicit-parameters'
-gem 'validate_url'
 
 group :default, :deploy do
   gem 'bugsnag'
