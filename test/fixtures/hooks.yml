@@ -1,0 +1,16 @@
+shipit_deploys:
+  stack: shipit
+  events: 'deploy,rollback'
+  url: https://example.com/events/deploy
+  content_type: json
+
+all_deploys:
+  events: 'deploy,rollback'
+  url: https://example.com/events/deploy
+  content_type: form
+
+shipit_tasks:
+  stack: shipit
+  events: 'task'
+  url: https://example.com/events/deploy
+  content_type: json
