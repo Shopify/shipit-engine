@@ -1,6 +1,6 @@
-class CommitSerializer < ActiveModel::Serializer
+class CommitSerializer < ShortCommitSerializer
   has_one :author
   has_one :committer
 
-  attributes :sha, :message, :additions, :deletions, :authored_at, :committed_at
+  attributes :additions, :deletions, :authored_at, :committed_at
 end
