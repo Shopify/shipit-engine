@@ -1,6 +1,8 @@
 class TaskSerializer < ActiveModel::Serializer
   include ConditionalAttributes
 
+  has_one :user
+
   attributes :id, :url, :html_url, :output_url, :type, :status, :updated_at, :created_at
 
   def url

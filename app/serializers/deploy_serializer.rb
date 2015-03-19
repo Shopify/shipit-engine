@@ -1,4 +1,6 @@
 class DeploySerializer < TaskSerializer
+  has_many :commits
+
   attributes :additions, :deletions
 
   def html_url
