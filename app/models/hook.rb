@@ -22,7 +22,7 @@ class Hook < ActiveRecord::Base
 
   class << self
     def emit(event, stack, payload)
-      Resque.enqueue(EmitEventJob, event: event, stack_id: stack.try!(:id), payload: payload.as_json)
+      Resque.enqueue(EmitEventJob, event: event, stack_id: stack.try!(:id), payload: coerce_payload(payload))
     end
 
     def deliver(event, stack_id, payload)
@@ -34,6 +34,16 @@ class Hook < ActiveRecord::Base
     def listening_event(event)
       event = event.to_s
       all.to_a.select { |h| h.events.include?(event) }
+    end
+
+    def coerce_payload(payload)
+      coerced_payload = payload.dup
+      payload.each do |key, value|
+        if serializer = ActiveModel::Serializer.serializer_for(value)
+          coerced_payload[key] = serializer.new(value)
+        end
+      end
+      coerced_payload.as_json
     end
   end
 

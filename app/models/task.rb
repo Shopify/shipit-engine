@@ -14,6 +14,8 @@ class Task < ActiveRecord::Base
 
   scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
+  after_commit :emit_hooks
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running
@@ -100,5 +102,14 @@ class Task < ActiveRecord::Base
 
   def clear_working_directory
     FileUtils.rm_rf(working_directory)
+  end
+
+  def emit_hooks
+    return unless previous_changes.include?('status')
+    Hook.emit(hook_event, stack, hook_event => self, status: status, stack: stack)
+  end
+
+  def hook_event
+    self.class.name.underscore.to_sym
   end
 end
