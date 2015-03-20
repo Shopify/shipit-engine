@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      render json: @stack.tasks.find(params[:id])
+      render_resource @stack.tasks.find(params[:id])
     end
 
     private

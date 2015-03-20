@@ -5,7 +5,7 @@ module Api
     end
 
     def show
-      render json: stack
+      render_resource stack
     end
 
     private

@@ -6,7 +6,7 @@ module Api
     end
     def create
       commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
-      render json: stack.trigger_deploy(commit, current_user), status: :accepted
+      render_resource stack.trigger_deploy(commit, current_user), status: :accepted
     end
 
     private

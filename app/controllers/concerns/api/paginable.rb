@@ -16,7 +16,7 @@ module Api
 
     private
 
-    def render_resources(resource)
+    def render_resources(resource, *)
       paginator = Paginator.new(
         resource,
         self,
