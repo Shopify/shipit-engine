@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150318183925) do
+ActiveRecord::Schema.define(version: 20150320143636) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -101,7 +101,6 @@ ActiveRecord::Schema.define(version: 20150318183925) do
     t.integer  "tasks_count",              limit: 4,     default: 0,            null: false
     t.boolean  "continuous_deployment",    limit: 1,     default: false,        null: false
     t.integer  "undeployed_commits_count", limit: 4,     default: 0,            null: false
-    t.string   "reminder_url",             limit: 255
     t.text     "cached_deploy_spec",       limit: 65535
     t.integer  "lock_author_id",           limit: 4
   end
