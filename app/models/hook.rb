@@ -10,6 +10,7 @@ class Hook < ActiveRecord::Base
     task
     deploy
     rollback
+    lock
   ).freeze
 
   belongs_to :stack, required: false

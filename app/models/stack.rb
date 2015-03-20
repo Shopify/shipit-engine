@@ -16,6 +16,7 @@ class Stack < ActiveRecord::Base
   after_create :setup_hooks, :sync_github
   after_destroy :teardown_hooks, :clear_local_files
   after_commit :broadcast_update, on: :update
+  after_commit :emit_hooks
   after_touch :clear_cache
 
   validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
@@ -228,5 +229,10 @@ class Stack < ActiveRecord::Base
   def update_defaults
     self.environment = 'production' if environment.blank?
     self.branch = 'master' if branch.blank?
+  end
+
+  def emit_hooks
+    return unless previous_changes.include?('lock_reason')
+    Hook.emit(:lock, self, locked: locked?, stack: self)
   end
 end

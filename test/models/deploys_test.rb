@@ -211,6 +211,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "#trigger_rollback schedule the task" do
+    Hook.expects(:emit).at_least_once
     Resque.expects(:enqueue).with(PerformTaskJob, has_key(:task_id))
     @deploy.trigger_rollback(@user)
   end

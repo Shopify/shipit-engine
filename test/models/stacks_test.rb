@@ -235,4 +235,21 @@ class StacksTest < ActiveSupport::TestCase
       @stack.destroy
     end
   end
+
+  test "locking the stack triggers a webhook" do
+    expect_hook(:lock, @stack, locked: true, stack: @stack)
+    @stack.update(lock_reason: "Just for fun", lock_author: users(:walrus))
+  end
+
+  test "unlocking the stack triggers a webhook" do
+    @stack.update(lock_reason: "Just for fun", lock_author: users(:walrus))
+    expect_hook(:lock, @stack, locked: false, stack: @stack)
+    @stack.update(lock_reason: nil)
+  end
+
+  private
+
+  def expect_hook(event, stack, payload)
+    Hook.expects(:emit).with(event, stack, payload)
+  end
 end
