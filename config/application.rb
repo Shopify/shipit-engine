@@ -38,6 +38,5 @@ module Shipit
     Rails.application.routes.default_url_options[:host] = Rails.application.secrets.host
 
     ActiveModel::Serializer._root = false
-    ActiveModel::ArraySerializer._root = false
   end
 end

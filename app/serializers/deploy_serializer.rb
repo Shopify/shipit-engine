@@ -1,7 +1,7 @@
 class DeploySerializer < TaskSerializer
   has_many :commits
 
-  attributes :additions, :deletions
+  attributes :additions, :deletions, *TaskSerializer._attributes
 
   def html_url
     stack_deploy_url(object.stack, object)
