@@ -29,3 +29,8 @@ en:
     create:
       error:
         deploy_in_progress: Rollbacks can't be triggered if a deploy is in progress
+
+  errors:
+    messages:
+      subset: "is not a strict subset of %{of}"
+      

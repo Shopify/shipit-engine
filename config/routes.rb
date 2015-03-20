@@ -70,6 +70,9 @@ Shipit::Application.routes.draw do
         resource :output, only: :show
       end
       resources :deploys, only: %i(create)
+      resources :hooks, only: %i(index create show update destroy)
     end
+
+    resources :hooks, only: %i(index create show update destroy)
   end
 end

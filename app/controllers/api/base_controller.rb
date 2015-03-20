@@ -1,5 +1,6 @@
 module Api
   class BaseController < ActionController::Base
+    include Rendering
     include Cacheable
     include Paginable
 

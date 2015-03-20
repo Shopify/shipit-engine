@@ -1,4 +1,6 @@
 class Hook < ActiveRecord::Base
+  default_scope { order :id }
+
   CONTENT_TYPES = {
     'json' => 'application/json',
     'form' => 'application/x-www-form-urlencoded',
@@ -15,9 +17,12 @@ class Hook < ActiveRecord::Base
 
   validates :url, presence: true, url: {no_local: true, allow_blank: true}
   validates :content_type, presence: true, inclusion: {in: CONTENT_TYPES.keys}
+  validates :events, presence: true, subset: {of: EVENTS}
 
   serialize :events, CSVSerializer
 
+  scope :global, -> { where(stack_id: nil) }
+  scope :scoped_to, -> (stack) { where(stack_id: stack.id) }
   scope :for_stack, -> (stack_id) { where(stack_id: [nil, stack_id]) }
 
   class << self
@@ -45,6 +50,14 @@ class Hook < ActiveRecord::Base
       end
       coerced_payload.as_json
     end
+  end
+
+  def global?
+    !stack_id?
+  end
+
+  def scoped?
+    stack_id?
   end
 
   def deliver!(event, payload)

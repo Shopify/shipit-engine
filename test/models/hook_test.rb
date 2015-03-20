@@ -16,6 +16,12 @@ class HookTest < ActiveSupport::TestCase
     assert_equal %w(deploy rollback), @hook.events
   end
 
+  test "#events can only contain a defined set of values" do
+    @hook.events = %w(foo)
+    refute @hook.valid?
+    assert_equal ["Events is not a strict subset of #{Hook::EVENTS.inspect}"], @hook.errors.full_messages
+  end
+
   test ".emit enqueues an EmitEventJob with the proper payload" do
     Resque.expects(:enqueue).with(EmitEventJob, event: :deploy, stack_id: @stack.id, payload: {'foo' => 42})
     Hook.emit(:deploy, @stack, {foo: 42})
