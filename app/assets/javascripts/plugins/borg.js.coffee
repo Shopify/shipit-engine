@@ -157,7 +157,7 @@ class JobServersRestartWidget extends RestartTaskWidget
         @getTask(log.host).update
           numPending: match[1]
           numLights: match[2]
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* successfully restarted/i)
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (successfully restarted|was not required to restart in time)/i)
         task = @getTask(log.host)
         task.addStatus("up", match[1])
       else if match = log.output.match(/\[(\d+)\/(\d+)\].* did not restart in time/i)
