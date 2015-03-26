@@ -118,7 +118,7 @@ class ContainersRestartWidget extends RestartTaskWidget
         @getTask(log.host).update
           numPending: match[1]
           numLights: match[2]
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* successfully restarted/i)
+      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (successfully restarted|was not required to restart in time)/i)
         @getTask(log.host).update
           numDone: match[1]
           numLights: match[2]
