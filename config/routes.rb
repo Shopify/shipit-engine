@@ -2,6 +2,7 @@ require "resque/server"
 
 Shipit::Application.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
+  sha_format = /[\da-f]{6,40}/
   root to: 'stacks#index'
 
   mount UserRequiredMiddleware.new(Resque::Server.new), at: "/resque"
@@ -50,7 +51,8 @@ Shipit::Application.routes.draw do
       end
     end
 
-    resources :deploys, only: %i(new show create) do
+    resources :deploys, only: %i(show create) do
+      get ':sha', sha: sha_format, on: :new, action: :new, as: ''
       member do
         get :rollback
         post :abort
