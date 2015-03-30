@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150320143636) do
+ActiveRecord::Schema.define(version: 20150330153704) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -44,18 +44,18 @@ ActiveRecord::Schema.define(version: 20150320143636) do
   add_index "commits", ["stack_id"], name: "index_commits_on_stack_id", using: :btree
 
   create_table "deliveries", force: :cascade do |t|
-    t.integer  "hook_id",          limit: 4,                         null: false
-    t.string   "status",           limit: 255,   default: "pending", null: false
-    t.string   "url",              limit: 4096,                      null: false
-    t.string   "content_type",     limit: 255,                       null: false
-    t.string   "event",            limit: 255,                       null: false
-    t.text     "payload",          limit: 65535,                     null: false
+    t.integer  "hook_id",          limit: 4,                            null: false
+    t.string   "status",           limit: 255,      default: "pending", null: false
+    t.string   "url",              limit: 4096,                         null: false
+    t.string   "content_type",     limit: 255,                          null: false
+    t.string   "event",            limit: 255,                          null: false
+    t.text     "payload",          limit: 16777215,                     null: false
     t.integer  "response_code",    limit: 4
     t.text     "response_headers", limit: 65535
     t.text     "response_body",    limit: 65535
     t.datetime "delivered_at"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
   end
 
   create_table "github_hooks", force: :cascade do |t|
