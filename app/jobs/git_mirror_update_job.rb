@@ -6,6 +6,6 @@ class GitMirrorUpdateJob < BackgroundJob
   def perform(params)
     stack = Stack.find(params[:stack_id])
     commands = StackCommands.new(stack)
-    commands.fetch.run!
+    commands.fetch.run
   end
 end
