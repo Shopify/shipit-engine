@@ -1,6 +1,7 @@
 require "resque/server"
 
 Shipit::Application.routes.draw do
+  stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   root to: 'stacks#index'
 
   mount UserRequiredMiddleware.new(Resque::Server.new), at: "/resque"
@@ -23,7 +24,7 @@ Shipit::Application.routes.draw do
   end
 
   # Humans
-  scope '/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+  scope '/*id', id: stack_id_format, as: :stack do
     get '/' => 'stacks#show'
     patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
@@ -34,7 +35,7 @@ Shipit::Application.routes.draw do
     post :clear_git_cache, controller: :stacks
   end
 
-  scope '/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+  scope '/*stack_id', stack_id: stack_id_format, as: :stack do
     resources :rollbacks, only: %i(create)
     resources :tasks, only: %i(show) do
       collection do
@@ -61,11 +62,11 @@ Shipit::Application.routes.draw do
   namespace :api do
     root to: 'base#index'
     resources :stacks, only: :index
-    scope '/stacks/*id', id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+    scope '/stacks/*id', id: stack_id_format, as: :stack do
       get '/' => 'stacks#show'
     end
 
-    scope '/stacks/*stack_id', stack_id: %r{[^/]+/[^/]+/[^/]+}, as: :stack do
+    scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
       resources :tasks, only: %i(index show) do
         resource :output, only: :show
       end
