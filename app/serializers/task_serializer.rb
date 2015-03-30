@@ -1,7 +1,7 @@
 class TaskSerializer < ActiveModel::Serializer
   include ConditionalAttributes
 
-  has_one :user
+  has_one :author
   has_one :revision, serializer: ShortCommitSerializer
 
   attributes :id, :url, :html_url, :output_url, :type, :status, :updated_at, :created_at

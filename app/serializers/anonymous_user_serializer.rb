@@ -1,0 +1,2 @@
+class AnonymousUserSerializer < UserSerializer
+end

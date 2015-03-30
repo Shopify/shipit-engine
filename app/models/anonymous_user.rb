@@ -11,6 +11,10 @@ class AnonymousUser
     'Anonymous'
   end
 
+  def avatar_url
+    'https://github.com/images/error/octocat_happy.gif'
+  end
+
   def id
   end
 
@@ -24,5 +28,14 @@ class AnonymousUser
 
   def avatar_uri
     User::DEFAULT_AVATAR.dup
+  end
+
+  def created_at
+    Time.at(0).utc
+  end
+  alias_method :updated_at, :created_at
+
+  def read_attribute_for_serialization(attr)
+    public_send(attr)
   end
 end
