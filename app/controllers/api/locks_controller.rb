@@ -5,6 +5,18 @@ module Api
     params do
       requires :reason, String, presence: true
     end
+    def create
+      if @stack.locked?
+        render json: {message: 'Already locked'}, status: :conflict
+      else
+        @stack.update(lock_reason: params.reason)
+        render_resource @stack
+      end
+    end
+
+    params do
+      requires :reason, String, presence: true
+    end
     def update
       @stack.update(lock_reason: params.reason)
       render_resource @stack
