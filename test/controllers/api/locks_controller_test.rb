@@ -6,6 +6,19 @@ class Api::LocksControllerTest < ActionController::TestCase
     @stack = stacks(:shipit)
   end
 
+  test "#create sets a lock" do
+    post :create, stack_id: @stack.to_param, reason: 'Just for fun!'
+    assert_response :ok
+    assert_json 'is_locked', true
+    assert_json 'lock_reason', 'Just for fun!'
+  end
+
+  test "#create fails if already locked" do
+    @stack.update!(lock_reason: "Don't forget me")
+    post :create, stack_id: @stack.to_param, reason: 'Just for fun!'
+    assert_response :conflict
+  end
+
   test "#update sets a lock" do
     put :update, stack_id: @stack.to_param, reason: 'Just for fun!'
     assert_response :ok

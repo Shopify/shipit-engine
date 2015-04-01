@@ -69,7 +69,7 @@ Shipit::Application.routes.draw do
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
-      resource :lock, only: %i(update destroy)
+      resource :lock, only: %i(create update destroy)
       resources :tasks, only: %i(index show) do
         resource :output, only: :show
       end
