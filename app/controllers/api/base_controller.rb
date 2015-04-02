@@ -32,5 +32,13 @@ module Api
       user_login = request.headers['X-Shipit-User'].presence
       User.find_by(login: user_login) if user_login
     end
+
+    def stacks
+      @stacks ||= current_api_client.stack_id? ? Stack.where(id: current_api_client.stack_id) : Stack.all
+    end
+
+    def stack
+      @stack ||= stacks.from_param!(params[:stack_id])
+    end
   end
 end

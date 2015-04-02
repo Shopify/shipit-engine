@@ -12,6 +12,9 @@ class Api::StacksControllerTest < ActionController::TestCase
     get :index
     assert_response :ok
     assert_json '0.id', stack.id
+    assert_json do |stacks|
+      assert_equal 2, stacks.size
+    end
   end
 
   test "#index is paginable" do
@@ -29,5 +32,13 @@ class Api::StacksControllerTest < ActionController::TestCase
   test "the `next` link is not provided when the last page is reached" do
     get :index, page_size: Stack.count
     assert_no_link 'next'
+  end
+
+  test "an api client scoped to a stack will only see that one stack" do
+    authenticate!(:here_come_the_walrus)
+    get :index
+    assert_json do |stacks|
+      assert_equal 1, stacks.size
+    end
   end
 end

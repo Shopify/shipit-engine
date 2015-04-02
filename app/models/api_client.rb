@@ -1,5 +1,6 @@
 class ApiClient < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
+  belongs_to :stack
 
   validates :creator, :name, presence: true
 

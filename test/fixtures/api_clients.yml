@@ -1,2 +1,8 @@
 spy:
+  name: Spy
   creator: walrus
+
+here_come_the_walrus:
+  name: Here Come The Walrus
+  creator: walrus
+  stack: shipit
