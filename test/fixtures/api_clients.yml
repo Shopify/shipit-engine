@@ -1,8 +1,17 @@
 spy:
   name: Spy
   creator: walrus
+  permissions:
+    - 'read:stack'
+    - 'write:stack'
+    - 'deploy:stack'
+    - 'lock:stack'
+    - 'read:hook'
+    - 'write:hook'
 
 here_come_the_walrus:
   name: Here Come The Walrus
   creator: walrus
   stack: shipit
+  permissions:
+    - 'read:stack'

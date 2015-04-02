@@ -4,6 +4,14 @@ module Api
     include Cacheable
     include Paginable
 
+    rescue_from ApiClient::InsufficientPermission, with: :insufficient_permission
+
+    class << self
+      def require_permission(operation, scope, options = {})
+        before_action(options) { require_permission!(operation, scope) }
+      end
+    end
+
     before_action :authenticate_api_client
 
     def index
@@ -19,7 +27,7 @@ module Api
       end
       return if @current_api_client
       headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'
-      render json: {message: 'Bad credentials'}, status: :unauthorized
+      render status: :unauthorized, json: {message: 'Bad credentials'}
     end
 
     attr_reader :current_api_client
@@ -39,6 +47,14 @@ module Api
 
     def stack
       @stack ||= stacks.from_param!(params[:stack_id])
+    end
+
+    def require_permission!(operation, scope)
+      current_api_client.check_permissions!(operation, scope)
+    end
+
+    def insufficient_permission(error)
+      render status: :forbidden, json: {message: error.message}
     end
   end
 end

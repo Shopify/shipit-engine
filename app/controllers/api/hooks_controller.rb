@@ -1,5 +1,8 @@
 module Api
   class HooksController < BaseController
+    require_permission :read, :hook, only: %i(index show)
+    require_permission :write, :hook, only: %i(create update destroy)
+
     def index
       render_resources hooks
     end
