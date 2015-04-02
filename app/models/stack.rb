@@ -10,6 +10,7 @@ class Stack < ActiveRecord::Base
   has_many :rollbacks
   has_many :github_hooks, dependent: :destroy
   has_many :hooks, dependent: :destroy
+  has_many :api_clients, dependent: :destroy
   belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults

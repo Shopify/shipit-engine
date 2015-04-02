@@ -44,9 +44,5 @@ module Api
     def stack_id
       stack.id if params[:stack_id].present?
     end
-
-    def stack
-      @stack ||= Stack.from_param!(params[:stack_id])
-    end
   end
 end

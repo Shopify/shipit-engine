@@ -9,11 +9,5 @@ module Api
       param_error!(:force, "Can't deploy a locked stack") if !params.force && stack.locked?
       render_resource stack.trigger_deploy(commit, current_user), status: :accepted
     end
-
-    private
-
-    def stack
-      @stack ||= Stack.from_param!(params[:stack_id])
-    end
   end
 end

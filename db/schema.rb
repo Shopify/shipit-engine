@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330153704) do
+ActiveRecord::Schema.define(version: 20150402143210) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20150330153704) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.string   "name",        limit: 255,   default: ""
+    t.integer  "stack_id",    limit: 4
   end
 
   add_index "api_clients", ["creator_id"], name: "index_api_clients_on_creator_id", using: :btree
