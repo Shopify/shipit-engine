@@ -9,5 +9,11 @@ module Api
     def show
       render_resource stack
     end
+
+    private
+
+    def stack
+      @stack ||= stacks.from_param!(params[:id])
+    end
   end
 end

@@ -48,4 +48,10 @@ class Api::StacksControllerTest < ActionController::TestCase
     assert_response :forbidden
     assert_json 'message', 'This operation requires the `read:stack` permission'
   end
+
+  test "#show renders the stack" do
+    get :show, id: @stack.to_param
+    assert_response :ok
+    assert_json 'id', @stack.id
+  end
 end
