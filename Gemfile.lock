@@ -192,6 +192,7 @@ GEM
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.0)
+    rack-cors (0.3.1)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -357,6 +358,7 @@ DEPENDENCIES
   pry
   pubsubstub (~> 0.0.7)
   quiet_assets
+  rack-cors
   rails (~> 4.2.1.rc4)
   rails-timeago (~> 2.0)
   redis-rails

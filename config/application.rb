@@ -37,6 +37,13 @@ module Shipit
 
     Rails.application.routes.default_url_options[:host] = Rails.application.secrets.host
 
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '/api/*', headers: :any, methods: %i(head get options put patch post delete)
+      end
+    end
+
     ActiveModel::Serializer._root = false
     ActiveModel::ArraySerializer._root = false
   end
