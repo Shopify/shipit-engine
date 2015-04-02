@@ -1,5 +1,7 @@
 module Api
   class DeploysController < BaseController
+    require_permission :deploy, :stack
+
     params do
       requires :sha, String, length: {in: 6..40}
       accepts :force, Boolean, default: false

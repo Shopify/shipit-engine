@@ -1,5 +1,7 @@
 module Api
   class LocksController < BaseController
+    require_permission :lock, :stack
+
     params do
       requires :reason, String, presence: true
     end

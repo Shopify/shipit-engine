@@ -1,5 +1,7 @@
 module Api
   class StacksController < BaseController
+    require_permission :read, :stack
+
     def index
       render_resources stacks
     end

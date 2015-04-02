@@ -41,4 +41,11 @@ class Api::StacksControllerTest < ActionController::TestCase
       assert_equal 1, stacks.size
     end
   end
+
+  test "a request with insufficient permissions will render a 403" do
+    @client.update!(permissions: [])
+    get :index
+    assert_response :forbidden
+    assert_json 'message', 'This operation requires the `read:stack` permission'
+  end
 end

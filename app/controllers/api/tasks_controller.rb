@@ -1,5 +1,7 @@
 module Api
   class TasksController < BaseController
+    require_permission :read, :stack
+
     def index
       render_resources stack.tasks
     end
