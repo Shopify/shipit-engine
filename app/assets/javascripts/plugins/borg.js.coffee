@@ -32,16 +32,8 @@ class BaseTaskWidget
 
   update: (text) ->
     parser = new CapistranoParser(filterAshburn(text))
-    unless @active
-      res = parser.findTaskStart(@capistranoTask)
-      return unless res
-      @activate()
-
     @parse(parser)
     @refresh()
-
-    if parser.findTaskEnd(@capistranoTask)
-      @finish()
     null
 
 # Abstract, need to implement @parse
@@ -54,6 +46,7 @@ class RestartTaskWidget extends BaseTaskWidget
     new LightsTaskView(@$container, host)
 
   getTask: (host) ->
+    @activate()
     @tasks[host] ||= @createTask(host)
 
   refresh: ->
@@ -75,6 +68,7 @@ class ProgressBarTaskWidget extends BaseTaskWidget
     @$bar.insertBefore(@$container.find('.section-bottom'))
 
   refresh: ->
+    return unless @active
     frac = @done / @total
     doneWidth = @$bar.width() * frac
     @$donePart.width(doneWidth)
@@ -87,16 +81,8 @@ class AssetsUploadWidget extends ProgressBarTaskWidget
 
   update: (text) ->
     parser = new CapistranoParser(filterAshburn(text))
-    unless @active
-      res = parser.findTaskStart(@capistranoTask)
-      return unless res
-      @activate()
-
     @parse(parser)
     @refresh()
-
-    if parser.findTaskStart("assets:upload_manifest")
-      @finish()
     null
 
   parse: (parser) ->
@@ -110,7 +96,6 @@ class ContainersRestartWidget extends RestartTaskWidget
   constructor: ->
     super
     @heading = "Restarting Servers"
-    @capistranoTask = "deploy:restart"
 
   parse: (parser) ->
     parser.eachMessage (log) =>
@@ -127,47 +112,6 @@ class ContainersRestartWidget extends RestartTaskWidget
       else if match = log.output.match(/\[(\d+)\/(\d+)\].* (failed to restart|unable to restart)/i)
         @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
     null
-
-
-class JobServersRestartWidget extends RestartTaskWidget
-  constructor: ->
-    super
-    @heading = "Restarting Job Servers"
-    @capistranoTask = "jobs:restart"
-
-  createTask: (host) ->
-    new JobServerRestartTaskView(@$container, host)
-
-  parse: (parser) ->
-    parser.eachMessage (log) =>
-      if match = log.output.match(/sv-multi sending graceful_quit to (\d+) services/)
-        @getTask(log.host).update
-          numLights: match[1]
-      else if match = log.output.match(/ok: run: ([\-\w\d]+): \(pid \d+\)/)
-        task = @getTask(log.host)
-        task.addStatus("up", match[1])
-      else if match = log.output.match(/Timeout: ([\-\w\d]+) still running after (\d+) seconds|timeout: run: ([\-\w\d]+): \(pid \d+\) (\d+)s/)
-        task = @getTask(log.host)
-        task.addStatus("partial", "timeout (#{match[2]||match[4]}s): #{match[1]||match[3]}")
-      else if match = log.output.match(/(fatal|fail|down):( run:)? ([\-\w\d]+)/)
-        task = @getTask(log.host)
-        task.addStatus("down", "#{match[1]}: #{match[3]}")
-        # Legacy jobservers --^, borg jobservers --V
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* restarting/i)
-        @getTask(log.host).update
-          numPending: match[1]
-          numLights: match[2]
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (successfully restarted|was not required to restart in time)/i)
-        task = @getTask(log.host)
-        task.addStatus("up", match[1])
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* did not restart in time/i)
-        task = @getTask(log.host)
-        task.addStatus("partial", "timeout: #{match[1]}")
-      else if match = log.output.match(/\[(\d+)\/(\d+)\].* (failed to restart|unable to restart)/i)
-        task = @getTask(log.host)
-        task.addStatus("down", "fail: #{match[1]}")
-    null
-
 
 class LightsTaskView
   TEMPLATE = $.trim """
@@ -223,27 +167,7 @@ class LightsTaskView
   fail: ->
     @$element.addClass('task-failed')
 
-class JobServerRestartTaskView extends LightsTaskView
-  constructor: (container, host) ->
-    super container, host
-    @$element.addClass("task-job-server")
-    @statuses = []
-
-  genBoxes: ->
-    boxes = document.createDocumentFragment();
-    for status in @statuses
-      box = $('<span>').addClass("task-lights-box box-#{status[0]}")
-      box.attr('title',status[1])
-      box.appendTo(boxes)
-    numNeutral = Math.max(@numLights-@statuses.length, 0)
-    for i in [0...numNeutral]
-      $('<span>').addClass("task-lights-box box-neutral").appendTo(boxes)
-    boxes
-
-  addStatus: (status, note) ->
-    @statuses.push([status, note])
-
-BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget, JobServersRestartWidget]
+BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget]
 borgWidgetInstances = for widget in BORG_WIDGETS
   new widget()
 

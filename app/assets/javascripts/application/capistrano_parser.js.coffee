@@ -1,10 +1,11 @@
 class @CapistranoParser
-  LOG_PATTERN = /^\s*\*+ +\[(\w+) :: ([a-zA-Z\d\.]+)\] (.*)$/gm
+  LOG_PATTERN = /^\s*\[([a-zA-Z\d\.]+)\]\[(\w+)\] (.*)$/gm
   TASK_START_PATTERN = /^\s*\*(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})? executing `([^']+)'\s*$|^.*\*+ Execute (\S+)/gm
   TASK_END_PATTERN = /^\s*triggering after callbacks for `([^']+)'\s*$|^\s*\* Finished (\S+) in /gm
   lastIndex: 0
 
   constructor: (@text) ->
+
 
   matchPattern: (pattern, callback) ->
     pattern.lastIndex = @lastIndex
@@ -17,22 +18,6 @@ class @CapistranoParser
   eachMessage: (callback) ->
     @matchPattern LOG_PATTERN, (match) ->
       callback
-        source: match[1]
-        host: match[2]
+        source: match[2]
+        host: match[1]
         output: match[3] || ''
-
-  findTaskStart: (task) ->
-    found = false
-    @matchPattern TASK_START_PATTERN, (match) ->
-      if match[1] == task || match[2] == task
-        found = true
-        return false
-    found
-
-  findTaskEnd: (task) ->
-    found = false
-    @matchPattern TASK_END_PATTERN, (match) ->
-      if match[1] == task || match[2] == task
-        found = true
-        return false
-    found
