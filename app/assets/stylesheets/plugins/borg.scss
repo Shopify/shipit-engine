@@ -28,6 +28,9 @@
   margin: 4px;
   width: 50px;
   text-align: center;
+  &.wide {
+    width: 116px;
+  }
 }
 
 .task-failed {

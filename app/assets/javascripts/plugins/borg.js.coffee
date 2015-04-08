@@ -1,6 +1,6 @@
 filterAshburn = (text) ->
   String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace(/\[chi\]/mg,'')
-    
+
 # Abstract, need to implement @refresh and @parse
 class BaseTaskWidget
   constructor: ->
@@ -37,24 +37,6 @@ class BaseTaskWidget
     null
 
 # Abstract, need to implement @parse
-class RestartTaskWidget extends BaseTaskWidget
-  constructor: ->
-    super
-    @tasks = {}
-
-  createTask: (host) ->
-    new LightsTaskView(@$container, host)
-
-  getTask: (host) ->
-    @activate()
-    @tasks[host] ||= @createTask(host)
-
-  refresh: ->
-    for _, task of @tasks
-      task.updateDOM()
-    null
-
-# Abstract, need to implement @parse
 class ProgressBarTaskWidget extends BaseTaskWidget
   constructor: ->
     super
@@ -77,40 +59,88 @@ class AssetsUploadWidget extends ProgressBarTaskWidget
   constructor: ->
     super
     @heading = "Uploading Assets"
-    @capistranoTask = "assets:upload"
 
   update: (text) ->
     parser = new CapistranoParser(filterAshburn(text))
     @parse(parser)
-    @refresh()
     null
 
   parse: (parser) ->
     parser.eachMessage (log) =>
       if match = log.output.match(/S3 assets uploading \[(\d+)\/(\d+)\]/)
+        @activate()
         @done = +(match[1])
         @total = +(match[2])
+        @refresh()
     null
 
-class ContainersRestartWidget extends RestartTaskWidget
+class ContainersRestartWidget extends BaseTaskWidget
   constructor: ->
     super
     @heading = "Restarting Servers"
+    @containers = []
+    @tasks = {}
+
+  createTask: (host) ->
+    task = new LightsTaskView(@$container, host)
+    @push(task)
+    task
+
+  getTask: (host) ->
+    @activate()
+    @tasks[host] ||= @createTask(host)
+
+  push: (container) ->
+    @containers.push(container)
+    @refresh()
+
+  refresh: ->
+    @sort()
+    @getList().empty()
+    @getList().html(c.updateDOM().$element[0] for c in @containers)
+    this
+
+  getList: ->
+    unless @$list
+      @$list = $('<div>').addClass('container-tasks').appendTo(@$container)
+    @$list
+
+  sort: ->
+    @containers.sort (a, b) ->
+      if a.type > b.type
+        -1
+      else if a.type < b.type
+        1
+      else
+        a.index - b.index
+
+  updateTask: (host, attrs) ->
+    task = @getTask(host).update(attrs)
+    task
 
   parse: (parser) ->
     parser.eachMessage (log) =>
       if match = log.output.match(/\[(\d+)\/(\d+)\].* restarting/i)
-        @getTask(log.host).update
+        @updateTask log.host,
           numPending: match[1]
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\].* (successfully restarted|was not required to restart in time)/i)
-        @getTask(log.host).update
+        @updateTask log.host,
           numDone: match[1]
           numLights: match[2]
       else if match = log.output.match(/\[(\d+)\/(\d+)\].* did not restart in time/i)
-        @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
+        @updateTask(
+          log.host,
+          numPending: match[1],
+          numLights: match[2]
+        ).fail()
       else if match = log.output.match(/\[(\d+)\/(\d+)\].* (failed to restart|unable to restart)/i)
-        @getTask(log.host).update(numPending: match[1], numLights: match[2]).fail()
+        @updateTask(
+          log.host,
+          numPending: match[1],
+          numLights: match[2]
+        ).fail()
+    @refresh()
     null
 
 class LightsTaskView
@@ -129,20 +159,12 @@ class LightsTaskView
   constructor: (@$container, host) ->
     @$element = $(TEMPLATE)
     @$title = host.split('.')[0]
+    @parseTitle(@$title)
     @$element.find('.task-lights-title').text(@$title)
-    @insertSorted(@$element, @$title)
 
-  insertSorted: (toInsert, title) ->
-    inserted = false
-    @$container.find('.task-lights').each ->
-      title2 = $('.task-lights-title',this).text()
-      # Sort shorter names first, so that the sort ends up 
-      # like [sb1,sb2,sb10] not [sb1,sb10,sb2]
-      if title2.length > title.length || (title2 > title && title2.length == title.length)
-        toInsert.insertBefore(this)
-        inserted = true
-        return false
-    toInsert.insertBefore(@$container.find('.section-bottom')) unless inserted
+  parseTitle: (title) ->
+    [_, @type, index] = title.match(/^([a-z]+)(\d+)$/)
+    @index = parseInt(index, 10)
 
   genBoxes: ->
     boxes = document.createDocumentFragment();
@@ -161,11 +183,15 @@ class LightsTaskView
     this
 
   updateDOM: ->
-    @$element.find('.task-lights-boxes').empty().append(@genBoxes())
+    @$element.find('.task-lights-boxes').html(@genBoxes())
+    @$element.toggleClass('wide', @numLights > 10)
     this
 
   fail: ->
     @$element.addClass('task-failed')
+
+class ContainersList
+  constructor: (@$element) ->
 
 BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget]
 borgWidgetInstances = for widget in BORG_WIDGETS
