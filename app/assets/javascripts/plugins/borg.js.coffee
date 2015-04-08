@@ -92,7 +92,6 @@ class ContainersRestartWidget extends BaseTaskWidget
 
   push: (container) ->
     @containers.push(container)
-    @refresh()
 
   refresh: ->
     @sort()
@@ -140,7 +139,6 @@ class ContainersRestartWidget extends BaseTaskWidget
           numPending: match[1],
           numLights: match[2]
         ).fail()
-    @refresh()
     null
 
 class LightsTaskView
@@ -189,9 +187,6 @@ class LightsTaskView
 
   fail: ->
     @$element.addClass('task-failed')
-
-class ContainersList
-  constructor: (@$element) ->
 
 BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget]
 borgWidgetInstances = for widget in BORG_WIDGETS
