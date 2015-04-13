@@ -6,9 +6,6 @@ AllCops:
     - data/**/*
     - db/schema.rb
 
-inherit_from:
-  .rubocop_todo.yml
-
 Lint/AssignmentInCondition:
   Enabled: false
 
@@ -37,6 +34,9 @@ Metrics/MethodLength:
 
 Metrics/ClassLength:
   Max: 400
+
+Metrics/AbcSize:
+  Max: 35
 
 Style/Documentation:
   Enabled: false
