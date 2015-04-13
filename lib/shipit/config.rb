@@ -61,6 +61,11 @@ module Shipit::Config
     end
   end
 
+  def bugsnag_api_key
+    # TODO: Update cookbooks and get rid of this key
+    secrets.bugsnag_api_key.presence || '8f5ef714c28f7ea7b5c1fde664d3dc7a'
+  end
+
   protected
 
   def revision_file
