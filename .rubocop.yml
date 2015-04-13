@@ -6,6 +6,9 @@ AllCops:
     - data/**/*
     - db/schema.rb
 
+inherit_from:
+  .rubocop_todo.yml
+
 Lint/AssignmentInCondition:
   Enabled: false
 
