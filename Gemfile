@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2.1'
 gem 'responders'
-gem 'sprockets'
+gem 'sprockets', '~> 2.12'
 gem 'mysql2'
 gem 'sass-rails'
 gem 'uglifier'
