@@ -39,9 +39,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    airbrake (3.1.17)
-      builder
-      multi_json
     ansi_stream (0.0.5)
     arel (6.0.0)
     ast (2.0.0)
@@ -334,7 +331,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
-  airbrake (~> 3.1.5)
   ansi_stream (~> 0.0.4)
   bugsnag
   byebug
