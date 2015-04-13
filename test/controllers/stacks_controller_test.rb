@@ -42,7 +42,7 @@ class StacksControllerTest < ActionController::TestCase
 
   test "#create when not valid renders new" do
     assert_no_difference "Stack.count" do
-      post :create, stack: { repo_owner: 'some', repo_name: 'owner/path' }
+      post :create, stack: {repo_owner: 'some', repo_name: 'owner/path'}
     end
 
     assert_template :new

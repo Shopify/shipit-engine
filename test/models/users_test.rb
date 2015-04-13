@@ -43,7 +43,7 @@ class UsersTest < ActiveSupport::TestCase
 
   test "#identifiers_for_ping returns a hash with the user's github_id, name, email and github_login" do
     user = users(:bob)
-    expected_ouput = { github_id: user.github_id, name: user.name, email: user.email, github_login: user.login}
+    expected_ouput = {github_id: user.github_id, name: user.name, email: user.email, github_login: user.login}
     assert_equal expected_ouput, user.identifiers_for_ping
   end
 

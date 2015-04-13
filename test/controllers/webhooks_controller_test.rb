@@ -13,7 +13,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_master)
-    post :push, { stack_id: @stack.id }.merge(params)
+    post :push, {stack_id: @stack.id}.merge(params)
   end
 
   test ":push does not enqueue a job if not the target branch" do
@@ -22,7 +22,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_not_master)
-    post :push, { stack_id: @stack.id }.merge(params)
+    post :push, {stack_id: @stack.id}.merge(params)
   end
 
   test ":state create a Status for the specific commit" do
@@ -33,7 +33,7 @@ class WebhooksControllerTest < ActionController::TestCase
     commit = commits(:first)
 
     assert_difference 'commit.statuses.count', +1 do
-      post :state, { stack_id: @stack.id }.merge(status_payload)
+      post :state, {stack_id: @stack.id}.merge(status_payload)
     end
 
     status = commit.statuses.last
@@ -50,7 +50,7 @@ class WebhooksControllerTest < ActionController::TestCase
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
     assert_raises ActiveRecord::RecordNotFound do
-      post :state, { stack_id: @stack.id }.merge(params)
+      post :state, {stack_id: @stack.id}.merge(params)
     end
   end
 
@@ -59,7 +59,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
-    post :state, { stack_id: @stack.id }.merge(params)
+    post :state, {stack_id: @stack.id}.merge(params)
     assert_response :ok
   end
 
@@ -90,7 +90,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
     GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
-    post :push, { stack_id: @stack.id }.merge(params)
+    post :push, {stack_id: @stack.id}.merge(params)
     assert_response :unprocessable_entity
   end
 
@@ -103,7 +103,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
     GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
-    post :push, { stack_id: @stack.id }.merge(params)
+    post :push, {stack_id: @stack.id}.merge(params)
     assert_response :unprocessable_entity
   end
 end

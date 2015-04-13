@@ -68,3 +68,6 @@ Style/ClassAndModuleChildren:
 Style/PredicateName:
   Exclude:
     - app/serializers/**/*
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space

@@ -14,12 +14,6 @@ Metrics/AbcSize:
 Style/PerlBackrefs:
   Enabled: false
 
-# Offense count: 142
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
 # Offense count: 336
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
