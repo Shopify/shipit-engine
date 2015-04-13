@@ -74,3 +74,6 @@ Style/SpaceInsideHashLiteralBraces:
 
 Style/StringLiterals:
   Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false

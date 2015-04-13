@@ -8,8 +8,3 @@
 # Offense count: 8
 Metrics/AbcSize:
   Max: 34
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Enabled: false
