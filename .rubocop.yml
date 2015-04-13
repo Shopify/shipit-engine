@@ -71,3 +71,6 @@ Style/PredicateName:
 
 Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
+
+Style/StringLiterals:
+  Enabled: false
