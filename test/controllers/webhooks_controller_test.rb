@@ -67,14 +67,14 @@ class WebhooksControllerTest < ActionController::TestCase
     @request.headers['X-Github-Event'] = 'ping'
 
     Resque.expects(:enqueue).never
-    post :state, { stack_id: @stack.id, zen: "Git is beautiful" }
+    post :state, stack_id: @stack.id, zen: "Git is beautiful"
     assert_response :ok
   end
 
   test ":state returns head :ok if request is ping" do
     @request.headers['X-Github-Event'] = 'ping'
 
-    post :state, { stack_id: @stack.id }
+    post :state, stack_id: @stack.id
     Resque.expects(:enqueue).never
     assert_response :ok
   end

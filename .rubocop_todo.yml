@@ -9,12 +9,6 @@
 Metrics/AbcSize:
   Max: 34
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/PerlBackrefs:

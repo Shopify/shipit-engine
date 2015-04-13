@@ -24,13 +24,13 @@ class GithubSetupWebhooksJobTest < ActiveSupport::TestCase
       url: "https://example.com/stacks/#{@stack.id}/webhooks/push",
       content_type: 'json',
       secret: '1234',
-    }, { events: ['push'], active: true }).returns(stub(id: 122))
+    }, events: ['push'], active: true).returns(stub(id: 122))
 
     Shipit.github_api.expects(:create_hook).with('shopify/shipit2', 'web', {
       url: "https://example.com/stacks/#{@stack.id}/webhooks/state",
       content_type: 'json',
       secret: '1234',
-    }, { events: ['status'], active: true }).returns(stub(id: 123))
+    }, events: ['status'], active: true).returns(stub(id: 123))
 
     assert_difference -> { GithubHook.count }, +2 do
       @job.perform(stack_id: @stack.id, hostname: "example.com")

@@ -71,7 +71,7 @@ class StacksControllerTest < ActionController::TestCase
   test "#index when authentication is successful does not redirect" do
     Shipit.stubs(:authentication).returns('provider' => 'google_apps')
 
-    get :index, {}, { authenticated: true }
+    get :index, {}, authenticated: true
 
     assert_response :ok
   end

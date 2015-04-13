@@ -21,7 +21,7 @@ class GithubSetupWebhooksJob < BackgroundJob
       url: url,
       content_type: 'json',
       secret: secret,
-    }, { events: [event.to_s], active: true })
+    }, events: [event.to_s], active: true)
 
     stack.github_hooks.create!(github_id: github_hook.id, event: event, secret: secret)
   end

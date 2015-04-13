@@ -53,7 +53,7 @@ Shipit::Application.configure do
 
   # Use a different cache store in production.
   config.cache_store = :redis_store, {db: 1}
-  config.session_store :redis_store, {db: 5}
+  config.session_store :redis_store, db: 5
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
