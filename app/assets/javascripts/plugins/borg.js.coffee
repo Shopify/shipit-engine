@@ -100,7 +100,7 @@ class ContainersRestartWidget extends BaseTaskWidget
     this
 
   getList: ->
-    unless @$list
+    unless @$list?.length
       @$list = $('<div>').addClass('container-tasks').appendTo(@$container)
     @$list
 
