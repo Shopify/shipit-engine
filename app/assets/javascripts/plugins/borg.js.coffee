@@ -1,3 +1,27 @@
+class @CapistranoParser
+  LOG_PATTERN = /^\s*\[([a-zA-Z\d\.]+)\]\[(\w+)\] (.*)$/gm
+  TASK_START_PATTERN = /^\s*\*(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})? executing `([^']+)'\s*$|^.*\*+ Execute (\S+)/gm
+  TASK_END_PATTERN = /^\s*triggering after callbacks for `([^']+)'\s*$|^\s*\* Finished (\S+) in /gm
+  lastIndex: 0
+
+  constructor: (@text) ->
+
+
+  matchPattern: (pattern, callback) ->
+    pattern.lastIndex = @lastIndex
+    while (match = pattern.exec(@text)) != null
+      res = callback(match)
+      break if res == false
+    @lastIndex = pattern.lastIndex
+    null
+
+  eachMessage: (callback) ->
+    @matchPattern LOG_PATTERN, (match) ->
+      callback
+        source: match[2]
+        host: match[1]
+        output: match[3] || ''
+
 filterAshburn = (text) ->
   String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace(/\[chi\]/mg,'')
 
@@ -34,44 +58,6 @@ class BaseTaskWidget
     parser = new CapistranoParser(filterAshburn(text))
     @parse(parser)
     @refresh()
-    null
-
-# Abstract, need to implement @parse
-class ProgressBarTaskWidget extends BaseTaskWidget
-  constructor: ->
-    super
-    @total = 1
-    @done = 0
-
-  newContainer: ->
-    super
-    @$bar = $("<div>").addClass("task-progress-container")
-    @$donePart = $("<div>").addClass("task-progress-bar").appendTo(@$bar)
-    @$bar.insertBefore(@$container.find('.section-bottom'))
-
-  refresh: ->
-    return unless @active
-    frac = @done / @total
-    doneWidth = @$bar.width() * frac
-    @$donePart.width(doneWidth)
-
-class AssetsUploadWidget extends ProgressBarTaskWidget
-  constructor: ->
-    super
-    @heading = "Uploading Assets"
-
-  update: (text) ->
-    parser = new CapistranoParser(filterAshburn(text))
-    @parse(parser)
-    null
-
-  parse: (parser) ->
-    parser.eachMessage (log) =>
-      if match = log.output.match(/S3 assets uploading \[(\d+)\/(\d+)\]/)
-        @activate()
-        @done = +(match[1])
-        @total = +(match[2])
-        @refresh()
     null
 
 class ContainersRestartWidget extends BaseTaskWidget
@@ -188,11 +174,5 @@ class LightsTaskView
   fail: ->
     @$element.addClass('task-failed')
 
-BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget]
-borgWidgetInstances = for widget in BORG_WIDGETS
-  new widget()
-
-ChunkPoller.prependFormatter (chunk) ->
-  for widget in borgWidgetInstances
-    widget.update(ChunkPoller.stripANSICodes(chunk))
-  false
+containersRestart = new ContainersRestartWidget
+OutputStream.addEventListener('chunk', (chunk) -> containersRestart.update(chunk.text))

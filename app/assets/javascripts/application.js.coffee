@@ -14,28 +14,8 @@
 #= require jquery_ujs
 #= require rails-timeago
 #= require jquery-notify
-#= require ansi_stream
 #= require_tree ./application
 #= require_self
-
-entityMap =
- "&": "&amp;"
- "<": "&lt;"
- ">": "&gt;"
- '"': '&quot;'
- "'": '&#39;'
- "/": '&#x2F;'
-
-escapeHtml = (string) ->
-  String(string).replace(/[&<>"'\/]/g, (s) -> entityMap[s])
-
-stream = new AnsiStream()
-
-ChunkPoller.appendFormatter (chunk) ->
-  stream.process(escapeHtml(chunk))
-
-jQuery ->
-  ChunkPoller.init()
 
 $(document).on 'click', 'a.disabled', (event) ->
   event.preventDefault()
