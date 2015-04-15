@@ -56,24 +56,20 @@
   margin: 2px;
 }
 
-.box-up {
+.box-restarted {
   background-color: #00B432;
 }
 
-.box-partial {
-  background-color: #e6ae00;
+.box-restarting {
+  background-color: #248af2;
 }
 
-.box-neutral {
+.box-running {
   background-color: #B6BCC0;
 }
 
-.box-down {
-  background-color: #ee3333;
-}
-
-.task-failed .box-neutral {
-  background-color: red;
+.box-timeout {
+  background-color: #e6ae00;
 }
 
 .task-job-server {

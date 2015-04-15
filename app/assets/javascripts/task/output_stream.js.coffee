@@ -1,3 +1,18 @@
+class Chunk
+  constructor: (@raw) ->
+
+  rawText: ->
+    @raw
+
+  text: ->
+    @_text ||= AnsiStream.strip(@raw)
+
+  rawLines: ->
+    @_rawLines ||= @raw.split('\n')
+
+  lines: ->
+    @_lines ||= @text().split('\n')
+
 class Stream
   INTERVAL = 1000
   MAX_RETRIES = 15
@@ -10,7 +25,7 @@ class Stream
 
   init: ({url, text, status}) ->
     @status = status
-    @broadcastRawText(text)
+    @broadcastChunk(text)
     @start(url)
 
   poll: =>
@@ -30,20 +45,13 @@ class Stream
       for handler in @listeners('status')
         handler(task)
 
-  broadcastRawText: (raw) ->
-    text = AnsiStream.strip(raw)
-
+  broadcastChunk: (raw) ->
+    chunk = new Chunk(raw)
     for handler in @listeners('chunk')
-      handler(raw: raw, text: text)
-
-    raw_lines = raw.split('\n')
-    for raw in raw_lines
-      text = AnsiStream.strip(raw)
-      for handler in @listeners('line')
-        handler(raw: raw, text: text)
+      handler(chunk)
 
   broadcastChunks: (chunks) ->
-    @broadcastRawText((c.text for c in chunks).join(''))
+    @broadcastChunk((c.text for c in chunks).join(''))
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES
