@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/byroot/ansi_stream.git
+  revision: 5c5324ace533b819eadc8d1ae8b022138ac4a5eb
+  ref: 5c5324ace533b819eadc8d1ae8b022138ac4a5eb
+  branch: strip
+  specs:
+    ansi_stream (0.0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -39,7 +47,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    ansi_stream (0.0.5)
     arel (6.0.0)
     ast (2.0.0)
     astrolabe (1.3.0)
@@ -335,7 +342,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
-  ansi_stream (~> 0.0.4)
+  ansi_stream!
   bugsnag
   byebug
   capistrano
