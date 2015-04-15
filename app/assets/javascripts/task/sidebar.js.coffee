@@ -18,7 +18,7 @@ class @Sidebar
     @$container.height($(window).height() - @$container[0].getBoundingClientRect().top)
 
   newWidgetContainer: ->
-    $('<div>').addClass('sidebar-plugin').prependTo(@$container)
+    $(document.createElement('div')).addClass('sidebar-plugin').prependTo(@$container)
 
   saveMinTop: ->
     @minTop = @$container.position()?.top || 0

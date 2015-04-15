@@ -44,8 +44,8 @@ class Scrolling
       @initialScroll = (window.scrollY == 0)
       true
     else
-      @viewportBottomPosition() >= @codeBottomPosition() - TOLERENCE and \
-      @viewportBottomPosition() < @codeBottomPosition() + TOLERENCE
+      codeBottom = @codeBottomPosition()
+      codeBottom + TOLERENCE > @viewportBottomPosition() >= codeBottom - TOLERENCE
 
   viewportBottomPosition: ->
     window.scrollY + @$window.height()

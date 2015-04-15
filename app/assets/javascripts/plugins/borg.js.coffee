@@ -31,8 +31,7 @@ class BaseTaskWidget
     @active = false
 
   addHeading: ->
-    @$headingEl = $("<h2 class='task-group-heading'></h2>")
-    @$headingEl.appendTo(@$container)
+    @$headingEl = $(document.createElement('h2')).addClass('task-group-heading').appendTo(@$container)
 
   newContainer: ->
     if @$container
@@ -40,7 +39,7 @@ class BaseTaskWidget
     else
       @$container = Sidebar.newWidgetContainer()
     @addHeading()
-    @$container.append("<div class='section-bottom'></div>")
+    @$container.append($(document.createElement('div')).addClass('section-bottom'))
 
   activate: ->
     return if @active
@@ -87,7 +86,7 @@ class ContainersRestartWidget extends BaseTaskWidget
 
   getList: ->
     unless @$list?.length
-      @$list = $('<div>').addClass('container-tasks').appendTo(@$container)
+      @$list = $(document.createElement('div')).addClass('container-tasks').appendTo(@$container)
     @$list
 
   sort: ->
