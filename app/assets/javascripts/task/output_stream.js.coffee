@@ -43,7 +43,7 @@ class Stream
         handler(raw: raw, text: text)
 
   broadcastChunks: (chunks) ->
-    @broadcastRawText((c.text for c in chunks).join())
+    @broadcastRawText((c.text for c in chunks).join(''))
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES
