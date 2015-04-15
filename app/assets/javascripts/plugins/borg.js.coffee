@@ -1,3 +1,27 @@
+class @CapistranoParser
+  LOG_PATTERN = /^\s*\[([a-zA-Z\d\.]+)\]\[(\w+)\] (.*)$/gm
+  TASK_START_PATTERN = /^\s*\*(?: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})? executing `([^']+)'\s*$|^.*\*+ Execute (\S+)/gm
+  TASK_END_PATTERN = /^\s*triggering after callbacks for `([^']+)'\s*$|^\s*\* Finished (\S+) in /gm
+  lastIndex: 0
+
+  constructor: (@text) ->
+
+
+  matchPattern: (pattern, callback) ->
+    pattern.lastIndex = @lastIndex
+    while (match = pattern.exec(@text)) != null
+      res = callback(match)
+      break if res == false
+    @lastIndex = pattern.lastIndex
+    null
+
+  eachMessage: (callback) ->
+    @matchPattern LOG_PATTERN, (match) ->
+      callback
+        source: match[2]
+        host: match[1]
+        output: match[3] || ''
+
 filterAshburn = (text) ->
   String(text).replace(/^.*\[ash\].*$/gm, '').replace(/^.*\.ash\.shopify\.com.*$/gm, '').replace(/\[chi\]/mg,'')
 
@@ -192,7 +216,7 @@ BORG_WIDGETS = [AssetsUploadWidget, ContainersRestartWidget]
 borgWidgetInstances = for widget in BORG_WIDGETS
   new widget()
 
-ChunkPoller.prependFormatter (chunk) ->
+TTY.prependFormatter (chunk) ->
   for widget in borgWidgetInstances
-    widget.update(ChunkPoller.stripANSICodes(chunk))
+    widget.update(AnsiStream.strip(chunk))
   false

@@ -1,4 +1,5 @@
-<%= render partial: "stacks/header", locals: { stack: @stack } %>
+<%= render partial: 'tasks/plugins' %>
+<%= render partial: 'stacks/header', locals: { stack: @stack } %>
 
 <span class="deploy-tasks"></span>
 <div class="deploy-banner <%= @task.status %>" data-deploy-status="<%= @task.status %>">
@@ -12,5 +13,5 @@
 </div>
 
 <pre class="nowrap">
-  <code data-next-chunks-url="<%= next_chunks_url(@task) %>"><%= @task.chunk_output %></code>
+  <code data-task-status="<%= @task.status %>" data-next-chunks-url="<%= next_chunks_url(@task) %>"><%= @task.chunk_output %></code>
 </pre>
