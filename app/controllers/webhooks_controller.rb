@@ -23,11 +23,48 @@ class WebhooksController < ActionController::Base
     head :ok
   end
 
+  params do
+    requires :team do
+      requires :id, Integer
+      requires :name, String
+      requires :slug, String
+      requires :url, String
+    end
+    requires :organization do
+      requires :login, String
+    end
+    requires :member do
+      requires :login, String
+    end
+  end
+  def membership
+    team = find_or_create_team!
+    member = User.find_or_create_by_login!(params.member.login)
+
+    case membership_action
+    when 'added'
+      team.add_member(member)
+    when 'removed'
+      team.members.delete(member)
+    else
+      raise ArgumentError, "Don't know how to perform action: `#{params.action.inspect}`"
+    end
+    head :ok
+  end
+
   def index
     render text: "working"
   end
 
   private
+
+  def find_or_create_team!
+    Team.find_or_create_by!(github_id: params.team.id) do |team|
+      team.github_team = params.team
+      team.organization = params.organization.login
+      team.automatically_setup_hooks = true
+    end
+  end
 
   def verify_signature
     request.body.rewind
@@ -39,11 +76,21 @@ class WebhooksController < ActionController::Base
   end
 
   def webhook
-    @webhook ||= stack.github_hooks.where(event: event).first!
+    @webhook ||= if params[:stack_id]
+      stack.github_hooks.find_by!(event: event)
+    else
+      GithubHook::Organization.find_by!(organization: params.organization.login, event: event)
+    end
   end
 
   def event
-    request.headers['X-Github-Event']
+    request.headers['X-Github-Event'] || action_name
+  end
+
+  def membership_action
+    # GitHub send an `action` parameter that is shadowed by Rails url parameters
+    # It's also impossible to pass an `action` parameters from a test case.
+    request.request_parameters['action'] || params[:_action]
   end
 
   def stack

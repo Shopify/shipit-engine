@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+shopify_developers:
+  id: 1
+  github_id: 1
+  organization: shopify
+  slug: developers
+  name: Developers
+  api_url: https://example.com/shopify/developers
+
+cyclimse_cooks:
+  id: 2
+  github_id: 2
+  organization: cyclimse
+  slug: cooks
+  name: Cooks
+  api_url: https://example.com/cyclimse/cooks

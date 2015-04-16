@@ -9,13 +9,13 @@ class GithubSyncJobTest < ActiveSupport::TestCase
 
   test "#perform fetch commits from the API" do
     Stack.any_instance.expects(:github_commits).returns(@github_commits)
-    @job.expects(:fetch_missing_commits).with(@github_commits).returns([[], nil])
+    @job.expects(:fetch_missing_commits).yields.returns([[], nil])
     @job.perform(stack_id: @stack.id)
   end
 
   test "#perform mark all childs of the common parent as detached" do
     Stack.any_instance.expects(:github_commits).returns(@github_commits)
-    @job.expects(:fetch_missing_commits).with(@github_commits).returns([[], commits(:third)])
+    @job.expects(:fetch_missing_commits).yields.returns([[], commits(:third)])
 
     refute commits(:fourth).reload.detached?
     refute commits(:fifth).reload.detached?
@@ -32,7 +32,7 @@ class GithubSyncJobTest < ActiveSupport::TestCase
     FirstParentCommitsIterator.any_instance.stubs(:each).multiple_yields(last, first)
     @job.stubs(lookup_commit: nil)
 
-    commits, parent = @job.fetch_missing_commits(stub)
+    commits, parent = @job.fetch_missing_commits { stub }
     assert_nil parent
     assert_equal [first, last], commits
   end
@@ -44,7 +44,7 @@ class GithubSyncJobTest < ActiveSupport::TestCase
     @job.stubs(:lookup_commit).with(123).returns(nil)
     @job.stubs(:lookup_commit).with(345).returns(first)
 
-    commits, parent = @job.fetch_missing_commits(stub)
+    commits, parent = @job.fetch_missing_commits { stub }
     assert_equal first, parent
     assert_equal [last], commits
   end

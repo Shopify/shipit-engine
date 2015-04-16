@@ -12,7 +12,7 @@ class GithubSyncJob < BackgroundJob
   def perform(params)
     @stack = Stack.find(params[:stack_id])
 
-    new_commits, shared_parent = fetch_missing_commits(@stack.github_commits)
+    new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
 
     @stack.transaction do
       shared_parent.try(:detach_children!)
@@ -25,9 +25,9 @@ class GithubSyncJob < BackgroundJob
     end
   end
 
-  def fetch_missing_commits(relation)
+  def fetch_missing_commits(&block)
     commits = []
-    iterator = FirstParentCommitsIterator.new(relation)
+    iterator = FirstParentCommitsIterator.new(&block)
     iterator.each do |commit|
       if shared_parent = lookup_commit(commit.sha)
         return commits, shared_parent
