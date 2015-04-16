@@ -1,5 +1,16 @@
 lock '3.4.0'
 
+module UserSwitching
+  def execute(command, *args)
+    if command == :rake
+      as('shipit') { super }
+    else
+      super
+    end
+  end
+end
+SSHKit.config.backend.prepend(UserSwitching)
+
 set :bundle_bins, fetch(:bundle_bins, []).push('whenever')
 
 set :application, 'shipit'
