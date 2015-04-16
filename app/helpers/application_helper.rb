@@ -19,7 +19,7 @@ module ApplicationHelper
     tags = []
     Rails.application.config.assets.paths.each do |path|
       Dir[File.join(path, 'plugins/*')].each do |plugin_path|
-        tags << include_plugin_asset_tag(File.basename(plugin_path))
+        tags << include_plugin_asset_tag(File.basename(plugin_path)) if File.file?(plugin_path)
       end
     end
     tags.join.html_safe

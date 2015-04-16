@@ -30,6 +30,7 @@ gem 'validate_url'
 gem 'active_model_serializers'
 gem 'explicit-parameters'
 gem 'rack-cors', require: 'rack/cors'
+gem 'react-rails'
 
 group :default, :deploy do
   gem 'bugsnag'

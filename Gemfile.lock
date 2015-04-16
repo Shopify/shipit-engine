@@ -83,6 +83,7 @@ GEM
     coffee-script-source (1.9.1.1)
     colorize (0.7.5)
     columnize (0.9.0)
+    connection_pool (2.2.0)
     daemons (1.2.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -230,6 +231,13 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.0.0)
     rake (10.4.2)
+    react-rails (1.0.0)
+      coffee-script-source (~> 1.8)
+      connection_pool
+      execjs
+      rails (>= 3.1)
+      react-source (~> 0.13)
+    react-source (0.13.1)
     redis (3.2.1)
     redis-actionpack (4.0.0)
       actionpack (~> 4)
@@ -369,6 +377,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 4.2.1)
   rails-timeago (~> 2.0)
+  react-rails
   redis-rails
   responders
   resque (= 1.26.pre.0)
