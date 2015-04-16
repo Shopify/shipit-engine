@@ -8,10 +8,10 @@ class Chunk
     @_text ||= AnsiStream.strip(@raw)
 
   rawLines: ->
-    @_rawLines ||= @raw.split('\n')
+    @_rawLines ||= @raw.split(/\r?\n/)
 
   lines: ->
-    @_lines ||= @text().split('\n')
+    @_lines ||= @text().split(/\r?\n/)
 
 class Stream
   INTERVAL = 1000
