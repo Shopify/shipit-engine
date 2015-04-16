@@ -42,7 +42,7 @@ var DataCenterStatus = (function() {
     render: function() {
       classes = 'borg-container borg-status-' + this.props.status
       return (
-        <span className={classes} />
+        <span className={classes} data-tooltip={this.props.name} />
       );
     }
   });
