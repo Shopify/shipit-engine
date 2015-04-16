@@ -1,26 +1,10 @@
-.task-group-heading {
+.borg-widget-title {
   color: white;
   margin-left: 3px;
   margin-bottom: 5px;
 }
 
-.section-bottom {
-  clear: both;
-}
-
-.task-progress-container {
-  height: 20px;
-  background-color: #424E5A;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.task-progress-bar {
-  background-color: #19AD42;
-  height: 100%;
-}
-
-.task-lights {
+.borg-host {
   float: left;
   background-color: #424E5A;
   border-radius: 4px;
@@ -33,22 +17,18 @@
   }
 }
 
-.task-failed {
-  background-color: #923838;
-}
-
-.task-lights-title {
+.borg-host-name {
   font-weight: bold;
   color: #ececec;
 }
 
-.task-lights-boxes {
+.borg-containers {
   float: left;
   margin-top: 0.05em;
   margin-bottom: 0.1em;
 }
 
-.task-lights-box {
+.borg-container {
   float: left;
   display: block;
   width: 6px;
@@ -56,29 +36,18 @@
   margin: 2px;
 }
 
-.box-restarted {
+.borg-status-restarted {
   background-color: #00B432;
 }
 
-.box-restarting {
+.borg-status-restarting {
   background-color: #248af2;
 }
 
-.box-running {
+.borg-status-running {
   background-color: #B6BCC0;
 }
 
-.box-timeout {
+.borg-status-timeout {
   background-color: #e6ae00;
-}
-
-.task-job-server {
-  height: 95px;
-  width: 116px;
-
-  .task-lights-box {
-    width: 6px;
-    height: 6px;
-    margin: 2px;
-  }
 }
