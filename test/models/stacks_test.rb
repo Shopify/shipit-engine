@@ -4,6 +4,7 @@ class StacksTest < ActiveSupport::TestCase
   def setup
     @stack = stacks(:shipit)
     @expected_base_path = Rails.root.join('data/stacks', @stack.to_param).to_s
+    GithubHook.any_instance.stubs(:teardown!)
   end
 
   test "repo_owner, repo_name and environment uniqueness is enforced" do
@@ -148,14 +149,15 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#create queues a GithubSetupWebhooksJob and a GithubSyncJob" do
-    Resque.expects(:enqueue).with(GithubSetupWebhooksJob, has_key(:stack_id))
+    Resque.expects(:enqueue).with(SetupGithubHookJob, has_key(:hook_id)).twice
     Resque.expects(:enqueue).with(GithubSyncJob, has_key(:stack_id))
     Stack.create(repo_name: 'rails', repo_owner: 'rails')
   end
 
-  test "#destroy queues a GithubTeardownWebhooksJob" do
-    Resque.expects(:enqueue).with(GithubTeardownWebhooksJob, all_of(has_key(:stack_id), has_key(:github_repo_name)))
-    stacks(:shipit).destroy
+  test "#destroy also destroy associated GithubHooks" do
+    assert_difference -> { GithubHook.count }, -2 do
+      stacks(:shipit).destroy
+    end
   end
 
   test "#destroy delete all local files (git mirror and deploy clones)" do

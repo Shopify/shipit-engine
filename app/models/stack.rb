@@ -15,7 +15,7 @@ class Stack < ActiveRecord::Base
 
   before_validation :update_defaults
   after_create :setup_hooks, :sync_github
-  after_destroy :teardown_hooks, :clear_local_files
+  before_destroy :clear_local_files
   after_commit :broadcast_update, on: :update
   after_commit :emit_hooks
   after_touch :clear_cache
@@ -205,18 +205,21 @@ class Stack < ActiveRecord::Base
     Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
   end
 
+  def setup_hooks
+    REQUIRED_HOOKS.each do |event|
+      hook = github_hooks.find_or_create_by!(event: event)
+      hook.schedule_setup!
+    end
+  end
+
+  def schedule_for_destroy!
+    Resque.enqueue(DestroyStackJob, stack_id: id)
+  end
+
   private
 
   def clear_cache
     remove_instance_variable(:@deploying) if defined?(@deploying)
-  end
-
-  def setup_hooks
-    Resque.enqueue(GithubSetupWebhooksJob, stack_id: id)
-  end
-
-  def teardown_hooks
-    Resque.enqueue(GithubTeardownWebhooksJob, stack_id: id, github_repo_name: github_repo_name)
   end
 
   def sync_github

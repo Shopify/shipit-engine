@@ -48,7 +48,8 @@ class StacksControllerTest < ActionController::TestCase
     assert_template :new
   end
 
-  test "#destroy behaves correctly" do
+  test "#destroy enqueues a DestroyStackJob" do
+    Resque.expects(:enqueue).with(DestroyStackJob, stack_id: @stack.id)
     delete :destroy, id: @stack.to_param
     assert_redirected_to stacks_path
   end
@@ -109,8 +110,8 @@ class StacksControllerTest < ActionController::TestCase
     assert_redirected_to stack_settings_path(@stack)
   end
 
-  test "#sync_webhooks queues a GithubSetupWeebhookJob" do
-    Resque.expects(:enqueue).with(GithubSetupWebhooksJob, stack_id: @stack.id)
+  test "#sync_webhooks queues #{Stack::REQUIRED_HOOKS.count} SetupGithubHookJob" do
+    Resque.expects(:enqueue).with(SetupGithubHookJob, includes(:hook_id)).times(Stack::REQUIRED_HOOKS.count)
     post :sync_webhooks, id: @stack.to_param
     assert_redirected_to stack_settings_path(@stack)
   end

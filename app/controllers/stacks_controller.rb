@@ -29,8 +29,8 @@ class StacksController < ApplicationController
   end
 
   def destroy
-    @stack.destroy!
-    respond_with(@stack)
+    @stack.schedule_for_destroy!
+    redirect_to stacks_url
   end
 
   def settings
@@ -49,7 +49,7 @@ class StacksController < ApplicationController
   end
 
   def sync_webhooks
-    Resque.enqueue(GithubSetupWebhooksJob, stack_id: @stack.id)
+    @stack.setup_hooks
     redirect_to stack_settings_path(@stack)
   end
 
