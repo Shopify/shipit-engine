@@ -19,6 +19,13 @@ class StacksControllerTest < ActionController::TestCase
     assert_response :ok
   end
 
+  test "current_user must be a member of Shipit.github_team" do
+    Shipit.stubs(:github_team).returns(teams(:cyclimse_cooks))
+    get :index
+    assert_response :forbidden
+    assert_equal 'You must me a member of cyclimse/cooks to access this application.', response.body
+  end
+
   test "#show is success" do
     get :show, id: @stack.to_param
     assert_response :ok
