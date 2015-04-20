@@ -28,18 +28,26 @@ module Shipit::Config
     Rails.application.secrets.api_clients_secret || ''
   end
 
-  delegate :authentication, :github, :host, to: :secrets
+  delegate :authentication, :host, to: :secrets
 
   def github_required?
-    github && !github['optional']
+    !github['optional']
+  end
+
+  def github_team
+    @github_team ||= github['team'] && Team.find_or_create_by_handle(github['team'])
   end
 
   def github_key
-    github && github['key']
+    github['key']
   end
 
   def github_secret
-    github && github['secret']
+    github['secret']
+  end
+
+  def github
+    secrets.github || {}
   end
 
   def authentication_settings

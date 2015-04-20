@@ -31,6 +31,10 @@ class Team < ActiveRecord::Base
     end
   end
 
+  def handle
+    "#{organization}/#{slug}"
+  end
+
   def add_member(member)
     members.append(member) unless members.include?(member)
   end

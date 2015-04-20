@@ -19,10 +19,15 @@ class ApplicationController < ActionController::Base
   def force_github_authentication
     return unless Shipit.github
     return unless Shipit.github_required?
-    return if current_user.logged_in?
 
-    redirect_to authentication_path(:github, origin: request.original_url)
-    false
+    if current_user.logged_in?
+      team = Shipit.github_team
+      if team && !current_user.in?(team.members)
+        render text: "You must me a member of #{team.handle} to access this application.", status: :forbidden
+      end
+    else
+      redirect_to authentication_path(:github, origin: request.original_url)
+    end
   end
 
   def current_user
