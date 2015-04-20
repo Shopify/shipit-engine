@@ -1,10 +1,4 @@
 class FirstParentCommitsIterator < OctokitIterator
-  MAX_PAGE = 2
-
-  def initialize(relation = nil, max_pages: MAX_PAGE, &block)
-    super
-  end
-
   def each
     last_ancestor = nil
     super do |commit|
