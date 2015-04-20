@@ -3,13 +3,12 @@ require 'test_helper'
 class WebhooksControllerTest < ActionController::TestCase
   setup do
     @stack = stacks(:shipit)
+    GithubHook.any_instance.stubs(:verify_signature).returns(true)
   end
 
   test ":push with the target branch queues a job" do
     Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
     Resque.expects(:enqueue).with(GitMirrorUpdateJob, stack_id: @stack.id)
-
-    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_master)
@@ -18,7 +17,6 @@ class WebhooksControllerTest < ActionController::TestCase
 
   test ":push does not enqueue a job if not the target branch" do
     Resque.expects(:enqueue).never
-    GithubHook.any_instance.expects(:verify_signature).returns(true)
 
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_not_master)
@@ -26,7 +24,6 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state create a Status for the specific commit" do
-    GithubHook.any_instance.expects(:verify_signature).returns(true)
     request.headers['X-Github-Event'] = 'status'
 
     status_payload = payload(:status_master)
@@ -45,8 +42,6 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do
-    GithubHook.any_instance.expects(:verify_signature).returns(true)
-
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
     assert_raises ActiveRecord::RecordNotFound do
@@ -55,8 +50,6 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":state in an untracked branche bails out" do
-    GithubHook.any_instance.expects(:verify_signature).returns(true)
-
     request.headers['X-Github-Event'] = 'status'
     params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
     post :state, {stack_id: @stack.id}.merge(params)
@@ -105,5 +98,68 @@ class WebhooksControllerTest < ActionController::TestCase
 
     post :push, {stack_id: @stack.id}.merge(params)
     assert_response :unprocessable_entity
+  end
+
+  test ":membership creates the mentioned team on the fly" do
+    assert_difference -> { Team.count }, +1 do
+      post :membership, membership_params.merge(team: {
+        id: 48,
+        name: 'Ouiche Cooks',
+        slug: 'ouiche-cooks',
+        url: 'https://example.com',
+      })
+      assert_response :ok
+    end
+  end
+
+  test ":membership creates the mentioned user on the fly" do
+    Shipit.github_api.expects(:user).with('george').returns(george)
+    assert_difference -> { User.count }, +1 do
+      post :membership, membership_params.merge(member: {login: 'george'})
+      assert_response :ok
+    end
+  end
+
+  test ":membership can delete an user membership" do
+    assert_difference -> { Membership.count }, -1 do
+      post :membership, membership_params.merge(_action: 'removed')
+      assert_response :ok
+    end
+  end
+
+  test ":membership can append an user membership" do
+    assert_difference -> { Membership.count }, +1 do
+      post :membership, membership_params.merge(member: {login: 'bob'})
+      assert_response :ok
+    end
+  end
+
+  test ":membership can append an user twice" do
+    assert_no_difference -> { Membership.count } do
+      post :membership, membership_params
+      assert_response :ok
+    end
+  end
+
+  test ":membership can delete an user twice" do
+    assert_no_difference -> { Membership.count } do
+      post :membership, membership_params.merge(_action: 'removed', member: {login: 'bob'})
+      assert_response :ok
+    end
+  end
+
+  private
+
+  def membership_params
+    {_action: 'added', team: team_params, organization: {login: 'shopify'}, member: {login: 'walrus'}}
+  end
+
+  def team_params
+    {id: teams(:shopify_developers).id, slug: 'developers', name: 'Developers', url: 'http://example.com'}
+  end
+
+  def george
+    rels = {self: stub(href: 'https://api.github.com/user/george')}
+    stub(id: 42, name: 'George Abitbol', login: 'george', email: 'george@cyclim.se', rels: rels)
   end
 end

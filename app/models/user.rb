@@ -5,13 +5,19 @@ class User < ActiveRecord::Base
   has_many :commits, foreign_key: :committer_id, inverse_of: :committer
   has_many :tasks
 
+  def self.find_or_create_by_login!(login)
+    find_or_create_by!(login: login) do |user|
+      user.github_user = Shipit.github_api.user(login)
+    end
+  end
+
   def self.find_or_create_from_github(github_user)
     find_from_github(github_user) || create_from_github!(github_user)
   end
 
   def self.find_from_github(github_user)
     return unless github_user.id
-    where(github_id: github_user.id).first
+    find_by(github_id: github_user.id)
   end
 
   def self.create_from_github!(github_user)

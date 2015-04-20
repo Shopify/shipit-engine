@@ -24,6 +24,13 @@ Shipit::Application.routes.draw do
     end
   end
 
+  resources :webhooks, only: [] do
+    collection do
+      post :membership
+      get :membership
+    end
+  end
+
   # Humans
   scope '/*id', id: stack_id_format, as: :stack do
     get '/' => 'stacks#show'

@@ -2,13 +2,13 @@ require 'fileutils'
 
 class Stack < ActiveRecord::Base
   STACKS_PATH = File.join(Rails.root, "data", "stacks")
-  REQUIRED_HOOKS = %i( push status )
+  REQUIRED_HOOKS = %i(push status)
 
   has_many :commits, dependent: :destroy
   has_many :tasks, dependent: :destroy
   has_many :deploys
   has_many :rollbacks
-  has_many :github_hooks, dependent: :destroy
+  has_many :github_hooks, dependent: :destroy, class_name: 'GithubHook::Repo'
   has_many :hooks, dependent: :destroy
   has_many :api_clients, dependent: :destroy
   belongs_to :lock_author, class_name: :User
@@ -150,7 +150,6 @@ class Stack < ActiveRecord::Base
 
   def github_commits
     Shipit.github_api.commits(github_repo_name, sha: branch)
-    Shipit.github_api.last_response
   end
 
   def deploying?
