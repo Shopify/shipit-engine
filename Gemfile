@@ -19,6 +19,7 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-google-oauth2'
 gem 'safe_yaml', require: 'safe_yaml/load'
+gem 'airbrake', '~> 3.1.5'
 gem 'pubsubstub', '~> 0.0.7'
 gem 'securecompare', '~>1.0'
 gem 'rails-timeago', '~> 2.0'
@@ -31,10 +32,6 @@ gem 'active_model_serializers'
 gem 'explicit-parameters'
 gem 'rack-cors', require: 'rack/cors'
 gem 'react-rails'
-
-group :default, :deploy do
-  gem 'bugsnag'
-end
 
 group :development do
   gem 'quiet_assets'
