@@ -1,4 +1,5 @@
 class GithubSyncJob < BackgroundJob
+  MAX_FETCHED_COMMITS = 10
   @queue = :default
 
   self.timeout = 60
@@ -28,7 +29,9 @@ class GithubSyncJob < BackgroundJob
   def fetch_missing_commits(&block)
     commits = []
     iterator = FirstParentCommitsIterator.new(&block)
-    iterator.each do |commit|
+    iterator.each_with_index do |commit, index|
+      break if index >= MAX_FETCHED_COMMITS
+
       if shared_parent = lookup_commit(commit.sha)
         return commits, shared_parent
       end
