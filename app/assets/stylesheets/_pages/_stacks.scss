@@ -130,3 +130,13 @@
 
   p { font-weight: bold; }
 }
+
+.new_stack {
+  input.repo {
+    width: 150px;
+
+    &:focus {
+      padding-right: 30px !important;
+    }
+  }
+}
