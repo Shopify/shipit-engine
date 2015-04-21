@@ -6,13 +6,11 @@
     <div class="setting-section">
       <%= form_for @stack do |f| %>
         <p>
-          <%= f.label :repo_owner %>
-          <%= f.text_field :repo_owner, placeholder: 'e.g. Shopify', required: true %>
-        </p>
-        <p>
-          <%= f.label :repo_name %>
-          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_\.]+$" %>
-          <span class="form-hint">Only letters, numbers, underscores, periods and dashes</span>
+          <%= label_tag "Repo" %>
+          https://github.com/
+          <%= f.text_field :repo_owner, placeholder: 'e.g. Shopify', required: true, class: "repo" %>
+          /
+          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_\.]+$", class: "repo" %>
         </p>
         <p>
           <%= f.label :branch %>
