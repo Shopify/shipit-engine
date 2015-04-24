@@ -1,5 +1,5 @@
 class DestroyStackJob < BackgroundJob
-  @queue = :default
+  queue_as :default
 
   def perform(params)
     stack = Stack.find(params[:stack_id])

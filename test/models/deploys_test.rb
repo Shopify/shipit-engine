@@ -12,9 +12,9 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "enqueue" do
-    Resque.expects(:enqueue).with(PerformTaskJob, task_id: @deploy.id, stack_id: @deploy.id)
-
-    @deploy.enqueue
+    assert_enqueued_with(job: PerformTaskJob, args: [task_id: @deploy.id, stack_id: @deploy.id]) do
+      @deploy.enqueue
+    end
   end
 
   test "enqueue when not persisted" do
@@ -212,8 +212,9 @@ class DeploysTest < ActiveSupport::TestCase
 
   test "#trigger_rollback schedule the task" do
     Hook.expects(:emit).at_least_once
-    Resque.expects(:enqueue).with(PerformTaskJob, has_key(:task_id))
-    @deploy.trigger_rollback(@user)
+    assert_enqueued_with(job: PerformTaskJob) do
+      @deploy.trigger_rollback(@user)
+    end
   end
 
   test "#trigger_rollback locks the stack" do

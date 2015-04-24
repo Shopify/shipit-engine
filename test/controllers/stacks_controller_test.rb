@@ -56,8 +56,9 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#destroy enqueues a DestroyStackJob" do
-    Resque.expects(:enqueue).with(DestroyStackJob, stack_id: @stack.id)
-    delete :destroy, id: @stack.to_param
+    assert_enqueued_with(job: DestroyStackJob, args: [stack_id: @stack.id]) do
+      delete :destroy, id: @stack.to_param
+    end
     assert_redirected_to stacks_path
   end
 
@@ -109,23 +110,28 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#refresh queues a RefreshStatusesJob and a GithubSyncJob" do
-    Resque.expects(:enqueue).with(RefreshStatusesJob, stack_id: @stack.id)
-    Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
     request.env['HTTP_REFERER'] = stack_settings_path(@stack)
 
-    post :refresh, id: @stack.to_param
+    assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
+        post :refresh, id: @stack.to_param
+      end
+    end
+
     assert_redirected_to stack_settings_path(@stack)
   end
 
   test "#sync_webhooks queues #{Stack::REQUIRED_HOOKS.count} SetupGithubHookJob" do
-    Resque.expects(:enqueue).with(SetupGithubHookJob, includes(:hook_id)).times(Stack::REQUIRED_HOOKS.count)
-    post :sync_webhooks, id: @stack.to_param
+    assert_enqueued_jobs(Stack::REQUIRED_HOOKS.count) do
+      post :sync_webhooks, id: @stack.to_param
+    end
     assert_redirected_to stack_settings_path(@stack)
   end
 
   test "#clear_git_cache queues a ClearGitCacheJob" do
-    Resque.expects(:enqueue).with(ClearGitCacheJob, stack_id: @stack.id)
-    post :clear_git_cache, id: @stack.to_param
+    assert_enqueued_with(job: ClearGitCacheJob, args: [stack_id: @stack.id]) do
+      post :clear_git_cache, id: @stack.to_param
+    end
     assert_redirected_to stack_settings_path(@stack)
   end
 end
