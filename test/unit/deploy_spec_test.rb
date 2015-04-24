@@ -184,7 +184,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     refute @spec.egg?
   end
 
-  test '#publish_egg first check if version tag have been created, and then invoke bundler release task' do
+  test '#publish_egg first check if version tag have been created and then invoke setup.py upload' do
     file = Pathname.new('/tmp/fake_setup.py')
     file.write('foo')
     @spec.stubs(:setup_dot_py).returns(file)
