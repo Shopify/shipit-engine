@@ -8,6 +8,8 @@ class Commit < ActiveRecord::Base
   after_commit { broadcast_update }
   after_create { stack.update_undeployed_commits_count }
 
+  after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, on: :create
+
   belongs_to :author, class_name: 'User', inverse_of: :authored_commits
   belongs_to :committer, class_name: 'User', inverse_of: :commits
 
@@ -48,14 +50,6 @@ class Commit < ActiveRecord::Base
   end
 
   def self.from_github(commit)
-    additions = 0
-    deletions = 0
-    begin
-      additions = commit.stats.additions
-      deletions = commit.stats.deletions
-    rescue StandardError => error
-      Rails.logger.info("[WTF] The commit had no stats: #{error.class.name}: #{error.message}, #{commit.inspect}")
-    end
     new(
       sha: commit.sha,
       message: commit.commit.message,
@@ -63,12 +57,20 @@ class Commit < ActiveRecord::Base
       committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
       committed_at: commit.commit.committer.date,
       authored_at: commit.commit.author.date,
-      additions: additions,
-      deletions: deletions,
+      additions: commit.stats.try!(:additions),
+      deletions: commit.stats.try!(:deletions),
     )
   end
 
-  def refresh_statuses
+  def self.create_from_github!(commit)
+    from_github(commit).save!
+  end
+
+  def schedule_refresh_statuses!
+    Resque.enqueue(RefreshStatusesJob, commit_id: id)
+  end
+
+  def refresh_statuses!
     Shipit.github_api.statuses(github_repo_name, sha).each do |status|
       statuses.replicate_from_github!(status)
     end
@@ -121,7 +123,18 @@ class Commit < ActiveRecord::Base
   end
 
   def github_commit
-    Shipit.github_api.commit(github_repo_name, sha)
+    @github_commit ||= Shipit.github_api.commit(github_repo_name, sha)
+  end
+
+  def schedule_fetch_stats!
+    Resque.enqueue(FetchCommitStatsJob, commit_id: id)
+  end
+
+  def fetch_stats!
+    update!(
+      additions: github_commit.stats.try!(:additions),
+      deletions: github_commit.stats.try!(:deletions),
+    )
   end
 
   private

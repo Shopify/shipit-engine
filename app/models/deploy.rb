@@ -69,8 +69,8 @@ class Deploy < Task
   end
 
   def denormalize_commit_stats
-    self.additions = commits.map(&:additions).sum
-    self.deletions = commits.map(&:deletions).sum
+    self.additions = commits.map(&:additions).compact.sum
+    self.deletions = commits.map(&:deletions).compact.sum
   end
 
   def schedule_continuous_delivery

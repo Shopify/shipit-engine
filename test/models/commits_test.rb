@@ -128,12 +128,12 @@ class CommitsTest < ActiveSupport::TestCase
                           message: "more fish!")
   end
 
-  test "refresh_statuses pull state from github" do
+  test "refresh_statuses! pull state from github" do
     rels = {target: mock(href: 'http://example.com')}
     status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
     Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
     assert_difference '@commit.statuses.count', +1 do
-      @commit.refresh_statuses
+      @commit.refresh_statuses!
     end
     assert_equal 'success', @commit.statuses.first.state
   end
