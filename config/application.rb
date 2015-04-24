@@ -33,6 +33,8 @@ module Shipit
       path =~ /\Aplugins\/[\-\w]+\.(js|css)\Z/
     end
 
+    config.active_job.queue_adapter = :resque
+
     config.active_record.raise_in_transactional_callbacks = true
 
     Rails.application.routes.default_url_options[:host] = Rails.application.secrets.host

@@ -1,7 +1,9 @@
 class EmitEventJob < BackgroundJob
-  @queue = :hooks
+  queue_as :hooks
 
   def perform(params)
-    Hook.deliver(*params.with_indifferent_access.values_at('event', 'stack_id', 'payload'))
+    event, stack_id, payload = params.with_indifferent_access.values_at('event', 'stack_id', 'payload')
+    payload = Marshal.load(payload)
+    Hook.deliver(event, stack_id, payload)
   end
 end

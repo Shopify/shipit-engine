@@ -8,7 +8,7 @@ class EmitEventJobTest < ActiveSupport::TestCase
 
   test "#perform schedule deliveries" do
     assert_difference -> { Delivery.scheduled.count }, +2 do
-      @job.perform(event: :deploy, stack_id: @stack.id, payload: {'foo' => 42})
+      @job.perform(event: :deploy, stack_id: @stack.id, payload: Marshal.dump('foo' => 42))
     end
   end
 end
