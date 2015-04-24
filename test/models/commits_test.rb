@@ -128,12 +128,12 @@ class CommitsTest < ActiveSupport::TestCase
                           message: "more fish!")
   end
 
-  test "refresh_statuses pull state from github" do
+  test "refresh_statuses! pull state from github" do
     rels = {target: mock(href: 'http://example.com')}
     status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
     Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
     assert_difference '@commit.statuses.count', +1 do
-      @commit.refresh_statuses
+      @commit.refresh_statuses!
     end
     assert_equal 'success', @commit.statuses.first.state
   end
@@ -150,6 +150,22 @@ class CommitsTest < ActiveSupport::TestCase
 
     @stack.reload
     assert_equal 4, @stack.undeployed_commits_count
+  end
+
+  test "fetch_stats! pulls additions and deletions from github" do
+    commit = stub(stats: stub(additions: 4242, deletions: 2424))
+    Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+    @commit.fetch_stats!
+    assert_equal 4242, @commit.additions
+    assert_equal 2424, @commit.deletions
+  end
+
+  test "fetch_stats! doesn't fail if the commits have no stats" do
+    commit = stub(stats: nil)
+    Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+    assert_nothing_raised do
+      @commit.fetch_stats!
+    end
   end
 
   test ".by_sha! can match sha prefixes" do

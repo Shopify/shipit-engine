@@ -38,7 +38,7 @@ class DeploySpec
     end
 
     def load_config
-      read_config(file("shipit.#{@env}.yml")) || read_config(file("shipit.yml"))
+      read_config(file("shipit.#{@env}.yml")) || read_config(file('shipit.yml'))
     end
 
     def read_config(path)
