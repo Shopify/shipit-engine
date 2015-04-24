@@ -23,7 +23,7 @@
   <div class="layout">
     <header class="sidebar">
       <div class="inner-sidebar">
-        <a href="/" class="logo"><i></i><span>Ship it</span></a>
+        <a href="/" class="logo header"><i></i><span>Ship it</span></a>
 
         <% if can_login? %>
           <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>

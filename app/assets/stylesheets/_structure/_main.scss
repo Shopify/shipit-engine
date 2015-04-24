@@ -67,6 +67,11 @@ pre {
   font-family: Menlo, monospace;
 }
 
+.header {
+  box-sizing: border-box;
+  height: 120px;
+}
+
 .repo-header {
   background-color: $blue;
   padding: 1.75rem 0;
