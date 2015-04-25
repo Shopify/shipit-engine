@@ -67,7 +67,7 @@ class Commit < ActiveRecord::Base
   end
 
   def schedule_refresh_statuses!
-    Resque.enqueue(RefreshStatusesJob, commit_id: id)
+    RefreshStatusesJob.perform_later(commit_id: id)
   end
 
   def refresh_statuses!
@@ -127,7 +127,7 @@ class Commit < ActiveRecord::Base
   end
 
   def schedule_fetch_stats!
-    Resque.enqueue(FetchCommitStatsJob, commit_id: id)
+    FetchCommitStatsJob.perform_later(commit_id: id)
   end
 
   def fetch_stats!

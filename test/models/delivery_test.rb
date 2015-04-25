@@ -15,8 +15,9 @@ class DeliveryTest < ActiveSupport::TestCase
     )
     assert_equal 'pending', delivery.status
 
-    Resque.expects(:enqueue).with(DeliverHookJob, delivery_id: delivery.id)
-    delivery.schedule!
+    assert_enqueued_with(job: DeliverHookJob, args: [delivery_id: delivery.id]) do
+      delivery.schedule!
+    end
     assert_equal 'scheduled', delivery.status
   end
 

@@ -37,8 +37,8 @@ class StacksController < ApplicationController
   end
 
   def refresh
-    Resque.enqueue(RefreshStatusesJob, stack_id: @stack.id)
-    Resque.enqueue(GithubSyncJob, stack_id: @stack.id)
+    RefreshStatusesJob.perform_later(stack_id: @stack.id)
+    GithubSyncJob.perform_later(stack_id: @stack.id)
     flash[:success] = 'Refresh scheduled'
     redirect_to :back
   end
@@ -54,7 +54,7 @@ class StacksController < ApplicationController
   end
 
   def clear_git_cache
-    Resque.enqueue(ClearGitCacheJob, stack_id: @stack.id)
+    ClearGitCacheJob.perform_later(stack_id: @stack.id)
     redirect_to stack_settings_path(@stack)
   end
 

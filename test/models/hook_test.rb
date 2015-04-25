@@ -23,8 +23,9 @@ class HookTest < ActiveSupport::TestCase
   end
 
   test ".emit enqueues an EmitEventJob with the proper payload" do
-    Resque.expects(:enqueue).with(EmitEventJob, event: :deploy, stack_id: @stack.id, payload: {'foo' => 42})
-    Hook.emit(:deploy, @stack, foo: 42)
+    assert_enqueued_with(job: EmitEventJob) do
+      Hook.emit(:deploy, @stack, foo: 42)
+    end
   end
 
   test ".deliver schedule a delivery for each matching hook" do
