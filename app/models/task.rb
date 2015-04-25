@@ -46,11 +46,11 @@ class Task < ActiveRecord::Base
 
   def enqueue
     raise "only persisted jobs can be enqueued" unless persisted?
-    PerformTaskJob.perform_later(task_id: id, stack_id: stack_id)
+    Resque.enqueue(PerformTaskJob, task_id: id, stack_id: stack_id)
   end
 
   def rollup_chunks
-    ChunkRollupJob.perform_later(task_id: id)
+    Resque.enqueue(ChunkRollupJob, task_id: id)
   end
 
   def write(text)

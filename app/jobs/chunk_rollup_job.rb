@@ -1,5 +1,5 @@
 class ChunkRollupJob < BackgroundJob
-  queue_as :default
+  @queue = :default
 
   extend BackgroundJob::DeployExclusive
 

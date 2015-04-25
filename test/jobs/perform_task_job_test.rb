@@ -30,9 +30,8 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     @job.stubs(:capture)
 
     Hook.expects(:emit).twice
-    assert_enqueued_with(job: FetchDeployedRevisionJob, args: [stack_id: @deploy.stack_id]) do
-      @job.perform(task_id: @deploy.id)
-    end
+    Resque.expects(:enqueue).with(FetchDeployedRevisionJob, stack_id: @deploy.stack_id)
+    @job.perform(task_id: @deploy.id)
   end
 
   test "marks deploy as successful" do

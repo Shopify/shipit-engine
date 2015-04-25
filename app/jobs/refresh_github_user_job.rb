@@ -1,5 +1,5 @@
 class RefreshGithubUserJob < BackgroundJob
-  queue_as :default
+  @queue = :default
 
   def perform(params)
     user = User.find(params[:user_id])

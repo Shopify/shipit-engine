@@ -1,5 +1,5 @@
 class SetupGithubHookJob < BackgroundJob
-  queue_as :default
+  @queue = :default
 
   def perform(params)
     hook = GithubHook.find(params[:hook_id])

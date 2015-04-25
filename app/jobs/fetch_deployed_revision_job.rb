@@ -1,5 +1,5 @@
 class FetchDeployedRevisionJob < BackgroundJob
-  queue_as :default
+  @queue = :default
 
   extend BackgroundJob::StackExclusive
 

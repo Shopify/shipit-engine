@@ -1,5 +1,7 @@
 class RefreshStatusesJob < BackgroundJob
-  queue_as :default
+  @queue = :default
+
+  self.timeout = 60
 
   def perform(params)
     if params[:commit_id]

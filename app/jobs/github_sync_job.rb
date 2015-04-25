@@ -1,6 +1,6 @@
 class GithubSyncJob < BackgroundJob
   MAX_FETCHED_COMMITS = 10
-  queue_as :default
+  @queue = :default
 
   self.timeout = 60
 

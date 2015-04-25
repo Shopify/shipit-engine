@@ -26,7 +26,6 @@ class ActiveSupport::TestCase
   include JSONHelper
   include LinksHelper
   include ApiHelper
-  include ActiveJob::TestHelper
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.

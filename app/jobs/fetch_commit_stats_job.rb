@@ -1,5 +1,7 @@
 class FetchCommitStatsJob < BackgroundJob
-  queue_as :default
+  @queue = :default
+
+  self.timeout = 60
 
   def perform(params)
     commit = Commit.find(params[:commit_id])

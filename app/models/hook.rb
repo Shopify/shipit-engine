@@ -28,11 +28,7 @@ class Hook < ActiveRecord::Base
 
   class << self
     def emit(event, stack, payload)
-      EmitEventJob.perform_later(
-        event: event.to_s,
-        stack_id: stack.try!(:id),
-        payload: Marshal.dump(coerce_payload(payload)),
-      )
+      Resque.enqueue(EmitEventJob, event: event, stack_id: stack.try!(:id), payload: coerce_payload(payload))
     end
 
     def deliver(event, stack_id, payload)
