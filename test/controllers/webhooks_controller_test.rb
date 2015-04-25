@@ -6,30 +6,21 @@ class WebhooksControllerTest < ActionController::TestCase
     GithubHook.any_instance.stubs(:verify_signature).returns(true)
   end
 
-  test ":push with the target branch queues a GithubSyncJob" do
+  test ":push with the target branch queues a job" do
+    Resque.expects(:enqueue).with(GithubSyncJob, stack_id: @stack.id)
+    Resque.expects(:enqueue).with(GitMirrorUpdateJob, stack_id: @stack.id)
+
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_master)
-
-    assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-      post :push, {stack_id: @stack.id}.merge(params)
-    end
-  end
-
-  test ":push with the target branch queues a GitMirrorUpdateJob" do
-    request.headers['X-Github-Event'] = 'push'
-    params = payload(:push_master)
-
-    assert_enqueued_with(job: GitMirrorUpdateJob, args: [stack_id: @stack.id]) do
-      post :push, {stack_id: @stack.id}.merge(params)
-    end
+    post :push, {stack_id: @stack.id}.merge(params)
   end
 
   test ":push does not enqueue a job if not the target branch" do
+    Resque.expects(:enqueue).never
+
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_not_master)
-    assert_no_enqueued_jobs do
-      post :push, {stack_id: @stack.id}.merge(params)
-    end
+    post :push, {stack_id: @stack.id}.merge(params)
   end
 
   test ":state create a Status for the specific commit" do

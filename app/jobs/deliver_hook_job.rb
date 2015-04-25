@@ -1,5 +1,5 @@
 class DeliverHookJob < BackgroundJob
-  queue_as :hooks
+  @queue = :hooks
 
   def perform(params)
     Delivery.find(params[:delivery_id]).send!

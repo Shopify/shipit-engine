@@ -61,7 +61,7 @@ class Stack < ActiveRecord::Base
   end
 
   def async_refresh_deployed_revision
-    FetchDeployedRevisionJob.perform_later(stack_id: id)
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: id)
   end
 
   def update_deployed_revision(sha)
@@ -212,7 +212,7 @@ class Stack < ActiveRecord::Base
   end
 
   def schedule_for_destroy!
-    DestroyStackJob.perform_later(stack_id: id)
+    Resque.enqueue(DestroyStackJob, stack_id: id)
   end
 
   private
@@ -222,7 +222,7 @@ class Stack < ActiveRecord::Base
   end
 
   def sync_github
-    GithubSyncJob.perform_later(stack_id: id)
+    Resque.enqueue(GithubSyncJob, stack_id: id)
   end
 
   def clear_local_files

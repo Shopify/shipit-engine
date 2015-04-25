@@ -1,5 +1,5 @@
 class PerformTaskJob < BackgroundJob
-  queue_as :deploys
+  @queue = :deploys
 
   extend BackgroundJob::StackExclusive
 
@@ -29,7 +29,7 @@ class PerformTaskJob < BackgroundJob
     @task.error!
     @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
   ensure
-    FetchDeployedRevisionJob.perform_later(stack_id: @task.stack_id)
+    Resque.enqueue(FetchDeployedRevisionJob, stack_id: @task.stack_id)
     @task.clear_working_directory
   end
 

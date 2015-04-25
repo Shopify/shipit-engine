@@ -18,7 +18,7 @@ class GithubHook < ActiveRecord::Base
   end
 
   def schedule_setup!
-    SetupGithubHookJob.perform_later(hook_id: id)
+    Resque.enqueue(SetupGithubHookJob, hook_id: id)
   end
 
   def teardown!

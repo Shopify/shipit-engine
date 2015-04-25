@@ -148,16 +148,10 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal commits(:fifth), @stack.last_deployed_commit
   end
 
-  test "#create queues 2 GithubSetupWebhooksJob" do
-    assert_enqueued_with(job: SetupGithubHookJob) do
-      Stack.create!(repo_name: 'rails', repo_owner: 'rails')
-    end
-  end
-
-  test "#create queues a GithubSyncJob" do
-    assert_enqueued_with(job: GithubSyncJob) do
-      Stack.create!(repo_name: 'rails', repo_owner: 'rails')
-    end
+  test "#create queues a GithubSetupWebhooksJob and a GithubSyncJob" do
+    Resque.expects(:enqueue).with(SetupGithubHookJob, has_key(:hook_id)).twice
+    Resque.expects(:enqueue).with(GithubSyncJob, has_key(:stack_id))
+    Stack.create(repo_name: 'rails', repo_owner: 'rails')
   end
 
   test "#destroy also destroy associated GithubHooks" do

@@ -13,8 +13,6 @@ Shipit::Application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
-  config.active_job.queue_adapter = :test
-
   # Configure static asset server for tests with Cache-Control for performance.
   config.serve_static_files  = true
   config.static_cache_control = "public, max-age=3600"
