@@ -20,7 +20,7 @@ class DataCenter
     @sortedHosts ||= @sortHosts()
 
   sortHosts: ->
-    (h for _, h of @hosts when h.dc == 'chi').sort (a, b) ->
+    (h for _, h of @hosts when h.dc == 'ash').sort (a, b) ->
       if a.dc > b.dc
         -1
       else if a.dc < b.dc
