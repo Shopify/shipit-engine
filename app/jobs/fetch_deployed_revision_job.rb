@@ -1,8 +1,6 @@
 class FetchDeployedRevisionJob < BackgroundJob
   queue_as :default
 
-  extend BackgroundJob::StackExclusive
-
   def perform(stack)
     return if stack.deploying?
 

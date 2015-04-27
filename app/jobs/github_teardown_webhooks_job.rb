@@ -1,8 +1,6 @@
 class GithubTeardownWebhooksJob < BackgroundJob
   queue_as :default
 
-  extend BackgroundJob::StackExclusive
-
   def perform(params)
     Shipit.github_api.hooks(params[:github_repo_name]).each do |hook|
       if hook.last_response.status == 'misconfigured'

@@ -1,8 +1,6 @@
 class PerformTaskJob < BackgroundJob
   queue_as :deploys
 
-  extend BackgroundJob::StackExclusive
-
   def perform(params)
     @task = Task.find(params[:task_id])
     unless @task.pending?

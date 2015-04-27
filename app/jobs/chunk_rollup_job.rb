@@ -1,8 +1,6 @@
 class ChunkRollupJob < BackgroundJob
   queue_as :default
 
-  extend BackgroundJob::DeployExclusive
-
   def perform(task)
     unless task.finished?
       logger.error("Task ##{task.id} is not finished (current state: #{task.status}). Aborting.")

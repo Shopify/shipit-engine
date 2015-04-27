@@ -266,8 +266,6 @@ GEM
       redis-namespace (~> 1.2)
       sinatra (>= 0.9.2)
       vegas (~> 0.1.2)
-    resque-workers-lock (2.0.0)
-      resque
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -382,7 +380,6 @@ DEPENDENCIES
   redis-rails
   responders
   resque (= 1.26.pre.0)
-  resque-workers-lock
   rubocop
   safe_yaml
   sass-rails
