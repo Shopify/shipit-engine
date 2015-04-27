@@ -127,7 +127,7 @@ class Commit < ActiveRecord::Base
   end
 
   def schedule_fetch_stats!
-    FetchCommitStatsJob.perform_later(commit_id: id)
+    FetchCommitStatsJob.perform_later(self)
   end
 
   def fetch_stats!

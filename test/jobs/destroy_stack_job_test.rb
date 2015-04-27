@@ -10,7 +10,7 @@ class DestroyStackJobTest < ActiveSupport::TestCase
     Shipit.github_api.expects(:remove_hook).times(@stack.github_hooks.count)
 
     assert_difference -> { Stack.count }, -1 do
-      @job.perform(stack_id: @stack.id)
+      @job.perform(@stack)
     end
   end
 end

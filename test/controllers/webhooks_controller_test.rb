@@ -19,7 +19,7 @@ class WebhooksControllerTest < ActionController::TestCase
     request.headers['X-Github-Event'] = 'push'
     params = payload(:push_master)
 
-    assert_enqueued_with(job: GitMirrorUpdateJob, args: [stack_id: @stack.id]) do
+    assert_enqueued_with(job: GitMirrorUpdateJob, args: [@stack]) do
       post :push, {stack_id: @stack.id}.merge(params)
     end
   end

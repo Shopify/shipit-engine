@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
 
   def self.refresh_shard(shard_index, shards_count)
     where.not(login: nil).where('id % ? = ?', shards_count, shard_index).find_each do |user|
-      RefreshGithubUserJob.perform_later(user_id: user.id)
+      RefreshGithubUserJob.perform_later(user)
     end
   end
 

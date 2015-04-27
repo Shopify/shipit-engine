@@ -50,7 +50,7 @@ class Task < ActiveRecord::Base
   end
 
   def rollup_chunks
-    ChunkRollupJob.perform_later(task_id: id)
+    ChunkRollupJob.perform_later(self)
   end
 
   def write(text)

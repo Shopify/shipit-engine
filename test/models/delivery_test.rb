@@ -15,7 +15,7 @@ class DeliveryTest < ActiveSupport::TestCase
     )
     assert_equal 'pending', delivery.status
 
-    assert_enqueued_with(job: DeliverHookJob, args: [delivery_id: delivery.id]) do
+    assert_enqueued_with(job: DeliverHookJob, args: [delivery]) do
       delivery.schedule!
     end
     assert_equal 'scheduled', delivery.status

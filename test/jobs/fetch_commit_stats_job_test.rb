@@ -7,8 +7,7 @@ class FetchCommitStatsJobTest < ActiveSupport::TestCase
   end
 
   test "#perform call #fetch_stats! on the provided commit" do
-    Commit.any_instance.expects(:fetch_stats!).once
-
-    @job.perform(commit_id: @commit.id)
+    @commit.expects(:fetch_stats!).once
+    @job.perform(@commit)
   end
 end

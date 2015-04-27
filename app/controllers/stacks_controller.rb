@@ -54,7 +54,7 @@ class StacksController < ApplicationController
   end
 
   def clear_git_cache
-    ClearGitCacheJob.perform_later(stack_id: @stack.id)
+    ClearGitCacheJob.perform_later(@stack)
     redirect_to stack_settings_path(@stack)
   end
 

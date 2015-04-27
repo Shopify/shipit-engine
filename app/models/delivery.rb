@@ -10,7 +10,7 @@ class Delivery < ActiveRecord::Base
   serialize :response_headers, JSON
 
   def schedule!
-    DeliverHookJob.perform_later(delivery_id: id)
+    DeliverHookJob.perform_later(self)
     scheduled!
   end
 

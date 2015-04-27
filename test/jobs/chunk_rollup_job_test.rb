@@ -9,7 +9,7 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
   test "#perform combines all the chunks into a new one and sets rolled_up to true" do
     expected_output = @task.chunk_output
 
-    @job.perform(task_id: @task.id)
+    @job.perform(@task)
 
     @task.reload
     assert_equal 1, @task.chunks.count
@@ -24,7 +24,7 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
 
     @task.update_attribute(:status, :pending)
 
-    @job.perform(task_id: @task.id)
+    @job.perform(@task)
   end
 
   test "#perform ignores tasks with zero or one chunk" do
@@ -34,6 +34,6 @@ class ChunkRollupJobTest < ActiveSupport::TestCase
 
     @task.chunks.delete_all
 
-    @job.perform(task_id: @task.id)
+    @job.perform(@task)
   end
 end

@@ -7,9 +7,7 @@ class RefreshGithubUserJobTest < ActiveSupport::TestCase
   end
 
   test "#perform call #refresh_from_github! on the provided user" do
-    User.expects(:find).with(@user.id).returns(@user)
     @user.expects(:refresh_from_github!)
-
-    @job.perform(user_id: @user.id)
+    @job.perform(@user)
   end
 end

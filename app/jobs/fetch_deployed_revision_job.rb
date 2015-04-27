@@ -3,9 +3,7 @@ class FetchDeployedRevisionJob < BackgroundJob
 
   extend BackgroundJob::StackExclusive
 
-  def perform(params)
-    stack = Stack.find(params[:stack_id])
-
+  def perform(stack)
     return if stack.deploying?
 
     commands = StackCommands.new(stack)

@@ -56,7 +56,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#destroy enqueues a DestroyStackJob" do
-    assert_enqueued_with(job: DestroyStackJob, args: [stack_id: @stack.id]) do
+    assert_enqueued_with(job: DestroyStackJob, args: [@stack]) do
       delete :destroy, id: @stack.to_param
     end
     assert_redirected_to stacks_path
@@ -129,7 +129,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#clear_git_cache queues a ClearGitCacheJob" do
-    assert_enqueued_with(job: ClearGitCacheJob, args: [stack_id: @stack.id]) do
+    assert_enqueued_with(job: ClearGitCacheJob, args: [@stack]) do
       post :clear_git_cache, id: @stack.to_param
     end
     assert_redirected_to stack_settings_path(@stack)

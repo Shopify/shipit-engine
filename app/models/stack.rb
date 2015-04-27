@@ -61,7 +61,7 @@ class Stack < ActiveRecord::Base
   end
 
   def async_refresh_deployed_revision
-    FetchDeployedRevisionJob.perform_later(stack_id: id)
+    FetchDeployedRevisionJob.perform_later(self)
   end
 
   def update_deployed_revision(sha)
@@ -212,7 +212,7 @@ class Stack < ActiveRecord::Base
   end
 
   def schedule_for_destroy!
-    DestroyStackJob.perform_later(stack_id: id)
+    DestroyStackJob.perform_later(self)
   end
 
   private

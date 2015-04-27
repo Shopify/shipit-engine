@@ -1,8 +1,7 @@
 class RefreshGithubUserJob < BackgroundJob
   queue_as :default
 
-  def perform(params)
-    user = User.find(params[:user_id])
+  def perform(user)
     user.refresh_from_github!
   end
 end

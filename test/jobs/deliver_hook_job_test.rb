@@ -8,7 +8,7 @@ class DeliverHookJobTest < ActiveSupport::TestCase
 
   test "#perform delivers a delivery" do
     FakeWeb.register_uri(:post, @delivery.url, body: 'OK')
-    @job.perform(delivery_id: @delivery.id)
+    @job.perform(@delivery)
     assert_equal 'sent', @delivery.reload.status
   end
 end

@@ -29,7 +29,7 @@ class PerformTaskJob < BackgroundJob
     @task.error!
     @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
   ensure
-    FetchDeployedRevisionJob.perform_later(stack_id: @task.stack_id)
+    FetchDeployedRevisionJob.perform_later(@task.stack)
     @task.clear_working_directory
   end
 

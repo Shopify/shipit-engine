@@ -1,8 +1,7 @@
 class FetchCommitStatsJob < BackgroundJob
   queue_as :default
 
-  def perform(params)
-    commit = Commit.find(params[:commit_id])
+  def perform(commit)
     commit.fetch_stats!
   end
 end
