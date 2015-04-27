@@ -249,6 +249,8 @@ GEM
       redis-store (~> 1.1.0)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    redis-objects (1.1.0)
+      redis (>= 3.0.2)
     redis-rack (1.5.0)
       rack (~> 1.5)
       redis-store (~> 1.1.0)
@@ -377,6 +379,7 @@ DEPENDENCIES
   rails (~> 4.2.1)
   rails-timeago (~> 2.0)
   react-rails
+  redis-objects
   redis-rails
   responders
   resque (= 1.26.pre.0)
