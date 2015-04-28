@@ -1,6 +1,4 @@
 class GithubSyncJob < BackgroundJob
-  include BackgroundJob::Unique
-
   MAX_FETCHED_COMMITS = 10
   queue_as :default
 
