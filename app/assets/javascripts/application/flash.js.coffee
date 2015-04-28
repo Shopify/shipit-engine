@@ -1,2 +1,2 @@
 jQuery ($) ->
-  setTimeout((-> $('.flash').remove()), 3000)
+  setTimeout((-> $('.flash-success').remove()), 3000)

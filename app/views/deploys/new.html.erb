@@ -1,6 +1,8 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <div class="wrapper">
+  <%= render 'concurrent_deploy_warning' if @stack.deploying? %>
+
   <section>
     <header class="section-header">
       <h2>Commits included in this deploy</h2>
@@ -29,6 +31,9 @@
 
   <section class="submit-section">
     <%= form_for [@stack, @deploy] do |f| %>
+      <% if @stack.deploying? %>
+        <%= hidden_field_tag :force, value: true %>
+      <% end %>
       <%= f.hidden_field :until_commit_id %>
       <%= f.submit :class => ['btn', 'primary', 'trigger-deploy'] %>
     <% end %>

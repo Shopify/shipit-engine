@@ -153,8 +153,12 @@ class Stack < ActiveRecord::Base
   end
 
   def deploying?
-    return @deploying if defined?(@deploying)
-    @deploying = deploys.active.any?
+    !!active_deploy
+  end
+
+  def active_deploy
+    return @active_deploy if defined?(@active_deploy)
+    @active_deploy ||= deploys.active.last
   end
 
   def locked?
@@ -218,7 +222,7 @@ class Stack < ActiveRecord::Base
   private
 
   def clear_cache
-    remove_instance_variable(:@deploying) if defined?(@deploying)
+    remove_instance_variable(:@active_deploy) if defined?(@active_deploy)
   end
 
   def sync_github
