@@ -31,6 +31,7 @@ gem 'active_model_serializers'
 gem 'explicit-parameters'
 gem 'rack-cors', require: 'rack/cors'
 gem 'react-rails'
+gem 'redis-objects'
 
 group :development do
   gem 'quiet_assets'

@@ -1,4 +1,6 @@
 class ChunkRollupJob < BackgroundJob
+  include BackgroundJob::Unique
+
   queue_as :default
 
   def perform(task)
