@@ -9,6 +9,10 @@ module Shipit::Config
     end
   end
 
+  def redis
+    @redis ||= Redis.new(url: Rails.application.secrets.redis_url, logger: Rails.logger)
+  end
+
   def github_api
     @github_api ||= begin
       credentials = Rails.application.secrets.github_credentials || {}
