@@ -40,6 +40,8 @@ class Task < ActiveRecord::Base
     state :error
   end
 
+  delegate :acquire_git_cache_lock, to: :stack
+
   def spec
     @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
   end
