@@ -27,6 +27,11 @@ class ActiveSupport::TestCase
   include LinksHelper
   include ApiHelper
   include ActiveJob::TestHelper
+
+  teardown do
+    Shipit.redis.flushdb
+  end
+
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
