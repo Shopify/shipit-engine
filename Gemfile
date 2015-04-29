@@ -30,7 +30,7 @@ gem 'validate_url'
 gem 'active_model_serializers'
 gem 'explicit-parameters'
 gem 'rack-cors', require: 'rack/cors'
-gem 'react-rails'
+gem 'react-rails', github: 'byroot/react-rails', branch: 'dont-crash-on-boot-because-of-file-copying', ref: '07eec911ed957e724ef996fd30ae055ec858dd31'
 gem 'redis-objects'
 
 group :development do

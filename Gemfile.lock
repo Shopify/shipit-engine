@@ -6,6 +6,19 @@ GIT
   specs:
     ansi_stream (0.0.5)
 
+GIT
+  remote: git://github.com/byroot/react-rails.git
+  revision: 07eec911ed957e724ef996fd30ae055ec858dd31
+  ref: 07eec911ed957e724ef996fd30ae055ec858dd31
+  branch: dont-crash-on-boot-because-of-file-copying
+  specs:
+    react-rails (1.0.0)
+      coffee-script-source (~> 1.8)
+      connection_pool
+      execjs
+      rails (>= 3.1)
+      tilt
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -232,13 +245,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.0.0)
     rake (10.4.2)
-    react-rails (1.0.0)
-      coffee-script-source (~> 1.8)
-      connection_pool
-      execjs
-      rails (>= 3.1)
-      react-source (~> 0.13)
-    react-source (0.13.1)
     redis (3.2.1)
     redis-actionpack (4.0.0)
       actionpack (~> 4)
@@ -378,7 +384,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 4.2.1)
   rails-timeago (~> 2.0)
-  react-rails
+  react-rails!
   redis-objects
   redis-rails
   responders
