@@ -140,6 +140,23 @@ class Stack < ActiveRecord::Base
     File.join(base_path, "git")
   end
 
+  def acquire_git_cache_lock(timeout: 15, &block)
+    Redis::Lock.new(
+      "stack:#{id}:git-cache-lock",
+      Shipit.redis,
+      timeout: timeout,
+      expiration: 60,
+    ).lock(&block)
+  end
+
+  def clear_git_cache!
+    tmp_path = "#{git_path}-#{SecureRandom.hex}"
+    acquire_git_cache_lock do
+      File.mv(git_path, tmp_path)
+    end
+    FileUtils.rm_rf(tmp_path)
+  end
+
   def github_repo_name
     [repo_owner, repo_name].join('/')
   end

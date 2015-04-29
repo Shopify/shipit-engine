@@ -3,6 +3,8 @@ class GitMirrorUpdateJob < BackgroundJob
 
   def perform(stack)
     commands = StackCommands.new(stack)
-    commands.fetch.run
+    stack.acquire_git_cache_lock do
+      commands.fetch.run
+    end
   end
 end

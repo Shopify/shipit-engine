@@ -255,6 +255,24 @@ class StacksTest < ActiveSupport::TestCase
     @stack.update(lock_reason: nil)
   end
 
+  test "the git cache lock prevent concurrent access to the git cache" do
+    @stack.acquire_git_cache_lock do
+      assert_raises Redis::Lock::LockTimeout do
+        @stack.acquire_git_cache_lock(timeout: 0.1) {}
+      end
+    end
+  end
+
+  test "the git cache lock is scoped to the stack" do
+    called = false
+    stacks(:cyclimse).acquire_git_cache_lock do
+      @stack.acquire_git_cache_lock do
+        called = true
+      end
+    end
+    assert called
+  end
+
   private
 
   def expect_hook(event, stack, payload)

@@ -10,8 +10,10 @@ class PerformTaskJob < BackgroundJob
 
     @task.run!
     commands = Commands.for(@task)
-    capture commands.fetch
-    capture commands.clone
+    @task.acquire_git_cache_lock do
+      capture commands.fetch
+      capture commands.clone
+    end
     capture commands.checkout(@task.until_commit)
 
     record_deploy_spec!
