@@ -273,6 +273,21 @@ class StacksTest < ActiveSupport::TestCase
     assert called
   end
 
+  test "#clear_git_cache! deletes the stack git directory" do
+    FileUtils.mkdir_p(@stack.git_path)
+    path = File.join(@stack.git_path, 'foo')
+    File.write(path, 'bar')
+    @stack.clear_git_cache!
+    refute File.exist?(path)
+  end
+
+  test "#clear_git_cache! does nothing if the git directory is not present" do
+    FileUtils.rm_rf(@stack.git_path)
+    assert_nothing_raised do
+      @stack.clear_git_cache!
+    end
+  end
+
   private
 
   def expect_hook(event, stack, payload)

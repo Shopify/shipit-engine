@@ -152,7 +152,8 @@ class Stack < ActiveRecord::Base
   def clear_git_cache!
     tmp_path = "#{git_path}-#{SecureRandom.hex}"
     acquire_git_cache_lock do
-      File.mv(git_path, tmp_path)
+      return unless File.exist?(git_path)
+      File.rename(git_path, tmp_path)
     end
     FileUtils.rm_rf(tmp_path)
   end
