@@ -14,6 +14,7 @@ class DeploysController < ApplicationController
   end
 
   def create
+    return redirect_to new_stack_deploy_path(@stack, sha: @until_commit.sha) if !params[:force] && @stack.deploying?
     @deploy = @stack.trigger_deploy(@until_commit, current_user)
     respond_with(@deploy.stack, @deploy)
   end

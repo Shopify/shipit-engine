@@ -23,4 +23,20 @@ class RollbacksControllerTest < ActionController::TestCase
     post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}
     assert @stack.reload.locked?
   end
+
+  test ":create redirects back to the :new page if there is an active deploy" do
+    deploys(:shipit_running).update_column(:status, 'running')
+    assert_no_difference '@stack.deploys.count' do
+      post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}
+    end
+    assert_redirected_to rollback_stack_deploy_path(@stack, @deploy)
+  end
+
+  test ":create with `force` option ignore the active deploys" do
+    deploys(:shipit_running).update_column(:status, 'running')
+    assert_difference '@stack.deploys.count', +1 do
+      post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}, force: true
+    end
+    assert_redirected_to stack_deploy_path(@stack, Rollback.last)
+  end
 end

@@ -352,8 +352,13 @@ a.disabled {
   border-radius: 4px;
   min-width: 30%;
   text-align: center;
+  z-index: 1;
 }
 
 .flash-success {
   background-color: #E2F1FF;
+}
+
+.flash-warning {
+  background-color: orange;
 }

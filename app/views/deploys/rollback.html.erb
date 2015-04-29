@@ -9,6 +9,8 @@
     </ul>
   </section>
 
+  <%= render 'concurrent_deploy_warning' if @stack.deploying? %>
+
   <section>
     <header class="section-header">
       <h2>Commits included in this rollback</h2>
@@ -25,6 +27,9 @@
 
   <section class="submit-section">
     <%= form_for [@stack, @rollback] do |f| %>
+      <% if @stack.deploying? %>
+        <%= hidden_field_tag :force, value: true %>
+      <% end %>
       <%= f.hidden_field :parent_id %>
       <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'], data: {confirm: "Are you really sure it's safe?"} %>
     <% end %>
