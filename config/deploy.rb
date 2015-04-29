@@ -1,21 +1,10 @@
 lock '3.4.0'
 
-module UserSwitching
-  def execute(command, *args)
-    if command == :rake
-      as('shipit') { super }
-    else
-      super
-    end
-  end
-end
-SSHKit.config.backend.prepend(UserSwitching)
-
 set :bundle_bins, fetch(:bundle_bins, []).push('whenever')
 
 set :application, 'shipit'
 set :repo_url, 'git@shipit2.github.shopify.com:Shopify/shipit2.git'
-set :branch, ENV['REVISION'] || ENV['BRANCH_NAME'] || 'master'
+set :branch, ENV['SHA'] || ENV['REVISION'] || ENV['BRANCH_NAME'] || 'master'
 
 set :deploy_to, '/u/apps/shipit'
 set :format, :pretty
