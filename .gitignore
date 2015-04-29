@@ -19,3 +19,4 @@
 /config/secrets.yml
 /data/*
 /coverage/*
+/public/assets/*

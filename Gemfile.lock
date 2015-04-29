@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: git://github.com/byroot/react-rails.git
-  revision: 07eec911ed957e724ef996fd30ae055ec858dd31
-  ref: 07eec911ed957e724ef996fd30ae055ec858dd31
+  revision: 260cb285f3f6c3e490359c353f3346f963ebd764
+  ref: 260cb285f3f6c3e490359c353f3346f963ebd764
   branch: dont-crash-on-boot-because-of-file-copying
   specs:
     react-rails (1.0.0)
