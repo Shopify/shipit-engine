@@ -1,6 +1,7 @@
 AllCops:
   RunRailsCops: true
   Exclude:
+    - Gemfile
     - lib/snippets/**/*
     - vendor/**/*
     - data/**/*
