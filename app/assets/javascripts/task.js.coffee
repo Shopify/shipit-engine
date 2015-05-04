@@ -2,6 +2,9 @@
 #= require_self
 
 jQuery ->
+  OutputStream.addEventListener 'status', (task) ->
+    $('[data-deploy-status]').attr('data-deploy-status', task.status)
+
   tty = new TTY($('body'))
   OutputStream.addEventListener('chunk', tty.appendChunk)
   Notifications.init(OutputStream)
