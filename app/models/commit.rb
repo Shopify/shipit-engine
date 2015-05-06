@@ -73,7 +73,7 @@ class Commit < ActiveRecord::Base
   end
 
   def refresh_statuses!
-    Shipit.github_api.statuses(github_repo_name, sha).each do |status|
+    Shipster.github_api.statuses(github_repo_name, sha).each do |status|
       statuses.replicate_from_github!(status)
     end
   end
@@ -125,7 +125,7 @@ class Commit < ActiveRecord::Base
   end
 
   def github_commit
-    @github_commit ||= Shipit.github_api.commit(github_repo_name, sha)
+    @github_commit ||= Shipster.github_api.commit(github_repo_name, sha)
   end
 
   def schedule_fetch_stats!

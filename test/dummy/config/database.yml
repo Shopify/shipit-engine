@@ -1,0 +1,12 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  strict: true
+
+development:
+  <<: *default
+  database: shipit_development
+
+test:
+  <<: *default
+  database: shipit_test

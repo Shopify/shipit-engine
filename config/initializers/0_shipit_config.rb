@@ -1,1 +1,0 @@
-Shipit.extend(Shipit::Config)

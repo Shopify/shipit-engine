@@ -6,6 +6,9 @@ AllCops:
     - vendor/**/*
     - data/**/*
     - db/schema.rb
+    - db/migrate/*
+    - test/dummy/**/*
+    - bin/rails
 
 inherit_from:
   .rubocop_todo.yml

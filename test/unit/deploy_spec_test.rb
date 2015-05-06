@@ -54,10 +54,10 @@ class DeploySpecTest < ActiveSupport::TestCase
   test '#bundle_install return a sane default bundle install command' do
     @spec.stubs(:gemfile_lock_exists?).returns(true)
     command = %(
-      bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
+      bundle check --path=#{DeploySpec.bundle_path} ||
       bundle install
       --frozen
-      --path=#{DeploySpec::BUNDLE_PATH}
+      --path=#{DeploySpec.bundle_path}
       --retry=2
       --without=default:production:development:test:staging:benchmark:debug
     ).gsub(/\s+/, ' ').strip
@@ -68,10 +68,10 @@ class DeploySpecTest < ActiveSupport::TestCase
     @spec.stubs(:gemfile_lock_exists?).returns(true)
     @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
     command = %(
-      bundle check --path=#{DeploySpec::BUNDLE_PATH} ||
+      bundle check --path=#{DeploySpec.bundle_path} ||
       bundle install
       --frozen
-      --path=#{DeploySpec::BUNDLE_PATH}
+      --path=#{DeploySpec.bundle_path}
       --retry=2
       --without=some:custom:groups
     ).gsub(/\s+/, ' ').strip
@@ -175,12 +175,12 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#egg? is true if a setup.py is present' do
-    @spec.expects(:setup_dot_py).returns(Rails.root.join('Gemfile'))
+    @spec.expects(:setup_dot_py).returns(Shipster::Engine.root.join('Gemfile'))
     assert @spec.egg?
   end
 
   test '#egg? is false if there is no setup.py' do
-    @spec.expects(:setup_dot_py).returns(Rails.root.join("tmp-#{SecureRandom.hex}"))
+    @spec.expects(:setup_dot_py).returns(Shipster::Engine.root.join("tmp-#{SecureRandom.hex}"))
     refute @spec.egg?
   end
 

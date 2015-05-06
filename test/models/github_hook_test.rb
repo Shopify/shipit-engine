@@ -18,7 +18,7 @@ class GithubHookTest < ActiveSupport::TestCase
     @hook = github_hooks(:cyclimse_push)
 
     response = mock(id: 44, rels: {self: mock(href: 'https://api.github.com/somestuff')})
-    Shipit.github_api.expects(:create_hook).with(
+    Shipster.github_api.expects(:create_hook).with(
       @hook.github_repo_name,
       'web',
       includes(:url, :content_type, :secret),
@@ -32,7 +32,7 @@ class GithubHookTest < ActiveSupport::TestCase
 
   test "#setup! update the hook it it already exist" do
     response = mock(id: 44, rels: {self: mock(href: 'https://api.github.com/somestuff')})
-    Shipit.github_api.expects(:edit_hook).with(
+    Shipster.github_api.expects(:edit_hook).with(
       @hook.github_repo_name,
       @hook.github_id,
       'web',
@@ -46,7 +46,7 @@ class GithubHookTest < ActiveSupport::TestCase
   end
 
   test "#destroy starts by removing the hook" do
-    Shipit.github_api.expects(:remove_hook).with(@hook.github_repo_name, @hook.github_id)
+    Shipster.github_api.expects(:remove_hook).with(@hook.github_repo_name, @hook.github_id)
     assert_difference -> { GithubHook.count }, -1 do
       @hook.destroy!
     end

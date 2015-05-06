@@ -5,8 +5,8 @@ class OctokitIterator
     if relation
       @response = relation.get(per_page: 100)
     else
-      yield Shipit.github_api
-      @response = Shipit.github_api.last_response
+      yield Shipster.github_api
+      @response = Shipster.github_api.last_response
     end
   end
 

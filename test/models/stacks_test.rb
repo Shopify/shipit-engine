@@ -62,15 +62,15 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "base_path" do
-    assert_equal @expected_base_path, @stack.base_path
+    assert_equal @expected_base_path, @stack.base_path.to_s
   end
 
   test "deploys_path" do
-    assert_equal File.join(@expected_base_path, "deploys"), @stack.deploys_path
+    assert_equal File.join(@expected_base_path, "deploys"), @stack.deploys_path.to_s
   end
 
   test "git_path" do
-    assert_equal File.join(@expected_base_path, "git"), @stack.git_path
+    assert_equal File.join(@expected_base_path, "git"), @stack.git_path.to_s
   end
 
   test "#trigger_deploy persist a new deploy" do

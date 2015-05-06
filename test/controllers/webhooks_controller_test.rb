@@ -68,17 +68,19 @@ class WebhooksControllerTest < ActionController::TestCase
   test ":push returns head :ok if request is ping" do
     @request.headers['X-Github-Event'] = 'ping'
 
-    Resque.expects(:enqueue).never
-    post :state, stack_id: @stack.id, zen: "Git is beautiful"
-    assert_response :ok
+    assert_no_enqueued_jobs do
+      post :state, stack_id: @stack.id, zen: "Git is beautiful"
+      assert_response :ok
+    end
   end
 
   test ":state returns head :ok if request is ping" do
     @request.headers['X-Github-Event'] = 'ping'
 
-    post :state, stack_id: @stack.id
-    Resque.expects(:enqueue).never
-    assert_response :ok
+    assert_no_enqueued_jobs do
+      post :state, stack_id: @stack.id
+      assert_response :ok
+    end
   end
 
   test ":state verifies webhook signature" do
@@ -122,7 +124,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":membership creates the mentioned user on the fly" do
-    Shipit.github_api.expects(:user).with('george').returns(george)
+    Shipster.github_api.expects(:user).with('george').returns(george)
     assert_difference -> { User.count }, +1 do
       post :membership, membership_params.merge(member: {login: 'george'})
       assert_response :ok

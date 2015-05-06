@@ -35,8 +35,8 @@ ActiveRecord::Schema.define(version: 20150424175630) do
     t.boolean  "detached",     limit: 1,     default: false, null: false
     t.datetime "authored_at",                                null: false
     t.datetime "committed_at",                               null: false
-    t.integer  "additions",    limit: 4
-    t.integer  "deletions",    limit: 4
+    t.integer  "additions",    limit: 4,     default: 0
+    t.integer  "deletions",    limit: 4,     default: 0
   end
 
   add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree

@@ -24,7 +24,7 @@ class ApiClient < ActiveRecord::Base
     end
 
     def message_verifier
-      @message_verifier ||= SimpleMessageVerifier.new(Shipit.api_clients_secret)
+      @message_verifier ||= SimpleMessageVerifier.new(Shipster.api_clients_secret)
     end
   end
 
