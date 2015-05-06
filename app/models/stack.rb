@@ -1,7 +1,6 @@
 require 'fileutils'
 
 class Stack < ActiveRecord::Base
-  STACKS_PATH = File.join(Rails.root, "data", "stacks")
   REQUIRED_HOOKS = %i(push status)
 
   has_many :commits, dependent: :destroy
@@ -129,7 +128,7 @@ class Stack < ActiveRecord::Base
   end
 
   def base_path
-    File.join(STACKS_PATH, repo_owner, repo_name, environment)
+    Rails.root.join('data/stacks', repo_owner, repo_name, environment)
   end
 
   def deploys_path
@@ -143,7 +142,7 @@ class Stack < ActiveRecord::Base
   def acquire_git_cache_lock(timeout: 15, &block)
     Redis::Lock.new(
       "stack:#{id}:git-cache-lock",
-      Shipit.redis,
+      Shipster.redis,
       timeout: timeout,
       expiration: 60,
     ).lock(&block)
@@ -163,11 +162,11 @@ class Stack < ActiveRecord::Base
   end
 
   def github_repo
-    Shipit.github_api.repo(github_repo_name)
+    Shipster.github_api.repo(github_repo_name)
   end
 
   def github_commits
-    Shipit.github_api.commits(github_repo_name, sha: branch)
+    Shipster.github_api.commits(github_repo_name, sha: branch)
   end
 
   def deploying?
@@ -221,7 +220,7 @@ class Stack < ActiveRecord::Base
   end
 
   def broadcast_update
-    payload = {url: Rails.application.routes.url_helpers.stack_path(self)}.to_json
+    payload = {url: Shipster::Engine.routes.url_helpers.stack_path(self)}.to_json
     event = Pubsubstub::Event.new(payload, name: "stack.update")
     Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
   end
@@ -248,7 +247,7 @@ class Stack < ActiveRecord::Base
   end
 
   def clear_local_files
-    FileUtils.rm_rf(base_path)
+    FileUtils.rm_rf(base_path.to_s)
   end
 
   def update_defaults

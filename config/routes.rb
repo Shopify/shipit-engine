@@ -1,11 +1,8 @@
-require "resque/server"
-
-Shipit::Application.routes.draw do
+Shipster::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   sha_format = /[\da-f]{6,40}/
   root to: 'stacks#index'
 
-  mount UserRequiredMiddleware.new(Resque::Server.new), at: "/resque"
   mount UserRequiredMiddleware.new(Pubsubstub::StreamAction.new), at: "/events", as: :events
 
   get '/status/version' => 'status#version', as: :version

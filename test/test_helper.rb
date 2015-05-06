@@ -6,9 +6,17 @@ SimpleCov.start 'rails'
 require 'fakeweb'
 FakeWeb.allow_net_connect = false
 
-require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
+require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
+ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
+ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
+require "rails/test_help"
 require "mocha/mini_test"
+
+# Load fixtures from the engine
+if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+  ActiveSupport::TestCase.fixtures :all
+end
 
 Dir[File.expand_path('../helpers/**/*.rb', __FILE__)].each do |helper|
   require helper
@@ -28,8 +36,12 @@ class ActiveSupport::TestCase
   include ApiHelper
   include ActiveJob::TestHelper
 
+  setup do
+    @routes = Shipster::Engine.routes
+  end
+
   teardown do
-    Shipit.redis.flushdb
+    Shipster.redis.flushdb
   end
 
   ActiveRecord::Migration.check_pending!

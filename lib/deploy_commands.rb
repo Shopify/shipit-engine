@@ -14,6 +14,6 @@ class DeployCommands < TaskCommands
   protected
 
   def permalink
-    Rails.application.routes.url_helpers.stack_deploy_url(@stack, @task)
+    Shipster::Engine.routes.url_helpers.stack_deploy_url(@stack, @task)
   end
 end

@@ -11,7 +11,7 @@ class BackgroundJob
     def acquire_lock(&block)
       mutex = Redis::Lock.new(
         lock_key(*arguments),
-        Resque.redis,
+        Shipster.redis,
         expiration: self.class.timeout || DEFAULT_TIMEOUT,
         timeout: 0.1,
       )

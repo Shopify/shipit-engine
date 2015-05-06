@@ -2,7 +2,7 @@ require 'test_helper'
 
 class AuthenticationControllerTest < ActionController::TestCase
   setup do
-    Shipit.stubs(:authentication).returns('provider' => 'google_oauth2')
+    Shipster.stubs(:authentication).returns('provider' => 'google_oauth2')
   end
 
   test ":callback renders a snowman if not authenticated and authentication is required" do
@@ -26,7 +26,7 @@ class AuthenticationControllerTest < ActionController::TestCase
 
   test ":callback refuses authentication if the email domain doesn't match" do
     stack = stacks(:shipit)
-    Shipit.stubs(:authentication).returns('provider' => 'google_oauth2', 'email_domain' => 'shopify.com')
+    Shipster.stubs(:authentication).returns('provider' => 'google_oauth2', 'email_domain' => 'shopify.com')
     @request.env['omniauth.auth'] = {'info' => {'email' => 'bob@toto.com'}, 'provider' => 'google_oauth2'}
     @request.env['omniauth.origin'] = stack_path(stack)
 
@@ -40,7 +40,7 @@ class AuthenticationControllerTest < ActionController::TestCase
 
     @request.env['omniauth.auth'] = {provider: 'github', info:  {nickname: 'shipit'}}
     github_user = mock('Sawyer User')
-    Shipit.github_api.stubs(:user).returns(github_user)
+    Shipster.github_api.stubs(:user).returns(github_user)
     User.expects(:find_or_create_from_github).with(github_user).returns(stub(id: 44))
 
     get :callback, provider: 'github'

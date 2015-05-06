@@ -20,3 +20,11 @@
 /data/*
 /coverage/*
 /public/assets/*
+pkg/
+/test/dummy/db/*.sqlite3
+/test/dummy/db/*.sqlite3-journal
+/test/dummy/db/migrate/*.rb
+/test/dummy/log/*.log
+/test/dummy/tmp/
+/test/dummy/.sass-cache
+

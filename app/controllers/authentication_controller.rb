@@ -1,4 +1,4 @@
-class AuthenticationController < ApplicationController
+class AuthenticationController < ShipsterController
   skip_before_action :authenticate, :force_github_authentication, :verify_authenticity_token, only: :callback
 
   def callback
@@ -22,7 +22,7 @@ class AuthenticationController < ApplicationController
   private
 
   def authenticate_user(auth, user_id)
-    return if Shipit.authentication.blank?
+    return if Shipster.authentication.blank?
 
     reset_session
     session[:authenticated] = valid_provider_auth?(auth)
@@ -30,9 +30,9 @@ class AuthenticationController < ApplicationController
   end
 
   def valid_provider_auth?(auth)
-    return false unless auth['provider'] == Shipit.authentication['provider']
+    return false unless auth['provider'] == Shipster.authentication['provider']
 
-    email_domain = Shipit.authentication['email_domain'] || "shopify.com"
+    email_domain = Shipster.authentication['email_domain'] || "shopify.com"
 
     auth['info']['email'].match(/@#{Regexp.escape(email_domain)}\z/).present?
   end
@@ -40,7 +40,7 @@ class AuthenticationController < ApplicationController
   def sign_in_github(auth)
     return unless auth[:provider] == 'github'
 
-    user = Shipit.github_api.user(auth[:info][:nickname])
+    user = Shipster.github_api.user(auth[:info][:nickname])
     User.find_or_create_from_github(user).id
   end
 end

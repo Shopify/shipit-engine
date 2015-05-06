@@ -1,4 +1,4 @@
-class StacksController < ApplicationController
+class StacksController < ShipsterController
   before_action :load_stack, only: %i(update destroy settings sync_webhooks clear_git_cache refresh)
 
   def new

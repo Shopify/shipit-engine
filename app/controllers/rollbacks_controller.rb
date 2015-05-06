@@ -1,4 +1,4 @@
-class RollbacksController < ApplicationController
+class RollbacksController < ShipsterController
   before_action :load_stack
   before_action :load_deploy
 

@@ -1,1 +1,0 @@
-Resque.redis = Shipit.redis

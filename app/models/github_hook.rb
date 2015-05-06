@@ -56,15 +56,15 @@ class GithubHook < ActiveRecord::Base
   end
 
   def url_helpers
-    Rails.application.routes.url_helpers
+    Shipster::Engine.routes.url_helpers
   end
 
   def host
-    Shipit.host
+    Shipster.host
   end
 
   def api
-    Shipit.github_api
+    Shipster.github_api
   end
 
   class Repo < GithubHook

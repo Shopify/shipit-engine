@@ -1,6 +1,4 @@
 class TaskCommands < Commands
-  BUNDLE_PATH = File.join(Rails.root, 'data', 'bundler')
-
   delegate :fetch, to: :stack_commands
 
   def initialize(task)
@@ -32,9 +30,9 @@ class TaskCommands < Commands
     normalized_name = ActiveSupport::Inflector.transliterate(@task.author.name)
     super.merge(
       'ENVIRONMENT' => @stack.environment,
-      'USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
+      'USER' => "#{@task.author.login} (#{normalized_name}) via Shipster",
       'EMAIL' => @task.author.email,
-      'BUNDLE_PATH' => BUNDLE_PATH,
+      'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
       'SHIPIT_LINK' => permalink,
     ).merge(deploy_spec.machine_env)
   end
@@ -62,6 +60,6 @@ class TaskCommands < Commands
   end
 
   def permalink
-    Rails.application.routes.url_helpers.stack_task_url(@stack, @task)
+    Shipster::Engine.routes.url_helpers.stack_task_url(@stack, @task)
   end
 end

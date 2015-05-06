@@ -60,7 +60,7 @@ class Command
 
   def with_full_path
     old_path = ENV['PATH']
-    ENV['PATH'] = "#{ENV['PATH']}:#{Rails.root.join('lib', 'snippets')}"
+    ENV['PATH'] = "#{ENV['PATH']}:#{Shipster::Engine.root.join('lib', 'snippets')}"
     yield
   ensure
     ENV['PATH'] = old_path

@@ -1,23 +1,27 @@
-GIT
-  remote: git://github.com/byroot/ansi_stream.git
-  revision: 5c5324ace533b819eadc8d1ae8b022138ac4a5eb
-  ref: 5c5324ace533b819eadc8d1ae8b022138ac4a5eb
-  branch: strip
+PATH
+  remote: .
   specs:
-    ansi_stream (0.0.5)
-
-GIT
-  remote: git://github.com/byroot/react-rails.git
-  revision: 260cb285f3f6c3e490359c353f3346f963ebd764
-  ref: 260cb285f3f6c3e490359c353f3346f963ebd764
-  branch: dont-crash-on-boot-because-of-file-copying
-  specs:
-    react-rails (1.0.0)
-      coffee-script-source (~> 1.8)
-      connection_pool
-      execjs
-      rails (>= 3.1)
-      tilt
+    shipster (0.0.1)
+      active_model_serializers (~> 0.9.3)
+      ansi_stream (~> 0.0.6)
+      coffee-rails (~> 4.1.0)
+      explicit-parameters (~> 0.0.3)
+      faraday (~> 0.9.1)
+      faraday-http-cache (= 1.1.0)
+      jquery-rails (~> 4.0.3)
+      octokit (~> 3.8.0)
+      omniauth-github (~> 1.1.2)
+      pubsubstub (~> 0.0.9)
+      rails (~> 4.2.1)
+      rails-timeago (~> 2.11.1)
+      redis-objects (= 1.1.0)
+      responders (~> 2.1.0)
+      safe_yaml (~> 1.0.4)
+      sass-rails (~> 5.0.3)
+      securecompare (~> 1.0.0)
+      sprockets (~> 2.12.3)
+      state_machines-activerecord (~> 0.2.0)
+      validate_url (~> 1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -60,9 +64,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    airbrake (3.1.17)
-      builder
-      multi_json
+    ansi_stream (0.0.6)
     arel (6.0.0)
     ast (2.0.0)
     astrolabe (1.3.0)
@@ -74,17 +76,6 @@ GEM
     builder (3.2.2)
     byebug (4.0.5)
       columnize (= 0.9.0)
-    capistrano (3.4.0)
-      i18n
-      rake (>= 10.0.0)
-      sshkit (~> 1.3)
-    capistrano-bundler (1.1.4)
-      capistrano (~> 3.1)
-      sshkit (~> 1.2)
-    capistrano-rails (1.1.2)
-      capistrano (~> 3.1)
-      capistrano-bundler (~> 1.1)
-    chronic (0.10.2)
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -95,22 +86,16 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
-    colorize (0.7.5)
     columnize (0.9.0)
-    connection_pool (2.2.0)
-    daemons (1.2.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     docile (1.1.5)
-    domain_name (0.5.23)
-      unf (>= 0.0.5, < 1.0.0)
     em-hiredis (0.3.0)
       eventmachine (~> 1.0)
       hiredis (~> 0.5.0)
     equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.7)
-    excon (0.45.1)
     execjs (2.5.2)
     explicit-parameters (0.0.3)
       actionpack (~> 4.0)
@@ -123,25 +108,11 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.1.0)
       faraday (~> 0.8)
-    foreman (0.78.0)
-      thor (~> 0.19.1)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
     hashie (3.4.1)
-    heroku (3.31.3)
-      heroku-api (>= 0.3.19)
-      launchy (>= 0.3.2)
-      multi_json (>= 1.10)
-      netrc (>= 0.10.0)
-      rest-client (>= 1.6.0)
-      rubyzip (>= 0.9.9)
-    heroku-api (0.3.23)
-      excon (~> 0.44)
-      multi_json (~> 1.8)
     hike (1.2.3)
     hiredis (0.5.2)
-    http-cookie (1.0.2)
-      domain_name (~> 0.5)
     i18n (0.7.0)
     ice_nine (0.11.1)
     jquery-rails (4.0.3)
@@ -150,28 +121,21 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.2)
     jwt (1.4.1)
-    launchy (2.4.3)
-      addressable (~> 2.3)
-    loofah (2.0.1)
+    loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     metaclass (0.0.4)
     method_source (0.8.2)
-    mime-types (2.4.3)
+    mime-types (2.5)
     mini_portile (0.6.2)
-    minitest (5.5.1)
+    minitest (5.6.1)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    mono_logger (1.1.0)
     multi_json (1.11.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     mysql2 (0.3.18)
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
-    net-ssh (2.9.2)
-    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -188,17 +152,12 @@ GEM
     omniauth-github (1.1.2)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
-    omniauth-google-oauth2 (0.2.6)
-      omniauth (> 1.0)
-      omniauth-oauth2 (~> 1.1)
-    omniauth-oauth2 (1.2.0)
-      faraday (>= 0.8, < 0.10)
-      multi_json (~> 1.3)
+    omniauth-oauth2 (1.3.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    parser (2.2.0.3)
+    parser (2.2.2.2)
       ast (>= 1.1, < 3.0)
-    powerpack (0.1.0)
+    powerpack (0.1.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -208,10 +167,7 @@ GEM
       eventmachine (~> 1.0)
       redis (~> 3.0)
       sinatra (~> 1.4)
-    quiet_assets (1.1.0)
-      railties (>= 3.1, < 5.0)
     rack (1.6.0)
-    rack-cors (0.3.1)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -246,46 +202,17 @@ GEM
     rainbow (2.0.0)
     rake (10.4.2)
     redis (3.2.1)
-    redis-actionpack (4.0.0)
-      actionpack (~> 4)
-      redis-rack (~> 1.5.0)
-      redis-store (~> 1.1.0)
-    redis-activesupport (4.0.0)
-      activesupport (~> 4)
-      redis-store (~> 1.1.0)
-    redis-namespace (1.5.2)
-      redis (~> 3.0, >= 3.0.4)
     redis-objects (1.1.0)
       redis (>= 3.0.2)
-    redis-rack (1.5.0)
-      rack (~> 1.5)
-      redis-store (~> 1.1.0)
-    redis-rails (4.0.0)
-      redis-actionpack (~> 4)
-      redis-activesupport (~> 4)
-      redis-store (~> 1.1.0)
-    redis-store (1.1.4)
-      redis (>= 2.2)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
-    resque (1.26.pre.0)
-      mono_logger (~> 1.0)
-      multi_json (~> 1.0)
-      redis-namespace (~> 1.2)
-      sinatra (>= 0.9.2)
-      vegas (~> 0.1.2)
-    rest-client (1.8.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
-    rubocop (0.30.0)
+    rubocop (0.31.0)
       astrolabe (~> 1.3)
-      parser (>= 2.2.0.1, < 3.0)
+      parser (>= 2.2.2.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
     ruby-progressbar (1.7.5)
-    rubyzip (1.1.7)
     safe_yaml (1.0.4)
     sass (3.4.13)
     sass-rails (5.0.3)
@@ -317,87 +244,40 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    sshkit (1.7.1)
-      colorize (>= 0.7.0)
-      net-scp (>= 1.1.2)
-      net-ssh (>= 2.8.0)
-    state_machine (1.2.0)
-    test_after_commit (0.4.1)
+    state_machines (0.2.2)
+    state_machines-activemodel (0.1.2)
+      activemodel (~> 4.1)
+      state_machines (~> 0.2.0)
+    state_machines-activerecord (0.2.0)
+      activerecord (~> 4.1)
+      state_machines-activemodel (~> 0.1.0)
+    test_after_commit (0.4.0)
       activerecord (>= 3.2)
-    thin (1.6.3)
-      daemons (~> 1.0, >= 1.0.9)
-      eventmachine (~> 1.0)
-      rack (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (2.7.1)
-      execjs (>= 0.3.0)
-      json (>= 1.8.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.6)
     validate_url (1.0.0)
       activemodel (>= 3.0.0)
       addressable
-    vegas (0.1.11)
-      rack (>= 1.0.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
-    whenever (0.9.4)
-      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_model_serializers
-  airbrake (~> 3.1.5)
-  ansi_stream!
   byebug
-  capistrano
-  capistrano-bundler
-  capistrano-rails
-  coffee-rails
-  explicit-parameters
   faker
   fakeweb
-  faraday
-  faraday-http-cache
-  foreman (~> 0.74)
-  heroku
-  jquery-rails
   mocha
   mysql2
-  octokit
-  omniauth
-  omniauth-github
-  omniauth-google-oauth2
   pry
-  pubsubstub (~> 0.0.7)
-  quiet_assets
-  rack-cors
-  rails (~> 4.2.1)
-  rails-timeago (~> 2.0)
-  react-rails!
-  redis-objects
-  redis-rails
-  responders
-  resque (= 1.26.pre.0)
   rubocop
-  safe_yaml
-  sass-rails
-  securecompare (~> 1.0)
+  shipster!
   simplecov
-  sprockets (~> 2.12)
-  state_machine
-  test_after_commit
-  thin
-  uglifier
-  validate_url
-  whenever
+  test_after_commit (= 0.4.0)
