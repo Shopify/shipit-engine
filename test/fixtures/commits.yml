@@ -9,6 +9,7 @@ first:
   committed_at: <%= 9.days.ago.to_s(:db) %>
   additions: 42
   deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>
 
 second:
   id: 2
@@ -21,6 +22,7 @@ second:
   committed_at: <%= 7.days.ago.to_s(:db) %>
   additions: 1
   deletions: 1
+  updated_at: <%= 8.days.ago.to_s(:db) %>
 
 third:
   id: 3
@@ -33,6 +35,7 @@ third:
   committed_at: <%= 5.days.ago.to_s(:db) %>
   additions: 12
   deletions: 64
+  updated_at: <%= 8.days.ago.to_s(:db) %>
 
 fourth:
   id: 4
@@ -45,6 +48,7 @@ fourth:
   committed_at: <%= 3.days.ago.to_s(:db) %>
   additions: 420
   deletions: 342
+  updated_at: <%= 8.days.ago.to_s(:db) %>
 
 fifth:
   id: 5
@@ -57,7 +61,7 @@ fifth:
   committed_at: <%= 1.days.ago.to_s(:db) %>
   additions: 1
   deletions: 24
-
+  updated_at: <%= 8.days.ago.to_s(:db) %>
 
 cyclimse_first:
   id: 6
@@ -70,3 +74,4 @@ cyclimse_first:
   committed_at: <%= 1.days.ago.to_s(:db) %>
   additions: 1
   deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>

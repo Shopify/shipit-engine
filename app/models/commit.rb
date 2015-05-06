@@ -10,6 +10,8 @@ class Commit < ActiveRecord::Base
 
   after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, on: :create
 
+  after_touch :touch_stack
+
   belongs_to :author, class_name: 'User', inverse_of: :authored_commits
   belongs_to :committer, class_name: 'User', inverse_of: :commits
 
@@ -138,6 +140,10 @@ class Commit < ActiveRecord::Base
   end
 
   private
+
+  def touch_stack
+    stack.touch
+  end
 
   def significant_status
     statuses = last_statuses

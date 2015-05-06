@@ -7,6 +7,7 @@ class Status < ActiveRecord::Base
   validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 
   after_commit :schedule_continuous_delivery, :broadcast_update, on: :create
+  after_commit :touch_commit
 
   delegate :broadcast_update, to: :commit
 
@@ -21,6 +22,10 @@ class Status < ActiveRecord::Base
   end
 
   private
+
+  def touch_commit
+    commit.touch
+  end
 
   def schedule_continuous_delivery
     commit.schedule_continuous_delivery
