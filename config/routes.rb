@@ -3,12 +3,12 @@ Shipster::Engine.routes.draw do
   sha_format = /[\da-f]{6,40}/
   root to: 'stacks#index'
 
-  mount UserRequiredMiddleware.new(Pubsubstub::StreamAction.new), at: "/events", as: :events
+  mount Pubsubstub::StreamAction.new, at: "/events", as: :events
 
   get '/status/version' => 'status#version', as: :version
 
-  scope '/auth/:provider', as: :authentication, controller: :authentication do
-    get '/', action: :mock
+  scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
+    get '/', action: :request
     post :callback
     get :callback
     get :logout

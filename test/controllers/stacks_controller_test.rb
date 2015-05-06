@@ -9,7 +9,7 @@ class StacksControllerTest < ActionController::TestCase
   test "GitHub authentication is mandatory" do
     session[:user_id] = nil
     get :index
-    assert_redirected_to authentication_path(:github, origin: root_url)
+    assert_redirected_to github_authentication_path(origin: root_url)
   end
 
   test "mandatory GitHub authentication can be disabled" do
@@ -60,29 +60,6 @@ class StacksControllerTest < ActionController::TestCase
       delete :destroy, id: @stack.to_param
     end
     assert_redirected_to stacks_path
-  end
-
-  test "#index before authentication redirects to authentication" do
-    Shipster.stubs(:authentication).returns('provider' => 'google_apps')
-
-    get :index
-
-    assert_redirected_to "/auth/google_apps?origin=%2F"
-  end
-
-  test "#index when authentication is disabled does not redirect" do
-    Shipster.stubs(:authentication).returns(false)
-
-    get :index
-    assert_response :ok
-  end
-
-  test "#index when authentication is successful does not redirect" do
-    Shipster.stubs(:authentication).returns('provider' => 'google_apps')
-
-    get :index, {}, authenticated: true
-
-    assert_response :ok
   end
 
   test "#settings is success" do

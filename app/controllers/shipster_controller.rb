@@ -1,16 +1,10 @@
-class ShipsterController < ActionController::Base
+class ShipsterController < ApplicationController
   layout 'shipster'
 
   helper Shipster::Engine.routes.url_helpers
   include Shipster::Engine.routes.url_helpers
 
-  before_action :authenticate, :force_github_authentication, :set_variant
-
-  def authenticate
-    auth_settings = Shipster.authentication
-    return if session[:authenticated] || auth_settings.blank?
-    redirect_to authentication_path(provider: auth_settings['provider'], origin: request.fullpath)
-  end
+  before_action :force_github_authentication, :set_variant
 
   # Respond to HTML by default
   respond_to :html
@@ -31,7 +25,7 @@ class ShipsterController < ActionController::Base
         render text: "You must me a member of #{team.handle} to access this application.", status: :forbidden
       end
     else
-      redirect_to authentication_path(:github, origin: request.original_url)
+      redirect_to github_authentication_path(origin: request.original_url)
     end
   end
 

@@ -17,6 +17,7 @@ module Shipster
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
 
       if Shipster.github
+        OmniAuth::Strategies::GitHub.configure path_prefix: '/github/auth'
         app.middleware.use OmniAuth::Builder do
           provider(:github, Shipster.github_key, Shipster.github_secret, scope: 'email')
         end

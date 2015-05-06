@@ -71,7 +71,7 @@ module Shipster
     Rails.application.secrets.api_clients_secret || ''
   end
 
-  delegate :authentication, :host, to: :secrets
+  delegate :host, to: :secrets
 
   def github_required?
     !github['optional']
@@ -91,11 +91,6 @@ module Shipster
 
   def github
     secrets.github || {}
-  end
-
-  def authentication_settings
-    parameters = Array(authentication['parameters'] || authentication['options'])
-    [authentication['provider'], *parameters]
   end
 
   def extra_env

@@ -26,7 +26,7 @@
         <a href="/" class="logo header"><i></i><span>Ship it</span></a>
 
         <% if can_login? %>
-          <%= link_to "Login with Github", authentication_path(:github, origin: request.original_url) %>
+          <%= link_to "Login with Github", github_authentication_path(origin: request.original_url) %>
         <% end %>
 
       </div>
