@@ -71,7 +71,9 @@ module Shipster
     Rails.application.secrets.api_clients_secret || ''
   end
 
-  delegate :host, to: :secrets
+  def host
+    secrets.host.presence || fail("Missing `host` setting in secrets.yml")
+  end
 
   def github_required?
     !github['optional']

@@ -3,6 +3,9 @@ module Shipster
     paths['app/models'] << 'app/serializers' << 'app/serializers/concerns'
 
     initializer 'shipster.config' do |app|
+      Rails.application.routes.default_url_options[:host] = Shipster.host
+      Shipster::Engine.routes.default_url_options[:host] = Shipster.host
+
       app.config.assets.precompile += %w(
         task.js
         shipster.js
