@@ -6,6 +6,7 @@ class BackgroundJob
 
     included do
       around_perform { |job, block| job.acquire_lock(&block) }
+      cattr_accessor :lock_timeout
     end
 
     def acquire_lock(&block)
@@ -13,7 +14,7 @@ class BackgroundJob
         lock_key(*arguments),
         Shipster.redis,
         expiration: self.class.timeout || DEFAULT_TIMEOUT,
-        timeout: 0.1,
+        timeout: self.class.lock_timeout || 0,
       )
       mutex.lock(&block)
     end

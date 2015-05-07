@@ -38,5 +38,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'octokit', '~> 3.8.0'
   s.add_dependency 'faraday', '~> 0.9.1'
   s.add_dependency 'faraday-http-cache', '1.1.0'
-  s.add_dependency 'redis-objects', '1.1.0'
+  s.add_dependency 'redis-objects', '1.2.0'
 end
