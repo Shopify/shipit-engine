@@ -48,6 +48,10 @@ module Shipster
     end
   end
 
+  def app_name
+    @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first
+  end
+
   def redis
     @redis ||= Redis.new(url: Rails.application.secrets.redis_url, logger: Rails.logger)
   end
