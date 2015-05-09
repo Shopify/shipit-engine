@@ -1,6 +1,6 @@
 # :shipit: Next
 
-## Instalation
+## Installation
 
 ```
 gem 'shipster'
