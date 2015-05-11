@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'omniauth-github', '~> 1.1.2'
   s.add_dependency 'responders', '~> 2.1.0'
 
-  s.add_dependency 'sprockets', '~> 2.12.3'
+  s.add_dependency 'sprockets', '>= 2.12.3'
   s.add_dependency 'sass-rails', '~> 5.0.3'
   s.add_dependency 'coffee-rails', '~> 4.1.0'
   s.add_dependency 'jquery-rails', '~> 4.0.3'
