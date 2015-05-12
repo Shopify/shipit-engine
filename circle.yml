@@ -10,9 +10,6 @@ database:
   override:
     - script/bootstrap
 dependencies:
-  pre:
-    - cp config/secrets.yml.example config/secrets.yml
-    - mkdir -p tmp/cache/
   bundler:
     without:
       - benchmark
