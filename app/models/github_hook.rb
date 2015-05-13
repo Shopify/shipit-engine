@@ -23,6 +23,7 @@ class GithubHook < ActiveRecord::Base
 
   def teardown!
     destroy_hook! if already_setup?
+    true
   end
 
   def event=(event)
