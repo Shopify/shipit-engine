@@ -78,7 +78,7 @@ class GithubHook < ActiveRecord::Base
     end
 
     def edit_hook!
-      api.edit_hook(github_repo_name, github_id, 'web', properties, add_events: [event], active: true)
+      api.edit_hook(github_repo_name, github_id, 'web', properties, events: [event], active: true)
     end
 
     def destroy_hook!
@@ -116,7 +116,7 @@ class GithubHook < ActiveRecord::Base
     end
 
     def edit_hook!
-      api.edit_org_hook(organization, github_id, properties, add_events: [event], active: true)
+      api.edit_org_hook(organization, github_id, properties, events: [event], active: true)
     end
 
     def destroy_hook!

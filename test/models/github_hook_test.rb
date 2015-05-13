@@ -37,7 +37,7 @@ class GithubHookTest < ActiveSupport::TestCase
       @hook.github_id,
       'web',
       includes(:url, :content_type, :secret),
-      includes(:add_events, :active),
+      includes(:events, :active),
     ).returns(response)
     @hook.setup!
     @hook.reload
