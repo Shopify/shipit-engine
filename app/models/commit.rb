@@ -34,7 +34,7 @@ class Commit < ActiveRecord::Base
   end
 
   def self.detach!
-    update_all(detached: true)
+    Commit.where(id: ids).update_all(detached: true)
   end
 
   def self.by_sha(sha)

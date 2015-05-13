@@ -37,6 +37,16 @@ class CommitsTest < ActiveSupport::TestCase
     @commit.update(detached: true)
   end
 
+  test ".detach! detaches commits" do
+    parent = commits(:fourth)
+    child = commits(:fifth)
+    refute child.detached?, "fifth commit should not be detached"
+
+    parent.detach_children!
+
+    assert child.reload.detached?, "children commits must be detached"
+  end
+
   test "#destroy broadcasts an update event" do
     expect_event(@stack)
     @commit.destroy
