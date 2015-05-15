@@ -51,16 +51,38 @@ class Task < ActiveRecord::Base
     PerformTaskJob.perform_later(task_id: id, stack_id: stack_id)
   end
 
-  def rollup_chunks
-    ChunkRollupJob.perform_later(self)
-  end
-
   def write(text)
     chunks.create!(text: text)
   end
 
   def chunk_output
-    chunks.pluck(:text).join
+    if rolled_up?
+      output
+    else
+      chunks.pluck(:text).join
+    end
+  end
+
+  def rollup_chunks
+    ActiveRecord::Base.transaction do
+      self.output = chunk_output
+      chunks.delete_all
+      update_attribute(:rolled_up, true)
+    end
+  end
+
+  def output
+    gzip = self[:gzip_output]
+
+    if gzip.nil? || gzip.empty?
+      ''
+    else
+      ActiveSupport::Gzip.decompress(gzip)
+    end
+  end
+
+  def output=(string)
+    self[:gzip_output] = ActiveSupport::Gzip.compress(string)
   end
 
   def rollback?
