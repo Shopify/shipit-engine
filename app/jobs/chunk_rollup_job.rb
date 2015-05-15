@@ -19,7 +19,7 @@ class ChunkRollupJob < BackgroundJob
     output = task.chunk_output
 
     ActiveRecord::Base.transaction do
-      task.chunks.delete_all
+      OutputChunk.where(id: task.chunks.ids).delete_all
       task.write(output)
       task.update_attribute(:rolled_up, true)
     end
