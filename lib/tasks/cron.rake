@@ -6,7 +6,7 @@ namespace :cron do
 
   desc "Rolls-up output chunks for completed deploys older than an hour"
   task rollup: :environment do
-    Task.due_for_rollup.find_each(&:rollup_chunks)
+    Task.due_for_rollup.find_each(&:schedule_rollup_chunks)
   end
 
   task refresh_users: :environment do

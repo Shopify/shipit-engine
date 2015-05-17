@@ -63,6 +63,10 @@ class Task < ActiveRecord::Base
     end
   end
 
+  def schedule_rollup_chunks
+    ChunkRollupJob.perform_later(self)
+  end
+
   def rollup_chunks
     ActiveRecord::Base.transaction do
       self.output = chunk_output
