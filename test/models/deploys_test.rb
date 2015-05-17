@@ -258,6 +258,22 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  test "#chunk_output joins all chunk test if logs not rolled up" do
+    assert_equal @deploy.chunks.count, @deploy.chunks.count
+    assert_equal @deploy.chunks.pluck(:text).join, @deploy.chunk_output
+    refute @deploy.rolled_up
+  end
+
+  test "#chunk_output returns logs from records if rolled up" do
+    expected_output = @deploy.chunks.pluck(:text).join
+    @deploy.rollup_chunks
+
+    assert_no_queries do
+      assert_equal expected_output, @deploy.chunk_output
+      assert @deploy.rolled_up
+    end
+  end
+
   private
 
   def expect_event(deploy)
