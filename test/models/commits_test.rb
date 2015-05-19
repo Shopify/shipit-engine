@@ -215,11 +215,11 @@ class CommitsTest < ActiveSupport::TestCase
   end
 
   test "#deployable? is true if commit status is 'success'" do
-    assert_true commits(:cyclimse_first).deployable?
+    assert commits(:cyclimse_first).deployable?
   end
 
   test "#deployable? is true if stack is set to 'ignore_ci'" do
-    assert_true commits(:first).deployable?
+    assert commits(:first).deployable?
   end
 
   private
