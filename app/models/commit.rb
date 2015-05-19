@@ -81,6 +81,10 @@ class Commit < ActiveRecord::Base
   delegate :pending?, :success?, :error?, :failure?, to: :significant_status
   delegate :state, to: :significant_status # deprecated
 
+  def deployable?
+    success? || stack.ignore_ci?
+  end
+
   def last_statuses
     statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
   end
