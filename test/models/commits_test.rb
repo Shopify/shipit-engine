@@ -214,6 +214,14 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 'pending', commits(:fourth).state
   end
 
+  test "#deployable? is true if commit status is 'success'" do
+    assert commits(:cyclimse_first).deployable?
+  end
+
+  test "#deployable? is true if stack is set to 'ignore_ci'" do
+    assert commits(:first).deployable?
+  end
+
   private
 
   def expect_event(stack)

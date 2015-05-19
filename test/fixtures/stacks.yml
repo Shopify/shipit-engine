@@ -3,6 +3,7 @@ shipit:
   repo_name: "shipit2"
   environment: "production"
   branch: master
+  ignore_ci: true
   tasks_count: 3
   undeployed_commits_count: 3
   cached_deploy_spec: >
@@ -35,6 +36,7 @@ cyclimse:
   repo_name: cyclimse
   environment: production
   branch: master
+  ignore_ci: false
   tasks_count: 0
   undeployed_commits_count: 1
   cached_deploy_spec: >

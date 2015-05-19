@@ -1,7 +1,7 @@
 <% if commit.stack.locked? %>
   <%= link_to 'Locked', '#', class: 'btn disabled deploy-action' %>
 <% else %>
-  <% if commit.success? %>
+  <% if commit.deployable? %>
     <% if commit.stack.deploying? %>
       <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
     <% else %>

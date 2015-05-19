@@ -65,7 +65,7 @@ class StacksController < ShipsterController
   end
 
   def create_params
-    params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url)
+    params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url, :ignore_ci)
   end
 
   def update_params
