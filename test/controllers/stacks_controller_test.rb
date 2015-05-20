@@ -23,7 +23,7 @@ class StacksControllerTest < ActionController::TestCase
     Shipster.stubs(:github_team).returns(teams(:cyclimse_cooks))
     get :index
     assert_response :forbidden
-    assert_equal 'You must me a member of cyclimse/cooks to access this application.', response.body
+    assert_equal 'You must be a member of cyclimse/cooks to access this application.', response.body
   end
 
   test "#show is success" do

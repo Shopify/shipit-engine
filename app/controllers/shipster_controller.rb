@@ -22,7 +22,7 @@ class ShipsterController < ApplicationController
     if current_user.logged_in?
       team = Shipster.github_team
       if team && !current_user.in?(team.members)
-        render text: "You must me a member of #{team.handle} to access this application.", status: :forbidden
+        render text: "You must be a member of #{team.handle} to access this application.", status: :forbidden
       end
     else
       redirect_to github_authentication_path(origin: request.original_url)
