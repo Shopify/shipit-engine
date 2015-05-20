@@ -52,6 +52,10 @@ module Shipster
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first
   end
 
+  def redis_url
+    @redis_url ||= URI(secrets.redis_url.presence || fail("Missing `redis_url` setting in secrets.yml"))
+  end
+
   def redis
     @redis ||= Redis.new(url: Rails.application.secrets.redis_url, logger: Rails.logger)
   end
