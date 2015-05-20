@@ -9,6 +9,7 @@ AllCops:
     - db/migrate/*
     - test/dummy/**/*
     - bin/rails
+    - lib/shipit-engine.rb
 
 inherit_from:
   .rubocop_todo.yml
