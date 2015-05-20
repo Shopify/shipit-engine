@@ -142,7 +142,7 @@ class Stack < ActiveRecord::Base
   def acquire_git_cache_lock(timeout: 15, &block)
     Redis::Lock.new(
       "stack:#{id}:git-cache-lock",
-      Shipster.redis,
+      Shipit.redis,
       timeout: timeout,
       expiration: 60,
     ).lock(&block)
@@ -162,11 +162,11 @@ class Stack < ActiveRecord::Base
   end
 
   def github_repo
-    Shipster.github_api.repo(github_repo_name)
+    Shipit.github_api.repo(github_repo_name)
   end
 
   def github_commits
-    Shipster.github_api.commits(github_repo_name, sha: branch)
+    Shipit.github_api.commits(github_repo_name, sha: branch)
   end
 
   def deploying?
@@ -220,7 +220,7 @@ class Stack < ActiveRecord::Base
   end
 
   def broadcast_update
-    payload = {url: Shipster::Engine.routes.url_helpers.stack_path(self)}.to_json
+    payload = {url: Shipit::Engine.routes.url_helpers.stack_path(self)}.to_json
     event = Pubsubstub::Event.new(payload, name: "stack.update")
     Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
   end

@@ -35,10 +35,10 @@ class Delivery < ActiveRecord::Base
 
   def headers
     {
-      'User-Agent' => 'Shipster Webhook',
+      'User-Agent' => 'Shipit Webhook',
       'Content-Type' => content_type,
-      'X-Shipster-Event' => event,
-      'X-Shipster-Delivery' => id.to_s,
+      'X-Shipit-Event' => event,
+      'X-Shipit-Delivery' => id.to_s,
       'Accept' => '*/*',
     }
   end

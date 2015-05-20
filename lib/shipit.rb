@@ -22,7 +22,7 @@ require 'redis-objects'
 require 'octokit'
 require 'faraday-http-cache'
 
-require 'shipster/engine'
+require 'shipit/engine'
 
 require 'commands'
 require 'task_commands'
@@ -35,7 +35,7 @@ Dir[__dir__ + '/**/*.rb'].each { |f| require f } # TODO: do this properly
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
 
-module Shipster
+module Shipit
   extend self
 
   module NullSerializer

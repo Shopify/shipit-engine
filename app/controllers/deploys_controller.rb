@@ -1,4 +1,4 @@
-class DeploysController < ShipsterController
+class DeploysController < ShipitController
   include ChunksHelper
 
   before_action :load_stack

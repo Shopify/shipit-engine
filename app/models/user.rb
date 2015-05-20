@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
 
   def self.find_or_create_by_login!(login)
     find_or_create_by!(login: login) do |user|
-      user.github_user = Shipster.github_api.user(login)
+      user.github_user = Shipit.github_api.user(login)
     end
   end
 
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   end
 
   def refresh_from_github!
-    update!(github_user: Shipster.github_api.user(login))
+    update!(github_user: Shipit.github_api.user(login))
   rescue Octokit::NotFound
     identify_renamed_user!
   end

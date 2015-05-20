@@ -14,13 +14,13 @@ class StacksControllerTest < ActionController::TestCase
 
   test "mandatory GitHub authentication can be disabled" do
     session[:user_id] = nil
-    Shipster.stubs(:github).returns('optional' => true)
+    Shipit.stubs(:github).returns('optional' => true)
     get :index
     assert_response :ok
   end
 
-  test "current_user must be a member of Shipster.github_team" do
-    Shipster.stubs(:github_team).returns(teams(:cyclimse_cooks))
+  test "current_user must be a member of Shipit.github_team" do
+    Shipit.stubs(:github_team).returns(teams(:cyclimse_cooks))
     get :index
     assert_response :forbidden
     assert_equal 'You must be a member of cyclimse/cooks to access this application.', response.body

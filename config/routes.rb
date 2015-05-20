@@ -1,4 +1,4 @@
-Shipster::Engine.routes.draw do
+Shipit::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   sha_format = /[\da-f]{6,40}/
   root to: 'stacks#index'

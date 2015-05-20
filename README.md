@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-gem 'shipster'
+gem 'shipit-engine'
 ```
 
 ```

@@ -1,4 +1,4 @@
-class ChunksController < ShipsterController
+class ChunksController < ShipitController
   include ChunksHelper
 
   before_action :load_stack

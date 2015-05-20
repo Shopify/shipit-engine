@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount Shipster::Engine => '/'
+  mount Shipit::Engine => '/'
 end

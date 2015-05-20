@@ -1,17 +1,17 @@
 $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
-require 'shipster/version'
+require 'shipit/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'shipster'
-  s.version     = Shipster::VERSION
+  s.name        = 'shipit-engine'
+  s.version     = Shipit::VERSION
   s.authors     = ['Jean Boussier']
   s.email       = ['jean.boussier@gmail.com']
   s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Shipster."
-  s.description = "TODO: Description of Shipster."
+  s.summary     = "TODO: Summary of Shipit."
+  s.description = "TODO: Description of Shipit."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

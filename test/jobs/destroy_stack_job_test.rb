@@ -7,7 +7,7 @@ class DestroyStackJobTest < ActiveSupport::TestCase
   end
 
   test "perform destroys the received stack" do
-    Shipster.github_api.expects(:remove_hook).times(@stack.github_hooks.count)
+    Shipit.github_api.expects(:remove_hook).times(@stack.github_hooks.count)
 
     assert_difference -> { Stack.count }, -1 do
       @job.perform(@stack)

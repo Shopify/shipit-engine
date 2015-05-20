@@ -175,12 +175,12 @@ class DeploySpecTest < ActiveSupport::TestCase
   end
 
   test '#egg? is true if a setup.py is present' do
-    @spec.expects(:setup_dot_py).returns(Shipster::Engine.root.join('Gemfile'))
+    @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join('Gemfile'))
     assert @spec.egg?
   end
 
   test '#egg? is false if there is no setup.py' do
-    @spec.expects(:setup_dot_py).returns(Shipster::Engine.root.join("tmp-#{SecureRandom.hex}"))
+    @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
     refute @spec.egg?
   end
 

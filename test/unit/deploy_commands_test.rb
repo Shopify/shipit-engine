@@ -48,8 +48,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.deploys_path, command.chdir
   end
 
-  test "#fetch merges Shipster.extra_env in ENVIRONMENT" do
-    Shipster.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#fetch merges Shipit.extra_env in ENVIRONMENT" do
+    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
     command = @commands.fetch
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end
@@ -119,7 +119,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
-    assert_equal "http://shipster.com/shopify/shipit2/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
+    assert_equal "http://shipit.com/shopify/shipit2/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
   end
 
   test "#perform transliterates the user name" do
@@ -127,7 +127,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
-    assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipster", command.env['USER']
+    assert_equal "Sirupsen (Simon Horup Eskildsen) via Shipit", command.env['USER']
   end
 
   test "#perform calls cap $environment deploy with the ENVIRONMENT in the environment" do
@@ -137,8 +137,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.environment, command.env['ENVIRONMENT']
   end
 
-  test "#perform merges Shipster.extra_env in ENVIRONMENT" do
-    Shipster.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#perform merges Shipit.extra_env in ENVIRONMENT" do
+    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
     assert_equal 5, @commands.env["SPECIFIC_CONFIG"]
   end
 
@@ -152,8 +152,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal ['bundle install --some-args'], commands.first.args
   end
 
-  test "#install_dependencies merges Shipster.extra_env in ENVIRONMENT" do
-    Shipster.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#install_dependencies merges Shipit.extra_env in ENVIRONMENT" do
+    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
     command = @commands.install_dependencies.first
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end

@@ -124,7 +124,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":membership creates the mentioned user on the fly" do
-    Shipster.github_api.expects(:user).with('george').returns(george)
+    Shipit.github_api.expects(:user).with('george').returns(george)
     assert_difference -> { User.count }, +1 do
       post :membership, membership_params.merge(member: {login: 'george'})
       assert_response :ok

@@ -1,8 +1,8 @@
-class ShipsterController < ApplicationController
-  layout 'shipster'
+class ShipitController < ApplicationController
+  layout 'shipit'
 
-  helper Shipster::Engine.routes.url_helpers
-  include Shipster::Engine.routes.url_helpers
+  helper Shipit::Engine.routes.url_helpers
+  include Shipit::Engine.routes.url_helpers
 
   before_action :force_github_authentication, :set_variant
 
@@ -16,11 +16,10 @@ class ShipsterController < ApplicationController
   private
 
   def force_github_authentication
-    return unless Shipster.github
-    return unless Shipster.github_required?
+    return unless Shipit.github_required?
 
     if current_user.logged_in?
-      team = Shipster.github_team
+      team = Shipit.github_team
       if team && !current_user.in?(team.members)
         render text: "You must be a member of #{team.handle} to access this application.", status: :forbidden
       end

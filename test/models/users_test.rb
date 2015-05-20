@@ -48,7 +48,7 @@ class UsersTest < ActiveSupport::TestCase
   end
 
   test "#refresh_from_github! update the user with the latest data from GitHub's API" do
-    Shipster.github_api.expects(:user).with('walrus').returns(@github_user)
+    Shipit.github_api.expects(:user).with('walrus').returns(@github_user)
     @user.refresh_from_github!
     @user.reload
 
@@ -61,8 +61,8 @@ class UsersTest < ActiveSupport::TestCase
     user.update!(github_id: @github_user.id)
     commit = user.authored_commits.last
 
-    Shipster.github_api.expects(:user).with(user.login).raises(Octokit::NotFound)
-    Shipster.github_api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
+    Shipit.github_api.expects(:user).with(user.login).raises(Octokit::NotFound)
+    Shipit.github_api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
 
     assert_equal 'bob', user.login
 

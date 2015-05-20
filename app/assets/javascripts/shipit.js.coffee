@@ -14,7 +14,7 @@
 #= require jquery_ujs
 #= require rails-timeago
 #= require jquery-notify
-#= require_tree ./shipster
+#= require_tree ./shipit
 #= require_self
 
 $(document).on 'click', 'a.disabled', (event) ->

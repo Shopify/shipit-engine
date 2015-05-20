@@ -1,4 +1,4 @@
-class TasksController < ShipsterController
+class TasksController < ShipitController
   before_action :load_stack
 
   def new

@@ -37,11 +37,11 @@ class ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   setup do
-    @routes = Shipster::Engine.routes
+    @routes = Shipit::Engine.routes
   end
 
   teardown do
-    Shipster.redis.flushdb
+    Shipit.redis.flushdb
   end
 
   ActiveRecord::Migration.check_pending!

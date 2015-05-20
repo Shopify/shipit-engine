@@ -16,7 +16,7 @@ class Commands
   delegate :git_version, to: :class
 
   def env
-    @env ||= DEFAULT_ENVIRONMENT.merge(Shipster.extra_env)
+    @env ||= DEFAULT_ENVIRONMENT.merge(Shipit.extra_env)
   end
 
   def git(*args)

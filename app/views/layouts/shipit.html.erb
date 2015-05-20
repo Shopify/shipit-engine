@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 <head>
-  <title><%= [Shipster.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
-  <%= stylesheet_link_tag :shipster, media: 'all' %>
-  <%= javascript_include_tag :shipster %>
+  <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
+  <%= stylesheet_link_tag :shipit, media: 'all' %>
+  <%= javascript_include_tag :shipit %>
 
   <%= csrf_meta_tags %>
 </head>

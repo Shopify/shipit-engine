@@ -1,6 +1,6 @@
 module Api
   class BaseController < ActionController::Base
-    include Shipster::Engine.routes.url_helpers
+    include Shipit::Engine.routes.url_helpers
     include Rendering
     include Cacheable
     include Paginable
@@ -38,7 +38,7 @@ module Api
     end
 
     def identify_user
-      user_login = request.headers['X-Shipster-User'].presence
+      user_login = request.headers['X-Shipit-User'].presence
       User.find_by(login: user_login) if user_login
     end
 

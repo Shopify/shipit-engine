@@ -25,7 +25,7 @@ class Team < ActiveRecord::Base
     end
 
     def find_team_on_github(organization, slug)
-      teams = OctokitIterator.new { Shipster.github_api.org_teams(organization, per_page: 100) }
+      teams = OctokitIterator.new { Shipit.github_api.org_teams(organization, per_page: 100) }
       teams.find { |t| t.slug == slug }
     rescue Octokit::NotFound
     end
@@ -52,7 +52,7 @@ class Team < ActiveRecord::Base
   end
 
   def refresh_members!
-    github_members = OctokitIterator.new(Shipster.github_api.get(api_url).rels[:members])
+    github_members = OctokitIterator.new(Shipit.github_api.get(api_url).rels[:members])
     members = github_members.map { |u| User.find_or_create_from_github(u) }
     self.members = members
     save!

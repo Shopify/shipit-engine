@@ -1,4 +1,4 @@
-module ShipsterHelper
+module ShipitHelper
   def stacks
     @stacks ||= Stack.all
   end
@@ -8,7 +8,7 @@ module ShipsterHelper
   end
 
   def can_login?
-    Shipster.github && !current_user.logged_in?
+    Shipit.github && !current_user.logged_in?
   end
 
   def emoji_tag(emoji)

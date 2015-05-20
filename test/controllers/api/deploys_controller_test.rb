@@ -17,7 +17,7 @@ class Api::DeploysControllerTest < ActionController::TestCase
   end
 
   test "#create use the claimed user as author" do
-    request.headers['X-Shipster-User'] = @user.login
+    request.headers['X-Shipit-User'] = @user.login
     post :create, stack_id: @stack.to_param, sha: @commit.sha
     deploy = Deploy.last
     deploy.user == @user

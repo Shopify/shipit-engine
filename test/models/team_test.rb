@@ -10,9 +10,9 @@ class TeamTest < ActiveSupport::TestCase
   end
 
   test ".find_or_create_by_handle fetch the team from github if it's not in the db already" do
-    Shipster.github_api.expects(:org_teams).with('shopify', per_page: 100)
+    Shipit.github_api.expects(:org_teams).with('shopify', per_page: 100)
     response = stub(rels: {}, data: [new_team])
-    Shipster.github_api.expects(:last_response).returns(response)
+    Shipit.github_api.expects(:last_response).returns(response)
     assert_difference -> { Team.count }, +1 do
       Team.find_or_create_by_handle('Shopify/new-team')
     end
@@ -20,7 +20,7 @@ class TeamTest < ActiveSupport::TestCase
 
   test "#refresh_members! fetch all the team members from github" do
     response = stub(rels: {members: members_resource})
-    Shipster.github_api.expects(:get).with(@team.api_url).returns(response)
+    Shipit.github_api.expects(:get).with(@team.api_url).returns(response)
     assert_difference -> { User.count }, +1 do
       @team.refresh_members!
     end

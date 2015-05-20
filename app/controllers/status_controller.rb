@@ -1,5 +1,5 @@
 class StatusController < ActionController::Base
   def version
-    render text: Shipster.revision
+    render text: Shipit.revision
   end
 end

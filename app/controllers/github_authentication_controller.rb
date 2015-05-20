@@ -1,5 +1,5 @@
 class GithubAuthenticationController < ActionController::Base
-  include Shipster::Engine.routes.url_helpers
+  include Shipit::Engine.routes.url_helpers
 
   def callback
     return_url = request.env['omniauth.origin'] || root_path
@@ -19,7 +19,7 @@ class GithubAuthenticationController < ActionController::Base
   private
 
   def sign_in_github(auth)
-    user = Shipster.github_api.user(auth[:info][:nickname])
+    user = Shipit.github_api.user(auth[:info][:nickname])
     User.find_or_create_from_github(user).id
   end
 end

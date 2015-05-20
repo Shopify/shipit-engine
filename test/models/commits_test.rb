@@ -141,7 +141,7 @@ class CommitsTest < ActiveSupport::TestCase
   test "refresh_statuses! pull state from github" do
     rels = {target: mock(href: 'http://example.com')}
     status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
-    Shipster.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
+    Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
     assert_difference '@commit.statuses.count', +1 do
       @commit.refresh_statuses!
     end
@@ -164,7 +164,7 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "fetch_stats! pulls additions and deletions from github" do
     commit = stub(stats: stub(additions: 4242, deletions: 2424))
-    Shipster.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+    Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
     @commit.fetch_stats!
     assert_equal 4242, @commit.additions
     assert_equal 2424, @commit.deletions
@@ -172,7 +172,7 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "fetch_stats! doesn't fail if the commits have no stats" do
     commit = stub(stats: nil)
-    Shipster.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+    Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
     assert_nothing_raised do
       @commit.fetch_stats!
     end
