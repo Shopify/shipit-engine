@@ -17,6 +17,7 @@ $navigation-width: 100%;
 .navigation__inner {
   padding-bottom: 30px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -35,6 +36,7 @@ $navigation-width: 100%;
   display: flex;
   align-items: center;
   flex-grow: 1;
+  flex-shrink: 0;
 
   div {
     margin: 0 4px;
