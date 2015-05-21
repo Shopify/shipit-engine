@@ -22,7 +22,7 @@ class GithubSyncJob < BackgroundJob
 
   def fetch_missing_commits(&block)
     commits = []
-    iterator = FirstParentCommitsIterator.new(&block)
+    iterator = Shipit::FirstParentCommitsIterator.new(&block)
     iterator.each_with_index do |commit, index|
       break if index >= MAX_FETCHED_COMMITS
 

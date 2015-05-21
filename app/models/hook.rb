@@ -20,7 +20,7 @@ class Hook < ActiveRecord::Base
   validates :content_type, presence: true, inclusion: {in: CONTENT_TYPES.keys}
   validates :events, presence: true, subset: {of: EVENTS}
 
-  serialize :events, CSVSerializer
+  serialize :events, Shipit::CSVSerializer
 
   scope :global, -> { where(stack_id: nil) }
   scope :scoped_to, -> (stack) { where(stack_id: stack.id) }

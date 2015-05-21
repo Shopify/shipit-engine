@@ -26,11 +26,11 @@ class CSVSerializerTest < ActiveSupport::TestCase
 
   def assert_dumped(expected, object)
     message = "Expected CSVSerializer.dump(#{object.inspect}) to eq #{expected.inspect}"
-    assert_equal(expected, CSVSerializer.dump(object), message)
+    assert_equal(expected, Shipit::CSVSerializer.dump(object), message)
   end
 
   def assert_loaded(expected, payload)
     message = "Expected CSVSerializer.load(#{payload.inspect}) to eq #{expected.inspect}"
-    assert_equal(expected, CSVSerializer.load(payload), message)
+    assert_equal(expected, Shipit::CSVSerializer.load(payload), message)
   end
 end
