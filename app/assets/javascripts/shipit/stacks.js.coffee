@@ -1,10 +1,4 @@
 jQuery ($) ->
-  displayConfigureCiMessage = ->
-    commits = $('.commit')
-    ciConfigured = !commits.length || commits.length != commits.find('div.unknown').length
-    $('.configure-ci').toggleClass('hidden', ciConfigured)
-    return
-
   displayIgnoreCiMessage = ->
     ignoreCiMessage = $(".ignoring-ci")
     return unless ignoreCiMessage
@@ -23,7 +17,6 @@ jQuery ($) ->
     stackName = $('.repo-name').data('repo-full-name')
     "ignoreCIDismissed" + stackName
 
-  displayConfigureCiMessage()
   displayIgnoreCiMessage()
 
   updatePage = (message) ->
