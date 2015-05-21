@@ -271,6 +271,6 @@ class Stack < ActiveRecord::Base
   end
 
   def ci_enabled_cache_key
-    "ci_enabled_stack_#{id}"
+    "stacks:#{id}:ci_enabled"
   end
 end
