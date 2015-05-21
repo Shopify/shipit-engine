@@ -6,6 +6,7 @@ class Status < ActiveRecord::Base
 
   validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 
+  after_create :enable_ci_on_stack
   after_commit :schedule_continuous_delivery, :broadcast_update, on: :create
   after_commit :touch_commit
 
@@ -22,6 +23,10 @@ class Status < ActiveRecord::Base
   end
 
   private
+
+  def enable_ci_on_stack
+    commit.stack.enable_ci!
+  end
 
   def touch_commit
     commit.touch

@@ -14,12 +14,18 @@
 
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
-<section>
-  <div class="wrapper configure-ci hidden">
-    <p>Hey there, did you forget to enable Continuous Integration for this repository?</p>
-    <a href="https://repodb.herokuapp.com/ci/<%= @stack.github_repo_name %>/show" target="_blank">Take me there!</a>
-  </div>
-</section>
+<% if !@stack.ignore_ci && !@stack.ci_enabled? %>
+  <section>
+    <div class="wrapper ignoring-ci">
+      <p>
+        <strong>Heads Up!</strong>
+        This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.
+        You can either configure CI yourself, or <a href="#">ignore CI statuses and deploy any commits you want.</a>
+      </p>
+      <a class="dismiss-ignore-ci-warning"><small><em>Dismiss this message.</em></small></a>
+    </div>
+  </section>
+<% end %>
 
 <div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
   <% if @stack.locked? %>
