@@ -8,10 +8,9 @@ Gem::Specification.new do |s|
   s.name        = 'shipit-engine'
   s.version     = Shipit::VERSION
   s.authors     = ['Jean Boussier']
-  s.email       = ['jean.boussier@gmail.com']
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Shipit."
-  s.description = "TODO: Description of Shipit."
+  s.email       = ['jean.boussier@shopify.com', 'guillaume@shopify.com']
+  s.homepage    = "https://github.com/shopify/shipit-engine"
+  s.summary     = "Application deployment software"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
