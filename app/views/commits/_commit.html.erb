@@ -1,21 +1,25 @@
 <li class="commit" id="commit-<%= commit.id %>">
-  <%= render commit.last_statuses %>
-  <div class="event">
-    <span class="event-meta">
-      <%= render_github_user(commit.author) %>
-      merged <%= render_commit_id_link(commit) %> <%= timeago_tag(commit.committed_at, force: true) %>
-      <span class="event-time">at <%= commit.committed_at %></span>
-      <% if commit.additions? && commit.deletions? %>
-        <span class="event-stats">
-          <span class="event-additions">+<%= commit.additions %></span>
-          <span class="event-deletions">-<%= commit.deletions %></span>
-        </span>
-      <% end %>
-    </span>
-    <span class="event-title">
-      <%= render_commit_message_with_link commit %>
-    </span>
+  <div class="commit-author">
+    <%= github_avatar(commit.author, size: 80, class: 'commit-author__avatar') %>
+    <div class="commit-author__name">
+      <span class="commit-author__name__real-name"><%= commit.author.name %></span>
+      <span class="commit-author__name__username"><%= commit.author.login %></span>
+    </div>
   </div>
-
-  <%= render 'commits/deploy_button', commit: commit %>
+  <%= render commit.last_statuses %>
+  <div class="commit-details">
+    <span class="commit-title"><%= render_commit_message_with_link commit %></span>
+    <p class="commit-meta">
+      <span class="sha"><%= render_commit_id_link(commit) %></span>
+      merged <%= timeago_tag(commit.committed_at, force: true) %>
+      <span class="utc-timecode">at <%= commit.committed_at.strftime('%H:%M:%S') %> UTC</span>
+      <% if commit.additions? && commit.deletions? %>
+        <span class="code-additions">+<%= commit.additions %></span>
+        <span class="code-deletions">-<%= commit.deletions %></span>
+      <% end %>
+    </p>
+  </div>
+  <div class="commit-actions">
+    <%= render 'commits/deploy_button', commit: commit %>
+  </div>
 </li>

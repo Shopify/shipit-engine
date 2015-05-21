@@ -1,38 +1,35 @@
-<li class="deploy" id="deploy-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
-  <div class="status <%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
-    <%= link_to stack_deploy_path(@stack, deploy) do %>
-      <i><%= deploy.status %></i>
-    <% end %>
+<li class="commit" id="deploy-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
+  <div class="commit-author">
+    <%= github_avatar(deploy.author, size: 80, class: 'commit-author__avatar') %>
+    <div class="commit-author__name">
+      <span class="commit-author__name__real-name"><%= deploy.author.name %></span>
+      <span class="commit-author__name__username"><%= deploy.author.login %></span>
+    </div>
   </div>
-  <div class="event">
-    <span class="event-meta">
-      <%= render_github_user(deploy.author) %>
-      <% if deploy.rollback? %>
-        rolled back
-      <% else %>
-        deployed
-      <% end %>
-
-      <%= link_to_github_deploy(deploy) %> <%= timeago_tag(deploy.created_at, force: true) %>
-      <span class="event-time">at <%= deploy.created_at %></span>
-      <span class="event-stats">
-        <span class="event-additions">+<%= deploy.additions %></span>
-        <span class="event-deletions">-<%= deploy.deletions %></span>
-      </span>
-    </span>
-    <span class="event-title">
+  <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
+    <span class="visually-hidden"><%= deploy.status %></span>
+  </a>
+  <div class="commit-details">
+    <span class="commit-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">
         <%= render_commit_message deploy.until_commit %>
       </a>
-      <span class="event-number"></span>
     </span>
+    <p class="commit-meta">
+      <span class="sha"><%= link_to_github_deploy(deploy) %></span>
+      <%= deploy.rollback? ? 'rolled back' : 'deployed' %> <%= timeago_tag(deploy.created_at, force: true) %>
+      <span class="utc-timecode">at <%= deploy.created_at.strftime('%H:%M:%S') %> UTC</span>
+      <span class="code-additions">+<%= deploy.additions %></span>
+      <span class="code-deletions">-<%= deploy.deletions %></span>
+    </p>
   </div>
-
-  <% if deploy.rollbackable? %>
-    <% if deploy.stack.deploying? %>
-      <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
-    <% else  %>
-      <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action rollback-action' %>
+  <div class="commit-actions">
+    <% if deploy.rollbackable? %>
+      <% if deploy.stack.deploying? %>
+        <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
+      <% else %>
+        <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn delete deploy-action rollback-action' %>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 </li>

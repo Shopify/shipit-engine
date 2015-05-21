@@ -1,179 +1,180 @@
-.commit-lst, .deploy-lst {
+// =============================================================================
+// COMMIT LIST
+// =============================================================================
+
+.commit-list {
   list-style-type: none;
   margin: 0; padding: 0;
-    .btn {
-      font-size: .875rem;
-      font-weight: normal;
-      padding: .7em 1em .8em;
-    }
 }
 
-.commit-lst:empty:before {
-  content: "No undeployed commits, Walrus is happy.";
-}
+.commit {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
 
-  .commit-lst li, .deploy-lst li {
-    padding: .75rem 0;
-    border-bottom: 1px solid rgba(#000, .05);
-    @include clearfix;
-      &:last-child { border: none; }
+  @include media(desktop) {
+    flex-direction: row;
+    align-items: center;
   }
 
-  .status {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    position: relative;
-    float: left;
+  & + & {
+    border-top: 1px solid #e5e5e5;
+  }
+}
+
+
+// COMMIT AUTHOR
+// -----------------------------------------------------------------------------
+
+.commit-author {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 10em;
+
+  @include media(tablet-down) {
+    margin-bottom: 1rem;
+  }
+
+  @include media(desktop) {
     margin-right: 1rem;
-    border: 2px solid #ccc;
-      i { background: asset-data-url("unknown.svg") center center no-repeat; }
-
-      &.pending, &[data-task-status=pending] {
-        border: 2px solid #ccc;
-        i { background: asset-data-url("pending.gif") center center no-repeat; background-size: 21px 5px; }
-      }
-      &.running, &[data-task-status=running] {
-        border: 2px solid $blue;
-        i { background: asset-data-url("deploying.svg") center center no-repeat; -webkit-animation: rotate 2s linear infinite; }
-      }
-      &.success, &[data-task-status=success] {
-        border: 2px solid $green;
-        i { background: asset-data-url("success.svg") center center no-repeat; }
-      }
-      &.failure, &[data-task-status=failure],
-      &.failed, &[data-task-status=failed] {
-        border: 2px solid $red;
-        i { background: asset-data-url("failure.svg") center center no-repeat; }
-      }
-
-      &.error, &[data-task-status=error] {
-        border: 2px solid #FFC66C;
-        i { background: asset-data-url("error.svg") center center no-repeat; }
-      }
-
-    i {
-      text-indent: -99999999px;
-      overflow: hidden;
-      display: block;
-      width: 2.25rem;
-      height: 2.25rem;
-      display: block;
-    }
   }
-
-  .event {
-    float: left;
-    padding: .2rem 0;
-    max-width: calc(100% - 170px);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-    .event-meta {
-      font-size: .75rem;
-      display: block;
-      color: #999;
-    }
-
-    .event-title {
-      font-size: 1rem;
-        a { color: inherit; }
-    }
-
-    .event-number {
-      color: #999;
-        a {
-          color: inherit;
-            &:hover { color: $blue; }
-        }
-    }
-
-    .event-time {
-      color: #BBB;
-    }
-
-    .event-stats {
-      display: inline-block;
-      margin-left: 3px;
-      font-weight: bold;
-    }
-
-    .event-additions {
-      color: #55a532; // From GitHub CSS
-    }
-
-    .event-deletions {
-      color: #bd2c00; // From GitHub CSS
-    }
-
-  .deploy-action {
-    margin: 0;
-    float: right;
-  }
-
-  .sub-commits {
-    padding: .75rem 0;
-    .avatar {
-      width: 1.5rem; height: 1.5rem;
-      background-color: #ccc;
-    }
-    li {
-      padding: .5rem 0;
-      border-bottom: none;
-    }
-    .event-title {
-      font-size: 1rem;
-      font-weight: normal;
-    }
-
-    .accessory {
-      float: right;
-      font-size: .875rem;
-    }
-  }
-
-  .avatar {
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 50%;
-    margin-right: .75rem;
-    float: left;
-      img {
-        max-width: 100%;
-        border-radius: 50%;
-      }
-  }
-
-  .submit-section {
-    border-top: 1px solid rgba(0,0,0,.05);
-    margin-top: 0rem;
-    text-align: center;
-    padding: 4rem 0;
-    padding-top: 6rem;
-  }
-
-.setting-section {
-  padding: 1.75rem 0;
-    & + .setting-section { border-top: 1px solid rgba(#000, 0.05); }
-
-    p { color: #777; }
-
 }
 
-.user {
+.commit-author__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius;
+  margin-right: 0.5rem;
+}
 
-  img {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    position: relative;
-    bottom: -0.25rem;
+.commit-author__name {
+  font-size: 0.8em;
+}
+
+.commit-author__name__real-name {
+  font-weight: 500;
+  color: #555;
+  display: block;
+}
+
+.commit-author__name__username {
+  color: #999;
+}
+
+
+// COMMIT DETAILS
+// -----------------------------------------------------------------------------
+
+.commit-details {
+  flex-grow: 1;
+
+  @include media(tablet-down) {
+    margin-bottom: 1rem;
+    order: -1;
+  }
+}
+
+.commit-title {
+  font-size: 1em;
+  display: block;
+
+  @include media(desktop) {
+    @include truncate;
+  }
+}
+
+.commit-title a {
+  color: #333;
+}
+
+.commit-meta {
+  font-size: 0.8em;
+  color: #999;
+  margin: 0;
+
+  @include media(desktop) {
+    @include truncate;
+  }
+}
+
+.utc-timecode {
+  color: #bbb;
+}
+
+.code-additions {
+  color: $green;
+}
+
+.code-deletions {
+  color: $red;
+}
+
+
+// COMMIT ACTIONS
+// -----------------------------------------------------------------------------
+
+.commit-actions {
+  flex-shrink: 0;
+
+  @include media(desktop) {
+    margin-left: 1rem;
+  }
+}
+
+
+// STATUS
+// -----------------------------------------------------------------------------
+
+.status {
+  flex-shrink: 0;
+
+  @include media(tablet-down) {
+    margin-bottom: 1rem;
+    order: -2;
   }
 
-  font-weight: 500;
-  color: #777;
-    &:hover { color: $blue; }
+  @include media(desktop) {
+    margin-right: 0.75rem;
+  }
+}
+
+.status {
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background: asset-data-url("unknown.svg") center center no-repeat;
+}
+
+.status--pending,
+[data-deploy-status='pending'] {
+  background-image: asset-data-url("pending.gif");
+}
+
+.status--running,
+[data-deploy-status='running'] {
+  border-color: $blue;
+  background-image: asset-data-url("deploying.svg");
+}
+
+.status--success,
+[data-deploy-status='success'] {
+  border-color: $green;
+  background-image: asset-data-url("success.svg");
+}
+
+.status--failure,
+.status--failed,
+[data-deploy-status='failure'],
+[data-deploy-status='failed'] {
+  border-color: $red;
+  background-image: asset-data-url("failure.svg");
+}
+
+.status--error,
+[data-deploy-status='error'] {
+  border-color: $yellow;
+  background-image: asset-data-url("error.svg");
 }
