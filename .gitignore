@@ -26,5 +26,6 @@ pkg/
 /test/dummy/db/migrate/*.rb
 /test/dummy/log/*.log
 /test/dummy/tmp/
+/test/dummy/data/
 /test/dummy/.sass-cache
 
