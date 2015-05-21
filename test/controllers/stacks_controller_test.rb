@@ -10,7 +10,8 @@ class StacksControllerTest < ActionController::TestCase
     Shipit.stubs(github_oauth_credentials: {})
     get :index
     assert_template 'missing_settings'
-    assert_select "#github_oauth", text: /missing/i
+    assert_select "#github_oauth_id", text: /missing/i
+    assert_select "#github_oauth_secret", text: /missing/i
     assert_select "#github_api", text: /success/i
   end
 
@@ -19,7 +20,8 @@ class StacksControllerTest < ActionController::TestCase
     get :index
     assert_template 'missing_settings'
     assert_select "#github_api", text: /missing/i
-    assert_select "#github_oauth", text: /success/i
+    assert_select "#github_oauth_id", text: /success/i
+    assert_select "#github_oauth_secret", text: /success/i
   end
 
   test "GitHub authentication is mandatory" do
