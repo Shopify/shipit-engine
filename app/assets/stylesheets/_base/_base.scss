@@ -111,6 +111,7 @@ p {
 
 a {
   text-decoration: none;
+  cursor: pointer;
   color: #248af2;
     &.subdued { color: #999; }
     &.subdued:hover { color: #248af2; }

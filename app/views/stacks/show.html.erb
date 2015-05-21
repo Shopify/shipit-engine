@@ -21,17 +21,15 @@
   </div>
 </section>
 
-<% if @stack.ignore_ci %>
+<% if @stack.ignore_ci && @stack.ci_enabled? %>
   <section>
     <div class="wrapper ignoring-ci">
       <p>
         <strong>Heads Up!</strong>
-        This stack currently does not require a green CI to deploy,
-        this means that you could accidentally deploy broken builds.
-        Consider <a href="http://circleci.com">Configuring CI</a> and
-        <a href="#">blocking deploys until it's green.</a>
+        CI is properly configured for this stack, but this stack does not require passing builds to deploy.
+        Now that CI is set up, you can <a href="#">only allow deploys on passing builds.</a>
       </p>
-      <a class="dismiss-ignore-ci-warning" href="javascript:void(0)"><small><em>Ok, Got it.</em></small></a>
+      <a class="dismiss-ignore-ci-warning"><small><em>Dismiss this message.</em></small></a>
     </div>
   </section>
 <% end %>

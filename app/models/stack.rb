@@ -236,6 +236,16 @@ class Stack < ActiveRecord::Base
     DestroyStackJob.perform_later(self)
   end
 
+  def ci_enabled?
+    Rails.cache.fetch(ci_enabled_cache_key) do
+      commits.joins(:statuses).any?
+    end
+  end
+
+  def enable_ci!
+    Rails.cache.write(ci_enabled_cache_key, true)
+  end
+
   private
 
   def clear_cache
@@ -258,5 +268,9 @@ class Stack < ActiveRecord::Base
   def emit_hooks
     return unless previous_changes.include?('lock_reason')
     Hook.emit(:lock, self, locked: locked?, stack: self)
+  end
+
+  def ci_enabled_cache_key
+    "ci_enabled_stack_#{id}"
   end
 end
