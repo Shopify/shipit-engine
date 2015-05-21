@@ -2,7 +2,8 @@ jQuery ($) ->
   displayIgnoreCiMessage = ->
     ignoreCiMessage = $(".ignoring-ci")
     return unless ignoreCiMessage
-    $('.dismiss-ignore-ci-warning').click ->
+    $('.dismiss-ignore-ci-warning').click (event) ->
+      event.preventDefault()
       dismissIgnoreCiMessage()
 
     if localStorage.getItem(getLocalStorageKey())
