@@ -130,6 +130,15 @@
 // STATUS
 // -----------------------------------------------------------------------------
 
+.status-group {
+  .status-items {
+    display: none;
+  }
+  &:hover .status-items {
+    display: block;
+  }
+}
+
 .status {
   flex-shrink: 0;
 
