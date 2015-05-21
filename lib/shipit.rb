@@ -70,7 +70,7 @@ module Shipit
   end
 
   def github_api_credentials
-    (Rails.application.secrets.github_credentials || {}).symbolize_keys
+    (Rails.application.secrets.github_api || {}).symbolize_keys
   end
 
   def api_clients_secret
@@ -82,19 +82,19 @@ module Shipit
   end
 
   def github_team
-    @github_team ||= github['team'] && Team.find_or_create_by_handle(github['team'])
+    @github_team ||= github_oauth_credentials['team'] && Team.find_or_create_by_handle(github_oauth_credentials['team'])
   end
 
-  def github_key
-    github['key']
+  def github_oauth_id
+    github_oauth_credentials['id']
   end
 
-  def github_secret
-    github['secret']
+  def github_oauth_secret
+    github_oauth_credentials['secret']
   end
 
-  def github
-    secrets.github || {}
+  def github_oauth_credentials
+    secrets.github_oauth || {}
   end
 
   def extra_env

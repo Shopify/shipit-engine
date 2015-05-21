@@ -25,8 +25,8 @@ class ShipitController < ApplicationController
 
   def all_settings_present?
     [
-      Shipit.github_secret.presence,
-      Shipit.github_key.presence,
+      Shipit.github_oauth_id.presence,
+      Shipit.github_oauth_secret.presence,
       Shipit.github_api_credentials.presence,
     ].all?(&:present?)
   end

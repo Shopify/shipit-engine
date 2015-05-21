@@ -6,33 +6,26 @@ class StacksControllerTest < ActionController::TestCase
     session[:user_id] = users(:walrus).id
   end
 
-  test "validates that Shipit.github_secret is present" do
-    Shipit.stubs(github_secret: nil)
+  test "validates that Shipit.github_app_credentials is present" do
+    Shipit.stubs(github_oauth_credentials: {})
     get :index
     assert_template 'missing_settings'
-    assert_select "#github_application", text: /missing/i
+    assert_select "#github_oauth", text: /missing/i
     assert_select "#github_api", text: /success/i
   end
 
-  test "validates that Shipit.github_credentials is present" do
-    Shipit.stubs(github_api_credentials: nil)
+  test "validates that Shipit.github_api_credentials is present" do
+    Shipit.stubs(github_api_credentials: {})
     get :index
     assert_template 'missing_settings'
     assert_select "#github_api", text: /missing/i
-    assert_select "#github_application", text: /success/i
+    assert_select "#github_oauth", text: /success/i
   end
 
   test "GitHub authentication is mandatory" do
     session[:user_id] = nil
     get :index
     assert_redirected_to github_authentication_path(origin: root_url)
-  end
-
-  test "mandatory GitHub authentication can be disabled" do
-    session[:user_id] = nil
-    Shipit.stubs(:github).returns('optional' => true)
-    get :index
-    assert_response :ok
   end
 
   test "current_user must be a member of Shipit.github_team" do
