@@ -31,8 +31,8 @@ module ShipitHelper
 
   def missing_github_oauth_message
     (<<-MESSAGE).html_safe
-      Shipit needs to be configured with a Github Application to work properly.
-      If you haven't created an application on Github yet, you can do so in the
+      Shipit needs to be configured with a GitHub Application to work properly.
+      If you haven't created an application on GitHub yet, you can do so in the
       #{ link_to 'Settings', 'https://github.com/settings/applications/new' }
       section of your profile. You can also create applications for organizations.
     MESSAGE
@@ -40,21 +40,21 @@ module ShipitHelper
 
   def missing_github_oauth_id_message
     (<<-MESSAGE)
-      From the Github Application, copy the Client ID to the secrets.yml file,
+      From the GitHub Application, copy the Client ID to the secrets.yml file,
       under the key github_oauth.id
      MESSAGE
   end
 
   def missing_github_oauth_secret_message
     (<<-MESSAGE)
-      From the Github Application, copy the Client Secret to the secrets.yml file,
+      From the GitHub Application, copy the Client Secret to the secrets.yml file,
       under the key github_oauth.secret
      MESSAGE
   end
 
   def missing_github_api_credentials_message
     (<<-MESSAGE).html_safe
-      Shipit requires API access to Github. You can create
+      Shipit requires API access to GitHub. You can create
       #{ link_to 'access tokens', 'https://github.com/settings/tokens' }
       and add it to the secrets.yml file under the key github_api.access_token
     MESSAGE
