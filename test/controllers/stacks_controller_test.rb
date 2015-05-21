@@ -145,10 +145,8 @@ class StacksControllerTest < ActionController::TestCase
     assert_redirected_to stack_settings_path(@stack)
   end
 
-  test "#ignore_ci updates stack" do
-    cyclimse = stacks(:cyclimse)
-    put :ignore_ci, id: cyclimse.to_param
-    assert_redirected_to stack_path(cyclimse)
-    assert(cyclimse.ignore_ci?)
+  test "#update redirects to return_to parameter" do
+    patch :update, id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)
+    assert_redirected_to stack_path(@stack)
   end
 end

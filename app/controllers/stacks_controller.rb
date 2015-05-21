@@ -45,7 +45,7 @@ class StacksController < ShipitController
 
   def update
     @stack.update(update_params)
-    redirect_to stack_settings_path(@stack)
+    redirect_to params[:return_to].presence || stack_settings_path(@stack)
   end
 
   def sync_webhooks
@@ -56,12 +56,6 @@ class StacksController < ShipitController
   def clear_git_cache
     ClearGitCacheJob.perform_later(@stack)
     redirect_to stack_settings_path(@stack)
-  end
-
-  def ignore_ci
-    @stack.update!(ignore_ci: true)
-    flash[:success] = "This stack is now ignoring CI statuses. Deploy anything you want!"
-    redirect_to stack_path(@stack)
   end
 
   private

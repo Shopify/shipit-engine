@@ -38,7 +38,6 @@ Shipit::Engine.routes.draw do
     get :refresh, controller: :stacks # For easier design, sorry :/
     post :sync_webhooks, controller: :stacks
     post :clear_git_cache, controller: :stacks
-    put :ignore_ci, controller: :stacks
   end
 
   scope '/*stack_id', stack_id: stack_id_format, as: :stack do
