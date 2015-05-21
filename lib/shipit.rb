@@ -57,7 +57,7 @@ module Shipit
   end
 
   def redis
-    @redis ||= Redis.new(url: secrets.redis_url, logger: Rails.logger)
+    @redis ||= Redis.new(url: redis_url.to_s, logger: Rails.logger)
   end
 
   def github_api
