@@ -4,7 +4,9 @@ class ShipitController < ApplicationController
   helper Shipit::Engine.routes.url_helpers
   include Shipit::Engine.routes.url_helpers
 
-  before_action :force_github_authentication, :set_variant
+  before_action :ensure_required_settings,
+                :force_github_authentication,
+                :set_variant
 
   # Respond to HTML by default
   respond_to :html
@@ -15,9 +17,21 @@ class ShipitController < ApplicationController
 
   private
 
-  def force_github_authentication
-    return unless Shipit.github_required?
+  def ensure_required_settings
+    return if all_settings_present?
 
+    render 'missing_settings', layout: false
+  end
+
+  def all_settings_present?
+    [
+      Shipit.github_secret.presence,
+      Shipit.github_key.presence,
+      Shipit.github_api_credentials.presence,
+    ].all?(&:present?)
+  end
+
+  def force_github_authentication
     if current_user.logged_in?
       team = Shipit.github_team
       if team && !current_user.in?(team.members)

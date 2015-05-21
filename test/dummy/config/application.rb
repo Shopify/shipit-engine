@@ -4,6 +4,7 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 require "shipit"
+require "pry"
 
 module Dummy
   class Application < Rails::Application

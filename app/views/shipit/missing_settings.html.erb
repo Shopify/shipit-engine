@@ -1,0 +1,25 @@
+<h1>☃ Snowman says no</h1>
+<p>Shipit is missing some information to work properly</p>
+
+<div id="github_application">
+  <h2>Github Application</h2>
+  <% if Shipit.github_secret.present? %>
+    <p>Success!</p>
+  <% else %>
+    <p>Missing</p>
+
+    <p>Shipit needs to have github_secret and github_key to work properly. If you haven't created an application on Github yet, you can do so in the <%= link_to "Settings", "https://github.com/settings/applications/new" %> section of your profile. You can also create applications for organizations.</p>
+
+    <p>Copy the Client ID to the shipit.yml file under github.key and the Client Secret under github.secret</p>
+  <% end %>
+</div>
+
+<div id="github_api" %>
+  <% if Shipit.github_api_credentials.present? %>
+    <p>Success!</p>
+  <% else %>
+    <p>Missing</p>
+
+    <p>Shipit requires API access to Github. You can create <%= link_to "access tokens", "https://github.com/settings/tokens" %> and add it to the secrets.yml file under github_credentials.access_token</p>
+  <% end %>
+</div>

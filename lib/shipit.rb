@@ -57,8 +57,7 @@ module Shipit
 
   def github_api
     @github_api ||= begin
-      credentials = secrets.github_credentials || {}
-      client = Octokit::Client.new(credentials.symbolize_keys)
+      client = Octokit::Client.new(github_api_credentials)
       client.middleware.use(
         Faraday::HttpCache,
         shared_cache: false,
@@ -70,16 +69,16 @@ module Shipit
     end
   end
 
+  def github_api_credentials
+    (Rails.application.secrets.github_credentials || {}).symbolize_keys
+  end
+
   def api_clients_secret
     secrets.api_clients_secret || ''
   end
 
   def host
     secrets.host.presence || fail("Missing `host` setting in secrets.yml")
-  end
-
-  def github_required?
-    github.present? && !github['optional']
   end
 
   def github_team

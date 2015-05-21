@@ -6,6 +6,22 @@ class StacksControllerTest < ActionController::TestCase
     session[:user_id] = users(:walrus).id
   end
 
+  test "validates that Shipit.github_secret is present" do
+    Shipit.stubs(github_secret: nil)
+    get :index
+    assert_template 'missing_settings'
+    assert_select "#github_application", text: /missing/i
+    assert_select "#github_api", text: /success/i
+  end
+
+  test "validates that Shipit.github_credentials is present" do
+    Shipit.stubs(github_api_credentials: nil)
+    get :index
+    assert_template 'missing_settings'
+    assert_select "#github_api", text: /missing/i
+    assert_select "#github_application", text: /success/i
+  end
+
   test "GitHub authentication is mandatory" do
     session[:user_id] = nil
     get :index
