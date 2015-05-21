@@ -18,19 +18,9 @@ class ShipitController < ApplicationController
   private
 
   def ensure_required_settings
-    return if all_settings_present?
+    return if Shipit.all_settings_present?
 
     render 'missing_settings', layout: false
-  end
-
-  def all_settings_present?
-    [
-      Shipit.github_oauth_id.presence,
-      Shipit.github_oauth_secret.presence,
-      Shipit.github_api_credentials.presence,
-      Shipit.redis_url.presence,
-      Shipit.host.presence,
-    ].all?(&:present?)
   end
 
   def force_github_authentication

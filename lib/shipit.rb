@@ -98,6 +98,16 @@ module Shipit
     secrets.github_oauth || {}
   end
 
+  def all_settings_present?
+    @all_settings_present ||= [
+      github_oauth_id,
+      github_oauth_secret,
+      github_api_credentials,
+      redis_url,
+      host,
+    ].all?(&:present?)
+  end
+
   def extra_env
     secrets.env || {}
   end

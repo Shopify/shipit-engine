@@ -42,6 +42,10 @@ class ActiveSupport::TestCase
 
   teardown do
     Shipit.redis.flushdb
+    Shipit.instance_variable_names.each do |name|
+      next if name == "@mocha" || name == "@redis"
+      Shipit.remove_instance_variable(name)
+    end
   end
 
   ActiveRecord::Migration.check_pending!
