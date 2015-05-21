@@ -59,8 +59,7 @@ class StacksController < ShipitController
   end
 
   def ignore_ci
-    @stack.ignore_ci = true
-    @stack.save
+    @stack.update!(ignore_ci: true)
     flash[:success] = "This stack is now ignoring CI statuses. Deploy anything you want!"
     redirect_to stack_path(@stack)
   end
