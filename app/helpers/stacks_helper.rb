@@ -26,4 +26,13 @@ module StacksHelper
   def render_raw_commit_id_link(commit)
     link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
   end
+
+  def render_status(commit)
+    statuses = commit.last_statuses
+    if statuses.size == 1
+      render statuses.first
+    else
+      render StatusGroup.new(statuses)
+    end
+  end
 end
