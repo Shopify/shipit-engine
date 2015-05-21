@@ -31,6 +31,7 @@ development:
     # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
   github_api:
     access_token: #{github_token}
+  redis_url: redis://localhost
 
 test:
   secret_key_base: #{SecureRandom.hex(64)}
@@ -40,6 +41,7 @@ test:
     secret: s3cr3t
   github_api:
     access_token: t0k3n
+  redis_url: redis://localhost
 
 production:
   secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
@@ -50,6 +52,7 @@ production:
     # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
   github_api:
     access_token: <%= ENV['GITHUB_API_TOKEN'] %>
+  redis_url: <%= ENV['REDIS_URL'] %>
   env:
     # SSH_AUTH_SOCK: /foo/bar # You can set environment variable that will be present during deploys.
 CODE
