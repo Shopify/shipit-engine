@@ -57,12 +57,12 @@ module Shipit
   end
 
   def redis
-    @redis ||= Redis.new(url: Rails.application.secrets.redis_url, logger: Rails.logger)
+    @redis ||= Redis.new(url: redis_url.to_s, logger: Rails.logger)
   end
 
   def github_api
     @github_api ||= begin
-      credentials = Rails.application.secrets.github_credentials || {}
+      credentials = secrets.github_credentials || {}
       client = Octokit::Client.new(credentials.symbolize_keys)
       client.middleware.use(
         Faraday::HttpCache,
@@ -76,7 +76,7 @@ module Shipit
   end
 
   def api_clients_secret
-    Rails.application.secrets.api_clients_secret || ''
+    secrets.api_clients_secret || ''
   end
 
   def host
