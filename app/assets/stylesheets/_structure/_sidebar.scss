@@ -1,7 +1,6 @@
 $sidebar-width: 300px;
 
 .sidebar {
-  background-color: #2e343a;
   width: $sidebar-width;
   box-sizing: border-box;
   @include flex(0 0 300px);
@@ -64,8 +63,8 @@ $sidebar-width: 300px;
   overflow-y: auto;
 }
 
-.sidebar-plugins::-webkit-scrollbar { 
-  display: none; 
+.sidebar-plugins::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar-plugins-outer.fixed {
