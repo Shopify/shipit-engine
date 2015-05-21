@@ -21,13 +21,13 @@
   </div>
 </section>
 
-<% if @stack.ignore_ci && @stack.ci_enabled? %>
+<% if !@stack.ignore_ci && !@stack.ci_enabled? %>
   <section>
     <div class="wrapper ignoring-ci">
       <p>
         <strong>Heads Up!</strong>
-        CI is properly configured for this stack, but this stack does not require passing builds to deploy.
-        Now that CI is set up, you can <a href="#">only allow deploys on passing builds.</a>
+        This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.
+        You can either configure CI yourself, or <a href="#">ignore CI statuses and deploy any commits you want.</a>
       </p>
       <a class="dismiss-ignore-ci-warning"><small><em>Dismiss this message.</em></small></a>
     </div>
