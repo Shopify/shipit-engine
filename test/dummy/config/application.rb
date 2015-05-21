@@ -4,7 +4,11 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 require "shipit"
-require "pry"
+
+begin
+  require "pry"
+rescue LoadError
+end
 
 module Dummy
   class Application < Rails::Application
