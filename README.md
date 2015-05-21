@@ -14,8 +14,8 @@ bundle install
 ## Setup
 
 ```shell
-$ git clone git@github.com:Shopify/shipit2.git
-$ cd shipit2
+$ git clone git@github.com:Shopify/shipit-engine.git
+$ cd shipit-engine
 $ script/bootstrap
 ```
 
