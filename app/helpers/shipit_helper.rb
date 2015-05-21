@@ -32,23 +32,23 @@ module ShipitHelper
   def missing_github_oauth_message
     (<<-MESSAGE).html_safe
       Shipit needs to be configured with a Github Application to work properly.
-      If you haven't created an application on Github yet, you can do so in
-      the #{ link_to 'Settings', 'https://github.com/settings/applications/new' }
+      If you haven't created an application on Github yet, you can do so in the
+      #{ link_to 'Settings', 'https://github.com/settings/applications/new' }
       section of your profile. You can also create applications for organizations.
     MESSAGE
   end
 
   def missing_github_oauth_id_message
-    (<<-MESSAGE).html_safe
-      From the Github Application, copy the Client ID to the shipit.yml file,
-      under github_oauth.id
+    (<<-MESSAGE)
+      From the Github Application, copy the Client ID to the secrets.yml file,
+      under the key github_oauth.id
      MESSAGE
   end
 
   def missing_github_oauth_secret_message
-    (<<-MESSAGE).html_safe
-      From the Github Application, copy the Client Secret to the shipit.yml file,
-      under github_oauth.secret
+    (<<-MESSAGE)
+      From the Github Application, copy the Client Secret to the secrets.yml file,
+      under the key github_oauth.secret
      MESSAGE
   end
 
@@ -56,7 +56,21 @@ module ShipitHelper
     (<<-MESSAGE).html_safe
       Shipit requires API access to Github. You can create
       #{ link_to 'access tokens', 'https://github.com/settings/tokens' }
-      and add it to the secrets.yml file under github_api.access_token
+      and add it to the secrets.yml file under the key github_api.access_token
+    MESSAGE
+  end
+
+  def missing_redis_url_message
+    (<<-MESSAGE)
+      Redis is required to run Shipit. Please configure the redis_url in the secrets.yml file
+      of your app, under the key redis_url
+    MESSAGE
+  end
+
+  def missing_host_message
+    (<<-MESSAGE)
+      The host of the application is required when Shipit generates links in background jobs.
+      Add it to the secrets.yml file, under the key host.
     MESSAGE
   end
 end

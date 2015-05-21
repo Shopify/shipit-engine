@@ -28,6 +28,8 @@ class ShipitController < ApplicationController
       Shipit.github_oauth_id.presence,
       Shipit.github_oauth_secret.presence,
       Shipit.github_api_credentials.presence,
+      Shipit.redis_url.presence,
+      Shipit.host.presence,
     ].all?(&:present?)
   end
 

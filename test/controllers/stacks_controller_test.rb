@@ -6,22 +6,44 @@ class StacksControllerTest < ActionController::TestCase
     session[:user_id] = users(:walrus).id
   end
 
-  test "validates that Shipit.github_app_credentials is present" do
-    Shipit.stubs(github_oauth_credentials: {})
+  test "validates that Shipit.github_oauth_id is present" do
+    Shipit.stubs(github_oauth_credentials: {'secret' => 'abc'})
     get :index
     assert_template 'missing_settings'
-    assert_select "#github_oauth_id", text: /missing/i
-    assert_select "#github_oauth_secret", text: /missing/i
-    assert_select "#github_api", text: /success/i
+    assert_select "#github_oauth_id .missing"
+    assert_select ".missing", count: 1
+  end
+
+  test "validates that Shipit.github_oauth_secret is present" do
+    Shipit.stubs(github_oauth_credentials: {'id' => 'abc'})
+    get :index
+    assert_template 'missing_settings'
+    assert_select "#github_oauth_secret .missing"
+    assert_select ".missing", count: 1
   end
 
   test "validates that Shipit.github_api_credentials is present" do
     Shipit.stubs(github_api_credentials: {})
     get :index
     assert_template 'missing_settings'
-    assert_select "#github_api", text: /missing/i
-    assert_select "#github_oauth_id", text: /success/i
-    assert_select "#github_oauth_secret", text: /success/i
+    assert_select "#github_api .missing"
+    assert_select ".missing", count: 1
+  end
+
+  test "validates that Shipit.redis_url is present" do
+    Shipit.stubs(redis_url: nil)
+    get :index
+    assert_template 'missing_settings'
+    assert_select "#redis_url .missing"
+    assert_select ".missing", count: 1
+  end
+
+  test "validates that Shipit.host is present" do
+    Shipit.stubs(host: nil)
+    get :index
+    assert_template 'missing_settings'
+    assert_select "#host .missing"
+    assert_select ".missing", count: 1
   end
 
   test "GitHub authentication is mandatory" do

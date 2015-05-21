@@ -10,8 +10,9 @@
   <% if Shipit.github_oauth_id.present? %>
     <p>Success!</p>
   <% else %>
-    <p>Missing</p>
-    <p><%= missing_github_oauth_id_message %></p>
+    <span class="missing">
+      <%= missing_github_oauth_id_message %>
+    </span>
   <% end %>
 </div>
 
@@ -20,17 +21,43 @@
   <% if Shipit.github_oauth_secret.present? %>
     <p>Success!</p>
   <% else %>
-    <p>Missing</p>
-    <p><%= missing_github_oauth_secret_message %></p>
+    <span class="missing">
+      <%= missing_github_oauth_secret_message %>
+    </span>
   <% end %>
 </div>
 
 <h2>Github API</h2>
-<div id="github_api" %>
+<div id="github_api">
   <% if Shipit.github_api_credentials.present? %>
     <p>Success!</p>
   <% else %>
-    <p>Missing</p>
-    <p><%= missing_github_api_credentials_message %></p>
+    <span class="missing">
+      <%= missing_github_api_credentials_message %>
+    </span>
+  <% end %>
+</div>
+
+<h2>Redis</h2>
+<div id="redis_url">
+  Redis
+  <% if Shipit.redis_url.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_redis_url_message %>
+    </span>
+  <% end %>
+</div>
+
+<h2>Host</h2>
+<div id="host">
+  Host
+  <% if Shipit.host.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_host_message %>
+    </span>
   <% end %>
 </div>

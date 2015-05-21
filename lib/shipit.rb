@@ -48,7 +48,8 @@ module Shipit
   end
 
   def redis_url
-    @redis_url ||= URI(secrets.redis_url.presence || fail("Missing `redis_url` setting in secrets.yml"))
+    return @redis_url if defined?(@redis_url)
+    @redis_url = secrets.redis_url.present? ? URI(secrets.redis_url) : nil
   end
 
   def redis
@@ -78,7 +79,7 @@ module Shipit
   end
 
   def host
-    secrets.host.presence || fail("Missing `host` setting in secrets.yml")
+    secrets.host.presence
   end
 
   def github_team
