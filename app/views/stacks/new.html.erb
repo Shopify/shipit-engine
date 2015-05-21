@@ -26,10 +26,8 @@
           <span class="form-hint">Where is this stack deployed to?</span>
         </p>
         <p>
-          <div class="form-group">
-            <%= f.label :ignore_ci, "Allow deploys regardless of CI status" %>
-            <%= f.check_box :ignore_ci %>
-          </div>
+          <%= f.label :ignore_ci, "Allow deploys regardless of CI status" %>
+          <%= f.check_box :ignore_ci %>
         </p>
         <p><%= f.submit class: 'btn' %></p>
       <% end %>
