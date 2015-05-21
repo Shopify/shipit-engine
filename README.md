@@ -25,7 +25,7 @@ $ script/bootstrap
   contains a similar dummy `shipit.yml` file.
 - Create an API key (https://github.com/settings/tokens/new) that has only
   public_repo permissions (Shipit doesn't need anything else) and add it in
-  `config/secrets.yml` under `development.github_credentials.access_token`. Be
+  `config/secrets.yml` under `development.github_api.access_token`. Be
   careful with this key, it would give an attacker some permissions with your
   github account!
 - Create a stack in your local Shipit that points to that repository.

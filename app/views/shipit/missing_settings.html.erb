@@ -1,0 +1,63 @@
+<h1>☠ Oops! You're not ready to ship just yet.</h1>
+<p>Shipit is missing some information to work properly. Once you've added the configuration, make sure you restart the Rails server</p>
+
+<h2>Github Application</h2>
+<% if Shipit.github_oauth_id.blank? || Shipit.github_oauth_secret.blank? %>
+  <p><%= missing_github_oauth_message %></p>
+<% end %>
+<div id="github_oauth_id">
+  ID:
+  <% if Shipit.github_oauth_id.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_github_oauth_id_message %>
+    </span>
+  <% end %>
+</div>
+
+<div id="github_oauth_secret">
+  Secret:
+  <% if Shipit.github_oauth_secret.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_github_oauth_secret_message %>
+    </span>
+  <% end %>
+</div>
+
+<h2>Github API</h2>
+<div id="github_api">
+  <% if Shipit.github_api_credentials.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_github_api_credentials_message %>
+    </span>
+  <% end %>
+</div>
+
+<h2>Redis</h2>
+<div id="redis_url">
+  Redis
+  <% if Shipit.redis_url.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_redis_url_message %>
+    </span>
+  <% end %>
+</div>
+
+<h2>Host</h2>
+<div id="host">
+  Host
+  <% if Shipit.host.present? %>
+    <p>Success!</p>
+  <% else %>
+    <span class="missing">
+      <%= missing_host_message %>
+    </span>
+  <% end %>
+</div>

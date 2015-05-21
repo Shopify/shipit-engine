@@ -48,7 +48,8 @@ module Shipit
   end
 
   def redis_url
-    @redis_url ||= URI(secrets.redis_url.presence || fail("Missing `redis_url` setting in secrets.yml"))
+    return @redis_url if defined?(@redis_url)
+    @redis_url = secrets.redis_url.present? ? URI(secrets.redis_url) : nil
   end
 
   def redis
@@ -57,8 +58,7 @@ module Shipit
 
   def github_api
     @github_api ||= begin
-      credentials = secrets.github_credentials || {}
-      client = Octokit::Client.new(credentials.symbolize_keys)
+      client = Octokit::Client.new(github_api_credentials)
       client.middleware.use(
         Faraday::HttpCache,
         shared_cache: false,
@@ -70,32 +70,42 @@ module Shipit
     end
   end
 
+  def github_api_credentials
+    (Rails.application.secrets.github_api || {}).symbolize_keys
+  end
+
   def api_clients_secret
     secrets.api_clients_secret || ''
   end
 
   def host
-    secrets.host.presence || fail("Missing `host` setting in secrets.yml")
-  end
-
-  def github_required?
-    github.present? && !github['optional']
+    secrets.host.presence
   end
 
   def github_team
-    @github_team ||= github['team'] && Team.find_or_create_by_handle(github['team'])
+    @github_team ||= github_oauth_credentials['team'] && Team.find_or_create_by_handle(github_oauth_credentials['team'])
   end
 
-  def github_key
-    github['key']
+  def github_oauth_id
+    github_oauth_credentials['id']
   end
 
-  def github_secret
-    github['secret']
+  def github_oauth_secret
+    github_oauth_credentials['secret']
   end
 
-  def github
-    secrets.github || {}
+  def github_oauth_credentials
+    secrets.github_oauth || {}
+  end
+
+  def all_settings_present?
+    @all_settings_present ||= [
+      github_oauth_id,
+      github_oauth_secret,
+      github_api_credentials,
+      redis_url,
+      host,
+    ].all?(&:present?)
   end
 
   def extra_env
