@@ -24,12 +24,6 @@ $navigation-width: 100%;
 .navigation__inner--last {
   padding-bottom: 0px;
   margin: 0 0 -30px 56px;
-
-  a {
-    padding: 0 0 15px 0;
-    margin: 0 20px 0 0;
-    border-bottom: 2px solid #2c8ce1;
-  }
 }
 
 .navigation__inner__logo {
@@ -56,6 +50,26 @@ $navigation-width: 100%;
   small {
     font-size: .5em;
     color: #888;
+  }
+}
+
+.navigation__inner__item {
+  flex-grow: 1;
+  margin-bottom: 16px;
+
+  a {
+    font-size: .9em;
+    padding: 0 0 15px 0;
+    margin: 0 20px 0 0;
+    border-bottom: 2px solid #2c8ce1;
+  }
+}
+
+.navigation__inner__item--fixed {
+  flex-grow: 0;
+
+   a {
+    border: none;
   }
 }
 
