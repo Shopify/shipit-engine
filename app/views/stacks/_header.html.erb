@@ -8,13 +8,13 @@
 
 
 <% content_for :primary_navigation do %>
-  <%= link_to 'Refresh', stack_refresh_path(@stack), method: 'post', data: {tooltip: 'Refresh statuses and commits'} %>
+  <%= link_to 'Refresh', stack_refresh_path(@stack), method: 'post', data: {tooltip: 'Refresh statuses and commits'}, class: "btn secondary" %>
 
   <% unless @stack.task_definitions.empty? %>
     <ul>
       <% @stack.task_definitions.each do |definition| %>
         <li class="stack-action">
-          <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn trigger-deploy) %>
+          <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn secondary trigger-deploy) %>
         </li>
       <% end %>
     </ul>

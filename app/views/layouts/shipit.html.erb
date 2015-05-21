@@ -34,7 +34,7 @@
         <div>
           <%= yield :primary_navigation %>
           <% if can_login? %>
-            <%= link_to "Login with Github", github_authentication_path(origin: request.original_url) %>
+            <%= link_to "Login with Github", github_authentication_path(origin: request.original_url), :class => "btn secondary" %>
           <% end %>
         </div>
       </div>
