@@ -4,8 +4,8 @@ $navigation-width: 100%;
   background-color: #fafafa;
   border-bottom: 1px #ebebeb solid;
   width: $navigation-width;
-  padding: 30px;
   box-sizing: border-box;
+  padding: 15px 0 0 0;
   @include order(-1);
 
   button.notifications {
@@ -15,7 +15,6 @@ $navigation-width: 100%;
 }
 
 .navigation__inner {
-  padding-bottom: 30px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -25,7 +24,7 @@ $navigation-width: 100%;
 
 .navigation__inner--last {
   padding: 0 0 0 56px;
-  margin: 0 auto -30px auto;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -57,8 +56,11 @@ $navigation-width: 100%;
 }
 
 .navigation__inner__item {
+  margin: 15px;
+}
+
+.navigation__inner__item--secondary {
   flex-grow: 1;
-  margin-bottom: 16px;
 
   a {
     font-size: .9em;
@@ -67,6 +69,7 @@ $navigation-width: 100%;
     border-bottom: 2px solid #2c8ce1;
   }
 }
+
 
 .navigation__inner__item--fixed {
   flex-grow: 0;

@@ -23,10 +23,10 @@
 
 
 <% content_for :secondary_navigation do %>
-  <div class="navigation__inner__item">
+  <div class="navigation__inner__item navigation__inner__item--secondary">
     <%= link_to 'Settings', stack_settings_path(stack), data: {tooltip: 'Settings'} %>
   </div>
-  <div class="navigation__inner__item navigation__inner__item--fixed">
+  <div class="navigation__inner__item navigation__inner__item--fixed navigation__inner__item--secondary">
     <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name), data: {tooltip: 'View repo on Github'} %>
   </div>
 <% end %>

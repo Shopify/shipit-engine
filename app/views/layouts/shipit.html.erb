@@ -23,7 +23,7 @@
   <div class="layout">
     <header class="navigation">
       <div class="navigation__inner">
-        <div class="navigation__inner__logo">
+        <div class="navigation__inner__item navigation__inner__logo">
           <div>
             <a href="/" class="logo"><i></i></a>
           </div>
@@ -31,7 +31,7 @@
             <%= yield :page_title %>
           </div>
         </div>
-        <div>
+        <div class="navigation__inner__item">
           <%= yield :primary_navigation %>
           <% if can_login? %>
             <%= link_to "Login with Github", github_authentication_path(origin: request.original_url), :class => "btn secondary" %>
