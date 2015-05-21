@@ -33,7 +33,7 @@ module ShipitHelper
     (<<-MESSAGE).html_safe
       Shipit needs to be configured with a Github Application to work properly.
       If you haven't created an application on Github yet, you can do so in
-      the #{ link_to "Settings", "https://github.com/settings/applications/new" }
+      the #{ link_to 'Settings', 'https://github.com/settings/applications/new' }
       section of your profile. You can also create applications for organizations.
     MESSAGE
   end
@@ -55,7 +55,7 @@ module ShipitHelper
   def missing_github_api_credentials_message
     (<<-MESSAGE).html_safe
       Shipit requires API access to Github. You can create
-      #{ link_to "access tokens", "https://github.com/settings/tokens" }
+      #{ link_to 'access tokens', 'https://github.com/settings/tokens' }
       and add it to the secrets.yml file under github_api.access_token
     MESSAGE
   end
