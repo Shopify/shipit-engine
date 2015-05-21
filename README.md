@@ -31,15 +31,3 @@ $ script/bootstrap
 - Create a stack in your local Shipit that points to that repository.
 - Make sure you have resque running (see below) in order for background jobs to
   work.
-
-## Jobs
-
-```shell
-# run workers for deploy jobs
-QUEUE=* bundle exec rake resque:work
-
-# start-stop resque-web
-resque-web
-resque-web -K
-```
-
