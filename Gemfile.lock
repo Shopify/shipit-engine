@@ -271,6 +271,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autoprefixer-rails
   byebug
   faker
   fakeweb
