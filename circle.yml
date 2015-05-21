@@ -20,3 +20,4 @@ dependencies:
 test:
   post:
     - bundle exec rubocop
+    - bundle exec rake db:seed # Make sure db:seed still works
