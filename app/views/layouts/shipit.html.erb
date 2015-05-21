@@ -24,11 +24,6 @@
     <header class="sidebar">
       <div class="inner-sidebar">
         <a href="/" class="logo header"><i></i><span>Ship it</span></a>
-
-        <% if can_login? %>
-          <%= link_to "Login with Github", github_authentication_path(origin: request.original_url) %>
-        <% end %>
-
       </div>
       <div class="sidebar-plugins-outer">
         <%= yield :inner_sidebar %>
