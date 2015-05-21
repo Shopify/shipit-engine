@@ -20,7 +20,8 @@
       <p>
         <strong>Heads Up!</strong>
         This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.
-        You can either configure CI yourself, or <a href="#">ignore CI statuses and deploy any commits you want.</a>
+        You can either configure CI yourself, or
+        <%= link_to "ignore CI and deploy any commits you want.", stack_ignore_ci_path(@stack), method: :put %>
       </p>
       <a class="dismiss-ignore-ci-warning"><small><em>Dismiss this message.</em></small></a>
     </div>

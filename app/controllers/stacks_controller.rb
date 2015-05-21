@@ -1,5 +1,5 @@
 class StacksController < ShipitController
-  before_action :load_stack, only: %i(update destroy settings sync_webhooks clear_git_cache refresh)
+  before_action :load_stack, only: %i(update destroy settings sync_webhooks clear_git_cache refresh ignore_ci)
 
   def new
     @stack = Stack.new
@@ -58,6 +58,13 @@ class StacksController < ShipitController
     redirect_to stack_settings_path(@stack)
   end
 
+  def ignore_ci
+    @stack.ignore_ci = true
+    @stack.save
+    flash[:success] = "This stack is now ignoring CI statuses. Deploy anything you want!"
+    redirect_to stack_path(@stack)
+  end
+
   private
 
   def load_stack
@@ -69,7 +76,7 @@ class StacksController < ShipitController
   end
 
   def update_params
-    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment).tap do |params|
+    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment, :ignore_ci).tap do |params|
       params[:lock_author_id] = params[:lock_reason].present? ? current_user.id : nil
     end
   end
