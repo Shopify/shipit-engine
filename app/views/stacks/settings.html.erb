@@ -43,10 +43,6 @@
           <td>Ensure that all required webhooks have been created.</td>
         </tr>
         <tr>
-          <td><%= button_to "Refresh Statuses And Commits", stack_refresh_path(@stack), class: "btn", method: "post" %></td>
-          <td>Force synchronization of new commits and last 30 commits CI status, in case webhooks have been lost or are slow.</td>
-        </tr>
-        <tr>
           <td><%= button_to "Clear Git Cache", stack_clear_git_cache_path(@stack), class: "btn", method: "post" %></td>
           <td>Delete the local git mirror in case it's in a bad state.</td>
         </tr>
