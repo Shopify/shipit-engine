@@ -1,45 +1,39 @@
-# :shipit: Next
+# Shipit::Engine
+
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/shipit/engine`. To experiment with that code, run `bin/console` for an interactive prompt.
+
+TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
-```
+Add this line to your application's Gemfile:
+
+```ruby
 gem 'shipit-engine'
 ```
 
-```
-bundle install
-```
+And then execute:
 
+    $ bundle
 
-## Setup
+Or install it yourself as:
 
-```shell
-$ git clone git@github.com:Shopify/shipit-engine.git
-$ cd shipit-engine
-$ script/bootstrap
-```
+    $ gem install shipit-engine
 
-## Local Development/Testing
+## Usage
 
-- Create a **public** github repository like https://github.com/byroot/junk that
-  contains a similar dummy `shipit.yml` file.
-- Create an API key (https://github.com/settings/tokens/new) that has only
-  public_repo permissions (Shipit doesn't need anything else) and add it in
-  `config/secrets.yml` under `development.github_credentials.access_token`. Be
-  careful with this key, it would give an attacker some permissions with your
-  github account!
-- Create a stack in your local Shipit that points to that repository.
-- Make sure you have resque running (see below) in order for background jobs to
-  work.
+TODO: Write usage instructions here
 
-## Jobs
+## Development
 
-```shell
-# run workers for deploy jobs
-QUEUE=* bundle exec rake resque:work
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
 
-# start-stop resque-web
-resque-web
-resque-web -K
-```
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Contributing
+
+1. Fork it ( https://github.com/[my-github-username]/shipit-engine/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
