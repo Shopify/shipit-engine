@@ -20,11 +20,11 @@ class ApiClient < ActiveRecord::Base
   class << self
     def authenticate(token)
       find_by_id(message_verifier.verify(token).to_i)
-    rescue SimpleMessageVerifier::InvalidSignature
+    rescue Shipit::SimpleMessageVerifier::InvalidSignature
     end
 
     def message_verifier
-      @message_verifier ||= SimpleMessageVerifier.new(Shipit.api_clients_secret)
+      @message_verifier ||= Shipit::SimpleMessageVerifier.new(Shipit.api_clients_secret)
     end
   end
 

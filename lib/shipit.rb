@@ -22,31 +22,26 @@ require 'redis-objects'
 require 'octokit'
 require 'faraday-http-cache'
 
-require 'shipit/engine'
+require 'shipit/null_serializer'
+require 'shipit/csv_serializer'
+require 'shipit/octokit_iterator'
+require 'shipit/first_parent_commits_iterator'
+require 'shipit/simple_message_verifier'
 
+require 'command'
 require 'commands'
+require 'stack_commands'
 require 'task_commands'
 require 'deploy_commands'
+require 'rollback_commands'
 
-require 'octokit_iterator'
-
-Dir[__dir__ + '/**/*.rb'].each { |f| require f } # TODO: do this properly
+require 'shipit/engine'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
 
 module Shipit
   extend self
-
-  module NullSerializer
-    def self.load(object)
-      object
-    end
-
-    def self.dump(object)
-      object
-    end
-  end
 
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first
@@ -84,7 +79,7 @@ module Shipit
   end
 
   def github_required?
-    !github['optional']
+    github.present? && !github['optional']
   end
 
   def github_team
