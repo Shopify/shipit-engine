@@ -5,4 +5,4 @@ set -e
 set -x
 
 bundle install
-bundle exec rake db:create db:schema:load
+bundle exec rake db:create db:schema:load db:seed

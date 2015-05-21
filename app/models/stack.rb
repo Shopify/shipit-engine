@@ -13,10 +13,10 @@ class Stack < ActiveRecord::Base
   belongs_to :lock_author, class_name: :User
 
   before_validation :update_defaults
-  after_create :setup_hooks, :sync_github
   before_destroy :clear_local_files
-  after_commit :broadcast_update, on: :update
   after_commit :emit_hooks
+  after_commit :broadcast_update, on: :update
+  after_commit :setup_hooks, :sync_github, on: :create
   after_touch :clear_cache
 
   validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}

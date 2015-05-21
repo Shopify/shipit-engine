@@ -1,5 +1,11 @@
 require 'faker'
 
+# Cheap hack to allow rake db:seed to work
+Stack.send(:define_method, :setup_hooks) {}
+Stack.send(:define_method, :sync_github) {}
+Commit.send(:define_method, :fetch_stats!) {}
+Commit.send(:define_method, :refresh_statuses!) {}
+
 users = 3.times.map do
   User.create!(
     name:  Faker::Name.name,
@@ -17,7 +23,7 @@ stacks = 3.times.map do
 end
 
 stacks.each do |stack|
-  20.times do
+  20.times do |i|
     user = users.sample
 
     commit = Commit.create!(
@@ -32,10 +38,21 @@ stacks.each do |stack|
 
     Status.create!(
       state: %w(pending success error failure).sample,
+      context: 'ci/travis',
       commit_id: commit.id,
       created_at: Time.now,
       updated_at: Time.now,
     )
+
+    if (i % 5) == 0
+      Status.create!(
+        state: %w(pending success error failure).sample,
+        context: 'ci/circle',
+        commit_id: commit.id,
+        created_at: Time.now,
+        updated_at: Time.now,
+      )
+    end
   end
 end
 
