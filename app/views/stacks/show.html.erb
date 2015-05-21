@@ -21,6 +21,21 @@
   </div>
 </section>
 
+<% if @stack.ignore_ci %>
+  <section>
+    <div class="wrapper ignoring-ci">
+      <p>
+        <strong>Heads Up!</strong>
+        This stack currently does not require a green CI to deploy,
+        this means that you could accidentally deploy broken builds.
+        Consider <a href="http://circleci.com">Configuring CI</a> and
+        <a href="#">blocking deploys until it's green.</a>
+      </p>
+      <a class="dismiss-ignore-ci-warning" href="javascript:void(0)"><small><em>Ok, Got it.</em></small></a>
+    </div>
+  </section>
+<% end %>
+
 <div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
   <% if @stack.locked? %>
     <section class="lock-reason">

@@ -5,7 +5,26 @@ jQuery ($) ->
     $('.configure-ci').toggleClass('hidden', ciConfigured)
     return
 
+  displayIgnoreCiMessage = ->
+    ignoreCiMessage = $(".ignoring-ci")
+    return unless ignoreCiMessage
+    $('.dismiss-ignore-ci-warning').click ->
+      dismissIgnoreCiMessage()
+
+    if localStorage.getItem(getLocalStorageKey())
+      ignoreCiMessage.hide()
+
+  dismissIgnoreCiMessage = ->
+    localStorage.setItem(getLocalStorageKey(), true)
+    ignoreCiMessage = $(".ignoring-ci")
+    ignoreCiMessage.hide() if ignoreCiMessage
+
+  getLocalStorageKey = ->
+    stackName = $('.repo-name').data('repo-full-name')
+    "ignoreCIDismissed" + stackName
+
   displayConfigureCiMessage()
+  displayIgnoreCiMessage()
 
   updatePage = (message) ->
     payload = JSON.parse(message.data)
