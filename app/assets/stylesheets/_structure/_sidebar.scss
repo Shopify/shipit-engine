@@ -19,11 +19,14 @@ $navigation-width: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .navigation__inner--last {
-  padding-bottom: 0px;
-  margin: 0 0 -30px 56px;
+  padding: 0 0 0 56px;
+  margin: 0 auto -30px auto;
+  box-sizing: border-box;
 }
 
 .navigation__inner__logo {
