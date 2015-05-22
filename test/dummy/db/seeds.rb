@@ -58,7 +58,10 @@ end
 
 stacks.each do |stack|
   stack.commits.limit(15).each_slice(5).each do |commits|
-    chunks = 5.times.map { OutputChunk.new(text: Faker::Lorem.paragraph) }
+    chunks = 5.times.map {
+      status = "\x1b[%s;1m[ %s ]\x1b[0m" % [["31", "error"], ["32", "success"]].sample
+      OutputChunk.new(text: "[ #{Faker::Date.backward} ] #{status} #{Faker::Lorem.paragraph}\n")
+    }
     deploy = stack.deploys.create!(
       since_commit_id: commits.first.id,
       until_commit_id: commits.last.id,
