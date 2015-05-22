@@ -1,4 +1,4 @@
-<li class="deploy" id="deploy-<%= task.id %>" data-deploy-status="<%= task.status %>">
+<li class="deploy" id="deploy-<%= task.id %>" data-task-status="<%= task.status %>">
   <div class="status <%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
     <%= link_to stack_task_path(@stack, task) do %>
       <i><%= task.status %></i>

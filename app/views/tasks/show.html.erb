@@ -2,7 +2,7 @@
 <%= render partial: 'stacks/header', locals: { stack: @stack } %>
 
 <span class="deploy-tasks"></span>
-<div class="deploy-banner <%= @task.status %>" data-deploy-status="<%= @task.status %>">
+<div class="deploy-banner <%= @task.status %>" data-task-status="<%= @task.status %>">
   <div class="wrapper">
     <a href="#" class="user main-user disabled"><%= @task.author.name %></a>
     <span class="deploy-status">

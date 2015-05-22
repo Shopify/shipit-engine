@@ -1,6 +1,6 @@
 <%= render partial: 'tasks/plugins' %>
 <% content_for :inner_sidebar do %>
-  <div class="deploy-abort" data-deploy-status="<%= @deploy.status %>">
+  <div class="deploy-abort" data-task-status="<%= @deploy.status %>">
     <%= link_to abort_stack_deploy_path(@stack, @deploy), class: 'btn delete deploy-action' do %>
     <span class="ready">Abort Deploy</span>
     <span class="disabled">Aborting</span>
@@ -11,7 +11,7 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <span class="deploy-tasks"></span>
-<div class="deploy-banner <%= @deploy.status %>" data-deploy-status="<%= @deploy.status %>">
+<div class="deploy-banner <%= @deploy.status %>" data-task-status="<%= @deploy.status %>">
   <div class="wrapper">
     <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
     <span class="deploy-status">

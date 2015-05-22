@@ -4,7 +4,7 @@
 
 .deploy-abort {
   display: none;
-  &[data-deploy-status="running"] { display: block; }
+  &[data-task-status="running"] { display: block; }
 
   text-align: center;
   .deploy-action {
