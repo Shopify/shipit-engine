@@ -1,9 +1,11 @@
-$sidebar-width: 300px;
+$navigation-width: 100%;
 
-.sidebar {
-  width: $sidebar-width;
+.navigation {
+  background-color: #fafafa;
+  border-bottom: 1px #ebebeb solid;
+  width: $navigation-width;
+  padding: 30px;
   box-sizing: border-box;
-  @include flex(0 0 300px);
   @include order(-1);
 
   button.notifications {
@@ -12,41 +14,47 @@ $sidebar-width: 300px;
   }
 }
 
-.inner-sidebar {
-  padding-bottom: 1rem;
+.navigation__inner {
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 
-  .logo {
-    display: block;
-    background-color: #2679cd;
-    padding: 2.85rem 3.75rem 2.25rem 5rem;
-    -webkit-transition: background-color .3s ease-in-out;
+.navigation__inner--last {
+  padding-bottom: none;
+}
 
-      &:hover { background-color: darken(#2679cd, 5%); }
+.navigation__inner__logo {
+  flex-grow: 1;
+}
 
-      span {
-        background: asset-data-url('logo.svg') top right no-repeat;
-        height: 35px;
-        display: inline-block;
-        width: 80px;
-        overflow: hidden;
-        text-indent: -999999px;
-        line-height: 1;
-      }
+.logo {
+  display: block;
+  -webkit-transition: background-color .3s ease-in-out;
 
-      i {
-        background: asset-data-url('anchor.svg') center center no-repeat;
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        -webkit-transition: -webkit-transform .3s ease-in-out;
-        margin-right: .25rem;
-        vertical-align: bottom;
-      }
-    &:hover i {
-      -webkit-transform: rotate(-25deg);
+    span {
+      background: asset-data-url('logo.svg') top right no-repeat;
+      height: 35px;
+      display: inline-block;
+      width: 80px;
+      overflow: hidden;
+      text-indent: -999999px;
+      line-height: 1;
     }
+
+    i {
+      background: asset-data-url('anchor.svg') center center no-repeat;
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      -webkit-transition: -webkit-transform .3s ease-in-out;
+      margin-right: .25rem;
+      vertical-align: bottom;
+    }
+  &:hover i {
+    -webkit-transform: rotate(-25deg);
   }
+}
 
 .stack {
   padding: 2.25rem 0;
@@ -54,12 +62,12 @@ $sidebar-width: 300px;
 }
 
 .sidebar-plugins-outer {
-  width: $sidebar-width;
+  // width: $navigation-width;
   overflow: hidden;
 }
 
 .sidebar-plugins {
-  width: $sidebar-width + 15px;
+  // width: $navigation-width + 15px;
   overflow-y: auto;
 }
 

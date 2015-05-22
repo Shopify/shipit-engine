@@ -21,13 +21,24 @@
     </div>
   </div>
   <div class="layout">
-    <header class="sidebar">
-      <div class="inner-sidebar">
-        <a href="/" class="logo header"><i></i><span>Ship it</span></a>
+    <header class="navigation">
+      <div class="navigation__inner">
+        <div class="navigation__inner__logo">
+          <a href="/" class="logo"><i></i><span>Ship it</span></a>
+        </div>
+
+        <div>
+          <%= yield :primary_navigation %>
+          <% if can_login? %>
+            <%= link_to "Login with Github", github_authentication_path(origin: request.original_url) %>
+          <% end %>
+        </div>
       </div>
-      <div class="sidebar-plugins-outer">
-        <%= yield :inner_sidebar %>
-        <div class="sidebar-plugins"></div>
+      <div class="navigation__inner navigation__inner--last">
+        <div class="sidebar-plugins-outer">
+          <%= yield :secondary_navigation %>
+          <div class="sidebar-plugins"></div>
+        </div>
       </div>
     </header>
     <div class="main">

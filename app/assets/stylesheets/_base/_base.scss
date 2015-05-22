@@ -99,6 +99,7 @@ body {
 .layout {
   @include flexbox;
   @include flex(1);
+  flex-direction: column;
 }
 
 // Paragraphs
