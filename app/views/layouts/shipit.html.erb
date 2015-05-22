@@ -30,13 +30,17 @@
         <div class="header__page-title">
           <%= yield :page_title %>
         </div>
-        <div class="header__page-actions">
-          <%= yield :primary_navigation %>
-        </div>
+        <% if content_for? :primary_navigation %>
+          <div class="header__page-actions">
+            <%= yield :primary_navigation %>
+          </div>
+        <% end %>
       </div>
-      <nav class="nav">
-        <%= yield :secondary_navigation %>
-      </nav>
+      <% if content_for? :secondary_navigation %>
+        <nav class="nav">
+          <%= yield :secondary_navigation %>
+        </nav>
+      <% end %>
     </div>
   </header>
 
