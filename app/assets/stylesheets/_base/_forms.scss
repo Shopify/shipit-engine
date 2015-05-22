@@ -2,6 +2,10 @@
 // FORMS
 // =============================================================================
 
+form + form {
+  margin-top: 1rem;
+}
+
 input[type=text], input[type=password], select, textarea {
   display: block;
   font-size: .875rem;
