@@ -1,15 +1,9 @@
 <li class="commit" id="deploy-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
-  <div class="commit-author">
-    <%= github_avatar(deploy.author, size: 80, class: 'commit-author__avatar') %>
-    <div class="commit-author__name">
-      <span class="commit-author__name__real-name"><%= deploy.author.name %></span>
-      <span class="commit-author__name__username"><%= deploy.author.login %></span>
-    </div>
-  </div>
-  <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
+  <%= render 'commits/commit_author', commit: deploy %>
+<!--   <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <i class="status__icon"></i>
     <span class="visually-hidden"><%= deploy.status %></span>
-  </a>
+  </a> -->
   <div class="commit-details">
     <span class="commit-title">
       <a href="<%= stack_deploy_path(@stack, deploy) %>">

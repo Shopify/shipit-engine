@@ -1,11 +1,5 @@
 <li class="commit" id="commit-<%= commit.id %>">
-  <div class="commit-author">
-    <%= github_avatar(commit.author, size: 80, class: 'commit-author__avatar') %>
-    <div class="commit-author__name">
-      <span class="commit-author__name__real-name"><%= commit.author.name %></span>
-      <span class="commit-author__name__username"><%= commit.author.login %></span>
-    </div>
-  </div>
+  <%= render 'commits/commit_author', commit: commit %>
   <%= render commit.last_statuses %>
   <div class="commit-details">
     <span class="commit-title"><%= render_commit_message_with_link commit %></span>
