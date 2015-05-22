@@ -168,7 +168,7 @@ For example:
 ```yml
 deploy:
   override:
-    - exec ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy
+    - ./script/deploy
 ```
 <br>
 
@@ -179,7 +179,7 @@ For example:
 ```yml
 rollback:
   override:
-    - exec ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy:rollback
+    - ./script/rollback
 ```
 <br>
 
@@ -204,7 +204,7 @@ key: val # things added as environment variables
 
 You can define a list of custom tasks that Shipit users can trigger for your application from a stack's overview page in Shipit:
 
-**<code>tasks.restart</code>** restarts the application. 
+**<code>tasks</code>** restarts the application. 
 
 For example:
 
@@ -212,22 +212,9 @@ For example:
 tasks:
   restart:
     action: "Restart Application"     
-    description: "Sometimes needed if you want unicorns and resques to reboot but don't want to ship any new code."
+    description: "Sometimes needed if you the application to restart but don't want to ship any new code."
     steps:
-      - ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy:restart
-```
-<br>
-
-**<code>tasks.unlock</code>** unlocks [Capistrano](http://capistranorb.com/). Sometimes needed if a deployment failed badly and deploys are still locked.
-
-For example:
-
-```yml
-unlock:
-  action: "Unlock Capistrano"
-  description: "Required if a deployment failed badly and deploys are still locked."
-  steps:
-    - ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy:unlock
+      - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
 ```
 
 <h3 id="review-process">Review process</h3>
@@ -303,9 +290,6 @@ For example:
 development:
   github_api:             
     access_token: 10da65c687f6degaf5475ce12a980d5vd8c44d2a
-    # login:
-    # password:
-    # api_endpoint:
 ```
 <br>
 
