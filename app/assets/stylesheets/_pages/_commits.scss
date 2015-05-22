@@ -198,3 +198,40 @@
     background-image: asset-data-url("error.svg");
   }
 }
+
+
+// =============================================================================
+// COMMIT SUMMARY
+// =============================================================================
+
+.commit-summary-list {
+  list-style-type: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.commit-summary {
+  display: flex;
+  margin-bottom: .5em;
+}
+
+.commit-summary__avatar {
+  margin-right: .5rem;
+}
+
+.commit-summary__avatar img {
+  border-radius: 4px;
+}
+
+.commit-summary__title {
+  flex-grow: 1;
+}
+
+.commit-summary__title a {
+  color: #555;
+}
+
+.commit-summary__sha {
+  font-size: 0.875rem;
+  color: #999;
+}

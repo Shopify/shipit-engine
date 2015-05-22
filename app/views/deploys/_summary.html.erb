@@ -1,19 +1,11 @@
-<ul class="commit-lst sub-commits">
+<ul class="commit-summary-list">
   <% commits.each do |commit| %>
-    <li>
-      <div data-tooltip="<%= commit.author.name %>" class="avatar">
+    <li class="commit-summary">
+      <div data-tooltip="<%= commit.author.name %>" class="commit-summary__avatar">
         <%= github_avatar commit.author, size: 24 %>
       </div>
-      <div class="event">
-        <span class="event-title">
-          <%= render_commit_message_with_link commit %>
-        </span>
-      </div>
-      <a href="<%= github_commit_url(commit) %>" target="_blank" class="accessory subdued number" data-tooltip="View on GitHub">
-        <span class="event-stats">
-          <span class="event-additions">+<%= commit.additions %></span>
-          <span class="event-deletions">-<%= commit.deletions %></span>
-        </span>
+      <span class="commit-summary__title"><%= render_commit_message_with_link commit %></span>
+      <a href="#" class="commit-summary__sha number">
         <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
       </a>
     </li>
