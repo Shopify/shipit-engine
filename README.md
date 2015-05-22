@@ -106,15 +106,56 @@ From a stack's **Settings** page, you can:
 
 The settings in the `shipit.yml` file relate to the different things you can do with Shipit:
 
+* [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`)
-* [Ruby settings](#ruby-settings) (`dependencies`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
 * * *
+
+<h3 id="installing-dependencies">Installing dependencies</h3>
+
+The **<code>dependencies</code>** step allows you to install all the packages your deploy script needs.
+
+<h4 id="bundler-support">Bundler</h3>
+  
+If your application uses Bundler, Shipit will detect it automatically and take care of the `bundle install` and prefix your commands with `bundle exec`.
+
+By default the following gem groups will be ignored:
+
+  - `default`
+  - `production`
+  - `development`
+  - `test`
+  - `staging`
+  - `benchmark`
+  - `debug`
+
+The gems you need in order to deploy should be in a different group, such as `deploy`.
+
+For example:
+
+```yml
+dependencies:
+  bundler:
+    without:
+      - development
+      - test
+      - debug
+```
+
+<h4 id="other-dependencies">Other dependencies</h3>
+
+If your deploy script uses another tool to install dependencies, you can install them manually via `dependencies.override`:
+
+```yml
+dependencies:
+  override:
+    - npm install
+```
 
 <h3 id="deployment">Deployment</h3>
 
@@ -158,36 +199,7 @@ For example:
 key: val # things added as environment variables
 ```
 
-<h3 id="ruby-settings">Ruby settings</h3>
 
-The `shipit.yaml` file works with some standard Ruby settings:
-
-**<code>dependencies</code>** are commands that are required for your deploy to work properly. Shipit supports <code>bundler</code> by default, but you can choose to install other packages instead by adding them to <code>dependencies.override</code>.
-
-For example:
-
-```yml
-dependencies:
-  bundler:
-    without:
-      - default
-      - production
-      - development
-      - test
-      - staging
-      - benchmark
-      - debug
-      - assets
-      - stagingdb
-```
-
-Or:
-
-```yml
-dependencies:
-  override:  
-    - npm install
-```
 <h3 id="custom-tasks">Custom tasks</h3>
 
 You can define a list of custom tasks that Shipit users can trigger for your application from a stack's overview page in Shipit:
