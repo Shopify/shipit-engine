@@ -161,10 +161,6 @@ class Stack < ActiveRecord::Base
     [repo_owner, repo_name].join('/')
   end
 
-  def github_repo
-    Shipit.github_api.repo(github_repo_name)
-  end
-
   def github_commits
     Shipit.github_api.commits(github_repo_name, sha: branch)
   end
