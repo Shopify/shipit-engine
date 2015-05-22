@@ -5,9 +5,9 @@
   <%= link_to 'Add a stack', new_stack_path, class: 'btn secondary' %>
 <% end %>
 
-<div class="wrapper">
+<div class="wrapper <%= 'filtering-enabled' if @stacks.size > 10 %>">
   <section>
-    <header class="section-header">
+    <header class="section-header stack-search-header">
       <input class="stack-search" placeholder="Search <%= @stacks.size %> stacks" />
     </header>
     <ul class="stack-table-header">
@@ -27,7 +27,7 @@
       <% end %>
     </ul>
 
-    <%= link_to 'show all stacks', '#', class: 'btn secondary', id: 'show-all-stacks' %></p>
+    <%= link_to 'show all stacks', '#', class: 'btn secondary show-all-stacks' %></p>
   </section>
 
 </div>
