@@ -1,28 +1,38 @@
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
 <% if !@stack.ignore_ci && !@stack.ci_enabled? %>
-  <section>
-    <div class="wrapper ignoring-ci">
-      <p>
-        <strong>Heads Up!</strong>
-        This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.
-        You can either configure CI yourself, or
-        <%= button_to "ignore CI and deploy any commits you want.", stack_path(@stack, stack: {ignore_ci: true}, return_to: stack_path(@stack)), method: :patch %>
-      </p>
-      <a class="dismiss-ignore-ci-warning"><small><em>Dismiss this message.</em></small></a>
+  <div class="banner">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">Heads Up!</h2>
+        <p class="banner__text">
+          This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.<br>
+          You can either configure CI yourself, or ignore CI and deploy any commits you want.
+        </p>
+        <%= button_to "Ignore CI", stack_path(@stack, stack: {ignore_ci: true}, return_to: stack_path(@stack)), method: :patch, class: 'banner__btn btn' %>
+      </div>
     </div>
-  </section>
+    <a class="banner__dismiss">&times;</a>
+  </div>
+<% end %>
+
+<% if @stack.locked? %>
+  <div class="banner banner--orange">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">
+          <i class="icon icon--lock"></i>
+          Deploys are locked by <%= @stack.lock_author.name || AnonymousUser.new.name %>
+        </h2>
+        <p class="banner__text">
+          <%= @stack.lock_reason %>
+        </p>
+      </div>
+    </div>
+  </div>
 <% end %>
 
 <div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
-  <% if @stack.locked? %>
-    <section class="lock-reason">
-      <div class="wrapper message">
-        <h2>Deploys are locked by <%= render_github_user(@stack.lock_author || AnonymousUser.new) %></h2>
-        <p><%= @stack.lock_reason %></p>
-      </div>
-    </section>
-  <% end %>
 
   <section>
     <header class="section-header">
