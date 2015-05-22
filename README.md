@@ -21,6 +21,9 @@ $ script/bootstrap
 
 ## Local Development/Testing
 
+- Create an App (https://github.com/settings/applications/new), and add the settings to
+  `config/secrets.yml` under `development.github_oauth.id` and
+  `development.github_oauth.secret`.
 - Create a **public** github repository like https://github.com/byroot/junk that
   contains a similar dummy `shipit.yml` file.
 - Create an API key (https://github.com/settings/tokens/new) that has only
