@@ -3,36 +3,47 @@
 <div class="wrapper">
   <section>
     <header class="section-header">
-      <h2>Settings</h2>
+      <h2>Settings (Stack #<%= @stack.id %>)</h2>
     </header>
+
     <div class="setting-section">
       <%= form_for @stack do |f| %>
-        <p>Deploy URL (Where is this stack deployed to?)</p>
-        <p><%= f.text_field :deploy_url, placeholder: 'https://' %></p>
-        <p>Continuous Deployment? <%= f.check_box :continuous_deployment %></p>
-        <p>Don't require CI to deploy: <%= f.check_box :ignore_ci %></p>
-        <p><%= f.submit class: "btn", value: "Save" %></p>
-      <%- end -%>
+        <div class="field-wrapper">
+          <%= f.label :deploy_url, 'Deploy URL (Where is this stack deployed to?)' %>
+          <%= f.text_field :deploy_url, placeholder: 'https://' %>
+        </div>
+
+        <div class="field-wrapper">
+          <%= f.check_box :continuous_deployment %>
+          <%= f.label :continuous_deployment, 'Enable continuous deployment' %>
+        </div>
+
+        <div class="field-wrapper">
+          <%= f.check_box :ignore_ci %>
+          <%= f.label :ignore_ci, "Don't require CI to deploy" %>
+        </div>
+
+        <%= f.submit class: "btn", value: "Save" %>
+      <% end %>
     </div>
+
     <div class="setting-section">
       <h5>Lock deploys</h5>
       <%= form_for @stack do |f| %>
-        <p>
+        <div class="field-wrapper">
           <%= f.label :lock_reason, 'Reason for lock' %>
-          <%= f.text_field :lock_reason %>
-          <% if @stack.locked? %>
-            <%= f.submit class: "btn", value: "Update Reason" %>
-          <% else %>
-            </p>
-            <p>
-              <%= f.submit class: "btn", value: "Lock" %>
-          <% end %>
-        </p>
-      <%- end -%>
+          <%= f.text_area :lock_reason %>
+        </div>
+        <% if @stack.locked? %>
+          <%= f.submit class: "btn", value: "Update Reason" %>
+        <% else %>
+            <%= f.submit class: "btn", value: "Lock" %>
+        <% end %>
+      <% end %>
       <% if @stack.locked? %>
         <%= form_for @stack do |f| %>
           <%= f.hidden_field :lock_reason, value: nil %>
-          <p><%= f.submit class: "btn", value: "Unlock" %></p>
+          <%= f.submit class: "btn btn--primary", value: "Unlock" %>
         <%- end -%>
       <% end %>
     </div>
@@ -50,14 +61,11 @@
       </table>
     </div>
 
-    <div class="setting-section">
-      <h5>Stack-Information</h5>
-      <p>ID: <%= @stack.id %></p>
-    </div>
+
     <div class="setting-section">
       <h5>Delete this stack</h5>
       <p>This action will delete the stack from Ship it permanently. Be careful.</p>
-      <%= button_to "Delete…", stack_path(@stack), :class => "btn delete", :method => :delete, :confirm => "Are you sure?" %>
+      <%= button_to "Delete…", stack_path(@stack), :class => "btn btn--delete", :method => :delete, :confirm => "Are you sure?" %>
     </div>
 
   </section>
