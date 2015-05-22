@@ -75,4 +75,8 @@ CODE
 
 after_bundle do
   rake 'railties:install:migrations db:create db:migrate'
+
+  git :init
+  git add: '.'
+  git commit: "-a -m 'Initial commit'"
 end
