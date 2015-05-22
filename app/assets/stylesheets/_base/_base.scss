@@ -101,6 +101,7 @@ body {
   font-family: "Helvetica Neue", sans-serif;
   color: #333;
   background-color: #fafafa;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 
@@ -217,6 +218,13 @@ h5 {
   background: asset-data-url("pending.gif") center center no-repeat;
   background-size: contain;
   margin-right: 3px;
+}
+
+.icon--lock {
+  display: inline-block;
+  background: asset-data-url("lock.svg") center center no-repeat;
+  height: 15px;
+  width: 12px;
 }
 
 [data-tooltip], [data-tooltip-multiline] { // Add this attribute to the element that needs a tooltip

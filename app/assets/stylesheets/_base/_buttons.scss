@@ -7,17 +7,18 @@
   font-family: inherit;
   background: #fff;
   color: $blue;
-  border: 1px solid rgba(#000, 0.12);
   padding: .75em 1em;
   font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 1px rgba(#000, 0.15);
 }
 
 .btn--primary {
   background-color: $blue;
   color: #fff;
-  border: none;
+  box-shadow: none;
 }
 
 .btn--disabled {

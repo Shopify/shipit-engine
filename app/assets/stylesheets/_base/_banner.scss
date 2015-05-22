@@ -1,0 +1,70 @@
+// =============================================================================
+// BANNERS
+// =============================================================================
+
+.banner {
+  background: $blue;
+  padding: 1.75rem 0;
+  position: relative;
+}
+
+.banner a {
+  color: #fff;
+}
+
+.banner__inner {
+  display: flex;
+  align-items: center;
+}
+
+.banner__title {
+  color: #fff;
+  margin-bottom: .5rem;
+}
+
+.banner__text {
+  color: rgba(#000, .6);
+  line-height: 1.3em;
+  margin-bottom: 0;
+}
+
+.banner__btn {
+  margin-top: 1rem;
+
+  .banner__accessory & {
+    margin-top: 0;
+  }
+}
+
+.banner__dismiss {
+  color: rgba(#000, .5);
+  font-size: 1.25rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: .5em .75em;
+}
+
+.banner__content {
+  flex-grow: 1;
+}
+
+.banner__accessory {
+  flex-shrink: 0;
+}
+
+
+// BANNER COLORS
+// -----------------------------------------------------------------------------
+
+.banner--orange {
+  background: #EDAA4E;
+}
+
+.banner--grey {
+  background: #96A9BA;
+}
+
+.banner--red {
+  background: #EE6A6A;
+}
