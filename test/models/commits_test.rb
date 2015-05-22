@@ -61,7 +61,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.reload.update(continuous_deployment: true)
     @stack.deploys.destroy_all
 
-    assert_difference "Deploy.count" do
+    assert_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
@@ -70,7 +70,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.reload.update(continuous_deployment: true)
     @stack.trigger_deploy(@commit, @commit.committer)
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
@@ -79,7 +79,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.deploys.destroy_all
     @stack.reload.update!(continuous_deployment: true, lock_reason: "Maintenance ongoing")
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
@@ -105,7 +105,7 @@ class CommitsTest < ActiveSupport::TestCase
       status: 'success',
     )
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'success')
     end
   end
@@ -113,7 +113,7 @@ class CommitsTest < ActiveSupport::TestCase
   test "updating without CD skips deploy regardless of state" do
     @stack.reload.deploys.destroy_all
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'success')
     end
   end
@@ -122,7 +122,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.reload.update(continuous_deployment: true)
     @stack.deploys.destroy_all
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       @commit.statuses.create!(state: 'failure')
     end
   end
@@ -142,7 +142,7 @@ class CommitsTest < ActiveSupport::TestCase
     rels = {target: mock(href: 'http://example.com')}
     status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
     Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
-    assert_difference '@commit.statuses.count', +1 do
+    assert_difference -> { @commit.statuses(true).count }, +1 do
       @commit.refresh_statuses!
     end
     assert_equal 'success', @commit.statuses.first.state

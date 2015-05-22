@@ -9,7 +9,7 @@ class FetchDeployedRevisionJobTest < ActiveSupport::TestCase
 
   test 'the job abort if the stack is deploying' do
     @stack.expects(:deploying?).returns(true)
-    assert_no_difference 'Deploy.count' do
+    assert_no_difference ->{ Deploy.count } do
       @job.perform(@stack)
     end
   end

@@ -73,7 +73,7 @@ class StacksControllerTest < ActionController::TestCase
       branch: "staging",
     }
 
-    assert_difference "Stack.count" do
+    assert_difference ->{ Stack.count } do
       post :create, params
     end
 
@@ -81,7 +81,7 @@ class StacksControllerTest < ActionController::TestCase
   end
 
   test "#create when not valid renders new" do
-    assert_no_difference "Stack.count" do
+    assert_no_difference ->{ Stack.count } do
       post :create, stack: {repo_owner: 'some', repo_name: 'owner/path'}
     end
 

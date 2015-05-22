@@ -31,7 +31,7 @@ class DeploysControllerTest < ActionController::TestCase
   end
 
   test ":create persists a new deploy" do
-    assert_difference '@stack.deploys.count', +1 do
+    assert_difference ->{ @stack.deploys(true).count }, +1 do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}
     end
   end
@@ -39,7 +39,7 @@ class DeploysControllerTest < ActionController::TestCase
   test ":create with `force` option ignore the active deploys" do
     deploys(:shipit_running).update_column(:status, 'running')
 
-    assert_difference '@stack.deploys.count', +1 do
+    assert_difference ->{ @stack.deploys(true).count }, +1 do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}, force: true
     end
   end
@@ -47,7 +47,7 @@ class DeploysControllerTest < ActionController::TestCase
   test ":create redirect back to :new with a warning if there is an active deploy" do
     deploys(:shipit_running).update_column(:status, 'running')
 
-    assert_no_difference '@stack.deploys.count' do
+    assert_no_difference ->{ @stack.deploys(true).count } do
       post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}
     end
     assert_redirected_to new_stack_deploy_path(@stack, sha: @commit.sha)

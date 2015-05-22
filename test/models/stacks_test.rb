@@ -111,13 +111,13 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#update_deployed_revision bail out if there is an active deploy" do
-    assert_no_difference 'Deploy.count' do
+    assert_no_difference ->{ Deploy.count } do
       @stack.update_deployed_revision(commits(:fifth).sha)
     end
   end
 
   test "#update_deployed_revision bail out if sha is unknown" do
-    assert_no_difference 'Deploy.count' do
+    assert_no_difference ->{ Deploy.count } do
       @stack.update_deployed_revision('skldjaslkdjas')
     end
   end
@@ -126,7 +126,7 @@ class StacksTest < ActiveSupport::TestCase
     Deploy.active.update_all(status: 'error')
 
     assert_equal commits(:second), @stack.last_deployed_commit
-    assert_difference 'Deploy.count', +1 do
+    assert_difference ->{ Deploy.count }, +1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha)
       assert_not_nil deploy
       assert_equal commits(:second), deploy.since_commit
@@ -139,7 +139,7 @@ class StacksTest < ActiveSupport::TestCase
     Deploy.active.update_all(status: 'error')
 
     assert_equal commits(:second), @stack.last_deployed_commit
-    assert_difference 'Deploy.count', +1 do
+    assert_difference ->{ Deploy.count }, +1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha[0..5])
       assert_not_nil deploy
       assert_equal commits(:second), deploy.since_commit
@@ -227,19 +227,19 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#destroy deletes the related commits" do
-    assert_difference -> { @stack.commits.count }, -@stack.commits.count do
+    assert_difference -> { @stack.commits(true).count }, -@stack.commits.count do
       @stack.destroy
     end
   end
 
   test "#destroy deletes the related tasks" do
-    assert_difference -> { @stack.tasks.count }, -@stack.tasks.count do
+    assert_difference -> { @stack.tasks(true).count }, -@stack.tasks.count do
       @stack.destroy
     end
   end
 
   test "#destroy deletes the related webhooks" do
-    assert_difference -> { @stack.github_hooks.count }, -@stack.github_hooks.count do
+    assert_difference -> { @stack.github_hooks(true).count }, -@stack.github_hooks.count do
       @stack.destroy
     end
   end

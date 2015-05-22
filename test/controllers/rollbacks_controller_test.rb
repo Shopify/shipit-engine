@@ -9,7 +9,7 @@ class RollbacksControllerTest < ActionController::TestCase
   end
 
   test ":create persists a new rollback" do
-    assert_difference '@stack.rollbacks.count', +1 do
+    assert_difference ->{ @stack.rollbacks(true).count }, +1 do
       post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}
     end
   end
@@ -26,7 +26,7 @@ class RollbacksControllerTest < ActionController::TestCase
 
   test ":create redirects back to the :new page if there is an active deploy" do
     deploys(:shipit_running).update_column(:status, 'running')
-    assert_no_difference '@stack.deploys.count' do
+    assert_no_difference ->{ @stack.deploys(true).count } do
       post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}
     end
     assert_redirected_to rollback_stack_deploy_path(@stack, @deploy)
@@ -34,7 +34,7 @@ class RollbacksControllerTest < ActionController::TestCase
 
   test ":create with `force` option ignore the active deploys" do
     deploys(:shipit_running).update_column(:status, 'running')
-    assert_difference '@stack.deploys.count', +1 do
+    assert_difference ->{ @stack.deploys(true).count }, +1 do
       post :create, stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}, force: true
     end
     assert_redirected_to stack_deploy_path(@stack, Rollback.last)

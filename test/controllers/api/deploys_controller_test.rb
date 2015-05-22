@@ -9,7 +9,7 @@ class Api::DeploysControllerTest < ActionController::TestCase
   end
 
   test "#create triggers a new deploy for the stack" do
-    assert_difference -> { @stack.deploys.count }, +1 do
+    assert_difference -> { @stack.deploys(true).count }, +1 do
       post :create, stack_id: @stack.to_param, sha: @commit.sha
     end
     assert_response :accepted
@@ -38,7 +38,7 @@ class Api::DeploysControllerTest < ActionController::TestCase
   test "#create refuses to deploy locked stacks" do
     @stack.update!(lock_reason: 'Something broken')
 
-    assert_no_difference -> { @stack.deploys.count } do
+    assert_no_difference -> { @stack.deploys(true).count } do
       post :create, stack_id: @stack.to_param, sha: @commit.sha
     end
     assert_response :unprocessable_entity
@@ -48,7 +48,7 @@ class Api::DeploysControllerTest < ActionController::TestCase
   test "#create accepts to deploy locked stacks if force mode is enabled" do
     @stack.update!(lock_reason: 'Something broken')
 
-    assert_difference -> { @stack.deploys.count }, +1 do
+    assert_difference -> { @stack.deploys(true).count }, +1 do
       post :create, stack_id: @stack.to_param, sha: @commit.sha, force: true
     end
     assert_response :accepted

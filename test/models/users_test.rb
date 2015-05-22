@@ -8,7 +8,7 @@ class UsersTest < ActiveSupport::TestCase
   end
 
   test "find_or_create_from_github persist a new user if he is unknown" do
-    assert_difference 'User.count', +1 do
+    assert_difference ->{ User.count }, +1 do
       fetch_user
     end
   end
@@ -16,7 +16,7 @@ class UsersTest < ActiveSupport::TestCase
   test "find_or_create_from_github returns the existing user if he is known" do
     existing = fetch_user
 
-    assert_no_difference 'User.count' do
+    assert_no_difference ->{ User.count } do
       assert_equal existing, fetch_user
     end
   end

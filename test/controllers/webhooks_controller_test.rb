@@ -38,7 +38,7 @@ class WebhooksControllerTest < ActionController::TestCase
     status_payload = payload(:status_master)
     commit = commits(:first)
 
-    assert_difference 'commit.statuses.count', +1 do
+    assert_difference ->{ commit.statuses(true).count }, +1 do
       post :state, {stack_id: @stack.id}.merge(status_payload)
     end
 

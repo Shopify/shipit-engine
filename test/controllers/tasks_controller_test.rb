@@ -15,7 +15,7 @@ class TasksControllerTest < ActionController::TestCase
   end
 
   test "tasks defined in the shipit.yml can be triggered" do
-    assert_difference '@stack.tasks.count', +1 do
+    assert_difference ->{ @stack.tasks(true).count }, +1 do
       post :create, stack_id: @stack, definition_id: @definition.id
     end
     assert_redirected_to stack_task_path(@stack, Task.last)

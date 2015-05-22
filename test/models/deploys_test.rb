@@ -144,7 +144,7 @@ class DeploysTest < ActiveSupport::TestCase
     deploy = deploys(:shipit_running)
     deploy.stack.update(continuous_deployment: true)
 
-    assert_difference "Deploy.count" do
+    assert_difference ->{ Deploy.count } do
       deploy.complete
     end
   end
@@ -154,7 +154,7 @@ class DeploysTest < ActiveSupport::TestCase
 
     deploy = deploys(:shipit_running)
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       deploy.complete
     end
   end
@@ -163,7 +163,7 @@ class DeploysTest < ActiveSupport::TestCase
     deploy = deploys(:shipit_running)
     deploy.stack.update(continuous_deployment: true)
 
-    assert_no_difference "Deploy.count" do
+    assert_no_difference ->{ Deploy.count } do
       deploy.complete
     end
   end

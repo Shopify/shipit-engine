@@ -7,11 +7,11 @@ class StatusTest < ActiveSupport::TestCase
   end
 
   test ".replicate_from_github! is idempotent" do
-    assert_difference '@commit.statuses.count', +1 do
+    assert_difference ->{ @commit.statuses(true).count }, +1 do
       @commit.statuses.replicate_from_github!(github_status)
     end
 
-    assert_no_difference '@commit.statuses.count' do
+    assert_no_difference ->{ @commit.statuses(true).count } do
       @commit.statuses.replicate_from_github!(github_status)
     end
   end
