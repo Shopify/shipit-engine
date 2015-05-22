@@ -31,7 +31,7 @@ module ShipitHelper
 
   def missing_github_oauth_message
     (<<-MESSAGE).html_safe
-      Shipit needs to be configured with a GitHub Application to work properly.
+      Shipit requires a GitHub application to authenticate users.
       If you haven't created an application on GitHub yet, you can do so in the
       #{ link_to 'Settings', 'https://github.com/settings/applications/new' }
       section of your profile. You can also create applications for organizations.
@@ -39,38 +39,38 @@ module ShipitHelper
   end
 
   def missing_github_oauth_id_message
-    (<<-MESSAGE)
-      From the GitHub Application, copy the Client ID to the secrets.yml file,
-      under the key github_oauth.id
+    (<<-MESSAGE).html_safe
+      Copy the Client ID from your GitHub application,
+      and paste it into the shipit.yml file under <code>github_oath.id</code>.
      MESSAGE
   end
 
   def missing_github_oauth_secret_message
-    (<<-MESSAGE)
-      From the GitHub Application, copy the Client Secret to the secrets.yml file,
-      under the key github_oauth.secret
+    (<<-MESSAGE).html_safe
+      Copy the Client Secret from your GitHub application,
+      and paste it into the shipit.yml file under <code>github_oauth.secret</code>.
      MESSAGE
   end
 
   def missing_github_api_credentials_message
     (<<-MESSAGE).html_safe
-      Shipit requires API access to GitHub. You can create
-      #{ link_to 'access tokens', 'https://github.com/settings/tokens' }
-      and add it to the secrets.yml file under the key github_api.access_token
+      Shipit needs API access to GitHub. You can
+      #{ link_to 'create an access token', 'https://github.com/settings/tokens' }
+      and add it to the secrets.yml file under the key <code>github_api.access_token</code>.
     MESSAGE
   end
 
   def missing_redis_url_message
-    (<<-MESSAGE)
-      Redis is required to run Shipit. Please configure the redis_url in the secrets.yml file
-      of your app, under the key redis_url
+    (<<-MESSAGE).html_safe
+      Shipit needs a Redis server. Please configure the Redis URL in the secrets.yml file of your app,
+      under the key <code>redis_url</code>.
     MESSAGE
   end
 
   def missing_host_message
-    (<<-MESSAGE)
-      The host of the application is required when Shipit generates links in background jobs.
-      Add it to the secrets.yml file, under the key host.
+    (<<-MESSAGE).html_safe
+      Shipit needs the host of the application before generating links in background jobs.
+      Add the host name to the secrets.yml file, under the <code>host</code> key.
     MESSAGE
   end
 end
