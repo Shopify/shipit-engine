@@ -24,9 +24,13 @@
     <header class="navigation">
       <div class="navigation__inner">
         <div class="navigation__inner__logo">
-          <a href="/" class="logo"><i></i><span>Ship it</span></a>
+          <div>
+            <a href="/" class="logo"><i></i></a>
+          </div>
+          <div>
+            <%= yield :page_title %>
+          </div>
         </div>
-
         <div>
           <%= yield :primary_navigation %>
           <% if can_login? %>
@@ -35,10 +39,8 @@
         </div>
       </div>
       <div class="navigation__inner navigation__inner--last">
-        <div class="sidebar-plugins-outer">
-          <%= yield :secondary_navigation %>
-          <div class="sidebar-plugins"></div>
-        </div>
+        <%= yield :secondary_navigation %>
+        <div class="sidebar-plugins"></div>
       </div>
     </header>
     <div class="main">

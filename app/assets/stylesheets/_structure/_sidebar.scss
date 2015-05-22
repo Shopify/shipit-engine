@@ -15,17 +15,46 @@ $navigation-width: 100%;
 }
 
 .navigation__inner {
-  padding-bottom: 10px;
+  padding-bottom: 30px;
   display: flex;
   align-items: center;
 }
 
 .navigation__inner--last {
-  padding-bottom: none;
+  padding-bottom: 0px;
+  margin: 0 0 -30px 56px;
+
+  a {
+    padding: 0 0 15px 0;
+    margin: 0 20px 0 0;
+    border-bottom: 2px solid #2c8ce1;
+  }
 }
 
 .navigation__inner__logo {
+  display: flex;
+  align-items: center;
   flex-grow: 1;
+
+  div {
+    margin: 0 4px;
+  }
+  p, h1 {
+    margin-bottom: 0;
+  }
+
+  p {
+    color: #a5a5a5;
+  }
+
+  h1 {
+    line-height: .8;
+  }
+
+  small {
+    font-size: .5em;
+    color: #888;
+  }
 }
 
 .logo {
