@@ -1,3 +1,3 @@
-<a class="status status--<%= status.state %>" data-tooltip="<%= status.description.presence || status.state.capitalize %>" href="<%= status.target_url%>" class="<%= :disabled unless status.target_url.present? %>" target="_blank">
+<a class="status status--<%= status.state %> <%= :disabled unless status.target_url.present? %>" data-tooltip="<%= status.description.presence || status.state.capitalize %>" href="<%= status.target_url%>" target="_blank">
   <span class="visually-hidden"><%= status.state %></span>
 </a>
