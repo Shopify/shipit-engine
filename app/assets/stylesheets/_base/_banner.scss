@@ -1,3 +1,7 @@
+// =============================================================================
+// BANNERS
+// =============================================================================
+
 .banner {
   background: $blue;
   padding: 1.75rem 0;
@@ -6,18 +10,6 @@
 
 .banner a {
   color: #fff;
-}
-
-.banner--orange {
-  background: #EDAA4E;
-}
-
-.banner--grey {
-  background: #96A9BA;
-}
-
-.banner--red {
-  background: #EE6A6A;
 }
 
 .banner__inner {
@@ -59,4 +51,20 @@
 
 .banner__accessory {
   flex-shrink: 0;
+}
+
+
+// BANNER COLORS
+// -----------------------------------------------------------------------------
+
+.banner--orange {
+  background: #EDAA4E;
+}
+
+.banner--grey {
+  background: #96A9BA;
+}
+
+.banner--red {
+  background: #EE6A6A;
 }
