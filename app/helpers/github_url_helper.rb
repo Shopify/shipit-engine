@@ -5,7 +5,7 @@ module GithubUrlHelper
 
   def github_avatar(user, options = {})
     uri = user.avatar_uri
-    attributes = options.slice(:class).merge({alt: user.try!(:name)})
+    attributes = options.slice(:class).merge(alt: user.try!(:name))
     if options[:size]
       uri.query ||= ''
       uri.query += "&s=#{options[:size]}"
