@@ -1,29 +1,9 @@
+
 .setting-section {
-  textarea {
-    width: 800px;
-    height: 200px;
-  }
-  label {
-  	display: inline-block;
-  	width: 120px;
-  }
-  input[type=text] {
-  	width: 240px;
-  }
-  span.helper-text {
-    font-size: smaller;
-  }
+  padding: 2rem 0;
 
-  table {
-    border-collapse: collapse;
-
-    td {
-      padding: .25rem;
-
-      &:first-child {
-        text-align: right;
-        padding-left: 0;
-      }
-    }
+  & + & {
+    border-top: 1px solid #e5e5e5;
   }
 }
+
