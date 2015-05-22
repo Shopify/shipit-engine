@@ -10,6 +10,7 @@ require 'coffee-rails'
 require 'jquery-rails'
 require 'rails-timeago'
 require 'ansi_stream'
+require 'autoprefixer-rails'
 
 require 'omniauth-github'
 
