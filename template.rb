@@ -10,7 +10,7 @@ gem 'sidekiq'
 gem 'thin'
 gem 'shipit-engine'
 
-say("This configs are for development, you will have to generate them again for production.",
+say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
 say("Create a GitHub application (https://github.com/settings/applications/new) to generate oauth credentials.",
     Thor::Shell::Color::GREEN, true)
