@@ -1,8 +1,9 @@
 //= require 'ansi_stream'
 @import "_base/_base";
 @import "_base/_forms";
+@import "_base/_buttons";
+@import "_structure/_layout";
 @import "_structure/_main";
-@import "_structure/_sidebar";
 @import "_pages/_commits";
 @import "_pages/_settings";
 @import "_pages/_stacks";

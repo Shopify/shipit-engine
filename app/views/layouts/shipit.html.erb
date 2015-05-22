@@ -20,29 +20,52 @@
       <button class="btn">Manage notifications</button>
     </div>
   </div>
-  <div class="layout">
-    <header class="navigation">
-      <div class="navigation__inner">
-        <div class="navigation__inner__item navigation__inner__logo">
-          <div>
-            <a href="/" class="logo"><i></i></a>
-          </div>
-          <div>
-            <%= yield :page_title %>
-          </div>
+
+  <header class="header">
+    <div class="wrapper">
+      <div class="header__inner">
+        <a href="/" class="logo">
+          <span class="visually-hidden">Shipit</span>
+        </a>
+        <div class="header__page-title">
+          <%= yield :page_title %>
         </div>
-        <div class="navigation__inner__item">
+        <div class="header__page-actions">
           <%= yield :primary_navigation %>
         </div>
       </div>
-      <div class="navigation__inner navigation__inner--last">
+      <nav class="nav">
         <%= yield :secondary_navigation %>
-        <div class="sidebar-plugins"></div>
-      </div>
-    </header>
-    <div class="main">
-      <%= yield %>
+      </nav>
     </div>
+  </header>
+
+
+
+
+
+
+<!--   <header class="navigation">
+    <div class="navigation__inner">
+      <div class="navigation__inner__item navigation__inner__logo">
+        <div>
+          <a href="/" class="logo"><i></i></a>
+        </div>
+        <div>
+          <%= yield :page_title %>
+        </div>
+      </div>
+      <div class="navigation__inner__item">
+        <%= yield :primary_navigation %>
+      </div>
+    </div>
+    <div class="navigation__inner navigation__inner--last">
+      <%= yield :secondary_navigation %>
+      <div class="sidebar-plugins"></div>
+    </div>
+  </header> -->
+  <div class="main">
+    <%= yield %>
   </div>
 </body>
 </html>

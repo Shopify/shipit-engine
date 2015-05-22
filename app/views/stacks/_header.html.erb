@@ -1,32 +1,39 @@
 <% content_for :page_title do %>
-  <p><%= stack.repo_owner %></p>
-  <h1><a href="<%= stack_path(@stack) %>"><%= stack.repo_name %> <small><%= stack.environment %></small></a></h1>
-  <% if stack.deploy_url.present? %>
-    <%= link_to stack.deploy_url, stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
-  <% end %>
+  <span><%= stack.repo_owner %></span>
+  <h1><%= stack.repo_name %> <%= stack.environment %></h1>
 <% end %>
 
 
 <% content_for :primary_navigation do %>
-  <%= link_to 'Refresh', stack_refresh_path(@stack), method: 'post', data: {tooltip: 'Refresh statuses and commits'}, class: "btn secondary" %>
-
+  <%= link_to 'Refresh statuses & commits', stack_refresh_path(@stack), method: 'post', class: "btn" %>
   <% unless @stack.task_definitions.empty? %>
     <ul>
       <% @stack.task_definitions.each do |definition| %>
         <li class="stack-action">
-          <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn secondary trigger-deploy) %>
+          <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(btn trigger-deploy) %>
         </li>
       <% end %>
     </ul>
   <% end %>
 <% end %>
 
-
 <% content_for :secondary_navigation do %>
-  <div class="navigation__inner__item navigation__inner__item--secondary">
-    <%= link_to 'Settings', stack_settings_path(stack), data: {tooltip: 'Settings'} %>
-  </div>
-  <div class="navigation__inner__item navigation__inner__item--fixed navigation__inner__item--secondary">
-    <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name), data: {tooltip: 'View repo on Github'} %>
-  </div>
+  <ul class="nav__list nav__list--primary">
+    <li class="nav__list__item">
+      <%= link_to "Commits & Deploys", stack_path(@stack) %>
+    </li>
+    <li class="nav__list__item">
+      <%= link_to 'Settings', stack_settings_path(stack) %>
+    </li>
+  </ul>
+  <ul class="nav__list nav__list--secondary">
+    <li class="nav__list__item">
+      <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name) %>
+    </li>
+    <% if stack.deploy_url.present? %>
+      <li class="nav__list__item">
+        <%= link_to stack.deploy_url, stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
+      </li>
+    <% end %>
+  </ul>
 <% end %>

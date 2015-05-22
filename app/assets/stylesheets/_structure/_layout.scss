@@ -1,0 +1,81 @@
+// =============================================================================
+// HEADER
+// =============================================================================
+
+.wrapper {
+  width: 80%;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+
+// HEADER
+// -----------------------------------------------------------------------------
+
+.header {
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fff;
+  color: #999;
+}
+
+.header__inner {
+  display: flex;
+  padding: 1.5em 0;
+}
+
+.header__page-title {
+  flex-grow: 1;
+}
+
+.header__page-actions {
+  flex-shrink: 0;
+}
+
+
+// LOGO
+// -----------------------------------------------------------------------------
+
+.logo {
+  background: asset-data-url('anchor.svg') center center no-repeat;
+  display: block;
+  width: 40px;
+  height: 40px;
+  transition: transform .3s ease-in-out;
+  text-indent: -9999px;
+  position: absolute;
+  right: 100%;
+  margin-right: 1em;
+  margin-top: 0.25em;
+
+  &:hover {
+    transform: rotate(-25deg);
+  }
+}
+
+
+// NAVIGATION
+// -----------------------------------------------------------------------------
+
+.nav {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.nav__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__list--primary {
+  flex-grow: 1;
+}
+
+.nav__list__item {
+  display: inline-block;
+
+  & + & {
+    margin-left: 1.5em;
+  }
+}

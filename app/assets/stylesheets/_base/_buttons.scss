@@ -1,0 +1,76 @@
+// =============================================================================
+// BUTTONS
+// =============================================================================
+
+.btn {
+  display: inline-block;
+  font-family: inherit;
+  background: #fff;
+  color: $blue;
+  border: 1px solid rgba(#000, 0.12);
+  padding: .75em 1em;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.btn--primary {
+  background-color: $blue;
+  color: #fff;
+  border: none;
+}
+
+.btn--disabled {
+  color: #999;
+  background-color: #fafafa;
+}
+
+
+
+
+// .btn {
+//   font-family: "Helvetica Neue", sans-serif !important;
+//   background-color: $blue;
+//   color: #fff;
+//   padding: .75em 1em;
+//   border-radius: 4px;
+//   font-weight: 300;
+//   display: inline-block;
+//   font-size: 1rem;
+//   border: none;
+//   margin: 0;
+//   cursor: pointer;
+//     &:hover {
+//       background-color: darken($blue, 10%);
+//     }
+
+//     &.disabled {
+//       @include disabled;
+//     }
+
+//     &.secondary {
+//       background: transparent;
+//       border: 1px solid rgba($blue, .8);
+//       color: $blue;
+//         &:hover {
+//           background-color: rgba($blue, .1);
+//         }
+//     }
+
+//     &.primary {
+//       padding: 1.5em 4em;
+//     }
+
+//     &.rollback {
+//       padding: 1.5em 4em;
+//       background-color: $bright-red;
+//     }
+
+//     &.failure {
+//       @include failure;
+//     }
+
+//     &.delete {
+//       background-color: $bright-red;
+//     }
+
+// }
