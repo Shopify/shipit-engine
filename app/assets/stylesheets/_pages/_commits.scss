@@ -151,12 +151,14 @@
 .status--pending,
 [data-deploy-status='pending'] {
   background-image: asset-data-url("pending.gif");
+  background-size: 21px 5px;
 }
 
 .status--running,
 [data-deploy-status='running'] {
   border-color: $blue;
   background-image: asset-data-url("deploying.svg");
+  animation: rotate 2s linear infinite;
 }
 
 .status--success,
