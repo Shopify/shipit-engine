@@ -1,3 +1,23 @@
+.deploy-checklist {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+.deploy-checklist__item {
+  margin-bottom: 1rem;
+}
+
+.deploy-checklist__item__label {
+  display: flex;
+}
+
+.deploy-checklist__item__checkbox {
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+
 .rolling-back {
   background-color: $light-red;
 }

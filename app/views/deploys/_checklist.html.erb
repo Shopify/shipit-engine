@@ -3,11 +3,11 @@
     <h2>Checklist</h2>
   </header>
 
-  <ul class="checklist">
+  <ul class="deploy-checklist">
     <%- stack.checklist.each do |check| -%>
-      <li>
-        <label>
-          <%= check_box_tag :checklist %>
+      <li class="deploy-checklist__item">
+        <label class="deploy-checklist__item__label">
+          <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox' %>
           <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
         </label>
       </li>

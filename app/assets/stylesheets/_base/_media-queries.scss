@@ -1,0 +1,17 @@
+$mobile: 600px;
+$tablet: 800px;
+$desktop: 1000px;
+
+$media-queries: (
+  mobile: "(max-width: #{$mobile - 1})",
+  tablet-down: "(max-width: #{$desktop - 1})",
+  tablet: "(min-width: #{$mobile} and max-width: #{$tablet - 1})",
+  tablet-up: "(min-width: #{$tablet})",
+  desktop: "(min-width: #{$desktop})"
+);
+
+@mixin media($key) {
+  @media #{map-get($media-queries, $key)} {
+    @content;
+  }
+}

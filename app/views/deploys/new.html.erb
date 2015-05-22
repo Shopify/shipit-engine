@@ -5,10 +5,8 @@
 
   <section>
     <header class="section-header">
-      <h2>Commits included in this deploy</h2>
+      <h2>Commits included in this deploy (<%= link_to_github_deploy(@deploy) %>)</h2>
     </header>
-
-    <p><%= link_to_github_deploy(@deploy) %></p>
 
     <%= render 'deploys/summary', commits: @deploy.commits %>
   </section>
@@ -35,7 +33,7 @@
         <%= hidden_field_tag :force, value: true %>
       <% end %>
       <%= f.hidden_field :until_commit_id %>
-      <%= f.submit :class => ['btn', 'primary', 'trigger-deploy'] %>
+      <%= f.submit class: 'btn btn--primary btn--large trigger-deploy' %>
     <% end %>
   </section>
 </div>

@@ -28,13 +28,15 @@
     <header class="section-header">
       <h2>Undeployed Commits</h2>
     </header>
-    <ul class="commit-lst"><%= render partial: "commits/commit", collection: @commits.to_a %></ul>
+    <ul class="commit-list">
+      <%= render partial: "commits/commit", collection: @commits.to_a %>
+    </ul>
   </section>
 
   <section>
     <header class="section-header">
       <h2>Previous Deploys</h2>
     </header>
-    <ul class="deploy-lst"><%= render @tasks %></ul>
+    <ul class="commit-list"><%= render @tasks %></ul>
   </section>
 </div>

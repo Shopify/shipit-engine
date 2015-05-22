@@ -1,0 +1,15 @@
+// =============================================================================
+// UTILITY
+// =============================================================================
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  clip: rect(0 0 0 0);
+  width: 2px; // 2px min. required to still allow hidden fields to be filled in
+  height: 2px; // 2px min. required to still allow hidden fields to be filled in
+  margin: -2px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+}
