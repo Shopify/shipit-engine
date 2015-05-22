@@ -28,4 +28,5 @@ pkg/
 /test/dummy/tmp/
 /test/dummy/data/
 /test/dummy/.sass-cache
+/test/dummy/config/secrets.yml
 

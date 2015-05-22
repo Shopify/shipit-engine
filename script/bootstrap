@@ -4,5 +4,6 @@
 set -e
 set -x
 
+cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
 bundle install
 bundle exec rake db:create db:schema:load db:seed
