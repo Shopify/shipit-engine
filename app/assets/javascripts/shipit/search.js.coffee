@@ -12,9 +12,9 @@ class StackSearch
   constructor: (root) ->
     @$root = $(root)
     @$root.on('keyup', '.stack-search', @onKeyUp)
-    @$root.on('click', '#show-all-stacks', (e) =>
+    @$root.on('click', '.show-all-stacks', (event) =>
       @$root.find('.not-matching').removeClass('not-matching')
-      e.preventDefault()
+      event.preventDefault()
     )
 
   onKeyUp: (event) =>

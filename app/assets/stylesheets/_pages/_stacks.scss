@@ -109,8 +109,25 @@
   border: 1px #a0a0a0 solid;
 }
 
-.search-item.not-matching {
+.stack-search-header {
   display: none;
+}
+
+.show-all-stacks {
+  display: none;
+}
+
+.filtering-enabled {
+  .show-all-stacks {
+    display: inline-block;
+  }
+
+  .stack-search-header {
+    display: block;
+  }
+  .search-item.not-matching {
+    display: none;
+  }
 }
 
 .message {
