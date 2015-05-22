@@ -57,6 +57,18 @@ production:
     # SSH_AUTH_SOCK: /foo/bar # You can set environment variable that will be present during deploys.
 CODE
 
+initializer 'sidekiq.rb', <<-CODE
+  Rails.application.config.queue_adapter = :sidekiq if Rails.env.preoduction?
+
+  Sidekiq.configure_server do |config|
+    config.redis = { url: Shipit.redis_url.to_s }
+  end
+
+  Sidekiq.configure_client do |config|
+    config.redis = { url: Shipit.redis_url.to_s }
+  end
+CODE
+
 after_bundle do
   rake 'railties:install:migrations db:create db:migrate'
 end
