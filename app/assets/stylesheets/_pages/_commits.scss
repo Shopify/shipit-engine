@@ -140,16 +140,22 @@
 }
 
 .status {
-  display: block;
-  width: 2.25rem;
-  height: 2.25rem;
+  display: inline-block;
   border: 2px solid #ccc;
   border-radius: 50%;
-  background: asset-data-url("unknown.svg") center center no-repeat;
+  width: 2.25rem;
+  height: 2.25rem;
+
+  .status__icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: asset-data-url("unknown.svg") center center no-repeat;
+  }
 }
 
-.status--pending,
-[data-deploy-status='pending'] {
+.status--pending .status__icon,
+[data-deploy-status='pending'] .status__icon {
   background-image: asset-data-url("pending.gif");
   background-size: 21px 5px;
 }
@@ -157,14 +163,20 @@
 .status--running,
 [data-deploy-status='running'] {
   border-color: $blue;
-  background-image: asset-data-url("deploying.svg");
-  animation: rotate 2s linear infinite;
+
+  .status__icon {
+    background-image: asset-data-url("deploying.svg");
+    animation: rotate 2s linear infinite;
+  }
 }
 
 .status--success,
 [data-deploy-status='success'] {
   border-color: $green;
-  background-image: asset-data-url("success.svg");
+
+  .status__icon {
+    background-image: asset-data-url("success.svg");
+  }
 }
 
 .status--failure,
@@ -172,11 +184,17 @@
 [data-deploy-status='failure'],
 [data-deploy-status='failed'] {
   border-color: $red;
-  background-image: asset-data-url("failure.svg");
+
+  .status__icon {
+    background-image: asset-data-url("failure.svg");
+  }
 }
 
 .status--error,
 [data-deploy-status='error'] {
   border-color: $yellow;
-  background-image: asset-data-url("error.svg");
+
+  .status__icon {
+    background-image: asset-data-url("error.svg");
+  }
 }

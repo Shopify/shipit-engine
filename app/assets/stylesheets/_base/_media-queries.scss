@@ -3,9 +3,9 @@ $tablet: 800px;
 $desktop: 1000px;
 
 $media-queries: (
-  mobile: "(max-width: #{$mobile})",
-  tablet-down: "(max-width: #{$desktop})",
-  tablet: "(min-width: #{$mobile} and max-width: #{$tablet})",
+  mobile: "(max-width: #{$mobile - 1})",
+  tablet-down: "(max-width: #{$desktop - 1})",
+  tablet: "(min-width: #{$mobile} and max-width: #{$tablet - 1})",
   tablet-up: "(min-width: #{$tablet})",
   desktop: "(min-width: #{$desktop})"
 );
