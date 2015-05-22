@@ -202,11 +202,9 @@ key: val # things added as environment variables
 
 <h3 id="custom-tasks">Custom tasks</h3>
 
-You can define a list of custom tasks that Shipit users can trigger for your application from a stack's overview page in Shipit:
+You can create custom tasks that users execute directly from a stack's overview page in Shipit. To create a new custom task, specify its parameters in the `tasks` section of the `shipit.yml` file. For example:
 
 **<code>tasks</code>** restarts the application. 
-
-For example:
 
 ```yml
 tasks:
@@ -219,7 +217,7 @@ tasks:
 
 <h3 id="review-process">Review process</h3>
 
-You can display review elements, such as monitoring data or a pre-deployment checklist, on the deployment page in Shipit:~
+You can display review elements, such as monitoring data or a pre-deployment checklist, on the deployment page in Shipit:
 
 **<code>review.checklist</code>** contains a pre-deploy checklist that appears on the deployment page in Shipit, with each item in the checklist as a separate string in the array. It can contain HTML tags. Users cannot deploy from Shipit until they have checked each item in the checklist. 
 
