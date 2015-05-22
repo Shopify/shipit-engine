@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150518214944) do
     t.text     "message",      limit: 65535,                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "detached",     limit: 1,     default: false, null: false
+    t.boolean  "detached",                   default: false, null: false
     t.datetime "authored_at",                                null: false
     t.datetime "committed_at",                               null: false
     t.integer  "additions",    limit: 4
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20150518214944) do
     t.string   "content_type", limit: 4,    default: "json", null: false
     t.string   "secret",       limit: 255
     t.string   "events",       limit: 255,  default: "",     null: false
-    t.boolean  "insecure_ssl", limit: 1,    default: false,  null: false
+    t.boolean  "insecure_ssl",              default: false,  null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
   end
@@ -116,11 +116,11 @@ ActiveRecord::Schema.define(version: 20150518214944) do
     t.string   "deploy_url",               limit: 255
     t.string   "lock_reason",              limit: 255
     t.integer  "tasks_count",              limit: 4,     default: 0,            null: false
-    t.boolean  "continuous_deployment",    limit: 1,     default: false,        null: false
+    t.boolean  "continuous_deployment",                  default: false,        null: false
     t.integer  "undeployed_commits_count", limit: 4,     default: 0,            null: false
     t.text     "cached_deploy_spec",       limit: 65535
     t.integer  "lock_author_id",           limit: 4
-    t.boolean  "ignore_ci",                limit: 1
+    t.boolean  "ignore_ci"
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
@@ -138,18 +138,18 @@ ActiveRecord::Schema.define(version: 20150518214944) do
   add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
-    t.integer  "stack_id",        limit: 4,                            null: false
-    t.integer  "since_commit_id", limit: 4,                            null: false
-    t.integer  "until_commit_id", limit: 4,                            null: false
-    t.string   "status",          limit: 255,      default: "pending", null: false
+    t.integer  "stack_id",        limit: 4,                         null: false
+    t.integer  "since_commit_id", limit: 4,                         null: false
+    t.integer  "until_commit_id", limit: 4,                         null: false
+    t.string   "status",          limit: 255,   default: "pending", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id",         limit: 4
-    t.boolean  "rolled_up",       limit: 1,        default: false,     null: false
+    t.boolean  "rolled_up",                     default: false,     null: false
     t.string   "type",            limit: 255
     t.integer  "parent_id",       limit: 4
-    t.integer  "additions",       limit: 4,        default: 0
-    t.integer  "deletions",       limit: 4,        default: 0
+    t.integer  "additions",       limit: 4,     default: 0
+    t.integer  "deletions",       limit: 4,     default: 0
     t.text     "definition",      limit: 65535
     t.binary   "gzip_output",     limit: 16777215
   end
