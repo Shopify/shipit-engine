@@ -12,12 +12,16 @@ gem 'shipit-engine'
 
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
-say("Create a GitHub application (https://github.com/settings/applications/new) to generate oauth credentials.",
-    Thor::Shell::Color::GREEN, true)
-github_id = ask("What is the Client ID?")
-github_secret = ask("What is the Client Secret?")
 
-say("Create an API key (https://github.com/settings/tokens/new) that has these permissions: "\
+
+say("Shipit requires a GitHub application to authenticate users. "\
+  "If you haven't created an application on GitHub yet, you can do so at https://github.com/settings/applications/new",
+  Thor::Shell::Color::GREEN, true)
+github_id = ask("What is the application client ID?")
+github_secret = ask("What is the application client secret?")
+
+say("Shipit needs API access to GitHub.")
+say("Create an API key at https://github.com/settings/tokens/new that has these permissions: "\
     "admin:repo_hook, admin:org_hook, repo", Thor::Shell::Color::GREEN, true)
 github_token = ask("What is the github key?")
 
