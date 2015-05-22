@@ -9,6 +9,8 @@ Shipit's compatible with just about anything that you can deploy using a script.
 
 This guide aims to help you [set up](#installation-and-setup), [use](#using-shipit), and [understand](#reference) Shipit.
 
+*Shipit requires MySQL, redis, and Ruby 2.1.x.*
+
 * * *
 <h2 id="toc">Table of contents</h2>
 **I. INSTALLATION & SETUP**
@@ -26,6 +28,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 * [Format and content of shipit.yml](#configuring-shipit)
 * [Format and content of secrets.yml](#configuring-secrets)
+* [Script parameters](#script-parameters)
 * [Free samples](#sample-file)
 
 * * *
@@ -33,6 +36,8 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 <h2 id="installation-and-setup">I. INSTALLATION & SETUP</h2>
 
 <h3 id="installation">Installation</h3>
+
+*Shipit requires MySQL, redis, and Ruby 2.1.x.*
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
@@ -124,6 +129,7 @@ deploy:
   override:
     - exec ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy
 ```
+<br>
 
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to disabled unless Capistrano is detected.
 
@@ -134,13 +140,14 @@ rollback:
   override:
     - exec ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy:rollback
 ```
+<br>
 
 **<code>fetch</code>** contains an array of the shell commands that Shipit executes to check the revision of the currently-deployed version. This key defaults to disabled.
 
 For example:
 ```yml
 fetch:
-  curl --silent https://app.shipit.com/services/ping/version
+  curl --silent https://app.example.com/services/ping/version
 ```
 <h3 id="environment">Environment</h3>
 
@@ -197,6 +204,7 @@ tasks:
     steps:
       - ./script/multi_deploy.rb bundle exec cap $ENVIRONMENT deploy:restart
 ```
+<br>
 
 **<code>tasks.unlock</code>** unlocks [Capistrano](http://capistranorb.com/). Sometimes needed if a deployment failed badly and deploys are still locked.
 
@@ -226,6 +234,7 @@ review:
     - Has the Docs team been notified of any major changes to the app?
     - Is the app stable right now?
 ```
+<br>
 
 **<code>review.monitoring</code>** contains a list of inclusions that appear on the deployment page in Shipit. Inclusions can either be images or iframes.
 
@@ -251,6 +260,7 @@ For example:
 development:
   secret_key_base: s3cr3t # This needs to be a very long, fully random 
 ```
+<br>
 
 **`github_oauth`** contains the settings required to authenticate users through GitHub. 
 
@@ -267,6 +277,7 @@ development:
     secret: (your application's Client Secret)            
     team: Shipit/team  
 ```
+<br>
 
 **`github_api`** communicates with the GitHub API about the stacks and setup Hooks. It should reflect the guidelines at  https://github.com/octokit/octokit.rb. 
 
@@ -284,6 +295,8 @@ development:
     # password:
     # api_endpoint:
 ```
+<br>
+
 **`host`**  is the host that hosts Shipit. It's used to generate URLs, and it's the host that GitHub will try to talk to. 
 
 For example:
@@ -291,6 +304,7 @@ For example:
 development:
   host: 'http://localhost:3000' 
 ```
+<br>
 
 **`redis_url`** is the URL of the redis instance that Shipit uses. 
 
@@ -300,3 +314,20 @@ For example:
 development:
   redis_url: "redis://127.0.0.1:6379/7" 
 ```
+
+<h2 id="script-parameters">Script parameters</h2>
+
+Your deploy scripts have access to the following environment variables:
+
+* `SHIPIT`: Set to "1" allow your script to know it's executed by Shipit
+* `SHIPIT_LINK`: URL to the task output, usefull to broadcast it in an IRC channel
+* `USER`: Full name of the user that triggered the deploy/task
+* `EMAIL`: Email of the user that triggered the deploy/task (if available)
+* `ENVIRONMENT`: The stack environment (e.g production / staging)
+* All the content of the `secrets.yml` `env` key
+* All the content of the `shipit.yml` `machine.environment` key
+
+These variables are accessible only during deploys and rollback:
+
+* `REVISION`: the git SHA of the revision that must be deployed in production
+* `SHA`: alias for REVISION
