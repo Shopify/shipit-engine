@@ -144,4 +144,9 @@ class StacksControllerTest < ActionController::TestCase
     end
     assert_redirected_to stack_settings_path(@stack)
   end
+
+  test "#update redirects to return_to parameter" do
+    patch :update, id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)
+    assert_redirected_to stack_path(@stack)
+  end
 end

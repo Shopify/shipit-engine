@@ -45,7 +45,7 @@ class StacksController < ShipitController
 
   def update
     @stack.update(update_params)
-    redirect_to stack_settings_path(@stack)
+    redirect_to params[:return_to].presence || stack_settings_path(@stack)
   end
 
   def sync_webhooks
@@ -69,7 +69,7 @@ class StacksController < ShipitController
   end
 
   def update_params
-    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment).tap do |params|
+    params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment, :ignore_ci).tap do |params|
       params[:lock_author_id] = params[:lock_reason].present? ? current_user.id : nil
     end
   end

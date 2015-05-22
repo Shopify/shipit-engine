@@ -10,6 +10,7 @@
         <p>Deploy URL (Where is this stack deployed to?)</p>
         <p><%= f.text_field :deploy_url, placeholder: 'https://' %></p>
         <p>Continuous Deployment? <%= f.check_box :continuous_deployment %></p>
+        <p>Don't require CI to deploy: <%= f.check_box :ignore_ci %></p>
         <p><%= f.submit class: "btn", value: "Save" %></p>
       <%- end -%>
     </div>
