@@ -13,7 +13,6 @@ gem 'shipit-engine', github: 'Shopify/shipit-engine'
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
 
-
 say("Shipit requires a GitHub application to authenticate users. "\
   "If you haven't created an application on GitHub yet, you can do so at https://github.com/settings/applications/new",
   Thor::Shell::Color::GREEN, true)
