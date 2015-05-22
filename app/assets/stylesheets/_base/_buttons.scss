@@ -1,0 +1,25 @@
+// =============================================================================
+// BUTTONS
+// =============================================================================
+
+.btn {
+  display: inline-block;
+  font-family: inherit;
+  background: #fff;
+  color: $blue;
+  border: 1px solid rgba(#000, 0.12);
+  padding: .75em 1em;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.btn--primary {
+  background-color: $blue;
+  color: #fff;
+  border: none;
+}
+
+.btn--disabled {
+  color: #999;
+  background-color: #fafafa;
+}

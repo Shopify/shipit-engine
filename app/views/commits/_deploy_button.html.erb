@@ -1,19 +1,19 @@
 <% if commit.stack.locked? %>
-  <%= link_to 'Locked', '#', class: 'btn disabled deploy-action' %>
+  <%= link_to 'Locked', '#', class: 'btn btn--disabled deploy-action' %>
 <% else %>
   <% if commit.deployable? %>
     <% if commit.stack.deploying? %>
-      <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
+      <%= link_to 'Deploy in progress...', '#', class: 'btn btn--disabled deploy-action' %>
     <% else %>
-      <%= link_to 'Deploy', new_stack_deploy_path(@stack, sha: commit.sha), class: 'btn deploy-action' %>
+      <%= link_to 'Deploy', new_stack_deploy_path(@stack, sha: commit.sha), class: 'btn btn--primary deploy-action' %>
     <% end %>
   <% elsif commit.pending? %>
-    <a href="#" class="btn disabled deploy-action"><span>Pending...</span></a>
+    <a href="#" class="btn btn--disabled deploy-action"><span>Pending...</span></a>
   <% elsif commit.failure? %>
-    <a href="#" class="btn disabled failure deploy-action"><span>Failure</span></a>
+    <a href="#" class="btn btn--disabled failure deploy-action"><span>Failure</span></a>
   <% elsif commit.error? %>
-    <a href="#" class="btn disabled error deploy-action"><span>Error</span></a>
+    <a href="#" class="btn btn--disabled error deploy-action"><span>Error</span></a>
   <% else %>
-    <a href="#" class="btn disabled unknown deploy-action"><span>Not Run</span></a>
+    <a href="#" class="btn btn--disabled unknown deploy-action"><span>Not Run</span></a>
   <% end %>
 <% end %>

@@ -1,3 +1,10 @@
+<% content_for :page_title do %>
+  <h1>Shipit</h1>
+<% end %>
+<% content_for :primary_navigation do %>
+  <%= link_to 'Add a stack', new_stack_path, class: 'btn secondary' %>
+<% end %>
+
 <div class="wrapper">
   <section>
     <header class="section-header">
@@ -20,7 +27,7 @@
       <% end %>
     </ul>
 
-    <%= link_to 'Add a stack', new_stack_path, class: 'btn' %>&nbsp;<%= link_to 'show all stacks', '#', class: 'btn secondary', id: 'show-all-stacks' %></p>
+    <%= link_to 'show all stacks', '#', class: 'btn secondary', id: 'show-all-stacks' %></p>
   </section>
 
 </div>

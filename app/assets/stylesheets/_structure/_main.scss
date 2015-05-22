@@ -3,12 +3,6 @@
   padding-bottom: 3rem;
 }
 
-  .wrapper {
-    padding: 0 10%;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
   section {
     margin-top: 3rem;
 
@@ -67,11 +61,6 @@ pre {
   font-family: Menlo, monospace;
 }
 
-.header {
-  box-sizing: border-box;
-  height: 120px;
-}
-
 .repo-header {
   background-color: $blue;
   padding: 1.75rem 0;
@@ -119,6 +108,7 @@ pre {
   background-color: #f0f4f7;
   padding: 1rem 1.5rem;
   -webkit-animation: notice-slide-in .3s .6s ease-in-out backwards;
+  overflow: hidden;
 
     .message {
       float: left;

@@ -20,19 +20,28 @@
       <button class="btn">Manage notifications</button>
     </div>
   </div>
-  <div class="layout">
-    <header class="sidebar">
-      <div class="inner-sidebar">
-        <a href="/" class="logo header"><i></i><span>Ship it</span></a>
+
+  <header class="header">
+    <div class="wrapper">
+      <div class="header__inner">
+        <a href="/" class="logo">
+          <span class="visually-hidden">Shipit</span>
+        </a>
+        <div class="header__page-title">
+          <%= yield :page_title %>
+        </div>
+        <div class="header__page-actions">
+          <%= yield :primary_navigation %>
+        </div>
       </div>
-      <div class="sidebar-plugins-outer">
-        <%= yield :inner_sidebar %>
-        <div class="sidebar-plugins"></div>
-      </div>
-    </header>
-    <div class="main">
-      <%= yield %>
+      <nav class="nav">
+        <%= yield :secondary_navigation %>
+      </nav>
     </div>
+  </header>
+
+  <div class="main">
+    <%= yield %>
   </div>
 </body>
 </html>
