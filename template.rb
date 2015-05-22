@@ -8,7 +8,7 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'thin'
-gem 'shipit-engine'
+gem 'shipit-engine', github: 'Shopify/shipit-engine'
 
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
