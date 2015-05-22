@@ -55,7 +55,8 @@ module ShipitHelper
   def missing_github_api_credentials_message
     (<<-MESSAGE).html_safe
       Shipit needs API access to GitHub. You can
-      #{ link_to 'create an access token', 'https://github.com/settings/tokens', target: '_blank' } with the following permissions:
+      #{ link_to 'create an access token', 'https://github.com/settings/tokens', target: '_blank' }
+      with the following permissions:
       <code>admin:repo_hook</code>, <code>admin:org_hook</code> and <code>repo</code>
       and add it to the secrets.yml file under the key <code>github_api.access_token</code>.
     MESSAGE
