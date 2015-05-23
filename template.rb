@@ -8,7 +8,7 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'thin'
-gem 'shipit-engine'
+gem 'shipit-engine', github: 'Shopify/shipit-engine'
 
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
@@ -24,16 +24,27 @@ say("Create an API key at https://github.com/settings/tokens/new that has these 
     "admin:repo_hook, admin:org_hook, repo", Thor::Shell::Color::GREEN, true)
 github_token = ask("What is the github key?")
 
+create_file '.env', <<-CODE
+GITHUB_OAUTH_ID=#{github_id}
+GITHUB_OAUTH_SECRET=#{github_secret}
+GITHUB_API_TOKEN=#{github_token}
+CODE
+
+create_file 'Procfile', <<-CODE
+web: bundle exec rails s
+worker: bundle exec sidekiq -c 1
+CODE
+
 create_file 'config/secrets.yml', <<-CODE, force: true
 development:
   secret_key_base: #{SecureRandom.hex(64)}
   host: 'http://localhost:3000'
   github_oauth: # Head to https://github.com/settings/applications/new to generate oauth credentials
-    id: #{github_id}
-    secret: #{github_secret}
+    id: <%= ENV['GITHUB_OAUTH_ID'] %>
+    secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
     # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
   github_api:
-    access_token: #{github_token}
+    access_token: <%= ENV['GITHUB_API_TOKEN'] %>
   redis_url: redis://localhost
 
 test:
@@ -61,17 +72,22 @@ production:
 CODE
 
 initializer 'sidekiq.rb', <<-CODE
-  Rails.application.config.queue_adapter = :sidekiq if Rails.env.preoduction?
+Rails.application.config.queue_adapter = :sidekiq
 
-  Sidekiq.configure_server do |config|
-    config.redis = { url: Shipit.redis_url.to_s }
-  end
+Sidekiq.configure_server do |config|
+  config.redis = { url: Shipit.redis_url.to_s }
+end
 
-  Sidekiq.configure_client do |config|
-    config.redis = { url: Shipit.redis_url.to_s }
-  end
+Sidekiq.configure_client do |config|
+  config.redis = { url: Shipit.redis_url.to_s }
+end
 CODE
 
 after_bundle do
   rake 'railties:install:migrations db:create db:migrate'
+
+  git :init
+  run "echo '.env' >> .gitignore"
+  git add: '.'
+  git commit: "-a -m 'Initial commit'"
 end
