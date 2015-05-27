@@ -1,0 +1,17 @@
+#!/bin/bash
+
+case $CIRCLE_NODE_INDEX in
+  0 )
+    bundle exec rake test
+    ;;
+  1)
+    bundle exec rake test
+    ;;
+  2)
+    bundle exec rake test
+    ;;
+  3)
+    bundle exec rubocop
+    bundle exec rake db:seed # Make sure db:seed still works
+    ;;
+esac

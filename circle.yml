@@ -8,7 +8,8 @@ machine:
 
 database:
   override:
-    - script/bootstrap
+    - script/bootstrap:
+        parallel: true
 dependencies:
   bundler:
     without:
@@ -18,6 +19,6 @@ dependencies:
       - debug
 
 test:
-  post:
-    - bundle exec rubocop
-    - bundle exec rake db:seed # Make sure db:seed still works
+  override:
+    - script/circleci:
+        parallel: true

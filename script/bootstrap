@@ -4,6 +4,18 @@
 set -e
 set -x
 
+#!/bin/bash
+
 cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
+
+case $CIRCLE_NODE_INDEX in
+  1)
+    cp test/config/database.postgres.yml test/dummy/config/database.yml
+    ;;
+  2)
+    cp test/config/database.sqlite.yml test/dummy/config/database.yml
+    ;;
+esac
+
 bundle install
 bundle exec rake db:create db:schema:load db:seed

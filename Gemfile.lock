@@ -160,6 +160,7 @@ GEM
       omniauth (~> 1.2)
     parser (2.2.2.3)
       ast (>= 1.1, < 3.0)
+    pg (0.18.2)
     powerpack (0.1.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -244,6 +245,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
+    sqlite3 (1.3.10)
     state_machines (0.2.2)
     state_machines-activemodel (0.1.2)
       activemodel (~> 4.1)
@@ -276,8 +278,10 @@ DEPENDENCIES
   fakeweb
   mocha
   mysql2
+  pg
   pry
   rubocop
   shipit-engine!
   simplecov
+  sqlite3
   test_after_commit (= 0.4.0)
