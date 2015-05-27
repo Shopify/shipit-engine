@@ -21,3 +21,4 @@ case $DATABASE in
 esac
 
 bundle exec rake db:create db:schema:load test
+bundle exec rake db:seed
