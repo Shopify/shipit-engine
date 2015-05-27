@@ -9,6 +9,7 @@ env:
     - "DATABASE=sqlite3"
 rvm:
   - 2.1
+  - 2.2
 matrix:
   fast_finish: true
 notifications:
