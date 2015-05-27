@@ -22,6 +22,10 @@ class Status < ActiveRecord::Base
     )
   end
 
+  def group?
+    false
+  end
+
   private
 
   def enable_ci_on_stack

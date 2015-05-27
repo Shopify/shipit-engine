@@ -24,6 +24,10 @@ class StatusGroup
     'statuses/group'
   end
 
+  def group?
+    true
+  end
+
   private
 
   def find_main_status
