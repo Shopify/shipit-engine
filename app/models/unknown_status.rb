@@ -25,6 +25,10 @@ class UnknownStatus
     false
   end
 
+  def group?
+    false
+  end
+
   def target_url
     nil
   end
