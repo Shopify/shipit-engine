@@ -11,7 +11,7 @@ Shipit's compatible with just about anything that you can deploy using a script.
 
 This guide aims to help you [set up](#installation-and-setup), [use](#using-shipit), and [understand](#reference) Shipit.
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), redis, and Ruby 2.1.x.*
+*Shipit requires a database (MySQL, PostgreSQL or SQLite3), redis, and Ruby 2.1 or superior.*
 
 * * *
 <h2 id="toc">Table of contents</h2>
@@ -39,7 +39,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 <h3 id="installation">Installation</h3>
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), redis, and Ruby 2.1.x.*
+*Shipit requires a database (MySQL, PostgreSQL or SQLite3), redis, and Ruby 2.1 or superior.*
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
