@@ -10,6 +10,8 @@ env:
 rvm:
   - 2.1
 matrix:
+  allow_failures:
+    - env: "DATABASE=sqlite3"
   fast_finish: true
 notifications:
   email: false
