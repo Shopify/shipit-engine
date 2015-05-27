@@ -34,7 +34,7 @@ class StatusTest < ActiveSupport::TestCase
   private
 
   def github_status
-    OpenStruct.new(
+    @github_status ||= OpenStruct.new(
       state: 'success',
       description: 'This is a description',
       context: 'default',

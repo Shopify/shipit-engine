@@ -18,7 +18,7 @@ class Status < ActiveRecord::Base
       description: github_status.description,
       target_url: github_status.rels.try(:[], :target).try(:href),
       context: github_status.context,
-      created_at: github_status.created_at.to_s(:db),
+      created_at: github_status.created_at,
     )
   end
 
