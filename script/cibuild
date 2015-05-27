@@ -8,7 +8,7 @@ cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || tru
 
 case $DATABASE in
   mysql)
-    echo "Testing PostgreSQL"
+    echo "Testing MySQL"
     ;;
   pg)
     cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
