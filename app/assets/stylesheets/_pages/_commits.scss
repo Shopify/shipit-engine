@@ -208,14 +208,38 @@
   }
 }
 
-.status-item.status--pending strong {
-  color: $slate;
+.status-item.status--pending {
+  .status__icon {
+    background-image: none;
+    position: relative;
+    &:after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #ccc;
+      border-radius: 3px;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -3px 0 0 -3px;
+    }
+  }
+  strong {
+    color: #999;
+  }
 }
+
 .status-item.status--success strong {
   color: $green;
 }
-.status-item.status--failure strong {
-  color: $red;
+.status-item.status--failure, .status-item.status--error {
+  .status__icon {
+    background-size: 100% 100%;
+  }
+  strong {
+    color: $red;
+  }
 }
 
 .status {
