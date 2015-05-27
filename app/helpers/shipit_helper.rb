@@ -41,14 +41,14 @@ module ShipitHelper
   def missing_github_oauth_id_message
     (<<-MESSAGE).html_safe
       Copy the Client ID from your GitHub application,
-      and paste it into the shipit.yml file under <code>github_oauth.id</code>.
+      and paste it into the secrets.yml file under <code>github_oauth.id</code>.
      MESSAGE
   end
 
   def missing_github_oauth_secret_message
     (<<-MESSAGE).html_safe
       Copy the Client Secret from your GitHub application,
-      and paste it into the shipit.yml file under <code>github_oauth.secret</code>.
+      and paste it into the secrets.yml file under <code>github_oauth.secret</code>.
      MESSAGE
   end
 
