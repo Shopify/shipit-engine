@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Output all commands, stop on failures
+set -e
+set -x
+
+cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
+
+case $DATABASE in
+  mysql)
+    echo "Testing PostgreSQL"
+    ;;
+  pg)
+    cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
+    echo "Testing PostgreSQL"
+    ;;
+  sqlite3)
+    cp test/dummy/config/database.sqlite.yml test/dummy/config/database.yml
+    echo "Testing SQLite3"
+    ;;
+esac
+
+bundle exec rake db:create db:schema:load test
+bundle exec rake db:seed

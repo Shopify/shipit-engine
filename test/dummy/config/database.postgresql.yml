@@ -1,0 +1,10 @@
+default: &default
+  adapter: postgresql
+
+development:
+  <<: *default
+  database: shipit_development
+
+test:
+  <<: *default
+  database: shipit_test
