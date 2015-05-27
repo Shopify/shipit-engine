@@ -219,7 +219,7 @@ tasks:
 
 You can display review elements, such as monitoring data or a pre-deployment checklist, on the deployment page in Shipit:
 
-**<code>review.checklist</code>** contains a pre-deploy checklist that appears on the deployment page in Shipit, with each item in the checklist as a separate string in the array. It can contain HTML tags. Users cannot deploy from Shipit until they have checked each item in the checklist. 
+**<code>review.checklist</code>** contains a pre-deploy checklist that appears on the deployment page in Shipit, with each item in the checklist as a separate string in the array. It can contain `strong` and `a` HTML tags. Users cannot deploy from Shipit until they have checked each item in the checklist. 
 
 For example:
 
