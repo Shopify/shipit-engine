@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'explicit-parameters', '~> 0.0.3'
   s.add_dependency 'state_machines-activerecord', '~> 0.2.0'
   s.add_dependency 'active_model_serializers', '~> 0.9.3'
-  s.add_dependency 'pubsubstub', '~> 0.0.10'
+  s.add_dependency 'pubsubstub', '~> 0.0.11'
   s.add_dependency 'safe_yaml', '~> 1.0.4'
   s.add_dependency 'omniauth-github', '~> 1.1.2'
   s.add_dependency 'responders', '~> 2.1.0'
