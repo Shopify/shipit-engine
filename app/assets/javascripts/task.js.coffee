@@ -11,7 +11,7 @@ class StickyElement
     window.requestAnimationFrame(@refresh)
 
   toggleStickyClass: ->
-    @$element.toggleClass('sticky', window.scrollY >= @staticElementTop)
+    @$element.toggleClass('sticky', window.pageYOffset >= @staticElementTop)
 
 class
 

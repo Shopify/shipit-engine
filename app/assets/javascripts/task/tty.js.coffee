@@ -41,14 +41,14 @@ class Scrolling
 
   isScrolledToBottom: ->
     if @initialScroll
-      @initialScroll = (window.scrollY == 0)
+      @initialScroll = (window.pageYOffset == 0)
       true
     else
       codeBottom = @codeBottomPosition()
       codeBottom + TOLERENCE > @viewportBottomPosition() >= codeBottom - TOLERENCE
 
   viewportBottomPosition: ->
-    window.scrollY + @$window.height()
+    window.pageYOffset + @$window.height()
 
   codeBottomPosition: ->
     @$code.position().top + @$code.height()
