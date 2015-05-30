@@ -3,12 +3,12 @@
 
   <div class="status-items">
     <div class="status-summary status--<%= group.state %>">
-      <i class="status__icon"></i>
+      <i class="status-item__icon"></i>
       <span><%= group.description %></span>
     </div>
     <% group.statuses.each do |status| %>
       <div class="status-item status--<%= status.state %>">
-        <i class="status__icon"></i>
+        <i class="status-item__icon"></i>
         <strong><%= status.context %></strong>
         <span><%= status.description %></span>
         <a href="<%= status.target_url %>" target="_blank">Details</a>

@@ -230,20 +230,34 @@
     }
   }
   strong {
-    color: #999;
+    color: $dark_yellow;
   }
 }
 
 .status-item.status--success strong {
   color: $green;
 }
-.status-item.status--failure, .status-item.status--error {
+.status-item {
   .status__icon {
     background-size: 100% 100%;
   }
-  strong {
-    color: $red;
+
+  &.status--failure {
+    strong {
+      color: $dark_red;
+    }
   }
+  
+  &.status--error {
+    strong {
+      color: $black;
+    }
+  }
+}
+
+.status-item__icon {
+   width: 0.75em;
+   text-align: center;
 }
 
 .status {
@@ -258,6 +272,7 @@
     margin-right: 0.75rem;
   }
 }
+
 
 .status {
   display: inline-block;
@@ -274,10 +289,19 @@
   }
 }
 
-.status--pending .status__icon,
-[data-deploy-status='pending'] .status__icon {
-  background-image: asset-data-url("pending.gif");
-  background-size: 21px 5px;
+.status--pending,
+[data-deploy-status='pending'] {
+  
+  .status__icon {
+    background-image: asset-data-url("pending.gif");
+    background-size: 21px 5px;
+  }
+
+  .status-item__icon {
+    color: $dark_yellow;
+    @extend .octicon;
+    @extend .octicon-primitive-dot;
+  }
 }
 
 .status--running,
@@ -297,6 +321,12 @@
   .status__icon {
     background-image: asset-data-url("success.svg");
   }
+
+  .status-item__icon {
+    color: $green;
+    @extend .octicon;
+    @extend .octicon-check;
+  }
 }
 
 .status--failure,
@@ -308,6 +338,12 @@
   .status__icon {
     background-image: asset-data-url("failure.svg");
   }
+
+  .status-item__icon {
+    color: $dark_red;
+    @extend .octicon;
+    @extend .octicon-x;
+  }
 }
 
 .status--error,
@@ -316,6 +352,12 @@
 
   .status__icon {
     background-image: asset-data-url("error.svg");
+  }
+
+  .status-item__icon {
+    color: $black;
+    @extend .octicon;
+    @extend .octicon-x;
   }
 }
 
