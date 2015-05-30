@@ -58,17 +58,20 @@ stacks.each do |stack|
   end
 end
 
+def create_chunks
+  100.times.map do
+    status = "\x1b[%s;1m[ %s ]\x1b[0m" % [["31", "error"], ["32", "success"]].sample
+    OutputChunk.new(text: "[ #{Faker::Date.backward} ] #{status} #{Faker::Lorem.paragraph}\n")
+  end
+end
+
 stacks.each do |stack|
   stack.commits.limit(15).each_slice(5).each do |commits|
-    chunks = 100.times.map {
-      status = "\x1b[%s;1m[ %s ]\x1b[0m" % [["31", "error"], ["32", "success"]].sample
-      OutputChunk.new(text: "[ #{Faker::Date.backward} ] #{status} #{Faker::Lorem.paragraph}\n")
-    }
     deploy = stack.deploys.create!(
       since_commit_id: commits.first.id,
       until_commit_id: commits.last.id,
       status:          "success",
-      chunks:          chunks,
+      chunks:          create_chunks,
       additions: Faker::Number.number(3),
       deletions: Faker::Number.number(3),
       user: users.sample,
@@ -82,6 +85,7 @@ stacks.each do |stack|
     until_commit_id: last_deploy.since_commit_id,
     status: 'success',
     user: users.sample,
+    chunks: create_chunks,
   )
 
   stack.tasks.create!(
@@ -93,6 +97,7 @@ stacks.each do |stack|
       'action' => 'Restart application',
       'description' => 'Restart unicorns and resques',
       'steps' => ['cap $ENVIRONMENT restart'],
-    )
+    ),
+    chunks: create_chunks,
   )
 end
