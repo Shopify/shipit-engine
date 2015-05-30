@@ -1,28 +1,6 @@
-<%= render partial: 'tasks/plugins' %>
-<%= render partial: 'stacks/header', locals: { stack: @stack } %>
+<% content_for :task_title do %>
+  executing <%= @task.definition.id %>
+  <%= timeago_tag(@task.created_at, force: true) %> at <%= @task.created_at %>
+<% end %>
 
-<span class="deploy-tasks"></span>
-<div class="deploy-banner <%= @task.status %>" data-task-status="<%= @task.status %>">
-  <div class="wrapper">
-    <a href="#" class="user main-user disabled"><%= @task.author.name %></a>
-    <span class="deploy-status">
-      executing <%= @task.definition.id %>
-      <%= timeago_tag(@task.created_at, force: true) %> at <%= @task.created_at %>
-    </span>
-  </div>
-
-  <span class="deploy-abort" data-task-status="<%= @task.status %>">
-    <%= link_to abort_stack_task_path(@stack, @task), class: 'btn btn--delete deploy-action' do %>
-    <span class="ready">Abort Task</span>
-    <span class="disabled">Aborting</span>
-    <% end %>
-  </span>
-</div>
-
-<div class="sidebar-plugins-outer">
-  <div class="sidebar-plugins"></div>
-</div>
-
-<pre class="nowrap">
-  <code data-task-status="<%= @task.status %>" data-next-chunks-url="<%= next_chunks_url(@task) %>"><%= @task.chunk_output %></code>
-</pre>
+<%= render partial: 'tasks/task_output', locals: {task: @task} %>
