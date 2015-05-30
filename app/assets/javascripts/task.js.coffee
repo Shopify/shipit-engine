@@ -1,17 +1,19 @@
 #= require_tree ./task
 #= require_self
 
-class StickyBanner
-  constructor: (@$banner) ->
-    @staticBannerTop = @$banner.position().top
+class StickyElement
+  constructor: (@$element) ->
+    @staticElementTop = @$element.position().top
     @refresh()
 
   refresh: =>
-    @toggleBannerClass()
+    @toggleStickyClass()
     window.requestAnimationFrame(@refresh)
 
-  toggleBannerClass: ->
-    @$banner.toggleClass('sticky', window.scrollY >= @staticBannerTop)
+  toggleStickyClass: ->
+    @$element.toggleClass('sticky', window.scrollY >= @staticElementTop)
+
+class
 
 jQuery ->
   OutputStream.addEventListener 'status', (task) ->
@@ -27,4 +29,5 @@ jQuery ->
     url: $code.data('next-chunks-url')
     text: tty.popInitialOutput()
 
-  new StickyBanner($('.deploy-banner'))
+  new StickyElement($('.deploy-banner'))
+  new StickyElement($('.sidebar'))

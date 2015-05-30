@@ -87,7 +87,7 @@ pre.nowrap {
   white-space: pre;
 }
 
-.sidebar + .deploy-main {
+.sidebar.enabled + .deploy-main {
   margin-left: 300px;
   .deploy-banner .wrapper {
     width: 100%;
@@ -95,11 +95,17 @@ pre.nowrap {
   }
 }
 
-.sidebar-plugins {
-  position: fixed;
+.sidebar {
   background-color: #2e343a;
-  width: 300px;
+  color: white;
+  height: 100%;
+  position: absolute;
+  width: 0px;
+  &.enabled {
+    width: 300px;
+  }
   &.sticky {
     top: 0;
+    position: fixed;
   }
 }
