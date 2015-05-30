@@ -1,21 +1,19 @@
-<li class="deploy" id="deploy-<%= task.id %>" data-task-status="<%= task.status %>">
-  <div class="status <%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
-    <%= link_to stack_task_path(@stack, task) do %>
-      <i><%= task.status %></i>
-    <% end %>
-  </div>
-  <div class="event">
-    <span class="event-meta">
-      <%= render_github_user(task.author) %>
-      ran a command
-      <%= timeago_tag(task.created_at, force: true) %>
-      <span class="event-time">at <%= task.created_at %></span>
-    </span>
-    <span class="event-title">
+<li class="commit" id="task-<%= task.id %>" data-task-status="<%= task.status %>">
+  <%= render 'commits/commit_author', commit: task %>
+  <a href="<%= stack_task_path(@stack, task) %>" class="status status--<%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
+    <i class="status__icon"></i>
+    <span class="visually-hidden"><%= task.status %></span>
+  </a>
+
+  <div class="commit-details">
+    <span class="commit-title">
       <a href="<%= stack_task_path(@stack, task) %>">
         <%= task.definition.action %>
       </a>
-      <span class="event-number"></span>
     </span>
+    <p class="commit-meta">
+      ran a command <%= timeago_tag(task.created_at, force: true) %>
+      <span class="utc-timecode">at <%= task.created_at.strftime('%H:%M:%S') %> UTC</span>
+    </p>
   </div>
 </li>
