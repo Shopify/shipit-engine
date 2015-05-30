@@ -34,6 +34,8 @@ stacks.each do |stack|
       message:      Faker::Company.catch_phrase,
       authored_at:  Time.now,
       committed_at: Time.now,
+      additions: Faker::Number.number(3),
+      deletions: Faker::Number.number(3),
     )
 
     Status.create!(
@@ -67,6 +69,8 @@ stacks.each do |stack|
       until_commit_id: commits.last.id,
       status:          "success",
       chunks:          chunks,
+      additions: Faker::Number.number(3),
+      deletions: Faker::Number.number(3),
     )
     deploy.write("$ cap production deploy SHA=yolo")
   end
