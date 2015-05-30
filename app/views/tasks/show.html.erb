@@ -1,13 +1,4 @@
 <%= render partial: 'tasks/plugins' %>
-<% content_for :inner_sidebar do %>
-  <div class="deploy-abort" data-task-status="<%= @task.status %>">
-    <%= link_to abort_stack_task_path(@stack, @task), class: 'btn delete deploy-action' do %>
-    <span class="ready">Abort Task</span>
-    <span class="disabled">Aborting</span>
-    <% end %>
-  </div>
-<% end %>
-
 <%= render partial: 'stacks/header', locals: { stack: @stack } %>
 
 <span class="deploy-tasks"></span>
@@ -19,6 +10,13 @@
       <%= timeago_tag(@task.created_at, force: true) %> at <%= @task.created_at %>
     </span>
   </div>
+
+  <span class="deploy-abort" data-task-status="<%= @task.status %>">
+    <%= link_to abort_stack_task_path(@stack, @task), class: 'btn btn--delete deploy-action' do %>
+    <span class="ready">Abort Task</span>
+    <span class="disabled">Aborting</span>
+    <% end %>
+  </span>
 </div>
 
 <pre class="nowrap">
