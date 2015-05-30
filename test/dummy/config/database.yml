@@ -1,12 +1,10 @@
 default: &default
-  adapter: mysql2
-  encoding: utf8
-  strict: true
+  adapter: sqlite3
 
 development:
   <<: *default
-  database: shipit_development
+  database: db/development.sqlite3
 
 test:
   <<: *default
-  database: shipit_test
+  database: db/test.sqlite3

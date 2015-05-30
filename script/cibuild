@@ -9,13 +9,13 @@ cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || tru
 case $DATABASE in
   mysql)
     echo "Testing MySQL"
+    cp test/dummy/config/database.mysql.yml test/dummy/config/database.yml
     ;;
   pg)
     cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
     echo "Testing PostgreSQL"
     ;;
   sqlite3)
-    cp test/dummy/config/database.sqlite.yml test/dummy/config/database.yml
     echo "Testing SQLite3"
     ;;
 esac
