@@ -25,4 +25,10 @@ class TasksControllerTest < ActionController::TestCase
     get :show, stack_id: @stack, id: @task.id
     assert_response :ok
   end
+
+  test ":abort call abort! on the deploy" do
+    Task.any_instance.expects(:abort!)
+    post :abort, stack_id: @stack.to_param, id: @task.id
+    assert_response :success
+  end
 end

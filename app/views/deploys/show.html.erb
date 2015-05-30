@@ -1,7 +1,7 @@
 <%= render partial: 'tasks/plugins' %>
 <% content_for :inner_sidebar do %>
   <div class="deploy-abort" data-task-status="<%= @deploy.status %>">
-    <%= link_to abort_stack_deploy_path(@stack, @deploy), class: 'btn delete deploy-action' do %>
+    <%= link_to abort_stack_task_path(@stack, @deploy), class: 'btn delete deploy-action' do %>
     <span class="ready">Abort Deploy</span>
     <span class="disabled">Aborting</span>
     <% end %>

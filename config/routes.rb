@@ -48,6 +48,10 @@ Shipit::Engine.routes.draw do
         post ':definition_id' => 'tasks#create', as: ''
       end
 
+      member do
+        post :abort
+      end
+
       resources :chunks, only:  %i(index), defaults: {format: :json} do
         collection do
           get :tail
@@ -59,7 +63,6 @@ Shipit::Engine.routes.draw do
       get ':sha', sha: sha_format, on: :new, action: :new, as: ''
       member do
         get :rollback
-        post :abort
       end
     end
   end

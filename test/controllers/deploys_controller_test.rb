@@ -59,12 +59,6 @@ class DeploysControllerTest < ActionController::TestCase
     assert_redirected_to stack_deploy_path(@stack, new_deploy)
   end
 
-  test ":abort call abort! on the deploy" do
-    Deploy.any_instance.expects(:abort!)
-    post :abort, stack_id: @stack.to_param, id: @deploy.id
-    assert_response :success
-  end
-
   test ":rollback is success" do
     get :rollback, stack_id: @stack.to_param, id: @deploy.id
     assert_response :success
