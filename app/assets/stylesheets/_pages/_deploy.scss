@@ -96,8 +96,9 @@ pre.nowrap {
 }
 
 .sidebar {
-  background-color: #2e343a;
+  background-color: $slate;
   color: white;
+  overflow-y: scroll;
   height: 100%;
   position: absolute;
   width: 0px;
