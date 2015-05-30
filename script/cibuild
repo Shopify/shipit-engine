@@ -4,21 +4,30 @@
 set -e
 set -x
 
+run_test_suite(){
+  bundle exec rake db:create db:schema:load test
+  bundle exec rake db:seed
+}
+
 cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
 
-case $DATABASE in
+case $SUITE in
   mysql)
     echo "Testing MySQL"
     cp test/dummy/config/database.mysql.yml test/dummy/config/database.yml
+    run_test_suite
     ;;
   pg)
-    cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
     echo "Testing PostgreSQL"
+    cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
+    run_test_suite
     ;;
   sqlite3)
     echo "Testing SQLite3"
+    run_test_suite
+    ;;
+  rubocop)
+    bundle exec rubocop
     ;;
 esac
 
-bundle exec rake db:create db:schema:load test
-bundle exec rake db:seed

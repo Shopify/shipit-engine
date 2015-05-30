@@ -4,14 +4,18 @@ script: 'script/cibuild'
 cache: bundler
 env:
   matrix:
-    - "DATABASE=mysql"
-    - "DATABASE=pg"
-    - "DATABASE=sqlite3"
+    - SUITE=mysql
+    - SUITE=pg
+    - SUITE=sqlite3
+    - SUITE=rubocop
 rvm:
   - 2.1
   - 2.2
 matrix:
   fast_finish: true
+  exclude:
+    - env: SUITE=rubocop
+      rvm: 2.2
 notifications:
   email: false
 services:
