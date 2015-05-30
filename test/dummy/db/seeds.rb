@@ -71,7 +71,28 @@ stacks.each do |stack|
       chunks:          chunks,
       additions: Faker::Number.number(3),
       deletions: Faker::Number.number(3),
+      user: users.sample,
     )
     deploy.write("$ cap production deploy SHA=yolo")
   end
+
+  last_deploy = stack.deploys.last
+  stack.rollbacks.create!(
+    since_commit_id: last_deploy.until_commit_id,
+    until_commit_id: last_deploy.since_commit_id,
+    status: 'success',
+    user: users.sample,
+  )
+
+  stack.tasks.create!(
+    since_commit_id: stack.last_deployed_commit.id,
+    until_commit_id: stack.last_deployed_commit.id,
+    status: "success",
+    user: users.sample,
+    definition: TaskDefinition.new('restart',
+      'action' => 'Restart application',
+      'description' => 'Restart unicorns and resques',
+      'steps' => ['cap $ENVIRONMENT restart'],
+    )
+  )
 end
