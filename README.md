@@ -1,5 +1,6 @@
 # Shipit - Documentation
 [![Build Status](https://travis-ci.org/Shopify/shipit-engine.svg?branch=master)](https://travis-ci.org/Shopify/shipit-engine)
+[![Gem Version](https://badge.fury.io/rb/shipit-engine.svg)](http://badge.fury.io/rb/shipit-engine)
 
 **Shipit** is a deployment tool that makes shipping code better for everyone. It's especially great for large teams of developers and designers who work together to build and deploy GitHub repos. You can use it to:
 
