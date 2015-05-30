@@ -16,6 +16,10 @@ matrix:
   exclude:
     - env: SUITE=rubocop
       rvm: 2.2
+    - env: SUITE=pg
+      rvm: 2.2
+    - env: SUITE=mysql
+      rvm: 2.2
 notifications:
   email: false
 services:
