@@ -19,6 +19,57 @@ stacks = 3.times.map do
     repo_name:  Faker::Internet.domain_name.parameterize,
     repo_owner: Faker::Company.name.parameterize,
     deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/",
+    cached_deploy_spec: DeploySpec.load(%(
+      {
+        "dependencies": {
+          "bundler": {
+            "without": [
+              "default",
+              "production",
+              "development",
+              "test",
+              "staging",
+              "benchmark",
+              "debug"
+            ]
+          },
+          "override": [
+            "bundle check --path=/tmp/bundler || bundle install --frozen --path=/tmp/bundler --retry=2 --without=default:production:development:test:staging:benchmark:debug"
+          ]
+        },
+        "fetch": [
+        ],
+        "tasks": {
+          "restart": {
+            "action": "Restart application",
+            "description": "Restart Thin and Resque.",
+            "steps": [
+              "bundle exec cap $ENVIRONMENT deploy:restart"
+            ]
+          }
+        },
+        "machine": {
+          "environment": {
+          },
+          "directory": null
+        },
+        "review": {
+          "checklist": [
+
+          ]
+        },
+        "deploy": {
+          "override": [
+            "bundle exec cap $ENVIRONMENT deploy"
+          ]
+        },
+        "rollback": {
+          "override": [
+            "bundle exec cap $ENVIRONMENT deploy:rollback"
+          ]
+        }
+      }
+    )),
   )
 end
 
