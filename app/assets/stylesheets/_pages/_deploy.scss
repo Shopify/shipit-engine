@@ -86,3 +86,13 @@
 pre.nowrap {
   white-space: pre;
 }
+
+.sidebar {
+  background-color: #2e343a;
+  width: 300px;
+  box-sizing: border-box;
+  flex: 0 0 300px;
+  order: -1;
+  height: 3000px;
+  float: left;
+}
