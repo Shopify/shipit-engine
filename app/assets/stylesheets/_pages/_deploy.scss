@@ -52,7 +52,7 @@
       width: 100%;
     }
 
-    &.pending:before {
+    &[data-task-status="running"]:before {
       content: "";
       background-color: $blue;
       bottom: 0;

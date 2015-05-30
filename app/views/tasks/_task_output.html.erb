@@ -5,7 +5,7 @@
   <div class="sidebar-plugins"></div>
 </div>
 
-<div class="deploy-main">
+<div class="deploy-main" data-repo-full-name="<%= @stack.github_repo_name %>">
   <span class="deploy-tasks"></span>
   <div class="deploy-banner <%= task.status %>" data-task-status="<%= task.status %>">
     <div class="wrapper">
