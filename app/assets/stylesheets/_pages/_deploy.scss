@@ -87,12 +87,19 @@ pre.nowrap {
   white-space: pre;
 }
 
-.sidebar {
+.sidebar + .deploy-main {
+  margin-left: 300px;
+  .deploy-banner .wrapper {
+    width: 100%;
+    margin: 0 1.5rem;
+  }
+}
+
+.sidebar-plugins {
+  position: fixed;
   background-color: #2e343a;
   width: 300px;
-  box-sizing: border-box;
-  flex: 0 0 300px;
-  order: -1;
-  height: 3000px;
-  float: left;
+  &.sticky {
+    top: 0;
+  }
 }

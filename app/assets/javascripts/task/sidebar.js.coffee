@@ -14,7 +14,7 @@ class @Sidebar
     @$outerContainer = @$container.parent()
 
   updatePosition: =>
-    @$outerContainer.toggleClass('fixed', @$window.scrollTop() > @minTop)
+    @$container.toggleClass('sticky', @$window.scrollTop() > @minTop)
     @$container.height($(window).height() - @$container[0].getBoundingClientRect().top)
 
   newWidgetContainer: ->

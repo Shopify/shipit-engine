@@ -1,33 +1,35 @@
 <%= render partial: 'tasks/plugins' %>
 <%= render partial: "stacks/header", locals: { stack: @stack } %>
 
-<span class="deploy-tasks"></span>
-<div class="deploy-banner <%= @deploy.status %>" data-task-status="<%= @deploy.status %>">
-  <div class="wrapper">
-    <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
-    <span class="deploy-status">
-      <% if @deploy.rollback? %>
-        rolling back to
-      <% else %>
-        deploying
-      <% end %>
-      <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
-      <%= timeago_tag(@deploy.created_at, force: true) %> at <%= @deploy.created_at %>
-    </span>
-
-    <span class="deploy-abort" data-task-status="<%= @deploy.status %>">
-      <%= link_to abort_stack_task_path(@stack, @deploy), class: 'btn btn--delete deploy-action' do %>
-      <span class="ready">Abort Deploy</span>
-      <span class="disabled">Aborting</span>
-      <% end %>
-    </span>
-  </div>
-</div>
-
 <div class="sidebar">
   <div class="sidebar-plugins"></div>
 </div>
 
-<pre class="nowrap">
-<code data-task-status="<%= @deploy.status %>" data-next-chunks-url="<%= next_chunks_url(@deploy) %>"><%= @deploy.chunk_output %></code>
-</pre>
+<div class="deploy-main">
+  <span class="deploy-tasks"></span>
+  <div class="deploy-banner <%= @deploy.status %>" data-task-status="<%= @deploy.status %>">
+    <div class="wrapper">
+      <a href="#" class="user main-user disabled"><%= @deploy.author.name %></a>
+      <span class="deploy-status">
+        <% if @deploy.rollback? %>
+          rolling back to
+        <% else %>
+          deploying
+        <% end %>
+        <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
+        <%= timeago_tag(@deploy.created_at, force: true) %> at <%= @deploy.created_at %>
+      </span>
+
+      <span class="deploy-abort" data-task-status="<%= @deploy.status %>">
+        <%= link_to abort_stack_task_path(@stack, @deploy), class: 'btn btn--delete deploy-action' do %>
+        <span class="ready">Abort Deploy</span>
+        <span class="disabled">Aborting</span>
+        <% end %>
+      </span>
+    </div>
+  </div>
+
+  <pre class="nowrap">
+  <code data-task-status="<%= @deploy.status %>" data-next-chunks-url="<%= next_chunks_url(@deploy) %>"><%= @deploy.chunk_output %></code>
+  </pre>
+</div>
