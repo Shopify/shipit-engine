@@ -10,16 +10,11 @@ env:
     - SUITE=rubocop
 rvm:
   - 2.1
-  - 2.2
 matrix:
   fast_finish: true
-  exclude:
-    - env: SUITE=rubocop
-      rvm: 2.2
-    - env: SUITE=pg
-      rvm: 2.2
-    - env: SUITE=mysql
-      rvm: 2.2
+  include:
+    - rvm: 2.2
+      env: SUITE=sqlite3
 notifications:
   email: false
 services:
