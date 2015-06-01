@@ -26,7 +26,7 @@
     </li>
     <% if stack.deploy_url.present? %>
       <li class="nav__list__item">
-        <%= link_to stack.deploy_url, stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
+        <%= link_to 'View website', stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
       </li>
     <% end %>
   </ul>
