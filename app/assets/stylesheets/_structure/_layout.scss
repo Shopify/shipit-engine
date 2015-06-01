@@ -21,6 +21,7 @@
 
 .header__inner {
   display: flex;
+  flex-wrap: wrap;
   padding: 1.5em 0;
   position: relative;
 }
@@ -30,7 +31,11 @@
 }
 
 .header__page-actions {
-  flex-shrink: 0;
+
+}
+
+.header__btn {
+  margin: .4em .5em .4em 0;
 }
 
 
