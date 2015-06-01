@@ -8,9 +8,9 @@ class Task < ActiveRecord::Base
 
   serialize :definition, TaskDefinition
 
-  scope :success,   -> { where(status: 'success') }
+  scope :success, -> { where(status: 'success') }
   scope :completed, -> { where(status: %w(success error failed)) }
-  scope :active,    -> { where(status: %w(pending running)) }
+  scope :active, -> { where(status: %w(pending running)) }
 
   scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 

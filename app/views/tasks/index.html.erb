@@ -1,0 +1,25 @@
+<%= render partial: "stacks/header", locals: { stack: @stack } %>
+
+<div class="wrapper">
+  <section>
+    <ul class="task-list">
+      <%= render @tasks, read_only: true %>
+    </ul>
+  </section>
+</div>
+
+<div class="wrapper">
+  <section class="pagination">
+    <% if params[:since].present? %>
+      <%= link_to 'Start', @links[:first], class: 'header__btn btn' %>
+    <% else %>
+      <%= link_to 'Start', '', class: 'header__btn btn btn--disabled disabled' %>
+    <% end %>
+
+    <% if url = @links[:next] %>
+      <%= link_to 'Older', url, class: 'header__btn btn' %>
+    <% else %>
+      <%= link_to 'Older', '', class: 'header__btn btn btn--disabled disabled' %>
+    <% end %>
+  </section>
+</div>

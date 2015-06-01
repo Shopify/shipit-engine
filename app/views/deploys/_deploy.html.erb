@@ -1,4 +1,6 @@
-<li class="commit" id="task-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
+<%- read_only ||= false -%>
+
+<li class="task deploy" id="task-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
   <%= render 'commits/commit_author', commit: deploy %>
   <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <i class="status__icon"></i>
@@ -18,13 +20,15 @@
       <span class="code-deletions">-<%= deploy.deletions %></span>
     </p>
   </div>
-  <div class="commit-actions">
-    <% if deploy.rollbackable? %>
-      <% if deploy.stack.deploying? %>
-        <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
-      <% else %>
-        <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn btn--delete deploy-action rollback-action' %>
+  <% unless read_only %>
+    <div class="commit-actions">
+      <% if deploy.rollbackable? %>
+        <% if deploy.stack.deploying? %>
+          <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
+        <% else %>
+          <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn btn--delete deploy-action rollback-action' %>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </li>

@@ -2,12 +2,12 @@
 // COMMIT LIST
 // =============================================================================
 
-.commit-list {
+.commit-list, .task-list {
   list-style-type: none;
   margin: 0; padding: 0;
 }
 
-.commit {
+.commit, .task {
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
