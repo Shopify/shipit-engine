@@ -4,10 +4,10 @@
   </header>
 
   <ul class="deploy-checklist">
-    <%- stack.checklist.each do |check| -%>
+    <%- stack.checklist.each_with_index do |check, index| -%>
       <li class="deploy-checklist__item">
-        <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox' %>
-        <label class="deploy-checklist__item__label">
+        <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox', id: "checkbox_#{index}" %>
+        <label class="deploy-checklist__item__label" for="checkbox_<%= index %>">
           <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
         </label>
       </li>
