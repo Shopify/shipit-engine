@@ -6,8 +6,8 @@
   <ul class="deploy-checklist">
     <%- stack.checklist.each do |check| -%>
       <li class="deploy-checklist__item">
+        <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox' %>
         <label class="deploy-checklist__item__label">
-          <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox' %>
           <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
         </label>
       </li>

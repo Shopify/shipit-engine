@@ -6,10 +6,11 @@
 
 .deploy-checklist__item {
   margin-bottom: 1rem;
+  display: flex;
 }
 
 .deploy-checklist__item__label {
-  display: flex;
+
 }
 
 .deploy-checklist__item__checkbox {
