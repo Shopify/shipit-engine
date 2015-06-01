@@ -98,7 +98,7 @@ pre.nowrap {
 .sidebar {
   background-color: $slate;
   color: white;
-  overflow-y: scroll;
+  overflow: hidden;
   height: 100%;
   position: absolute;
   width: 0px;
@@ -109,4 +109,13 @@ pre.nowrap {
     top: 0;
     position: fixed;
   }
+}
+
+.sidebar-plugins {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 20px;
+  padding-left: 15px;
 }
