@@ -22,7 +22,7 @@ jQuery ($) ->
 
   updatePage = (message) ->
     payload = JSON.parse(message.data)
-    $('.layout').load("#{payload.url} .layout > *", -> $('time[data-time-ago]').timeago())
+    $('[data-layout-content]').load("#{payload.url} [data-layout-content] > *", -> $('time[data-time-ago]').timeago())
 
   listenToEventSource = (url) ->
     source = new EventSource(url)
