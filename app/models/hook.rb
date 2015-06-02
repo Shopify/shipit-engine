@@ -57,10 +57,6 @@ class Hook < ActiveRecord::Base
     end
   end
 
-  def global?
-    !stack_id?
-  end
-
   def scoped?
     stack_id?
   end

@@ -40,4 +40,12 @@ class HookTest < ActiveSupport::TestCase
     assert_equal 'foo=42', delivery.payload
     assert_equal 'scheduled', delivery.status
   end
+
+  test ".scoped? returns true if the hook have a stack_id" do
+    @hook.stack_id = nil
+    refute @hook.scoped?
+
+    @hook.stack_id = 42
+    assert @hook.scoped?
+  end
 end
