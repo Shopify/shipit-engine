@@ -122,6 +122,13 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal "http://shipit.com/shopify/shipit2/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
   end
 
+  test "#perform calls cap $environment deploy with the LAST_DEPLOYED_SHA in the environment" do
+    commands = @commands.perform
+    assert_equal 1, commands.length
+    command = commands.first
+    assert_equal @deploy.stack.last_deployed_commit.sha, command.env['LAST_DEPLOYED_SHA']
+  end
+
   test "#perform transliterates the user name" do
     @deploy.user = User.new(login: 'Sirupsen', name: "Simon Hørup Eskildsen")
     commands = @commands.perform
