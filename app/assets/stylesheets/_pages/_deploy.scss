@@ -88,6 +88,10 @@ pre.nowrap {
   white-space: pre;
 }
 
+.code-preview {
+  margin: 1.5rem 0;
+}
+
 .sidebar.enabled + .deploy-main {
   margin-left: 300px;
   .deploy-banner .wrapper {

@@ -200,10 +200,6 @@ class Stack < ActiveRecord::Base
     cached_deploy_spec.review_monitoring.select(&:present?)
   end
 
-  def checklist?
-    checklist.present?
-  end
-
   def checklist
     return [] unless cached_deploy_spec
     cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)

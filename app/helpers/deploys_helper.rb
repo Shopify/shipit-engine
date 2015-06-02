@@ -1,7 +1,7 @@
 module DeploysHelper
-  def render_checklist(stack)
-    return '' unless stack.checklist?
-    render 'deploys/checklist', stack: stack
+  def render_checklist(checklist)
+    return '' if checklist.blank?
+    render 'deploys/checklist', checklist: checklist
   end
 
   def render_monitoring(stack)

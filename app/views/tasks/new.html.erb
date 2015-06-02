@@ -8,8 +8,10 @@
   </section>
 
   <section>
-    <pre class="nowrap"><code><%= @task.definition.steps.join("\n") %></code></pre>
+    <pre class="nowrap code-preview"><code><%= @task.definition.steps.join("\n") %></code></pre>
   </section>
+
+  <%= render_checklist @task.checklist %>
 
   <section class="submit-section">
     <%= form_for @task, url: stack_tasks_path(@stack, definition_id: @task.definition.id) do |f| %>
