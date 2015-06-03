@@ -1,5 +1,15 @@
 class TasksController < ShipitController
+  include Pagination
+
   before_action :stack
+
+  self.default_page_size = 20
+
+  def index
+    paginator = paginate(stack.tasks)
+    @tasks = paginator.to_a
+    @links = paginator.links
+  end
 
   def new
     @definition = stack.find_task_definition(params[:definition_id])

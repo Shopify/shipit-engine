@@ -79,7 +79,7 @@ stacks = 3.times.map do
 end
 
 stacks.each do |stack|
-  20.times do |i|
+  50.times do |i|
     user = users.sample
 
     commit = Commit.create!(
@@ -122,7 +122,7 @@ def create_chunks
 end
 
 stacks.each do |stack|
-  stack.commits.limit(15).each_slice(5).each do |commits|
+  stack.commits.limit(45).each_slice(2).each do |commits|
     deploy = stack.deploys.create!(
       since_commit_id: commits.first.id,
       until_commit_id: commits.last.id,

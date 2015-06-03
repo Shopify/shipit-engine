@@ -12,7 +12,7 @@ PATH
       jquery-rails (~> 4.0.3)
       octokit (~> 3.8.0)
       omniauth-github (~> 1.1.2)
-      pubsubstub (~> 0.0.11)
+      pubsubstub (~> 0.0.9)
       rails (~> 4.2.1)
       rails-timeago (~> 2.11.1)
       redis-objects (= 1.2.0)

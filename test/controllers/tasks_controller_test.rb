@@ -31,4 +31,16 @@ class TasksControllerTest < ActionController::TestCase
     post :abort, stack_id: @stack.to_param, id: @task.id
     assert_response :success
   end
+
+  test ":index list the stack deploys" do
+    get :index, stack_id: @stack.to_param
+    assert_response :success
+    assert_select '.task-list .task', @stack.tasks.count
+  end
+
+  test ":index paginates with the `since` parameter" do
+    get :index, stack_id: @stack.to_param, since: @stack.tasks.last.id
+    assert_response :success
+    assert_select '.task-list .task', @stack.tasks.count - 1
+  end
 end

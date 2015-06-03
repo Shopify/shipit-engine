@@ -23,6 +23,7 @@ require 'redis-objects'
 require 'octokit'
 require 'faraday-http-cache'
 
+require 'shipit/paginator'
 require 'shipit/null_serializer'
 require 'shipit/csv_serializer'
 require 'shipit/octokit_iterator'

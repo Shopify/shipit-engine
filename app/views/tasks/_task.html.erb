@@ -1,4 +1,4 @@
-<li class="commit" id="task-<%= task.id %>" data-task-status="<%= task.status %>">
+<li class="task" id="task-<%= task.id %>" data-task-status="<%= task.status %>">
   <%= render 'commits/commit_author', commit: task %>
   <a href="<%= stack_task_path(@stack, task) %>" class="status status--<%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
     <i class="status__icon"></i>

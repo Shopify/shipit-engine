@@ -44,6 +44,7 @@ Shipit::Engine.routes.draw do
     resources :rollbacks, only: %i(create)
     resources :tasks, only: %i(show) do
       collection do
+        get '' => 'tasks#index', as: :index
         get ':definition_id/new' => 'tasks#new', as: :new
         post ':definition_id' => 'tasks#create', as: ''
       end
