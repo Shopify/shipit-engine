@@ -14,13 +14,14 @@ class TaskDefinition
     end
   end
 
-  attr_reader :id, :action, :description, :steps
+  attr_reader :id, :action, :description, :steps, :checklist
 
   def initialize(id, config)
     @id = id
     @action = config['action']
     @description = config['description'] || ''
     @steps = config['steps'] || []
+    @checklist = config['checklist'] || []
   end
 
   def as_json
@@ -29,6 +30,7 @@ class TaskDefinition
       action: action,
       description: description,
       steps: steps,
+      checklist: checklist,
     }
   end
 end

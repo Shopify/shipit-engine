@@ -42,6 +42,8 @@ class Task < ActiveRecord::Base
 
   delegate :acquire_git_cache_lock, to: :stack
 
+  delegate :checklist, to: :definition
+
   def spec
     @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
   end

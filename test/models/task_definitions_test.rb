@@ -25,6 +25,7 @@ class TaskDefinitionsTest < ActiveSupport::TestCase
       action: 'Restart application',
       description: 'Restart app and job servers',
       steps: ['touch tmp/restart'],
+      checklist: [],
     }
     assert_equal as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json
   end

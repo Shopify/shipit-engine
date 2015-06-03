@@ -45,6 +45,10 @@ stacks = 3.times.map do
             "description": "Restart Thin and Resque.",
             "steps": [
               "bundle exec cap $ENVIRONMENT deploy:restart"
+            ],
+            "checklist": [
+              "Hold on your butts",
+              "Eat some chips"
             ]
           }
         },
@@ -55,7 +59,8 @@ stacks = 3.times.map do
         },
         "review": {
           "checklist": [
-
+            "Hold on your butts",
+            "Eat some chips"
           ]
         },
         "deploy": {

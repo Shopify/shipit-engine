@@ -25,7 +25,7 @@
 
   <%= render_monitoring @stack %>
 
-  <%= render_checklist @stack %>
+  <%= render_checklist @stack.checklist %>
 
   <section class="submit-section">
     <%= form_for [@stack, @deploy] do |f| %>

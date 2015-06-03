@@ -4,7 +4,7 @@
   </header>
 
   <ul class="deploy-checklist">
-    <%- stack.checklist.each_with_index do |check, index| -%>
+    <%- checklist.each_with_index do |check, index| -%>
       <li class="deploy-checklist__item">
         <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox', id: "checkbox_#{index}" %>
         <label class="deploy-checklist__item__label" for="checkbox_<%= index %>">
