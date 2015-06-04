@@ -90,6 +90,12 @@ class DeploySpecTest < ActiveSupport::TestCase
     refute @spec.bundle_install.last.include?('--frozen')
   end
 
+  test '#bundle_install does not have --frozen if overridden in shipit.yml' do
+    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'frozen' => false}})
+    @spec.stubs(:gemfile_lock_exists?).returns(true)
+    refute @spec.bundle_install.last.include?('--frozen')
+  end
+
   test '#deploy_steps returns `deploy.override` if present' do
     @spec.stubs(:load_config).returns('deploy' => {'override' => %w(foo bar baz)})
     assert_equal %w(foo bar baz), @spec.deploy_steps
