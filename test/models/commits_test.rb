@@ -13,6 +13,12 @@ class CommitsTest < ActiveSupport::TestCase
     refute @commit.pull_request?
   end
 
+  test "#pull_request? detects pull requests with unusual branch names" do
+    @pr.message = "Merge pull request #7 from Shopify/bump-to-v1.0.1\n\nBump to v1.0.1"
+    assert @pr.pull_request?
+    assert_equal "Bump to v1.0.1", @pr.pull_request_title
+  end
+
   test "#pull_request_id extract the pull request id from the message" do
     assert_equal 31, @pr.pull_request_id
     assert_nil @commit.pull_request_id

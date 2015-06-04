@@ -118,7 +118,7 @@ class Commit < ActiveRecord::Base
   end
 
   def parsed
-    @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-\_\/]+\n\n(?<pr_title>.*)/)
+    @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-.\/]+\n\n(?<pr_title>.*)/)
   end
 
   def schedule_continuous_delivery
