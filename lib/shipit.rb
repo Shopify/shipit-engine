@@ -46,7 +46,7 @@ module Shipit
   extend self
 
   def app_name
-    @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first
+    @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end
 
   def redis_url

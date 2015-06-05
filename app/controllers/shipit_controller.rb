@@ -20,7 +20,7 @@ class ShipitController < ApplicationController
   def ensure_required_settings
     return if Shipit.all_settings_present?
 
-    render 'missing_settings', layout: false
+    render 'missing_settings'
   end
 
   def force_github_authentication
