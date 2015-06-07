@@ -19,6 +19,9 @@
   background-color: $blue;
   color: #fff;
   box-shadow: none;
+  &.btn--disabled {
+    box-shadow: 0 0 0 1px rgba(#000, 0.15);
+  }
 }
 
 .btn--disabled {
