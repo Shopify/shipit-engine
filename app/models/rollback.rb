@@ -3,6 +3,10 @@ class Rollback < Deploy
     true
   end
 
+  def rollbackable?
+    false
+  end
+
   def commits
     return Commit.none unless stack
 
