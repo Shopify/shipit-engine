@@ -43,7 +43,7 @@ class StackCommands < Commands
   end
 
   def git_clone(url, path, branch: 'master', **kwargs)
-    git('clone', *modern_git_args, '--branch', branch, url, path, **kwargs)
+    git('clone', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
   end
 
   def modern_git_args
