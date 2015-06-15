@@ -78,8 +78,7 @@ class Commit < ActiveRecord::Base
     end
   end
 
-  delegate :pending?, :success?, :error?, :failure?, to: :significant_status
-  delegate :state, to: :significant_status # deprecated
+  delegate :pending?, :success?, :error?, :failure?, :state, to: :significant_status
 
   def deployable?
     success? || stack.ignore_ci?
