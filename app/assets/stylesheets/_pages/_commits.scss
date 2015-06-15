@@ -7,6 +7,10 @@
   margin: 0; padding: 0;
 }
 
+.commit-list-actions {
+  float: right;
+}
+
 .commit, .task {
   padding: 1rem 0;
   display: flex;

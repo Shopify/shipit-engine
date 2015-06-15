@@ -1,10 +1,10 @@
 module StacksHelper
-  DISABLED_BUTTON = %w(btn--disabled disabled).freeze
-
   def deploy_button(commit)
     url = new_stack_deploy_path(@stack, sha: commit.sha)
     classes = %W(btn btn--primary deploy-action #{commit.state})
-    classes << 'btn--disabled' << 'disabled' if deploy_button_disabled?(commit)
+    if deploy_button_disabled?(commit)
+      classes.push(params[:force].present? ? 'btn--warning' : 'btn--disabled')
+    end
 
     link_to(deploy_button_caption(commit), url, class: classes)
   end
