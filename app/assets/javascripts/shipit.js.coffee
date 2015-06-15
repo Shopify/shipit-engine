@@ -17,7 +17,7 @@
 #= require_tree ./shipit
 #= require_self
 
-$(document).on 'click', 'a.disabled', (event) ->
+$(document).on 'click', '.disabled, .btn--disabled', (event) ->
   event.preventDefault()
 
 jQuery ->

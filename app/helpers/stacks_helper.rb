@@ -1,4 +1,14 @@
 module StacksHelper
+  def deploy_button(commit)
+    url = new_stack_deploy_path(@stack, sha: commit.sha)
+    classes = %W(btn btn--primary deploy-action #{commit.state})
+    if deploy_button_disabled?(commit)
+      classes.push(params[:force].present? ? 'btn--warning' : 'btn--disabled')
+    end
+
+    link_to(deploy_button_caption(commit), url, class: classes)
+  end
+
   def github_change_url(commit)
     commit.pull_request_url || github_commit_url(commit)
   end
@@ -25,5 +35,25 @@ module StacksHelper
 
   def render_raw_commit_id_link(commit)
     link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
+  end
+
+  private
+
+  def deploy_button_disabled?(commit)
+    !commit.deployable? || commit.stack.locked?
+  end
+
+  def deploy_button_caption(commit)
+    return 'Locked' if commit.stack.locked?
+
+    if commit.deployable?
+      return 'Deploy in progress...' if commit.stack.deploying?
+      return 'Deploy'
+    end
+
+    return 'CI Pending...' if commit.pending?
+    return 'CI Failure' if commit.failure?
+    return 'CI Error' if commit.error?
+    'Not Run'
   end
 end
