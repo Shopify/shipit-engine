@@ -44,16 +44,13 @@ module StacksHelper
   end
 
   def deploy_button_caption(commit)
-    return 'Locked' if commit.stack.locked?
-
-    if commit.deployable?
-      return 'Deploy in progress...' if commit.stack.deploying?
-      return 'Deploy'
+    case
+    when commit.stack.locked? then 'Locked'
+    when commit.deployable? then commit.stack.deploying? ? 'Deploy in progress...' : 'Deploy'
+    when commit.pending? then 'CI Pending...'
+    when commit.failure? then 'CI Failure'
+    when commit.error? then 'CI Error'
+    else 'Not Run'
     end
-
-    return 'CI Pending...' if commit.pending?
-    return 'CI Failure' if commit.failure?
-    return 'CI Error' if commit.error?
-    'Not Run'
   end
 end
