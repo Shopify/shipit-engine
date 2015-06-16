@@ -212,6 +212,11 @@ class Stack < ActiveRecord::Base
     cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
   end
 
+  def checks?
+    return false unless cached_deploy_spec
+    cached_deploy_spec.review_checks.present?
+  end
+
   def update_undeployed_commits_count(after_commit = nil)
     after_commit ||= last_deployed_commit
     undeployed_commits = commits.reachable.select('count(*) as count').where('id > ?', after_commit.id)

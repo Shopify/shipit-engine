@@ -46,15 +46,18 @@
   }
 
 pre {
-  background-color: #272c30;
+  background-color: $terminal-black;
   overflow-x: auto;
   color: #fff;
   padding: 1.5rem;
   line-height: 1.5em;
-  margin-top: -.25rem;
-  margin-bottom: -3rem;
   font-family: "Source Code Pro";
   white-space: pre-wrap;
+  &.nowrap {
+    white-space: pre;
+    margin-top: -.25rem;
+    margin-bottom: -3rem;
+  }
 }
 
 .number {

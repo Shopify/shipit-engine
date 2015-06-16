@@ -5,12 +5,15 @@ class @Notifications
     error: '<%= image_path "deploy_error.jpg" %>'
 
   @init: (outputStream) ->
-    outputStream.addEventListener('status', new this().statusUpdated)
+    if repoName = $('[data-repo-full-name]').attr('data-repo-full-name')
+      outputStream.addEventListener('status', new this(repoName).statusUpdated)
+
+  constructor: (@repoName) ->
 
   statusUpdated: (task) =>
     return if task.status in ['pending', 'running']
     return unless $.notifyCheck() == $.NOTIFY_ALLOWED
-    $.notify(@url(task), @title(task), @message(task))
+    $.notify(@url(task), @repoName, @message(task))
 
   url: (task) ->
     IMAGES[task.status]
@@ -26,6 +29,3 @@ class @Notifications
         'Error while deploying ' + deployShortSha + ' .'
       else
         'Your deploy of ' + deployShortSha + ' ended with status: ' + task.status
-
-  title: (task) ->
-    $('[data-repo-full-name]').attr('data-repo-full-name')

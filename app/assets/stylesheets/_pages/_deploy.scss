@@ -84,10 +84,6 @@
   100% { width: 50%; left: 100%; }
 }
 
-pre.nowrap {
-  white-space: pre;
-}
-
 .code-preview {
   margin: 1.5rem 0;
 }
@@ -123,4 +119,21 @@ pre.nowrap {
   overflow-x: hidden;
   padding-right: 20px;
   padding-left: 15px;
+}
+
+.commit-checks {
+  border: .25rem solid $terminal-black;
+  &[data-status="success"] {
+    border-color: $green;
+  }
+
+  &[data-status="failure"],
+  &[data-status="error"] {
+    border-color: $bright-red;
+  }
+
+  &[data-status="scheduled"],
+  &[data-status="running"] {
+    border-color: $dark_yellow;
+  }
 }

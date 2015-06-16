@@ -78,6 +78,10 @@ class Commit < ActiveRecord::Base
     end
   end
 
+  def checks
+    @checks ||= CommitChecks.new(self)
+  end
+
   delegate :pending?, :success?, :error?, :failure?, :state, to: :significant_status
 
   def deployable?

@@ -31,13 +31,14 @@ class StackCommands < Commands
     end
   end
 
-  def with_temporary_working_directory
+  def with_temporary_working_directory(commit: nil)
     @stack.acquire_git_cache_lock do
       fetch.run!
       git('checkout', '--force', "origin/#{@stack.branch}", env: env, chdir: @stack.git_path).run!
     end
     Dir.mktmpdir do |dir|
       git('clone', @stack.git_path, @stack.repo_name, chdir: dir).run!
+      git('checkout', commit.sha, chdir: dir) if commit
       yield Pathname.new(File.join(dir, @stack.repo_name))
     end
   end

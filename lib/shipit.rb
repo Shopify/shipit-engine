@@ -19,6 +19,7 @@ require 'safe_yaml/load'
 require 'securecompare'
 
 require 'redis-objects'
+require 'redis-namespace'
 
 require 'octokit'
 require 'faraday-http-cache'
@@ -54,8 +55,10 @@ module Shipit
     @redis_url = secrets.redis_url.present? ? URI(secrets.redis_url) : nil
   end
 
-  def redis
+  def redis(namespace = nil)
     @redis ||= Redis.new(url: redis_url.to_s, logger: Rails.logger)
+    return @redis unless namespace
+    Redis::Namespace.new(namespace, redis: @redis)
   end
 
   def github_domain

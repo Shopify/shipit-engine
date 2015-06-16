@@ -1,12 +1,17 @@
 module DeploysHelper
   def render_checklist(checklist)
-    return '' if checklist.blank?
+    return if checklist.blank?
     render 'deploys/checklist', checklist: checklist
   end
 
   def render_monitoring(stack)
-    return '' unless stack.monitoring?
+    return unless stack.monitoring?
     render 'deploys/monitoring', stack: stack
+  end
+
+  def render_checks(commit)
+    return unless commit.stack.checks?
+    render 'deploys/checks', commit: commit
   end
 
   def render_monitoring_panel(panel_spec)
