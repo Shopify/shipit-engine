@@ -12,21 +12,21 @@
 /db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-/shared/*
-/config/database.yml
-/config/secrets.yml
-/data/*
-/coverage/*
-/public/assets/*
+log/*
+tmp/*
+shared/*
+config/database.yml
+config/secrets.yml
+data/*
+coverage/*
+public/assets/*
 pkg/
-/test/dummy/db/*.sqlite3
-/test/dummy/db/*.sqlite3-journal
-/test/dummy/db/migrate/*.rb
-/test/dummy/log/*.log
-/test/dummy/tmp/*
-/test/dummy/data/*
-/test/dummy/.sass-cache
-/test/dummy/config/secrets.yml
+test/dummy/db/*.sqlite3
+test/dummy/db/*.sqlite3-journal
+test/dummy/db/migrate/*.rb
+test/dummy/log/*.log
+test/dummy/tmp/*
+test/dummy/data/*
+test/dummy/.sass-cache
+test/dummy/config/secrets.yml
 
