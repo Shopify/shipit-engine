@@ -283,8 +283,6 @@ development:
 
 If you specify an `access_token`, you don't need a `login` and `password`. The opposite is also true:  if you specify a `login` and `password`, then you don't need an `access_token`.
 
-If you use GitHub Enterprise, you must also specify the `api_endpoint`.
-
 For example:
 
 ```yml
@@ -310,6 +308,17 @@ For example:
 ```yml
 development:
   redis_url: "redis://127.0.0.1:6379/7"
+```
+
+<br>
+
+If you use GitHub Enterprise, you must also specify the `github_domain`.
+
+For example:
+```yml
+development:
+  github_domain: "github.example.com"
+
 ```
 
 <h2 id="script-parameters">Script parameters</h2>
