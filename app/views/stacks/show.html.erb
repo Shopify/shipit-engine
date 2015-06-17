@@ -7,7 +7,8 @@
         <h2 class="banner__title">Heads Up!</h2>
         <p class="banner__text">
           This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.<br>
-          You can either configure CI yourself, or ignore CI and deploy any commits you want.
+          You can either <a href="https://developer.github.com/v3/repos/statuses/">configure your CI to push statuses to GitHub</a>,
+          or ignore CI and deploy any commits you want.
         </p>
         <%= button_to "Ignore CI", stack_path(@stack, stack: {ignore_ci: true}, return_to: stack_path(@stack)), method: :patch, class: 'banner__btn btn' %>
       </div>
