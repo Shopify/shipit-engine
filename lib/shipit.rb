@@ -118,7 +118,7 @@ module Shipit
   end
 
   def github_oauth_options
-    return unless github_enterprise?
+    return {} unless github_enterprise?
     {
       site: github_api_endpoint,
       authorize_url: github_url('/login/oauth/authorize'),
