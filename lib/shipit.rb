@@ -71,7 +71,7 @@ module Shipit
     path ? File.join(@github_url, path) : @github_url
   end
 
-  def github_api_url
+  def github_api_endpoint
     github_url('/api/v3/') if github_enterprise?
   end
 
@@ -90,7 +90,7 @@ module Shipit
   end
 
   def github_api_credentials
-    {api_endpoint: github_api_url}.merge((Rails.application.secrets.github_api || {}).symbolize_keys)
+    {api_endpoint: github_api_endpoint}.merge((Rails.application.secrets.github_api || {}).symbolize_keys)
   end
 
   def api_clients_secret
@@ -120,7 +120,7 @@ module Shipit
   def github_oauth_options
     return unless github_enterprise?
     {
-      site: github_api_url,
+      site: github_api_endpoint,
       authorize_url: github_url('/login/oauth/authorize'),
       token_url: github_url('/login/oauth/access_token'),
     }
