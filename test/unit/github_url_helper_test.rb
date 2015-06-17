@@ -3,10 +3,6 @@ require 'test_helper'
 class GithubUrlHelperTest < ActiveSupport::TestCase
   include GithubUrlHelper
 
-  test "#github_url returns the base github url" do
-    assert_equal "https://github.com", github_url
-  end
-
   test "#github_user_url returns a user url" do
     assert_equal "https://github.com/tobi", github_user_url("tobi")
   end

@@ -58,6 +58,23 @@ module Shipit
     @redis ||= Redis.new(url: redis_url.to_s, logger: Rails.logger)
   end
 
+  def github_domain
+    @github_domain ||= secrets.github_domain.presence || 'github.com'.freeze
+  end
+
+  def github_enterprise?
+    github_domain != 'github.com'
+  end
+
+  def github_url(path = nil)
+    @github_url ||= "https://#{github_domain}".freeze
+    path ? File.join(@github_url, path) : @github_url
+  end
+
+  def github_api_url
+    github_url('/api/v3/') if github_enterprise?
+  end
+
   def github_api
     @github_api ||= begin
       client = Octokit::Client.new(github_api_credentials)
@@ -73,7 +90,7 @@ module Shipit
   end
 
   def github_api_credentials
-    (Rails.application.secrets.github_api || {}).symbolize_keys
+    {api_endpoint: github_api_url}.merge((Rails.application.secrets.github_api || {}).symbolize_keys)
   end
 
   def api_clients_secret
@@ -98,6 +115,15 @@ module Shipit
 
   def github_oauth_credentials
     secrets.github_oauth || {}
+  end
+
+  def github_oauth_options
+    return unless github_enterprise?
+    {
+      site: github_api_url,
+      authorize_url: github_url('/login/oauth/authorize'),
+      token_url: github_url('/login/oauth/access_token'),
+    }
   end
 
   def all_settings_present?

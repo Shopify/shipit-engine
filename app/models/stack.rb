@@ -120,11 +120,11 @@ class Stack < ActiveRecord::Base
   end
 
   def repo_http_url
-    "https://github.com/#{repo_owner}/#{repo_name}"
+    Shipit.github_url("#{repo_owner}/#{repo_name}")
   end
 
   def repo_git_url
-    "git@github.com:#{repo_owner}/#{repo_name}.git"
+    "git@#{Shipit.github_domain}:#{repo_owner}/#{repo_name}.git"
   end
 
   def base_path

@@ -22,7 +22,13 @@ module Shipit
       if Shipit.github_oauth_credentials
         OmniAuth::Strategies::GitHub.configure path_prefix: '/github/auth'
         app.middleware.use OmniAuth::Builder do
-          provider(:github, Shipit.github_oauth_id, Shipit.github_oauth_secret, scope: 'email')
+          provider(
+            :github,
+            Shipit.github_oauth_id,
+            Shipit.github_oauth_secret,
+            scope: 'email',
+            client_options: Shipit.github_oauth_options,
+          )
         end
       end
     end

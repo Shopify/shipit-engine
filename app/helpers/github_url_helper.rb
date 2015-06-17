@@ -1,8 +1,4 @@
 module GithubUrlHelper
-  def github_url
-    "https://github.com"
-  end
-
   def github_avatar(user, options = {})
     uri = user.avatar_uri
     attributes = options.slice(:class).merge(alt: user.try!(:name))
@@ -21,7 +17,7 @@ module GithubUrlHelper
   end
 
   def github_user_url(user, *args)
-    [github_url, user, *args].join('/')
+    [Shipit.github_url, user, *args].join('/')
   end
 
   def render_github_user(user)
