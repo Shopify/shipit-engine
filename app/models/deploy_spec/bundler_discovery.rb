@@ -22,7 +22,13 @@ class DeploySpec
     end
 
     def remove_ruby_version_from_gemfile
-      %q(sed -i '/^ruby\s/d' Gemfile) # Heroku apps often specify a ruby version.
+      # Heroku apps often specify a ruby version.
+      if /darwin/ =~ RUBY_PLATFORM
+        # OSX is nitpicky about the -i.
+        %q(sed -i '' '/^ruby\s/d' Gemfile)
+      else
+        %q(sed -i '/^ruby\s/d' Gemfile)
+      end
     end
 
     def frozen_flag
