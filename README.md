@@ -283,7 +283,7 @@ development:
 
 If you specify an `access_token`, you don't need a `login` and `password`. The opposite is also true:  if you specify a `login` and `password`, then you don't need an `access_token`.
 
-The `api_endpoint` is optional, and required only if you want to use a proxy.
+If you use GitHub Enterprise, you must also specify the `api_endpoint`.
 
 For example:
 
