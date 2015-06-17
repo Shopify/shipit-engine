@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency 'rails', '~> 4.2.1'
+  s.add_dependency 'rails', '~> 4.2.2'
   s.add_dependency 'securecompare', '~> 1.0.0'
   s.add_dependency 'validate_url', '~> 1.0.0'
   s.add_dependency 'explicit-parameters', '~> 0.0.3'
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sprockets', '>= 2.12.3'
   s.add_dependency 'sass-rails', '~> 5.0.3'
   s.add_dependency 'coffee-rails', '~> 4.1.0'
-  s.add_dependency 'jquery-rails', '~> 4.0.3'
+  s.add_dependency 'jquery-rails', '~> 4.0.4'
   s.add_dependency 'rails-timeago', '~> 2.11.1'
   s.add_dependency 'ansi_stream', '~> 0.0.6'
   s.add_dependency 'autoprefixer-rails', '~> 5.1.11'
