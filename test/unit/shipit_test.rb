@@ -38,4 +38,9 @@ class ShipitTest < ActiveSupport::TestCase
     Rails.application.secrets.stubs(:github_domain).returns('github.example.com')
     assert_equal 'https://github.example.com/api/v3/', Shipit.github_api_endpoint
   end
+
+  test ".github_oauth_options returns an empty hash if not enterprise" do
+    refute Shipit.github_enterprise?
+    assert_equal({}, Shipit.github_oauth_options)
+  end
 end
