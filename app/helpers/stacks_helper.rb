@@ -51,6 +51,7 @@ module StacksHelper
     when commit.failure? then 'CI Failure'
     when commit.error? then 'CI Error'
     else 'Not Run'
+    end
   end
 
   def render_status(commit)
