@@ -5,14 +5,10 @@
 
 
 <% content_for :primary_navigation do %>
-  <%= link_to 'Refresh statuses & commits', stack_refresh_path(stack), method: 'post', class: "header__btn btn" %>
-  <% stack.task_definitions.each do |definition| %>
-      <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: %w(header__btn stack-action btn trigger-deploy) %>
-  <% end %>
+
 <% end %>
 
 <% content_for :secondary_navigation do %>
-  <ul class="nav__list nav__list--primary">
     <li class="nav__list__item">
       <%= link_to "Commits & Deploys", stack_path(stack) %>
     </li>
@@ -22,15 +18,12 @@
     <li class="nav__list__item">
       <%= link_to 'Timeline', index_stack_tasks_path(stack) %>
     </li>
-  </ul>
-  <ul class="nav__list nav__list--secondary">
     <li class="nav__list__item">
       <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name) %>
     </li>
     <% if stack.deploy_url.present? %>
       <li class="nav__list__item">
-        <%= link_to 'View website', stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
+        <%= link_to 'Website', stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
       </li>
     <% end %>
-  </ul>
 <% end %>

@@ -30,9 +30,6 @@
   flex-grow: 1;
 }
 
-.header__page-actions {
-
-}
 
 .header__btn {
   margin: .4em .5em .4em 0;
@@ -64,25 +61,16 @@
 // NAVIGATION
 // -----------------------------------------------------------------------------
 
-.nav {
-  display: flex;
-  margin-bottom: 1.5rem;
-}
+.header__nav {
 
-.nav__list {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav__list--primary {
-  flex-grow: 1;
 }
 
 .nav__list__item {
   display: inline-block;
+  padding: 1em 0;
+  font-size: .875rem;
 
-  & + & {
-    margin-left: 1.5em;
+  &:not(:last-child) {
+    margin-right: 1.5em;
   }
 }

@@ -37,13 +37,17 @@
 
   <section>
     <header class="section-header">
-      <h2>Undeployed Commits</h2>
+      <h2 class="section-header__title">Undeployed Commits</h2>
 
-      <div class="commit-list-actions">
+      <div class="section-header__actions">
+      <%= link_to 'Refresh statuses & commits', stack_refresh_path(@stack), method: 'post', class: "section-header__action-btn btn" %>
+      <% @stack.task_definitions.each do |definition| %>
+          <%= link_to "#{definition.action}…", new_stack_tasks_path(@stack, definition_id: definition.id), class: %w(section-header__action-btn stack-action btn trigger-deploy) %>
+      <% end %>
         <% if params[:force] %>
-          <%= link_to 'Exit emergency mode', stack_path(@stack) %>
+          <%= link_to 'Exit emergency mode', stack_path(@stack), class: 'section-header__action-btn btn' %>
         <% else %>
-          <%= link_to 'Enable emergency mode', stack_path(@stack, force: 1) %>
+          <%= link_to 'Enable emergency mode', stack_path(@stack, force: 1), class: 'section-header__action-btn btn' %>
         <% end %>
       </div>
     </header>
