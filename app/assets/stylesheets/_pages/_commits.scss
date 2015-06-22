@@ -131,134 +131,85 @@
 // -----------------------------------------------------------------------------
 
 .status-group {
-  position: relative;
-  .status-items {
-    display: none;
-    position: absolute;
-    min-width: 20rem;
-    left: 2.25rem;
-    top: 0.25rem;
-    background: white;
-    border-radius: 3px;
-    border: 1px solid #ddd;
-    box-shadow: rgba(black, 0.1) 0 1px 5px;
-  }
-  &:hover .status-items {
-    display: block;
-  }
+  position: relative; // Required to position the status-items div correctly
 }
 
-.status-summary, .status-item {
-  height: 1rem;
-  white-space: nowrap;
-  line-height: 1rem;
-  padding: 0.5rem;
-  span, strong, a {
-    display: inline-block;
-    vertical-align: top;
-  }
-}
+// .status-items {
+//   // display: none;
+//   position: absolute;
+//   min-width: 20rem;
+//   left: 2.25rem;
+//   top: 0.25rem;
+//   background: #fff;
+//   border-radius: $border-radius;
+//   box-shadow: 0 0 0 1px rgba(#000, .1), 0 2px 5px rgba(#000, .15);
+//   z-index: 2;
 
-.status-summary {
-  font-weight: bold;
-  position: relative;
-  font-size: 0.9rem;
-  &:before, &:after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    top: 50%;
-    margin-top: -7px;
-    border: 7px outset transparent;
-  }
+//   .status-group:hover & {
+//     display: block;
+//   }
+// }
 
-  &:before {
-    border-right: 7px solid #ddd;
-    left: -13px;
-  }
+// .status-items:before,
+// .status-items:after {
+//   content: '';
+//   display: block;
+//   width: 0;
+//   height: 0;
+//   position: absolute;
+//   top: 0.55rem;
+//   border: 7px outset transparent;
+// }
 
-  &:after {
-    border-right: 7px solid white;
-    left: -12px;
-  }
-  .status__icon {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background: asset-data-url("unknown.svg") center center no-repeat;
-    background-size: 90% 90%;
-  }
-}
+// .status-items:before {
+//   border-right: 7px solid rgba(#000, .1);
+//   left: -14px;
+// }
 
-.status-item {
-  border-top: 1px solid #ddd !important;
-  background: #f5f5f5;
-  font-size: 0.8rem;
-  overflow: hidden;
-  &:last-child {
-    border-radius: 0 0 2px 2px;
-  }
-  .status__icon {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background: asset-data-url("unknown.svg") center center no-repeat;
-    background-size: 75% 75%;
-  }
-  a {
-    float: right;
-  }
-}
+// .status-items:after {
+//   border-right: 7px solid white;
+//   left: -12px;
+// }
 
-.status-item.status--pending {
-  .status__icon {
-    background-image: none;
-    position: relative;
-    &:after {
-      content: "";
-      width: 6px;
-      height: 6px;
-      background: #ccc;
-      border-radius: 3px;
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: -3px 0 0 -3px;
-    }
-  }
-  strong {
-    color: $dark_yellow;
-  }
-}
+// .status-summary,
+// .status-item {
+//   padding: 0.5rem;
+// }
 
-.status-item.status--success strong {
-  color: $green;
-}
-.status-item {
-  .status__icon {
-    background-size: 100% 100%;
-  }
+// .status-summary {
+//   font-weight: 500;
+//   position: relative;
+//   font-size: 0.9rem;
+// }
 
-  &.status--failure {
-    strong {
-      color: $dark_red;
-    }
-  }
-  
-  &.status--error {
-    strong {
-      color: $black;
-    }
-  }
-}
+// .status-item {
+//   border-top: 1px solid rgba(#000, 0.1);
+//   background: rgba(#000, 0.02);
+//   font-size: 0.8rem;
 
-.status-item__icon {
-   width: 0.75em;
-   text-align: center;
-}
+//   a {
+//     float: right;
+//   }
+// }
+
+// .status-item.status--pending strong {
+//   color: $dark_yellow;
+// }
+
+// .status-item.status--success strong {
+//   color: $green;
+// }
+
+// .status-item.status--failure strong {
+//   color: $dark_red;
+// }
+
+// .status-item.status--error strong {
+//   color: $black;
+// }
+
+
+
 
 .status {
   flex-shrink: 0;
@@ -291,16 +242,9 @@
 
 .status--pending,
 [data-deploy-status='pending'] {
-  
   .status__icon {
     background-image: asset-data-url("pending.gif");
     background-size: 21px 5px;
-  }
-
-  .status-item__icon {
-    color: $dark_yellow;
-    @extend .octicon;
-    @extend .octicon-primitive-dot;
   }
 }
 
@@ -321,12 +265,6 @@
   .status__icon {
     background-image: asset-data-url("success.svg");
   }
-
-  .status-item__icon {
-    color: $green;
-    @extend .octicon;
-    @extend .octicon-check;
-  }
 }
 
 .status--failure,
@@ -338,12 +276,6 @@
   .status__icon {
     background-image: asset-data-url("failure.svg");
   }
-
-  .status-item__icon {
-    color: $dark_red;
-    @extend .octicon;
-    @extend .octicon-x;
-  }
 }
 
 .status--error,
@@ -352,12 +284,6 @@
 
   .status__icon {
     background-image: asset-data-url("error.svg");
-  }
-
-  .status-item__icon {
-    color: $black;
-    @extend .octicon;
-    @extend .octicon-x;
   }
 }
 

@@ -1,0 +1,136 @@
+// =============================================================================
+// STATUS ITEMS
+// =============================================================================
+
+.status-list {
+  position: absolute;
+  width: 20rem;
+  left: 3.25rem;
+  top: 0.25rem;
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: 0 0 0 1px rgba(#000, .075), 0 5px 13px rgba(#000, .15);
+  transform: scale(0.75);
+  transform-origin: -10% 20%;
+  transition: all .3s cubic-bezier(0.34,1.61,0.7,1);
+  visibility: hidden;
+  opacity: 0;
+  z-index: 2;
+
+  .status-group:hover & {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+
+// STATUS ITEMS TRIANGLE
+// -----------------------------------------------------------------------------
+
+.status-list:before,
+.status-list:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0.55rem;
+  border: 7px outset transparent;
+}
+
+.status-list:before {
+  border-right: 7px solid rgba(#000, .075);
+  left: -14px;
+}
+
+.status-list:after {
+  border-right: 7px solid white;
+  left: -12px;
+}
+
+
+// STATUS ITEM
+// -----------------------------------------------------------------------------
+
+.status-item {
+  padding: 0.6rem;
+}
+
+
+// STATUS ITEM
+
+.status-item {
+  background: rgba(#000, 0.035);
+  font-size: 0.8rem;
+
+  & + & {
+    border-top: 1px solid #fff;
+  }
+}
+
+.status-item__link {
+  float: right;
+}
+
+
+// STATUS ITEM SUMMARY
+
+.status-item--summary {
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+
+// STATUS DESCRIPTION
+// -----------------------------------------------------------------------------
+
+.status-item__description {
+  color: #777;
+}
+
+
+// STATUS SERVICE
+// -----------------------------------------------------------------------------
+
+.status-item__service {
+  .status-item--success & {
+    color: $green;
+  }
+
+  .status-item--error &,
+  .status-item--failed &,
+  .status-item--failure & {
+    color: $bright-red;
+  }
+
+  .status-item--pending & {
+    color: $dark_yellow;
+  }
+}
+
+
+// STATUS ICON
+// -----------------------------------------------------------------------------
+
+.status-item__icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: transparent no-repeat center center;
+  vertical-align: -2px;
+
+  .status-item--success & {
+    background-image: asset-data-url('success-small.svg');
+  }
+
+  .status-item--pending & {
+    background-image: asset-data-url('pending-small.svg');
+  }
+
+  .status-item--error &,
+  .status-item--failed &,
+  .status-item--failure & {
+    background-image: asset-data-url('failure-small.svg');
+  }
+}
