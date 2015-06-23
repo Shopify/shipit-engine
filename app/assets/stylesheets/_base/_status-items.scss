@@ -98,14 +98,17 @@
     color: $green;
   }
 
-  .status-item--error &,
+  .status-item--pending & {
+    color: $dark_yellow;
+  }
+
+  .status-item--error & {
+    color: #333;
+  }
+
   .status-item--failed &,
   .status-item--failure & {
     color: $bright-red;
-  }
-
-  .status-item--pending & {
-    color: $dark_yellow;
   }
 }
 
@@ -128,7 +131,10 @@
     background-image: asset-data-url('pending-small.svg');
   }
 
-  .status-item--error &,
+  .status-item--error & {
+    background-image: asset-data-url('error-small.svg');
+  }
+
   .status-item--failed &,
   .status-item--failure & {
     background-image: asset-data-url('failure-small.svg');
