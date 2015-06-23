@@ -202,7 +202,7 @@
 
 .status--error,
 [data-deploy-status='error'] {
-  border-color: $bright-red;
+  border-color: #333;
 
   .status__icon {
     background-image: asset-data-url("error.svg");
