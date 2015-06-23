@@ -5,7 +5,7 @@
     <span class="commit-title"><%= render_commit_message_with_link commit %></span>
     <p class="commit-meta">
       <span class="sha"><%= render_commit_id_link(commit) %></span>
-      merged <%= timeago_tag(commit.committed_at, force: true) %>
+      <%= timeago_tag(commit.committed_at, force: true) %>
       <span class="utc-timecode">at <%= commit.committed_at.strftime('%H:%M:%S') %> UTC</span>
       <% if commit.additions? && commit.deletions? %>
         <span class="code-additions">+<%= commit.additions %></span>
