@@ -34,7 +34,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails-timeago', '~> 2.11.1'
   s.add_dependency 'ansi_stream', '~> 0.0.6'
   s.add_dependency 'autoprefixer-rails', '~> 5.1.11'
-  s.add_dependency 'octicons-rails', '~> 2.1'
 
   s.add_dependency 'octokit', '~> 3.8.0'
   s.add_dependency 'faraday', '~> 0.9.1'
