@@ -1,0 +1,72 @@
+// =============================================================================
+// POPOVER
+// =============================================================================
+
+.popover-container {
+  position: relative;
+  user-select: none;
+}
+
+.popover {
+  position: absolute;
+  width: 20rem;
+  padding: 0.5em 0;
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: 0 0 0 1px rgba(#000, .075), 0 5px 13px rgba(#000, .15);
+  z-index: 2;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: all .3s cubic-bezier(0.34,1.61,0.7,1);
+  visibility: hidden;
+}
+
+.popover--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+
+// POPOVER POSITION
+// -----------------------------------------------------------------------------
+
+.popover--bottom-left {
+  transform-origin: 0 -20%;
+  top: calc(100% + 1rem);
+  left: 0;
+}
+
+.popover--bottom-right {
+  transform-origin: 100% -20%;
+  top: calc(100% + 1rem);
+  right: 0;
+}
+
+.popover--top-left {
+  transform-origin: 0 20%;
+  bottom: calc(100% + 1rem);
+  left: 0;
+}
+
+.popover--top-right {
+  transform-origin: 100% 20%;
+  bottom: calc(100% + 1rem);
+  right: 0;
+}
+
+
+// POPOVER ITEM
+// -----------------------------------------------------------------------------
+
+.popover__item {
+  padding: 0.5em 1em;
+}
+
+// POPOVER SEPARATOR
+// -----------------------------------------------------------------------------
+
+.popover__separator {
+  border-top: 1px solid rgba(#000, .1);
+  margin: 0.5em 0;
+}

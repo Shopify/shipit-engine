@@ -9,6 +9,21 @@
   <% stack.task_definitions.each do |definition| %>
       <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: %w(header__btn stack-action btn trigger-deploy) %>
   <% end %>
+  <div href="#" class="header__btn btn popover-container">
+    More
+    <div class="popover popover--bottom-right">
+      <div class="popover__item">
+        <a href="#">Unlock capistrano</a>
+      </div>
+      <div class="popover__item">
+        <a href="#">Restart application</a>
+      </div>
+      <div class="popover__separator"></div>
+      <div class="popover__item">
+        <a href="#" class="emergency">Enable emergency mode</a>
+      </div>
+    </div>
+  </div>
 <% end %>
 
 <% content_for :secondary_navigation do %>
