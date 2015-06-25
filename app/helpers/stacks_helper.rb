@@ -40,7 +40,7 @@ module StacksHelper
   private
 
   def deploy_button_disabled?(commit)
-    !commit.deployable? || commit.stack.locked?
+    !commit.deployable? || commit.stack.locked? || commit.stack.deploying?
   end
 
   def deploy_button_caption(commit)
