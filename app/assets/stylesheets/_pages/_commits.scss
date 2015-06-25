@@ -130,6 +130,10 @@
 // STATUS
 // -----------------------------------------------------------------------------
 
+.status-group {
+  position: relative; // Required to position the status-items div correctly
+}
+
 .status {
   flex-shrink: 0;
 
@@ -158,10 +162,12 @@
   }
 }
 
-.status--pending .status__icon,
-[data-deploy-status='pending'] .status__icon {
-  background-image: asset-data-url("pending.gif");
-  background-size: 21px 5px;
+.status--pending,
+[data-deploy-status='pending'] {
+  .status__icon {
+    background-image: asset-data-url("pending.gif");
+    background-size: 21px 5px;
+  }
 }
 
 .status--running,
@@ -187,7 +193,7 @@
 .status--failed,
 [data-deploy-status='failure'],
 [data-deploy-status='failed'] {
-  border-color: $red;
+  border-color: $bright-red;
 
   .status__icon {
     background-image: asset-data-url("failure.svg");
@@ -196,7 +202,7 @@
 
 .status--error,
 [data-deploy-status='error'] {
-  border-color: $yellow;
+  border-color: #333;
 
   .status__icon {
     background-image: asset-data-url("error.svg");

@@ -53,4 +53,13 @@ module StacksHelper
     else 'Not Run'
     end
   end
+
+  def render_status(commit)
+    statuses = commit.last_statuses
+    if statuses.size == 1
+      render statuses.first
+    else
+      render StatusGroup.new(statuses)
+    end
+  end
 end

@@ -97,6 +97,8 @@ stacks.each do |stack|
     Status.create!(
       state: %w(pending success error failure).sample,
       context: 'ci/travis',
+      description: "Your tests ran on travis-ci",
+      target_url: "https://example.com",
       commit_id: commit.id,
       created_at: Time.now,
       updated_at: Time.now,
@@ -106,6 +108,8 @@ stacks.each do |stack|
       Status.create!(
         state: %w(pending success error failure).sample,
         context: 'ci/circle',
+        description: "Your tests ran on circle-ci",
+        target_url: "https://example.com",
         commit_id: commit.id,
         created_at: Time.now,
         updated_at: Time.now,
