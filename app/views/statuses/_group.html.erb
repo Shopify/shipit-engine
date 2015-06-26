@@ -9,9 +9,10 @@
     <% group.statuses.each do |status| %>
       <div class="status-item status-item--<%= status.state %>">
         <i class="status-item__icon"></i>
-        <strong class="status-item__service"><%= status.context %></strong>
+        <a href="<%= status.target_url %>" target="_blank">
+          <strong class="status-item__service"><%= status.context %></strong>
+        </a>
         <span class="status-item__description">&mdash; <%= status.description %></span>
-        <a href="<%= status.target_url %>" target="_blank" class="status-item__link">Details</a>
       </div>
     <% end %>
   </div>
