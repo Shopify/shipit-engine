@@ -107,6 +107,13 @@ class Stack < ActiveRecord::Base
     end
   end
 
+  def filter_statuses(statuses)
+    hidden_statuses = cached_deploy_spec.try!(:hidden_statuses)
+    return statuses if hidden_statuses.blank?
+
+    statuses.reject { |s| hidden_statuses.include?(s.context) }
+  end
+
   def deployable?
     !locked? && !deploying?
   end

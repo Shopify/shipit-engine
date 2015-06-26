@@ -92,6 +92,10 @@ class DeploySpec
     config('review', 'monitoring') || []
   end
 
+  def hidden_statuses
+    Array.wrap(config('ci', 'hide'))
+  end
+
   private
 
   def coerce_task_definition(config)
