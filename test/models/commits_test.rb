@@ -205,7 +205,7 @@ class CommitsTest < ActiveSupport::TestCase
   end
 
   test "#state is `unknown` by default" do
-    assert_equal 'unknown', Commit.new.state
+    assert_equal 'unknown', @stack.commits.new.state
   end
 
   test "#state is `success` if all most recent the statuses are `success`" do
@@ -218,6 +218,18 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "#state is `pending` one of the most recent the statuses is `pending` and none is `failure` or `error`" do
     assert_equal 'pending', commits(:fourth).state
+  end
+
+  test "#last_statuses returns the list of the most recent status of each context" do
+    assert_equal 4, commits(:second).statuses.count
+    assert_equal 2, commits(:second).last_statuses.count
+  end
+
+  test "#last_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
+    commit = commits(:second)
+    assert_equal 2, commit.last_statuses.count
+    commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => 'metrics/coveralls'}))
+    assert_equal 1, commits(:second).last_statuses.count
   end
 
   test "#deployable? is true if commit status is 'success'" do

@@ -85,7 +85,7 @@ class Commit < ActiveRecord::Base
   end
 
   def last_statuses
-    statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
+    stack.filter_statuses(statuses.to_a.uniq(&:context).sort_by(&:context)).presence || [UnknownStatus.new(self)]
   end
 
   def children

@@ -202,6 +202,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_instance_of DeploySpec::FileSystem, @spec
     assert_instance_of DeploySpec, @spec.cacheable
     config = {
+      'ci' => {'hide' => []},
       'machine' => {'environment' => {}, 'directory' => nil},
       'review' => {'checklist' => []},
       'dependencies' => {'override' => []},
@@ -252,5 +253,19 @@ class DeploySpecTest < ActiveSupport::TestCase
 
   test "#review_monitoring returns an empty array if the section is missing" do
     assert_equal [], @spec.review_monitoring
+  end
+
+  test "#hidden_statuses is empty by default" do
+    assert_equal [], @spec.hidden_statuses
+  end
+
+  test "#hidden_statuses is an array even if the value is a string" do
+    @spec.expects(:load_config).returns('ci' => {'hide' => 'ci/circleci'})
+    assert_equal %w(ci/circleci), @spec.hidden_statuses
+  end
+
+  test "#hidden_statuses is an array even if the value is present" do
+    @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
+    assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
   end
 end
