@@ -1,6 +1,6 @@
 <%- read_only ||= false -%>
 
-<li class="task deploy" id="task-<%= deploy.id %>" data-task-status="<%= deploy.status %>">
+<li class="task deploy" id="task-<%= deploy.id %>" data-status="<%= deploy.status %>">
   <%= render 'commits/commit_author', commit: deploy %>
   <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
     <i class="status__icon"></i>

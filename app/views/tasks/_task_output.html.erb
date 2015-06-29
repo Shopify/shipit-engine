@@ -7,14 +7,14 @@
 
 <div class="deploy-main" data-repo-full-name="<%= @stack.github_repo_name %>">
   <span class="deploy-tasks"></span>
-  <div class="deploy-banner <%= task.status %>" data-task-status="<%= task.status %>">
+  <div class="deploy-banner <%= task.status %>" data-status="<%= task.status %>">
     <div class="wrapper">
       <a href="#" class="user main-user disabled"><%= task.author.name %></a>
       <span class="deploy-status">
         <%= content_for :task_title %>
       </span>
 
-      <span class="deploy-abort" data-task-status="<%= task.status %>">
+      <span class="deploy-abort" data-status="<%= task.status %>">
         <%= link_to abort_stack_task_path(@stack, task), class: 'btn btn--delete deploy-action' do %>
         <span class="ready">Abort Deploy</span>
         <span class="disabled">Aborting</span>
@@ -23,5 +23,5 @@
     </div>
   </div>
 
-  <pre class="nowrap"><code data-task-status="<%= task.status %>" data-next-chunks-url="<%= next_chunks_url(task) %>"><%= task.chunk_output %></code></pre>
+  <pre class="nowrap"><code data-status="<%= task.status %>" data-next-chunks-url="<%= next_chunks_url(task) %>"><%= task.chunk_output %></code></pre>
 </div>

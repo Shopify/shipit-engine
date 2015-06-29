@@ -4,7 +4,7 @@
 jQuery ->
   OutputStream = new Stream
   OutputStream.addEventListener 'status', (status) ->
-    $('[data-task-status]').attr('data-task-status', status)
+    $('[data-status]').attr('data-status', status)
 
   tty = new TTY($('body'))
   OutputStream.addEventListener('chunk', tty.appendChunk)
@@ -12,7 +12,7 @@ jQuery ->
 
   $code = $('code')
   OutputStream.init
-    status: $code.data('task-status')
+    status: $code.data('status')
     url: $code.data('next-chunks-url')
     text: tty.popInitialOutput()
 
