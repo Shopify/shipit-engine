@@ -1,21 +1,8 @@
 #= require_tree ./task
 #= require_self
 
-class StickyElement
-  constructor: (@$element) ->
-    @staticElementTop = @$element.position().top
-    @refresh()
-
-  refresh: =>
-    @toggleStickyClass()
-    window.requestAnimationFrame(@refresh)
-
-  toggleStickyClass: ->
-    @$element.toggleClass('sticky', window.pageYOffset >= @staticElementTop)
-
-class
-
 jQuery ->
+  OutputStream = new Stream
   OutputStream.addEventListener 'status', (status) ->
     $('[data-task-status]').attr('data-task-status', status)
 
@@ -29,5 +16,5 @@ jQuery ->
     url: $code.data('next-chunks-url')
     text: tty.popInitialOutput()
 
-  new StickyElement($('.deploy-banner'))
-  new StickyElement($('.sidebar'))
+  StickyElement.init('.deploy-banner')
+  StickyElement.init('.sidebar')

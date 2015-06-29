@@ -13,7 +13,7 @@ class Chunk
   lines: ->
     @_lines ||= @text().split(/\r?\n/)
 
-class Stream
+class @Stream
   INTERVAL = 1000
   MAX_RETRIES = 15
 
@@ -65,5 +65,3 @@ class Stream
 
   listeners: (type) ->
     @eventListeners[type] ||= []
-
-@OutputStream = new Stream
