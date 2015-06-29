@@ -1,6 +1,4 @@
 class Commands
-  DEFAULT_ENVIRONMENT = {'SHIPIT' => '1'}.freeze
-
   def self.for(model)
     "#{model.class.name}Commands".constantize.new(model)
   end
@@ -16,7 +14,7 @@ class Commands
   delegate :git_version, to: :class
 
   def env
-    @env ||= DEFAULT_ENVIRONMENT.merge(Shipit.extra_env)
+    @env ||= Shipit.env
   end
 
   def git(*args)

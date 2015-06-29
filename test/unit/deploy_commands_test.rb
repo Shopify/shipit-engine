@@ -50,8 +50,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.deploys_path, command.chdir
   end
 
-  test "#fetch merges Shipit.extra_env in ENVIRONMENT" do
-    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#fetch merges Shipit.env in ENVIRONMENT" do
+    Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
     command = @commands.fetch
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end
@@ -146,8 +146,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal @stack.environment, command.env['ENVIRONMENT']
   end
 
-  test "#perform merges Shipit.extra_env in ENVIRONMENT" do
-    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#perform merges Shipit.env in ENVIRONMENT" do
+    Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
     assert_equal 5, @commands.env["SPECIFIC_CONFIG"]
   end
 
@@ -161,8 +161,8 @@ class DeployCommandsTest < ActiveSupport::TestCase
     assert_equal ['bundle install --some-args'], commands.first.args
   end
 
-  test "#install_dependencies merges Shipit.extra_env in ENVIRONMENT" do
-    Shipit.stubs(:extra_env).returns("SPECIFIC_CONFIG" => 5)
+  test "#install_dependencies merges Shipit.env in ENVIRONMENT" do
+    Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
     command = @commands.install_dependencies.first
     assert_equal 5, command.env["SPECIFIC_CONFIG"]
   end

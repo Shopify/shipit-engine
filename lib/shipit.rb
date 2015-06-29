@@ -136,8 +136,8 @@ module Shipit
     ].all?(&:present?)
   end
 
-  def extra_env
-    secrets.env || {}
+  def env
+    {'SHIPIT' => '1'}.merge(secrets.env || {})
   end
 
   def revision
