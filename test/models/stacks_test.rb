@@ -167,7 +167,7 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#destroy delete all local files (git mirror and deploy clones)" do
-    FileUtils.expects(:rm_rf).with(Rails.root.join('data', 'stacks', 'shopify', 'shipit2', 'production').to_s)
+    FileUtils.expects(:rm_rf).with(Rails.root.join('data', 'stacks', 'shopify', 'shipit-engine', 'production').to_s)
     stacks(:shipit).destroy
   end
 

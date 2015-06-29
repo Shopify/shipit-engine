@@ -121,7 +121,7 @@ class DeployCommandsTest < ActiveSupport::TestCase
     commands = @commands.perform
     assert_equal 1, commands.length
     command = commands.first
-    assert_equal "http://shipit.com/shopify/shipit2/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
+    assert_equal "http://shipit.com/shopify/shipit-engine/production/deploys/#{@deploy.id}", command.env['SHIPIT_LINK']
   end
 
   test "#perform calls cap $environment deploy with the LAST_DEPLOYED_SHA in the environment" do

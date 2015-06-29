@@ -12,7 +12,7 @@ class GithubUrlHelperTest < ActiveSupport::TestCase
   end
 
   test "#github_commit_url returns a commit url" do
-    expected = 'https://github.com/shopify/shipit2/commit/6d9278037b872fd9a6690523e411ecb3aa181355'
+    expected = 'https://github.com/shopify/shipit-engine/commit/6d9278037b872fd9a6690523e411ecb3aa181355'
     assert_equal expected, github_commit_url(commits(:first))
   end
 
