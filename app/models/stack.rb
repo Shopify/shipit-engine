@@ -7,6 +7,7 @@ class Stack < ActiveRecord::Base
   has_many :tasks, dependent: :destroy
   has_many :deploys
   has_many :rollbacks
+  has_many :deploys_and_rollbacks, -> { where(type: %w(Deploy Rollback)) }, class_name: 'Task'
   has_many :github_hooks, dependent: :destroy, class_name: 'GithubHook::Repo'
   has_many :hooks, dependent: :destroy
   has_many :api_clients, dependent: :destroy
@@ -178,7 +179,7 @@ class Stack < ActiveRecord::Base
 
   def active_deploy
     return @active_deploy if defined?(@active_deploy)
-    @active_deploy ||= deploys.active.last
+    @active_deploy ||= deploys_and_rollbacks.active.last
   end
 
   def locked?
@@ -210,6 +211,11 @@ class Stack < ActiveRecord::Base
   def checklist
     return [] unless cached_deploy_spec
     cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
+  end
+
+  def checks?
+    return false unless cached_deploy_spec
+    cached_deploy_spec.review_checks.present?
   end
 
   def update_undeployed_commits_count(after_commit = nil)

@@ -186,6 +186,11 @@ class StacksTest < ActiveSupport::TestCase
     assert @stack.deploying?
   end
 
+  test "#deploying? is true if a rollback is ongoing" do
+    deploys(:shipit_complete).trigger_rollback(AnonymousUser.new)
+    assert @stack.deploying?
+  end
+
   test "#deploying? is memoized" do
     assert_queries(1) do
       10.times { @stack.deploying? }
