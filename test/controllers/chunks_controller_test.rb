@@ -23,6 +23,6 @@ class ChunksControllerTest < ActionController::TestCase
   test ":tail" do
     get :tail, stack_id: @stack.to_param, task_id: @deploy.id, last_id: @last_chunk.id, format: :json
     assert_response :success
-    assert_equal %w(url task chunks), JSON.parse(@response.body).keys
+    assert_equal %w(url status chunks), JSON.parse(@response.body).keys
   end
 end

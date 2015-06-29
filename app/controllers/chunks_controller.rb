@@ -1,18 +1,18 @@
 class ChunksController < ShipitController
   include ChunksHelper
 
+  respond_to :json
+
   before_action :load_stack
   before_action :load_task
   before_action :load_output_chunks
-
-  respond_to :json
 
   def index
     respond_with(@output_chunks)
   end
 
   def tail
-    respond_with(url: next_chunks_url(@task), task: @task, chunks: @output_chunks)
+    render json: {url: next_chunks_url(@task), status: @task.status, chunks: @output_chunks}
   end
 
   private

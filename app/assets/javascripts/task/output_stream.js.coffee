@@ -36,14 +36,14 @@ class Stream
   success: (response) =>
     @retries = 0
     @broadcastChunks(response.chunks)
-    @broadcastStatus(response.task)
+    @broadcastStatus(response.status)
     @start(response.url || false)
 
-  broadcastStatus: (task) ->
-    if task.status != @status
-      @status = task.status
+  broadcastStatus: (status) ->
+    if status != @status
+      @status = status
       for handler in @listeners('status')
-        handler(task)
+        handler(status)
 
   broadcastChunk: (raw) ->
     chunk = new Chunk(raw)

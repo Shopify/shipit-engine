@@ -16,8 +16,8 @@ class StickyElement
 class
 
 jQuery ->
-  OutputStream.addEventListener 'status', (task) ->
-    $('[data-task-status]').attr('data-task-status', task.status)
+  OutputStream.addEventListener 'status', (status) ->
+    $('[data-task-status]').attr('data-task-status', status)
 
   tty = new TTY($('body'))
   OutputStream.addEventListener('chunk', tty.appendChunk)
