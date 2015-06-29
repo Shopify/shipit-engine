@@ -18,7 +18,7 @@ class Command
   end
 
   def to_s
-    "#{format_env} #{@args.join(' ')}"
+    @args.join(' ')
   end
 
   def interpolate_environment_variables(argument)
@@ -28,10 +28,6 @@ class Command
       variable.sub!('$', '')
       Shellwords.escape(@env.fetch(variable) { ENV[variable] })
     end
-  end
-
-  def format_env
-    @env.map { |pair| pair.map(&:to_s).join('=') }.join(' ')
   end
 
   def success?
