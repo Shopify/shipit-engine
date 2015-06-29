@@ -12,7 +12,8 @@ class ChunksController < ShipitController
   end
 
   def tail
-    render json: {url: next_chunks_url(@task), status: @task.status, chunks: @output_chunks}
+    output = @output_chunks.pluck(:text).join
+    render json: {url: next_chunks_url(@task), status: @task.status, output: output}
   end
 
   private

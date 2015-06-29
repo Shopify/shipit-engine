@@ -25,7 +25,7 @@ class @Stream
 
   init: ({url, text, status}) ->
     @status = status
-    @broadcastChunk(text)
+    @broadcastOutput(text)
     @start(url)
 
   poll: =>
@@ -35,7 +35,7 @@ class @Stream
 
   success: (response) =>
     @retries = 0
-    @broadcastChunks(response.chunks)
+    @broadcastOutput(response.output)
     @broadcastStatus(response.status)
     @start(response.url || false)
 
@@ -45,13 +45,10 @@ class @Stream
       for handler in @listeners('status')
         handler(status)
 
-  broadcastChunk: (raw) ->
+  broadcastOutput: (raw) ->
     chunk = new Chunk(raw)
     for handler in @listeners('chunk')
       handler(chunk)
-
-  broadcastChunks: (chunks) ->
-    @broadcastChunk((c.text for c in chunks).join(''))
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES
