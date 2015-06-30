@@ -42,7 +42,7 @@ class Deploy < Task
   end
 
   def rollbackable?
-    stack.supports_rollback? && success? && self != stack.last_deploy
+    stack.supports_rollback? && success? && until_commit_id != stack.last_deployed_commit.try!(:id)
   end
 
   def commits
