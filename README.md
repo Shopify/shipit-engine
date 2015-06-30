@@ -112,6 +112,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`)
+* [CI](#ci) (`ci.hide`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
@@ -199,9 +200,21 @@ fetch:
 
 For example:
 ```yml
-key: val # things added as environment variables
+machine:
+  environment:
+    key: val # things added as environment variables
 ```
 
+<h3 id="ci">CI</h3>
+
+**<code>ci.hide</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to ignore.
+
+For example:
+```yml
+ci:
+  hide:
+    - ci/circleci
+```
 
 <h3 id="custom-tasks">Custom tasks</h3>
 
