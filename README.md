@@ -113,7 +113,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
-* [Review Process](#review-process) (`monitor`, `checklist`)
+* [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
@@ -245,6 +245,19 @@ review:
   monitoring:
     - image: https://example.com/monitoring.png
     - iframe: https://example.com/monitoring.html
+```
+
+<br>
+
+**<code>review.checks</code>** contains a list of commands that will be executed during the pre-deploy review step.
+Their output appears on the deployment page in Shipit.
+
+For example:
+
+```yml
+review:
+  checks:
+    - bundle exec rake db:migrate:status
 ```
 
 ***
