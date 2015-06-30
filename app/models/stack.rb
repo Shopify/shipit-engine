@@ -244,6 +244,14 @@ class Stack < ActiveRecord::Base
     Rails.cache.write(ci_enabled_cache_key, true)
   end
 
+  def mark_as_inaccessible!
+    update!(inaccessible_since: Time.now) unless inaccessible?
+  end
+
+  def inaccessible?
+    inaccessible_since?
+  end
+
   private
 
   def clear_cache

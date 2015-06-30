@@ -13,11 +13,13 @@ class GithubSyncJob < BackgroundJob
     new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
 
     @stack.transaction do
-      shared_parent.try(:detach_children!)
+      shared_parent.try!(:detach_children!)
       new_commits.each do |gh_commit|
         @stack.commits.create_from_github!(gh_commit)
       end
     end
+  rescue Octokit::NotFound
+    @stack.mark_as_inaccessible!
   end
 
   def fetch_missing_commits(&block)

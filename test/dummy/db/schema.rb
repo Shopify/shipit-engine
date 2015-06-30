@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150518214944) do
+ActiveRecord::Schema.define(version: 20150630171127) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 20150518214944) do
     t.text     "cached_deploy_spec",       limit: 65535
     t.integer  "lock_author_id",           limit: 4
     t.boolean  "ignore_ci"
+    t.datetime "inaccessible_since"
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
