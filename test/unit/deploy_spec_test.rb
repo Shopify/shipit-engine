@@ -204,7 +204,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     config = {
       'ci' => {'hide' => []},
       'machine' => {'environment' => {}, 'directory' => nil},
-      'review' => {'checklist' => []},
+      'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
       'dependencies' => {'override' => []},
       'deploy' => {'override' => nil},
       'rollback' => {'override' => nil},

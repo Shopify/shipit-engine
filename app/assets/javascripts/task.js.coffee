@@ -12,7 +12,7 @@ jQuery ->
 
   $code = $('code')
   OutputStream.init
-    status: $code.data('status')
+    status: $code.closest('[data-status]').data('status')
     url: $code.data('next-chunks-url')
     text: tty.popInitialOutput()
 

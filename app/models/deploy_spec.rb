@@ -96,6 +96,10 @@ class DeploySpec
     Array.wrap(config('ci', 'hide'))
   end
 
+  def review_checks
+    config('review', 'checks') || []
+  end
+
   private
 
   def coerce_task_definition(config)
