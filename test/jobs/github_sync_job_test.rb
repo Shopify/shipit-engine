@@ -48,4 +48,11 @@ class GithubSyncJobTest < ActiveSupport::TestCase
     assert_equal first, parent
     assert_equal [last], commits
   end
+
+  test "if GitHub returns a 404, the stacks is marked as inaccessible" do
+    @job.expects(:fetch_missing_commits).raises(Octokit::NotFound)
+    @job.perform(stack_id: @stack.id)
+
+    assert_equal true, @stack.reload.inaccessible_since?
+  end
 end

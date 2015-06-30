@@ -10,12 +10,14 @@ class GithubSyncJob < BackgroundJob
   def perform(params)
     @stack = Stack.find(params[:stack_id])
 
-    new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
+    handle_github_errors do
+      new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
 
-    @stack.transaction do
-      shared_parent.try(:detach_children!)
-      new_commits.each do |gh_commit|
-        @stack.commits.create_from_github!(gh_commit)
+      @stack.transaction do
+        shared_parent.try!(:detach_children!)
+        new_commits.each do |gh_commit|
+          @stack.commits.create_from_github!(gh_commit)
+        end
       end
     end
   end
@@ -35,6 +37,14 @@ class GithubSyncJob < BackgroundJob
   end
 
   protected
+
+  def handle_github_errors
+    yield
+  rescue Octokit::NotFound
+    @stack.mark_as_inaccessible!
+  else
+    @stack.mark_as_accessible!
+  end
 
   def lookup_commit(sha)
     @stack.commits.find_by_sha(sha)

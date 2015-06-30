@@ -17,6 +17,22 @@
   </div>
 <% end %>
 
+<% if @stack.inaccessible? %>
+  <div class="banner banner--red">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">This repository seems to be missing!</h2>
+        <p class="banner__text">
+          <%= link_to @stack.github_repo_name, github_repo_url(@stack.repo_owner, @stack.repo_name) %>
+          has been inaccessible for <%= time_ago_in_words(@stack.inaccessible_since) %>.
+
+          This could be a permission issue, or the repository have been deleted on GitHub.
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <% if @stack.locked? %>
   <div class="banner banner--orange">
     <div class="banner__inner wrapper">
