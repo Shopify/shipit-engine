@@ -20,6 +20,7 @@ class GithubSyncJob < BackgroundJob
         end
       end
     end
+    CacheDeploySpecJob.perform_later(@stack)
   end
 
   def fetch_missing_commits(&block)

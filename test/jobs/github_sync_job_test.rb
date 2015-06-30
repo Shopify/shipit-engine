@@ -13,6 +13,15 @@ class GithubSyncJobTest < ActiveSupport::TestCase
     @job.perform(stack_id: @stack.id)
   end
 
+  test "#perform finally enqueue a CacheDeploySpecJob" do
+    Stack.any_instance.stubs(:github_commits).returns(@github_commits)
+    @job.stubs(:fetch_missing_commits).yields.returns([[], nil])
+
+    assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+      @job.perform(stack_id: @stack.id)
+    end
+  end
+
   test "#perform mark all childs of the common parent as detached" do
     Stack.any_instance.expects(:github_commits).returns(@github_commits)
     @job.expects(:fetch_missing_commits).yields.returns([[], commits(:third)])
