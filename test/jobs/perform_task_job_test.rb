@@ -87,16 +87,16 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     DeployCommands.expects(:new).with(@deploy).returns(@commands)
     @deploy.stubs(:clear_working_directory)
 
-    DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)
-    DeploySpec.any_instance.expects(:supports_rollback?).returns(true)
-
-    @stack.update!(cached_deploy_spec: nil)
+    @stack.update!(cached_deploy_spec: DeploySpec.new({}))
 
     refute @stack.supports_rollback?
     refute @stack.supports_fetch_deployed_revision?
 
     @job.perform(task_id: @deploy.id)
     @stack.reload
+
+    DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)
+    DeploySpec.any_instance.expects(:supports_rollback?).returns(true)
 
     assert @stack.supports_rollback?
     assert @stack.supports_fetch_deployed_revision?

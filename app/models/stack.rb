@@ -79,12 +79,8 @@ class Stack < ActiveRecord::Base
     )
   end
 
-  def task_definitions
-    cached_deploy_spec.try!(:task_definitions) || []
-  end
-
   def head
-    commits.reachable.first.try(:sha)
+    commits.reachable.first.try!(:sha)
   end
 
   def status
@@ -109,9 +105,7 @@ class Stack < ActiveRecord::Base
   end
 
   def filter_statuses(statuses)
-    hidden_statuses = cached_deploy_spec.try!(:hidden_statuses)
-    return statuses if hidden_statuses.blank?
-
+    hidden_statuses = cached_deploy_spec.hidden_statuses
     statuses.reject { |s| hidden_statuses.include?(s.context) }
   end
 
@@ -199,22 +193,21 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
+  delegate :task_definitions, to: :cached_deploy_spec
+
   def monitoring?
     monitoring.present?
   end
 
   def monitoring
-    return [] unless cached_deploy_spec
-    cached_deploy_spec.review_monitoring.select(&:present?)
+    cached_deploy_spec.review_monitoring
   end
 
   def checklist
-    return [] unless cached_deploy_spec
-    cached_deploy_spec.review_checklist.map(&:strip).select(&:present?)
+    cached_deploy_spec.review_checklist
   end
 
   def checks?
-    return false unless cached_deploy_spec
     cached_deploy_spec.review_checks.present?
   end
 

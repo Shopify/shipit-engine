@@ -240,15 +240,15 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_equal [], @spec.review_checklist
   end
 
-  test "#review_monitoring returns an array" do
-    @spec.expects(:load_config).returns('review' => {'checklist' => [
+  test "#review_monitoring returns an array of hashes" do
+    @spec.expects(:load_config).returns('review' => {'monitoring' => [
       {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
       {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
     ]})
     assert_equal [
       {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
       {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
-    ], @spec.review_checklist
+    ], @spec.review_monitoring
   end
 
   test "#review_monitoring returns an empty array if the section is missing" do

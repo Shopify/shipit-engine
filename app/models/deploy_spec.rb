@@ -5,7 +5,8 @@ class DeploySpec
 
   class << self
     def load(json)
-      new(JSON.parse(json)) if json.present?
+      config = json.blank? ? {} : JSON.parse(json)
+      new(config)
     end
 
     def dump(spec)
@@ -85,11 +86,11 @@ class DeploySpec
   end
 
   def review_checklist
-    config('review', 'checklist') || discover_review_checklist || []
+    (config('review', 'checklist') || discover_review_checklist || []).map(&:strip).select(&:present?)
   end
 
   def review_monitoring
-    config('review', 'monitoring') || []
+    (config('review', 'monitoring') || []).select(&:present?)
   end
 
   def hidden_statuses
