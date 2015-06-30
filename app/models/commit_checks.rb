@@ -25,13 +25,10 @@ class CommitChecks
     self.status = 'success'
   end
 
-  def fetch
-    @output ||= begin
-      if redis.set('output', '', ex: OUTPUT_TTL, nx: true)
-        self.status = 'scheduled'
-        PerformCommitChecksJob.perform_later(commit: commit)
-      end
-      redis.get('output').to_s
+  def schedule
+    if redis.set('output', '', ex: OUTPUT_TTL, nx: true)
+      self.status = 'scheduled'
+      PerformCommitChecksJob.perform_later(commit: commit)
     end
   end
 
@@ -49,7 +46,6 @@ class CommitChecks
   end
 
   def output(since: 0)
-    return fetch if since.zero?
     redis.getrange('output', since, -1)
   end
 

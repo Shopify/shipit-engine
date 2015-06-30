@@ -7,17 +7,17 @@ class CommitChecksTest < ActiveSupport::TestCase
     @checks = @commit.checks
   end
 
-  test "#fetch schedule the checks if output is missing" do
+  test "#schedule schedule the checks if output is missing" do
     assert_enqueued_with(job: PerformCommitChecksJob, args: [commit: @commit]) do
-      @checks.fetch
+      @checks.schedule
     end
   end
 
-  test "#fetch just returns the current output if present" do
+  test "#schedule just returns the current output if present" do
     schedule_checks
 
     assert_no_enqueued_jobs do
-      @checks.fetch
+      @checks.schedule
     end
   end
 
@@ -78,6 +78,6 @@ class CommitChecksTest < ActiveSupport::TestCase
   private
 
   def schedule_checks
-    CommitChecks.new(@commit).fetch
+    CommitChecks.new(@commit).schedule
   end
 end
