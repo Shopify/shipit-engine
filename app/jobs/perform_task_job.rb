@@ -16,8 +16,6 @@ class PerformTaskJob < BackgroundJob
     end
     capture commands.checkout(@task.until_commit)
 
-    record_deploy_spec!
-
     Bundler.with_clean_env do
       capture_all commands.install_dependencies
       capture_all commands.perform
@@ -45,9 +43,5 @@ class PerformTaskJob < BackgroundJob
       @task.write(line)
     end
     @task.write("\n")
-  end
-
-  def record_deploy_spec!
-    @task.stack.update(cached_deploy_spec: @task.spec)
   end
 end
