@@ -84,6 +84,7 @@ Shipit::Engine.routes.draw do
         resource :output, only: :show
       end
       resources :deploys, only: %i(create)
+      post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
       resources :hooks, only: %i(index create show update destroy)
     end
 
