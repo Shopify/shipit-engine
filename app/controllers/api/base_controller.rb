@@ -6,6 +6,7 @@ module Api
     include Paginable
 
     rescue_from ApiClient::InsufficientPermission, with: :insufficient_permission
+    rescue_from TaskDefinition::NotFound, with: :not_found
 
     class << self
       def require_permission(operation, scope, options = {})
@@ -56,6 +57,10 @@ module Api
 
     def insufficient_permission(error)
       render status: :forbidden, json: {message: error.message}
+    end
+
+    def not_found(_error)
+      render status: :not_found, json: {status: '404', error: 'Not Found'}
     end
   end
 end
