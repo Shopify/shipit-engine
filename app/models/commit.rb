@@ -127,7 +127,7 @@ class Commit < ActiveRecord::Base
   def schedule_continuous_delivery
     return unless state == 'success' && stack.continuous_deployment?
     return unless stack.deployable?
-    return if newer_commit_deployed?
+    return if already_deployed?
     stack.trigger_deploy(self, committer)
   end
 
@@ -160,7 +160,7 @@ class Commit < ActiveRecord::Base
     non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
   end
 
-  def newer_commit_deployed?
-    stack.last_deployed_commit.id > id
+  def already_deployed?
+    stack.last_deployed_commit.id >= id
   end
 end

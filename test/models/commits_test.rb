@@ -68,7 +68,7 @@ class CommitsTest < ActiveSupport::TestCase
     @stack.deploys.destroy_all
 
     assert_difference "Deploy.count" do
-      @commit.statuses.create!(state: 'success', context: 'ci/travis')
+      @stack.commits.last.statuses.create!(state: 'success', context: 'ci/travis')
     end
   end
 
@@ -113,6 +113,14 @@ class CommitsTest < ActiveSupport::TestCase
 
     assert_no_difference "Deploy.count" do
       @commit.statuses.create!(state: 'success')
+    end
+  end
+
+  test "updating won't trigger a deploy if this commit has already been deployed" do
+    @stack.reload.update!(continuous_deployment: true)
+
+    assert_no_difference "Deploy.count" do
+      @stack.last_deployed_commit.statuses.create!(state: 'success')
     end
   end
 
