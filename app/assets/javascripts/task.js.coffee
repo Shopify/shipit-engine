@@ -1,8 +1,9 @@
 #= require_tree ./task
 #= require_self
 
+@OutputStream = new Stream
+
 jQuery ->
-  OutputStream = new Stream
   OutputStream.addEventListener 'status', (status) ->
     $('[data-status]').attr('data-status', status)
 
