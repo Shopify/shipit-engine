@@ -17,6 +17,10 @@ class Task < ActiveRecord::Base
   after_commit :emit_hooks
 
   state_machine :status, initial: :pending do
+    after_transition any => %i(success failed error) do |task|
+      task.async_refresh_deployed_revision
+    end
+
     event :run do
       transition pending: :running
     end
@@ -40,7 +44,16 @@ class Task < ActiveRecord::Base
     state :error
   end
 
-  delegate :acquire_git_cache_lock, to: :stack
+  def report_failure!(_error)
+    failure!
+  end
+
+  def report_error!(error)
+    write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
+    error!
+  end
+
+  delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, to: :stack
 
   delegate :checklist, to: :definition
 

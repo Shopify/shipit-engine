@@ -21,13 +21,11 @@ class PerformTaskJob < BackgroundJob
       capture_all commands.perform
     end
     @task.complete!
-  rescue Command::Error
-    @task.failure!
+  rescue Command::Error => error
+    @task.report_failure!(error)
   rescue StandardError => error
-    @task.error!
-    @task.write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
+    @task.report_error!(error)
   ensure
-    FetchDeployedRevisionJob.perform_later(@task.stack)
     @task.clear_working_directory
   end
 

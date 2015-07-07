@@ -145,7 +145,7 @@ class DeploysTest < ActiveSupport::TestCase
     deploy.stack.update(continuous_deployment: true)
 
     assert_difference "Deploy.count" do
-      deploy.complete
+      deploy.complete!
     end
   end
 
@@ -155,7 +155,7 @@ class DeploysTest < ActiveSupport::TestCase
     deploy = deploys(:shipit_running)
 
     assert_no_difference "Deploy.count" do
-      deploy.complete
+      deploy.complete!
     end
   end
 
@@ -164,7 +164,7 @@ class DeploysTest < ActiveSupport::TestCase
     deploy.stack.update(continuous_deployment: true)
 
     assert_no_difference "Deploy.count" do
-      deploy.complete
+      deploy.complete!
     end
   end
 
@@ -178,6 +178,27 @@ class DeploysTest < ActiveSupport::TestCase
 
     stack.reload
     assert_equal 1, stack.undeployed_commits_count
+  end
+
+  test "transitioning to success schedule a fetch of the deployed revision" do
+    @deploy = deploys(:shipit_running)
+    assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
+      @deploy.complete!
+    end
+  end
+
+  test "transitioning to failure schedule a fetch of the deployed revision" do
+    @deploy = deploys(:shipit_running)
+    assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
+      @deploy.failure!
+    end
+  end
+
+  test "transitioning to error schedule a fetch of the deployed revision" do
+    @deploy = deploys(:shipit_running)
+    assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
+      @deploy.error!
+    end
   end
 
   test "#build_rollback returns an unsaved record" do
