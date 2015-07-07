@@ -50,7 +50,7 @@ class Task < ActiveRecord::Base
 
   def enqueue
     raise "only persisted jobs can be enqueued" unless persisted?
-    PerformTaskJob.perform_later(task_id: id, stack_id: stack_id)
+    PerformTaskJob.perform_later(self)
   end
 
   def write(text)

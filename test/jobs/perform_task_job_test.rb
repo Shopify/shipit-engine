@@ -10,7 +10,6 @@ class PerformTaskJobTest < ActiveSupport::TestCase
   test "#perform fetch commits from the API" do
     @job.stubs(:capture)
     @commands = stub(:commands)
-    Task.expects(:find).with(@deploy.id).returns(@deploy)
     Commands.expects(:for).with(@deploy).returns(@commands)
 
     @commands.expects(:fetch).once
@@ -21,7 +20,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
 
     @deploy.expects(:clear_working_directory)
 
-    @job.perform(task_id: @deploy.id)
+    @job.perform(@deploy)
   end
 
   test "#perform enqueues a FetchDeployedRevisionJob" do
@@ -31,7 +30,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
 
     Hook.expects(:emit).twice
     assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
-      @job.perform(task_id: @deploy.id)
+      @job.perform(@deploy)
     end
   end
 
@@ -40,14 +39,14 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     DeployCommands.any_instance.expects(:perform).returns([])
     @job.stubs(:capture)
 
-    @job.perform(task_id: @deploy.id)
+    @job.perform(@deploy)
     assert_equal 'success', @deploy.reload.status
   end
 
   test "marks deploy as `error` if any application error is raised" do
     @job.expects(:capture).raises("some error")
     assert_nothing_raised do
-      @job.perform(task_id: @deploy.id)
+      @job.perform(@deploy)
     end
     assert_equal 'error', @deploy.reload.status
     assert_includes @deploy.chunk_output, 'RuntimeError: some error'
@@ -55,21 +54,21 @@ class PerformTaskJobTest < ActiveSupport::TestCase
 
   test "marks deploy as `failed` if a command exit with an error code" do
     @job.expects(:capture).raises(Command::Error.new('something'))
-    @job.perform(task_id: @deploy.id)
+    @job.perform(@deploy)
     assert_equal 'failed', @deploy.reload.status
   end
 
   test "bail out if deploy is not pending" do
     @deploy.run!
     @job.expects(:capture).never
-    @job.perform(task_id: @deploy.id)
+    @job.perform(@deploy)
   end
 
   test "mark deploy as error if a command timeout" do
     Timeout.expects(:timeout).raises(Timeout::Error.new)
     Command.any_instance.expects(:terminate!)
     assert_nothing_raised do
-      @job.perform(task_id: @deploy.id)
+      @job.perform(@deploy)
     end
     assert @deploy.reload.error?
     assert_includes @deploy.chunk_output, 'Timeout::Error'
@@ -83,7 +82,6 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     @commands.stubs(:checkout).returns([])
     @commands.stubs(:install_dependencies).returns([])
     @commands.stubs(:perform).returns([])
-    Task.expects(:find).with(@deploy.id).returns(@deploy)
     DeployCommands.expects(:new).with(@deploy).returns(@commands)
     @deploy.stubs(:clear_working_directory)
 
@@ -92,7 +90,7 @@ class PerformTaskJobTest < ActiveSupport::TestCase
     refute @stack.supports_rollback?
     refute @stack.supports_fetch_deployed_revision?
 
-    @job.perform(task_id: @deploy.id)
+    @job.perform(@deploy)
     @stack.reload
 
     DeploySpec.any_instance.expects(:supports_fetch_deployed_revision?).returns(true)

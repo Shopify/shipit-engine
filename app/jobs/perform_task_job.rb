@@ -1,8 +1,8 @@
 class PerformTaskJob < BackgroundJob
   queue_as :deploys
 
-  def perform(params)
-    @task = Task.find(params[:task_id])
+  def perform(task)
+    @task = task
     unless @task.pending?
       logger.error("Task ##{@task.id} already in `#{@task.status}` state. Aborting.")
       return

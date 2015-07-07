@@ -12,7 +12,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "enqueue" do
-    assert_enqueued_with(job: PerformTaskJob, args: [task_id: @deploy.id, stack_id: @deploy.id]) do
+    assert_enqueued_with(job: PerformTaskJob, args: [@deploy]) do
       @deploy.enqueue
     end
   end
