@@ -164,7 +164,7 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "#creating a commit update the undeployed_commits_count" do
     walrus = users(:walrus)
-    assert_equal 3, @stack.undeployed_commits_count
+    assert_equal 1, @stack.undeployed_commits_count
     @stack.commits.create(author: walrus,
                           committer: walrus,
                           sha: "ab12",
@@ -173,7 +173,7 @@ class CommitsTest < ActiveSupport::TestCase
                           message: "more fish!")
 
     @stack.reload
-    assert_equal 4, @stack.undeployed_commits_count
+    assert_equal 2, @stack.undeployed_commits_count
   end
 
   test "fetch_stats! pulls additions and deletions from github" do

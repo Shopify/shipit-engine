@@ -1,9 +1,15 @@
 class Rollback < Deploy
+  belongs_to :deploy, foreign_key: :parent_id
+
   def rollback?
     true
   end
 
   def rollbackable?
+    false
+  end
+
+  def supports_rollback?
     false
   end
 

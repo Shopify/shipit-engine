@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630171127) do
+ActiveRecord::Schema.define(version: 20150708143032) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -139,20 +139,21 @@ ActiveRecord::Schema.define(version: 20150630171127) do
   add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id"
 
   create_table "tasks", force: :cascade do |t|
-    t.integer  "stack_id",        limit: 4,                         null: false
-    t.integer  "since_commit_id", limit: 4,                         null: false
-    t.integer  "until_commit_id", limit: 4,                         null: false
-    t.string   "status",          limit: 255,   default: "pending", null: false
+    t.integer  "stack_id",              limit: 4,                         null: false
+    t.integer  "since_commit_id",       limit: 4,                         null: false
+    t.integer  "until_commit_id",       limit: 4,                         null: false
+    t.string   "status",                limit: 255,   default: "pending", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",         limit: 4
-    t.boolean  "rolled_up",                     default: false,     null: false
-    t.string   "type",            limit: 255
-    t.integer  "parent_id",       limit: 4
-    t.integer  "additions",       limit: 4,     default: 0
-    t.integer  "deletions",       limit: 4,     default: 0
-    t.text     "definition",      limit: 65535
+    t.integer  "user_id",               limit: 4
+    t.boolean  "rolled_up",                           default: false,     null: false
+    t.string   "type",                  limit: 255
+    t.integer  "parent_id",             limit: 4
+    t.integer  "additions",             limit: 4,     default: 0
+    t.integer  "deletions",             limit: 4,     default: 0
+    t.text     "definition",            limit: 65535
     t.binary   "gzip_output"
+    t.boolean  "rollback_once_aborted",               default: false,     null: false
   end
 
   add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"

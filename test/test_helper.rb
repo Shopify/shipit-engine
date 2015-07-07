@@ -38,6 +38,7 @@ class ActiveSupport::TestCase
 
   setup do
     @routes = Shipit::Engine.routes
+    Process.stubs(:kill)
   end
 
   teardown do

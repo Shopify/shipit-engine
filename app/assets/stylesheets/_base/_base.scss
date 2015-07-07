@@ -2,15 +2,6 @@
 // BASE
 // =============================================================================
 
-$blue: #248af2;
-$green: #25C351;
-$red: #f39494;
-$bright-red: #F73B3B;
-$light-red: lighten($bright-red, 10%);
-$yellow: #FFC66C;
-$dark_yellow: #cea61b;
-$slate: #2e343a;
-$terminal-black: #272c30;
 $border-radius: 4px;
 
 @mixin clearfix {

@@ -37,15 +37,29 @@ class Task < ActiveRecord::Base
       transition all => :error
     end
 
+    event :aborting do
+      transition all - %i(aborted) => :aborting
+    end
+
+    event :aborted do
+      transition aborting: :aborted
+    end
+
     state :pending
     state :running
     state :failed
     state :success
     state :error
+    state :aborting
+    state :aborted
   end
 
   def report_failure!(_error)
-    failure!
+    if aborting?
+      aborted!
+    else
+      failure!
+    end
   end
 
   def report_error!(error)
@@ -112,12 +126,16 @@ class Task < ActiveRecord::Base
     false
   end
 
+  def supports_rollback?
+    false
+  end
+
   def author
     user || AnonymousUser.new
   end
 
   def finished?
-    !pending? && !running?
+    !pending? && !running? && !aborting?
   end
 
   def pid
@@ -128,14 +146,17 @@ class Task < ActiveRecord::Base
     Rails.cache.write("task:#{id}:pid", pid, expires_in: 1.hour)
   end
 
-  def abort!
+  def abort!(rollback_once_aborted: false)
     target_pid = pid
-    return write("Abort: failed, PID unknown\n") unless target_pid.present?
+    return write("\nAbort: failed, PID unknown\n") unless target_pid.present?
 
-    write("Abort: sending SIGTERM to pid #{target_pid}\n")
+    update!(rollback_once_aborted: rollback_once_aborted)
+    aborting!
+    write("\nAbort: sending SIGTERM to pid #{target_pid}\n")
     Process.kill('TERM', target_pid)
   rescue Errno::ESRCH
-    write("Abort: PID #{target_pid} ESRCH: No such process\n")
+    write("\nAbort: PID #{target_pid} ESRCH: No such process\n")
+    aborted!
     true
   end
 

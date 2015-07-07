@@ -88,12 +88,8 @@ class Stack < ActiveRecord::Base
     :default
   end
 
-  def last_deploy
-    @last_deploy ||= deploys.last
-  end
-
   def last_successful_deploy
-    deploys.success.last
+    deploys_and_rollbacks.success.order(created_at: :desc).first
   end
 
   def last_deployed_commit

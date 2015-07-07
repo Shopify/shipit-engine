@@ -35,20 +35,20 @@ class @Stream
 
   success: (response) =>
     @retries = 0
-    @broadcastOutput(response.output)
-    @broadcastStatus(response.status)
+    @broadcastOutput(response.output, response)
+    @broadcastStatus(response.status, response)
     @start(response.url || false)
 
-  broadcastStatus: (status) ->
+  broadcastStatus: (status, args...) ->
     if status != @status
       @status = status
       for handler in @listeners('status')
-        handler(status)
+        handler(status, args...)
 
-  broadcastOutput: (raw) ->
+  broadcastOutput: (raw, args...) ->
     chunk = new Chunk(raw)
     for handler in @listeners('chunk')
-      handler(chunk)
+      handler(chunk, args...)
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES
