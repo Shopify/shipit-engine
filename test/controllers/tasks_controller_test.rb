@@ -43,4 +43,15 @@ class TasksControllerTest < ActionController::TestCase
     assert_response :success
     assert_select '.task-list .task', @stack.tasks.count - 1
   end
+
+  test ":tail" do
+    @task = deploys(:shipit)
+    last_chunk = @task.chunks.last
+
+    get :tail, stack_id: @stack.to_param, id: @task.id, last_id: last_chunk.id, format: :json
+    assert_response :success
+    assert_json do |response|
+      assert_equal %w(url status output), response.keys
+    end
+  end
 end

@@ -1,4 +1,5 @@
 class TasksController < ShipitController
+  include ChunksHelper
   include Pagination
 
   before_action :stack
@@ -28,6 +29,15 @@ class TasksController < ShipitController
   def abort
     task.abort!
     head :ok
+  end
+
+  def tail
+    output = task.chunks.tail(params[:last_id]).pluck(:text).join
+    render json: {
+      url: next_chunks_url(task),
+      status: task.status,
+      output: output,
+    }
   end
 
   private

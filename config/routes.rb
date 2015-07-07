@@ -53,12 +53,7 @@ Shipit::Engine.routes.draw do
 
       member do
         post :abort
-      end
-
-      resources :chunks, only:  %i(index), defaults: {format: :json} do
-        collection do
-          get :tail
-        end
+        get :tail, defaults: {format: :json}
       end
     end
 
