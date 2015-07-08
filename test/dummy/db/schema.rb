@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.integer  "stack_id",    limit: 4
   end
 
-  add_index "api_clients", ["creator_id"], name: "index_api_clients_on_creator_id", using: :btree
+  add_index "api_clients", ["creator_id"], name: "index_api_clients_on_creator_id"
 
   create_table "commits", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4,                     null: false
@@ -39,10 +39,10 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.integer  "deletions",    limit: 4
   end
 
-  add_index "commits", ["author_id"], name: "index_commits_on_author_id", using: :btree
-  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id", using: :btree
-  add_index "commits", ["created_at"], name: "index_commits_on_created_at", using: :btree
-  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id", using: :btree
+  add_index "commits", ["author_id"], name: "index_commits_on_author_id"
+  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id"
+  add_index "commits", ["created_at"], name: "index_commits_on_created_at"
+  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deliveries", force: :cascade do |t|
     t.integer  "hook_id",          limit: 4,                            null: false
@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.string   "organization", limit: 255
   end
 
-  add_index "github_hooks", ["organization", "event"], name: "index_github_hooks_on_organization_and_event", unique: true, using: :btree
-  add_index "github_hooks", ["stack_id", "event"], name: "index_github_hooks_on_stack_id_and_event", unique: true, using: :btree
+  add_index "github_hooks", ["organization", "event"], name: "index_github_hooks_on_organization_and_event", unique: true
+  add_index "github_hooks", ["stack_id", "event"], name: "index_github_hooks_on_stack_id_and_event", unique: true
 
   create_table "hooks", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "updated_at",                                 null: false
   end
 
-  add_index "hooks", ["stack_id"], name: "index_hooks_on_stack_id", using: :btree
+  add_index "hooks", ["stack_id"], name: "index_hooks_on_stack_id"
 
   create_table "memberships", force: :cascade do |t|
     t.integer  "team_id",    limit: 4
@@ -94,8 +94,8 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "updated_at",           null: false
   end
 
-  add_index "memberships", ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true, using: :btree
-  add_index "memberships", ["user_id"], name: "index_memberships_on_user_id", using: :btree
+  add_index "memberships", ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true
+  add_index "memberships", ["user_id"], name: "index_memberships_on_user_id"
 
   create_table "output_chunks", force: :cascade do |t|
     t.integer  "task_id",    limit: 4
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "updated_at"
   end
 
-  add_index "output_chunks", ["task_id"], name: "index_output_chunks_on_task_id", using: :btree
+  add_index "output_chunks", ["task_id"], name: "index_output_chunks_on_task_id"
 
   create_table "stacks", force: :cascade do |t|
     t.string   "repo_name",                limit: 255,                          null: false
@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "inaccessible_since"
   end
 
-  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true, using: :btree
+  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
 
   create_table "statuses", force: :cascade do |t|
     t.string   "state",       limit: 255
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "updated_at"
   end
 
-  add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id", using: :btree
+  add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id"
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "stack_id",        limit: 4,                         null: false
@@ -152,14 +152,14 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.integer  "additions",       limit: 4,     default: 0
     t.integer  "deletions",       limit: 4,     default: 0
     t.text     "definition",      limit: 65535
-    t.binary   "gzip_output",     limit: 16777215
+    t.binary   "gzip_output"
   end
 
-  add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status", using: :btree
-  add_index "tasks", ["since_commit_id"], name: "index_tasks_on_since_commit_id", using: :btree
-  add_index "tasks", ["stack_id"], name: "index_tasks_on_stack_id", using: :btree
-  add_index "tasks", ["until_commit_id"], name: "index_tasks_on_until_commit_id", using: :btree
-  add_index "tasks", ["user_id"], name: "index_tasks_on_user_id", using: :btree
+  add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
+  add_index "tasks", ["since_commit_id"], name: "index_tasks_on_since_commit_id"
+  add_index "tasks", ["stack_id"], name: "index_tasks_on_stack_id"
+  add_index "tasks", ["until_commit_id"], name: "index_tasks_on_until_commit_id"
+  add_index "tasks", ["user_id"], name: "index_tasks_on_user_id"
 
   create_table "teams", force: :cascade do |t|
     t.integer  "github_id",    limit: 4
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.datetime "updated_at",               null: false
   end
 
-  add_index "teams", ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true, using: :btree
+  add_index "teams", ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true
 
   create_table "users", force: :cascade do |t|
     t.integer  "github_id",  limit: 4
@@ -184,8 +184,6 @@ ActiveRecord::Schema.define(version: 20150630171127) do
     t.string   "avatar_url", limit: 255
   end
 
-  add_index "users", ["login"], name: "index_users_on_login", using: :btree
+  add_index "users", ["login"], name: "index_users_on_login"
 
-  add_foreign_key "memberships", "teams"
-  add_foreign_key "memberships", "users"
 end
