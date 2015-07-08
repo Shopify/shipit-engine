@@ -6,6 +6,10 @@ gem 'mysql2'
 gem 'pg'
 gem 'sqlite3'
 
+group :development do
+  gem 'sucker_punch'
+end
+
 group :development, :test do
   gem 'faker'
   gem 'rubocop'
