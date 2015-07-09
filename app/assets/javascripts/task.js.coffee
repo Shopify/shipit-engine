@@ -4,8 +4,11 @@
 @OutputStream = new Stream
 
 jQuery ->
-  OutputStream.addEventListener 'status', (status) ->
+  OutputStream.addEventListener 'status', (status, response) ->
     $('[data-status]').attr('data-status', status)
+
+    if status == 'aborted' && response.rollback_url
+      window.location = response.rollback_url
 
   tty = new TTY($('body'))
   OutputStream.addEventListener('chunk', tty.appendChunk)

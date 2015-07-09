@@ -78,7 +78,7 @@ class StacksTest < ActiveSupport::TestCase
     deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
     assert deploy.persisted?
     assert_equal last_commit.id, deploy.until_commit_id
-    assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
+    assert_equal deploys(:shipit_complete).until_commit_id, deploy.since_commit_id
   end
 
   test "#trigger_deploy deploy until the commit passed in argument" do
@@ -88,9 +88,9 @@ class StacksTest < ActiveSupport::TestCase
   end
 
   test "#trigger_deploy since_commit is the last completed deploy until_commit if there is a previous deploy" do
-    last_commit = commits(:third)
+    last_commit = commits(:fifth)
     deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
-    assert_equal deploys(:shipit).until_commit_id, deploy.since_commit_id
+    assert_equal deploys(:shipit_complete).until_commit_id, deploy.since_commit_id
   end
 
   test "#trigger_deploy since_commit is the first stack commit if there is no previous deploy" do
@@ -125,11 +125,11 @@ class StacksTest < ActiveSupport::TestCase
   test "#update_deployed_revision create a new completed deploy" do
     Deploy.active.update_all(status: 'error')
 
-    assert_equal commits(:second), @stack.last_deployed_commit
+    assert_equal commits(:fourth), @stack.last_deployed_commit
     assert_difference 'Deploy.count', +1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha)
       assert_not_nil deploy
-      assert_equal commits(:second), deploy.since_commit
+      assert_equal commits(:fourth), deploy.since_commit
       assert_equal commits(:fifth), deploy.until_commit
     end
     assert_equal commits(:fifth), @stack.last_deployed_commit
@@ -138,11 +138,11 @@ class StacksTest < ActiveSupport::TestCase
   test "#update_deployed_revision works with short shas" do
     Deploy.active.update_all(status: 'error')
 
-    assert_equal commits(:second), @stack.last_deployed_commit
+    assert_equal commits(:fourth), @stack.last_deployed_commit
     assert_difference 'Deploy.count', +1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha[0..5])
       assert_not_nil deploy
-      assert_equal commits(:second), deploy.since_commit
+      assert_equal commits(:fourth), deploy.since_commit
       assert_equal commits(:fifth), deploy.until_commit
     end
     assert_equal commits(:fifth), @stack.last_deployed_commit

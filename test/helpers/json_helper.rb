@@ -10,6 +10,18 @@ module JSONHelper
     end
   end
 
+  def assert_json_keys(path, keys = nil)
+    keys, path = path, nil if keys.nil?
+
+    value = follow_path(path.to_s.split('.'))
+    case value
+    when Hash
+      assert_equal keys.sort, value.keys.sort
+    else
+      assert false, "Expected #{path} to be a Hash, was: #{value.inspect}"
+    end
+  end
+
   def assert_no_json(path)
     segments = path.to_s.split('.')
     last_segment = segments.pop

@@ -180,6 +180,26 @@
   }
 }
 
+
+.status--aborting,
+[data-deploy-status='aborting'] {
+  border-color: $orange;
+
+  .status__icon {
+    background-image: asset-data-url("aborting.svg");
+    animation: rotate 2s linear infinite;
+  }
+}
+
+.status--aborted,
+[data-deploy-status='aborted'] {
+  border-color: $orange;
+
+  .status__icon {
+    background-image: asset-data-url("aborted.svg");
+  }
+}
+
 .status--success,
 [data-deploy-status='success'] {
   border-color: $green;

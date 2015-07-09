@@ -3,6 +3,7 @@ require 'test_helper'
 class DeploysTest < ActiveSupport::TestCase
   def setup
     @deploy = deploys(:shipit)
+    @deploy.pid = 42
     @stack = stacks(:shipit)
     @user = users(:walrus)
   end
@@ -168,18 +169,6 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
-  test "#transitioning to success update the undeployed_commits_count" do
-    stack  = stacks(:shipit)
-    deploy = stack.deploys.active.first
-    assert_equal 3, stack.undeployed_commits_count
-
-    deploy.run!
-    deploy.complete!
-
-    stack.reload
-    assert_equal 1, stack.undeployed_commits_count
-  end
-
   test "transitioning to success schedule a fetch of the deployed revision" do
     @deploy = deploys(:shipit_running)
     assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
@@ -201,6 +190,18 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  test "transitioning to aborted schedule a rollback if required" do
+    @deploy = deploys(:shipit_running)
+    @deploy.pid = 42
+    @deploy.abort!(rollback_once_aborted: true)
+
+    assert_difference -> { @stack.rollbacks.count }, +1 do
+      assert_enqueued_with(job: PerformTaskJob) do
+        @deploy.aborted!
+      end
+    end
+  end
+
   test "#build_rollback returns an unsaved record" do
     assert @deploy.build_rollback.new_record?
   end
@@ -219,10 +220,20 @@ class DeploysTest < ActiveSupport::TestCase
     assert_equal @stack.last_deployed_commit, rollback.since_commit
   end
 
-  test "#build_rollback set the deploy's until_commit as the rollback until_commit" do
-    deploy = deploys(:shipit_complete)
-    rollback = deploy.build_rollback
-    assert_equal deploy.until_commit, rollback.until_commit
+  test "#trigger_rollback rolls the stack back to this deploy" do
+    assert_equal commits(:fourth), @stack.last_deployed_commit
+    rollback = @deploy.trigger_rollback
+    rollback.run!
+    rollback.complete!
+    assert_equal commits(:second), @stack.last_deployed_commit
+  end
+
+  test "#trigger_revert rolls the stack back to before this deploy" do
+    assert_equal commits(:fourth), @stack.last_deployed_commit
+    rollback = @deploy.trigger_revert
+    rollback.run!
+    rollback.complete!
+    assert_equal commits(:first), @stack.last_deployed_commit
   end
 
   test "#trigger_rollback creates a new Rollback" do
@@ -246,23 +257,42 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "pid is persisted" do
-    @deploy.pid = 42
     clone = Deploy.find(@deploy.id)
     assert_equal 42, clone.pid
   end
 
+  test "abort! transition to `aborting`" do
+    @deploy.abort!
+    assert_equal 'aborting', @deploy.status
+  end
+
+  test "abort! schedule the rollback if `rollback_once_aborted` is true" do
+    @deploy.abort!(rollback_once_aborted: true)
+    assert @deploy.reload.rollback_once_aborted?
+  end
+
   test "abort! sends a SIGTERM to the recorded PID" do
-    Process.expects(:kill).with('TERM', 42)
-    @deploy.pid = 42
+    Process.expects(:kill).with('TERM', @deploy.pid)
     @deploy.abort!
   end
 
   test "abort! still succeeds if the process is already dead" do
-    Process.expects(:kill).with('TERM', 42).raises(Errno::ESRCH)
-    @deploy.pid = 42
+    Process.expects(:kill).with('TERM', @deploy.pid).raises(Errno::ESRCH)
     assert_nothing_raised do
       @deploy.abort!
     end
+  end
+
+  test "abort! transition to `aborted` if the process is already dead" do
+    @deploy = deploys(:shipit_running)
+    @deploy.pid = 42
+
+    @deploy.abort!
+    assert_equal 'aborting', @deploy.status
+
+    Process.expects(:kill).with('TERM', @deploy.pid).raises(Errno::ESRCH)
+    @deploy.abort!
+    assert_equal 'aborted', @deploy.status
   end
 
   test "abort! bails out if the PID is nil" do

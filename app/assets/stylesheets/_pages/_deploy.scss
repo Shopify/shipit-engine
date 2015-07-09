@@ -24,21 +24,40 @@
 }
 
 .deploy-abort {
-  margin-left: 100px;
+  margin-left: 1rem;
+  &.first {
+    margin-left: 4rem;
+  }
+
   display: none;
-  &[data-status="running"] { display: inline-block; }
+  &[data-status="running"], &[data-status="aborting"] { display: inline-block; }
 
   text-align: center;
+
   .deploy-action {
     text-align: center;
     display: block;
-    &.pending {
-      .ready { display: none; }
-      .disabled { display: inline; }
-    }
-    .ready { display: inline; }
-    .disabled { display: none; }
   }
+
+  .caption--pending {
+    display: none;
+  }
+
+  &.disabled .deploy-action {
+    background-color: $light-red;
+  }
+
+  &.pending {
+    .deploy-action {
+      cursor: default;
+    }
+    .caption--ready {
+      display: none;
+    }
+    .caption--pending {
+      display: inline;
+    }
+  } 
 }
 
 .deploy-banner {
@@ -53,7 +72,8 @@
       width: 100%;
     }
 
-    &[data-status="running"]:before {
+    &[data-status="running"]:before,
+    &[data-status="aborting"]:before {
       content: "";
       background-color: $blue;
       bottom: 0;

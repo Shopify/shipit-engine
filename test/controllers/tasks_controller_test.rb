@@ -27,9 +27,25 @@ class TasksControllerTest < ActionController::TestCase
   end
 
   test ":abort call abort! on the deploy" do
-    Task.any_instance.expects(:abort!)
+    @task = deploys(:shipit_running)
+    @task.pid = 42
     post :abort, stack_id: @stack.to_param, id: @task.id
+
+    @task.reload
     assert_response :success
+    assert_equal 'aborting', @task.reload.status
+    assert_equal false, @task.rollback_once_aborted?
+  end
+
+  test ":abort schedule the rollback if `rollback` is present" do
+    @task = deploys(:shipit_running)
+    @task.pid = 42
+    post :abort, stack_id: @stack.to_param, id: @task.id, rollback: 'true'
+
+    @task.reload
+    assert_response :success
+    assert_equal 'aborting', @task.status
+    assert_equal true, @task.rollback_once_aborted?
   end
 
   test ":index list the stack deploys" do
@@ -44,14 +60,29 @@ class TasksControllerTest < ActionController::TestCase
     assert_select '.task-list .task', @stack.tasks.count - 1
   end
 
-  test ":tail" do
-    @task = deploys(:shipit)
+  test ":tail returns the task status, output, and next url" do
+    @task = deploys(:shipit_running)
     last_chunk = @task.chunks.last
 
     get :tail, stack_id: @stack.to_param, id: @task.id, last_id: last_chunk.id, format: :json
     assert_response :success
-    assert_json do |response|
-      assert_equal %w(url status output), response.keys
-    end
+    assert_json_keys %w(url status output)
+    assert_json 'status', @task.status
+  end
+
+  test ":tail doesn't returns the next url if the task is finished" do
+    @task = deploys(:shipit)
+
+    get :tail, stack_id: @stack.to_param, id: @task.id, format: :json
+    assert_response :success
+    assert_no_json 'url'
+  end
+
+  test ":tail returns the rollback url if the task have been aborted" do
+    @task = deploys(:shipit_aborted)
+
+    get :tail, stack_id: @stack.to_param, id: @task.id, format: :json
+    assert_response :success
+    assert_json_keys %w(status output rollback_url)
   end
 end
