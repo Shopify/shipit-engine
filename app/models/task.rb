@@ -55,6 +55,7 @@ class Task < ActiveRecord::Base
   end
 
   def report_failure!(_error)
+    reload
     if aborting?
       aborted!
     else
