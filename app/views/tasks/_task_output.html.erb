@@ -16,7 +16,7 @@
 
       <span class="deploy-abort first" data-action="abort" data-status="<%= task.status %>">
         <%= link_to abort_stack_task_path(@stack, task), class: 'btn btn--delete deploy-action' do %>
-          <span class="caption--ready">Abort Deploy</span>
+          <span class="caption--ready">Abort</span>
           <span class="caption--pending">Aborting...</span>
         <% end %>
       </span>
@@ -24,7 +24,7 @@
       <% if task.supports_rollback? %>
         <span class="deploy-abort" data-action="abort" data-rollback="true" data-status="<%= task.status %>">
           <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: 'btn btn--delete deploy-action' do %>
-            <span class="caption--ready">Abort Deploy and Rollback</span>
+            <span class="caption--ready">Abort and Rollback</span>
             <span class="caption--pending">Aborting with Rollback...</span>
           <% end %>
         </span>
