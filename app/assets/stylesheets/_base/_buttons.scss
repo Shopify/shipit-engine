@@ -34,6 +34,19 @@
   color: #fff;
   border: none;
   background-color: $bright-red;
+  &.btn-disabled {
+    color: #999;
+    background-color: $light-red;
+  }
+}
+
+.btn--alert {
+  color: #fff;
+  background-color: $orange;
+  &.btn-disabled {
+    color: #999;
+    background-color: $light-orange;
+  }
 }
 
 .btn--large {

@@ -10,7 +10,7 @@ class AbortButton
     button.trigger()
 
   constructor: (@$button) ->
-    @url = @$button.find('a[href]').attr('href')
+    @url = @$button.attr('href')
     @shouldRollback = @$button.data('rollback')
 
   trigger: ->
@@ -24,14 +24,14 @@ class AbortButton
     setTimeout(@reenable, 3000)
 
   reenable: =>
-    @$button.removeClass('pending')
-    @$button.siblings(SELECTOR).removeClass('disabled')
+    @$button.removeClass('pending btn-disabled')
+    @$button.siblings(SELECTOR).removeClass('btn-disabled')
 
   disable: ->
-    @$button.addClass('pending')
-    @$button.siblings(SELECTOR).addClass('disabled')
+    @$button.addClass('pending btn-disabled')
+    @$button.siblings(SELECTOR).addClass('btn-disabled')
 
   isDisabled: ->
-    @$button.hasClass('pending') || @$button.hasClass('disabled')
+    @$button.hasClass('btn-disabled')
 
 AbortButton.listen()
