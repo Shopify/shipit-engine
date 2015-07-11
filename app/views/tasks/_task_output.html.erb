@@ -16,13 +16,13 @@
       </div>
 
       <div class="deploy-banner-section action-buttons">
-        <%= link_to abort_stack_task_path(@stack, task), class: "btn btn--alert action-button", "data-action" => "abort", "data-status" => "#{task.status}" do %>
+        <%= link_to abort_stack_task_path(@stack, task), class: "btn btn--alert action-button", data: { action: "abort", status: task.status } do %>
           <span class="caption--ready">Abort</span>
           <span class="caption--pending">Aborting...</span>
         <% end %>
 
         <% if task.supports_rollback? %>
-          <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: "btn btn--delete action-button", "data-action" => "abort", "data-rollback" => "true", "data-status" => "#{task.status}" do %>
+          <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: "btn btn--delete action-button", data: { action: "abort", rollback: true, status: task.status } do %>
             <span class="caption--ready">Abort and Rollback</span>
             <span class="caption--pending">Aborting with Rollback...</span>
           <% end %>
