@@ -18,33 +18,14 @@
   flex-shrink: 0;
 }
 
-
-.rolling-back {
-  background-color: $light-red;
-}
-
-.deploy-abort {
-  margin-left: 1rem;
-  &.first {
-    margin-left: 4rem;
-  }
+.action-button {
+  margin: 0 0.5rem;
 
   display: none;
   &[data-status="running"], &[data-status="aborting"] { display: inline-block; }
 
-  text-align: center;
-
-  .deploy-action {
-    text-align: center;
-    display: block;
-  }
-
   .caption--pending {
     display: none;
-  }
-
-  &.disabled .deploy-action {
-    background-color: $light-red;
   }
 
   &.pending {
@@ -57,45 +38,55 @@
     .caption--pending {
       display: inline;
     }
-  } 
+  }
 }
 
 .deploy-banner {
   background-color: #f0f4f7;
-  overflow: hidden;
-  padding: .95rem 0 1.125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
+  flex-wrap: wrap;
 
-    &.sticky {
-      position: fixed;
-      top: 0;
-      width: 100%;
-    }
+  .deploy-banner-section {
+    padding: .95rem 1.5rem 1.125rem;
+  }
 
-    &[data-status="running"]:before,
-    &[data-status="aborting"]:before {
-      content: "";
-      background-color: $blue;
-      bottom: 0;
-      left: 0;
-      width: 0%;
-      height: 2px;
-      position: absolute;
-      z-index: 9999;
-      -webkit-animation: loading-slide 1.2s linear infinite;
-    }
+  .action-buttons {
+    flex: none;
+  }
 
-    .deploy-status {
-      color: #8f9498;
-    }
-    .short-sha {
-      background: #e6eaed;
-      font-family: Menlo, monospace;
-      color: #9cacbb;
-      border-radius: 4px;
-      font-size: .875rem;
-      padding: .25em .45em;
-    }
+  &.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  &[data-status="running"]:before,
+  &[data-status="aborting"]:before {
+    content: "";
+    background-color: $blue;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    position: absolute;
+    z-index: 9999;
+    -webkit-animation: loading-slide 1.2s linear infinite;
+  }
+
+  .deploy-status {
+    color: #8f9498;
+  }
+  .short-sha {
+    background: #e6eaed;
+    font-family: Menlo, monospace;
+    color: #9cacbb;
+    border-radius: 4px;
+    font-size: .875rem;
+    padding: .25em .45em;
+  }
 }
 
 @include keyframes(loading-slide) {
@@ -110,10 +101,6 @@
 
 .sidebar.enabled + .deploy-main {
   margin-left: 300px;
-  .deploy-banner .wrapper {
-    width: 100%;
-    margin: 0 1.5rem;
-  }
 }
 
 .sidebar {

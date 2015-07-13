@@ -7,29 +7,27 @@
 
 <div class="deploy-main" data-repo-full-name="<%= @stack.github_repo_name %>">
   <span class="deploy-tasks"></span>
-  <div class="deploy-banner <%= task.status %>" data-status="<%= task.status %>">
-    <div class="wrapper">
-      <a href="#" class="user main-user disabled"><%= task.author.name %></a>
-      <span class="deploy-status">
-        <%= content_for :task_title %>
-      </span>
+  <div class="deploy-banner" data-status="<%= task.status %>">
+      <div class="deploy-banner-section">
+        <a href="#" class="user main-user disabled"><%= task.author.name %></a>
+        <span class="deploy-status">
+          <%= content_for :task_title %>
+        </span>
+      </div>
 
-      <span class="deploy-abort first" data-action="abort" data-status="<%= task.status %>">
-        <%= link_to abort_stack_task_path(@stack, task), class: 'btn btn--delete deploy-action' do %>
-          <span class="caption--ready">Abort Deploy</span>
+      <div class="deploy-banner-section action-buttons">
+        <%= link_to abort_stack_task_path(@stack, task), class: "btn btn--alert action-button", data: { action: "abort", status: task.status } do %>
+          <span class="caption--ready">Abort</span>
           <span class="caption--pending">Aborting...</span>
         <% end %>
-      </span>
 
-      <% if task.supports_rollback? %>
-        <span class="deploy-abort" data-action="abort" data-rollback="true" data-status="<%= task.status %>">
-          <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: 'btn btn--delete deploy-action' do %>
-            <span class="caption--ready">Abort Deploy and Rollback</span>
+        <% if task.supports_rollback? %>
+          <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: "btn btn--delete action-button", data: { action: "abort", rollback: true, status: task.status } do %>
+            <span class="caption--ready">Abort and Rollback</span>
             <span class="caption--pending">Aborting with Rollback...</span>
           <% end %>
-        </span>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
   </div>
 
   <pre class="nowrap" data-status="<%= task.status %>"><code data-next-chunks-url="<%= next_chunks_url(task) %>"><%= task.chunk_output %></code></pre>
