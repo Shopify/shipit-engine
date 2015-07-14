@@ -60,7 +60,8 @@
   &.sticky {
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
   }
 
   &[data-status="running"]:before,
@@ -101,6 +102,11 @@
 
 .sidebar.enabled + .deploy-main {
   margin-left: 300px;
+
+  .deploy-banner.sticky {
+    box-sizing: border-box;
+    margin-left: 300px;
+  }
 }
 
 .sidebar {
