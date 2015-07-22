@@ -14,4 +14,10 @@ class UniqueJobTest < ActiveSupport::TestCase
     end
     assert called
   end
+
+  test "the lock key is serialized" do
+    task = tasks(:shipit_restart)
+    job = ChunkRollupJob.new(task)
+    assert_equal %(ChunkRollupJob-{"_aj_globalid"=>"gid://shipit/Task/#{task.id}"}), job.lock_key(*job.arguments)
+  end
 end
