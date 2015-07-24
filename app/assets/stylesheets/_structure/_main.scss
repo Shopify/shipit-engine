@@ -4,7 +4,7 @@
 }
 
   section {
-    margin-top: 3rem;
+    margin-top: 1.5rem;
 
     &.warning {
       background-color: orange;
@@ -17,33 +17,6 @@
       }
     }
   }
-
-  // .section-header {
-  //   border-bottom: 1px solid rgba(#000, 0.1);
-  //   padding-bottom: 1rem;
-  //   @include clearfix;
-
-  //     h2 {
-  //       float: left;
-  //     }
-
-  //     .header-accessory {
-  //       float: right;
-  //         & > a {
-  //           padding: .7rem 0;
-  //           display: inline-block;
-  //           & + a { margin-left: 1rem; }
-  //         }
-  //       & > p {
-  //         margin: 0;
-  //         padding: .7rem 0;
-  //         color: #999;
-  //         font-size: .875rem;
-  //           .repo-name { font-weight: 500; color: #777; }
-  //       }
-  //     }
-
-  // }
 
 pre {
   background-color: #272c30;

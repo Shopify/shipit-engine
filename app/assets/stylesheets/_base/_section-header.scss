@@ -7,11 +7,12 @@
   padding-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .section-header__title {
   flex-grow: 1;
-  margin-top: 1rem;
+  margin-right: 1rem;
 }
 
 .section-header__action-btn {

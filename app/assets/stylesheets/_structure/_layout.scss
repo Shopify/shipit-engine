@@ -3,10 +3,14 @@
 // =============================================================================
 
 .wrapper {
-  width: 80%;
   max-width: 1100px;
-  margin: 0 auto;
+  margin: 0 1rem;
   position: relative;
+
+  @include media(tablet-up) {
+    margin: 0 auto;
+    width: 80%;
+  }
 }
 
 
@@ -22,12 +26,15 @@
 .header__inner {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   padding: 1.5em 0;
   position: relative;
 }
 
 .header__page-title {
+  position: relative;
   flex-grow: 1;
+  margin-right: 2rem;
 }
 
 
@@ -55,6 +62,10 @@
   &:hover {
     transform: rotate(-25deg);
   }
+
+  @include media(mobile) {
+    display: none;
+  }
 }
 
 
@@ -67,7 +78,6 @@
 
 .nav__list__item {
   display: inline-block;
-  padding: 1em 0;
   font-size: .875rem;
 
   &:not(:last-child) {

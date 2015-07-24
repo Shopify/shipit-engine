@@ -15,6 +15,11 @@
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+
+  @include media(tablet-down) {
+    padding-left: 3rem;
+  }
 
   @include media(desktop) {
     flex-direction: row;
@@ -134,6 +139,11 @@
   flex-shrink: 0;
 
   @include media(tablet-down) {
+    position: absolute;
+    top: 0.75rem; left: 0;
+  }
+
+  @include media(tablet-down) {
     margin-bottom: 1rem;
     order: -2;
   }
@@ -149,6 +159,10 @@
   border-radius: 50%;
   width: 2.25rem;
   height: 2.25rem;
+
+  @include media(tablet-down) {
+    position: absolute;
+  }
 
   .status__icon {
     display: block;
