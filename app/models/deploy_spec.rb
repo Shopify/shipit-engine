@@ -97,6 +97,10 @@ class DeploySpec
     Array.wrap(config('ci', 'hide'))
   end
 
+  def soft_failing_statuses
+    Array.wrap(config('ci', 'allow_failures'))
+  end
+
   def review_checks
     config('review', 'checks') || []
   end

@@ -228,16 +228,31 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 'pending', commits(:fourth).state
   end
 
+  test "#state doesn't consider statuses that are hidden or allowed to fail" do
+    assert_equal 'pending', @commit.state
+
+    @commit.statuses.create!(context: 'metrics/coveralls', state: 'failure')
+    @commit.statuses.create!(context: 'metrics/performance', state: 'failure')
+    assert_equal 'failure', @commit.reload.state
+
+    @commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {
+      'hide' => 'metrics/coveralls',
+      'allow_failures' => 'metrics/performance',
+    }))
+    assert_equal 'pending', @commit.reload.state
+  end
+
   test "#last_statuses returns the list of the most recent status of each context" do
     assert_equal 4, commits(:second).statuses.count
     assert_equal 2, commits(:second).last_statuses.count
   end
 
-  test "#last_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
+  test "#visible_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
     commit = commits(:second)
-    assert_equal 2, commit.last_statuses.count
+    assert_equal 2, commit.visible_statuses.count
     commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => 'metrics/coveralls'}))
-    assert_equal 1, commits(:second).last_statuses.count
+    commit.reload
+    assert_equal 1, commit.visible_statuses.size
   end
 
   test "#deployable? is true if commit status is 'success'" do

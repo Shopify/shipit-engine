@@ -64,6 +64,11 @@ class Commit < ActiveRecord::Base
     )
   end
 
+  def reload(*)
+    @last_statuses = nil
+    super
+  end
+
   def self.create_from_github!(commit)
     from_github(commit).save!
   end
@@ -86,10 +91,6 @@ class Commit < ActiveRecord::Base
 
   def deployable?
     success? || stack.ignore_ci?
-  end
-
-  def last_statuses
-    stack.filter_statuses(statuses.to_a.uniq(&:context).sort_by(&:context)).presence || [UnknownStatus.new(self)]
   end
 
   def children
@@ -146,18 +147,30 @@ class Commit < ActiveRecord::Base
     )
   end
 
-  private
+  def visible_statuses
+    stack.filter_visible_statuses(last_statuses)
+  end
 
-  def touch_stack
-    stack.touch
+  def meaningful_statuses
+    stack.filter_meaningful_statuses(last_statuses)
+  end
+
+  def last_statuses
+    @last_statuses ||= statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
   end
 
   def significant_status
-    statuses = last_statuses
+    statuses = meaningful_statuses
     return nil if statuses.empty?
     return statuses.first if statuses.all?(&:success?)
     non_success_statuses = statuses.reject(&:success?)
     non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
+  end
+
+  private
+
+  def touch_stack
+    stack.touch
   end
 
   def already_deployed?
