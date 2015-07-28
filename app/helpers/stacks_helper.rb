@@ -55,11 +55,11 @@ module StacksHelper
   end
 
   def render_status(commit)
-    statuses = commit.last_statuses
+    statuses = commit.visible_statuses
     if statuses.size == 1
       render statuses.first
     else
-      render StatusGroup.new(statuses)
+      render StatusGroup.new(commit)
     end
   end
 end

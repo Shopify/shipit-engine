@@ -100,9 +100,12 @@ class Stack < ActiveRecord::Base
     end
   end
 
-  def filter_statuses(statuses)
-    hidden_statuses = cached_deploy_spec.hidden_statuses
+  def filter_visible_statuses(statuses)
     statuses.reject { |s| hidden_statuses.include?(s.context) }
+  end
+
+  def filter_meaningful_statuses(statuses)
+    filter_visible_statuses(statuses).reject { |s| soft_failing_statuses.include?(s.context) }
   end
 
   def deployable?
@@ -189,7 +192,7 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
-  delegate :task_definitions, to: :cached_deploy_spec
+  delegate :task_definitions, :hidden_statuses, :soft_failing_statuses, to: :cached_deploy_spec
 
   def monitoring?
     monitoring.present?

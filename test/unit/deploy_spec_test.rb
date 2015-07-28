@@ -202,7 +202,7 @@ class DeploySpecTest < ActiveSupport::TestCase
     assert_instance_of DeploySpec::FileSystem, @spec
     assert_instance_of DeploySpec, @spec.cacheable
     config = {
-      'ci' => {'hide' => []},
+      'ci' => {'hide' => [], 'allow_failures' => []},
       'machine' => {'environment' => {}, 'directory' => nil},
       'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
       'dependencies' => {'override' => []},

@@ -18,7 +18,7 @@ class DeploySpec
 
     def cacheable_config
       (config || {}).deep_merge(
-        'ci' => {'hide' => hidden_statuses},
+        'ci' => {'hide' => hidden_statuses, 'allow_failures' => soft_failing_statuses},
         'machine' => {'environment' => machine_env, 'directory' => directory},
         'review' => {
           'checklist' => review_checklist,
