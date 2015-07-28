@@ -59,7 +59,7 @@ module StacksHelper
     if statuses.size == 1
       render statuses.first
     else
-      render StatusGroup.new(commit.significant_status, statuses)
+      render StatusGroup.new(commit)
     end
   end
 end

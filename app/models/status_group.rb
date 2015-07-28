@@ -3,15 +3,15 @@ class StatusGroup
 
   attr_reader :statuses, :significant_status
 
-  def initialize(significant_status, statuses)
-    @significant_status = significant_status
-    @statuses = statuses
+  def initialize(commit)
+    @significant_status = commit.significant_status
+    @statuses = commit.visible_statuses
   end
 
   delegate :state, to: :significant_status
 
   def description
-    "#{success_count} / #{sstatuses.count} checks OK"
+    "#{success_count} / #{statuses.count} checks OK"
   end
 
   def target_url
