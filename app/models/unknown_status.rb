@@ -1,10 +1,4 @@
-class UnknownStatus
-  attr_reader :commit
-
-  def initialize(commit)
-    @commit = commit
-  end
-
+UnknownStatus = Struct.new(:commit) do
   def state
     'unknown'
   end

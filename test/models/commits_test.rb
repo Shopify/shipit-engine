@@ -247,6 +247,12 @@ class CommitsTest < ActiveSupport::TestCase
     assert_equal 2, commits(:second).last_statuses.count
   end
 
+  test "#last_statuses return [UnknownStatus] if the commit has no statuses" do
+    commit = commits(:second)
+    commit.statuses = []
+    assert_equal UnknownStatus.new(commit), commit.significant_status
+  end
+
   test "#visible_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
     commit = commits(:second)
     assert_equal 2, commit.visible_statuses.count
@@ -261,6 +267,58 @@ class CommitsTest < ActiveSupport::TestCase
 
   test "#deployable? is true if stack is set to 'ignore_ci'" do
     assert commits(:first).deployable?
+  end
+
+  test "#visible_statuses forward the last_statuses to the stack" do
+    commit = commits(:second)
+    stack = commit.stack
+    stack.expects(:filter_visible_statuses).with(commit.last_statuses)
+    commit.visible_statuses
+  end
+
+  test "#meaningful_statuses forward the last_statuses to the stack" do
+    commit = commits(:second)
+    stack = commit.stack
+    stack.expects(:filter_meaningful_statuses).with(commit.last_statuses)
+    commit.meaningful_statuses
+  end
+
+  test "#significant_status is UnknownStatus when the commit has no statuses" do
+    commit = commits(:first)
+    commit.statuses = []
+    assert_equal UnknownStatus.new(commit), commit.significant_status
+  end
+
+  test "#significant_status hierarchy uses failures and errors, then pending, then successes, then UnknownStatus" do
+    commit = commits(:first)
+    pending = commit.statuses.new(state: 'pending', context: 'ci/pending')
+    failure = commit.statuses.new(state: 'failure', context: 'ci/failure')
+    error = commit.statuses.new(state: 'error', context: 'ci/error')
+    success = commit.statuses.new(state: 'success', context: 'ci/success')
+
+    commit.reload.statuses = [pending, failure, success, error]
+    assert_includes [error, failure], commit.significant_status
+
+    commit.reload.statuses = [pending, failure, success]
+    assert_equal failure, commit.significant_status
+
+    commit.reload.statuses = [pending, error, success]
+    assert_equal error, commit.significant_status
+
+    commit.reload.statuses = [success, pending]
+    assert_equal pending, commit.significant_status
+
+    commit.reload.statuses = [success]
+    assert_equal success, commit.significant_status
+
+    commit.reload.statuses = []
+    assert_equal UnknownStatus.new(commit), commit.significant_status
+  end
+
+  test "#significant_status is UnknownStatus when the commit has statuses but none meaningful" do
+    commit = commits(:first)
+    commit.stubs(meaningful_statuses: [])
+    assert_equal UnknownStatus.new(commit), commit.significant_status
   end
 
   private
