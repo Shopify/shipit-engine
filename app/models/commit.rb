@@ -161,7 +161,7 @@ class Commit < ActiveRecord::Base
 
   def significant_status
     statuses = meaningful_statuses
-    return nil if statuses.empty?
+    return UnknownStatus.new(self) if statuses.empty?
     return statuses.first if statuses.all?(&:success?)
     non_success_statuses = statuses.reject(&:success?)
     non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)

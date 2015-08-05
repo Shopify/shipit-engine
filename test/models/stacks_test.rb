@@ -293,6 +293,26 @@ class StacksTest < ActiveSupport::TestCase
     end
   end
 
+  test "#filter_visible_statuses removes statuses from hidden contexts" do
+    stack = stacks(:cyclimse)
+    stack.stubs(hidden_statuses: ['ci/hidden'])
+    commit1 = Status.new(state: 'pending', context: 'ci/valid')
+    commit2 = Status.new(state: 'pending', context: 'ci/valid')
+    hidden = Status.new(state: 'pending', context: 'ci/hidden')
+
+    assert_equal [commit1, commit2], stack.filter_visible_statuses([hidden, commit1, commit2])
+  end
+
+  test "#filter_meaningful_statuses removes statuses from soft-failing contexts" do
+    stack = stacks(:cyclimse)
+    stack.stubs(soft_failing_statuses: ['ci/soft-fail'])
+    commit1 = Status.new(state: 'pending', context: 'ci/valid')
+    commit2 = Status.new(state: 'pending', context: 'ci/valid')
+    soft_fail = Status.new(state: 'pending', context: 'ci/soft-fail')
+
+    assert_equal [commit1, commit2], stack.filter_meaningful_statuses([soft_fail, commit1, commit2])
+  end
+
   private
 
   def expect_hook(event, stack, payload)
