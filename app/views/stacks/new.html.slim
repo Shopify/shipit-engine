@@ -1,0 +1,36 @@
+- content_for :page_title
+  h1 Create a stack
+
+= form_for @stack do |f|
+  .row
+    .col-md-6
+      .form-group
+        = label_tag "Repo"
+        .form-inline
+          span = Shipit.github_url
+          '/
+          ' 
+          = f.text_field :repo_owner, placeholder: 'my-org', required: true, class: "form-control repo"
+          ' 
+          ' /
+          = f.text_field :repo_name, placeholder: 'my-repo', required: true, pattern: "^[a-z0-9\-_\.]+$", class: "form-control repo"
+
+      .form-group
+        = f.label :branch
+        = f.text_field :branch, placeholder: 'master', class: 'form-control'
+
+      .form-group
+        = f.label :environment
+        = f.text_field :environment, placeholder: 'production', class: 'form-control'
+
+      .form-group
+        = f.label :deploy_url
+        = f.text_field :deploy_url, placeholder: 'https://', class: 'form-control'
+        p.help-block Where is this stack deployed to?
+
+      .form-group
+        = f.check_box :ignore_ci
+        ' 
+        = f.label :ignore_ci, "Allow deploys regardless of CI status"
+
+      button.btn.btn-primary type="submit" Create stack

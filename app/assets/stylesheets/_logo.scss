@@ -1,0 +1,20 @@
+// LOGO
+// -----------------------------------------------------------------------------
+
+.logo {
+  background: asset-data-url('anchor.svg') center center no-repeat;
+  display: block;
+  width: 40px;
+  height: 40px;
+  transition: transform .3s ease-in-out;
+  text-indent: -9999px;
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-right: 1em;
+  margin-top: -20px;
+
+  &:hover {
+    transform: rotate(-25deg);
+  }
+}
