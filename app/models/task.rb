@@ -7,6 +7,7 @@ class Task < ActiveRecord::Base
   has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :destroy
 
   serialize :definition, TaskDefinition
+  serialize :env, Hash
 
   scope :success, -> { where(status: 'success') }
   scope :completed, -> { where(status: %w(success error failed)) }

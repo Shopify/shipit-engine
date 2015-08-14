@@ -16,7 +16,8 @@ class DeploysController < ShipitController
 
   def create
     return redirect_to new_stack_deploy_path(@stack, sha: @until_commit.sha) if !params[:force] && @stack.deploying?
-    @deploy = @stack.trigger_deploy(@until_commit, current_user)
+
+    @deploy = @stack.trigger_deploy(@until_commit, current_user, deploy_params[:env])
     respond_with(@deploy.stack, @deploy)
   end
 
@@ -39,6 +40,6 @@ class DeploysController < ShipitController
   end
 
   def deploy_params
-    @deploy_params ||= params.require(:deploy).permit(:until_commit_id)
+    @deploy_params ||= params.require(:deploy).permit(:until_commit_id, env: @stack.deploy_variables.map(&:name))
   end
 end

@@ -85,6 +85,10 @@ class Deploy < Task
     super || default_since_commit_id
   end
 
+  def variables
+    stack.deploy_variables
+  end
+
   private
 
   def trigger_revert_if_required
