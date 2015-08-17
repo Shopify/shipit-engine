@@ -48,13 +48,14 @@ class Stack < ActiveRecord::Base
     task
   end
 
-  def trigger_deploy(until_commit, user)
+  def trigger_deploy(until_commit, user, env: nil)
     since_commit = last_deployed_commit
 
     deploy = deploys.create(
       user_id: user.id,
       until_commit: until_commit,
       since_commit: since_commit,
+      env: env || {},
     )
     deploy.enqueue
     deploy
@@ -192,7 +193,7 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
-  delegate :task_definitions, :hidden_statuses, :soft_failing_statuses, to: :cached_deploy_spec
+  delegate :task_definitions, :hidden_statuses, :soft_failing_statuses, :deploy_variables, to: :cached_deploy_spec
 
   def monitoring?
     monitoring.present?

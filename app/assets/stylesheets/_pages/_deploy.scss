@@ -9,6 +9,18 @@
   display: flex;
 }
 
+.environment-variables {
+  margin: 1rem 0;
+}
+
+.environment-variable {
+  input {
+    display: inline-block;
+    width: inherit;
+    margin-right: 1rem;
+  }
+}
+
 .deploy-checklist__item__label {
 
 }

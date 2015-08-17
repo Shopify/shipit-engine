@@ -26,7 +26,7 @@ class DeploySpec
           'checks' => review_checks,
         },
         'dependencies' => {'override' => dependencies_steps},
-        'deploy' => {'override' => deploy_steps},
+        'deploy' => {'override' => deploy_steps, 'variables' => deploy_variables.map(&:to_h)},
         'rollback' => {'override' => rollback_steps},
         'fetch' => fetch_deployed_revision_steps,
         'tasks' => cacheable_tasks,

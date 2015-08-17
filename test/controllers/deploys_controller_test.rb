@@ -36,6 +36,19 @@ class DeploysControllerTest < ActionController::TestCase
     end
   end
 
+  test ":create can receive an :env hash" do
+    env = {'SAFETY_DISABLED' => '1'}
+    post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id, env: env}
+    new_deploy = Deploy.last
+    assert_equal env, new_deploy.env
+  end
+
+  test ":create can receive an :env keys not declared in the deploy spec" do
+    post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id, env: {'H4X0R' => '1'}}
+    new_deploy = Deploy.last
+    assert_equal({}, new_deploy.env)
+  end
+
   test ":create with `force` option ignore the active deploys" do
     deploys(:shipit_running).update_column(:status, 'running')
 

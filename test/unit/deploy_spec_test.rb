@@ -206,12 +206,28 @@ class DeploySpecTest < ActiveSupport::TestCase
       'machine' => {'environment' => {}, 'directory' => nil},
       'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
       'dependencies' => {'override' => []},
-      'deploy' => {'override' => nil},
+      'deploy' => {'override' => nil, 'variables' => []},
       'rollback' => {'override' => nil},
       'fetch' => nil,
       'tasks' => {},
     }
     assert_equal config, @spec.cacheable.config
+  end
+
+  test "#deploy_variables returns an empty array by default" do
+    assert_equal [], @spec.deploy_variables
+  end
+
+  test "#deploy_variables returns an array of VariableDefinition instances" do
+    @spec.stubs(:load_config).returns('deploy' => {'variables' => [{
+      'name' => 'SAFETY_DISABLED',
+      'title' => 'Set to 1 to do dangerous things',
+      'default' => 0,
+    }]})
+
+    assert_equal 1, @spec.deploy_variables.size
+    variable_definition = @spec.deploy_variables.first
+    assert_equal 'SAFETY_DISABLED', variable_definition.name
   end
 
   test "task definitions prepend bundle exec if necessary" do

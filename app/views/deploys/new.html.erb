@@ -29,13 +29,28 @@
 
   <%= render_checklist @stack.checklist %>
 
-  <section class="submit-section">
-    <%= form_for [@stack, @deploy] do |f| %>
+  <%= form_for [@stack, @deploy] do |f| %>
+    <% unless @deploy.variables.empty? %>
+      <section>
+        <header class="section-header environment-variables">
+          <h2>Environment variables</h2>
+        </header>
+        <%= f.fields_for :env do |env_fields| %>
+          <% @deploy.variables.each do |variable| %>
+            <p class="environment-variable">
+              <%= env_fields.text_field variable.name, value: variable.default %>
+              <%= env_fields.label variable.name, variable.title || variable.name %>
+            </p>
+          <% end %>
+        <% end %>
+      </section>
+    <% end %>
+    <section class="submit-section">
       <% if @stack.deploying? %>
         <%= hidden_field_tag :force, value: true %>
       <% end %>
       <%= f.hidden_field :until_commit_id %>
       <%= f.submit class: 'btn btn--primary btn--large trigger-deploy' %>
-    <% end %>
-  </section>
+    </section>
+  <% end %>
 </div>

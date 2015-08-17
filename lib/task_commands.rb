@@ -35,7 +35,7 @@ class TaskCommands < Commands
       'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
       'SHIPIT_LINK' => permalink,
       'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
-    ).merge(deploy_spec.machine_env)
+    ).merge(deploy_spec.machine_env).merge(@task.env)
   end
 
   def checkout(commit)

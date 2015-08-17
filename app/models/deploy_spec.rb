@@ -61,6 +61,10 @@ class DeploySpec
     deploy_steps || cant_detect!(:deploy)
   end
 
+  def deploy_variables
+    Array.wrap(config('deploy', 'variables')).map(&VariableDefinition.method(:new))
+  end
+
   def rollback_steps
     config('rollback', 'override') || discover_rollback_steps
   end

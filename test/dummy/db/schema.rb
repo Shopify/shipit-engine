@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150708143032) do
+ActiveRecord::Schema.define(version: 20150814204960) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 20150708143032) do
     t.text     "definition",            limit: 65535
     t.binary   "gzip_output"
     t.boolean  "rollback_once_aborted",               default: false,     null: false
+    t.text     "env"
   end
 
   add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"

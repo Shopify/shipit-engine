@@ -171,4 +171,10 @@ class DeployCommandsTest < ActiveSupport::TestCase
     command = @commands.install_dependencies.first
     assert_equal '1', command.env['GLOBAL']
   end
+
+  test "the deploy's `env` is merged in ENVIRONMENT" do
+    @deploy.env = {'FOO' => 'BAR'}
+    command = @commands.install_dependencies.first
+    assert_equal 'BAR', command.env['FOO']
+  end
 end
