@@ -17,6 +17,12 @@ class CommandTest < ActiveSupport::TestCase
     assert_equal [%(cap '' deploy)], command.interpolated_arguments
   end
 
+  test '#interpolate_environment_variables escape the variable contents' do
+    malicious_string = '$(echo pwnd)'
+    command = Command.new('echo $FOO', env: {'FOO' => malicious_string}, chdir: '.')
+    assert_equal malicious_string, command.run.chomp
+  end
+
   test "#interpolate_environment_variables fallback to ENV" do
     command = Command.new('cap $LANG deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
     assert_equal [%(cap #{ENV['LANG']} deploy)], command.interpolated_arguments
