@@ -48,7 +48,7 @@ class Stack < ActiveRecord::Base
     task
   end
 
-  def trigger_deploy(until_commit, user, env = nil)
+  def trigger_deploy(until_commit, user, env: nil)
     since_commit = last_deployed_commit
 
     deploy = deploys.create(
