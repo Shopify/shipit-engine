@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+html data-controller=controller_name data-action=action_name
+head
+  title = [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ')
+  
+  = stylesheet_link_tag :shipit_bs, media: 'all'
+  = javascript_include_tag :shipit_bs
+  = csrf_meta_tags
+
+body
+  - flash.each do |name, msg|
+    = content_tag :div, msg, class: ["flash-#{name}", :flash]
+
+  / <div class="banner notification banner--blue hidden">
+  /   <div class="banner__inner wrapper">
+  /     <div class="banner__content">
+  /       <h2 class="banner__title">Do you want to enable desktop notifications?</h2>
+  /     </div>
+  /     <div class="banner__accessory">
+  /       <button class="banner__btn btn">Enable notifications</button>
+  /     </div>
+  /   </div>
+  / </div>
+
+  header class="page-header"
+    .container
+      a.logo href="/"
+        span.hidden Shipit.app_name
+      
+      - if content_for? :primary_navigation
+        .pull-right
+          = yield :primary_navigation
+
+      - if content_for? :secondary_navigation
+        = yield :secondary_navigation
+
+      = yield :page_title
+
+  .container
+    = yield
+
+  / <header class="header">
+  /   <div class="wrapper">
+  /     <div class="header__inner">
+  /       <a href="/" class="logo">
+  /         <span class="visually-hidden">Shipit</span>
+  /       </a>
+  /       <div class="header__page-title">
+  /         <%= yield :page_title %>
+  /       </div>
+  /       <% if content_for? :primary_navigation %>
+  /         <div class="header__page-actions">
+  /           <%= yield :primary_navigation %>
+  /         </div>
+  /       <% end %>
+  /     </div>
+  /     <% if content_for? :secondary_navigation %>
+  /       <nav class="nav">
+  /         <%= yield :secondary_navigation %>
+  /       </nav>
+  /     <% end %>
+  /   </div>
+  / </header>
+
+  / <div class="main" data-layout-content>
+  /   <%= yield %>
+  / </div>

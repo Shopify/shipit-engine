@@ -1,0 +1,24 @@
+@import "logo";
+
+body {
+  background: $background-grey;
+}
+
+.page-header {
+  margin-top: 0;
+  padding: 20px 0;
+  background-color: white;
+  .container {
+    position: relative;
+  }
+  h1 {
+    display: inline-block;
+    margin: 0;
+    line-height: 40px;
+  }
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 400;
+}
