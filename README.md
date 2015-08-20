@@ -114,7 +114,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`)
-* [CI](#ci) (`ci.hide`)
+* [CI](#ci) (`ci.hide`, `ci.allow_failures`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
@@ -215,6 +215,15 @@ For example:
 ```yml
 ci:
   hide:
+    - ci/circleci
+```
+
+**<code>ci.allow_failures</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want to be visible but not to required for deploy.
+
+For example:
+```yml
+ci:
+  allow_failures:
     - ci/circleci
 ```
 
