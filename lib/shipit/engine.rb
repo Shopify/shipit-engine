@@ -6,7 +6,6 @@ module Shipit
       Rails.application.routes.default_url_options[:host] = Shipit.host
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
 
-      app.config.assets.paths << File.expand_path('../../../vendor/assets/javascripts', __FILE__)
       app.config.assets.precompile += %w(
         task.js
         shipit.js
