@@ -1,4 +1,6 @@
 module StacksHelper
+  COMMIT_TITLE_LENGTH = 79
+
   def deploy_button(commit)
     url = new_stack_deploy_path(@stack, sha: commit.sha)
     classes = %W(btn btn--primary deploy-action #{commit.state})
@@ -14,7 +16,8 @@ module StacksHelper
   end
 
   def render_commit_message(commit)
-    content_tag(:span, commit.pull_request_title || commit.message, class: 'event-message')
+    message = commit.pull_request_title || commit.message
+    content_tag(:span, message.truncate(COMMIT_TITLE_LENGTH), class: 'event-message')
   end
 
   def render_commit_message_with_link(commit)
