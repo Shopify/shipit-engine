@@ -25,7 +25,10 @@ en:
       deploy: Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml
       rollback: Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml
       fetch: Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml
+  deploys:
+    description: "deploy of %{sha}"
   rollbacks:
+    description: "rollback to %{sha}"
     create:
       error:
         deploy_in_progress: Rollbacks can't be triggered if a deploy is in progress

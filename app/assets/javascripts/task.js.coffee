@@ -12,7 +12,9 @@ jQuery ->
 
   tty = new TTY($('body'))
   OutputStream.addEventListener('chunk', tty.appendChunk)
-  Notifications.init(OutputStream)
+
+  if task = $('[data-task]').data('task')
+    Notifications.init(OutputStream, task)
 
   $code = $('code')
   OutputStream.init
