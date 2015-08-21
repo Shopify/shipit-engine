@@ -65,7 +65,7 @@
     <div class="setting-section">
       <h5>Delete this stack</h5>
       <p>This action will delete the stack from Ship it permanently. Be careful.</p>
-      <%= button_to "Delete…", stack_path(@stack), :class => "btn btn--delete", :method => :delete, :confirm => "Are you sure?" %>
+      <%= button_to "Delete…", stack_path(@stack), class: 'btn btn--delete', data: {confirm: 'Are you sure?'}, method: :delete %>
     </div>
 
   </section>
