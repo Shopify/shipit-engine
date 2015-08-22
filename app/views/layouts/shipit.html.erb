@@ -2,6 +2,7 @@
 <html data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 <head>
   <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
+  <%= favicon_link_tag %>
   <%= stylesheet_link_tag :shipit, media: 'all' %>
   <%= javascript_include_tag :shipit %>
 
