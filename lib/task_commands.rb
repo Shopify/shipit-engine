@@ -30,7 +30,7 @@ class TaskCommands < Commands
     normalized_name = ActiveSupport::Inflector.transliterate(@task.author.name)
     super.merge(
       'ENVIRONMENT' => @stack.environment,
-      'USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
+      'USER' => "'#{@task.author.login} (#{normalized_name}) via Shipit'",
       'EMAIL' => @task.author.email,
       'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
       'SHIPIT_LINK' => permalink,
