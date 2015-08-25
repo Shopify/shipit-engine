@@ -12,19 +12,20 @@ class Deploy < Task
 
   delegate :broadcast_update, to: :stack
 
-  def build_rollback(user = nil)
+  def build_rollback(user = nil, env: nil)
     Rollback.new(
       user_id: user.try!(:id),
       stack_id: stack_id,
       parent_id: id,
       since_commit: stack.last_deployed_commit,
       until_commit: until_commit,
+      env: env || {},
     )
   end
 
   # Rolls the stack back to this deploy
-  def trigger_rollback(user = AnonymousUser.new)
-    rollback = build_rollback(user)
+  def trigger_rollback(user = AnonymousUser.new, env: nil)
+    rollback = build_rollback(user, env: env)
     rollback.save!
     rollback.enqueue
 

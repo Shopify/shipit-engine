@@ -25,13 +25,28 @@
 
   <%= render_checklist @stack.checklist %>
 
-  <section class="submit-section">
-    <%= form_for [@stack, @rollback] do |f| %>
+  <%= form_for [@stack, @rollback] do |f| %>
+    <% unless @rollback.variables.empty? %>
+      <section>
+        <header class="section-header environment-variables">
+          <h2>Environment variables</h2>
+        </header>
+        <%= f.fields_for :env do |env_fields| %>
+          <% @rollback.variables.each do |variable| %>
+            <p class="environment-variable">
+              <%= env_fields.text_field variable.name, value: variable.default %>
+              <%= env_fields.label variable.name, variable.title || variable.name %>
+            </p>
+          <% end %>
+        <% end %>
+      </section>
+    <% end %>
+    <section class="submit-section">
       <% if @stack.deploying? %>
         <%= hidden_field_tag :force, value: true %>
       <% end %>
       <%= f.hidden_field :parent_id %>
       <%= f.submit 'Rollback', :class => ['btn', 'rollback', 'trigger-rollback'], data: {confirm: "Are you really sure it's safe?"} %>
-    <% end %>
-  </section>
+    </section>
+  <% end %>
 </div>

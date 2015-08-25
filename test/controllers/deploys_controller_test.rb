@@ -43,7 +43,7 @@ class DeploysControllerTest < ActionController::TestCase
     assert_equal env, new_deploy.env
   end
 
-  test ":create can receive an :env keys not declared in the deploy spec" do
+  test ":create ignore :env keys not declared in the deploy spec" do
     post :create, stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id, env: {'H4X0R' => '1'}}
     new_deploy = Deploy.last
     assert_equal({}, new_deploy.env)

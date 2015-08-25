@@ -4,7 +4,7 @@ class RollbacksController < ShipitController
 
   def create
     return redirect_to rollback_stack_deploy_path(@stack, @deploy) if !params[:force] && @stack.deploying?
-    @rollback = @deploy.trigger_rollback(current_user)
+    @rollback = @deploy.trigger_rollback(current_user, env: rollback_params[:env])
     redirect_to stack_deploy_path(@stack, @rollback)
   end
 
@@ -19,6 +19,6 @@ class RollbacksController < ShipitController
   end
 
   def rollback_params
-    params.require(:rollback).permit(:parent_id)
+    params.require(:rollback).permit(:parent_id, env: @stack.deploy_variables.map(&:name))
   end
 end
