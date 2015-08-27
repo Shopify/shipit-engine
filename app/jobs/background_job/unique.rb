@@ -20,14 +20,7 @@ class BackgroundJob
     end
 
     def lock_key(*args)
-      ([self.class.name] + args).map { |arg| hash_argument(arg) }.join('-')
-    end
-
-    private
-
-    def hash_argument(argument)
-      return argument.to_global_id.to_s if argument.respond_to?(:to_global_id)
-      argument.to_s
+      ActiveJob::Arguments.serialize([self.class.name] + args).join('-')
     end
   end
 end
