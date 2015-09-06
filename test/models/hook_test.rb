@@ -29,7 +29,7 @@ class HookTest < ActiveSupport::TestCase
   end
 
   test ".deliver schedule a delivery for each matching hook" do
-    assert_difference -> { Delivery.count }, +2 do
+    assert_difference -> { Delivery.count }, 2 do
       Hook.deliver(:deploy, @stack, 'foo' => 42)
     end
 

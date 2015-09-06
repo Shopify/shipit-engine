@@ -13,7 +13,7 @@ class TeamTest < ActiveSupport::TestCase
     Shipit.github_api.expects(:org_teams).with('shopify', per_page: 100)
     response = stub(rels: {}, data: [new_team])
     Shipit.github_api.expects(:last_response).returns(response)
-    assert_difference -> { Team.count }, +1 do
+    assert_difference -> { Team.count }, 1 do
       Team.find_or_create_by_handle('Shopify/new-team')
     end
   end
@@ -21,7 +21,7 @@ class TeamTest < ActiveSupport::TestCase
   test "#refresh_members! fetch all the team members from github" do
     response = stub(rels: {members: members_resource})
     Shipit.github_api.expects(:get).with(@team.api_url).returns(response)
-    assert_difference -> { User.count }, +1 do
+    assert_difference -> { User.count }, 1 do
       @team.refresh_members!
     end
   end

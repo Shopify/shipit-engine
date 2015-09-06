@@ -37,9 +37,9 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "#since_commit_id returns a default value if stack_id is set" do
-    stack  = stacks(:shipit)
+    stack = stacks(:shipit)
     deploy = stack.deploys.new
-    last   = stack.deploys.success.last.until_commit_id
+    last = stack.deploys.success.last.until_commit_id
     assert_equal last, deploy.since_commit_id
   end
 
@@ -51,7 +51,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "additions and deletions are denormalized on before create" do
     stack = stacks(:shipit)
     first = commits(:first)
-    third  = commits(:third)
+    third = commits(:third)
 
     deploy = stack.deploys.create!(
       since_commit: first,
@@ -65,7 +65,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "#commits returns the commits in the id range" do
     stack = stacks(:shipit)
     first = commits(:first)
-    last  = commits(:third)
+    last = commits(:third)
 
     deploy = stack.deploys.new(
       since_commit: first,
@@ -82,7 +82,7 @@ class DeploysTest < ActiveSupport::TestCase
   test "#commits returns commits from newer to older" do
     stack = stacks(:shipit)
     first = commits(:first)
-    last  = commits(:fourth)
+    last = commits(:fourth)
 
     deploy = stack.deploys.new(
       since_commit: first,
@@ -195,7 +195,7 @@ class DeploysTest < ActiveSupport::TestCase
     @deploy.pid = 42
     @deploy.abort!(rollback_once_aborted: true)
 
-    assert_difference -> { @stack.rollbacks.count }, +1 do
+    assert_difference -> { @stack.rollbacks.count }, 1 do
       assert_enqueued_with(job: PerformTaskJob) do
         @deploy.aborted!
       end
@@ -237,7 +237,7 @@ class DeploysTest < ActiveSupport::TestCase
   end
 
   test "#trigger_rollback creates a new Rollback" do
-    assert_difference -> { Rollback.count }, +1 do
+    assert_difference -> { Rollback.count }, 1 do
       @deploy.trigger_rollback(@user)
     end
   end

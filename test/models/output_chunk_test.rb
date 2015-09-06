@@ -8,7 +8,7 @@ class OutputChunkTest < ActiveSupport::TestCase
 
   test "tail" do
     start = @chunks.first
-    rest  = @chunks - [start]
+    rest = @chunks - [start]
     assert_equal rest, @deploy.chunks.tail(start.id)
   end
 

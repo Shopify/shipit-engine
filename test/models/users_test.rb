@@ -8,7 +8,7 @@ class UsersTest < ActiveSupport::TestCase
   end
 
   test "find_or_create_from_github persist a new user if he is unknown" do
-    assert_difference 'User.count', +1 do
+    assert_difference 'User.count', 1 do
       fetch_user
     end
   end

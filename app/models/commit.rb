@@ -15,7 +15,7 @@ class Commit < ActiveRecord::Base
   belongs_to :author, class_name: 'User', inverse_of: :authored_commits
   belongs_to :committer, class_name: 'User', inverse_of: :commits
 
-  scope :reachable,  -> { where(detached: false) }
+  scope :reachable, -> { where(detached: false) }
 
   delegate :broadcast_update, :github_repo_name, to: :stack
 

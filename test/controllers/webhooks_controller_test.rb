@@ -38,7 +38,7 @@ class WebhooksControllerTest < ActionController::TestCase
     status_payload = payload(:status_master)
     commit = commits(:first)
 
-    assert_difference 'commit.statuses.count', +1 do
+    assert_difference 'commit.statuses.count', 1 do
       post :state, {stack_id: @stack.id}.merge(status_payload)
     end
 
@@ -112,7 +112,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":membership creates the mentioned team on the fly" do
-    assert_difference -> { Team.count }, +1 do
+    assert_difference -> { Team.count }, 1 do
       post :membership, membership_params.merge(team: {
         id: 48,
         name: 'Ouiche Cooks',
@@ -125,7 +125,7 @@ class WebhooksControllerTest < ActionController::TestCase
 
   test ":membership creates the mentioned user on the fly" do
     Shipit.github_api.expects(:user).with('george').returns(george)
-    assert_difference -> { User.count }, +1 do
+    assert_difference -> { User.count }, 1 do
       post :membership, membership_params.merge(member: {login: 'george'})
       assert_response :ok
     end
@@ -139,7 +139,7 @@ class WebhooksControllerTest < ActionController::TestCase
   end
 
   test ":membership can append an user membership" do
-    assert_difference -> { Membership.count }, +1 do
+    assert_difference -> { Membership.count }, 1 do
       post :membership, membership_params.merge(member: {login: 'bob'})
       assert_response :ok
     end

@@ -18,7 +18,7 @@ class GithubUrlHelperTest < ActiveSupport::TestCase
 
   test "#github_diff_url returns a diff url" do
     from_sha = SecureRandom.hex
-    to_sha   = SecureRandom.hex
+    to_sha = SecureRandom.hex
     expected = "https://github.com/rails/rails/compare/#{from_sha}...#{to_sha}"
 
     assert_equal expected, github_diff_url("rails", "rails", from_sha, to_sha)

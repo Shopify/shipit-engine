@@ -126,7 +126,7 @@ class StacksTest < ActiveSupport::TestCase
     Deploy.active.update_all(status: 'error')
 
     assert_equal commits(:fourth), @stack.last_deployed_commit
-    assert_difference 'Deploy.count', +1 do
+    assert_difference 'Deploy.count', 1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha)
       assert_not_nil deploy
       assert_equal commits(:fourth), deploy.since_commit
@@ -139,7 +139,7 @@ class StacksTest < ActiveSupport::TestCase
     Deploy.active.update_all(status: 'error')
 
     assert_equal commits(:fourth), @stack.last_deployed_commit
-    assert_difference 'Deploy.count', +1 do
+    assert_difference 'Deploy.count', 1 do
       deploy = @stack.update_deployed_revision(commits(:fifth).sha[0..5])
       assert_not_nil deploy
       assert_equal commits(:fourth), deploy.since_commit

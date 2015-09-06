@@ -156,7 +156,7 @@ class CommitsTest < ActiveSupport::TestCase
     rels = {target: mock(href: 'http://example.com')}
     status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
     Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
-    assert_difference '@commit.statuses.count', +1 do
+    assert_difference '@commit.statuses.count', 1 do
       @commit.refresh_statuses!
     end
     assert_equal 'success', @commit.statuses.first.state

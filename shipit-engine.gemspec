@@ -5,13 +5,13 @@ require 'shipit/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'shipit-engine'
-  s.version     = Shipit::VERSION
-  s.authors     = ['Jean Boussier']
-  s.email       = ['jean.boussier@shopify.com', 'guillaume@shopify.com']
-  s.homepage    = "https://github.com/shopify/shipit-engine"
-  s.summary     = "Application deployment software"
-  s.license     = "MIT"
+  s.name = 'shipit-engine'
+  s.version = Shipit::VERSION
+  s.authors = ['Jean Boussier']
+  s.email = ['jean.boussier@shopify.com', 'guillaume@shopify.com']
+  s.homepage = "https://github.com/shopify/shipit-engine"
+  s.summary = "Application deployment software"
+  s.license = "MIT"
 
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]

@@ -41,7 +41,7 @@ class Api::HooksControllerTest < ActionController::TestCase
   end
 
   test "#create adds a new hook" do
-    assert_difference -> { Hook.count }, +1 do
+    assert_difference -> { Hook.count }, 1 do
       post :create, url: 'https://example.com/hook', events: %w(deploy rollback)
     end
     assert_json 'url', 'https://example.com/hook'

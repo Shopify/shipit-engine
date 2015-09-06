@@ -41,7 +41,7 @@ module QueriesHelper
     attr_reader :log
 
     def initialize(ignore = nil)
-      @ignore =  ignore || self.class.ignored_sql
+      @ignore = ignore || self.class.ignored_sql
       @log = []
     end
 

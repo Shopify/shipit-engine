@@ -88,3 +88,9 @@ Style/StringLiterals:
 
 Style/PerlBackrefs:
   Enabled: false
+
+Style/TrivialAccessors:
+  AllowPredicates: true
+
+Style/ExtraSpacing:
+  AllowForAlignment: false
