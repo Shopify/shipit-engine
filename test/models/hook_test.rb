@@ -34,7 +34,7 @@ class HookTest < ActiveSupport::TestCase
     end
   end
 
-  test ".deliver schedule a delivery for each matching hook" do
+  test ".deliver schedules a delivery for each matching hook" do
     assert_difference -> { Delivery.count }, 2 do
       Hook.deliver(:deploy, @stack, 'foo' => 42)
     end
@@ -47,7 +47,7 @@ class HookTest < ActiveSupport::TestCase
     assert_equal 'scheduled', delivery.status
   end
 
-  test ".scoped? returns true if the hook have a stack_id" do
+  test ".scoped? returns true if the hook has a stack_id" do
     @hook.stack_id = nil
     refute @hook.scoped?
 

@@ -83,6 +83,15 @@ class Commit < ActiveRecord::Base
     end
   end
 
+  def add_status(status_attributes)
+    previous_status = significant_status
+    statuses.create!(status_attributes)
+    reload # to get the statuses into the right order (since sorted :desc)
+    new_status = significant_status
+    Hook.emit(:commit_status, stack, commit: self, stack: stack, status: new_status) if previous_status != new_status
+    new_status
+  end
+
   def checks
     @checks ||= CommitChecks.new(self)
   end

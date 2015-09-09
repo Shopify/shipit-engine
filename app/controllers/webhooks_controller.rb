@@ -18,7 +18,7 @@ class WebhooksController < ActionController::Base
     branches = params[:branches] || []
     if branches.find { |branch| branch[:name] == stack.branch }
       commit = stack.commits.find_by_sha!(params[:sha])
-      commit.statuses.create!(params.permit(:state, :description, :target_url, :context, :created_at))
+      commit.add_status(params.permit(:state, :description, :target_url, :context, :created_at))
     end
     head :ok
   end

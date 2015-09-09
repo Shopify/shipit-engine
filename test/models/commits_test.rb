@@ -269,6 +269,64 @@ class CommitsTest < ActiveSupport::TestCase
     assert commits(:first).deployable?
   end
 
+  test "#add_status fires webhook for success statuses if commit state changes to success?" do
+    commit = commits(:first)
+    refute commit.success?
+    assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
+    status_attributes = {state: 'success', description: 'Glad', context: 'ci/travis'}
+    expect_hook_emit(commit, status_attributes)
+    commit.add_status(status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
+  end
+
+  test "#add_status fires webhook for success statuses even if commit state is already success?" do
+    commit = commits(:third)
+    assert commit.success?
+    assert_equal 1, commit.stack.hooks.where(events: ['commit_status']).size
+    status_attributes = {state: 'success', description: 'Glad', context: 'ci/travis'}
+    expect_hook_emit(commit, status_attributes)
+    commit.add_status(status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
+  end
+
+  test "#add_status fires webhook for failure statuses" do
+    commit = commits(:third)
+    assert commit.success?
+    assert_equal 1, commit.stack.hooks.where(events: ['commit_status']).size
+    status_attributes = {state: 'failure', description: 'Sad', context: 'ci/travis'}
+    expect_hook_emit(commit, status_attributes)
+    commit.add_status(status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
+  end
+
+  test "#add_status fires webhook for failure statuses even if commit state is not success?" do
+    commit = commits(:second)
+    refute commit.success?
+    assert_equal 1, commit.stack.hooks.where(events: ['commit_status']).size
+    status_attributes = {state: 'failure', description: 'Sad', context: 'ci/travis'}
+    expect_hook_emit(commit, status_attributes)
+    commit.add_status(status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
+  end
+
+  test "#add_status fires webhook for error statuses" do
+    commit = commits(:third)
+    assert_equal 1, commit.stack.hooks.where(events: ['commit_status']).size
+    status_attributes = {state: 'error', description: 'Bad', context: 'ci/travis'}
+    expect_hook_emit(commit, status_attributes)
+    commit.add_status(status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
+  end
+
+  test "#add_status does not fire webhook for invisible statuses" do
+    commit = commits(:second)
+    assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
+    Hook.expects(:emit).never
+    commit.add_status(state: 'failure', description: 'Sad', context: 'ci/hidden', created_at: 1.day.ago.to_s(:db))
+  end
+
+  test "#add_status does not fire webhook for non-meaningful statuses" do
+    commit = commits(:second)
+    assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
+    Hook.expects(:emit).never
+    commit.add_status(state: 'failure', description: 'Sad', context: 'ci/ok_to_fail', created_at: 1.day.ago.to_s(:db))
+  end
+
   test "#visible_statuses forward the last_statuses to the stack" do
     commit = commits(:second)
     stack = commit.stack
@@ -329,5 +387,11 @@ class CommitsTest < ActiveSupport::TestCase
       data = JSON.load(event.data)
       channel == "stack.#{stack.id}" && data['url'] == "/#{stack.to_param}"
     end
+  end
+
+  def expect_hook_emit(commit, status_attributes)
+    matchers = status_attributes.to_a.map { |pair| responds_with(pair.first, pair.second) }
+    Hook.expects(:emit).with(:commit_status, commit.stack, has_entries(commit: commit, stack: commit.stack,
+                                                                       status: all_of(*matchers)))
   end
 end

@@ -14,3 +14,9 @@ shipit_tasks:
   events: 'task'
   url: https://example.com/events/deploy
   content_type: json
+
+shipit_commit_status:
+  stack: shipit
+  events: 'commit_status'
+  url: https://example.com/events/commit_status
+  content_type: json
