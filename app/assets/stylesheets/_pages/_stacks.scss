@@ -19,7 +19,7 @@
   @include clearfix;
   margin: 0; padding: 1.25rem 0 1rem;
   .col {
-    width: 33.33%;
+    width: 25%;
     float: left;
   }
   li {
@@ -33,7 +33,7 @@
   list-style-type: none;
   margin: 0; padding: 0; margin-bottom: 1.5rem;
     .col {
-      width: 33.33%;
+      width: 25%;
       float: left;
       text-overflow: ellipsis;
       white-space: nowrap;
