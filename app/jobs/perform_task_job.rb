@@ -9,10 +9,6 @@ class PerformTaskJob < BackgroundJob
       return
     end
     run
-  rescue Command::Error => error
-    @task.report_failure!(error)
-  rescue StandardError => error
-    @task.report_error!(error)
   ensure
     @task.clear_working_directory
   end
@@ -22,6 +18,10 @@ class PerformTaskJob < BackgroundJob
     checkout_repository
     perform_task
     @task.complete!
+  rescue Command::Error => error
+    @task.report_failure!(error)
+  rescue StandardError => error
+    @task.report_error!(error)
   end
 
   def perform_task
