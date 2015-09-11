@@ -7,6 +7,12 @@ class HookTest < ActiveSupport::TestCase
   end
 
   test "#url must be valid" do
+    @hook.url = 'file:/ad"fa/adfa'
+    refute @hook.valid?
+    assert_equal ['Url is not a valid URL'], @hook.errors.full_messages
+  end
+
+  test "#url must not be localhost" do
     @hook.url = 'file:///etc/passwd'
     refute @hook.valid?
     assert_equal ['Url is not a valid URL'], @hook.errors.full_messages
