@@ -3,30 +3,40 @@ class PerformTaskJob < BackgroundJob
 
   def perform(task)
     @task = task
+    @commands = Commands.for(@task)
     unless @task.pending?
       logger.error("Task ##{@task.id} already in `#{@task.status}` state. Aborting.")
       return
     end
-
-    @task.run!
-    commands = Commands.for(@task)
-    @task.acquire_git_cache_lock do
-      capture commands.fetch
-      capture commands.clone
-    end
-    capture commands.checkout(@task.until_commit)
-
-    Bundler.with_clean_env do
-      capture_all commands.install_dependencies
-      capture_all commands.perform
-    end
-    @task.complete!
+    run
   rescue Command::Error => error
     @task.report_failure!(error)
   rescue StandardError => error
     @task.report_error!(error)
   ensure
     @task.clear_working_directory
+  end
+
+  def run
+    @task.run!
+    checkout_repository
+    perform_task
+    @task.complete!
+  end
+
+  def perform_task
+    Bundler.with_clean_env do
+      capture_all @commands.install_dependencies
+      capture_all @commands.perform
+    end
+  end
+
+  def checkout_repository
+    @task.acquire_git_cache_lock do
+      capture @commands.fetch
+      capture @commands.clone
+    end
+    capture @commands.checkout(@task.until_commit)
   end
 
   def capture_all(commands)
