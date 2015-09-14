@@ -27,6 +27,10 @@ shipit:
             "cap $ENVIRONMENT deploy:restart"
           ]
         }
+      },
+      "ci": {
+        "hide": ["ci/hidden"],
+        "allow_failures": ["ci/ok_to_fail"]
       }
     }
   updated_at: <%= 8.days.ago.to_s(:db) %>
