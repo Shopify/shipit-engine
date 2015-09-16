@@ -88,7 +88,12 @@ class Commit < ActiveRecord::Base
     statuses.create!(status_attributes)
     reload # to get the statuses into the right order (since sorted :desc)
     new_status = significant_status
-    Hook.emit(:commit_status, stack, commit: self, stack: stack, status: new_status) if previous_status != new_status
+
+    payload = {commit: self, stack: stack, status: new_status.state}
+    Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
+    if simple_state(previous_status) != simple_state(new_status) && !new_status.pending?
+      Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
+    end
     new_status
   end
 
@@ -184,5 +189,9 @@ class Commit < ActiveRecord::Base
 
   def already_deployed?
     stack.last_deployed_commit.id >= id
+  end
+
+  def simple_state(status)
+    status.state == 'error' ? 'failure' : status.state
   end
 end

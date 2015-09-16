@@ -12,6 +12,7 @@ class Hook < ActiveRecord::Base
     rollback
     lock
     commit_status
+    deployable_status
   ).freeze
 
   belongs_to :stack, required: false
