@@ -73,6 +73,9 @@ class Stack < ActiveRecord::Base
     recorded_last_deployed_commit = last_deployed_commit
     return if recorded_last_deployed_commit.id == actual_deployed_commit.id
 
+    last_deploy = deploys_and_rollbacks.order(created_at: :desc).first
+    return if !last_deploy.success? && last_deploy.commit_range.include?(actual_deployed_commit)
+
     deploys.create!(
       until_commit: actual_deployed_commit,
       since_commit: recorded_last_deployed_commit,
