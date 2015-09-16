@@ -148,6 +148,25 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal commits(:fifth), @stack.last_deployed_commit
   end
 
+  test "#update_deployed_revision bails if the revision is already deployed" do
+    Deploy.active.update_all(status: 'success')
+
+    assert_no_difference 'Deploy.count' do
+      @stack.update_deployed_revision(commits(:fourth).sha)
+    end
+  end
+
+  test "#update_deployed_revision does nothing when the previous failed deploy flipflops" do
+    Deploy.active.update_all(status: 'error')
+
+    assert_no_difference 'Deploy.count' do
+      @stack.update_deployed_revision(commits(:third).sha)
+      @stack.update_deployed_revision(commits(:fourth).sha)
+      @stack.update_deployed_revision(commits(:third).sha)
+      @stack.update_deployed_revision(commits(:fourth).sha)
+    end
+  end
+
   test "#create queues 2 GithubSetupWebhooksJob" do
     assert_enqueued_with(job: SetupGithubHookJob) do
       Stack.create!(repo_name: 'rails', repo_owner: 'rails')
