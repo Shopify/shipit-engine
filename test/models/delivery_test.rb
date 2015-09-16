@@ -3,7 +3,12 @@ require 'test_helper'
 class DeliveryTest < ActiveSupport::TestCase
   setup do
     @hook = hooks(:shipit_deploys)
-    @delivery = deliveries(:scheduled_shipit_deploy)
+    @delivery = @hook.deliveries.create!(event: 'deploy', status: 'scheduled', url: 'https://example.com/events/deploy',
+                                         content_type: 'application/json', payload: '{"stack": {}, "deploy": {}}')
+  end
+
+  teardown do
+    @hook.deliveries.destroy_all
   end
 
   test "#schedule! enqueue a DeliverHookJob and update the status to `scheduled`" do
