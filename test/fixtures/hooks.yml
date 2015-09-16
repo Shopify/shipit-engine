@@ -20,3 +20,9 @@ shipit_commit_status:
   events: 'commit_status'
   url: https://example.com/events/commit_status
   content_type: json
+
+cyclimse_deploy_status:
+  stack: cyclimse
+  events: 'deploy_status'
+  url: https://example.com/events/deploy_status
+  content_type: json
