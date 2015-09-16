@@ -7,4 +7,11 @@ class StatusControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal 'foo', response.body
   end
+
+  test ":ping returns 'PONG'" do
+    get :ping
+
+    assert_response :success
+    assert_equal 'PONG', response.body
+  end
 end

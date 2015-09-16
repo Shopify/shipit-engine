@@ -6,6 +6,7 @@ Shipit::Engine.routes.draw do
   mount Pubsubstub::StreamAction.new, at: "/events", as: :events
 
   get '/status/version' => 'status#version', as: :version
+  get '/status/ping' => 'status#ping', as: :ping
 
   scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
     get '/', action: :request
