@@ -1,4 +1,8 @@
 require 'faker'
+require 'fakeweb'
+
+# Sometimes on Travis the background job runs immediately so provide a response to fake hooks
+FakeWeb.register_uri(:post, %r{https://example\.com/}, status: %w(200 OK))
 
 # Cheap hack to allow rake db:seed to work
 Stack.send(:define_method, :setup_hooks) {}
