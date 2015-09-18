@@ -1,6 +1,8 @@
 require 'fileutils'
 
 class Deploy < Task
+  CONFIRMATIONS_REQUIRED = 5
+
   state_machine :status do
     after_transition to: :success, do: :schedule_continuous_delivery
     after_transition to: :success, do: :update_undeployed_commits_count
@@ -88,6 +90,24 @@ class Deploy < Task
 
   def variables
     stack.deploy_variables
+  end
+
+  def reject!
+    return if failed?
+    flap! unless flapping?
+    update!(confirmations: [confirmations - 1, -1].min)
+    failure! if confirmed?
+  end
+
+  def accept!
+    return if success?
+    flap! unless flapping?
+    update!(confirmations: [confirmations + 1, 1].max)
+    complete! if confirmed?
+  end
+
+  def confirmed?
+    confirmations.abs >= CONFIRMATIONS_REQUIRED
   end
 
   private

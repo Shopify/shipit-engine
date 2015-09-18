@@ -200,6 +200,15 @@
   }
 }
 
+.status--flapping,
+[data-deploy-status='flapping'] {
+  border-color: $orange;
+
+  .status__icon {
+    background-image: asset-data-url("flapping.svg");
+  }
+}
+
 .status--success,
 [data-deploy-status='success'] {
   border-color: $green;
