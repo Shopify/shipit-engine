@@ -325,6 +325,50 @@ class DeploysTest < ActiveSupport::TestCase
     end
   end
 
+  test "#accept! bails out if the deploy is successful already" do
+    assert_predicate @deploy, :success?
+
+    Deploy::CONFIRMATIONS_REQUIRED.times do
+      @deploy.accept!
+      assert_predicate @deploy, :success?
+    end
+  end
+
+  test "#accept! first transition to flapping then ultimately to success if the deploy was failed" do
+    @deploy = deploys(:shipit2)
+    assert_predicate @deploy, :failed?
+
+    (Deploy::CONFIRMATIONS_REQUIRED - 1).times do
+      @deploy.accept!
+      assert_predicate @deploy, :flapping?
+    end
+
+    @deploy.accept!
+    assert_predicate @deploy, :success?
+  end
+
+  test "#reject! bails out if the deploy is failed already" do
+    @deploy = deploys(:shipit2)
+    assert_predicate @deploy, :failed?
+
+    Deploy::CONFIRMATIONS_REQUIRED.times do
+      @deploy.reject!
+      assert_predicate @deploy, :failed?
+    end
+  end
+
+  test "#reject! first transition to flapping then ultimately to failed if the deploy was successful" do
+    assert_predicate @deploy, :success?
+
+    (Deploy::CONFIRMATIONS_REQUIRED - 1).times do
+      @deploy.reject!
+      assert_predicate @deploy, :flapping?
+    end
+
+    @deploy.reject!
+    assert_predicate @deploy, :failed?
+  end
+
   private
 
   def expect_event(deploy)

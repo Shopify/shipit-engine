@@ -148,6 +148,22 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal commits(:fifth), @stack.last_deployed_commit
   end
 
+  test "#update_deployed_revision accepts the deploy if the reported revision is consistent" do
+    Deploy.active.update_all(status: 'error')
+
+    Deploy.any_instance.expects(:accept!).once
+    last_deploy = @stack.deploys_and_rollbacks.completed.last
+    @stack.update_deployed_revision(last_deploy.until_commit.sha)
+  end
+
+  test "#update_deployed_revision reject the deploy if the reported revision is inconsistent" do
+    Deploy.active.update_all(status: 'error')
+
+    Deploy.any_instance.expects(:reject!).once
+    last_deploy = @stack.deploys_and_rollbacks.completed.last
+    @stack.update_deployed_revision(last_deploy.since_commit.sha)
+  end
+
   test "#create queues 2 GithubSetupWebhooksJob" do
     assert_enqueued_with(job: SetupGithubHookJob) do
       Stack.create!(repo_name: 'rails', repo_owner: 'rails')

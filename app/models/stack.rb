@@ -68,16 +68,20 @@ class Stack < ActiveRecord::Base
   def update_deployed_revision(sha)
     return if deploying?
 
+    last_deploy = deploys_and_rollbacks.last
     actual_deployed_commit = commits.reachable.by_sha!(sha)
 
-    recorded_last_deployed_commit = last_deployed_commit
-    return if recorded_last_deployed_commit.id == actual_deployed_commit.id
-
-    deploys.create!(
-      until_commit: actual_deployed_commit,
-      since_commit: recorded_last_deployed_commit,
-      status: 'success',
-    )
+    if actual_deployed_commit == last_deploy.until_commit
+      last_deploy.accept!
+    elsif actual_deployed_commit == last_deploy.since_commit
+      last_deploy.reject!
+    else
+      deploys.create!(
+        until_commit: actual_deployed_commit,
+        since_commit: last_deployed_commit,
+        status: 'success',
+      )
+    end
   end
 
   def head

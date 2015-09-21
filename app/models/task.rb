@@ -10,8 +10,8 @@ class Task < ActiveRecord::Base
   serialize :env, Hash
 
   scope :success, -> { where(status: 'success') }
-  scope :completed, -> { where(status: %w(success error failed)) }
-  scope :active, -> { where(status: %w(pending running)) }
+  scope :completed, -> { where(status: %w(success error failed flapping aborted)) }
+  scope :active, -> { where(status: %w(pending running aborting)) }
 
   scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
@@ -22,16 +22,20 @@ class Task < ActiveRecord::Base
       task.async_refresh_deployed_revision
     end
 
+    after_transition any => :flapping do |task|
+      task.update!(confirmations: 0)
+    end
+
     event :run do
       transition pending: :running
     end
 
     event :failure do
-      transition running: :failed
+      transition %i(running flapping) => :failed
     end
 
     event :complete do
-      transition running: :success
+      transition %i(running flapping) => :success
     end
 
     event :error do
@@ -46,6 +50,10 @@ class Task < ActiveRecord::Base
       transition aborting: :aborted
     end
 
+    event :flap do
+      transition %i(failed error success) => :flapping
+    end
+
     state :pending
     state :running
     state :failed
@@ -53,6 +61,7 @@ class Task < ActiveRecord::Base
     state :error
     state :aborting
     state :aborted
+    state :flapping
   end
 
   def report_failure!(_error)
