@@ -94,16 +94,20 @@ class Deploy < Task
 
   def reject!
     return if failed?
-    flap! unless flapping?
-    update!(confirmations: [confirmations - 1, -1].min)
-    failure! if confirmed?
+    transaction do
+      flap! unless flapping?
+      update!(confirmations: [confirmations - 1, -1].min)
+      failure! if confirmed?
+    end
   end
 
   def accept!
     return if success?
-    flap! unless flapping?
-    update!(confirmations: [confirmations + 1, 1].max)
-    complete! if confirmed?
+    transaction do
+      flap! unless flapping?
+      update!(confirmations: [confirmations + 1, 1].max)
+      complete! if confirmed?
+    end
   end
 
   def confirmed?
