@@ -369,6 +369,13 @@ class DeploysTest < ActiveSupport::TestCase
     assert_predicate @deploy, :failed?
   end
 
+  test "entering flapping state triggers webhooks" do
+    assert_enqueued_with job: EmitEventJob do
+      @deploy.reject!
+    end
+    assert_predicate @deploy, :flapping?
+  end
+
   private
 
   def expect_event(deploy)

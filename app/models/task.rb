@@ -15,6 +15,7 @@ class Task < ActiveRecord::Base
 
   scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
+  after_save :record_status_change
   after_commit :emit_hooks
 
   state_machine :status, initial: :pending do
@@ -179,8 +180,13 @@ class Task < ActiveRecord::Base
     FileUtils.rm_rf(working_directory)
   end
 
+  def record_status_change
+    @status_changed ||= status_changed?
+  end
+
   def emit_hooks
-    return unless previous_changes.include?('status')
+    return unless @status_changed
+    @status_changed = nil
     Hook.emit(hook_event, stack, hook_event => self, status: status, stack: stack)
   end
 
