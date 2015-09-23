@@ -11,6 +11,7 @@ require 'jquery-rails'
 require 'rails-timeago'
 require 'ansi_stream'
 require 'autoprefixer-rails'
+require 'rails_autolink'
 
 require 'omniauth-github'
 
