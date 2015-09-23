@@ -64,6 +64,18 @@ class StacksControllerTest < ActionController::TestCase
     assert_response :ok
   end
 
+  test "#show handles locked stacks without a lock_author" do
+    @stack.update!(lock_reason: "I am a lock with no author")
+    get :show, id: @stack.to_param
+  end
+
+  test "#show auto-links URLs in lock reason" do
+    @stack.update!(lock_reason: 'http://google.com')
+    get :show, id: @stack.to_param
+    assert_response :ok
+    assert_select 'a[href="http://google.com"]'
+  end
+
   test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
     params = {}
     params[:stack] = {
