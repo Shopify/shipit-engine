@@ -42,7 +42,7 @@
           Deploys are locked by <%= @stack.lock_author.name || AnonymousUser.new.name %>
         </h2>
         <p class="banner__text">
-          <%= @stack.lock_reason %>
+          <%= auto_link @stack.lock_reason %>
         </p>
       </div>
     </div>
