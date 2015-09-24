@@ -13,6 +13,10 @@ class Stack < ActiveRecord::Base
   has_many :api_clients, dependent: :destroy
   belongs_to :lock_author, class_name: :User
 
+  def lock_author(*)
+    super || AnonymousUser.new
+  end
+
   before_validation :update_defaults
   before_destroy :clear_local_files
   after_commit :emit_hooks
