@@ -39,7 +39,7 @@
       <div class="banner__content">
         <h2 class="banner__title">
           <i class="icon icon--lock"></i>
-          Deploys are locked by <%= (@stack.lock_author || AnonymousUser.new).name %>
+          Deploys are locked by <%= @stack.lock_author.name %>
         </h2>
         <p class="banner__text">
           <%= auto_link @stack.lock_reason %>

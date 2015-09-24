@@ -128,7 +128,7 @@ class StacksControllerTest < ActionController::TestCase
     patch :update, id: @stack.to_param, stack: {lock_reason: ''}
     @stack.reload
     refute @stack.locked?
-    assert_nil @stack.lock_author
+    assert_instance_of AnonymousUser, @stack.lock_author
   end
 
   test "#refresh queues a RefreshStatusesJob and a GithubSyncJob" do
