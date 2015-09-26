@@ -11,6 +11,10 @@ gem 'thin'
 gem 'shipit-engine', github: 'Shopify/shipit-engine'
 gem 'dotenv-rails'
 
+gem_group :development do
+  gem 'therubyracer'
+end
+
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
 
@@ -33,7 +37,15 @@ CODE
 
 create_file 'Procfile', <<-CODE
 web: bundle exec rails s
-worker: bundle exec sidekiq -c 1
+worker: bundle exec sidekiq -C config/sidekiq.yml
+CODE
+
+create_file 'config/sidekiq.yml', <<-CODE
+:concurrency: 1
+:queues:
+  - default
+  - deploys
+  - hooks
 CODE
 
 create_file 'config/secrets.yml', <<-CODE, force: true
@@ -83,6 +95,45 @@ Sidekiq.configure_client do |config|
   config.redis = { url: Shipit.redis_url.to_s }
 end
 CODE
+
+if yes?("Are you hosting Shipit on Heroku? (y/n)")
+  inject_into_file "Procfile", " -p $PORT", after: "web: bundle exec rails s"
+  inject_into_file "Gemfile", "ruby '2.2.3'", after: "source 'https://rubygems.org'\n"
+
+  gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
+  gsub_file 'Gemfile', "gem 'sqlite3'", ''
+  gem_group :production do
+    gem 'pg'
+    gem 'rails_12factor'
+  end
+  gem_group :development, :test do
+    gem 'sqlite3'
+  end
+
+  remove_file 'config/database.yml'
+  create_file 'config/database.yml', <<-EOF
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  database: db/development.sqlite3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: db/test.sqlite3
+
+production:
+  url:  <%= ENV['DATABASE_URL'] %>
+  pool: <%= ENV['DB_POOL'] || 5 %>
+
+EOF
+end
 
 after_bundle do
   rake 'railties:install:migrations db:create db:migrate'
