@@ -3,7 +3,7 @@ class StackSerializer < ActiveModel::Serializer
 
   has_one :lock_author
   attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url,
-             :undeployed_commits_count, :is_locked, :lock_reason, :created_at, :updated_at
+             :undeployed_commits_count, :is_locked, :lock_reason, :continuous_deployment, :created_at, :updated_at
 
   def url
     api_stack_url(object)
