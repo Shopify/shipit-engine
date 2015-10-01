@@ -20,6 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  deploy_button:
+    caption:
+      pending: CI Pending...
+      failure: CI Failure
+      error: CI Error
+      unknown: Not Run
+
   deploy_spec:
     hint:
       deploy: Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml
