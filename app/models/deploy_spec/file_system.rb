@@ -25,6 +25,7 @@ class DeploySpec
           'monitoring' => review_monitoring,
           'checks' => review_checks,
         },
+        'plugins' => plugins,
         'dependencies' => {'override' => dependencies_steps},
         'deploy' => {'override' => deploy_steps, 'variables' => deploy_variables.map(&:to_h)},
         'rollback' => {'override' => rollback_steps},

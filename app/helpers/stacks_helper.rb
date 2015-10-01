@@ -66,10 +66,10 @@ module StacksHelper
   end
 
   def deploy_button_caption(commit)
-    state = commit.status
-    state = 'Locked' if commit.stack.locked? && !ignore_lock?
+    state = commit.significant_status.state
+    state = 'locked' if commit.stack.locked? && !ignore_lock?
     if commit.deployable?
-      state = commit.stack.deploying? ? 'Deploy in progress...' : 'Deploy'
+      state = commit.stack.deploying? ? 'deploying' : 'enabled'
     end
     t("deploy_button.caption.#{state}")
   end

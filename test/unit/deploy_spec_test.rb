@@ -206,6 +206,7 @@ class DeploySpecTest < ActiveSupport::TestCase
       'machine' => {'environment' => {}, 'directory' => nil},
       'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
       'dependencies' => {'override' => []},
+      'plugins' => {},
       'deploy' => {'override' => nil, 'variables' => []},
       'rollback' => {'override' => nil},
       'fetch' => nil,

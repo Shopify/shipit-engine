@@ -1,20 +1,16 @@
 module ShipitHelper
-  def include_plugins
-    tags = []
-    Rails.application.config.assets.paths.each do |path|
-      Dir[File.join(path, 'plugins/*')].each do |plugin_path|
-        tags << include_plugin_asset_tag(File.basename(plugin_path)) if File.file?(plugin_path)
-      end
-    end
-    tags.join.html_safe
+  def include_plugins(stack)
+    stack.plugins.flat_map do |plugin, config|
+      plugin_tags(plugin, config)
+    end.join.html_safe
   end
 
-  def include_plugin_asset_tag(plugin)
-    if plugin =~ /\A([\-\w]+)(\.js)?(\.coffee)?\Z/
-      javascript_include_tag "plugins/#{$1}"
-    elsif plugin =~ /\A([\-\w]+)(\.css)?(\.scss)?\Z/
-      stylesheet_link_tag "plugins/#{$1}"
-    end
+  def plugin_tags(plugin, config)
+    tags = []
+    tags << tag('meta', name: "#{plugin}-config", content: config.to_json) if config
+    tags << javascript_include_tag("plugins/#{plugin}")
+    tags << stylesheet_link_tag("plugins/#{plugin}")
+    tags
   end
 
   def missing_github_oauth_message

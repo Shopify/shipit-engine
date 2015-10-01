@@ -26,6 +26,9 @@ en:
       failure: CI Failure
       error: CI Error
       unknown: Not Run
+      locked: Locked
+      deploying: Deploy in progress...
+      enabled: Deploy
 
   deploy_spec:
     hint:
