@@ -1,5 +1,6 @@
-<%= render partial: 'tasks/plugins' %>
-<%= render partial: "stacks/header", locals: { stack: @stack } %>
+<%= javascript_include_tag 'task' %>
+<%= include_plugins(@stack) %>
+<%= render partial: 'stacks/header', locals: { stack: @stack } %>
 
 <div class="sidebar">
   <div class="sidebar-plugins"></div>

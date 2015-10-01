@@ -109,6 +109,10 @@ class DeploySpec
     config('review', 'checks') || []
   end
 
+  def plugins
+    config('plugins') || {}
+  end
+
   private
 
   def coerce_task_definition(config)
