@@ -26,8 +26,10 @@
         <% if deploy.stack.deploying? %>
           <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>
         <% else %>
-          <%= link_to "Rollback to this deploy", rollback_stack_deploy_path(@stack, deploy), class: 'btn btn--delete deploy-action rollback-action' %>
+          <%= link_to 'Rollback to this deploy...', rollback_stack_deploy_path(@stack, deploy), class: 'btn btn--delete deploy-action rollback-action' %>
         <% end %>
+      <% elsif deploy.currently_deployed? && !deploy.stack.deploying? %>
+        <%= redeploy_button(deploy.until_commit) %>
       <% end %>
     </div>
   <% end %>

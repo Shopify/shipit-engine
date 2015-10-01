@@ -1,6 +1,20 @@
 module StacksHelper
   COMMIT_TITLE_LENGTH = 79
 
+  def redeploy_button(commit)
+    url = new_stack_deploy_path(@stack, sha: commit.sha)
+    classes = %W(btn btn--primary deploy-action #{commit.state})
+    unless commit.stack.deployable?
+      classes.push(params[:force].present? ? 'btn--warning' : 'btn--disabled')
+    end
+
+    caption = 'Redeploy'
+    caption = 'Locked' if commit.stack.locked?
+    caption = 'Deploy in progress...' if commit.stack.deploying?
+
+    link_to(caption, url, class: classes)
+  end
+
   def deploy_button(commit)
     url = new_stack_deploy_path(@stack, sha: commit.sha)
     classes = %W(btn btn--primary deploy-action #{commit.state})
@@ -43,7 +57,7 @@ module StacksHelper
   private
 
   def deploy_button_disabled?(commit)
-    !commit.deployable? || commit.stack.locked? || commit.stack.deploying?
+    !commit.deployable? || !commit.stack.deployable?
   end
 
   def deploy_button_caption(commit)
