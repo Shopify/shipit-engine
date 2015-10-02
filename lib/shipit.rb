@@ -70,13 +70,13 @@ module Shipit
     github_domain != 'github.com'
   end
 
-  def github_url(path = nil)
+  def github_url(*paths)
     @github_url ||= "https://#{github_domain}".freeze
-    path ? File.join(@github_url, path) : @github_url
+    File.join(@github_url, *paths)
   end
 
-  def github_api_endpoint
-    github_url('/api/v3/') if github_enterprise?
+  def github_api_endpoint(*paths)
+    github_url(File.join('/api/v3/', *paths))
   end
 
   def github_api

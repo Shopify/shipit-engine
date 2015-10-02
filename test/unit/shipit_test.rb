@@ -30,8 +30,8 @@ class ShipitTest < ActiveSupport::TestCase
     assert_equal 'https://github.example.com/foo/bar', Shipit.github_url('foo/bar')
   end
 
-  test ".github_api_endpoint returns nil if github_domain is not overriden" do
-    assert_nil Shipit.github_api_endpoint
+  test ".github_api_endpoint returns the default GitHub api endpoint if github_domain is not overriden" do
+    assert_equal 'https://github.com/api/v3/', Shipit.github_api_endpoint
   end
 
   test ".github_api_endpoint returns Enterprise endpoint if github_domain is overriden" do
