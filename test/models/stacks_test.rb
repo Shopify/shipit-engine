@@ -329,6 +329,52 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal [commit1, commit2], stack.filter_meaningful_statuses([soft_fail, commit1, commit2])
   end
 
+  test "#github_commits handle renamed repository" do
+    FakeWeb.register_uri(
+      :get,
+      Shipit.github_api_endpoint('repos', @stack.github_repo_name, 'commits?sha=master'),
+      query: {sha: 'master'},
+      status: ['301', 'Moved Permanently'],
+      body: {message: 'Moved Permanently'}.to_json,
+      content_type: 'application/json',
+    )
+
+    new_url = 'https://example.com/moved-here'
+
+    FakeWeb.register_uri(
+      :get,
+      Shipit.github_api_endpoint('repos', @stack.github_repo_name),
+      query: {sha: 'master'},
+      status: ['301', 'Moved Permanently'],
+      body: {message: 'Moved Permanently', url: new_url}.to_json,
+      content_type: 'application/json',
+    )
+
+    FakeWeb.register_uri(
+      :get,
+      new_url,
+      query: {sha: 'master'},
+      status: ['200', 'OK'],
+      body: {name: 'shipster', owner: {login: 'Shipify'}}.to_json,
+      content_type: 'application/json',
+    )
+
+    FakeWeb.register_uri(
+      :get,
+      Shipit.github_api_endpoint('repos', 'shipify/shipster', 'commits?sha=master'),
+      query: {sha: 'master'},
+      status: ['200', 'OK'],
+      body: [].to_json,
+      content_type: 'application/json',
+    )
+
+    assert_equal 'shopify', @stack.repo_owner
+    assert_equal 'shipit-engine', @stack.repo_name
+    @stack.github_commits
+    assert_equal 'shipify', @stack.repo_owner
+    assert_equal 'shipster', @stack.repo_name
+  end
+
   private
 
   def expect_hook(event, stack, payload)

@@ -43,8 +43,9 @@ class ActiveSupport::TestCase
 
   teardown do
     Shipit.redis.flushdb
+    Rails.cache.clear
     Shipit.instance_variable_names.each do |name|
-      next if name == "@mocha" || name == "@redis"
+      next if name == "@mocha" || name == "@redis" || name == "@github_api"
       Shipit.remove_instance_variable(name)
     end
   end

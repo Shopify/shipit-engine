@@ -172,7 +172,7 @@ class Stack < ActiveRecord::Base
   end
 
   def github_commits
-    Shipit.github_api.commits(github_repo_name, sha: branch)
+    handle_github_errors { Shipit.github_api.commits(github_repo_name, sha: branch) }
   end
 
   def deploying?
@@ -266,6 +266,21 @@ class Stack < ActiveRecord::Base
   end
 
   private
+
+  def handle_github_errors
+    resource = yield
+    if resource.try(:message) == 'Moved Permanently'
+      update_repository_name_from_github!
+      resource = yield
+    end
+    resource
+  end
+
+  def update_repository_name_from_github!
+    response = Shipit.github_api.repo(github_repo_name)
+    repository = Shipit.github_api.get(response.url)
+    update!(repo_name: repository.name, repo_owner: repository.owner.login)
+  end
 
   def clear_cache
     remove_instance_variable(:@active_deploy) if defined?(@active_deploy)
