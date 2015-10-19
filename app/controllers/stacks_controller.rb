@@ -15,7 +15,9 @@ class StacksController < ShipitController
     @stack = Stack.from_param!(params[:id])
     return if flash.empty? && !stale?(last_modified: @stack.updated_at)
 
-    @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
+    ntasks = params[:ntasks].to_i || 10
+    ntasks = [[0, ntasks].max, 500].min
+    @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(ntasks)
     @commits = @stack.commits.reachable.preload(:author, :statuses).order(id: :desc)
     if deployed_commit = @stack.last_deployed_commit
       @commits = @commits.where('id > ?', deployed_commit.id)
