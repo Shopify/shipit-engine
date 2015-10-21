@@ -1,5 +1,8 @@
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.1.0")
+  raise Thor::Error, "You need at least Ruby 2.1.0 to install shipit"
+end
 if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("4.2.0")
   raise Thor::Error, "You need at least Rails 4.2.0 to install shipit"
 end
@@ -98,7 +101,7 @@ CODE
 
 if yes?("Are you hosting Shipit on Heroku? (y/n)")
   inject_into_file "Procfile", " -p $PORT", after: "web: bundle exec rails s"
-  inject_into_file "Gemfile", "ruby '2.2.3'", after: "source 'https://rubygems.org'\n"
+  inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
 
   gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
   gsub_file 'Gemfile', "gem 'sqlite3'", ''
