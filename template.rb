@@ -36,10 +36,11 @@ create_file '.env', <<-CODE
 GITHUB_OAUTH_ID=#{github_id}
 GITHUB_OAUTH_SECRET=#{github_secret}
 GITHUB_API_TOKEN=#{github_token}
+PORT=3000
 CODE
 
 create_file 'Procfile', <<-CODE
-web: bundle exec rails s
+web: bundle exec rails s -p $PORT
 worker: bundle exec sidekiq -C config/sidekiq.yml
 CODE
 
@@ -100,7 +101,6 @@ end
 CODE
 
 if yes?("Are you hosting Shipit on Heroku? (y/n)")
-  inject_into_file "Procfile", " -p $PORT", after: "web: bundle exec rails s"
   inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
 
   gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
