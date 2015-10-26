@@ -20,6 +20,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 * [Installation](#installation)
 * [Configuring shipit.yml and secrets.yml](#configuring-ymls)
+* [Updating and existing installation](#updating-shipit)
 
 **II. USING SHIPIT**
 
@@ -56,6 +57,11 @@ Shipit should just work right out of the box &mdash; you probably won't need to 
 * The settings in the `shipit.yml` file are related to the different things you can do within Shipit, such as handling deploys, performing custom tasks, and enforcing deployment checklists. If you want to edit these settings, [start here](#configuring-shipit).
 * The settings in the `secrets.yml` file are related to the ways that Shipit connects with GitHub. If you want to edit these settings, [start here](#configuring-secrets).
 
+<h3 id="updating-shipit">Updating an existing installation</h3>
+
+1. If you locked the gem to a specific version in your Gemfile, update it there.
+2. Update the `shipit-engine` gem with `bundle update shipit-engine`.
+3. Install new migrations with `rake shipit_engine:install:migrations db:migrate`
 
 * * *
 
