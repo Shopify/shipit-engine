@@ -1,5 +1,8 @@
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.1.0")
+  raise Thor::Error, "You need at least Ruby 2.1.0 to install shipit"
+end
 if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("4.2.0")
   raise Thor::Error, "You need at least Rails 4.2.0 to install shipit"
 end
@@ -10,6 +13,10 @@ gem 'sidekiq'
 gem 'thin'
 gem 'shipit-engine', github: 'Shopify/shipit-engine'
 gem 'dotenv-rails'
+
+gem_group :development do
+  gem 'therubyracer'
+end
 
 say("These configs are for development, you will have to generate them again for production.",
     Thor::Shell::Color::GREEN, true)
@@ -29,11 +36,43 @@ create_file '.env', <<-CODE
 GITHUB_OAUTH_ID=#{github_id}
 GITHUB_OAUTH_SECRET=#{github_secret}
 GITHUB_API_TOKEN=#{github_token}
+PORT=3000
 CODE
 
 create_file 'Procfile', <<-CODE
-web: bundle exec rails s
-worker: bundle exec sidekiq -c 1
+web: bundle exec rails s -p $PORT
+worker: bundle exec sidekiq -C config/sidekiq.yml
+CODE
+
+remove_file 'config/database.yml'
+create_file 'config/database.yml', <<-CODE
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  database: db/development.sqlite3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: db/test.sqlite3
+
+production:
+  url:  <%= ENV['DATABASE_URL'] %>
+  pool: <%= ENV['DB_POOL'] || 5 %>
+CODE
+
+create_file 'config/sidekiq.yml', <<-CODE
+:concurrency: 1
+:queues:
+  - default
+  - deploys
+  - hooks
 CODE
 
 create_file 'config/secrets.yml', <<-CODE, force: true
@@ -83,6 +122,20 @@ Sidekiq.configure_client do |config|
   config.redis = { url: Shipit.redis_url.to_s }
 end
 CODE
+
+if yes?("Are you hosting Shipit on Heroku? (y/n)")
+  inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
+
+  gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
+  gsub_file 'Gemfile', "gem 'sqlite3'", ''
+  gem_group :production do
+    gem 'pg'
+    gem 'rails_12factor'
+  end
+  gem_group :development, :test do
+    gem 'sqlite3'
+  end
+end
 
 after_bundle do
   rake 'railties:install:migrations db:create db:migrate'

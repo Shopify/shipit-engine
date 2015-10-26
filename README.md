@@ -47,8 +47,7 @@ Shipit provides you with a Rails template. To bootstrap your Shipit installation
 1. If you don't have Rails installed, run this command: `gem install rails`
 2. Run this command:  `rails new shipit -m https://raw.githubusercontent.com/Shopify/shipit-engine/master/template.rb`
 3. Enter your **Client ID**, **Client Secret**, and **GitHub API access token** when prompted. These can be found on your application's GitHub page.
-4. To install the Shipit migrations, run this command: `rake shipit_engine:install:migrations`
-5. To setup the database, run this command: `rake db:setup`
+4. To setup the database, run this command: `rake db:setup`
 
 <h3 id="configuring-ymls">Configuring <code>shipit.yml</code> and <code>secrets.yml</code></h3>
 
