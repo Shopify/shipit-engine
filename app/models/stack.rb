@@ -75,9 +75,9 @@ class Stack < ActiveRecord::Base
     last_deploy = deploys_and_rollbacks.last
     actual_deployed_commit = commits.reachable.by_sha!(sha)
 
-    if actual_deployed_commit == last_deploy.until_commit
+    if last_deploy && actual_deployed_commit == last_deploy.until_commit
       last_deploy.accept!
-    elsif actual_deployed_commit == last_deploy.since_commit
+    elsif last_deploy && actual_deployed_commit == last_deploy.since_commit
       last_deploy.reject!
     else
       deploys.create!(

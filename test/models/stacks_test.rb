@@ -135,6 +135,18 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal commits(:fifth), @stack.last_deployed_commit
   end
 
+  test "#update_deployed_revision creates a new completed deploy without previous deploys" do
+    stack = stacks(:undeployed_stack)
+    assert_empty stack.deploys_and_rollbacks
+    assert_difference 'Deploy.count', 1 do
+      deploy = stack.update_deployed_revision(commits(:undeployed_stack_first).sha)
+      assert_not_nil deploy
+      assert_equal commits(:undeployed_stack_first), deploy.since_commit
+      assert_equal commits(:undeployed_stack_first), deploy.until_commit
+    end
+    assert_equal commits(:undeployed_stack_first), stack.last_deployed_commit
+  end
+
   test "#update_deployed_revision works with short shas" do
     Deploy.active.update_all(status: 'error')
 

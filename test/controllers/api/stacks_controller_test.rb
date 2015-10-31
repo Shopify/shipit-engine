@@ -13,7 +13,7 @@ class Api::StacksControllerTest < ActionController::TestCase
     assert_response :ok
     assert_json '0.id', stack.id
     assert_json do |stacks|
-      assert_equal 2, stacks.size
+      assert_equal 3, stacks.size
     end
   end
 
