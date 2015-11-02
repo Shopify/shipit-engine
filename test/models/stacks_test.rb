@@ -13,6 +13,11 @@ class StacksTest < ActiveSupport::TestCase
     assert_equal ["has already been taken"], clone.errors[:repo_name]
   end
 
+  test "repo_owner, repo_name, and environment can only be ASCII" do
+    @stack.update(repo_owner: 'héllò', repo_name: 'wørld', environment: 'pródüctïòn')
+    refute_predicate @stack, :valid?
+  end
+
   test "repo_owner is automatically downcased" do
     @stack.repo_owner = 'George'
     assert_equal 'george', @stack.repo_owner

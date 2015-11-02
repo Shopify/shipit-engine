@@ -3,6 +3,7 @@ require 'fileutils'
 class Stack < ActiveRecord::Base
   REPO_OWNER_MAX_SIZE = 39
   REPO_NAME_MAX_SIZE = 100
+  ENVIRONMENT_MAX_SIZE = 50
   REQUIRED_HOOKS = %i(push status)
 
   has_many :commits, dependent: :destroy
@@ -27,10 +28,10 @@ class Stack < ActiveRecord::Base
   after_touch :clear_cache
 
   validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
-  validates :repo_owner, :repo_name, presence: true, format: {with: /\A[a-z0-9_\-\.]+\z/}
-  validates :environment, presence: true, format: {with: /\A[a-z0-9\-_\:]+\z/}
-  validates :repo_name, length: {maximum: REPO_NAME_MAX_SIZE}
-  validates :repo_owner, length: {maximum: REPO_OWNER_MAX_SIZE}
+  validates :repo_owner, :repo_name, :environment, presence: true, ascii_only: true
+  validates :repo_owner, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_OWNER_MAX_SIZE}
+  validates :repo_name, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_NAME_MAX_SIZE}
+  validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
 
   serialize :cached_deploy_spec, DeploySpec
   delegate :find_task_definition, :supports_rollback?,

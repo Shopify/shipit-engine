@@ -46,4 +46,4 @@ en:
   errors:
     messages:
       subset: "is not a strict subset of %{of}"
-      
+      ascii: "contains non-ASCII characters"
