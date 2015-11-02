@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150918190012) do
+ActiveRecord::Schema.define(version: 20151102201634) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 20150918190012) do
   create_table "github_hooks", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4
     t.integer  "github_id",    limit: 4
-    t.string   "event",        limit: 255
+    t.string   "event",        limit: 50,  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "secret",       limit: 255
     t.string   "api_url",      limit: 255
     t.string   "type",         limit: 255
-    t.string   "organization", limit: 255
+    t.string   "organization", limit: 39
   end
 
   add_index "github_hooks", ["organization", "event"], name: "index_github_hooks_on_organization_and_event", unique: true
@@ -107,9 +107,9 @@ ActiveRecord::Schema.define(version: 20150918190012) do
   add_index "output_chunks", ["task_id"], name: "index_output_chunks_on_task_id"
 
   create_table "stacks", force: :cascade do |t|
-    t.string   "repo_name",                limit: 255,                          null: false
-    t.string   "repo_owner",               limit: 255,                          null: false
-    t.string   "environment",              limit: 255,   default: "production", null: false
+    t.string   "repo_name",                limit: 100,                          null: false
+    t.string   "repo_owner",               limit: 39,                           null: false
+    t.string   "environment",              limit: 50,    default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "branch",                   limit: 255,   default: "master",     null: false
@@ -142,7 +142,7 @@ ActiveRecord::Schema.define(version: 20150918190012) do
     t.integer  "stack_id",              limit: 4,                         null: false
     t.integer  "since_commit_id",       limit: 4,                         null: false
     t.integer  "until_commit_id",       limit: 4,                         null: false
-    t.string   "status",                limit: 255,   default: "pending", null: false
+    t.string   "status",                limit: 10,    default: "pending", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id",               limit: 4
@@ -167,9 +167,9 @@ ActiveRecord::Schema.define(version: 20150918190012) do
   create_table "teams", force: :cascade do |t|
     t.integer  "github_id",    limit: 4
     t.string   "api_url",      limit: 255
-    t.string   "slug",         limit: 255
+    t.string   "slug",         limit: 50
     t.string   "name",         limit: 255
-    t.string   "organization", limit: 255
+    t.string   "organization", limit: 39
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
@@ -180,7 +180,7 @@ ActiveRecord::Schema.define(version: 20150918190012) do
     t.integer  "github_id",  limit: 4
     t.string   "name",       limit: 255, null: false
     t.string   "email",      limit: 255
-    t.string   "login",      limit: 255
+    t.string   "login",      limit: 39
     t.string   "api_url",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
