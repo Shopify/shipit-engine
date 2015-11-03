@@ -44,8 +44,11 @@ class StacksController < ShipitController
   end
 
   def update
-    @stack.update(update_params)
-    redirect_to params[:return_to].presence || stack_settings_path(@stack)
+    options = {}
+    unless @stack.update(update_params)
+      options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
+    end
+    redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
   end
 
   def sync_webhooks

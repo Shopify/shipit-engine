@@ -33,6 +33,8 @@ class Stack < ActiveRecord::Base
   validates :repo_name, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_NAME_MAX_SIZE}
   validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
 
+  validates :lock_reason, length: {maximum: 4096}
+
   serialize :cached_deploy_spec, DeploySpec
   delegate :find_task_definition, :supports_rollback?,
            :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
