@@ -20,6 +20,10 @@ class Stack < ActiveRecord::Base
     super || AnonymousUser.new
   end
 
+  def lock_author=(user)
+    super(user.try!(:logged_in?) ? user : nil)
+  end
+
   before_validation :update_defaults
   before_destroy :clear_local_files
   after_commit :emit_hooks
