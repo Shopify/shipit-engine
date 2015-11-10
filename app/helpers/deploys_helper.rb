@@ -18,7 +18,7 @@ module DeploysHelper
     if url = panel_spec['image']
       image_tag(url, panel_spec.slice('height', 'width', 'alt'))
     elsif url = panel_spec['iframe']
-      content_tag(:iframe, panel_spec.slice('height', 'width').merge('src' => url))
+      content_tag(:iframe, '', panel_spec.slice('height', 'width').merge('src' => url))
     else
       content_tag(:span, "#{panel_spec.inspect} is not a valid monitoring panel spec")
     end
