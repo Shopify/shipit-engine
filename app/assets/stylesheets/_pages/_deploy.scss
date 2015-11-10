@@ -162,3 +162,10 @@
     border-color: $dark_yellow;
   }
 }
+
+.monitoring-panel {
+  display: inline-block;
+  iframe {
+    border: none;
+  }
+}
