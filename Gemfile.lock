@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.4.5)
+    shipit-engine (0.4.6)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       autoprefixer-rails (~> 5.1.11)
