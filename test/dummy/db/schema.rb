@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103144716) do
+ActiveRecord::Schema.define(version: 20151113151323) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 20151103144716) do
     t.datetime "updated_at"
     t.string   "branch",                   limit: 255,   default: "master",     null: false
     t.string   "deploy_url",               limit: 255
-    t.string   "lock_reason",              limit: 255
+    t.string   "lock_reason",              limit: 4096
     t.integer  "tasks_count",              limit: 4,     default: 0,            null: false
     t.boolean  "continuous_deployment",                  default: false,        null: false
     t.integer  "undeployed_commits_count", limit: 4,     default: 0,            null: false
