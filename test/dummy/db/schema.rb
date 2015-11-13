@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20151113151323) do
     t.datetime "updated_at"
     t.integer  "user_id",               limit: 4
     t.boolean  "rolled_up",                           default: false,     null: false
-    t.string   "type",                  limit: 255
+    t.string   "type",                  limit: 10
     t.integer  "parent_id",             limit: 4
     t.integer  "additions",             limit: 4,     default: 0
     t.integer  "deletions",             limit: 4,     default: 0
