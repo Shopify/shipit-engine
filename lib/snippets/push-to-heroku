@@ -44,6 +44,8 @@ if [ $? -ne 0 ]; then
   exit 1;
 fi
 
+heroku config:set RELEASE_SHA=$SHA
+
 MIGRATIONS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
 
 if [ "$MIGRATIONS" != "" ]; then
@@ -69,4 +71,3 @@ else
 fi
 
 green "All done."
-
