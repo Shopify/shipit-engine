@@ -49,7 +49,7 @@ class StacksControllerTest < ActionController::TestCase
   test "GitHub authentication is mandatory" do
     session[:user_id] = nil
     get :index
-    assert_redirected_to github_authentication_path(origin: root_url)
+    assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
   end
 
   test "current_user must be a member of Shipit.github_team" do

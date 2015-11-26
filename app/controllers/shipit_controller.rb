@@ -30,7 +30,7 @@ class ShipitController < ApplicationController
         render text: "You must be a member of #{team.handle} to access this application.", status: :forbidden
       end
     else
-      redirect_to github_authentication_path(origin: request.original_url)
+      redirect_to Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url)
     end
   end
 
