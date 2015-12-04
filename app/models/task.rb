@@ -151,11 +151,12 @@ class Task < ActiveRecord::Base
   end
 
   def pid
-    Rails.cache.read("task:#{id}:pid")
+    pid = Shipit.redis.get("task:#{id}:pid")
+    pid.presence && pid.to_i
   end
 
   def pid=(pid)
-    Rails.cache.write("task:#{id}:pid", pid, expires_in: 1.hour)
+    Shipit.redis.set("task:#{id}:pid", pid, ex: 1.hour.to_i)
   end
 
   def abort!(rollback_once_aborted: false)
