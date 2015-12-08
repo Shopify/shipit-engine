@@ -13,6 +13,7 @@ gem 'sidekiq'
 gem 'thin'
 gem 'shipit-engine', github: 'Shopify/shipit-engine'
 gem 'dotenv-rails'
+gem 'redis-rails'
 
 gem_group :development do
   gem 'therubyracer'
@@ -43,6 +44,8 @@ create_file 'Procfile', <<-CODE
 web: bundle exec rails s -p $PORT
 worker: bundle exec sidekiq -C config/sidekiq.yml
 CODE
+
+environment 'config.cache_store = :redis_store, Shipit.redis_url.to_s, { expires_in: 90.minutes }', env: :production
 
 remove_file 'config/database.yml'
 create_file 'config/database.yml', <<-CODE
