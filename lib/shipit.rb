@@ -52,8 +52,7 @@ module Shipit
   end
 
   def redis_url
-    return @redis_url if defined?(@redis_url)
-    @redis_url = secrets.redis_url.present? ? URI(secrets.redis_url) : nil
+    secrets.redis_url.present? ? URI(secrets.redis_url) : nil
   end
 
   def redis(namespace = nil)
