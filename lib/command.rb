@@ -79,6 +79,7 @@ class Command
   end
 
   def stream(&block)
+    yield "\n#{args.inspect} in #{@chdir}\n"
     start
     begin
       read_stream(@out, &block)

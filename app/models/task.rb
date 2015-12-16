@@ -178,7 +178,7 @@ class Task < ActiveRecord::Base
   end
 
   def clear_working_directory
-    FileUtils.rm_rf(working_directory)
+    # FileUtils.rm_rf(working_directory)
   end
 
   def record_status_change
