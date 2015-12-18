@@ -8,7 +8,7 @@ class StatusGroup
     @statuses = visible_statuses
   end
 
-  delegate :state, to: :significant_status
+  delegate :success?, :state, to: :significant_status
 
   def description
     "#{success_count} / #{statuses.count} checks OK"
