@@ -101,6 +101,10 @@ class DeploySpec
     Array.wrap(config('ci', 'hide'))
   end
 
+  def required_statuses
+    Array.wrap(config('ci', 'require'))
+  end
+
   def soft_failing_statuses
     Array.wrap(config('ci', 'allow_failures'))
   end

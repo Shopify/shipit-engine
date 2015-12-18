@@ -212,7 +212,7 @@ class Stack < ActiveRecord::Base
     ).first!
   end
 
-  delegate :plugins, :task_definitions, :hidden_statuses, :soft_failing_statuses,
+  delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
            :deploy_variables, to: :cached_deploy_spec
 
   def monitoring?

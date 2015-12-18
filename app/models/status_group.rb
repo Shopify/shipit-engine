@@ -3,9 +3,9 @@ class StatusGroup
 
   attr_reader :statuses, :significant_status
 
-  def initialize(commit)
-    @significant_status = commit.significant_status
-    @statuses = commit.visible_statuses
+  def initialize(significant_status, visible_statuses)
+    @significant_status = significant_status
+    @statuses = visible_statuses
   end
 
   delegate :state, to: :significant_status

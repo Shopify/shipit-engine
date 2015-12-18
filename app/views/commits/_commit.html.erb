@@ -1,6 +1,6 @@
 <li class="commit" id="commit-<%= commit.id %>">
   <%= render 'commits/commit_author', commit: commit %>
-  <%= render_status commit %>
+  <%= render commit.status %>
   <div class="commit-details">
     <span class="commit-title"><%= render_commit_message_with_link commit %></span>
     <p class="commit-meta">

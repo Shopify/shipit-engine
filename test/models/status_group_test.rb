@@ -3,7 +3,7 @@ require 'test_helper'
 class StatusGroupTest < ActiveSupport::TestCase
   setup do
     @commit = commits(:second)
-    @group = StatusGroup.new(@commit)
+    @group = StatusGroup.new(@commit.significant_status, @commit.visible_statuses)
   end
 
   test "#description is a summary of the statuses" do

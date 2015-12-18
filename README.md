@@ -119,7 +119,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`)
-* [CI](#ci) (`ci.hide`, `ci.allow_failures`)
+* [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
@@ -213,6 +213,14 @@ machine:
 ```
 
 <h3 id="ci">CI</h3>
+**<code>ci.require</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to disallow deploys if any of them is missing.
+
+For example:
+```yml
+ci:
+  require:
+    - ci/circleci
+```
 
 **<code>ci.hide</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to ignore.
 
