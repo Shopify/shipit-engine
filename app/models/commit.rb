@@ -101,7 +101,7 @@ class Commit < ActiveRecord::Base
     @checks ||= CommitChecks.new(self)
   end
 
-  delegate :pending?, :success?, :error?, :failure?, :state, to: :significant_status
+  delegate :pending?, :success?, :error?, :failure?, :state, to: :status
 
   def deployable?
     success? || stack.ignore_ci?
@@ -173,6 +173,12 @@ class Commit < ActiveRecord::Base
     @last_statuses ||= statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
   end
 
+  def status
+    visibles = visible_statuses
+    status = visibles.size > 1 ? StatusGroup.new(significant_status, visibles) : visibles.first
+    missing_statuses.empty? ? status : MissingStatus.new(status, missing_statuses)
+  end
+
   def significant_status
     statuses = meaningful_statuses
     return UnknownStatus.new(self) if statuses.empty?
@@ -182,6 +188,10 @@ class Commit < ActiveRecord::Base
   end
 
   private
+
+  def missing_statuses
+    stack.required_statuses - last_statuses.map(&:context)
+  end
 
   def touch_stack
     stack.touch

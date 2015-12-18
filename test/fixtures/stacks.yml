@@ -3,7 +3,7 @@ shipit:
   repo_name: "shipit-engine"
   environment: "production"
   branch: master
-  ignore_ci: true
+  ignore_ci: false
   tasks_count: 3
   undeployed_commits_count: 1
   cached_deploy_spec: >

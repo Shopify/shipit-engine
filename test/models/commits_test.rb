@@ -262,11 +262,23 @@ class CommitsTest < ActiveSupport::TestCase
   end
 
   test "#deployable? is true if commit status is 'success'" do
-    assert commits(:cyclimse_first).deployable?
+    assert_predicate commits(:cyclimse_first), :deployable?
   end
 
   test "#deployable? is true if stack is set to 'ignore_ci'" do
-    assert commits(:first).deployable?
+    commit = commits(:first)
+    commit.stack.update!(ignore_ci: true)
+    assert_predicate commit, :deployable?
+  end
+
+  test "#deployable? is false if commit has no statuses" do
+    refute_predicate commits(:fifth), :deployable?
+  end
+
+  test "#deployable? is false if a required status is missing" do
+    commit = commits(:cyclimse_first)
+    commit.stack.stubs(:required_statuses).returns(%w(ci/very-important))
+    refute_predicate commit, :deployable?
   end
 
   expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
