@@ -1,0 +1,19 @@
+<li class="task" id="task-<%= task.id %>" data-status="<%= task.status %>">
+  <%= render 'shipit/commits/commit_author', commit: task %>
+  <a href="<%= stack_task_path(@stack, task) %>" class="status status--<%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
+    <i class="status__icon"></i>
+    <span class="visually-hidden"><%= task.status %></span>
+  </a>
+
+  <div class="commit-details">
+    <span class="commit-title">
+      <a href="<%= stack_task_path(@stack, task) %>">
+        <%= task.definition.action %>
+      </a>
+    </span>
+    <p class="commit-meta">
+      ran a command <%= timeago_tag(task.created_at, force: true) %>
+      <span class="utc-timecode">at <%= task.created_at.strftime('%H:%M:%S') %> UTC</span>
+    </p>
+  </div>
+</li>

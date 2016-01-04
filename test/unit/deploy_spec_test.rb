@@ -1,288 +1,290 @@
 require 'test_helper'
 
-class DeploySpecTest < ActiveSupport::TestCase
-  setup do
-    @spec = DeploySpec::FileSystem.new('/tmp/', 'env')
-    @spec.stubs(:load_config).returns({})
-  end
-
-  test '#supports_fetch_deployed_revision? returns false by default' do
-    refute @spec.supports_fetch_deployed_revision?
-  end
-
-  test '#supports_fetch_deployed_revision? returns true if steps are defined' do
-    @spec.stubs(:load_config).returns('fetch' => ['curl --silent https://example.com/status/version'])
-    assert @spec.supports_fetch_deployed_revision?
-  end
-
-  test '#supports_rollback? returns false by default' do
-    refute @spec.supports_rollback?
-  end
-
-  test '#supports_rollback? returns true if steps are defined' do
-    @spec.stubs(:load_config).returns('rollback' => {'override' => ['rm -rf /usr /lib/nvidia-current/xorg/xorg']})
-    assert @spec.supports_rollback?
-  end
-
-  test '#supports_rollback? returns true if stack is detected as capistrano' do
-    @spec.expects(:capistrano?).returns(true)
-    assert @spec.supports_rollback?
-  end
-
-  test '#dependencies_steps returns `dependencies.override` if present' do
-    @spec.stubs(:load_config).returns('dependencies' => {'override' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.dependencies_steps
-  end
-
-  test '#dependencies_steps returns `bundle install` if a `Gemfile` is present' do
-    @spec.expects(:bundler?).returns(true)
-    @spec.expects(:bundle_install).returns(:bundle_install)
-    assert_equal :bundle_install, @spec.dependencies_steps
-  end
-
-  test '#fetch_deployed_revision_steps! is unknown by default' do
-    assert_raises DeploySpec::Error do
-      @spec.fetch_deployed_revision_steps!
+module Shipit
+  class DeploySpecTest < ActiveSupport::TestCase
+    setup do
+      @spec = DeploySpec::FileSystem.new('/tmp/', 'env')
+      @spec.stubs(:load_config).returns({})
     end
-  end
 
-  test '#fetch_deployed_revision_steps use `fetch` is present' do
-    @spec.stubs(:load_config).returns('fetch' => ['echo l33t'])
-    assert_equal ['echo l33t'], @spec.fetch_deployed_revision_steps
-  end
-
-  test '#bundle_install return a sane default bundle install command' do
-    @spec.stubs(:gemfile_lock_exists?).returns(true)
-    command = %(
-      bundle check --path=#{DeploySpec.bundle_path} ||
-      bundle install
-      --frozen
-      --path=#{DeploySpec.bundle_path}
-      --retry=2
-      --without=default:production:development:test:staging:benchmark:debug
-    ).gsub(/\s+/, ' ').strip
-    assert_equal command, @spec.bundle_install.last
-  end
-
-  test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
-    @spec.stubs(:gemfile_lock_exists?).returns(true)
-    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    command = %(
-      bundle check --path=#{DeploySpec.bundle_path} ||
-      bundle install
-      --frozen
-      --path=#{DeploySpec.bundle_path}
-      --retry=2
-      --without=some:custom:groups
-    ).gsub(/\s+/, ' ').strip
-    assert_equal command, @spec.bundle_install.last
-  end
-
-  test '#bundle_install has --frozen option if Gemfile.lock is present' do
-    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    @spec.stubs(:gemfile_lock_exists?).returns(true)
-    assert @spec.bundle_install.last.include?('--frozen')
-  end
-
-  test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
-    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
-    @spec.stubs(:gemfile_lock_exists?).returns(false)
-    refute @spec.bundle_install.last.include?('--frozen')
-  end
-
-  test '#bundle_install does not have --frozen if overridden in shipit.yml' do
-    @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'frozen' => false}})
-    @spec.stubs(:gemfile_lock_exists?).returns(true)
-    refute @spec.bundle_install.last.include?('--frozen')
-  end
-
-  test '#deploy_steps returns `deploy.override` if present' do
-    @spec.stubs(:load_config).returns('deploy' => {'override' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.deploy_steps
-  end
-
-  test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
-    @spec.expects(:bundler?).returns(true)
-    @spec.expects(:capistrano?).returns(true)
-    assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
-  end
-
-  test '#deploy_steps raise a DeploySpec::Error! if it dont know how to deploy the app' do
-    @spec.expects(:capistrano?).returns(false)
-    assert_raise DeploySpec::Error do
-      @spec.deploy_steps!
+    test '#supports_fetch_deployed_revision? returns false by default' do
+      refute @spec.supports_fetch_deployed_revision?
     end
-  end
 
-  test '#rollback_steps returns `rollback.override` if present' do
-    @spec.stubs(:load_config).returns('rollback' => {'override' => %w(foo bar baz)})
-    assert_equal %w(foo bar baz), @spec.rollback_steps
-  end
+    test '#supports_fetch_deployed_revision? returns true if steps are defined' do
+      @spec.stubs(:load_config).returns('fetch' => ['curl --silent https://example.com/status/version'])
+      assert @spec.supports_fetch_deployed_revision?
+    end
 
-  test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
-    @spec.expects(:bundler?).returns(true)
-    @spec.expects(:capistrano?).returns(true)
-    assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], @spec.rollback_steps
-  end
+    test '#supports_rollback? returns false by default' do
+      refute @spec.supports_rollback?
+    end
 
-  test '#machine_env return an environment hash' do
-    @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
-    assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
-  end
+    test '#supports_rollback? returns true if steps are defined' do
+      @spec.stubs(:load_config).returns('rollback' => {'override' => ['rm -rf /usr /lib/nvidia-current/xorg/xorg']})
+      assert @spec.supports_rollback?
+    end
 
-  test '#load_config can grab the env-specific shipit.yml file' do
-    config = {}
-    config.expects(:exist?).returns(true)
-    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
-    spec = DeploySpec::FileSystem.new('.', 'staging')
-    spec.expects(:file).with('shipit.staging.yml').returns(config)
-    assert_equal %w(foo bar baz), spec.dependencies_steps
-  end
+    test '#supports_rollback? returns true if stack is detected as capistrano' do
+      @spec.expects(:capistrano?).returns(true)
+      assert @spec.supports_rollback?
+    end
 
-  test '#load_config grabs the global shipit.yml file if there is no env-specific file' do
-    not_config = {}
-    not_config.expects(:exist?).returns(false)
+    test '#dependencies_steps returns `dependencies.override` if present' do
+      @spec.stubs(:load_config).returns('dependencies' => {'override' => %w(foo bar baz)})
+      assert_equal %w(foo bar baz), @spec.dependencies_steps
+    end
 
-    config = {}
-    config.expects(:exist?).returns(true)
-    config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+    test '#dependencies_steps returns `bundle install` if a `Gemfile` is present' do
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundle_install).returns(:bundle_install)
+      assert_equal :bundle_install, @spec.dependencies_steps
+    end
 
-    spec = DeploySpec::FileSystem.new('.', 'staging')
-    spec.expects(:file).with('shipit.staging.yml').returns(not_config)
-    spec.expects(:file).with('shipit.yml').returns(config)
-    assert_equal %w(foo bar baz), spec.dependencies_steps
-  end
+    test '#fetch_deployed_revision_steps! is unknown by default' do
+      assert_raises DeploySpec::Error do
+        @spec.fetch_deployed_revision_steps!
+      end
+    end
 
-  test '#gemspec gives the path of the repo gemspec if present' do
-    spec = DeploySpec::FileSystem.new('foobar/', 'production')
-    Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])
-    assert_equal 'foobar/foobar.gemspec', spec.gemspec
-  end
+    test '#fetch_deployed_revision_steps use `fetch` is present' do
+      @spec.stubs(:load_config).returns('fetch' => ['echo l33t'])
+      assert_equal ['echo l33t'], @spec.fetch_deployed_revision_steps
+    end
 
-  test '#gem? is true if a gemspec is present' do
-    @spec.expects(:gemspec).returns('something')
-    assert @spec.gem?
-  end
+    test '#bundle_install return a sane default bundle install command' do
+      @spec.stubs(:gemfile_lock_exists?).returns(true)
+      command = %(
+        bundle check --path=#{DeploySpec.bundle_path} ||
+        bundle install
+        --frozen
+        --path=#{DeploySpec.bundle_path}
+        --retry=2
+        --without=default:production:development:test:staging:benchmark:debug
+      ).gsub(/\s+/, ' ').strip
+      assert_equal command, @spec.bundle_install.last
+    end
 
-  test '#gem? is false if there is no gemspec' do
-    @spec.expects(:gemspec).returns(nil)
-    refute @spec.gem?
-  end
+    test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
+      @spec.stubs(:gemfile_lock_exists?).returns(true)
+      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      command = %(
+        bundle check --path=#{DeploySpec.bundle_path} ||
+        bundle install
+        --frozen
+        --path=#{DeploySpec.bundle_path}
+        --retry=2
+        --without=some:custom:groups
+      ).gsub(/\s+/, ' ').strip
+      assert_equal command, @spec.bundle_install.last
+    end
 
-  test '#publish_gem first check if version tag have been created, and then invoke bundler release task' do
-    @spec.stubs(:gemspec).returns('/tmp/shipit.gemspec')
-    refute @spec.capistrano?
-    assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
-  end
+    test '#bundle_install has --frozen option if Gemfile.lock is present' do
+      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      @spec.stubs(:gemfile_lock_exists?).returns(true)
+      assert @spec.bundle_install.last.include?('--frozen')
+    end
 
-  test '#setup_dot_py gives the path of the repo setup.py if present' do
-    spec = DeploySpec::FileSystem.new('foobar/', 'production')
-    assert_equal Pathname.new('foobar/setup.py'), spec.setup_dot_py
-  end
+    test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
+      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      @spec.stubs(:gemfile_lock_exists?).returns(false)
+      refute @spec.bundle_install.last.include?('--frozen')
+    end
 
-  test '#egg? is true if a setup.py is present' do
-    @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join('Gemfile'))
-    assert @spec.egg?
-  end
+    test '#bundle_install does not have --frozen if overridden in shipit.yml' do
+      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'frozen' => false}})
+      @spec.stubs(:gemfile_lock_exists?).returns(true)
+      refute @spec.bundle_install.last.include?('--frozen')
+    end
 
-  test '#egg? is false if there is no setup.py' do
-    @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
-    refute @spec.egg?
-  end
+    test '#deploy_steps returns `deploy.override` if present' do
+      @spec.stubs(:load_config).returns('deploy' => {'override' => %w(foo bar baz)})
+      assert_equal %w(foo bar baz), @spec.deploy_steps
+    end
 
-  test '#publish_egg first check if version tag have been created and then invoke setup.py upload' do
-    file = Pathname.new('/tmp/fake_setup.py')
-    file.write('foo')
-    @spec.stubs(:setup_dot_py).returns(file)
-    steps = ['assert-egg-version-tag /tmp/fake_setup.py', 'python setup.py register sdist upload']
-    assert_equal steps, @spec.deploy_steps
-  end
+    test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:capistrano?).returns(true)
+      assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
+    end
 
-  test '#cacheable returns a DeploySpec instance that can be serialized' do
-    assert_instance_of DeploySpec::FileSystem, @spec
-    assert_instance_of DeploySpec, @spec.cacheable
-    config = {
-      'ci' => {'hide' => [], 'allow_failures' => [], 'require' => []},
-      'machine' => {'environment' => {}, 'directory' => nil},
-      'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
-      'dependencies' => {'override' => []},
-      'plugins' => {},
-      'deploy' => {'override' => nil, 'variables' => []},
-      'rollback' => {'override' => nil},
-      'fetch' => nil,
-      'tasks' => {},
-    }
-    assert_equal config, @spec.cacheable.config
-  end
+    test '#deploy_steps raise a DeploySpec::Error! if it dont know how to deploy the app' do
+      @spec.expects(:capistrano?).returns(false)
+      assert_raise DeploySpec::Error do
+        @spec.deploy_steps!
+      end
+    end
 
-  test "#deploy_variables returns an empty array by default" do
-    assert_equal [], @spec.deploy_variables
-  end
+    test '#rollback_steps returns `rollback.override` if present' do
+      @spec.stubs(:load_config).returns('rollback' => {'override' => %w(foo bar baz)})
+      assert_equal %w(foo bar baz), @spec.rollback_steps
+    end
 
-  test "#deploy_variables returns an array of VariableDefinition instances" do
-    @spec.stubs(:load_config).returns('deploy' => {'variables' => [{
-      'name' => 'SAFETY_DISABLED',
-      'title' => 'Set to 1 to do dangerous things',
-      'default' => 0,
-    }]})
+    test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:capistrano?).returns(true)
+      assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], @spec.rollback_steps
+    end
 
-    assert_equal 1, @spec.deploy_variables.size
-    variable_definition = @spec.deploy_variables.first
-    assert_equal 'SAFETY_DISABLED', variable_definition.name
-  end
+    test '#machine_env return an environment hash' do
+      @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
+      assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
+    end
 
-  test "task definitions prepend bundle exec if necessary" do
-    @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
-    @spec.expects(:bundler?).returns(true).at_least_once
-    definition = @spec.find_task_definition('restart')
+    test '#load_config can grab the env-specific shipit.yml file' do
+      config = {}
+      config.expects(:exist?).returns(true)
+      config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+      spec = DeploySpec::FileSystem.new('.', 'staging')
+      spec.expects(:file).with('shipit.staging.yml').returns(config)
+      assert_equal %w(foo bar baz), spec.dependencies_steps
+    end
 
-    assert_equal ['bundle exec foo'], definition.steps
-  end
+    test '#load_config grabs the global shipit.yml file if there is no env-specific file' do
+      not_config = {}
+      not_config.expects(:exist?).returns(false)
 
-  test "task definitions prepend bundle exec before serialization" do
-    @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
-    @spec.expects(:bundler?).returns(true).at_least_once
+      config = {}
+      config.expects(:exist?).returns(true)
+      config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
 
-    cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
-    definition = cached_spec.find_task_definition('restart')
-    assert_equal ['bundle exec foo'], definition.steps
-  end
+      spec = DeploySpec::FileSystem.new('.', 'staging')
+      spec.expects(:file).with('shipit.staging.yml').returns(not_config)
+      spec.expects(:file).with('shipit.yml').returns(config)
+      assert_equal %w(foo bar baz), spec.dependencies_steps
+    end
 
-  test "#review_checklist returns an array" do
-    @spec.expects(:load_config).returns('review' => {'checklist' => %w(foo bar)})
-    assert_equal %w(foo bar), @spec.review_checklist
-  end
+    test '#gemspec gives the path of the repo gemspec if present' do
+      spec = DeploySpec::FileSystem.new('foobar/', 'production')
+      Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])
+      assert_equal 'foobar/foobar.gemspec', spec.gemspec
+    end
 
-  test "#review_checklist returns an empty array if the section is missing" do
-    assert_equal [], @spec.review_checklist
-  end
+    test '#gem? is true if a gemspec is present' do
+      @spec.expects(:gemspec).returns('something')
+      assert @spec.gem?
+    end
 
-  test "#review_monitoring returns an array of hashes" do
-    @spec.expects(:load_config).returns('review' => {'monitoring' => [
-      {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
-      {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
-    ]})
-    assert_equal [
-      {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
-      {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
-    ], @spec.review_monitoring
-  end
+    test '#gem? is false if there is no gemspec' do
+      @spec.expects(:gemspec).returns(nil)
+      refute @spec.gem?
+    end
 
-  test "#review_monitoring returns an empty array if the section is missing" do
-    assert_equal [], @spec.review_monitoring
-  end
+    test '#publish_gem first check if version tag have been created, and then invoke bundler release task' do
+      @spec.stubs(:gemspec).returns('/tmp/shipit.gemspec')
+      refute @spec.capistrano?
+      assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
+    end
 
-  test "#hidden_statuses is empty by default" do
-    assert_equal [], @spec.hidden_statuses
-  end
+    test '#setup_dot_py gives the path of the repo setup.py if present' do
+      spec = DeploySpec::FileSystem.new('foobar/', 'production')
+      assert_equal Pathname.new('foobar/setup.py'), spec.setup_dot_py
+    end
 
-  test "#hidden_statuses is an array even if the value is a string" do
-    @spec.expects(:load_config).returns('ci' => {'hide' => 'ci/circleci'})
-    assert_equal %w(ci/circleci), @spec.hidden_statuses
-  end
+    test '#egg? is true if a setup.py is present' do
+      @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join('Gemfile'))
+      assert @spec.egg?
+    end
 
-  test "#hidden_statuses is an array even if the value is present" do
-    @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
-    assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+    test '#egg? is false if there is no setup.py' do
+      @spec.expects(:setup_dot_py).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
+      refute @spec.egg?
+    end
+
+    test '#publish_egg first check if version tag have been created and then invoke setup.py upload' do
+      file = Pathname.new('/tmp/fake_setup.py')
+      file.write('foo')
+      @spec.stubs(:setup_dot_py).returns(file)
+      steps = ['assert-egg-version-tag /tmp/fake_setup.py', 'python setup.py register sdist upload']
+      assert_equal steps, @spec.deploy_steps
+    end
+
+    test '#cacheable returns a DeploySpec instance that can be serialized' do
+      assert_instance_of DeploySpec::FileSystem, @spec
+      assert_instance_of DeploySpec, @spec.cacheable
+      config = {
+        'ci' => {'hide' => [], 'allow_failures' => [], 'require' => []},
+        'machine' => {'environment' => {}, 'directory' => nil},
+        'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
+        'dependencies' => {'override' => []},
+        'plugins' => {},
+        'deploy' => {'override' => nil, 'variables' => []},
+        'rollback' => {'override' => nil},
+        'fetch' => nil,
+        'tasks' => {},
+      }
+      assert_equal config, @spec.cacheable.config
+    end
+
+    test "#deploy_variables returns an empty array by default" do
+      assert_equal [], @spec.deploy_variables
+    end
+
+    test "#deploy_variables returns an array of VariableDefinition instances" do
+      @spec.stubs(:load_config).returns('deploy' => {'variables' => [{
+        'name' => 'SAFETY_DISABLED',
+        'title' => 'Set to 1 to do dangerous things',
+        'default' => 0,
+      }]})
+
+      assert_equal 1, @spec.deploy_variables.size
+      variable_definition = @spec.deploy_variables.first
+      assert_equal 'SAFETY_DISABLED', variable_definition.name
+    end
+
+    test "task definitions prepend bundle exec if necessary" do
+      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+      @spec.expects(:bundler?).returns(true).at_least_once
+      definition = @spec.find_task_definition('restart')
+
+      assert_equal ['bundle exec foo'], definition.steps
+    end
+
+    test "task definitions prepend bundle exec before serialization" do
+      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+      @spec.expects(:bundler?).returns(true).at_least_once
+
+      cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
+      definition = cached_spec.find_task_definition('restart')
+      assert_equal ['bundle exec foo'], definition.steps
+    end
+
+    test "#review_checklist returns an array" do
+      @spec.expects(:load_config).returns('review' => {'checklist' => %w(foo bar)})
+      assert_equal %w(foo bar), @spec.review_checklist
+    end
+
+    test "#review_checklist returns an empty array if the section is missing" do
+      assert_equal [], @spec.review_checklist
+    end
+
+    test "#review_monitoring returns an array of hashes" do
+      @spec.expects(:load_config).returns('review' => {'monitoring' => [
+        {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
+        {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
+      ]})
+      assert_equal [
+        {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
+        {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
+      ], @spec.review_monitoring
+    end
+
+    test "#review_monitoring returns an empty array if the section is missing" do
+      assert_equal [], @spec.review_monitoring
+    end
+
+    test "#hidden_statuses is empty by default" do
+      assert_equal [], @spec.hidden_statuses
+    end
+
+    test "#hidden_statuses is an array even if the value is a string" do
+      @spec.expects(:load_config).returns('ci' => {'hide' => 'ci/circleci'})
+      assert_equal %w(ci/circleci), @spec.hidden_statuses
+    end
+
+    test "#hidden_statuses is an array even if the value is present" do
+      @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
+      assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+    end
   end
 end
