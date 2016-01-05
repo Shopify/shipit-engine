@@ -4,7 +4,7 @@ module Shipit
       if task.class == Task
         task.definition.action
       else
-        t("#{task.class.name.underscore.pluralize}.description", sha: task.until_commit.short_sha)
+        t("#{task.class.name.demodulize.underscore.pluralize}.description", sha: task.until_commit.short_sha)
       end
     end
   end
