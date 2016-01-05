@@ -1,0 +1,25 @@
+shipit_push:
+  stack: shipit
+  event: push
+  secret: 1234
+  github_id: 42
+  type: Shipit::GithubHook::Repo
+
+shipit_status:
+  stack: shipit
+  event: status
+  secret: 1234
+  github_id: 43
+  type: Shipit::GithubHook::Repo
+
+cyclimse_push:
+  stack: cyclimse
+  event: push
+  secret: 1234
+  type: Shipit::GithubHook::Repo
+
+shopify_membership:
+  organization: shopify
+  event: membership
+  secret: 1234
+  type: Shipit::GithubHook::Organization

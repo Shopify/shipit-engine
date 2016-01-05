@@ -13,11 +13,11 @@ end
 group :development, :test do
   gem 'faker'
   gem 'fakeweb'
-  gem 'rubocop'
+  gem 'rubocop', '0.34.0'
 end
 
 group :test do
-  gem 'test_after_commit', '0.4.0'
+  gem 'test_after_commit'
   gem 'mocha'
   gem 'simplecov', require: false
 end

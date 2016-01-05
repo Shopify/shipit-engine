@@ -31,21 +31,20 @@ require 'shipit/csv_serializer'
 require 'shipit/octokit_iterator'
 require 'shipit/first_parent_commits_iterator'
 require 'shipit/simple_message_verifier'
-
-require 'command'
-require 'commands'
-require 'stack_commands'
-require 'task_commands'
-require 'deploy_commands'
-require 'rollback_commands'
-
-require 'shipit/engine'
+require 'shipit/command'
+require 'shipit/commands'
+require 'shipit/stack_commands'
+require 'shipit/task_commands'
+require 'shipit/deploy_commands'
+require 'shipit/rollback_commands'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
 
 module Shipit
   extend self
+
+  delegate :table_name_prefix, to: :secrets
 
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
@@ -56,7 +55,7 @@ module Shipit
   end
 
   def redis(namespace = nil)
-    @redis ||= Redis.new(url: redis_url.to_s, logger: Rails.logger)
+    @redis ||= Redis.new(url: redis_url.to_s.presence, logger: Rails.logger)
     return @redis unless namespace
     Redis::Namespace.new(namespace, redis: @redis)
   end
@@ -163,3 +162,5 @@ module Shipit
     Rails.application.secrets
   end
 end
+
+require 'shipit/engine'

@@ -1,5 +1,7 @@
 module Shipit
   class Engine < ::Rails::Engine
+    isolate_namespace Shipit
+
     paths['app/models'] << 'app/serializers' << 'app/serializers/concerns'
 
     initializer 'shipit.config' do |app|
@@ -7,6 +9,7 @@ module Shipit
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
 
       app.config.assets.precompile += %w(
+        favicon.ico
         task.js
         shipit.js
         shipit.css

@@ -1,0 +1,35 @@
+<%= javascript_include_tag 'task' %>
+<%= include_plugins(@stack) %>
+<%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
+
+<div class="sidebar">
+  <div class="sidebar-plugins"></div>
+</div>
+
+<div class="deploy-main" data-task="<%= {repo: @stack.github_repo_name, description: task_description(task)}.to_json %>">
+  <span class="deploy-tasks"></span>
+  <div class="deploy-banner" data-status="<%= task.status %>">
+      <div class="deploy-banner-section">
+        <a href="#" class="user main-user disabled"><%= task.author.name %></a>
+        <span class="deploy-status">
+          <%= content_for :task_title %>
+        </span>
+      </div>
+
+      <div class="deploy-banner-section action-buttons">
+        <%= link_to abort_stack_task_path(@stack, task), class: "btn btn--alert action-button", data: { action: "abort", status: task.status } do %>
+          <span class="caption--ready">Abort</span>
+          <span class="caption--pending">Aborting...</span>
+        <% end %>
+
+        <% if task.supports_rollback? %>
+          <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: "btn btn--delete action-button", data: { action: "abort", rollback: true, status: task.status } do %>
+            <span class="caption--ready">Abort and Rollback</span>
+            <span class="caption--pending">Aborting with Rollback...</span>
+          <% end %>
+        <% end %>
+      </div>
+  </div>
+
+  <pre class="nowrap" data-status="<%= task.status %>"><code data-next-chunks-url="<%= next_chunks_url(task) %>"><%= task.chunk_output %></code></pre>
+</div>

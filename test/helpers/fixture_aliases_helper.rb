@@ -1,9 +1,9 @@
 module FixtureAliasesHelper
-  def deploys(*args)
-    tasks(*args)
+  def shipit_deploys(*args)
+    shipit_tasks(*args)
   end
 
-  def rollbacks(*args)
-    tasks(*args)
+  def shipit_rollbacks(*args)
+    shipit_tasks(*args)
   end
 end

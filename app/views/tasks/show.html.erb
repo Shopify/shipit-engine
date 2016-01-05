@@ -1,6 +1,0 @@
-<% content_for :task_title do %>
-  executing <%= @task.definition.id %>
-  <%= timeago_tag(@task.created_at, force: true) %> at <%= @task.created_at %>
-<% end %>
-
-<%= render partial: 'tasks/task_output', locals: {task: @task} %>

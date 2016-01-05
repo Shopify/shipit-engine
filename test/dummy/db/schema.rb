@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151113151323) do
+ActiveRecord::Schema.define(version: 20160104151833) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20151113151323) do
     t.datetime "updated_at"
     t.integer  "user_id",               limit: 4
     t.boolean  "rolled_up",                           default: false,     null: false
-    t.string   "type",                  limit: 10
+    t.string   "type",                  limit: 20
     t.integer  "parent_id",             limit: 4
     t.integer  "additions",             limit: 4,     default: 0
     t.integer  "deletions",             limit: 4,     default: 0
