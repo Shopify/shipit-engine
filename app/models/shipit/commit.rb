@@ -163,11 +163,11 @@ module Shipit
     end
 
     def visible_statuses
-      stack.filter_visible_statuses(last_statuses)
+      stack.filter_visible_statuses(last_statuses).presence || [UnknownStatus.new(self)]
     end
 
     def meaningful_statuses
-      stack.filter_meaningful_statuses(last_statuses)
+      stack.filter_meaningful_statuses(last_statuses).presence || [UnknownStatus.new(self)]
     end
 
     def last_statuses

@@ -248,10 +248,16 @@ module Shipit
       assert_equal 2, shipit_commits(:second).last_statuses.count
     end
 
-    test "#last_statuses return [UnknownStatus] if the commit has no statuses" do
+    test "#last_statuses returns [UnknownStatus] if the commit has no statuses" do
       commit = shipit_commits(:second)
       commit.statuses = []
       assert_equal UnknownStatus.new(commit), commit.significant_status
+    end
+
+    test "#status returns UnknownStatus if the commit has no status" do
+      commit = shipit_commits(:second)
+      commit.statuses = []
+      assert_equal UnknownStatus.new(commit), commit.status
     end
 
     test "#visible_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
