@@ -43,12 +43,18 @@ class @Stream
     if status != @status
       @status = status
       for handler in @listeners('status')
-        handler(status, args...)
+        try
+          handler(status, args...)
+        catch error
+          console?.log("Plugin error: #{error}")
 
   broadcastOutput: (raw, args...) ->
     chunk = new Chunk(raw)
     for handler in @listeners('chunk')
-      handler(chunk, args...)
+      try
+        handler(chunk, args...)
+      catch error
+        console?.log("Plugin error: #{error}")
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES
