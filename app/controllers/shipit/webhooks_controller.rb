@@ -68,8 +68,7 @@ module Shipit
     end
 
     def verify_signature
-      request.body.rewind
-      head(422) unless webhook.verify_signature(request.headers['X-Hub-Signature'], request.body.read)
+      head(422) unless webhook.verify_signature(request.headers['X-Hub-Signature'], request.raw_post)
     end
 
     def check_if_ping
