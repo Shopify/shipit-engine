@@ -61,7 +61,7 @@ Shipit should just work right out of the box &mdash; you probably won't need to 
 
 1. If you locked the gem to a specific version in your Gemfile, update it there.
 2. Update the `shipit-engine` gem with `bundle update shipit-engine`.
-3. Install new migrations with `rake shipit_engine:install:migrations db:migrate`
+3. Install new migrations with `rake shipit:install:migrations db:migrate`
 
 * * *
 
