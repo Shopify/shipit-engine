@@ -4,3 +4,4 @@ module PayloadsHelper
     JSON.parse(file.read)
   end
 end
+
