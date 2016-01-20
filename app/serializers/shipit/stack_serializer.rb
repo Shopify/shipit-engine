@@ -31,7 +31,7 @@ module Shipit
     end
 
     def deploy_spec
-      object.cached_deploy_spec
+      object.cached_deploy_spec.cacheable.config
     end
   end
 end
