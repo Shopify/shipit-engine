@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.6.2)
+    shipit-engine (0.6.3)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       autoprefixer-rails (~> 5.1.11)
@@ -48,7 +48,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active_model_serializers (0.9.3)
+    active_model_serializers (0.9.4)
       activemodel (>= 3.2)
     activejob (4.2.5)
       activesupport (= 4.2.5)
@@ -104,7 +104,7 @@ GEM
       hiredis (~> 0.5.0)
     equalizer (0.0.11)
     erubis (2.7.0)
-    eventmachine (1.0.8)
+    eventmachine (1.0.9.1)
     execjs (2.6.0)
     explicit-parameters (0.0.3)
       actionpack (~> 4.0)
@@ -212,7 +212,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rainbow (2.0.0)
-    rake (10.4.2)
+    rake (10.5.0)
     redis (3.2.2)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
@@ -270,7 +270,7 @@ GEM
       activerecord (>= 3.2)
     thor (0.19.1)
     thread_safe (0.3.5)
-    tilt (2.0.1)
+    tilt (2.0.2)
     timers (4.0.1)
       hitimes
     tzinfo (1.2.2)
@@ -303,4 +303,4 @@ DEPENDENCIES
   test_after_commit
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
