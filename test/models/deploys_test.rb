@@ -96,37 +96,41 @@ module Shipit
     test "transitioning to success causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
-      expect_hook(:deploy, deploy.stack, status: 'success', deploy: deploy, stack: deploy.stack)
       expect_event(deploy)
       deploy.status = 'running'
-      deploy.complete!
+      expect_hook(:deploy, deploy.stack, status: 'success', deploy: deploy, stack: deploy.stack) do
+        deploy.complete!
+      end
     end
 
     test "transitioning to failed causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
-      expect_hook(:deploy, deploy.stack, status: 'failed', deploy: deploy, stack: deploy.stack)
       expect_event(deploy)
       deploy.status = 'running'
-      deploy.failure!
+      expect_hook(:deploy, deploy.stack, status: 'failed', deploy: deploy, stack: deploy.stack) do
+        deploy.failure!
+      end
     end
 
     test "transitioning to error causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
-      expect_hook(:deploy, deploy.stack, status: 'error', deploy: deploy, stack: deploy.stack)
       expect_event(deploy)
       deploy.status = 'running'
-      deploy.error!
+      expect_hook(:deploy, deploy.stack, status: 'error', deploy: deploy, stack: deploy.stack) do
+        deploy.error!
+      end
     end
 
     test "transitioning to running causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
-      expect_hook(:deploy, deploy.stack, status: 'running', deploy: deploy, stack: deploy.stack)
       expect_event(deploy)
       deploy.status = 'pending'
-      deploy.run!
+      expect_hook(:deploy, deploy.stack, status: 'running', deploy: deploy, stack: deploy.stack) do
+        deploy.run!
+      end
     end
 
     test "creating a deploy causes an event to be broadcasted" do
@@ -385,10 +389,6 @@ module Shipit
         data = JSON.load(event.data)
         channel == "stack.#{deploy.stack.id}" && data['url'] == "/#{deploy.stack.to_param}"
       end
-    end
-
-    def expect_hook(event, stack, payload)
-      Hook.expects(:emit).with(event, stack, payload)
     end
   end
 end

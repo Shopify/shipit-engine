@@ -8,6 +8,7 @@ module Shipit
     }.freeze
 
     EVENTS = %w(
+      stack
       task
       deploy
       rollback

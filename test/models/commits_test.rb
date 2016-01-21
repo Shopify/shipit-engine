@@ -309,14 +309,14 @@ module Shipit
           assert_equal initial_state, commit.state
 
           expected_status_attributes = {state: new_state, description: initial_state, context: 'ci/travis'}
-          if should_fire
-            expect_hook_emit(commit, :deployable_status, expected_status_attributes)
-          else
-            Hook.expects(:emit).never
+          add_status = -> { commit.add_status(expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))) }
+          expect_hook_emit(commit, :commit_status, expected_status_attributes) do
+            if should_fire
+              expect_hook_emit(commit, :deployable_status, expected_status_attributes, &add_status)
+            else
+              expect_no_hook(:deployable_status, &add_status)
+            end
           end
-          expect_hook_emit(commit, :commit_status, expected_status_attributes)
-
-          commit.add_status(expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db)))
         end
       end
     end
@@ -324,15 +324,24 @@ module Shipit
     test "#add_status does not fire webhooks for invisible statuses" do
       commit = shipit_commits(:second)
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
-      Hook.expects(:emit).never
-      commit.add_status(state: 'failure', description: 'Sad', context: 'ci/hidden', created_at: 1.day.ago.to_s(:db))
+
+      expect_no_hook(:deployable_status) do
+        commit.add_status(state: 'failure', description: 'Sad', context: 'ci/hidden', created_at: 1.day.ago.to_s(:db))
+      end
     end
 
     test "#add_status does not fire webhooks for non-meaningful statuses" do
       commit = shipit_commits(:second)
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
-      Hook.expects(:emit).never
-      commit.add_status(state: 'failure', description: 'Sad', context: 'ci/ok_to_fail', created_at: 1.day.ago.to_s(:db))
+
+      expect_no_hook(:deployable_status) do
+        commit.add_status(
+          state: 'failure',
+          description: 'Sad',
+          context: 'ci/ok_to_fail',
+          created_at: 1.day.ago.to_s(:db),
+        )
+      end
     end
 
     test "#visible_statuses forward the last_statuses to the stack" do
@@ -397,11 +406,13 @@ module Shipit
       end
     end
 
-    def expect_hook_emit(commit, event, status_attributes)
-      matchers = status_attributes.to_a.map { |pair| responds_with(pair.first, pair.second) }
-      Hook.expects(:emit).with(event, commit.stack, has_entries(commit: commit, stack: commit.stack,
-                                                                event => all_of(*matchers),
-                                                                status: status_attributes[:state]))
+    def expect_hook_emit(commit, event, status_attributes, &block)
+      matches = lambda do |payload|
+        assert_equal commit, payload[:commit]
+        assert_equal commit.stack, payload[:stack]
+        assert_equal status_attributes[:state], payload[:status]
+      end
+      expect_hook(event, commit.stack, matches, &block)
     end
   end
 end

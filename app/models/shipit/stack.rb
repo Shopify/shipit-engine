@@ -27,7 +27,10 @@ module Shipit
 
     before_validation :update_defaults
     before_destroy :clear_local_files
-    after_commit :emit_hooks
+    after_commit :emit_lock_hooks
+    after_commit :emit_added_hooks, on: :create
+    after_commit :emit_updated_hooks, on: :update
+    after_commit :emit_removed_hooks, on: :destroy
     after_commit :broadcast_update, on: :update
     after_commit :setup_hooks, :sync_github, on: :create
     after_touch :clear_cache
@@ -296,9 +299,22 @@ module Shipit
       self.branch = 'master' if branch.blank?
     end
 
-    def emit_hooks
+    def emit_lock_hooks
       return unless previous_changes.include?('lock_reason')
       Hook.emit(:lock, self, locked: locked?, stack: self)
+    end
+
+    def emit_added_hooks
+      Hook.emit(:stack, self, action: :added, stack: self)
+    end
+
+    def emit_updated_hooks
+      changed = !(previous_changes.keys - %w(updated_at)).empty?
+      Hook.emit(:stack, self, action: :updated, stack: self) if changed
+    end
+
+    def emit_removed_hooks
+      Hook.emit(:stack, self, action: :removed, stack: self)
     end
 
     def ci_enabled_cache_key

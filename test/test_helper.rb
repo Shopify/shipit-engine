@@ -6,11 +6,14 @@ SimpleCov.start 'rails'
 require 'fakeweb'
 FakeWeb.allow_net_connect = false
 
-require File.expand_path("../../test/dummy/config/environment.rb", __FILE__)
-ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
-ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
-require "rails/test_help"
-require "mocha/mini_test"
+require File.expand_path('../../test/dummy/config/environment.rb', __FILE__)
+ActiveRecord::Migrator.migrations_paths = [
+  File.expand_path('../../test/dummy/db/migrate', __FILE__),
+  File.expand_path('../../db/migrate', __FILE__),
+]
+require 'rails/test_help'
+require 'mocha/mini_test'
+require 'spy/integration'
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
@@ -34,6 +37,7 @@ class ActiveSupport::TestCase
   include JSONHelper
   include LinksHelper
   include ApiHelper
+  include HooksHelper
   include ActiveJob::TestHelper
 
   setup do

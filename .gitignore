@@ -30,3 +30,4 @@ test/dummy/data/*
 test/dummy/.sass-cache
 test/dummy/config/secrets.yml
 
+.byebug_history

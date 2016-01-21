@@ -284,14 +284,16 @@ module Shipit
     end
 
     test "locking the stack triggers a webhook" do
-      expect_hook(:lock, @stack, locked: true, stack: @stack)
-      @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
+      expect_hook(:lock, @stack, locked: true, stack: @stack) do
+        @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
+      end
     end
 
     test "unlocking the stack triggers a webhook" do
       @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
-      expect_hook(:lock, @stack, locked: false, stack: @stack)
-      @stack.update(lock_reason: nil)
+      expect_hook(:lock, @stack, locked: false, stack: @stack) do
+        @stack.update(lock_reason: nil)
+      end
     end
 
     test "the git cache lock prevent concurrent access to the git cache" do
@@ -347,10 +349,16 @@ module Shipit
       assert_equal [commit1, commit2], stack.filter_meaningful_statuses([soft_fail, commit1, commit2])
     end
 
-    private
+    test "updating the stack emit a hook" do
+      expect_hook(:stack, @stack, action: :updated, stack: @stack) do
+        @stack.update(repo_name: 'foo')
+      end
+    end
 
-    def expect_hook(event, stack, payload)
-      Hook.expects(:emit).with(event, stack, payload)
+    test "updating the stack doesn't emit a hook if only `updated_at` is changed" do
+      expect_no_hook(:stack) do
+        @stack.update(updated_at: Time.zone.now)
+      end
     end
   end
 end

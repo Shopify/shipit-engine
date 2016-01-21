@@ -29,7 +29,6 @@ module Shipit
       DeployCommands.any_instance.expects(:perform).returns([])
       @job.stubs(:capture)
 
-      Hook.expects(:emit).twice
       assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
         @job.perform(@deploy)
       end
