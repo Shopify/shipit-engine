@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160104151833) do
+ActiveRecord::Schema.define(version: 20160122165559) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 20160104151833) do
 
   create_table "hooks", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4
-    t.string   "url",          limit: 4096,                  null: false
+    t.string   "delivery_url", limit: 4096,                  null: false
     t.string   "content_type", limit: 4,    default: "json", null: false
     t.string   "secret",       limit: 255
     t.string   "events",       limit: 255,  default: "",     null: false
@@ -161,8 +161,6 @@ ActiveRecord::Schema.define(version: 20160104151833) do
   add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
   add_index "tasks", ["since_commit_id"], name: "index_tasks_on_since_commit_id"
   add_index "tasks", ["stack_id"], name: "index_tasks_on_stack_id"
-  add_index "tasks", ["type", "stack_id", "parent_id"], name: "index_tasks_by_stack_and_parent"
-  add_index "tasks", ["type", "stack_id", "status"], name: "index_tasks_by_stack_and_status"
   add_index "tasks", ["until_commit_id"], name: "index_tasks_on_until_commit_id"
   add_index "tasks", ["user_id"], name: "index_tasks_on_user_id"
 

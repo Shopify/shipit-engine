@@ -8,15 +8,15 @@ module Shipit
     end
 
     test "#url must be valid" do
-      @hook.url = 'file:/ad"fa/adfa'
+      @hook.delivery_url = 'file:/ad"fa/adfa'
       refute @hook.valid?
-      assert_equal ['Url is not a valid URL'], @hook.errors.full_messages
+      assert_equal ['Delivery url is not a valid URL'], @hook.errors.full_messages
     end
 
     test "#url must not be localhost" do
-      @hook.url = 'file:///etc/passwd'
+      @hook.delivery_url = 'file:///etc/passwd'
       refute @hook.valid?
-      assert_equal ['Url is not a valid URL'], @hook.errors.full_messages
+      assert_equal ['Delivery url is not a valid URL'], @hook.errors.full_messages
     end
 
     test "#events is accessible as an array" do
@@ -42,7 +42,7 @@ module Shipit
 
       delivery = Delivery.last
 
-      assert_equal @hook.url, delivery.url
+      assert_equal @hook.delivery_url, delivery.url
       assert_equal 'application/x-www-form-urlencoded', delivery.content_type
       assert_equal 'foo=42', delivery.payload
       assert_equal 'scheduled', delivery.status

@@ -20,7 +20,7 @@ module Shipit
     belongs_to :stack, required: false
     has_many :deliveries
 
-    validates :url, presence: true, url: {no_local: true, allow_blank: true}
+    validates :delivery_url, presence: true, url: {no_local: true, allow_blank: true}
     validates :content_type, presence: true, inclusion: {in: CONTENT_TYPES.keys}
     validates :events, presence: true, subset: {of: EVENTS}
 
@@ -68,7 +68,7 @@ module Shipit
     def deliver!(event, payload)
       deliveries.create!(
         event: event,
-        url: url,
+        url: delivery_url,
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
       ).schedule!

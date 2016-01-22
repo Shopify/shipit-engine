@@ -13,7 +13,7 @@ module Shipit
       end
 
       params do
-        requires :url, String
+        requires :delivery_url, String
         requires :events, Array[String]
         accepts :content_type, String
       end
@@ -22,7 +22,7 @@ module Shipit
       end
 
       params do
-        accepts :url, String
+        accepts :delivery_url, String
         accepts :events, Array[String]
         accepts :content_type, String
       end
