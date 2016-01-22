@@ -8,6 +8,10 @@ module Shipit
         @stack = shipit_stacks(:shipit)
       end
 
+      test "the route has priority over stacks one" do
+        assert_recognizes({controller: 'shipit/api/hooks', action: 'show', id: '42' }, '/api/hooks/42')
+      end
+
       test "#index without a stack_id returns the list of global hooks" do
         hook = Hook.global.first
 

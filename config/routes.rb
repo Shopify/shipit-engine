@@ -5,16 +5,9 @@ Shipit::Engine.routes.draw do
 
   mount Pubsubstub::StreamAction.new, at: "/events", as: :events
 
+  # Robots
   get '/status/version' => 'status#version', as: :version
 
-  scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
-    get '/', action: :request
-    post :callback
-    get :callback
-    get :logout
-  end
-
-  # Robots
   resources :stacks, only: %i(new create index) do
     resource :webhooks, only: [] do
       post :push, :state
@@ -28,7 +21,35 @@ Shipit::Engine.routes.draw do
     end
   end
 
+  # API
+  namespace :api do
+    root to: 'base#index'
+    resources :stacks, only: :index
+    scope '/stacks/*id', id: stack_id_format, as: :stack do
+      get '/' => 'stacks#show'
+    end
+
+    scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
+      resource :lock, only: %i(create update destroy)
+      resources :tasks, only: %i(index show) do
+        resource :output, only: :show
+      end
+      resources :deploys, only: %i(create)
+      post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
+      resources :hooks, only: %i(index create show update destroy)
+    end
+
+    resources :hooks, only: %i(index create show update destroy)
+  end
+
   # Humans
+  scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
+    get '/', action: :request
+    post :callback
+    get :callback
+    get :logout
+  end
+
   scope '/*id', id: stack_id_format, as: :stack do
     get '/' => 'stacks#show'
     patch '/' => 'stacks#update'
@@ -63,26 +84,5 @@ Shipit::Engine.routes.draw do
         get :rollback
       end
     end
-  end
-
-  # API
-  namespace :api do
-    root to: 'base#index'
-    resources :stacks, only: :index
-    scope '/stacks/*id', id: stack_id_format, as: :stack do
-      get '/' => 'stacks#show'
-    end
-
-    scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
-      resource :lock, only: %i(create update destroy)
-      resources :tasks, only: %i(index show) do
-        resource :output, only: :show
-      end
-      resources :deploys, only: %i(create)
-      post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
-      resources :hooks, only: %i(index create show update destroy)
-    end
-
-    resources :hooks, only: %i(index create show update destroy)
   end
 end
