@@ -44,5 +44,21 @@ module Shipit
       refute Shipit.github_enterprise?
       assert_equal({}, Shipit.github_oauth_options)
     end
+
+    test ".github_teams returns false if there's no team" do
+      assert_equal(false, Shipit.github_teams)
+    end
+
+    test ".github_teams returns the team key as an array" do
+      Rails.application.secrets.stubs(:github_oauth).returns('team' => 'shopify/developers')
+      assert_equal(['shopify/developers'], Shipit.github_teams.map(&:handle))
+    end
+
+    test ".github_teams merges the teams and team keys in a single array" do
+      Rails.application.secrets.stubs(:github_oauth).returns(
+        'team' => 'shopify/developers',
+        'teams' => ['shopify/developers', 'cyclimse/cooks'])
+      assert_equal(['cyclimse/cooks', 'shopify/developers'], Shipit.github_teams.map(&:handle))
+    end
   end
 end

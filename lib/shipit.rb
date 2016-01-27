@@ -103,8 +103,9 @@ module Shipit
     secrets.host.presence
   end
 
-  def github_team
-    @github_team ||= github_oauth_credentials['team'] && Team.find_or_create_by_handle(github_oauth_credentials['team'])
+  def github_teams
+    teams = (Array(github_oauth_credentials['team']) + Array(github_oauth_credentials['teams'])).sort.uniq
+    @github_teams ||= teams.any? && teams.map { |t| Team.find_or_create_by_handle(t) }
   end
 
   def github_oauth_id

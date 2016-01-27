@@ -54,11 +54,12 @@ module Shipit
       assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
     end
 
-    test "current_user must be a member of Shipit.github_team" do
-      Shipit.stubs(:github_team).returns(shipit_teams(:cyclimse_cooks))
+    test "current_user must be a member of at least a Shipit.github_teams" do
+      session[:user_id] = shipit_users(:bob).id
+      Shipit.stubs(:github_teams).returns([shipit_teams(:cyclimse_cooks), shipit_teams(:shopify_developers)])
       get :index
       assert_response :forbidden
-      assert_equal 'You must be a member of cyclimse/cooks to access this application.', response.body
+      assert_equal 'You must be a member of cyclimse/cooks or shopify/developers to access this application.', response.body
     end
 
     test "#show is success" do
