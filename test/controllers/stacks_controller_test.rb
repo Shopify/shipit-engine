@@ -59,7 +59,10 @@ module Shipit
       Shipit.stubs(:github_teams).returns([shipit_teams(:cyclimse_cooks), shipit_teams(:shopify_developers)])
       get :index
       assert_response :forbidden
-      assert_equal 'You must be a member of cyclimse/cooks or shopify/developers to access this application.', response.body
+      assert_equal(
+        'You must be a member of cyclimse/cooks or shopify/developers to access this application.',
+        response.body,
+      )
     end
 
     test "#show is success" do
