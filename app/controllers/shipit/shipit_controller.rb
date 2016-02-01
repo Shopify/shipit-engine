@@ -33,7 +33,7 @@ module Shipit
     def force_github_authentication
       if current_user.logged_in?
         teams = Shipit.github_teams
-        if teams && teams.none? { |team| team.in?(current_user.teams) }
+        unless teams.empty? || current_user.teams.where(id: teams).exists?
           team_list = teams.map(&:handle).to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
           render text: "You must be a member of #{team_list} to access this application.", status: :forbidden
         end

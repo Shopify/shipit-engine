@@ -105,7 +105,7 @@ module Shipit
 
   def github_teams
     teams = (Array(github_oauth_credentials['team']) + Array(github_oauth_credentials['teams'])).sort.uniq
-    @github_teams ||= teams.any? && teams.map { |t| Team.find_or_create_by_handle(t) }
+    @github_teams ||= teams.map { |t| Team.find_or_create_by_handle(t) }
   end
 
   def github_oauth_id

@@ -45,8 +45,8 @@ module Shipit
       assert_equal({}, Shipit.github_oauth_options)
     end
 
-    test ".github_teams returns false if there's no team" do
-      assert_equal(false, Shipit.github_teams)
+    test ".github_teams returns an empty array if there's no team" do
+      assert_equal([], Shipit.github_teams)
     end
 
     test ".github_teams returns the team key as an array" do
