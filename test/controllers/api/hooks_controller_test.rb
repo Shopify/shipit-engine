@@ -9,7 +9,7 @@ module Shipit
       end
 
       test "the route has priority over stacks one" do
-        assert_recognizes({controller: 'shipit/api/hooks', action: 'show', id: '42' }, '/api/hooks/42')
+        assert_recognizes({controller: 'shipit/api/hooks', action: 'show', id: '42'}, '/api/hooks/42')
       end
 
       test "#index without a stack_id returns the list of global hooks" do
@@ -57,7 +57,9 @@ module Shipit
       end
 
       test "#create do not allow to set protected attributes" do
-        post :create, delivery_url: 'https://example.com/hook', events: %w(deploy rollback), created_at: 2.months.ago.to_s(:db)
+        post :create, delivery_url: 'https://example.com/hook',
+                      events: %w(deploy rollback),
+                      created_at: 2.months.ago.to_s(:db)
         Hook.last.created_at > 2.seconds.ago
       end
 

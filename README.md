@@ -316,7 +316,7 @@ development:
 
 The value for `id` is your application's  *Client ID*, and the value for `secret` is your application's *Client Secret* &mdash; both of these should appear on your application's GitHub page.
 
-The `team` is optional, and required only if you want to specify a team that has access to the stack in Shipit.
+The `teams` key is optional, and required only if you want to specify some teams which have access to the stack in Shipit.
 
 For example:
 
@@ -325,7 +325,9 @@ development:
   github_oauth:
     id: (your application's Client ID)
     secret: (your application's Client Secret)
-    team: Shipit/team
+    teams:
+      - Shipit/team
+      - Shipit/another_team
 ```
 <br>
 
