@@ -1,9 +1,9 @@
 $document = $(document)
 
 toggleDeployButton = ->
-  $('.trigger-deploy').toggleClass('disabled btn--disabled', !!$(':checkbox[name=checklist]:not(:checked)').length)
+  $('.trigger-deploy').toggleClass('disabled btn--disabled', !!$(':checkbox.required:not(:checked)').length)
 
-$document.on('change', ':checkbox[name=checklist]', toggleDeployButton)
+$document.on('change', ':checkbox.required', toggleDeployButton)
 
 jQuery ($) ->
   toggleDeployButton()
