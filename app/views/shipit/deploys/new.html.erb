@@ -1,8 +1,6 @@
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
 
 <div class="wrapper">
-  <%= render 'concurrent_deploy_warning' if @stack.deploying? %>
-
   <section>
     <header class="section-header">
       <h2>Commits included in this deploy (<%= link_to_github_deploy(@deploy) %>)</h2>
@@ -45,10 +43,10 @@
         <% end %>
       </section>
     <% end %>
+
+    <%= render 'concurrent_deploy_warning' if @stack.deploying? %>
+
     <section class="submit-section">
-      <% if @stack.deploying? %>
-        <%= hidden_field_tag :force, value: true %>
-      <% end %>
       <%= f.hidden_field :until_commit_id %>
       <%= f.submit class: 'btn btn--primary btn--large trigger-deploy' %>
     </section>

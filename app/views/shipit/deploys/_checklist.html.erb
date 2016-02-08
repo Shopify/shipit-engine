@@ -6,7 +6,7 @@
   <ul class="deploy-checklist">
     <%- checklist.each_with_index do |check, index| -%>
       <li class="deploy-checklist__item">
-        <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox', id: "checkbox_#{index}" %>
+        <%= check_box_tag :checklist, nil, false, class: 'deploy-checklist__item__checkbox required', id: "checkbox_#{index}" %>
         <label class="deploy-checklist__item__label" for="checkbox_<%= index %>">
           <%= sanitize(check, tags: %w(a strong), attributes: %w(href target)) %>
         </label>
