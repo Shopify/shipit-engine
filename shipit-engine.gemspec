@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'autoprefixer-rails', '~> 5.1.11'
   s.add_dependency 'rails_autolink', '~> 1.1.6'
 
-  s.add_dependency 'octokit', '~> 4.1.1'
+  s.add_dependency 'octokit', '~> 4.2.0'
   s.add_dependency 'faraday', '~> 0.9.1'
   s.add_dependency 'faraday-http-cache', '1.1.0'
   s.add_dependency 'redis-objects', '1.2.0'
