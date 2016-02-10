@@ -16,6 +16,7 @@ module Shipit
     end
 
     attr_reader :id, :action, :description, :steps, :checklist
+    alias_method :to_param, :id
 
     def initialize(id, config)
       @id = id
@@ -23,6 +24,11 @@ module Shipit
       @description = config['description'] || ''
       @steps = config['steps'] || []
       @checklist = config['checklist'] || []
+      @allow_concurrency = config['allow_concurrency'] || false
+    end
+
+    def allow_concurrency?
+      @allow_concurrency
     end
 
     def as_json
@@ -32,6 +38,7 @@ module Shipit
         description: description,
         steps: steps,
         checklist: checklist,
+        allow_concurrency: allow_concurrency?,
       }
     end
   end

@@ -255,6 +255,18 @@ tasks:
       - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
 ```
 
+By default custom tasks are not allowed to be triggered while a deploy is running. But if it's safe for that specific task you can change that behavior with the `allow_concurrency` attribute:
+
+```yml
+tasks:
+  flush_cache:
+    action: "Flush Cache"
+    steps:
+      - ssh deploy@myserver.example.com 'myapp/flush_cache.sh'
+    allow_concurrency: true
+```
+
+
 <h3 id="review-process">Review process</h3>
 
 You can display review elements, such as monitoring data or a pre-deployment checklist, on the deployment page in Shipit:

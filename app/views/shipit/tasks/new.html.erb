@@ -15,6 +15,10 @@
 
   <section class="submit-section">
     <%= form_for @task, url: stack_tasks_path(@stack, definition_id: @task.definition.id) do |f| %>
+      <% if !@task.definition.allow_concurrency? && @stack.deploying? %>
+        <%= render 'shipit/deploys/concurrent_deploy_warning' %>
+      <% end %>
+
       <%= f.submit @task.definition.action, :class => ['btn', 'primary', 'trigger-deploy'] %>
     <% end %>
   </section>

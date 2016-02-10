@@ -15,6 +15,7 @@ module Shipit
     scope :success, -> { where(status: 'success') }
     scope :completed, -> { where(status: %w(success error failed flapping aborted)) }
     scope :active, -> { where(status: %w(pending running aborting)) }
+    scope :exclusive, -> { where(allow_concurrency: false) }
 
     scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 

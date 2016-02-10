@@ -191,12 +191,12 @@ module Shipit
     end
 
     def deploying?
-      !!active_deploy
+      !!active_task
     end
 
-    def active_deploy
-      return @active_deploy if defined?(@active_deploy)
-      @active_deploy ||= deploys_and_rollbacks.active.last
+    def active_task
+      return @active_task if defined?(@active_task)
+      @active_task ||= tasks.active.exclusive.last
     end
 
     def locked?
@@ -283,7 +283,7 @@ module Shipit
     private
 
     def clear_cache
-      remove_instance_variable(:@active_deploy) if defined?(@active_deploy)
+      remove_instance_variable(:@active_task) if defined?(@active_task)
     end
 
     def sync_github
