@@ -85,7 +85,7 @@ module Shipit
     end
 
     def update_deployed_revision(sha)
-      return if deploying?
+      return if active_task?
 
       last_deploy = deploys_and_rollbacks.last
       actual_deployed_commit = commits.reachable.by_sha!(sha)
@@ -108,7 +108,7 @@ module Shipit
     end
 
     def status
-      return :deploying if deploying?
+      return :deploying if active_task?
       :default
     end
 
@@ -133,7 +133,7 @@ module Shipit
     end
 
     def deployable?
-      !locked? && !deploying?
+      !locked? && !active_task?
     end
 
     def repo_name=(name)
@@ -190,7 +190,7 @@ module Shipit
       Shipit.github_api.commits(github_repo_name, sha: branch)
     end
 
-    def deploying?
+    def active_task?
       !!active_task
     end
 

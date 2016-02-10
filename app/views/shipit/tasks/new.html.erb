@@ -15,7 +15,7 @@
 
   <section class="submit-section">
     <%= form_for @task, url: stack_tasks_path(@stack, definition_id: @task.definition.id) do |f| %>
-      <% if !@task.definition.allow_concurrency? && @stack.deploying? %>
+      <% if !@task.definition.allow_concurrency? && @stack.active_task? %>
         <%= render 'shipit/deploys/concurrent_deploy_warning' %>
       <% end %>
 

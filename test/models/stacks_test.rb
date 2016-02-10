@@ -205,39 +205,39 @@ module Shipit
       shipit_stacks(:shipit).destroy
     end
 
-    test "#deploying? is false if stack has no deploy in either pending or running state" do
+    test "#active_task? is false if stack has no deploy in either pending or running state" do
       @stack.deploys.active.destroy_all
-      refute @stack.deploying?
+      refute @stack.active_task?
     end
 
-    test "#deploying? is false if stack has no deploy at all" do
+    test "#active_task? is false if stack has no deploy at all" do
       @stack.deploys.destroy_all
-      refute @stack.deploying?
+      refute @stack.active_task?
     end
 
-    test "#deploying? is true if stack has a deploy in either pending or running state" do
+    test "#active_task? is true if stack has a deploy in either pending or running state" do
       @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new)
-      assert @stack.deploying?
+      assert @stack.active_task?
     end
 
-    test "#deploying? is true if a rollback is ongoing" do
+    test "#active_task? is true if a rollback is ongoing" do
       shipit_deploys(:shipit_complete).trigger_rollback(AnonymousUser.new)
-      assert @stack.deploying?
+      assert @stack.active_task?
     end
 
-    test "#deploying? is memoized" do
+    test "#active_task? is memoized" do
       assert_queries(1) do
-        10.times { @stack.deploying? }
+        10.times { @stack.active_task? }
       end
     end
 
-    test "#deploying? cache is cleared if a deploy change state" do
+    test "#active_task? cache is cleared if a deploy change state" do
       assert_queries(1) do
-        10.times { @stack.deploying? }
+        10.times { @stack.active_task? }
       end
       @stack.tasks.where(status: 'running').first.error!
       assert_queries(1) do
-        10.times { @stack.deploying? }
+        10.times { @stack.active_task? }
       end
     end
 

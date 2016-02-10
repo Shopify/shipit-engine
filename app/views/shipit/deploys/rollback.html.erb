@@ -40,7 +40,7 @@
       </section>
     <% end %>
 
-    <%= render 'concurrent_deploy_warning' if @stack.deploying? %>
+    <%= render 'concurrent_deploy_warning' if @stack.active_task? %>
 
     <section class="submit-section">
       <%= f.hidden_field :parent_id %>

@@ -24,7 +24,7 @@ module Shipit
     def create
       @definition = stack.find_task_definition(params[:definition_id])
 
-      if @definition.allow_concurrency? || params[:force] || !@stack.deploying?
+      if @definition.allow_concurrency? || params[:force] || !@stack.active_task?
         @task = stack.trigger_task(params[:definition_id], current_user)
         redirect_to [stack, @task]
       else
