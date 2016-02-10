@@ -5,7 +5,7 @@ module Shipit
     has_one :author
     has_one :revision, serializer: ShortCommitSerializer
 
-    attributes :id, :url, :html_url, :output_url, :type, :status, :updated_at, :created_at
+    attributes :id, :url, :html_url, :output_url, :type, :status, :action, :description, :updated_at, :created_at
 
     def revision
       object.until_commit
@@ -25,6 +25,22 @@ module Shipit
 
     def type
       :task
+    end
+
+    def action
+      object.definition.try!(:action)
+    end
+
+    def include_action?
+      type == :task
+    end
+
+    def description
+      object.definition.try!(:action)
+    end
+
+    def include_description?
+      type == :task
     end
   end
 end
