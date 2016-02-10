@@ -12,7 +12,7 @@ module Shipit
 
       caption = 'Redeploy'
       caption = 'Locked' if commit.stack.locked? && !ignore_lock?
-      caption = 'Deploy in progress...' if commit.stack.deploying?
+      caption = 'Deploy in progress...' if commit.stack.active_task?
 
       link_to(caption, url, class: classes)
     end
@@ -70,7 +70,7 @@ module Shipit
       state = commit.status.state
       state = 'locked' if commit.stack.locked? && !ignore_lock?
       if commit.deployable?
-        state = commit.stack.deploying? ? 'deploying' : 'enabled'
+        state = commit.stack.active_task? ? 'deploying' : 'enabled'
       end
       t("deploy_button.caption.#{state}")
     end

@@ -15,8 +15,25 @@ module Shipit
       assert_response :ok
     end
 
-    test "tasks defined in the shipit.yml can be triggered" do
-      assert_difference '@stack.tasks.count', 1 do
+    test "tasks defined in the shipit.yml can't be triggered if the stack is being deployed" do
+      assert @stack.active_task?
+      assert_no_difference -> { @stack.tasks.count } do
+        post :create, stack_id: @stack, definition_id: @definition.id
+      end
+      assert_redirected_to new_stack_tasks_path(@stack, @definition)
+    end
+
+    test "tasks defined in the shipit.yml can be triggered anyway if force apram is present" do
+      assert @stack.active_task?
+      assert_difference -> { @stack.tasks.count } do
+        post :create, stack_id: @stack, definition_id: @definition.id, force: 'true'
+      end
+      assert_redirected_to stack_task_path(@stack, Task.last)
+    end
+
+    test "tasks defined in the shipit.yml can be triggered while the stack is being deployed if specified as such" do
+      @definition = @stack.find_task_definition('flush_cache')
+      assert_difference -> { @stack.tasks.count } do
         post :create, stack_id: @stack, definition_id: @definition.id
       end
       assert_redirected_to stack_task_path(@stack, Task.last)

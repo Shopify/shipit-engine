@@ -26,6 +26,14 @@ shipit:
           "steps": [
             "cap $ENVIRONMENT deploy:restart"
           ]
+        },
+        "flush_cache": {
+          "action": "Flush cache",
+          "description": "Flush the application cache",
+          "steps": [
+            "cap $ENVIRONMENT cache:flush"
+          ],
+          "allow_concurrency": true
         }
       },
       "ci": {

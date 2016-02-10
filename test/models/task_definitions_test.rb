@@ -8,6 +8,7 @@ module Shipit
         'action' => 'Restart application',
         'description' => 'Restart app and job servers',
         'steps' => ['touch tmp/restart'],
+        'allow_concurrency' => true,
       )
     end
 
@@ -27,6 +28,7 @@ module Shipit
         description: 'Restart app and job servers',
         steps: ['touch tmp/restart'],
         checklist: [],
+        allow_concurrency: true,
       }
       assert_equal as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json
     end

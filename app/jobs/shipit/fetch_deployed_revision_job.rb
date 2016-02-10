@@ -3,7 +3,7 @@ module Shipit
     queue_as :default
 
     def perform(stack)
-      return if stack.deploying?
+      return if stack.active_task?
 
       commands = StackCommands.new(stack)
 
