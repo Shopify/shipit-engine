@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '~> 4.2.0'
   s.add_dependency 'securecompare', '~> 1.0.0'
   s.add_dependency 'validate_url', '~> 1.0.0'
-  s.add_dependency 'explicit-parameters', '~> 0.0.3'
+  s.add_dependency 'explicit-parameters', '~> 0.1.0'
   s.add_dependency 'state_machines-activerecord', '~> 0.3.0'
   s.add_dependency 'active_model_serializers', '~> 0.9.3'
   s.add_dependency 'pubsubstub', '~> 0.0.14'
