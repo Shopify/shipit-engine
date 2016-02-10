@@ -7,7 +7,7 @@ gem 'pg'
 gem 'sqlite3'
 
 group :development do
-  gem 'sucker_punch'
+  gem 'sucker_punch', require: %w(sucker_punch sucker_punch/async_syntax)
 end
 
 group :development, :test do
