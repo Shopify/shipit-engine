@@ -6,11 +6,12 @@ module Shipit
       params do
         requires :sha, String, length: {in: 6..40}
         accepts :force, Boolean, default: false
+        accepts :env, Hash, default: {}
       end
       def create
         commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
         param_error!(:force, "Can't deploy a locked stack") if !params.force && stack.locked?
-        render_resource stack.trigger_deploy(commit, current_user), status: :accepted
+        render_resource stack.trigger_deploy(commit, current_user, env: params.env), status: :accepted
       end
     end
   end

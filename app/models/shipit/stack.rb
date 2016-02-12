@@ -55,13 +55,14 @@ module Shipit
       undeployed_commits_count > 0
     end
 
-    def trigger_task(definition_id, user)
+    def trigger_task(definition_id, user, env: nil)
       commit = last_deployed_commit
       task = tasks.create(
         user_id: user.id,
         definition: find_task_definition(definition_id),
         until_commit_id: commit.id,
         since_commit_id: commit.id,
+        env: filter_task_envs(definition_id, (env || {})),
       )
       task.enqueue
       task
@@ -74,7 +75,7 @@ module Shipit
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
-        env: env || {},
+        env: filter_deploy_envs(env || {}),
       )
       deploy.enqueue
       deploy
@@ -217,7 +218,7 @@ module Shipit
     end
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
-             :deploy_variables, to: :cached_deploy_spec
+             :deploy_variables, :filter_task_envs, :filter_deploy_envs, to: :cached_deploy_spec
 
     def monitoring?
       monitoring.present?

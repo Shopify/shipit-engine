@@ -44,6 +44,10 @@ module Shipit
       }
     end
 
+    def filter_envs(env)
+      EnvironmentVariables.with(env).permit(variables)
+    end
+
     private
 
     def task_variables(config_variables)

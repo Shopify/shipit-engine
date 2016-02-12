@@ -13,7 +13,7 @@ module Shipit
     before_create :denormalize_commit_stats
     after_commit :broadcast_update
 
-    delegate :broadcast_update, to: :stack
+    delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
     def build_rollback(user = nil, env: nil)
       Rollback.new(

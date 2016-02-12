@@ -28,21 +28,7 @@
   <%= render_checklist @stack.checklist %>
 
   <%= form_for [@stack, @deploy] do |f| %>
-    <% unless @deploy.variables.empty? %>
-      <section>
-        <header class="section-header environment-variables">
-          <h2>Environment variables</h2>
-        </header>
-        <%= f.fields_for :env do |env_fields| %>
-          <% @deploy.variables.each do |variable| %>
-            <p class="environment-variable">
-              <%= env_fields.text_field variable.name, value: variable.default %>
-              <%= env_fields.label variable.name, variable.title || variable.name %>
-            </p>
-          <% end %>
-        <% end %>
-      </section>
-    <% end %>
+    <%= render partial: 'shipit/variables', locals: { variables: @deploy.variables, form: f, header: "Environment Variables", field_name: :env}  %>
 
     <%= render 'concurrent_deploy_warning' if @stack.active_task? %>
 

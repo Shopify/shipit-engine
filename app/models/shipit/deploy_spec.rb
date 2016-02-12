@@ -90,6 +90,14 @@ module Shipit
       TaskDefinition.new(id, coerce_task_definition(config('tasks', id)) || task_not_found!(id))
     end
 
+    def filter_deploy_envs(env)
+      EnvironmentVariables.with(env).permit(deploy_variables)
+    end
+
+    def filter_task_envs(id, env)
+      find_task_definition(id).filter_envs(env)
+    end
+
     def review_checklist
       (config('review', 'checklist') || discover_review_checklist || []).map(&:strip).select(&:present?)
     end

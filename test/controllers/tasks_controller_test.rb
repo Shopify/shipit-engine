@@ -39,6 +39,14 @@ module Shipit
       assert_redirected_to stack_task_path(@stack, Task.last)
     end
 
+    test "tasks with variables defined in the shipit.yml can be triggered with their variables set" do
+      env = {"FOO" => "0"}
+
+      post :create, stack_id: @stack, definition_id: @definition.id, task: {env: env}, force: 'true'
+
+      assert_redirected_to stack_tasks_path(@stack, Task.last)
+    end
+
     test "triggered tasks can be observed" do
       get :show, stack_id: @stack, id: @task.id
       assert_response :ok

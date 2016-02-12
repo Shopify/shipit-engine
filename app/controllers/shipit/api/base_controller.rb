@@ -7,6 +7,7 @@ module Shipit
       include Paginable
 
       rescue_from ApiClient::InsufficientPermission, with: :insufficient_permission
+      rescue_from EnvironmentVariables::NotPermitted, with: :validation_error
       rescue_from TaskDefinition::NotFound, with: :not_found
 
       class << self
@@ -58,6 +59,10 @@ module Shipit
 
       def insufficient_permission(error)
         render status: :forbidden, json: {message: error.message}
+      end
+
+      def validation_error(error)
+        render status: :unprocessable_entity, json: {message: error.message}
       end
 
       def not_found(_error)

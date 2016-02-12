@@ -25,7 +25,7 @@ module Shipit
       @definition = stack.find_task_definition(params[:definition_id])
 
       if @definition.allow_concurrency? || params[:force] || !@stack.active_task?
-        @task = stack.trigger_task(params[:definition_id], current_user)
+        @task = stack.trigger_task(params[:definition_id], current_user, env: task_params[:env])
         redirect_to [stack, @task]
       else
         redirect_to new_stack_tasks_path(stack, @definition)
@@ -49,6 +49,12 @@ module Shipit
 
     def stack
       @stack ||= Stack.from_param!(params[:stack_id])
+    end
+
+    def task_params
+      return {} unless params[:task]
+      @definition = stack.find_task_definition(params[:definition_id])
+      @task_params ||= params.require(:task).permit(env: @definition.variables.map(&:name))
     end
   end
 end
