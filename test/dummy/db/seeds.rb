@@ -51,6 +51,9 @@ module Shipit
               "steps": [
                 "bundle exec cap $ENVIRONMENT deploy:restart"
               ],
+              "variables": [
+                {"name": "SAFETY_DISABLED", "title": "Set to 1 to do stuff", "default": "0"}
+              ],
               "checklist": [
                 "Hold on your butts",
                 "Eat some chips"

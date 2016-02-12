@@ -249,6 +249,35 @@ module Shipit
       assert_equal ['bundle exec foo'], definition.steps
     end
 
+    test "task definitions returns an array of VariableDefinition instances" do
+      @spec.expects(:load_config).returns('tasks' =>
+        {'restart' =>
+          {
+            'variables' => [
+              {
+                'name' => 'SAFETY_DISABLED',
+                'title' => 'Set to 1 to do dangerous things',
+                'default' => 0,
+              },
+              {
+                'name' => 'FOO',
+                'title' => 'Set to 0 to foo',
+                'default' => 1,
+              },
+            ],
+            'steps' => %w(foo),
+          },
+        })
+
+      assert_equal 2, @spec.task_definitions.first.variables.size
+      variable_definition = @spec.task_definitions.first.variables.first
+      assert_equal 'SAFETY_DISABLED', variable_definition.name
+    end
+
+    test "task definitions returns an empty array by default" do
+      assert_equal [], @spec.task_definitions
+    end
+
     test "#review_checklist returns an array" do
       @spec.expects(:load_config).returns('review' => {'checklist' => %w(foo bar)})
       assert_equal %w(foo bar), @spec.review_checklist
