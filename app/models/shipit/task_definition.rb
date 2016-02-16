@@ -15,7 +15,7 @@ module Shipit
       end
     end
 
-    attr_reader :id, :action, :description, :steps, :checklist
+    attr_reader :id, :action, :description, :steps, :checklist, :variables
     alias_method :to_param, :id
 
     def initialize(id, config)
@@ -23,6 +23,7 @@ module Shipit
       @action = config['action']
       @description = config['description'] || ''
       @steps = config['steps'] || []
+      @variables = task_variables(config['variables'] || [])
       @checklist = config['checklist'] || []
       @allow_concurrency = config['allow_concurrency'] || false
     end
@@ -37,9 +38,16 @@ module Shipit
         action: action,
         description: description,
         steps: steps,
+        variables: variables.map(&:to_h),
         checklist: checklist,
         allow_concurrency: allow_concurrency?,
       }
+    end
+
+    private
+
+    def task_variables(config_variables)
+      config_variables.map(&VariableDefinition.method(:new))
     end
   end
 end
