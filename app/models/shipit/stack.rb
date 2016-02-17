@@ -280,6 +280,11 @@ module Shipit
       inaccessible_since?
     end
 
+    def reload(*)
+      clear_cache
+      super
+    end
+
     private
 
     def clear_cache
