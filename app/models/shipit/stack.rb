@@ -133,7 +133,7 @@ module Shipit
     end
 
     def last_deployable_commit
-      commits.reachable.preload(:statuses).find_each(batch_size: 10).find(&:deployable?)
+      commits.order(id: :desc).newer_than(last_deployed_commit).reachable.preload(:statuses).to_a.find(&:deployable?)
     end
 
     def filter_visible_statuses(statuses)
