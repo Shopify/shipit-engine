@@ -69,7 +69,10 @@ module Shipit
       @stack.deploys.destroy_all
 
       assert_difference "Deploy.count" do
-        @stack.commits.last.statuses.create!(state: 'success', context: 'ci/travis')
+        assert_enqueued_with(job: ContinuousDeliveryJob, args: [@stack]) do
+          @stack.commits.last.statuses.create!(state: 'success', context: 'ci/travis')
+        end
+        ContinuousDeliveryJob.new.perform(@stack)
       end
     end
 

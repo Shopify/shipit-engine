@@ -94,3 +94,6 @@ Style/TrivialAccessors:
 
 Style/ExtraSpacing:
   AllowForAlignment: false
+
+Style/GuardClause:
+  Enabled: false

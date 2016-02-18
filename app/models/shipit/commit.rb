@@ -141,10 +141,8 @@ module Shipit
     end
 
     def schedule_continuous_delivery
-      return unless state == 'success' && stack.continuous_deployment?
-      return unless stack.deployable?
-      return if already_deployed?
-      stack.trigger_deploy(self, committer)
+      return unless state == 'success' && stack.continuous_deployment? && stack.deployable?
+      ContinuousDeliveryJob.perform_later(stack)
     end
 
     def github_commit
@@ -188,6 +186,10 @@ module Shipit
       non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
     end
 
+    def deployed?
+      stack.last_deployed_commit.id >= id
+    end
+
     private
 
     def missing_statuses
@@ -196,10 +198,6 @@ module Shipit
 
     def touch_stack
       stack.touch
-    end
-
-    def already_deployed?
-      stack.last_deployed_commit.id >= id
     end
 
     def simple_state(status)

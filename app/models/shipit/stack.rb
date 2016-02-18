@@ -80,6 +80,14 @@ module Shipit
       deploy
     end
 
+    def trigger_continuous_deploy
+      return unless deployable?
+      if commit = last_deployable_commit
+        return if commit.deployed?
+        trigger_deploy(commit, commit.committer)
+      end
+    end
+
     def async_refresh_deployed_revision
       FetchDeployedRevisionJob.perform_later(self)
     end
@@ -122,6 +130,10 @@ module Shipit
       else
         commits.first
       end
+    end
+
+    def last_deployable_commit
+      commits.reachable.preload(:statuses).find_each(batch_size: 10).find(&:deployable?)
     end
 
     def filter_visible_statuses(statuses)
