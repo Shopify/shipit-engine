@@ -310,7 +310,7 @@ For example:
 review:
   checklist:
     - >
-    Do you know if it is safe to revert the code being shipped? What happens if we need to undo this deploy?
+      Do you know if it is safe to revert the code being shipped? What happens if we need to undo this deploy?
     - Has the Docs team been notified of any major changes to the app?
     - Is the app stable right now?
 ```
