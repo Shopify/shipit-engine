@@ -125,6 +125,10 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
+Aslo, if your repository is deployed different ways depending on the environment, you can have alternative `shipit.yml` by including the environment name.
+
+For example for a stack like: `my-org/my-repo/staging`, `shipit.staging.yml` will have priority over `shipit.yml`.
+
 * * *
 
 <h3 id="installing-dependencies">Installing dependencies</h3>
