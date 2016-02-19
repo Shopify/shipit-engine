@@ -1,11 +1,10 @@
 module Shipit
   class VariableDefinition
-    attr_reader :name, :title, :value, :default
+    attr_reader :name, :title, :default
 
     def initialize(attributes)
       @name = attributes.fetch('name')
       @title = attributes['title']
-      @value = attributes['value']
       @default = attributes['default']
     end
 
@@ -13,7 +12,6 @@ module Shipit
       {
         'name' => @name,
         'title' => @title,
-        'value' => @value,
         'default' => @default,
       }
     end
