@@ -18,6 +18,8 @@ module Shipit
         path =~ /\Aplugins\/[\-\w]+\.(js|css)\Z/
       end
 
+      ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found
+
       ActiveModel::Serializer._root = false
       ActiveModel::ArraySerializer._root = false
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
