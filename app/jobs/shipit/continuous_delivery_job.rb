@@ -5,6 +5,7 @@ module Shipit
     queue_as :default
 
     def perform(stack)
+      return unless stack.continuous_deployment?
       stack.trigger_continuous_deploy
     end
   end

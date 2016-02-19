@@ -135,11 +135,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless stack.continuous_deployment?
-
-      to_deploy = stack.commits.order(:id).newer_than(until_commit).successful.last
-      return unless to_deploy
-
-      stack.trigger_deploy(to_deploy, to_deploy.committer)
+      ContinuousDeliveryJob.perform_later(stack)
     end
 
     def last_successful_deploy

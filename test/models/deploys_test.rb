@@ -148,10 +148,14 @@ module Shipit
       shipit_commits(:fifth).statuses.create!(state: 'success')
 
       deploy = shipit_deploys(:shipit_running)
+      deploy.stack.tasks.where.not(id: deploy.id).update_all(status: 'success')
       deploy.stack.update(continuous_deployment: true)
 
       assert_difference "Deploy.count" do
-        deploy.complete!
+        assert_enqueued_with(job: ContinuousDeliveryJob, args: [deploy.stack]) do
+          deploy.complete!
+        end
+        ContinuousDeliveryJob.new.perform(deploy.stack)
       end
     end
 
