@@ -1,0 +1,15 @@
+<% unless variables.empty? %>
+  <section>
+    <header class="section-header variables-header">
+      <h2><%= header %></h2>
+    </header>
+    <%= form.fields_for field_name do |field| %>
+      <% variables.each do |variable| %>
+        <p class="variables-fields">
+          <%= field.text_field variable.name, value: variable.default %>
+          <%= field.label variable.name, variable.title || variable.name %>
+        </p>
+      <% end %>
+    <% end %>
+  </section>
+<% end %>

@@ -9,11 +9,12 @@
   display: flex;
 }
 
-.environment-variables {
+.variables-header {
   margin: 1rem 0;
+  padding-top: 1rem;
 }
 
-.environment-variable {
+.variables-fields {
   input {
     display: inline-block;
     width: inherit;

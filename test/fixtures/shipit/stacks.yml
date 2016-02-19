@@ -23,6 +23,10 @@ shipit:
         "restart": {
           "action": "Restart application",
           "description": "Restart app and job servers",
+          "variables": [
+            {"name": "FOO", "title": "Set to 0 to foo", "default": 1},
+            {"name": "BAR", "title": "Set to 1 to bar", "default": 0}
+          ],
           "steps": [
             "cap $ENVIRONMENT deploy:restart"
           ]

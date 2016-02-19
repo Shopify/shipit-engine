@@ -31,6 +31,21 @@ module Shipit
         assert_json 'status', 'pending'
       end
 
+      test "#trigger refuses to trigger a task with tasks not whitelisted" do
+        env = {'DANGEROUS_VARIABLE' => 'bar'}
+        post :trigger, stack_id: @stack.to_param, task_name: 'restart', env: env
+        assert_response :unprocessable_entity
+        assert_json 'message', 'Variables DANGEROUS_VARIABLE have not been whitelisted'
+      end
+
+      test "#trigger triggers a task with only whitelisted env variables" do
+        env = {'FOO' => 'bar'}
+        post :trigger, stack_id: @stack.to_param, task_name: 'restart', env: env
+        assert_response :accepted
+        assert_json 'type', 'task'
+        assert_json 'status', 'pending'
+      end
+
       test "#trigger returns a 404 when the task doesn't exist" do
         post :trigger, stack_id: @stack.to_param, task_name: 'doesnt_exist'
         assert_response :not_found

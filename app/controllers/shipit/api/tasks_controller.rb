@@ -12,8 +12,11 @@ module Shipit
         render_resource stack.tasks.find(params[:id])
       end
 
+      params do
+        accepts :env, Hash, default: {}
+      end
       def trigger
-        render_resource stack.trigger_task(params[:task_name], current_user), status: :accepted
+        render_resource stack.trigger_task(params[:task_name], current_user, env: params.env), status: :accepted
       end
     end
   end
