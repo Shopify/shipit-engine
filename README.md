@@ -183,6 +183,22 @@ deploy:
 ```
 <br>
 
+You can also accept custom environment variables defined by the user that trigger the deploy:
+
+**<code>deploy.variables</code>** contains an array of variable definitions.
+
+For example:
+
+```yaml
+deploy:
+  variables:
+    -
+      name: RUN_MIGRATIONS
+      title: Run database migrations on deploy
+      default: 1
+```
+<br>
+
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to disabled unless Capistrano is detected.
 
 For example:
@@ -266,6 +282,21 @@ tasks:
     allow_concurrency: true
 ```
 
+Tasks like deploys can prompt for user defined environment variables:
+
+```yml
+tasks:
+  restart:
+    action: "Restart Application"
+    description: "Sometimes needed if you the application to restart but don't want to ship any new code."
+    steps:
+      - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
+    variables:
+      -
+        name: FORCE
+        title: Restart server without waiting for in-flight requests to complete (Dangerous).
+        default: 0
+```
 
 <h3 id="review-process">Review process</h3>
 

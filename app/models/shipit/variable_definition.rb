@@ -5,7 +5,7 @@ module Shipit
     def initialize(attributes)
       @name = attributes.fetch('name')
       @title = attributes['title']
-      @default = attributes['default']
+      @default = attributes['default'].to_s
     end
 
     def to_h
