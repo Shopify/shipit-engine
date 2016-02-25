@@ -428,7 +428,8 @@ Your deploy scripts have access to the following environment variables:
 * `SHIPIT_LINK`: URL to the task output, usefull to broadcast it in an IRC channel
 * `USER`: Full name of the user that triggered the deploy/task
 * `EMAIL`: Email of the user that triggered the deploy/task (if available)
-* `ENVIRONMENT`: The stack environment (e.g production / staging)
+* `ENVIRONMENT`: The stack environment (e.g `production` / `staging`)
+* `BRANCH`: The stack branch (e.g `master`)
 * `LAST_DEPLOYED_SHA`: The git SHA of the last deployed commit
 * All the content of the `secrets.yml` `env` key
 * All the content of the `shipit.yml` `machine.environment` key
