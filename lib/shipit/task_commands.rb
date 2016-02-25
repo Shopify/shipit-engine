@@ -31,6 +31,7 @@ module Shipit
       normalized_name = ActiveSupport::Inflector.transliterate(@task.author.name)
       super.merge(
         'ENVIRONMENT' => @stack.environment,
+        'BRANCH' => @stack.branch,
         'USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
         'EMAIL' => @task.author.email,
         'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
