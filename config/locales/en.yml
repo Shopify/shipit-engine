@@ -52,3 +52,14 @@ en:
     messages:
       subset: "is not a strict subset of %{of}"
       ascii: "contains non-ASCII characters"
+  deployment_description:
+    deploy:
+      pending: "%{author} triggered the deploy of %{stack} to %{sha}"
+      success: "%{author} deployed %{stack} to %{sha}"
+      failure: "Deploy of %{stack} to %{sha} by %{author} failed"
+      error: "Deploy of %{stack} to %{sha} by %{author} failed"
+    rollback:
+      pending: "%{author} triggered the rollback of %{stack} to %{sha}"
+      success: "%{author} rolled back %{stack} to %{sha}"
+      failure: "Rollback of %{stack} to %{sha} by %{author} failed"
+      error: "Rollback of %{stack} to %{sha} by %{author} failed"

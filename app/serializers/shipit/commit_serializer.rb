@@ -14,7 +14,7 @@ module Shipit
 
     def pull_request
       {
-        number: object.pull_request_id,
+        number: object.pull_request_number,
         html_url: github_pull_request_url(object),
       }
     end

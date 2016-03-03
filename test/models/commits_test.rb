@@ -20,9 +20,9 @@ module Shipit
       assert_equal "Bump to v1.0.1", @pr.pull_request_title
     end
 
-    test "#pull_request_id extract the pull request id from the message" do
-      assert_equal 31, @pr.pull_request_id
-      assert_nil @commit.pull_request_id
+    test "#pull_request_number extract the pull request id from the message" do
+      assert_equal 31, @pr.pull_request_number
+      assert_nil @commit.pull_request_number
     end
 
     test "#pull_request_title extract the pull request title from the message" do

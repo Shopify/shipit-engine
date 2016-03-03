@@ -117,10 +117,10 @@ module Shipit
     end
 
     def pull_request_url
-      parsed && Shipit.github_url("/#{stack.repo_owner}/#{stack.repo_name}/pull/#{pull_request_id}")
+      parsed && Shipit.github_url("/#{stack.repo_owner}/#{stack.repo_name}/pull/#{pull_request_number}")
     end
 
-    def pull_request_id
+    def pull_request_number
       parsed && parsed['pr_id'].to_i
     end
 

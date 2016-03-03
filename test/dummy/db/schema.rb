@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210185944) do
+ActiveRecord::Schema.define(version: 20160303183749) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -23,6 +23,29 @@ ActiveRecord::Schema.define(version: 20160210185944) do
   end
 
   add_index "api_clients", ["creator_id"], name: "index_api_clients_on_creator_id"
+
+  create_table "commit_deployment_statuses", force: :cascade do |t|
+    t.integer  "commit_deployment_id"
+    t.string   "status"
+    t.integer  "github_id"
+    t.string   "api_url"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "commit_deployment_statuses", ["commit_deployment_id"], name: "index_commit_deployment_statuses_on_commit_deployment_id"
+
+  create_table "commit_deployments", force: :cascade do |t|
+    t.integer  "commit_id"
+    t.integer  "task_id"
+    t.integer  "github_id"
+    t.string   "api_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "commit_deployments", ["commit_id", "task_id"], name: "index_commit_deployments_on_commit_id_and_task_id", unique: true
+  add_index "commit_deployments", ["task_id"], name: "index_commit_deployments_on_task_id"
 
   create_table "commits", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4,                     null: false

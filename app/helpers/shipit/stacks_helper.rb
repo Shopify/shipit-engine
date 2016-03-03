@@ -53,7 +53,7 @@ module Shipit
     end
 
     def pull_request_link(commit)
-      link_to("##{commit.pull_request_id}", commit.pull_request_url, target: '_blank', class: 'number')
+      link_to("##{commit.pull_request_number}", commit.pull_request_url, target: '_blank', class: 'number')
     end
 
     def render_raw_commit_id_link(commit)
