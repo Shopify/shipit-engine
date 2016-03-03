@@ -1,5 +1,7 @@
 module Shipit
   module GithubUrlHelper
+    private
+
     def github_avatar(user, options = {})
       uri = user.avatar_uri
       attributes = options.slice(:class).merge(alt: user.try!(:name))
@@ -35,8 +37,8 @@ module Shipit
       github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'commit', commit.sha)
     end
 
-    def github_diff_url(owner, repo, from_sha, to_sha)
-      github_repo_url(owner, repo, 'compare', "#{from_sha}...#{to_sha}")
+    def github_pull_request_url(commit)
+      github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'pull', commit.pull_request_id)
     end
 
     def link_to_github_deploy(deploy)

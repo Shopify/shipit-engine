@@ -3,7 +3,7 @@ module Shipit
     attributes :sha, :message
 
     def message
-      object.pull_request? ? "#{object.pull_request_title} (##{object.pull_request_id})" : object.message
+      object.pull_request? ? object.pull_request_title : object.message
     end
   end
 end

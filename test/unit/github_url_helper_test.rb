@@ -16,13 +16,5 @@ module Shipit
       expected = 'https://github.com/shopify/shipit-engine/commit/6d9278037b872fd9a6690523e411ecb3aa181355'
       assert_equal expected, github_commit_url(shipit_commits(:first))
     end
-
-    test "#github_diff_url returns a diff url" do
-      from_sha = SecureRandom.hex
-      to_sha = SecureRandom.hex
-      expected = "https://github.com/rails/rails/compare/#{from_sha}...#{to_sha}"
-
-      assert_equal expected, github_diff_url("rails", "rails", from_sha, to_sha)
-    end
   end
 end
