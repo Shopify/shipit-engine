@@ -32,6 +32,15 @@ module Shipit
       assert_not_equal stack_last_updated_at, @stack.reload.updated_at
     end
 
+    test ".simple_state returns failure when status is error" do
+      assert_equal 'failure', Status.new(state: 'error').simple_state
+    end
+
+    test ".simple_state returns status when status is not error" do
+      assert_equal 'success', Status.new(state: 'success').simple_state
+      assert_equal 'failure', Status.new(state: 'failure').simple_state
+    end
+
     private
 
     def github_status
