@@ -31,7 +31,7 @@ module Shipit
             :github,
             Shipit.github_oauth_id,
             Shipit.github_oauth_secret,
-            scope: 'email',
+            scope: 'email,repo_deployment',
             client_options: Shipit.github_oauth_options,
           )
         end

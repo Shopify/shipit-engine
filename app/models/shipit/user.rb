@@ -8,6 +8,8 @@ module Shipit
     has_many :commits, foreign_key: :committer_id, inverse_of: :committer
     has_many :tasks
 
+    attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
+
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
         user.github_user = Shipit.github_api.user(login)
@@ -60,8 +62,8 @@ module Shipit
         name: github_user.name || github_user.login, # Name is not mandatory on GitHub
         email: github_user.email,
         login: github_user.login,
-        avatar_url: github_user.rels[:avatar].try(:href),
-        api_url: github_user.rels[:self].try(:href),
+        avatar_url: github_user.avatar_url,
+        api_url: github_user.url,
       )
     end
 

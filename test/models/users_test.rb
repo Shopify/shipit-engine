@@ -4,8 +4,14 @@ module Shipit
   class UsersTest < ActiveSupport::TestCase
     setup do
       @user = shipit_users(:walrus)
-      rels = {self: stub(href: 'https://api.github.com/user/george')}
-      @github_user = stub(id: 42, name: 'George Abitbol', login: 'george', email: 'george@cyclim.se', rels: rels)
+      @github_user = stub(
+        id: 42,
+        name: 'George Abitbol',
+        login: 'george',
+        email: 'george@cyclim.se',
+        avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
+        url: 'https://api.github.com/user/george',
+      )
     end
 
     test "find_or_create_from_github persist a new user if he is unknown" do

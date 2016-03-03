@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303183749) do
+ActiveRecord::Schema.define(version: 20160303203940) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -203,14 +203,16 @@ ActiveRecord::Schema.define(version: 20160303183749) do
   add_index "teams", ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true
 
   create_table "users", force: :cascade do |t|
-    t.integer  "github_id",  limit: 4
-    t.string   "name",       limit: 255, null: false
-    t.string   "email",      limit: 255
-    t.string   "login",      limit: 39
-    t.string   "api_url",    limit: 255
+    t.integer  "github_id",                        limit: 4
+    t.string   "name",                             limit: 255, null: false
+    t.string   "email",                            limit: 255
+    t.string   "login",                            limit: 39
+    t.string   "api_url",                          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "avatar_url", limit: 255
+    t.string   "avatar_url",                       limit: 255
+    t.string   "encrypted_github_access_token"
+    t.string   "encrypted_github_access_token_iv"
   end
 
   add_index "users", ["login"], name: "index_users_on_login"
