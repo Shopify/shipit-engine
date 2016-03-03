@@ -7,4 +7,5 @@ set -x
 cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
 bundle install
 rm -rf test/dummy/db/migrate/*.rb
-bundle exec rake db:create db:schema:load db:migrate db:seed
+bundle exec rake db:drop db:create db:schema:load db:migrate db:seed
+bundle exec rake db:drop db:create db:schema:load RAILS_ENV=test
