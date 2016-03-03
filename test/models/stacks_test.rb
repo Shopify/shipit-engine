@@ -373,14 +373,6 @@ module Shipit
       assert_equal 'success', @stack.merge_status
     end
 
-    test "#merge_status returns state of last deployed commit if there are no undeployed commits" do
-      last_commit = shipit_commits(:fifth)
-      last_commit.statuses.create!(state: 'failure', context: 'ci/valid')
-
-      @stack.expects(:last_deployed_commit).returns(last_commit)
-      assert_equal 'failure', @stack.merge_status
-    end
-
     test "#merge_status returns pending if all commits have pending state" do
       @stack.commits.each { |commit| commit.destroy if commit.statuses.empty? }
       Status.update_all(state: 'pending')

@@ -121,11 +121,8 @@ module Shipit
       if locked?
         'locked'
       else
-        significant_commits = commits.reachable.where('id >= ?', last_deployed_commit).order(id: :desc)
-        significant_statuses = significant_commits.map(&:significant_status)
-        return 'pending' if significant_statuses.empty? || significant_statuses.all?(&:pending?)
-
-        significant_commits.map(&:significant_status).detect { |status| !status.pending? }.simple_state
+        significant_commits = commits.reachable.newer_than(last_deployed_commit).order(id: :desc)
+        significant_commits.map(&:significant_status).find { |s| !s.pending? }.try!(:simple_state) || 'pending'
       end
     end
 
@@ -263,7 +260,7 @@ module Shipit
 
     def update_undeployed_commits_count(after_commit = nil)
       after_commit ||= last_deployed_commit
-      undeployed_commits = commits.reachable.select('count(*) as count').where('id > ?', after_commit.id)
+      undeployed_commits = commits.reachable.newer_than(after_commit).select('count(*) as count')
       self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
     end
 
