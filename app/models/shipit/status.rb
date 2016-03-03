@@ -27,6 +27,10 @@ module Shipit
       false
     end
 
+    def simple_state
+      state == 'error' ? 'failure' : state
+    end
+
     private
 
     def enable_ci_on_stack
