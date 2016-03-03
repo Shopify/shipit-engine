@@ -171,8 +171,14 @@ module Shipit
     end
 
     def george
-      rels = {self: stub(href: 'https://api.github.com/user/george')}
-      stub(id: 42, name: 'George Abitbol', login: 'george', email: 'george@cyclim.se', rels: rels)
+      stub(
+        id: 42,
+        name: 'George Abitbol',
+        login: 'george',
+        email: 'george@cyclim.se',
+        avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
+        url: 'https://api.github.com/user/george',
+      )
     end
   end
 end

@@ -4,6 +4,7 @@ require 'state_machines-activerecord'
 require 'validate_url'
 require 'responders'
 require 'explicit-parameters'
+require 'attr_encrypted'
 
 require 'sass-rails'
 require 'coffee-rails'
@@ -97,7 +98,11 @@ module Shipit
   end
 
   def api_clients_secret
-    secrets.api_clients_secret || ''
+    secrets.api_clients_secret.presence || secrets.secret_key_base
+  end
+
+  def user_access_tokens_key
+    secrets.user_access_tokens_key.presence || secrets.secret_key_base
   end
 
   def host

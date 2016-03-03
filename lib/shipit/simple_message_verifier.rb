@@ -2,7 +2,6 @@ module Shipit
   class SimpleMessageVerifier < ActiveSupport::MessageVerifier
     def initialize(secret, options = {})
       options[:serializer] ||= ToS
-      secret += Rails.application.secrets.secret_key_base
       super(secret, options)
     end
 

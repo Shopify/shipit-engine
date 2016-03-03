@@ -9,6 +9,7 @@ module Shipit
       return render 'failed', layout: false if auth.blank?
 
       session[:user_id] = sign_in_github(auth)
+
       redirect_to return_url
     end
 
@@ -20,8 +21,9 @@ module Shipit
     private
 
     def sign_in_github(auth)
-      user = Shipit.github_api.user(auth[:info][:nickname])
-      User.find_or_create_from_github(user).id
+      user = User.find_or_create_from_github(auth.extra.raw_info)
+      user.update(github_access_token: auth.credentials.token)
+      user.id
     end
   end
 end
