@@ -1,0 +1,19 @@
+shipit_deploy_second_pending:
+  commit_deployment: shipit_deploy_second
+  status: pending
+  github_id: 42
+  api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/1/statuses/42
+
+shipit_deploy_second_success:
+  commit_deployment: shipit_deploy_second
+  status: success
+  github_id: 43
+  api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/1/statuses/43
+
+shipit2_deploy_third_pending:
+  commit_deployment: shipit2_deploy_third
+  status: pending
+
+shipit2_deploy_third_failure:
+  commit_deployment: shipit2_deploy_third
+  status: failure

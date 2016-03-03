@@ -8,9 +8,29 @@ module Shipit
       after_transition to: :success, do: :schedule_continuous_delivery
       after_transition to: :success, do: :update_undeployed_commits_count
       after_transition to: :aborted, do: :trigger_revert_if_required
+      after_transition any => any, do: :update_commit_deployments
+    end
+
+    has_many :commit_deployments, inverse_of: :task, foreign_key: :task_id do
+      GITHUB_STATUSES = {
+        'pending' => 'pending',
+        'failed' => 'failed',
+        'success' => 'success',
+        'error' => 'error',
+        'aborted' => 'error',
+      }
+
+      def append_status(task_status)
+        if github_status = GITHUB_STATUSES[task_status]
+          each do |deployment|
+            deployment.statuses.create!(status: github_status)
+          end
+        end
+      end
     end
 
     before_create :denormalize_commit_stats
+    after_create :create_commit_deployments
     after_commit :broadcast_update
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
@@ -116,6 +136,16 @@ module Shipit
     end
 
     private
+
+    def create_commit_deployments
+      commits.each do |commit|
+        commit_deployments.create!(commit: commit)
+      end
+    end
+
+    def update_commit_deployments
+      commit_deployments.append_status(status)
+    end
 
     def trigger_revert_if_required
       return unless rollback_once_aborted?

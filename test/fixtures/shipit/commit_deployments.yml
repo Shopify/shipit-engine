@@ -1,0 +1,37 @@
+shipit_deploy_second:
+  commit_id: 2 # second
+  task: shipit
+  api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/1
+  github_id: 1
+
+shipit2_deploy_third:
+  commit_id: 3 # third
+  task: shipit2
+  api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/2
+  github_id: 2
+
+shipit_pending_third:
+  commit_id: 3 # third
+  task: shipit_pending
+  api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/3
+  github_id: 3
+
+shipit_pending_fourth:
+  commit_id: 4 # fourth
+  task: shipit_pending
+
+shipit_running_fourth:
+  commit_id: 4 # fourth
+  task: shipit_running
+
+shipit_complete_fourth:
+  commit_id: 4 # fourth
+  task: shipit_complete
+
+shipit_aborted_fourth:
+  commit_id: 4 # fourth
+  task: shipit_aborted
+
+shipit_rollback_fourth:
+  commit_id: 4 # fourth
+  task: shipit_rollback

@@ -38,7 +38,7 @@ module Shipit
     end
 
     def github_pull_request_url(commit)
-      github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'pull', commit.pull_request_id)
+      github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'pull', commit.pull_request_number)
     end
 
     def link_to_github_deploy(deploy)

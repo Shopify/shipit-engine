@@ -211,6 +211,18 @@ module Shipit
       end
     end
 
+    test "creating a deploy creates one CommitDeployment per commit" do
+      shipit = shipit_stacks(:shipit)
+      deploy = shipit.deploys.build(
+        since_commit: shipit.commits.first,
+        until_commit: shipit.commits.last,
+      )
+
+      assert_difference -> { CommitDeployment.count }, deploy.commits.size do
+        deploy.save!
+      end
+    end
+
     test "#build_rollback returns an unsaved record" do
       assert @deploy.build_rollback.new_record?
     end
