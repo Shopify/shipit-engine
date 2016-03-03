@@ -32,6 +32,7 @@ module Shipit
     after_commit :emit_updated_hooks, on: :update
     after_commit :emit_removed_hooks, on: :destroy
     after_commit :broadcast_update, on: :update
+    after_commit :emit_merge_status_hooks, on: :update
     after_commit :setup_hooks, :sync_github, on: :create
     after_touch :clear_cache
 
@@ -114,6 +115,18 @@ module Shipit
 
     def head
       commits.reachable.first.try!(:sha)
+    end
+
+    def merge_status
+      if locked?
+        'locked'
+      else
+        significant_commits = commits.reachable.where('id >= ?', last_deployed_commit).order(id: :desc)
+        significant_statuses = significant_commits.map(&:significant_status)
+        return 'pending' if significant_statuses.empty? || significant_statuses.all?(&:pending?)
+
+        significant_commits.map(&:significant_status).detect { |status| !status.pending? }
+      end
     end
 
     def status
@@ -333,6 +346,10 @@ module Shipit
 
     def emit_removed_hooks
       Hook.emit(:stack, self, action: :removed, stack: self)
+    end
+
+    def emit_merge_status_hooks
+      Hook.emit(:merge_status, self, merge_status: merge_status, stack: self)
     end
 
     def ci_enabled_cache_key
