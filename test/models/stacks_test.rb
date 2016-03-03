@@ -360,5 +360,31 @@ module Shipit
         @stack.update(updated_at: Time.zone.now)
       end
     end
+
+    test "#merge_status returns locked if stack is locked" do
+      @stack.update!(lock_reason: 'Maintenance operation')
+      assert_equal 'locked', @stack.merge_status
+    end
+
+    test "#merge_status returns state of last non pending undeployed commit" do
+      shipit_commits(:fifth).statuses.create!(state: 'pending', context: 'ci/valid')
+      shipit_commits(:fourth).statuses.update_all(state: 'success')
+
+      assert_equal 'success', @stack.merge_status
+    end
+
+    test "#merge_status returns state of last deployed commit if there are no undeployed commits" do
+      last_commit = shipit_commits(:fifth)
+      last_commit.statuses.create!(state: 'failure', context: 'ci/valid')
+
+      @stack.expects(:last_deployed_commit).returns(last_commit)
+      assert_equal 'failure', @stack.merge_status
+    end
+
+    test "#merge_status returns pending if all commits have pending state" do
+      @stack.commits.each { |commit| commit.destroy if commit.statuses.empty? }
+      Status.update_all(state: 'pending')
+      assert_equal 'pending', @stack.merge_status
+    end
   end
 end

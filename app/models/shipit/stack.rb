@@ -125,7 +125,7 @@ module Shipit
         significant_statuses = significant_commits.map(&:significant_status)
         return 'pending' if significant_statuses.empty? || significant_statuses.all?(&:pending?)
 
-        significant_commits.map(&:significant_status).detect { |status| !status.pending? }
+        significant_commits.map(&:significant_status).detect { |status| !status.pending? }.simple_state
       end
     end
 
