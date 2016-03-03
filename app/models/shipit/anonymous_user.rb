@@ -39,5 +39,9 @@ module Shipit
     def read_attribute_for_serialization(attr)
       public_send(attr)
     end
+
+    def github_api
+      Shipit.github_api
+    end
   end
 end

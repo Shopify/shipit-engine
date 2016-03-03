@@ -7,6 +7,7 @@ module Shipit
       @commit = @deployment.commit
       @task = @deployment.task
       @stack = @task.stack
+      @author = @deployment.author
     end
 
     test "there can only be one record per deploy and commit pair" do
@@ -17,10 +18,10 @@ module Shipit
 
     test "creation on GitHub" do
       pull_request_response = stub(head: stub(sha: '6dcb09b5b57875f334f61aebed695e2e4193db5e'))
-      Shipit.github_api.expects(:pull_request).with('shopify/shipit-engine', 7).returns(pull_request_response)
+      @author.github_api.expects(:pull_request).with('shopify/shipit-engine', 7).returns(pull_request_response)
 
       deployment_response = stub(id: 42, url: 'https://example.com')
-      Shipit.github_api.expects(:create_deployment).with(
+      @author.github_api.expects(:create_deployment).with(
         'shopify/shipit-engine',
         pull_request_response.head.sha,
         auto_merge: false,

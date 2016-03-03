@@ -35,6 +35,22 @@ module Shipit
       end
     end
 
+    def github_api
+      return Shipit.github_api unless github_access_token
+
+      @github_api ||= begin
+        client = Octokit::Client.new(access_token: github_access_token)
+        client.middleware.use(
+          Faraday::HttpCache,
+          shared_cache: false,
+          store: Rails.cache,
+          logger: Rails.logger,
+          serializer: NullSerializer,
+        )
+        client
+      end
+    end
+
     def identifiers_for_ping
       {github_id: github_id, name: name, email: email, github_login: login}
     end
