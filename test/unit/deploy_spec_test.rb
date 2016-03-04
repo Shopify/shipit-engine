@@ -319,7 +319,7 @@ module Shipit
 
     test "#file is impacted by `machine.directory`" do
       subdir = '/foo/bar'
-      @spec.stubs(:load_config).returns({'machine' => {'directory' => subdir}})
+      @spec.stubs(:load_config).returns('machine' => {'directory' => subdir})
       assert_instance_of Pathname, @spec.file('baz')
       assert_equal File.join(@app_dir, subdir, 'baz'), @spec.file('baz').to_s
     end

@@ -58,7 +58,7 @@ module Shipit
 
       def load_config
         read_config(file("shipit.#{@env}.yml", root: true)) ||
-        read_config(file('shipit.yml', root: true))
+          read_config(file('shipit.yml', root: true))
       end
 
       def read_config(path)
