@@ -11,7 +11,7 @@
           <%= Shipit.github_url %>
           <%= f.text_field :repo_owner, placeholder: 'e.g. Shopify', required: true, class: "repo" %>
           /
-          <%= f.text_field :repo_name, required: true, pattern: "^[a-z0-9\-_\.]+$", class: "repo" %>
+          <%= f.text_field :repo_name, required: true, pattern: "^[a-zA-Z0-9\-_\.]+$", class: "repo" %>
         </p>
         <p>
           <%= f.label :branch %>

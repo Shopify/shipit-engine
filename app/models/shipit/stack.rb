@@ -150,11 +150,11 @@ module Shipit
     end
 
     def repo_name=(name)
-      super(name.try(:downcase))
+      super(name.try!(:downcase))
     end
 
     def repo_owner=(name)
-      super(name.try(:downcase))
+      super(name.try!(:downcase))
     end
 
     def repo_http_url
