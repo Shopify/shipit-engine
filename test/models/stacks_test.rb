@@ -366,11 +366,28 @@ module Shipit
       assert_equal 'locked', @stack.merge_status
     end
 
-    test "#merge_status returns state of last non pending undeployed commit" do
-      shipit_commits(:fifth).statuses.create!(state: 'pending', context: 'ci/valid')
-      shipit_commits(:fourth).statuses.update_all(state: 'success')
+    test "#merge_status returns state of last finalized undeployed commit" do
+      @stack.deploys_and_rollbacks.destroy_all
+      shipit_commits(:fifth).statuses.destroy_all
+      shipit_commits(:fourth).statuses.update_all(state: 'pending')
+      shipit_commits(:third).statuses.update_all(state: 'success')
+      shipit_commits(:second).statuses.update_all(state: 'failure')
 
       assert_equal 'success', @stack.merge_status
+    end
+
+    test "#merge_status returns pending if all undeployed commits are in pending or unknown state" do
+      shipit_commits(:fifth).statuses.destroy_all
+      shipit_commits(:fourth).statuses.update_all(state: 'pending')
+      @stack.expects(:last_deployed_commit).returns(shipit_commits(:third))
+
+      assert_equal 'pending', @stack.merge_status
+    end
+
+    test "#merge_status returns pending if there are no undeployed commits" do
+      @stack.expects(:last_deployed_commit).returns(shipit_commits(:fifth))
+
+      assert_equal 'pending', @stack.merge_status
     end
 
     test "#merge_status returns pending if all commits have pending state" do

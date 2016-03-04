@@ -121,14 +121,19 @@ module Shipit
       if locked?
         'locked'
       else
-        significant_commits = commits.reachable.newer_than(last_deployed_commit).order(id: :desc)
-        significant_commits.map(&:significant_status).find { |s| !s.pending? }.try!(:simple_state) || 'pending'
+        significant_statuses = undeployed_commits.map(&:significant_status)
+        last_finalized_status = significant_statuses.reject { |s| %w(pending unknown).include?(s.state) }.first
+        last_finalized_status.try!(:simple_state) || 'pending'
       end
     end
 
     def status
       return :deploying if active_task?
       :default
+    end
+
+    def undeployed_commits
+      commits.reachable.newer_than(last_deployed_commit).order(id: :desc)
     end
 
     def last_successful_deploy
