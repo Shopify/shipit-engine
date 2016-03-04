@@ -48,6 +48,7 @@ module Shipit
         stack.github_repo_name,
         pull_request_head,
         auto_merge: false,
+        required_contexts: [],
         description: "Via Shipit",
         environment: stack.environment,
       )

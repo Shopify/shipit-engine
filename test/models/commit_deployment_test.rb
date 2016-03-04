@@ -25,6 +25,7 @@ module Shipit
         'shopify/shipit-engine',
         pull_request_response.head.sha,
         auto_merge: false,
+        required_contexts: [],
         description: "Via Shipit",
         environment: @stack.environment,
       ).returns(deployment_response)
