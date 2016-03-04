@@ -7,7 +7,7 @@
       <strong class="status-item__service"><%= group.description %></strong>
     </div>
     <% group.statuses.each do |status| %>
-      <div class="status-item status-item--<%= status.state %>">
+      <div class="status-item status-item--<%= status.state %> <%= :ignored if status.ignored? %>">
         <i class="status-item__icon"></i>
         <a href="<%= status.target_url %>" target="_blank">
           <strong class="status-item__service"><%= status.context %></strong>

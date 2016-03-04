@@ -132,6 +132,9 @@
 
 .status-group {
   position: relative; // Required to position the status-items div correctly
+  .status-item.ignored {
+    opacity: .5;
+  }
 }
 
 .status {

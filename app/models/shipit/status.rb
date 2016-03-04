@@ -23,6 +23,12 @@ module Shipit
       )
     end
 
+    delegate :stack, to: :commit
+
+    def ignored?
+      stack.soft_failing_statuses.include?(context)
+    end
+
     def group?
       false
     end
