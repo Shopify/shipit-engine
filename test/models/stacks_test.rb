@@ -19,6 +19,22 @@ module Shipit
       refute_predicate @stack, :valid?
     end
 
+    test "repo_owner and repo_name are case insensitive" do
+      assert_no_difference -> { Stack.count } do
+        error = assert_raises ActiveRecord::RecordInvalid do
+          Stack.create!(
+            repo_owner: @stack.repo_owner.upcase,
+            repo_name: @stack.repo_name.upcase,
+            environment: @stack.environment,
+          )
+        end
+        assert_equal 'Validation failed: Repo name has already been taken', error.message
+      end
+
+      new_stack = Stack.create!(repo_owner: 'FOO', repo_name: 'BAR')
+      assert_equal new_stack, Stack.find_by(repo_owner: 'foo', repo_name: 'bar')
+    end
+
     test "repo_owner is automatically downcased" do
       @stack.repo_owner = 'George'
       assert_equal 'george', @stack.repo_owner
