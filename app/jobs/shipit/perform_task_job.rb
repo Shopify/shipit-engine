@@ -11,7 +11,7 @@ module Shipit
       end
       run
     ensure
-      @task.clear_working_directory
+      @commands.clear_working_directory
     end
 
     def run

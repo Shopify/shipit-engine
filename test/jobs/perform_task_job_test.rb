@@ -19,7 +19,7 @@ module Shipit
       @commands.expects(:install_dependencies).returns([]).once
       @commands.expects(:perform).returns([]).once
 
-      @deploy.expects(:clear_working_directory)
+      @commands.expects(:clear_working_directory)
 
       @job.perform(@deploy)
     end
@@ -83,7 +83,7 @@ module Shipit
       @commands.stubs(:install_dependencies).returns([])
       @commands.stubs(:perform).returns([])
       DeployCommands.expects(:new).with(@deploy).returns(@commands)
-      @deploy.stubs(:clear_working_directory)
+      @commands.stubs(:clear_working_directory)
 
       @stack.update!(cached_deploy_spec: DeploySpec.new({}))
 

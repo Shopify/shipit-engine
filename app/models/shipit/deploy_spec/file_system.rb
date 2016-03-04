@@ -32,7 +32,11 @@ module Shipit
             'allow_failures' => soft_failing_statuses,
             'require' => required_statuses,
           },
-          'machine' => {'environment' => machine_env, 'directory' => directory},
+          'machine' => {
+            'environment' => machine_env,
+            'directory' => directory,
+            'cleanup' => true,
+          },
           'review' => {
             'checklist' => review_checklist,
             'monitoring' => review_monitoring,

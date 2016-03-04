@@ -118,7 +118,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 
 * [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
-* [Environment](#environment) (`machine.environment`, `machine.directory`)
+* [Environment](#environment) (`machine.environment`, `machine.directory`, `machine.cleanup`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
@@ -240,6 +240,16 @@ For example:
 ```yml
 machine:
   directory: scripts/deploy/
+```
+
+<h3 id="cleanup">Cleanup</h3>
+
+**<code>machine.cleanup</code>** specify wether or not the deploy working directory should cleaned up once the deploy completed. Defaults to `true`, but can be useful to disable temporarily to investigate bugs.
+
+For example:
+```yml
+machine:
+  cleanup: false
 ```
 
 <h3 id="ci">CI</h3>

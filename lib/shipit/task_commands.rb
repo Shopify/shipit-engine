@@ -52,6 +52,10 @@ module Shipit
       @stack_commands = StackCommands.new(@stack)
     end
 
+    def clear_working_directory
+      FileUtils.rm_rf(@task.working_directory) if deploy_spec.clear_working_directory?
+    end
+
     protected
 
     def steps_directory

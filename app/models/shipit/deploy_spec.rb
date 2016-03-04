@@ -30,7 +30,13 @@ module Shipit
     end
 
     def config(*keys)
-      keys.flatten.reduce(@config) { |h, k| h[k] if h.respond_to?(:[]) }
+      keys.flatten.reduce(@config) do |hash, key|
+        if hash.respond_to?(:[])
+          hash[key]
+        else
+          return block_given? ? yield : nil
+        end
+      end
     end
 
     def supports_fetch_deployed_revision?
@@ -124,6 +130,10 @@ module Shipit
 
     def plugins
       config('plugins') || {}
+    end
+
+    def clear_working_directory?
+      config('machine', 'cleanup') { true }
     end
 
     private

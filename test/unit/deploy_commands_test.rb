@@ -12,6 +12,7 @@ module Shipit
         rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
         machine_env: {'GLOBAL' => '1'},
         directory: nil,
+        clear_working_directory?: true,
       )
       @commands.stubs(:deploy_spec).returns(@deploy_spec)
 
@@ -178,6 +179,17 @@ module Shipit
       @deploy.env = {'FOO' => 'BAR'}
       command = @commands.install_dependencies.first
       assert_equal 'BAR', command.env['FOO']
+    end
+
+    test "#clear_working_directory rm -rf the working directory" do
+      FileUtils.expects(:rm_rf).with(@deploy.working_directory)
+      @commands.clear_working_directory
+    end
+
+    test "#clear_working_directory is a noop if the deploy spec disabled cleanup" do
+      @deploy_spec.expects(:clear_working_directory?).returns(false)
+      FileUtils.expects(:rm_rf).never
+      @commands.clear_working_directory
     end
   end
 end

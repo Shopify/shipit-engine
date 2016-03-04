@@ -181,10 +181,6 @@ module Shipit
       File.join(stack.deploys_path, id.to_s)
     end
 
-    def clear_working_directory
-      FileUtils.rm_rf(working_directory)
-    end
-
     def record_status_change
       @status_changed ||= status_changed?
     end

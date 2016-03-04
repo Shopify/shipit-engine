@@ -205,7 +205,7 @@ module Shipit
       assert_instance_of DeploySpec, @spec.cacheable
       config = {
         'ci' => {'hide' => [], 'allow_failures' => [], 'require' => []},
-        'machine' => {'environment' => {}, 'directory' => nil},
+        'machine' => {'environment' => {}, 'directory' => nil, 'cleanup' => true},
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
         'dependencies' => {'override' => []},
         'plugins' => {},
@@ -322,6 +322,10 @@ module Shipit
       @spec.stubs(:load_config).returns('machine' => {'directory' => subdir})
       assert_instance_of Pathname, @spec.file('baz')
       assert_equal File.join(@app_dir, subdir, 'baz'), @spec.file('baz').to_s
+    end
+
+    test "#clear_working_directory? returns true by default" do
+      assert_predicate @spec, :clear_working_directory?
     end
   end
 end
