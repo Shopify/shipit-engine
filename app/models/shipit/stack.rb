@@ -32,6 +32,7 @@ module Shipit
     after_commit :emit_updated_hooks, on: :update
     after_commit :emit_removed_hooks, on: :destroy
     after_commit :broadcast_update, on: :update
+    after_commit :emit_merge_status_hooks, on: :update
     after_commit :setup_hooks, :sync_github, on: :create
     after_touch :clear_cache
 
@@ -116,9 +117,23 @@ module Shipit
       commits.reachable.first.try!(:sha)
     end
 
+    def merge_status
+      if locked?
+        'locked'
+      else
+        significant_statuses = undeployed_commits.map(&:significant_status)
+        last_finalized_status = significant_statuses.reject { |s| %w(pending unknown).include?(s.state) }.first
+        last_finalized_status.try!(:simple_state) || 'pending'
+      end
+    end
+
     def status
       return :deploying if active_task?
       :default
+    end
+
+    def undeployed_commits
+      commits.reachable.newer_than(last_deployed_commit).order(id: :desc)
     end
 
     def last_successful_deploy
@@ -250,7 +265,7 @@ module Shipit
 
     def update_undeployed_commits_count(after_commit = nil)
       after_commit ||= last_deployed_commit
-      undeployed_commits = commits.reachable.select('count(*) as count').where('id > ?', after_commit.id)
+      undeployed_commits = commits.reachable.newer_than(after_commit).select('count(*) as count')
       self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
     end
 
@@ -333,6 +348,10 @@ module Shipit
 
     def emit_removed_hooks
       Hook.emit(:stack, self, action: :removed, stack: self)
+    end
+
+    def emit_merge_status_hooks
+      Hook.emit(:merge_status, self, merge_status: merge_status, stack: self)
     end
 
     def ci_enabled_cache_key

@@ -3,6 +3,7 @@ module Shipit
     def state
       'unknown'
     end
+    alias_method :simple_state, :state
 
     def pending?
       false

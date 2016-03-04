@@ -92,7 +92,7 @@ module Shipit
 
       payload = {commit: self, stack: stack, status: new_status.state}
       Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
-      if simple_state(previous_status) != simple_state(new_status) && !new_status.pending?
+      if previous_status.simple_state != new_status.simple_state && !new_status.pending?
         Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
       end
       new_status
@@ -198,10 +198,6 @@ module Shipit
 
     def touch_stack
       stack.touch
-    end
-
-    def simple_state(status)
-      status.state == 'error' ? 'failure' : status.state
     end
   end
 end
