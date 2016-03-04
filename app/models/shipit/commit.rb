@@ -9,7 +9,7 @@ module Shipit
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
-    after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, on: :create
+    after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, :schedule_continuous_delivery, on: :create
 
     after_touch :touch_stack
 
@@ -141,7 +141,7 @@ module Shipit
     end
 
     def schedule_continuous_delivery
-      return unless state == 'success' && stack.continuous_deployment? && stack.deployable?
+      return unless deployable? && stack.continuous_deployment? && stack.deployable?
       ContinuousDeliveryJob.perform_later(stack)
     end
 
