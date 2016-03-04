@@ -26,6 +26,7 @@ require 'redis-namespace'
 require 'octokit'
 require 'faraday-http-cache'
 
+require 'shipit/version'
 require 'shipit/paginator'
 require 'shipit/null_serializer'
 require 'shipit/csv_serializer'
