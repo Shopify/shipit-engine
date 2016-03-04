@@ -15,6 +15,7 @@ module Shipit
       lock
       commit_status
       deployable_status
+      merge_status
     ).freeze
 
     belongs_to :stack, required: false
@@ -32,6 +33,7 @@ module Shipit
 
     class << self
       def emit(event, stack, payload)
+        raise "#{event} is not declared in Shipit::Hook::EVENTS" unless EVENTS.include?(event.to_s)
         Shipit::EmitEventJob.perform_later(
           event: event.to_s,
           stack_id: stack.try!(:id),
