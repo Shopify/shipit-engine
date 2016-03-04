@@ -81,6 +81,18 @@ module Shipit
       assert_equal 'george@cyclim.se', user.email
     end
 
+    test "#github_api uses the user's access token" do
+      assert_equal @user.github_access_token, @user.github_api.access_token
+    end
+
+    test "#github_api fallbacks to Shipit.github_api if the user doesn't have an access_token" do
+      assert_equal Shipit.github_api, shipit_users(:bob).github_api
+    end
+
+    test "#github_api fallbacks to Shipit.github_api for anonymous users" do
+      assert_equal Shipit.github_api, AnonymousUser.new.github_api
+    end
+
     private
 
     def fetch_user

@@ -2,6 +2,8 @@ walrus:
   name:  Lando Walrussian
   email: walrus@shopify.com
   login: walrus
+  encrypted_github_access_token: FuQv9jpHmMZ8Px64xmqASJtKlefv # t0k3n
+  encrypted_github_access_token_iv: "QNS4smChXEXtOjxb\n"
 
 bob:
   name:  Bob the Builder

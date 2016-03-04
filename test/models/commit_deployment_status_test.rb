@@ -7,11 +7,12 @@ module Shipit
       @deployment = @status.commit_deployment
       @task = @deployment.task
       @commit = @deployment.commit
+      @author = @deployment.author
     end
 
     test 'creation on GitHub' do
       response = stub(id: 44, url: 'https://example.com')
-      Shipit.github_api.expects(:create_deployment_status).with(
+      @author.github_api.expects(:create_deployment_status).with(
         @deployment.api_url,
         'pending',
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",

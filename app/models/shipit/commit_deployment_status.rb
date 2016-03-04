@@ -4,16 +4,21 @@ module Shipit
 
     after_commit :schedule_create_on_github, on: :create
 
-    delegate :stack, :task, to: :commit_deployment
+    delegate :stack, :task, :author, to: :commit_deployment
 
     def create_on_github!
       return if github_id?
-      response = Shipit.github_api.create_deployment_status(
-        commit_deployment.api_url,
-        status,
-        target_url: url_helpers.stack_deploy_url(stack, task),
-        description: description,
-      )
+      response = begin
+        create_status_on_github(author.github_api)
+      rescue Octokit::NotFound, Octokit::Forbidden
+        raise if Shipit.github_api == author.github_api
+        # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
+        # user.
+        #
+        # Octokit currently raise NotFound, but I'm convinced it should be Forbidden if the user can see the repository.
+        # So to be future proof I catch boths.
+        create_status_on_github(Shipit.github_api)
+      end
       update!(github_id: response.id, api_url: response.url)
     end
 
@@ -35,6 +40,15 @@ module Shipit
     end
 
     private
+
+    def create_status_on_github(client)
+      client.create_deployment_status(
+        commit_deployment.api_url,
+        status,
+        target_url: url_helpers.stack_deploy_url(stack, task),
+        description: description,
+      )
+    end
 
     def url_helpers
       Engine.routes.url_helpers
