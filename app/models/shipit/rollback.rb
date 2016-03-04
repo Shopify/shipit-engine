@@ -27,5 +27,15 @@ module Shipit
     def to_partial_path
       'deploys/deploy'
     end
+
+    private
+
+    def create_commit_deployments
+      # Rollback events are confusing in GitHub
+    end
+
+    def update_commit_deployments
+      # Rollback events are confusing in GitHub
+    end
   end
 end
