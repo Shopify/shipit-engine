@@ -118,7 +118,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 
 * [Installing dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
-* [Environment](#environment) (`machine.environment`)
+* [Environment](#environment) (`machine.environment`, `machine.directory`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Custom tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
@@ -230,6 +230,16 @@ For example:
 machine:
   environment:
     key: val # things added as environment variables
+```
+
+<h3 id="directory">Directory</h3>
+
+**<code>machine.directory</code>** specify a subfolder in which to execute all tasks. Useful for repositories containing multiple applications or if you don't want your deploy scripts to be located at the root.
+
+For example:
+```yml
+machine:
+  directory: scripts/deploy/
 ```
 
 <h3 id="ci">CI</h3>

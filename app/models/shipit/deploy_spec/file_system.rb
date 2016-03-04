@@ -15,6 +15,14 @@ module Shipit
         DeploySpec.new(cacheable_config)
       end
 
+      def file(path, root: false)
+        if root || directory.blank?
+          @app_dir.join(path)
+        else
+          Pathname.new(File.join(@app_dir, directory, path))
+        end
+      end
+
       private
 
       def cacheable_config
@@ -49,15 +57,12 @@ module Shipit
       end
 
       def load_config
-        read_config(file("shipit.#{@env}.yml")) || read_config(file('shipit.yml'))
+        read_config(file("shipit.#{@env}.yml", root: true)) ||
+        read_config(file('shipit.yml', root: true))
       end
 
       def read_config(path)
         SafeYAML.load(path.read) if path.exist?
-      end
-
-      def file(path)
-        @app_dir.join(path)
       end
     end
   end

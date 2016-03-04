@@ -3,7 +3,8 @@ require 'test_helper'
 module Shipit
   class DeploySpecTest < ActiveSupport::TestCase
     setup do
-      @spec = DeploySpec::FileSystem.new('/tmp/', 'env')
+      @app_dir = '/tmp/'
+      @spec = DeploySpec::FileSystem.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns({})
     end
 
@@ -136,7 +137,7 @@ module Shipit
       config.expects(:exist?).returns(true)
       config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
       spec = DeploySpec::FileSystem.new('.', 'staging')
-      spec.expects(:file).with('shipit.staging.yml').returns(config)
+      spec.expects(:file).with('shipit.staging.yml', root: true).returns(config)
       assert_equal %w(foo bar baz), spec.dependencies_steps
     end
 
@@ -149,8 +150,8 @@ module Shipit
       config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
 
       spec = DeploySpec::FileSystem.new('.', 'staging')
-      spec.expects(:file).with('shipit.staging.yml').returns(not_config)
-      spec.expects(:file).with('shipit.yml').returns(config)
+      spec.expects(:file).with('shipit.staging.yml', root: true).returns(not_config)
+      spec.expects(:file).with('shipit.yml', root: true).returns(config)
       assert_equal %w(foo bar baz), spec.dependencies_steps
     end
 
@@ -314,6 +315,13 @@ module Shipit
     test "#hidden_statuses is an array even if the value is present" do
       @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
       assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+    end
+
+    test "#file is impacted by `machine.directory`" do
+      subdir = '/foo/bar'
+      @spec.stubs(:load_config).returns({'machine' => {'directory' => subdir}})
+      assert_instance_of Pathname, @spec.file('baz')
+      assert_equal File.join(@app_dir, subdir, 'baz'), @spec.file('baz').to_s
     end
   end
 end
