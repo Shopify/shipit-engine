@@ -389,11 +389,5 @@ module Shipit
 
       assert_equal 'pending', @stack.merge_status
     end
-
-    test "#merge_status returns pending if all commits have pending state" do
-      @stack.commits.each { |commit| commit.destroy if commit.statuses.empty? }
-      Status.update_all(state: 'pending')
-      assert_equal 'pending', @stack.merge_status
-    end
   end
 end
