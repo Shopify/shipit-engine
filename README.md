@@ -172,9 +172,33 @@ dependencies:
     - npm install
 ```
 
+**<code>dependencies.pre</code>** If you wish to execute commands before Shipit install the dependencies you can specify them here:
+
+For example:
+
+```yml
+depedencies:
+  pre:
+    - mkdir tmp/
+    - cp -R /var/cache/ tmp/cache
+```
+<br>
+
+**<code>dependencies.post</code>** If you wish to execute commands after Shipit installed the dependencies you can specify them here:
+
+For example:
+
+```yml
+depedencies:
+  post:
+    - cp -R tmp/cache /var/cache/
+```
+<br>
+
+
 <h3 id="deployment">Deployment</h3>
 
-The `override` and `deployment` deployment tasks are the core of Shipit:
+The `deploy` and `rollback` sections are the core of Shipit:
 
 **<code>deploy.override</code>** contains an array of the shell commands required to deploy the application. Shipit will try to infer it from the repository structure, but you can change the default inference.
 
@@ -186,6 +210,29 @@ deploy:
     - ./script/deploy
 ```
 <br>
+
+**<code>deploy.pre</code>** If you wish to execute commands before Shipit execute your deploy script you can specify them here:
+
+For example:
+
+```yml
+deploy:
+  pre:
+    - ./script/notify_deploy_start
+```
+<br>
+
+**<code>deploy.post</code>** If you wish to execute commands after Shipit executed your deploy script you can specify them here:
+
+For example:
+
+```yml
+deploy:
+  post:
+    - ./script/notify_deploy_end
+```
+<br>
+
 
 You can also accept custom environment variables defined by the user that trigger the deploy:
 
@@ -213,6 +260,29 @@ rollback:
     - ./script/rollback
 ```
 <br>
+
+**<code>rollback.pre</code>** If you wish to execute commands before Shipit execute your rollback script you can specify them here:
+
+For example:
+
+```yml
+rollback:
+  pre:
+    - ./script/notify_rollback_start
+```
+<br>
+
+**<code>rollback.post</code>** If you wish to execute commands after Shipit executed your rollback script you can specify them here:
+
+For example:
+
+```yml
+rollback:
+  post:
+    - ./script/notify_rollback_end
+```
+<br>
+
 
 **<code>fetch</code>** contains an array of the shell commands that Shipit executes to check the revision of the currently-deployed version. This key defaults to disabled.
 

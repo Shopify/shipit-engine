@@ -29,12 +29,13 @@ module Shipit
       self
     end
 
-    def config(*keys)
+    def config(*keys, &default)
+      default ||= -> { nil }
       keys.flatten.reduce(@config) do |hash, key|
-        if hash.respond_to?(:[])
-          hash[key]
+        if hash.is_a?(Hash)
+          hash.fetch(key) { return default.call }
         else
-          return block_given? ? yield : nil
+          return default.call
         end
       end
     end
@@ -56,12 +57,16 @@ module Shipit
     end
 
     def dependencies_steps
-      config('dependencies', 'override') || discover_dependencies_steps || []
+      around_steps('dependencies') do
+        config('dependencies', 'override') { discover_dependencies_steps || [] }
+      end
     end
     alias_method :dependencies_steps!, :dependencies_steps
 
     def deploy_steps
-      config('deploy', 'override') || discover_deploy_steps
+      around_steps('deploy') do
+        config('deploy', 'override') { discover_deploy_steps }
+      end
     end
 
     def deploy_steps!
@@ -73,7 +78,9 @@ module Shipit
     end
 
     def rollback_steps
-      config('rollback', 'override') || discover_rollback_steps
+      around_steps('rollback') do
+        config('rollback', 'override') { discover_rollback_steps }
+      end
     end
 
     def rollback_steps!
@@ -137,6 +144,12 @@ module Shipit
     end
 
     private
+
+    def around_steps(section)
+      steps = yield
+      return unless steps
+      config(section, 'pre') { [] } + steps + config(section, 'post') { [] }
+    end
 
     def coerce_task_definition(config)
       config

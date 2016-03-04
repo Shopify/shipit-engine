@@ -38,8 +38,15 @@ module Shipit
 
     test '#dependencies_steps returns `bundle install` if a `Gemfile` is present' do
       @spec.expects(:bundler?).returns(true)
-      @spec.expects(:bundle_install).returns(:bundle_install)
-      assert_equal :bundle_install, @spec.dependencies_steps
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test "#dependencies_steps prepend and append pre and post steps" do
+      @spec.stubs(:load_config).returns('dependencies' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['before', 'bundle install', 'after'], @spec.dependencies_steps
     end
 
     test '#fetch_deployed_revision_steps! is unknown by default' do
@@ -109,6 +116,13 @@ module Shipit
       assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
     end
 
+    test "#deploy_steps prepend and append pre and post steps" do
+      @spec.stubs(:load_config).returns('deploy' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:capistrano?).returns(true)
+      assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy', 'after'], @spec.deploy_steps
+    end
+
     test '#deploy_steps raise a DeploySpec::Error! if it dont know how to deploy the app' do
       @spec.expects(:capistrano?).returns(false)
       assert_raise DeploySpec::Error do
@@ -125,6 +139,13 @@ module Shipit
       @spec.expects(:bundler?).returns(true)
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], @spec.rollback_steps
+    end
+
+    test "#rollback_steps prepend and append pre and post steps" do
+      @spec.stubs(:load_config).returns('rollback' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:capistrano?).returns(true)
+      assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy:rollback', 'after'], @spec.rollback_steps
     end
 
     test '#machine_env return an environment hash' do
