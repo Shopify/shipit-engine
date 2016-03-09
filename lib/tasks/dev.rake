@@ -4,7 +4,7 @@ namespace :dev do
     require 'faker'
     logger = Logger.new(STDOUT)
 
-    deploy = Deploy.find(ENV['DEPLOY']) if ENV['DEPLOY']
+    deploy = Shipit::Deploy.find(ENV['DEPLOY']) if ENV['DEPLOY']
     deploy ||= Deploy.last
 
     raise "Couldn't find Deploy" unless deploy
