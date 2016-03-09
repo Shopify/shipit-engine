@@ -453,7 +453,11 @@ development:
 
 The value for `id` is your application's  *Client ID*, and the value for `secret` is your application's *Client Secret* &mdash; both of these should appear on your application's GitHub page.
 
-The `teams` key is optional, and required only if you want to specify some teams which have access to the stack in Shipit.
+The `teams` key is optional, and required only if you want to restrict access to a set of GitHub teams.
+
+If it's missing the Shipit installation will be public unless you setup another authentication method.
+
+After you change the list of time you have to invoke `bin/rake teams:fetch` in production so that a webhook is setup to keep the list of members up to date.
 
 For example:
 
