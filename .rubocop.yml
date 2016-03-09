@@ -37,13 +37,21 @@ Style/SingleSpaceBeforeFirstArg:
 Style/DoubleNegation:
   Enabled: false
 
+Style/Next:
+  Enabled: false
+
 Metrics/LineLength:
+  Exclude:
+    - lib/tasks/teams.rake
   Max: 120
 
 Metrics/MethodLength:
   Max: 26
 
 Metrics/ClassLength:
+  Max: 400
+
+Metrics/ModuleLength:
   Max: 400
 
 Metrics/AbcSize:
