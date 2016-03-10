@@ -2,7 +2,7 @@ module Shipit
   class CommitDeployment < ActiveRecord::Base
     belongs_to :commit
     belongs_to :task
-    has_many :statuses, class_name: 'CommitDeploymentStatus'
+    has_many :statuses, dependent: :destroy, class_name: 'CommitDeploymentStatus'
 
     after_commit :schedule_create_on_github, on: :create
 
