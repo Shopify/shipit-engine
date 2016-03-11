@@ -160,6 +160,13 @@ module Shipit
       end
     end
 
+    test ":membership can append a user membership for an organization with capitals" do
+      assert_difference -> { Membership.count }, 1 do
+        post :membership, membership_params.merge(organization: {login: 'Shopify'}, member: {login: 'bob'})
+        assert_response :ok
+      end
+    end
+
     private
 
     def membership_params
