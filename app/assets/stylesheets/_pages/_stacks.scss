@@ -146,11 +146,15 @@
 
 .new_stack {
   input.repo {
-    width: 150px;
+    width: 200px;
+    display: inline;
 
     &:focus {
       padding-right: 30px !important;
     }
+  }
+  input:focus {
+    border-color: #248af2;
   }
 }
 
