@@ -5,6 +5,7 @@ module Shipit
     belongs_to :stack, touch: true
     has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }
+    has_many :commit_deployments, dependent: :destroy
 
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
