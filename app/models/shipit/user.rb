@@ -62,7 +62,11 @@ module Shipit
 
     def github_user=(github_user)
       return unless github_user
-      github_user = github_user.rels[:self].get.data unless github_user.name
+
+      if github_user.name.nil? && github_user.rels && github_user.rels[:self]
+        github_user = github_user.rels[:self].get.data
+      end
+
       assign_attributes(
         github_id: github_user.id,
         name: github_user.name || github_user.login, # Name is not mandatory on GitHub

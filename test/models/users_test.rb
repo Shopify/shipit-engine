@@ -12,6 +12,15 @@ module Shipit
         avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
         url: 'https://api.github.com/user/george',
       )
+      @minimal_github_user = stub(
+        id: 43,
+        name: nil,
+        login: 'peter',
+        email: nil,
+        avatar_url: 'https://avatars.githubusercontent.com/u/43?v=3',
+        url: 'https://api.github.com/user/peter',
+        rels: nil,
+      )
     end
 
     test "find_or_create_from_github persist a new user if he is unknown" do
@@ -46,6 +55,11 @@ module Shipit
     test "find_or_create_from_github store the login" do
       user = User.find_or_create_from_github(@github_user)
       assert_equal @github_user.login, user.login
+    end
+
+    test "find_or_create_from_github accepts minimal users without name nor email" do
+      user = User.find_or_create_from_github(@minimal_github_user)
+      assert_equal @minimal_github_user.login, user.login
     end
 
     test "#identifiers_for_ping returns a hash with the user's github_id, name, email and github_login" do
