@@ -83,14 +83,21 @@ module Shipit
   def github_api
     @github_api ||= begin
       client = Octokit::Client.new(github_api_credentials)
-      client.middleware.use(
-        Faraday::HttpCache,
+      client.middleware = new_faraday_stack
+      client
+    end
+  end
+
+  def new_faraday_stack
+    Faraday::RackBuilder.new do |builder|
+      builder.use(Faraday::HttpCache,
         shared_cache: false,
         store: Rails.cache,
         logger: Rails.logger,
         serializer: NullSerializer,
       )
-      client
+      builder.use Octokit::Response::RaiseError
+      builder.adapter Faraday.default_adapter
     end
   end
 

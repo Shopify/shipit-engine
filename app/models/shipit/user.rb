@@ -38,7 +38,11 @@ module Shipit
     def github_api
       return Shipit.github_api unless github_access_token
 
-      @github_api ||= Octokit::Client.new(access_token: github_access_token)
+      @github_api ||= begin
+        client = Octokit::Client.new(access_token: github_access_token)
+        client.middleware = Shipit.new_faraday_stack
+        client
+      end
     end
 
     def identifiers_for_ping
