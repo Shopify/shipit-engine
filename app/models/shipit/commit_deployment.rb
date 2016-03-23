@@ -13,6 +13,8 @@ module Shipit
 
       create_deployment_on_github!
       statuses.order(id: :asc).each(&:create_on_github!)
+    rescue Octokit::NotFound, Octokit::Forbidden
+      # If no one can create the deployment we can only give up
     end
 
     def create_deployment_on_github!
