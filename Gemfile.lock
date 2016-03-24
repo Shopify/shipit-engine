@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.8.7)
+    shipit-engine (0.8.8)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       attr_encrypted (~> 2.0.0)
@@ -76,7 +76,7 @@ GEM
       parser (~> 2.2)
     attr_encrypted (2.0.0)
       encryptor (~> 2.0.0)
-    autoprefixer-rails (6.3.3.1)
+    autoprefixer-rails (6.3.4)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -217,7 +217,7 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     redis-objects (1.2.1)
       redis (>= 3.0.2)
-    responders (2.1.1)
+    responders (2.1.2)
       railties (>= 4.2.0, < 5.1)
     rubocop (0.34.0)
       astrolabe (~> 1.3)
