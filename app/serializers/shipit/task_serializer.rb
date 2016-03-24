@@ -5,7 +5,20 @@ module Shipit
     has_one :author
     has_one :revision, serializer: ShortCommitSerializer
 
-    attributes :id, :url, :html_url, :output_url, :type, :status, :action, :description, :updated_at, :created_at
+    attributes(*%i(
+      id
+      url
+      html_url
+      output_url
+      type
+      status
+      action
+      description
+      started_at
+      ended_at
+      updated_at
+      created_at
+    ))
 
     def revision
       object.until_commit
