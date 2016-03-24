@@ -19,6 +19,8 @@ shipit2:
   additions: 12
   deletions: 64
   created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
 
 shipit_restart:
   user: walrus
@@ -41,6 +43,8 @@ shipit_restart:
       ]
     }
   created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
 
 shipit_pending:
   since_commit_id: 2 # second
@@ -62,6 +66,7 @@ shipit_running:
   additions: 420
   deletions: 342
   created_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
 
 shipit_complete:
   user: bob
@@ -73,6 +78,8 @@ shipit_complete:
   additions: 420
   deletions: 342
   created_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
 
 shipit_aborted:
   user: bob
@@ -85,6 +92,8 @@ shipit_aborted:
   deletions: 342
   rollback_once_aborted: true
   created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
 
 shipit_rollback:
   user: bob
@@ -97,3 +106,5 @@ shipit_rollback:
   additions: 420
   deletions: 342
   created_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 7).minutes.ago.to_s(:db) %>

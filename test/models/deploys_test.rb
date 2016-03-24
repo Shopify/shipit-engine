@@ -103,6 +103,16 @@ module Shipit
       end
     end
 
+    test "transitioning to success persists `ended_at`" do
+      deploy = shipit_deploys(:shipit_running)
+
+      assert_nil deploy.ended_at
+      deploy.complete!
+      deploy.reload
+      assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
+      assert_in_delta Time.now.utc, deploy.ended_at, 1
+    end
+
     test "transitioning to failed causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
@@ -111,6 +121,16 @@ module Shipit
       expect_hook(:deploy, deploy.stack, status: 'failed', deploy: deploy, stack: deploy.stack) do
         deploy.failure!
       end
+    end
+
+    test "transitioning to failed persists `ended_at`" do
+      deploy = shipit_deploys(:shipit_running)
+
+      assert_nil deploy.ended_at
+      deploy.failure!
+      deploy.reload
+      assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
+      assert_in_delta Time.now.utc, deploy.ended_at, 1
     end
 
     test "transitioning to error causes an event to be broadcasted" do
@@ -123,6 +143,16 @@ module Shipit
       end
     end
 
+    test "transitioning to error persists `ended_at`" do
+      deploy = shipit_deploys(:shipit_running)
+
+      assert_nil deploy.ended_at
+      deploy.error!
+      deploy.reload
+      assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
+      assert_in_delta Time.now.utc, deploy.ended_at, 1
+    end
+
     test "transitioning to running causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
@@ -131,6 +161,16 @@ module Shipit
       expect_hook(:deploy, deploy.stack, status: 'running', deploy: deploy, stack: deploy.stack) do
         deploy.run!
       end
+    end
+
+    test "transitioning to running persists `started_at`" do
+      deploy = shipit_deploys(:shipit_pending)
+
+      assert_nil deploy.started_at
+      deploy.run!
+      deploy.reload
+      assert_instance_of ActiveSupport::TimeWithZone, deploy.started_at
+      assert_in_delta Time.now.utc, deploy.started_at, 1
     end
 
     test "creating a deploy causes an event to be broadcasted" do

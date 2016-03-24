@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303203940) do
+ActiveRecord::Schema.define(version: 20160324155046) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -180,6 +180,8 @@ ActiveRecord::Schema.define(version: 20160303203940) do
     t.text     "env"
     t.integer  "confirmations",                       default: 0,         null: false
     t.boolean  "allow_concurrency",                   default: false,     null: false
+    t.datetime "started_at"
+    t.datetime "ended_at"
   end
 
   add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"

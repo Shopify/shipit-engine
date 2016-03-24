@@ -23,6 +23,14 @@ module Shipit
     after_commit :emit_hooks
 
     state_machine :status, initial: :pending do
+      before_transition any => :running do |task|
+        task.started_at ||= Time.now.utc
+      end
+
+      before_transition any => %i(success failed error) do |task|
+        task.ended_at ||= Time.now.utc
+      end
+
       after_transition any => %i(success failed error) do |task|
         task.async_refresh_deployed_revision
       end
@@ -86,6 +94,14 @@ module Shipit
     delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, to: :stack
 
     delegate :checklist, to: :definition
+
+    def duration?
+      started_at? && ended_at?
+    end
+
+    def duration
+      ended_at - started_at if duration?
+    end
 
     def spec
       @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)

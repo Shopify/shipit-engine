@@ -142,6 +142,8 @@ module Shipit
         chunks:          create_chunks,
         additions: Faker::Number.number(3),
         deletions: Faker::Number.number(3),
+        started_at: Random.rand(15.minutes.to_i).seconds.ago,
+        ended_at: Time.now.utc,
         user: users.sample,
       )
       deploy.write("$ cap production deploy SHA=yolo")
@@ -154,6 +156,8 @@ module Shipit
       status: 'success',
       user: users.sample,
       chunks: create_chunks,
+      started_at: Random.rand(15.minutes.to_i).seconds.ago,
+      ended_at: Time.now.utc,
     )
 
     stack.tasks.create!(
@@ -167,6 +171,8 @@ module Shipit
         'steps' => ['cap $ENVIRONMENT restart'],
       ),
       chunks: create_chunks,
+      started_at: Random.rand(15.minutes.to_i).seconds.ago,
+      ended_at: Time.now.utc,
     )
   end
 end
