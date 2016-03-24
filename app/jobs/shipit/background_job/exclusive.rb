@@ -1,6 +1,6 @@
 module Shipit
   class BackgroundJob
-    module Unique
+    module Exclusive
       extend ActiveSupport::Concern
 
       DEFAULT_TIMEOUT = 10
@@ -8,6 +8,10 @@ module Shipit
       included do
         around_perform { |job, block| job.acquire_lock(&block) }
         cattr_accessor :lock_timeout
+
+        rescue_from Redis::Lock::LockTimeout do
+          retry_job wait: 15.seconds
+        end
       end
 
       def acquire_lock(&block)

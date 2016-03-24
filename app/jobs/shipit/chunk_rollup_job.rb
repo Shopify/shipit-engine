@@ -1,6 +1,6 @@
 module Shipit
   class ChunkRollupJob < BackgroundJob
-    include BackgroundJob::Unique
+    include BackgroundJob::Exclusive
 
     queue_as :default
 

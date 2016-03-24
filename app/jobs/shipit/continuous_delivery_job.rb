@@ -1,6 +1,6 @@
 module Shipit
   class ContinuousDeliveryJob < BackgroundJob
-    include BackgroundJob::Unique
+    include BackgroundJob::Exclusive
 
     queue_as :default
 

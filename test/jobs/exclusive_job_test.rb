@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Shipit
-  class UniqueJobTest < ActiveSupport::TestCase
+  class ExclusiveJobTest < ActiveSupport::TestCase
     test "the lock key contains the job type" do
       task = shipit_tasks(:shipit_restart)
       job_a = ChunkRollupJob.new(task)
@@ -21,6 +21,11 @@ module Shipit
       job = ChunkRollupJob.new(task)
       key = %(Shipit::ChunkRollupJob-{"_aj_globalid"=>"gid://shipit/Shipit::Task/#{task.id}"})
       assert_equal key, job.lock_key(*job.arguments)
+    end
+
+    test "the job is retried if it can't obtain the lock in time" do
+      job_a = ChunkRollupJob.new(task)
+      job_b = GithubSyncJob.new(task)
     end
   end
 end

@@ -1,6 +1,6 @@
 module Shipit
   class CacheDeploySpecJob < BackgroundJob
-    include BackgroundJob::Unique
+    include BackgroundJob::Exclusive
 
     def perform(stack)
       commands = Commands.for(stack)
