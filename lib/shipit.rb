@@ -90,7 +90,8 @@ module Shipit
 
   def new_faraday_stack
     Faraday::RackBuilder.new do |builder|
-      builder.use(Faraday::HttpCache,
+      builder.use(
+        Faraday::HttpCache,
         shared_cache: false,
         store: Rails.cache,
         logger: Rails.logger,
