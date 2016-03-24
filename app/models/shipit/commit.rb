@@ -80,7 +80,8 @@ module Shipit
     end
 
     def refresh_statuses!
-      Shipit.github_api.statuses(github_repo_name, sha).each do |status|
+      github_statuses = stack.handle_github_redirections { Shipit.github_api.statuses(github_repo_name, sha) }
+      github_statuses.each do |status|
         statuses.replicate_from_github!(status)
       end
     end

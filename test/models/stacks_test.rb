@@ -417,5 +417,26 @@ module Shipit
 
       assert_equal 'pending', @stack.merge_status
     end
+
+    test "#handle_github_redirections update the stack if the repository was renamed" do
+      repo_permalink = 'https://api.github.com/repositories/42'
+
+      commits_redirection = stub(message: 'Moved Permanently', url: File.join(repo_permalink, '/commits'))
+      Shipit.github_api.expects(:commits).with(@stack.github_repo_name, sha: 'master').returns(commits_redirection)
+
+      repo_redirection = stub(message: 'Moved Permanently', url: repo_permalink)
+      Shipit.github_api.expects(:repo).with('shopify/shipit-engine').returns(repo_redirection)
+
+      repo_resource = stub(name: 'shipster', owner: stub(login: 'george'))
+      Shipit.github_api.expects(:get).with(repo_permalink).returns(repo_resource)
+
+      commits_resource = stub
+      Shipit.github_api.expects(:commits).with('george/shipster', sha: 'master').returns(commits_resource)
+
+      assert_equal 'shopify/shipit-engine', @stack.github_repo_name
+      assert_equal commits_resource, @stack.github_commits
+      @stack.reload
+      assert_equal 'george/shipster', @stack.github_repo_name
+    end
   end
 end

@@ -215,7 +215,28 @@ module Shipit
     end
 
     def github_commits
-      Shipit.github_api.commits(github_repo_name, sha: branch)
+      handle_github_redirections do
+        Shipit.github_api.commits(github_repo_name, sha: branch)
+      end
+    end
+
+    def handle_github_redirections
+      # https://developer.github.com/v3/#http-redirects
+      resource = yield
+      if resource.try(:message) == 'Moved Permanently'
+        refresh_repository!
+        yield
+      else
+        resource
+      end
+    end
+
+    def refresh_repository!
+      resource = Shipit.github_api.repo(github_repo_name)
+      if resource.try(:message) == 'Moved Permanently'
+        resource = Shipit.github_api.get(resource.url)
+      end
+      update!(repo_owner: resource.owner.login, repo_name: resource.name)
     end
 
     def active_task?
