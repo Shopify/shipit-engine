@@ -26,7 +26,7 @@ module Shipit
         # Heroku apps often specify a ruby version.
         if /darwin/ =~ RUBY_PLATFORM
           # OSX is nitpicky about the -i.
-          %q(sed -i '' '/^ruby\s/d' Gemfile)
+          %q(/usr/bin/sed -i '' '/^ruby\s/d' Gemfile)
         else
           %q(sed -i '/^ruby\s/d' Gemfile)
         end
