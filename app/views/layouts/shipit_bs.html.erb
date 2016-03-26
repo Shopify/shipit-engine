@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" data-controller="<%= controller_name %>" data-action="<%= action_name %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
+
+    <%= favicon_link_tag %>
+    <%= stylesheet_link_tag :shipit, media: 'all' %>
+    <%= javascript_include_tag :shipit %>
+
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+  </body>
+</html>

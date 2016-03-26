@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'attr_encrypted', '~> 2.0.0'
 
   s.add_dependency 'sprockets', '>= 2.12.3'
+  s.add_dependency 'sprockets-rails', '>= 2.3.2'
   s.add_dependency 'sass-rails', '~> 5.0.3'
   s.add_dependency 'coffee-rails', '~> 4.1.0'
   s.add_dependency 'jquery-rails', '~> 4.1.0'
@@ -39,6 +40,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'autoprefixer-rails', '~> 6.3.2'
   s.add_dependency 'rails_autolink', '~> 1.1.6'
   s.add_dependency 'gemoji', '~> 2.1'
+  s.add_dependency 'bootstrap', '4.0.0.alpha3'
 
   s.add_dependency 'octokit', '~> 4.2.0'
   s.add_dependency 'faraday', '~> 0.9.1'
