@@ -10,12 +10,14 @@ class @TTY
 
   constructor: ($body) ->
     @$code = $body.find('code')
-    @scrolling = new Scrolling(@$code)
-
-  popInitialOutput: ->
-    output = @$code.text()
-    @$code.empty()
-    output
+    @$container = @$code.closest('.clusterize-scroll')
+    @scroller = new Clusterize(
+      no_data_text: 'Loading...'
+      tag: 'div'
+      contentElem: @$code[0]
+      scrollElem: @$container[0]
+    )
+    window.scroller = @scroller
 
   formatChunks: (chunk) ->
     for formatter in FORMATTERS
@@ -23,32 +25,30 @@ class @TTY
     chunk
 
   appendChunk: (chunk) =>
-    @scrolling.preserve =>
-      @$code.append(@formatChunks(chunk.raw))
+    lines = chunk.rawLines()
+    lines.pop() unless lines[-1]
+    return unless lines.length
 
-class Scrolling
-  TOLERENCE = 200
+    @preserveScroll =>
+      @scroller.append(lines.map(@formatChunks).map(@createLine))
 
-  constructor: (@$code) ->
-    @$window = $(window)
-    @initialScroll = true
-
-  preserve: (callback) ->
-    wasScrolledToBottom = @isScrolledToBottom()
-    callback()
-    if wasScrolledToBottom
-      @$window.scrollTop(@codeBottomPosition() - @$window.height() + 50)
+  createLine: (fragment) ->
+    div = document.createElement('div')
+    div.appendChild(fragment)
+    div.className = 'output-line'
+    div.outerHTML
 
   isScrolledToBottom: ->
-    if @initialScroll
-      @initialScroll = (window.pageYOffset == 0)
-      true
-    else
-      codeBottom = @codeBottomPosition()
-      codeBottom + TOLERENCE > @viewportBottomPosition() >= codeBottom - TOLERENCE
+    (@getMaxScroll() - @$container.scrollTop()) < 1
 
-  viewportBottomPosition: ->
-    window.pageYOffset + @$window.height()
+  scrollToBottom: ->
+    @$container.scrollTop(@getMaxScroll())
 
-  codeBottomPosition: ->
-    @$code.position().top + @$code.height()
+  getMaxScroll: ->
+    @$code.parent().outerHeight(true) - @$container.outerHeight(true)
+
+  preserveScroll: (callback) ->
+    wasScrolledToBottom = @isScrolledToBottom()
+    callback()
+    @scrollToBottom() if wasScrolledToBottom
+

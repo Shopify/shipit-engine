@@ -1,3 +1,5 @@
+<% content_for :main_classes do %>no-footer<% end %>
+
 <%= javascript_include_tag 'task' %>
 <%= include_plugins(@stack) %>
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
@@ -9,6 +11,7 @@
 <div class="deploy-main" data-task="<%= {repo: @stack.github_repo_name, description: task_description(task)}.to_json %>">
   <span class="deploy-tasks"></span>
   <div class="deploy-banner" data-status="<%= task.status %>">
+    <div class="deploy-banner-status"></div>
     <div class="deploy-banner-section stack-link">
       <%= link_to "Return to #{@stack.repo_name}/#{@stack.environment}", stack_path(@stack) %>
     </div>
@@ -34,5 +37,7 @@
     </div>
   </div>
 
-  <pre class="nowrap" data-status="<%= task.status %>"><code data-next-chunks-url="<%= next_chunks_url(task) %>"><%= task.chunk_output %></code></pre>
+  <div class="clusterize-scroll task-output-container">
+    <pre class="nowrap" data-status="<%= task.status %>"><code class="clusterize-content" data-next-chunks-url="<%= tail_stack_task_path(task.stack, task) %>"></code></pre>
+  </div>
 </div>

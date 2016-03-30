@@ -23,9 +23,8 @@ class @Stream
     @retries = 0
     @status = 'running'
 
-  init: ({url, text, status}) ->
+  init: ({url, status}) ->
     @status = status
-    @broadcastOutput(text)
     @start(url)
 
   poll: =>
@@ -49,12 +48,13 @@ class @Stream
           console?.log("Plugin error: #{error}")
 
   broadcastOutput: (raw, args...) ->
-    chunk = new Chunk(raw)
-    for handler in @listeners('chunk')
-      try
-        handler(chunk, args...)
-      catch error
-        console?.log("Plugin error: #{error}")
+    if raw
+      chunk = new Chunk(raw)
+      for handler in @listeners('chunk')
+        try
+          handler(chunk, args...)
+        catch error
+          console?.log("Plugin error: #{error}")
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES

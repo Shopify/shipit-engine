@@ -48,7 +48,7 @@
     </div>
   </header>
 
-  <div class="main" data-layout-content>
+  <div class="main <%= content_for(:main_classes) %>" data-layout-content>
     <%= yield %>
   </div>
 </body>

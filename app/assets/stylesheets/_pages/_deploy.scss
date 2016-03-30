@@ -54,17 +54,27 @@
   }
 }
 
+.task-output-container {
+  height: calc(100vh - 9rem - 4rem - 1px); // .header and .deploy-banner. -1px is to floor the result
+}
+
+.output-line {
+  height: 1.5rem;
+}
+
 .deploy-banner {
+  height: 4rem;
   background-color: #f0f4f7;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   flex-wrap: wrap;
+  overflow-x: hidden;
 
   .deploy-banner-section {
     display: inline-block;
-    padding: .95rem 1.5rem 1.125rem;
+    padding: .75rem 1.5rem;
   }
 
   .stack-link {
@@ -75,26 +85,44 @@
     flex: none;
   }
 
-  &.sticky {
-    position: fixed;
-    top: 0;
+  .deploy-banner-status {
+    height: 2px;
+    position: absolute;
+    bottom: 0;
     left: 0;
-    right: 0;
+  }
 
-    .stack-link {
-      display: inline-block;
+  &[data-status="failure"],
+  &[data-status="error"] {
+    .deploy-banner-status {
+      background-color: $bright-red;
+      width: 100%;
     }
   }
 
-  &[data-status="running"]:before,
-  &[data-status="aborting"]:before {
-    content: "";
+  &[data-status="aborted"],
+  &[data-status="flapping"] {
+    .deploy-banner-status {
+      background-color: $orange;
+      width: 100%;
+    }
+  }
+
+  &[data-status="success"] .deploy-banner-status {
+    background-color: $green;
+    width: 100%;
+  }
+
+  &[data-status="running"] .deploy-banner-status {
     background-color: $blue;
-    bottom: 0;
-    left: 0;
     width: 0%;
-    height: 2px;
-    position: absolute;
+    z-index: 9999;
+    -webkit-animation: loading-slide 1.2s linear infinite;
+  }
+
+  &[data-status="aborting"] .deploy-banner-status {
+    background-color: $orange;
+    width: 0%;
     z-index: 9999;
     -webkit-animation: loading-slide 1.2s linear infinite;
   }
@@ -124,26 +152,17 @@
 
 .sidebar.enabled + .deploy-main {
   margin-left: 300px;
-
-  .deploy-banner.sticky {
-    box-sizing: border-box;
-    margin-left: 300px;
-  }
 }
 
 .sidebar {
   background-color: $slate;
   color: white;
   overflow: hidden;
-  height: 100%;
+  height: calc(100vh - 9rem - 1px); // .header. -1px is to floor the result
   position: absolute;
   width: 0px;
   &.enabled {
     width: 300px;
-  }
-  &.sticky {
-    top: 0;
-    position: fixed;
   }
 }
 
