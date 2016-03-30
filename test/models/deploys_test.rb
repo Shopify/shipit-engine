@@ -110,7 +110,7 @@ module Shipit
       deploy.complete!
       deploy.reload
       assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
-      assert_in_delta Time.now.utc, deploy.ended_at, 1
+      assert_in_delta Time.now.utc, deploy.ended_at, 2
     end
 
     test "transitioning to failed causes an event to be broadcasted" do
@@ -130,7 +130,7 @@ module Shipit
       deploy.failure!
       deploy.reload
       assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
-      assert_in_delta Time.now.utc, deploy.ended_at, 1
+      assert_in_delta Time.now.utc, deploy.ended_at, 2
     end
 
     test "transitioning to error causes an event to be broadcasted" do
@@ -150,7 +150,7 @@ module Shipit
       deploy.error!
       deploy.reload
       assert_instance_of ActiveSupport::TimeWithZone, deploy.ended_at
-      assert_in_delta Time.now.utc, deploy.ended_at, 1
+      assert_in_delta Time.now.utc, deploy.ended_at, 2
     end
 
     test "transitioning to running causes an event to be broadcasted" do
@@ -170,7 +170,7 @@ module Shipit
       deploy.run!
       deploy.reload
       assert_instance_of ActiveSupport::TimeWithZone, deploy.started_at
-      assert_in_delta Time.now.utc, deploy.started_at, 1
+      assert_in_delta Time.now.utc, deploy.started_at, 2
     end
 
     test "creating a deploy causes an event to be broadcasted" do
