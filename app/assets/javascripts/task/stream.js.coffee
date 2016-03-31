@@ -8,10 +8,15 @@ class Chunk
     @_text ||= AnsiStream.strip(@raw)
 
   rawLines: ->
-    @_rawLines ||= @raw.split(/\r?\n/)
+    @_rawLines ||= @splitLines(@raw)
 
   lines: ->
-    @_lines ||= @text().split(/\r?\n/)
+    @_lines ||= @splitLines(@text())
+
+  splitLines: (text) ->
+    lines = text.split(/\r?\n/)
+    lines.pop() unless lines[lines.length - 1]
+    lines
 
 class @Stream
   INTERVAL = 1000
@@ -49,13 +54,14 @@ class @Stream
           console?.log("Plugin error: #{error}")
 
   broadcastOutput: (raw, args...) ->
-    if raw
-      chunk = new Chunk(raw)
-      for handler in @listeners('chunk')
-        try
-          handler(chunk, args...)
-        catch error
-          console?.log("Plugin error: #{error}")
+    return unless raw
+
+    chunk = new Chunk(raw)
+    for handler in @listeners('chunk')
+      try
+        handler(chunk, args...)
+      catch error
+        console?.log("Plugin error: #{error}")
 
   error: (response) =>
     @start() if 600 > response.status >= 500 && (@retries += 1) < MAX_RETRIES

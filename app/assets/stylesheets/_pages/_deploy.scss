@@ -140,6 +140,19 @@
   }
 }
 
+.search-bar {
+  background-color: #f0f4f7;
+  border: 1px solid #f0f4f7;
+  position: absolute;
+  right: 0px;
+  padding: .125rem;
+  border-bottom-left-radius: .25rem;
+
+  input[type="search"] {
+    width: 300px;
+  }
+}
+
 @include keyframes(loading-slide) {
   0% { width: 0%; left: 0%; }
   30% {  left: 0%; }
