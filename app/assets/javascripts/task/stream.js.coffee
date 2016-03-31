@@ -23,8 +23,9 @@ class @Stream
     @retries = 0
     @status = 'running'
 
-  init: ({url, status}) ->
+  init: ({url, text, status}) ->
     @status = status
+    @broadcastOutput(text)
     @start(url)
 
   poll: =>

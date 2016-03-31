@@ -38,6 +38,6 @@
   </div>
 
   <div class="clusterize-scroll task-output-container">
-    <pre class="nowrap" data-status="<%= task.status %>"><code class="clusterize-content" data-next-chunks-url="<%= tail_stack_task_path(task.stack, task) %>"></code></pre>
+    <pre class="nowrap" data-status="<%= task.status %>"><code class="clusterize-content" data-output="<%= task.chunk_output %>" data-next-chunks-url="<%= next_chunks_url(task) %>"></code></pre>
   </div>
 </div>

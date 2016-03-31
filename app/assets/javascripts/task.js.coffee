@@ -6,6 +6,8 @@
 
 jQuery ->
   $code = $('code')
+  initialOutput = $code.attr('data-output')
+  $code.removeAttr('data-output')
 
   OutputStream.addEventListener 'status', (status, response) ->
     $('[data-status]').attr('data-status', status)
@@ -22,3 +24,4 @@ jQuery ->
   OutputStream.init
     status: $code.closest('[data-status]').data('status')
     url: $code.data('next-chunks-url')
+    text: initialOutput
