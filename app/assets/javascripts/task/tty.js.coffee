@@ -1,3 +1,31 @@
+class OutputLines
+  constructor: (@screen, @render) ->
+    @query = ''
+    @raw = []
+    @renderingCache = {}
+
+  setFilter: (query) ->
+    if @query = query
+      @screen.options.no_data_text = 'No matches'
+    else
+      @screen.options.no_data_text = 'Loading...'
+    @reset()
+
+  reset: ->
+    @screen.update(@renderLines(@filter(@raw)))
+
+  filter: (lines) ->
+    return lines unless @query
+    line for line in lines when line.includes(@query)
+
+  append: (lines) ->
+    @raw = @raw.concat(lines)
+    @screen.append(@renderLines(@filter(lines)))
+
+  renderLines: (lines) ->
+    for line in lines
+      @renderingCache[line] ||= @render(line)
+
 class @TTY
   FORMATTERS = []
   STICKY_SCROLL_TOLERENCE = 200
@@ -9,13 +37,19 @@ class @TTY
     FORMATTERS.unshift(formatter)
 
   constructor: ($body) ->
+    @outputLines = []
     @$code = $body.find('code')
-    @scrolling = new Scrolling(@$code)
+    @$container = @$code.closest('.clusterize-scroll')
+    scroller = new Clusterize(
+      no_data_text: 'Loading...'
+      tag: 'div'
+      contentElem: @$code[0]
+      scrollElem: @$container[0]
+    )
+    @output = new OutputLines(scroller, (line) => @createLine(@formatChunks(line)))
 
-  popInitialOutput: ->
-    output = @$code.text()
-    @$code.empty()
-    output
+  filterOutput: (query) =>
+    @output.setFilter(query)
 
   formatChunks: (chunk) ->
     for formatter in FORMATTERS
@@ -23,32 +57,29 @@ class @TTY
     chunk
 
   appendChunk: (chunk) =>
-    @scrolling.preserve =>
-      @$code.append(@formatChunks(chunk.raw))
+    lines = chunk.rawLines()
+    return unless lines.length
 
-class Scrolling
-  TOLERENCE = 200
+    @preserveScroll =>
+      @output.append(lines)
 
-  constructor: (@$code) ->
-    @$window = $(window)
-    @initialScroll = true
-
-  preserve: (callback) ->
-    wasScrolledToBottom = @isScrolledToBottom()
-    callback()
-    if wasScrolledToBottom
-      @$window.scrollTop(@codeBottomPosition() - @$window.height() + 50)
+  createLine: (fragment) ->
+    div = document.createElement('div')
+    div.appendChild(fragment)
+    div.className = 'output-line'
+    div.outerHTML
 
   isScrolledToBottom: ->
-    if @initialScroll
-      @initialScroll = (window.pageYOffset == 0)
-      true
-    else
-      codeBottom = @codeBottomPosition()
-      codeBottom + TOLERENCE > @viewportBottomPosition() >= codeBottom - TOLERENCE
+    (@getMaxScroll() - @$container.scrollTop()) < 1
 
-  viewportBottomPosition: ->
-    window.pageYOffset + @$window.height()
+  scrollToBottom: ->
+    @$container.scrollTop(@getMaxScroll())
 
-  codeBottomPosition: ->
-    @$code.position().top + @$code.height()
+  getMaxScroll: ->
+    @$code.parent().outerHeight(true) - @$container.outerHeight(true)
+
+  preserveScroll: (callback) ->
+    wasScrolledToBottom = @isScrolledToBottom()
+    callback()
+    @scrollToBottom() if wasScrolledToBottom
+

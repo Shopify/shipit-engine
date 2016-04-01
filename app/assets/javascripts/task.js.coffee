@@ -1,9 +1,19 @@
+#= require string_includes
+#= require mousetrap
+#= require lodash
+#= require clusterize
 #= require_tree ./task
 #= require_self
 
 @OutputStream = new Stream
 
 jQuery ->
+  $code = $('code')
+  initialOutput = $code.attr('data-output')
+  $code.removeAttr('data-output')
+
+  search = new SearchBar($('.search-bar'))
+
   OutputStream.addEventListener 'status', (status, response) ->
     $('[data-status]').attr('data-status', status)
 
@@ -11,16 +21,13 @@ jQuery ->
       window.location = response.rollback_url
 
   tty = new TTY($('body'))
+  search.addEventListener('query', tty.filterOutput)
   OutputStream.addEventListener('chunk', tty.appendChunk)
 
   if task = $('[data-task]').data('task')
     Notifications.init(OutputStream, task)
 
-  $code = $('code')
   OutputStream.init
     status: $code.closest('[data-status]').data('status')
     url: $code.data('next-chunks-url')
-    text: tty.popInitialOutput()
-
-  StickyElement.init('.deploy-banner')
-  StickyElement.init('.sidebar')
+    text: initialOutput

@@ -1,6 +1,9 @@
 .main {
   @include flex(1);
   padding-bottom: 3rem;
+  &.no-footer {
+    padding-bottom: 0;
+  }
 }
 
   section {
@@ -47,6 +50,7 @@
 
 pre {
   background-color: $terminal-black;
+  min-height: 100%;
   overflow-x: auto;
   color: #fff;
   padding: 1.5rem;

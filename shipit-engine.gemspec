@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'coffee-rails', '~> 4.1.0'
   s.add_dependency 'jquery-rails', '~> 4.1.0'
   s.add_dependency 'rails-timeago', '~> 2.13.0'
+  s.add_dependency 'lodash-rails', '~> 4.6.1'
   s.add_dependency 'ansi_stream', '~> 0.0.6'
   s.add_dependency 'autoprefixer-rails', '~> 6.3.2'
   s.add_dependency 'rails_autolink', '~> 1.1.6'
