@@ -95,10 +95,11 @@ module Shipit
     end
 
     def update_deployed_revision(sha)
-      return if active_task?
-
       last_deploy = deploys_and_rollbacks.last
-      actual_deployed_commit = commits.reachable.by_sha!(sha)
+      return if last_deploy.try!(:active?)
+
+      actual_deployed_commit = commits.reachable.by_sha(sha)
+      return unless actual_deployed_commit
 
       if last_deploy && actual_deployed_commit == last_deploy.until_commit
         last_deploy.accept!

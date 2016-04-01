@@ -1,5 +1,8 @@
 module Shipit
   class Task < ActiveRecord::Base
+    ACTIVE_STATUSES = %w(pending running aborting).freeze
+    COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
+
     belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
 
     belongs_to :user
@@ -13,8 +16,8 @@ module Shipit
     serialize :env, Hash
 
     scope :success, -> { where(status: 'success') }
-    scope :completed, -> { where(status: %w(success error failed flapping aborted)) }
-    scope :active, -> { where(status: %w(pending running aborting)) }
+    scope :completed, -> { where(status: COMPLETED_STATUSES) }
+    scope :active, -> { where(status: ACTIVE_STATUSES) }
     scope :exclusive, -> { where(allow_concurrency: false) }
 
     scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
@@ -75,6 +78,10 @@ module Shipit
       state :aborting
       state :aborted
       state :flapping
+    end
+
+    def active?
+      status.in?(ACTIVE_STATUSES)
     end
 
     def report_failure!(_error)

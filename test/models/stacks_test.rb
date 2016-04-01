@@ -133,6 +133,7 @@ module Shipit
     end
 
     test "#update_deployed_revision bail out if there is an active deploy" do
+      @stack.deploys_and_rollbacks.last.update_columns(status: 'running')
       assert_no_difference 'Deploy.count' do
         @stack.update_deployed_revision(shipit_commits(:fifth).sha)
       end
@@ -145,8 +146,6 @@ module Shipit
     end
 
     test "#update_deployed_revision create a new completed deploy" do
-      Deploy.active.update_all(status: 'error')
-
       assert_equal shipit_commits(:fourth), @stack.last_deployed_commit
       assert_difference 'Deploy.count', 1 do
         deploy = @stack.update_deployed_revision(shipit_commits(:fifth).sha)
