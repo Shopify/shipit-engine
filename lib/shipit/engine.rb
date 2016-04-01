@@ -8,6 +8,7 @@ module Shipit
       Rails.application.routes.default_url_options[:host] = Shipit.host
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
 
+      app.config.assets.paths << Emoji.images_path
       app.config.assets.precompile += %w(
         favicon.ico
         task.js
@@ -16,6 +17,9 @@ module Shipit
       )
       app.config.assets.precompile << proc do |path|
         path =~ /\Aplugins\/[\-\w]+\.(js|css)\Z/
+      end
+      app.config.assets.precompile << proc do |path|
+        path.start_with?('emoji/') && path.end_with?('.png')
       end
 
       ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found

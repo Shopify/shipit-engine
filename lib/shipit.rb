@@ -14,6 +14,7 @@ require 'lodash-rails'
 require 'ansi_stream'
 require 'autoprefixer-rails'
 require 'rails_autolink'
+require 'gemoji'
 
 require 'omniauth-github'
 

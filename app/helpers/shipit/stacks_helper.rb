@@ -37,7 +37,7 @@ module Shipit
 
     def render_commit_message(commit)
       message = commit.pull_request_title || commit.message
-      content_tag(:span, message.truncate(COMMIT_TITLE_LENGTH), class: 'event-message')
+      content_tag(:span, emojify(message.truncate(COMMIT_TITLE_LENGTH)), class: 'event-message')
     end
 
     def render_commit_message_with_link(commit)

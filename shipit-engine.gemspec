@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ansi_stream', '~> 0.0.6'
   s.add_dependency 'autoprefixer-rails', '~> 6.3.2'
   s.add_dependency 'rails_autolink', '~> 1.1.6'
+  s.add_dependency 'gemoji', '~> 2.1'
 
   s.add_dependency 'octokit', '~> 4.2.0'
   s.add_dependency 'faraday', '~> 0.9.1'

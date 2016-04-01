@@ -42,7 +42,7 @@
           Deploys are locked by <%= @stack.lock_author.name %>
         </h2>
         <p class="banner__text">
-          <%= auto_link @stack.lock_reason %>
+          <%= auto_link emojify(@stack.lock_reason) %>
         </p>
       </div>
     </div>
