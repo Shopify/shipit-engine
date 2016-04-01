@@ -1,3 +1,5 @@
+<%- read_only ||= false -%>
+
 <li class="task" id="task-<%= task.id %>" data-status="<%= task.status %>">
   <%= render 'shipit/commits/commit_author', commit: task %>
   <a href="<%= stack_task_path(@stack, task) %>" class="status status--<%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
@@ -12,8 +14,14 @@
       </a>
     </span>
     <p class="commit-meta">
-      ran a command <%= timeago_tag(task.created_at, force: true) %>
-      <span class="utc-timecode">at <%= task.created_at.strftime('%H:%M:%S') %> UTC</span>
+      ran a command
+    </p>
+    <p class="commit-meta">
+      <% if read_only %>
+        <span class="utc-timecode">on <%= task.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
+      <% else %>
+        <%= timeago_tag(task.created_at, force: true) %>
+      <% end %>
     </p>
   </div>
 </li>

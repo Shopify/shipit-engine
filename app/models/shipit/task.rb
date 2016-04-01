@@ -107,7 +107,7 @@ module Shipit
     end
 
     def duration
-      ended_at - started_at if duration?
+      Duration.new(ended_at - started_at) if duration?
     end
 
     def spec
