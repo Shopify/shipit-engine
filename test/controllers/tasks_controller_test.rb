@@ -52,6 +52,12 @@ module Shipit
       assert_response :ok
     end
 
+    test "triggered tasks can be observed as raw text" do
+      get :show, stack_id: @stack, id: @task.id, format: "txt"
+      assert_response :success
+      assert_equal("text/plain", @response.content_type)
+    end
+
     test ":abort call abort! on the deploy" do
       @task = shipit_deploys(:shipit_running)
       @task.pid = 42
