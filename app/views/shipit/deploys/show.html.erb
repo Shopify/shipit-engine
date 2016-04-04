@@ -5,7 +5,7 @@
     deploying
   <% end %>
   <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
-  <%= timeago_tag(@deploy.created_at, force: true) %> at <%= @deploy.created_at %>
+  <%= timeago_tag(@deploy.created_at, force: true) %>
 <% end %>
 
 <%= render partial: 'shipit/tasks/task_output', locals: {task: @deploy} %>
