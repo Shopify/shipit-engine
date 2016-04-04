@@ -19,6 +19,10 @@ module Shipit
 
     def show
       task
+      respond_to do |format|
+        format.html
+        format.text { render plain: @task.chunk_output }
+      end
     end
 
     def create
