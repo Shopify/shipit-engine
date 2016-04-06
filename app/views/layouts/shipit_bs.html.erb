@@ -7,12 +7,23 @@
     <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
 
     <%= favicon_link_tag %>
-    <%= stylesheet_link_tag :shipit, media: 'all' %>
-    <%= javascript_include_tag :shipit %>
+    <%= stylesheet_link_tag :shipit_bs, media: 'all' %>
+    <%= javascript_include_tag :shipit_bs %>
 
     <%= csrf_meta_tags %>
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <% flash.each do |name, msg| %>
+      <%= content_tag :div, msg, class: ["flash-#{name}", :flash] %>
+    <% end %>
+
+    <nav class="navbar navbar-fixed-top navbar-light bg-faded">
+      <%= link_to "Shipit", root_path, class: "navbar-brand" %>
+      <div class="pull-xs-right">
+        <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}" %>
+      </div>
+    </nav>
+
+    <%= yield %>
   </body>
 </html>

@@ -4,6 +4,7 @@ module Shipit
 
     def new
       @stack = Stack.new
+      render layout: 'shipit_bs'
     end
 
     def index
