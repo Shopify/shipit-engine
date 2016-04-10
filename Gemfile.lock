@@ -132,6 +132,7 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.3)
     jwt (1.5.1)
+    libv8 (3.16.14.13)
     lodash-rails (4.6.1)
       railties (>= 3.1)
     loofah (2.0.3)
@@ -224,6 +225,7 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     redis-objects (1.2.1)
       redis (>= 3.0.2)
+    ref (2.0.0)
     responders (2.1.2)
       railties (>= 4.2.0, < 5.1)
     rubocop (0.34.0)
@@ -275,6 +277,9 @@ GEM
       concurrent-ruby (~> 1.0.0)
     test_after_commit (0.4.2)
       activerecord (>= 3.2)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.2)
@@ -307,6 +312,7 @@ DEPENDENCIES
   sqlite3
   sucker_punch
   test_after_commit
+  therubyracer
 
 BUNDLED WITH
    1.11.2
