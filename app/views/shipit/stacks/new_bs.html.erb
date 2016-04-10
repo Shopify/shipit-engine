@@ -1,9 +1,10 @@
 <% content_for :page_title do %>
-  <h1>Create a stack</h1>
+Create a stack
 <% end %>
 
 <div class='container'>
   <section>
+    <h1>Create a stack</h1>
     <%= form_for @stack do |f| %>
       <fieldset class='form-group'>
         <%= label_tag :stack_repo_owner, 'Repo' %>

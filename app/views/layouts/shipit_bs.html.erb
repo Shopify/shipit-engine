@@ -19,6 +19,15 @@
 
     <nav class="navbar navbar-fixed-top navbar-light bg-faded">
       <%= link_to "Shipit", root_path, class: "navbar-brand" %>
+
+      <ul class="nav navbar-nav">
+        <li class="nav-item active">
+          <%= link_to "#", class: "nav-link" do %>
+            <%= yield :page_title %>
+          <% end %>
+        </li>
+      </ul>
+
       <div class="pull-xs-right">
         <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}" %>
       </div>

@@ -4,3 +4,19 @@
 body {
   padding-top: 5rem;
 }
+
+.navbar-brand {
+  background: asset-data-url('anchor.svg') center center no-repeat;
+  display: block;
+  width: 40px;
+  height: 40px;
+  transition: transform .3s ease-in-out;
+  text-indent: -9999px;
+  top: 50%;
+  right: 100%;
+  margin-right: 1em;
+
+  &:hover {
+    transform: rotate(-25deg);
+  }
+}
