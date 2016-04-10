@@ -27,7 +27,11 @@ module Shipit
     def ensure_required_settings
       return if Shipit.all_settings_present?
 
-      render 'shipit/missing_settings'
+      if params[:layout] == 'bootstrap'
+        render 'shipit/missing_settings_bs', layout: 'shipit_bs'
+      else
+        render 'shipit/missing_settings'
+      end
     end
 
     def force_github_authentication

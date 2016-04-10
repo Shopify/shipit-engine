@@ -31,6 +31,10 @@
       <div class="pull-xs-right">
         <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}" %>
       </div>
+
+      <div class="container pull-xs-right">
+        <%= yield :primary_navigation %>
+      </div>
     </nav>
 
     <div class="main">
