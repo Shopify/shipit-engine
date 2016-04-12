@@ -4,6 +4,7 @@ module Shipit
 
     def perform(stack)
       return if stack.active_task?
+      return if stack.inaccessible?
 
       commands = StackCommands.new(stack)
 
