@@ -174,7 +174,7 @@ module Shipit
   end
 
   def feature_bootstrap?
-    secrets.features.include?('bootstrap')
+    secrets.features.try!(:include?, 'bootstrap')
   end
 
   protected

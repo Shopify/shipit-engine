@@ -514,17 +514,6 @@ development:
 
 ```
 
-**`features`** is the list of development features you want to enable. These are typically not production ready.
-
-For example:
-
-```yml
-development:
-  features:
-    - bootstrap
-
-```
-
 <h2 id="script-parameters">Script parameters</h2>
 
 Your deploy scripts have access to the following environment variables:
