@@ -4,7 +4,6 @@ module Shipit
 
     def new
       @stack = Stack.new
-      render 'new_bs', layout: 'shipit_bs' if Shipit.feature_bootstrap? || params[:layout] == 'bootstrap'
     end
 
     def index
