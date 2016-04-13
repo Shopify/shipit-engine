@@ -27,7 +27,7 @@ module Shipit
     def ensure_required_settings
       return if Shipit.all_settings_present?
 
-      if params[:layout] == 'bootstrap'
+      if Shipit.feature_bootstrap? || params[:layout] == 'bootstrap'
         render 'shipit/missing_settings_bs', layout: 'shipit_bs'
       else
         render 'shipit/missing_settings'

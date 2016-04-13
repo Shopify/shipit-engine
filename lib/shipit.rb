@@ -173,6 +173,10 @@ module Shipit
     end
   end
 
+  def feature_bootstrap?
+    secrets.features.include?('bootstrap')
+  end
+
   protected
 
   def revision_file
