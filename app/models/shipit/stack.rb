@@ -36,7 +36,8 @@ module Shipit
     after_commit :setup_hooks, :sync_github, on: :create
     after_touch :clear_cache
 
-    validates :repo_name, uniqueness: {scope: %i(repo_owner environment)}
+    validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
+                                       message: 'cannot be used more than once with this environment'}
     validates :repo_owner, :repo_name, :environment, presence: true, ascii_only: true
     validates :repo_owner, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_OWNER_MAX_SIZE}
     validates :repo_name, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_NAME_MAX_SIZE}

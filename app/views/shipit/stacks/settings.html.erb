@@ -9,6 +9,11 @@
     <div class="setting-section">
       <%= form_for @stack do |f| %>
         <div class="field-wrapper">
+          <%= f.label :environment %>
+          <%= f.text_field :environment, placeholder: 'production' %>
+        </div>
+
+        <div class="field-wrapper">
           <%= f.label :deploy_url, 'Deploy URL (Where is this stack deployed to?)' %>
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
         </div>

@@ -27,3 +27,8 @@ textarea {
 .field-wrapper {
   margin-bottom: 1.5rem;
 }
+
+.field_with_errors {
+  border: 1px solid $red;
+  display: inline-block;
+}

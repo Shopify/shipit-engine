@@ -11,7 +11,7 @@ module Shipit
     test "repo_owner, repo_name and environment uniqueness is enforced" do
       clone = Stack.new(@stack.attributes.except('id'))
       refute clone.save
-      assert_equal ["has already been taken"], clone.errors[:repo_name]
+      assert_equal ["cannot be used more than once with this environment"], clone.errors[:repo_name]
     end
 
     test "repo_owner, repo_name, and environment can only be ASCII" do
@@ -28,7 +28,7 @@ module Shipit
             environment: @stack.environment,
           )
         end
-        assert_equal 'Validation failed: Repo name has already been taken', error.message
+        assert_equal 'Validation failed: Repo name cannot be used more than once with this environment', error.message
       end
 
       new_stack = Stack.create!(repo_owner: 'FOO', repo_name: 'BAR')
