@@ -94,7 +94,7 @@ module Shipit
     end
 
     def report_error!(error)
-      write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\t")}\n")
+      write("#{error.class}: #{error.message}\n\t#{error.backtrace.join("\n\t")}\n")
       error!
     end
 
