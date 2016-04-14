@@ -90,7 +90,7 @@ module Shipit
     end
 
     def currently_deployed?
-      until_commit_id == stack.last_deployed_commit.try!(:id)
+      until_commit_id == stack.last_deployed_commit.id
     end
 
     def commits

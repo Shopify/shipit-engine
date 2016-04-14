@@ -110,7 +110,7 @@ module Shipit
 
       @stack.deploys.create!(
         user_id: walrus.id,
-        since_commit: @stack.last_deployed_commit,
+        since_commit: @stack.commits.first,
         until_commit: new_commit,
         status: 'success',
       )

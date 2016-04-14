@@ -23,12 +23,12 @@ module Shipit
 
     def self.newer_than(commit)
       return all unless commit
-      where('id > ?', commit.is_a?(Commit) ? commit.id : commit)
+      where('id > ?', commit.try(:id) || commit)
     end
 
     def self.until(commit)
       return all unless commit
-      where('id <= ?', commit.is_a?(Commit) ? commit.id : commit)
+      where('id <= ?', commit.try(:id) || commit)
     end
 
     def self.successful

@@ -2,6 +2,22 @@ require 'fileutils'
 
 module Shipit
   class Stack < ActiveRecord::Base
+    module NoDeployedCommit
+      extend self
+
+      def id
+        -1
+      end
+
+      def sha
+        ''
+      end
+
+      def blank?
+        true
+      end
+    end
+
     REPO_OWNER_MAX_SIZE = 39
     REPO_NAME_MAX_SIZE = 100
     ENVIRONMENT_MAX_SIZE = 50
@@ -57,7 +73,7 @@ module Shipit
     end
 
     def trigger_task(definition_id, user, env: nil)
-      commit = last_deployed_commit
+      commit = last_deployed_commit.presence || commits.first
       task = tasks.create(
         user_id: user.id,
         definition: find_task_definition(definition_id),
@@ -70,7 +86,7 @@ module Shipit
     end
 
     def trigger_deploy(until_commit, user, env: nil)
-      since_commit = last_deployed_commit
+      since_commit = last_deployed_commit.presence || commits.first
 
       deploy = deploys.create(
         user_id: user.id,
@@ -108,7 +124,7 @@ module Shipit
       else
         deploys.create!(
           until_commit: actual_deployed_commit,
-          since_commit: last_deployed_commit,
+          since_commit: last_deployed_commit.presence || commits.first,
           status: 'success',
         )
       end
@@ -145,7 +161,7 @@ module Shipit
       if deploy = last_successful_deploy
         deploy.until_commit
       else
-        commits.first
+        NoDeployedCommit
       end
     end
 
