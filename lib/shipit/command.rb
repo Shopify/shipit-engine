@@ -150,7 +150,7 @@ module Shipit
       Timeout.timeout(wait) do
         read_stream(@out, &block)
       end
-    rescue Timeout::Error
+    rescue Timeout::Error, Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
     end
 
     def kill(sig)
