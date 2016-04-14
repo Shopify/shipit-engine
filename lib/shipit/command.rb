@@ -105,9 +105,6 @@ module Shipit
       self
     end
 
-    def check_status
-    end
-
     def red(text)
       "\033[1;31m#{text}\033[0m"
     end
