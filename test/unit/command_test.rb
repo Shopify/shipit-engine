@@ -43,5 +43,19 @@ module Shipit
       command = Command.new({'cap $LANG deploy' => {'timeout' => 10}}, default_timeout: 5, env: {}, chdir: '.')
       assert_equal 10, command.timeout
     end
+
+    test "command not found" do
+      error = assert_raises Command::NotFound do
+        Command.new('does-not-exist foo bar', env: {}, chdir: '.').run
+      end
+      assert_equal 'does-not-exist: command not found', error.message
+    end
+
+    test "permission denied" do
+      error = assert_raises Command::Denied do
+        Command.new('/etc/passwd foo bar', env: {}, chdir: '.').run
+      end
+      assert_equal '/etc/passwd: Permission denied', error.message
+    end
   end
 end

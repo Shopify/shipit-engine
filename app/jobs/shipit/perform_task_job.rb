@@ -20,6 +20,7 @@ module Shipit
       perform_task
       @task.complete!
     rescue Command::Error => error
+      @task.write("\n#{error.message}\n")
       @task.report_failure!(error)
     rescue StandardError => error
       @task.report_error!(error)

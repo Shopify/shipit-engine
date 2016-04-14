@@ -8,6 +8,9 @@ module Shipit
     MAX_READ = 64.kilobytes
 
     Error = Class.new(StandardError)
+    Failed = Class.new(Error)
+    NotFound = Class.new(Error)
+    Denied = Class.new(Error)
 
     attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
 
@@ -72,8 +75,14 @@ module Shipit
       child_in = @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
       with_full_path do
-        @out, child_in, @pid = PTY.spawn(@env, *interpolated_arguments, chdir: @chdir)
-        child_in.close
+        begin
+          @out, child_in, @pid = PTY.spawn(@env, *interpolated_arguments, chdir: @chdir)
+          child_in.close
+        rescue Errno::ENOENT
+          raise NotFound, "#{Shellwords.split(interpolated_arguments.first).first}: command not found"
+        rescue Errno::EACCES
+          raise Denied, "#{Shellwords.split(interpolated_arguments.first).first}: Permission denied"
+        end
       end
       @started = true
       self
@@ -93,8 +102,6 @@ module Shipit
 
       _, status = Process.waitpid2(@pid)
       @code = status.exitstatus
-      yield exit_message + "\n" unless success?
-
       self
     end
 
@@ -107,7 +114,7 @@ module Shipit
 
     def stream!(&block)
       stream(&block)
-      raise Command::Error.new(exit_message) unless success?
+      raise Failed.new(exit_message) unless success?
       self
     end
 
