@@ -1,0 +1,97 @@
+<% content_for :page_title do %>
+Shipit
+<% end %>
+
+<div class="jumbotron bg-warning">
+  <div class="container">
+    <h1 class="display-4">Oops! You're not ready to ship just yet.</h1>
+    <p class="lead">
+      Shipit is missing some of the information it needs to work properly.
+      Once you've added the configuration, make sure you restart the Rails server.
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  <section>
+    <header>
+      <h2>GitHub application</h2>
+    </header>
+
+    <% if Shipit.github_oauth_id.blank? || Shipit.github_oauth_secret.blank? %>
+      <p><%= missing_github_oauth_message %></p>
+    <% end %>
+    <p id="github_oauth_id">
+      ID:
+    <% if Shipit.github_oauth_id.present? %>
+       Success!
+    <% else %>
+      <span class="missing">
+        <%= missing_github_oauth_id_message %>
+      </span>
+    <% end %>
+    </p>
+
+    <p id="github_oauth_secret">
+    Secret:
+    <% if Shipit.github_oauth_secret.present? %>
+      Success!
+    <% else %>
+      <span class="missing">
+        <%= missing_github_oauth_secret_message %>
+      </span>
+    <% end %>
+    </p>
+  </section>
+
+  <section>
+    <header>
+      <h2>GitHub API</h2>
+    </header>
+
+    <p id="github_api">
+      Token:
+      <% if Shipit.github_api_credentials.present? %>
+        Success!
+      <% else %>
+        <span class="missing">
+          <%= missing_github_api_credentials_message %>
+        </span>
+      <% end %>
+    </p>
+  </section>
+
+  <section>
+    <header>
+      <h2>Redis</h2>
+    </header>
+
+    <p id="redis_url">
+      Redis:
+      <% if Shipit.redis_url.present? %>
+        Success!
+      <% else %>
+        <span class="missing">
+          <%= missing_redis_url_message %>
+        </span>
+      <% end %>
+    </p>
+  </section>
+
+  <section>
+    <header>
+      <h2>Host</h2>
+    </header>
+
+    <p id="host">
+      Host:
+      <% if Shipit.host.present? %>
+        Success!
+      <% else %>
+        <span class="missing">
+          <%= missing_host_message %>
+        </span>
+      <% end %>
+    </p>
+  </section>
+</div>
