@@ -85,4 +85,5 @@ Shipit::Engine.routes.draw do
       end
     end
   end
+  get '/stacks/:id' => 'stacks#lookup'
 end

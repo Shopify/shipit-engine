@@ -24,6 +24,11 @@ module Shipit
       @commits = @commits.to_a
     end
 
+    def lookup
+      @stack = Stack.find(params[:id])
+      redirect_to stack_url(@stack)
+    end
+
     def create
       @stack = Stack.create(create_params)
       respond_with(@stack)

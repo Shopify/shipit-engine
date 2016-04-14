@@ -167,5 +167,10 @@ module Shipit
       patch :update, id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)
       assert_redirected_to stack_path(@stack)
     end
+
+    test "#lookup redirects to the canonical URL" do
+      get :lookup, id: @stack.id
+      assert_redirected_to stack_path(@stack)
+    end
   end
 end
