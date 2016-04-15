@@ -6,7 +6,7 @@
   <section>
     <div class="setting-section">
       <%= form_for @stack do |f| %>
-        <p>
+        <div class="field-wrapper">
           <%= label_tag "Repo" %>
           <br>
           <%= Shipit.github_url %>
@@ -14,25 +14,25 @@
           <%= f.text_field :repo_owner, placeholder: 'e.g. Shopify', required: true, class: "repo" %>
           /
           <%= f.text_field :repo_name, required: true, pattern: "^[a-zA-Z0-9\-_\.]+$", class: "repo" %>
-        </p>
-        <p>
+        </div>
+        <div class="field-wrapper">
           <%= f.label :branch %>
           <%= f.text_field :branch, placeholder: 'master' %>
-        </p>
-        <p>
+        </div>
+        <div class="field-wrapper">
           <%= f.label :environment %>
           <%= f.text_field :environment, placeholder: 'production' %>
-        </p>
-        <p>
+        </div>
+        <div class="field-wrapper">
           <%= f.label :deploy_url %>
+          <span class="form-hint"><small>Where is this stack deployed to?</small></span>
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
-          <span class="form-hint">Where is this stack deployed to?</span>
-        </p>
-        <p>
+        </div>
+        <div class="field-wrapper">
           <%= f.check_box :ignore_ci %>
           <%= f.label :ignore_ci, "Allow deploys regardless of CI status" %>
-        </p>
-        <p><%= f.submit class: 'btn' %></p>
+        </div>
+        <div class="field-wrapper"><%= f.submit class: 'btn' %></div>
       <% end %>
     </div>
   </section>

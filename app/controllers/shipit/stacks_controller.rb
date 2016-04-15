@@ -30,7 +30,10 @@ module Shipit
     end
 
     def create
-      @stack = Stack.create(create_params)
+      @stack = Stack.new(create_params)
+      unless @stack.save
+        flash[:warning] = @stack.errors.full_messages.to_sentence
+      end
       respond_with(@stack)
     end
 
@@ -78,7 +81,8 @@ module Shipit
     end
 
     def update_params
-      params.require(:stack).permit(:deploy_url, :lock_reason, :continuous_deployment, :ignore_ci).tap do |params|
+      params.require(:stack).permit(:deploy_url, :lock_reason, :environment,
+                                    :continuous_deployment, :ignore_ci).tap do |params|
         params[:lock_author_id] = params[:lock_reason].present? ? current_user.id : nil
       end
     end
