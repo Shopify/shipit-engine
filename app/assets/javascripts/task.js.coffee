@@ -1,5 +1,6 @@
 #= require string_includes
 #= require mousetrap
+#= require mousetrap-global-bind
 #= require lodash
 #= require clusterize
 #= require_tree ./task

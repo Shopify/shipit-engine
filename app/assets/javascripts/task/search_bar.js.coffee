@@ -8,7 +8,7 @@ class @SearchBar
     @$input.on('blur', @closeIfEmpty)
     @$input.on('input', @updateQuery)
     @broadcastQueryChange = _.debounce(@immediateBroadcastQueryChange, DEBOUNCE)
-    Mousetrap.bind(['command+f', 'ctrl+f'], @open)
+    Mousetrap.bindGlobal(['command+f', 'ctrl+f'], @open)
 
     if @query
       @open()
