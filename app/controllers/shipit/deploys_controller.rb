@@ -9,7 +9,7 @@ module Shipit
     def new
       @commit = @stack.commits.by_sha!(params[:sha])
       @commit.checks.schedule if @stack.checks?
-      @deploy = @stack.deploys.new(until_commit: @commit, since_commit: @stack.last_deployed_commit)
+      @deploy = @stack.build_deploy(@commit, current_user)
     end
 
     def show

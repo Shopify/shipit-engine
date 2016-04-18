@@ -86,15 +86,19 @@ module Shipit
       task
     end
 
-    def trigger_deploy(until_commit, user, env: nil)
+    def build_deploy(until_commit, user, env: nil)
       since_commit = last_deployed_commit.presence || commits.first
-
-      deploy = deploys.create(
+      deploys.build(
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
         env: filter_deploy_envs(env || {}),
       )
+    end
+
+    def trigger_deploy(*args)
+      deploy = build_deploy(*args)
+      deploy.save!
       deploy.enqueue
       deploy
     end
