@@ -3,12 +3,16 @@ class @SearchBar
 
   constructor: (@$bar) ->
     @eventListeners = {}
-    @query = ''
+    @query = window.location.hash.replace(/^#/, '')
     @$input = @$bar.find('.search-input')
     @$input.on('blur', @closeIfEmpty)
     @$input.on('input', @updateQuery)
-    @broadcastQueryChange = _.debounce(@rawBroadcastQueryChange, DEBOUNCE)
+    @broadcastQueryChange = _.debounce(@immediateBroadcastQueryChange, DEBOUNCE)
     Mousetrap.bind(['command+f', 'ctrl+f'], @open)
+
+    if @query
+      @open()
+      @setQuery(@query)
 
   addEventListener: (type, handler) ->
     @listeners(type).push(handler)
@@ -16,17 +20,25 @@ class @SearchBar
   listeners: (type) ->
     @eventListeners[type] ||= []
 
+  setQuery: (query) ->
+    @$input.val(query)
+    @updateQuery()
+
   updateQuery: =>
     oldQuery = @query
     @query = @$input.val()
     @broadcastQueryChange() unless @query == oldQuery
 
-  rawBroadcastQueryChange: =>
+  immediateBroadcastQueryChange: =>
+    @updateHash()
     for handler in @listeners('query')
       handler(@query)
 
+  updateHash: ->
+    window.location.hash = "##{@query}"
+
   open: (event) =>
-    event.preventDefault()
+    event?.preventDefault()
     @$bar.removeClass('hidden')
     @focus()
 

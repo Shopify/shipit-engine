@@ -22,6 +22,7 @@ jQuery ->
 
   tty = new TTY($('body'))
   search.addEventListener('query', tty.filterOutput)
+  search.immediateBroadcastQueryChange()
   OutputStream.addEventListener('chunk', tty.appendChunk)
 
   if task = $('[data-task]').data('task')
