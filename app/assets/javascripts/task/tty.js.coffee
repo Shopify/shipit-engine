@@ -1,6 +1,7 @@
 class OutputLines
   constructor: (@screen, @render) ->
     @query = ''
+    @highlightRegexp = null
     @raw = []
     @renderingCache = {}
     @stripCache = {}
@@ -10,6 +11,7 @@ class OutputLines
       @screen.options.no_data_text = 'No matches'
     else
       @screen.options.no_data_text = 'Loading...'
+    @highlightRegexp = @buildHighlightRegexp(@query)
     @reset()
 
   reset: ->
@@ -28,7 +30,17 @@ class OutputLines
 
   renderLines: (lines) ->
     for line in lines
-      @renderingCache[line] ||= @render(line)
+      @highlight(@renderingCache[line] ||= @render(line))
+
+  buildHighlightRegexp: (query) ->
+    pattern = query.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/(\s+)/g, '(<[^>]+>)*$1(<[^>]+>)*')
+    new RegExp("(#{pattern})", 'g')
+
+  highlight: (renderedLine) ->
+    return renderedLine unless @query
+
+    renderedLine.replace(@highlightRegexp, '<mark>$1</mark>').replace(/(<mark>[^<>]*)((<[^>]+>)+)([^<>]*<\/mark>)/, '$1</mark>$2<mark>$4');
+
 
 class @TTY
   FORMATTERS = []
