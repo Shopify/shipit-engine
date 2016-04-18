@@ -3,6 +3,7 @@ class OutputLines
     @query = ''
     @raw = []
     @renderingCache = {}
+    @stripCache = {}
 
   setFilter: (query) ->
     if @query = query
@@ -16,7 +17,10 @@ class OutputLines
 
   filter: (lines) ->
     return lines unless @query
-    line for line in lines when line.includes(@query)
+    line for line in lines when @strip(line).includes(@query)
+
+  strip: (line) ->
+    @stripCache[line] ||= AnsiStream.strip(line)
 
   append: (lines) ->
     @raw = @raw.concat(lines)
