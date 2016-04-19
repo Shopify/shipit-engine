@@ -310,6 +310,7 @@ DEPENDENCIES
   mysql2
   pg
   pry
+  redis (~> 3.2)
   rubocop (= 0.34.0)
   shipit-engine!
   simplecov

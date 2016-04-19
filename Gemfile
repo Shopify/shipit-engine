@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-
+gem 'redis', '~> 3.2' # 3.3 breaks the test suite because it uses `Timeout.timeout`
 gem 'mysql2'
 gem 'pg'
 gem 'sqlite3'
