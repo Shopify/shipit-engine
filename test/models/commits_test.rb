@@ -402,8 +402,8 @@ module Shipit
     private
 
     def expect_event(stack)
-      Pubsubstub::RedisPubSub.expects(:publish).at_least_once
-      Pubsubstub::RedisPubSub.expects(:publish).with do |channel, event|
+      Pubsubstub.expects(:publish).at_least_once
+      Pubsubstub.expects(:publish).with do |channel, event|
         data = JSON.load(event.data)
         channel == "stack.#{stack.id}" && data['url'] == "/#{stack.to_param}"
       end

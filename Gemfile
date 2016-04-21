@@ -8,6 +8,8 @@ gem 'pg'
 gem 'sqlite3'
 gem 'therubyracer', platform: :ruby
 
+gem 'pubsubstub', github: 'byroot/pubsubstub', branch: 'bye-bye-em'
+
 group :development do
   gem 'sucker_punch', require: %w(sucker_punch sucker_punch/async_syntax)
 end

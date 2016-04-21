@@ -315,7 +315,7 @@ module Shipit
     def broadcast_update
       payload = {url: Shipit::Engine.routes.url_helpers.stack_path(self)}.to_json
       event = Pubsubstub::Event.new(payload, name: "stack.update")
-      Pubsubstub::RedisPubSub.publish("stack.#{id}", event)
+      Pubsubstub.publish("stack.#{id}", event)
     end
 
     def setup_hooks

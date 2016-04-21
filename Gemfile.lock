@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/byroot/pubsubstub.git
+  revision: ca82af97faa69d3206bbd0f4c3e1eb2088abe92a
+  branch: bye-bye-em
+  specs:
+    pubsubstub (0.0.15)
+      redis (~> 3.0)
+      sinatra (~> 1.4)
+
 PATH
   remote: .
   specs:
@@ -105,13 +114,9 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     docile (1.1.5)
-    em-hiredis (0.3.1)
-      eventmachine (~> 1.0)
-      hiredis (~> 0.6.0)
     encryptor (2.0.0)
     equalizer (0.0.11)
     erubis (2.7.0)
-    eventmachine (1.2.0.1)
     execjs (2.6.0)
     explicit-parameters (0.1.1)
       actionpack (~> 4.0)
@@ -128,7 +133,6 @@ GEM
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.3)
-    hiredis (0.6.1)
     i18n (0.7.0)
     ice_nine (0.11.2)
     jquery-rails (4.1.1)
@@ -184,11 +188,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pubsubstub (0.0.15)
-      em-hiredis (~> 0.2)
-      eventmachine (~> 1.0)
-      redis (~> 3.0)
-      sinatra (~> 1.4)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -310,6 +309,7 @@ DEPENDENCIES
   mysql2
   pg
   pry
+  pubsubstub!
   redis (~> 3.2)
   rubocop (= 0.34.0)
   shipit-engine!
