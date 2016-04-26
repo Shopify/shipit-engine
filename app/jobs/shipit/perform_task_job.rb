@@ -24,6 +24,9 @@ module Shipit
       @task.report_failure!(error)
     rescue StandardError => error
       @task.report_error!(error)
+    rescue Exception => error
+      @task.report_error!(error)
+      raise
     end
 
     def perform_task
