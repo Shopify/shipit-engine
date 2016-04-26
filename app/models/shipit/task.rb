@@ -183,7 +183,7 @@ module Shipit
     end
 
     def pid=(pid)
-      Shipit.redis.set("task:#{id}:pid", pid, ex: 1.hour.to_i)
+      Shipit.redis.set("task:#{id}:pid", pid, ex: 24.hour.to_i)
     end
 
     def abort!(rollback_once_aborted: false)
