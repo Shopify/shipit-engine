@@ -65,13 +65,13 @@ module Shipit
     end
 
     test "mark deploy as error if a command timeout" do
-      Timeout.expects(:timeout).raises(Timeout::Error.new)
+      Command.any_instance.expects(:timed_out?).returns(true)
       Command.any_instance.expects(:terminate!)
       assert_nothing_raised do
         @job.perform(@deploy)
       end
-      assert @deploy.reload.error?
-      assert_includes @deploy.chunk_output, 'Timeout::Error'
+      assert_equal 'failed', @deploy.reload.status
+      assert_includes @deploy.chunk_output, 'TimedOut'
     end
 
     test "records stack support for rollbacks and fetching deployed revision" do

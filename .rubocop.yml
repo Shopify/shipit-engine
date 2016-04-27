@@ -17,6 +17,9 @@ inherit_from:
 Rails/FindEach:
   Enabled: false
 
+Lint/RescueException:
+  Enabled: false
+
 Lint/AssignmentInCondition:
   Enabled: false
 

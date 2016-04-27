@@ -241,6 +241,7 @@ module Shipit
 
     test "transitioning to aborted schedule a rollback if required" do
       @deploy = shipit_deploys(:shipit_running)
+      @deploy.ping
       @deploy.pid = 42
       @deploy.abort!(rollback_once_aborted: true)
 
@@ -317,51 +318,37 @@ module Shipit
       assert_equal @user, @stack.lock_author
     end
 
-    test "pid is persisted" do
-      clone = Deploy.find(@deploy.id)
-      assert_equal 42, clone.pid
-    end
-
     test "abort! transition to `aborting`" do
+      @deploy.ping
       @deploy.abort!
       assert_equal 'aborting', @deploy.status
     end
 
     test "abort! schedule the rollback if `rollback_once_aborted` is true" do
       @deploy.abort!(rollback_once_aborted: true)
-      assert @deploy.reload.rollback_once_aborted?
+      assert_predicate @deploy.reload, :rollback_once_aborted?
     end
 
-    test "abort! sends a SIGTERM to the recorded PID" do
-      Process.expects(:kill).with('TERM', @deploy.pid)
+    test "abort! record the abort order if the task is alive" do
+      @deploy.ping
+      aborts = []
+
       @deploy.abort!
+      @deploy.should_abort? { |abort_count| aborts << abort_count }
+      assert_equal [1], aborts
+
+      3.times { @deploy.abort! }
+      @deploy.should_abort? { |abort_count| aborts << abort_count }
+      assert_equal [1, 2, 3, 4], aborts
     end
 
-    test "abort! still succeeds if the process is already dead" do
-      Process.expects(:kill).with('TERM', @deploy.pid).raises(Errno::ESRCH)
-      assert_nothing_raised do
-        @deploy.abort!
-      end
-    end
-
-    test "abort! transition to `aborted` if the process is already dead" do
+    test "abort! mark the deploy as error if it isn't alive and isn't finished" do
       @deploy = shipit_deploys(:shipit_running)
-      @deploy.pid = 42
+      refute_predicate @deploy, :alive?
+      refute_predicate @deploy, :finished?
 
       @deploy.abort!
-      assert_equal 'aborting', @deploy.status
-
-      Process.expects(:kill).with('TERM', @deploy.pid).raises(Errno::ESRCH)
-      @deploy.abort!
-      assert_equal 'aborted', @deploy.status
-    end
-
-    test "abort! bails out if the PID is nil" do
-      Process.expects(:kill).never
-      @deploy.pid = nil
-      assert_nothing_raised do
-        @deploy.abort!
-      end
+      assert_predicate @deploy, :error?
     end
 
     test "destroy deletes the related output chunks" do
@@ -435,6 +422,12 @@ module Shipit
         @deploy.reject!
       end
       assert_predicate @deploy, :flapping?
+    end
+
+    test "#ping updates the task status key" do
+      refute_predicate @deploy, :alive?
+      @deploy.ping
+      assert_predicate @deploy, :alive?
     end
 
     private
