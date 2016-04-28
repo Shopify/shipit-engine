@@ -13,7 +13,7 @@ module Shipit
     belongs_to :until_commit, class_name: 'Commit'
     belongs_to :since_commit, class_name: 'Commit'
 
-    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :destroy
+    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all
 
     serialize :definition, TaskDefinition
     serialize :env, Hash
