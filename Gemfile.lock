@@ -225,7 +225,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.1.0)
     rake (10.5.0)
-    redis (3.2.2)
+    redis (3.3.0)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
     redis-objects (1.2.1)
@@ -310,7 +310,6 @@ DEPENDENCIES
   mysql2
   pg
   pry
-  redis (~> 3.2)
   rubocop (= 0.34.0)
   shipit-engine!
   simplecov
