@@ -29,6 +29,28 @@ module Shipit
       raise
     end
 
+    def abort!(signal: 'TERM')
+      pid = @task.pid
+      if pid
+        @task.write("$ kill #{pid}\n")
+        Process.kill(signal, pid)
+      else
+        @task.write("Can't abort, no recorded pid, WTF?\n")
+      end
+    rescue SystemCallError => error
+      @task.write("kill: (#{pid}) - #{error.message}\n")
+    end
+
+    def check_for_abort
+      @task.should_abort? do |times_killed|
+        if times_killed > 3
+          abort!(signal: 'KILL')
+        else
+          abort!
+        end
+      end
+    end
+
     def perform_task
       Bundler.with_clean_env do
         capture_all @commands.install_dependencies
@@ -49,7 +71,10 @@ module Shipit
     end
 
     def capture(command)
-      command.start
+      command.start do
+        @task.ping
+        check_for_abort
+      end
       @task.write("$ #{command}\npid: #{command.pid}\n")
       @task.pid = command.pid
       command.stream! do |line|

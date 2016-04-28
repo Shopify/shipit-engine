@@ -60,7 +60,7 @@ module Shipit
 
     test ":abort call abort! on the deploy" do
       @task = shipit_deploys(:shipit_running)
-      @task.pid = 42
+      @task.ping
       post :abort, stack_id: @stack.to_param, id: @task.id
 
       @task.reload
@@ -71,7 +71,7 @@ module Shipit
 
     test ":abort schedule the rollback if `rollback` is present" do
       @task = shipit_deploys(:shipit_running)
-      @task.pid = 42
+      @task.ping
       post :abort, stack_id: @stack.to_param, id: @task.id, rollback: 'true'
 
       @task.reload

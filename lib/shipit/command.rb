@@ -11,6 +11,7 @@ module Shipit
     Failed = Class.new(Error)
     NotFound = Class.new(Error)
     Denied = Class.new(Error)
+    TimedOut = Class.new(Error)
 
     attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
 
@@ -19,6 +20,14 @@ module Shipit
       @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
       @env = env
       @chdir = chdir.to_s
+    end
+
+    def with_timeout(new_timeout)
+      old_timeout = timeout
+      @timeout = new_timeout
+      yield
+    ensure
+      @timeout = old_timeout
     end
 
     def to_s
@@ -70,8 +79,9 @@ module Shipit
       interpolate_environment_variables(@args)
     end
 
-    def start
+    def start(&block)
       return if @started
+      @control_block = block
       child_in = @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
       with_full_path do
@@ -92,7 +102,7 @@ module Shipit
       start
       begin
         read_stream(@out, &block)
-      rescue Timeout::Error => error
+      rescue TimedOut => error
         @code = 'timeout'
         yield red("No output received in the last #{timeout} seconds.") + "\n"
         terminate!(&block)
@@ -115,28 +125,42 @@ module Shipit
       self
     end
 
+    def timed_out?
+      @last_output_at ||= Time.now.to_i
+      (@last_output_at + timeout) < Time.now.to_i
+    end
+
+    def touch_last_output_at
+      @last_output_at = Time.now.to_i
+    end
+
+    def yield_control
+      @control_block.call if @control_block
+    end
+
     def read_stream(io)
+      touch_last_output_at
       loop do
-        with_timeout do
-          yield io.readpartial(MAX_READ)
+        begin
+          yield_control
+          yield io.read_nonblock(MAX_READ)
+          touch_last_output_at
+        rescue IO::WaitReadable
+          raise TimedOut if timed_out?
+          IO.select([io], nil, nil, 1)
+          retry
         end
       end
     rescue EOFError
     end
 
-    def with_timeout(&block)
-      return yield unless timeout
-
-      Timeout.timeout(timeout, &block)
-    end
-
     def terminate!(&block)
-      kill_and_wait('INT', 5, &block)
-      kill_and_wait('INT', 2, &block)
-      kill_and_wait('TERM', 5, &block)
-      kill_and_wait('TERM', 2, &block)
-      kill('KILL', &block)
-    rescue Errno::ECHILD
+      kill_and_wait('INT', 5, &block) ||
+        kill_and_wait('INT', 2, &block) ||
+        kill_and_wait('TERM', 5, &block) ||
+        kill_and_wait('TERM', 2, &block) ||
+        kill('KILL', &block)
+    rescue Errno::ECHILD, Errno::ESRCH
       true # much success
     ensure
       begin
@@ -147,10 +171,13 @@ module Shipit
 
     def kill_and_wait(sig, wait, &block)
       kill(sig, &block)
-      Timeout.timeout(wait) do
-        read_stream(@out, &block)
+      begin
+        with_timeout(wait) do
+          read_stream(@out, &block)
+        end
+      rescue TimedOut, Errno::EIO # EIO is somewhat expected on Linux: http://stackoverflow.com/a/10306782
       end
-    rescue Timeout::Error, Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
+      Process.wait(@pid, Process::WNOHANG)
     end
 
     def kill(sig)

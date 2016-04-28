@@ -39,9 +39,18 @@ module Shipit
       assert_equal 5, command.timeout
     end
 
-    test "#timeout returnsthe command option timeout over the `default_timeout` if present" do
+    test "#timeout returns the command option timeout over the `default_timeout` if present" do
       command = Command.new({'cap $LANG deploy' => {'timeout' => 10}}, default_timeout: 5, env: {}, chdir: '.')
       assert_equal 10, command.timeout
+    end
+
+    test "the process is properly terminated if it times out" do
+      # Minitest being run in an at_exit callback, signal handling etc is unreliable
+      assert system(
+        Engine.root.join('test/dummy/bin/rails').to_s,
+        'runner',
+        Engine.root.join('test/test_command_integration.rb').to_s,
+      )
     end
 
     test "command not found" do

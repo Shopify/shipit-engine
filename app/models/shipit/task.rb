@@ -1,7 +1,10 @@
 module Shipit
   class Task < ActiveRecord::Base
+    PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
+
+    attr_accessor :pid
 
     belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
 
@@ -177,27 +180,45 @@ module Shipit
       !pending? && !running? && !aborting?
     end
 
-    def pid
-      pid = Shipit.redis.get("task:#{id}:pid")
-      pid.presence && pid.to_i
+    def ping
+      Shipit.redis.set(status_key, 'alive', ex: PRESENCE_CHECK_TIMEOUT)
     end
 
-    def pid=(pid)
-      Shipit.redis.set("task:#{id}:pid", pid, ex: 24.hour.to_i)
+    def alive?
+      Shipit.redis.get(status_key) == 'alive'
+    end
+
+    def report_dead!
+      write("ERROR: Background job hasn't reported back in #{PRESENCE_CHECK_TIMEOUT} seconds.")
+      error!
+    end
+
+    def should_abort?
+      @last_abort_count ||= 1
+      (@last_abort_count..Shipit.redis.get(abort_key).to_i).each do |count|
+        @last_abort_count = count + 1
+        yield count
+      end
+    end
+
+    def request_abort
+      Shipit.redis.pipelined do
+        Shipit.redis.incr(abort_key)
+        Shipit.redis.expire(abort_key, 1.month.to_i)
+      end
     end
 
     def abort!(rollback_once_aborted: false)
-      target_pid = pid
-      return write("\nAbort: failed, PID unknown\n") unless target_pid.present?
-
       update!(rollback_once_aborted: rollback_once_aborted)
-      aborting!
-      write("\nAbort: sending SIGTERM to pid #{target_pid}\n")
-      Process.kill('TERM', target_pid)
-    rescue Errno::ESRCH
-      write("\nAbort: PID #{target_pid} ESRCH: No such process\n")
-      aborted!
-      true
+
+      if alive?
+        aborting
+        request_abort
+      elsif aborting? || aborted?
+        aborted
+      elsif !finished?
+        report_dead!
+      end
     end
 
     def working_directory
@@ -216,6 +237,16 @@ module Shipit
 
     def hook_event
       self.class.name.demodulize.underscore.to_sym
+    end
+
+    private
+
+    def status_key
+      "shipit:task:#{id}"
+    end
+
+    def abort_key
+      "#{status_key}:aborting"
     end
   end
 end
