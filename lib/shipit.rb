@@ -86,6 +86,14 @@ module Shipit
     github_url('/api/v3/') if github_enterprise?
   end
 
+  def user
+    if github_api.login
+      User.find_or_create_by_login!(github_api.login)
+    else
+      AnonymousUser.new
+    end
+  end
+
   def github_api
     @github_api ||= begin
       client = Octokit::Client.new(github_api_credentials)

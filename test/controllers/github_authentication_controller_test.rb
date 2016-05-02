@@ -10,11 +10,11 @@ module Shipit
         extra: OmniAuth::AuthHash.new(
           raw_info: OmniAuth::AuthHash.new(
             id: 44,
-            name: 'Shipit',
-            email: 'shipit@example.com',
-            login: 'shipit',
+            name: 'Shipit User',
+            email: 'shipit-user@example.com',
+            login: 'shipit-user',
             avatar_url: 'https://example.com',
-            api_url: 'https://github.com/api/v3/users/shipit',
+            api_url: 'https://github.com/api/v3/users/shipit-user',
           ),
         ),
       )
@@ -24,7 +24,7 @@ module Shipit
         get :callback
       end
 
-      user = User.find_by_login('shipit')
+      user = User.find_by_login('shipit-user')
       assert_equal 's3cr3t', user.github_access_token
       assert_equal 44, user.github_id
     end

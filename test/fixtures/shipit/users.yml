@@ -15,3 +15,8 @@ anonymous:
   name:  Anonymous Legion
   email: anonymous@example.com
   # no Github info
+
+shipit:
+  name: Shipit
+  email: shipit@example.com
+  login: shipit

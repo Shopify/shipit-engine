@@ -107,7 +107,7 @@ module Shipit
       return unless deployable?
       if commit = last_deployable_commit
         return if commit.deployed?
-        trigger_deploy(commit, commit.committer)
+        trigger_deploy(commit, Shipit.user)
       end
     end
 
