@@ -437,5 +437,11 @@ module Shipit
       @stack.reload
       assert_equal 'george/shipster', @stack.github_repo_name
     end
+
+    test "#update_estimated_deploy_duration! records the 90th percentile duration among the last 100 deploys" do
+      assert_equal 1, @stack.estimated_deploy_duration
+      @stack.update_estimated_deploy_duration!
+      assert_equal 120, @stack.estimated_deploy_duration
+    end
   end
 end

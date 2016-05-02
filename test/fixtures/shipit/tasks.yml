@@ -8,6 +8,8 @@ shipit:
   additions: 1
   deletions: 1
   created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
 
 shipit2:
   user: walrus
@@ -79,7 +81,7 @@ shipit_complete:
   deletions: 342
   created_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
 
 shipit_aborted:
   user: bob

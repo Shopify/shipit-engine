@@ -28,6 +28,12 @@ module Shipit
     after_save :record_status_change
     after_commit :emit_hooks
 
+    class << self
+      def durations
+        pluck(:started_at, :ended_at).select { |s, e| s && e }.map { |s, e| e - s }
+      end
+    end
+
     state_machine :status, initial: :pending do
       before_transition any => :running do |task|
         task.started_at ||= Time.now.utc
@@ -43,6 +49,10 @@ module Shipit
 
       after_transition any => :flapping do |task|
         task.update!(confirmations: 0)
+      end
+
+      after_transition any => :success do |task|
+        task.async_update_estimated_deploy_duration
       end
 
       event :run do
@@ -101,7 +111,8 @@ module Shipit
       error!
     end
 
-    delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, to: :stack
+    delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, :async_update_estimated_deploy_duration,
+             to: :stack
 
     delegate :checklist, to: :definition
 

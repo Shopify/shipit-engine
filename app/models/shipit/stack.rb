@@ -356,6 +356,18 @@ module Shipit
       super
     end
 
+    def async_update_estimated_deploy_duration
+      UpdateEstimatedDeployDurationJob.perform_later(self)
+    end
+
+    def update_estimated_deploy_duration!
+      update!(estimated_deploy_duration: Stat.p90(recent_deploys_durations) || 1)
+    end
+
+    def recent_deploys_durations
+      tasks.where(type: 'Shipit::Deploy').success.order(id: :desc).limit(100).durations
+    end
+
     private
 
     def clear_cache
