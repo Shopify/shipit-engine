@@ -230,7 +230,7 @@ module Shipit
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
         'dependencies' => {'override' => []},
         'plugins' => {},
-        'deploy' => {'override' => nil, 'variables' => []},
+        'deploy' => {'override' => nil, 'variables' => [], 'max_commits' => nil},
         'rollback' => {'override' => nil},
         'fetch' => nil,
         'tasks' => {},

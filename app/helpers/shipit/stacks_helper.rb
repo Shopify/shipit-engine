@@ -3,32 +3,32 @@ module Shipit
     COMMIT_TITLE_LENGTH = 79
 
     def redeploy_button(commit)
-      url = new_stack_deploy_path(@stack, sha: commit.sha)
+      url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
 
       unless commit.stack.deployable?
-        classes.push(ignore_lock? ? 'btn--warning' : 'btn--disabled')
+        classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
       end
 
-      caption = 'Redeploy'
-      caption = 'Locked' if commit.stack.locked? && !ignore_lock?
-      caption = 'Deploy in progress...' if commit.stack.active_task?
-
-      link_to(caption, url, class: classes)
+      link_to(t("deploy_button.caption.#{commit.redeploy_state(bypass_safeties?)}"), url, class: classes)
     end
 
-    def ignore_lock?
+    def bypass_safeties?
       params[:force].present?
     end
 
     def deploy_button(commit)
-      url = new_stack_deploy_path(@stack, sha: commit.sha)
+      url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
-      if deploy_button_disabled?(commit)
-        classes.push(params[:force].present? ? 'btn--warning' : 'btn--disabled')
+      data = {}
+      if commit.deploy_disallowed?
+        classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
+      elsif commit.deploy_discouraged?
+        classes.push('btn--warning')
+        data[:tooltip] = t('deploy_button.hint.max_commits', maximum: commit.stack.maximum_commits_per_deploy)
       end
 
-      link_to(deploy_button_caption(commit), url, class: classes)
+      link_to(t("deploy_button.caption.#{commit.deploy_state(bypass_safeties?)}"), url, class: classes, data: data)
     end
 
     def github_change_url(commit)
@@ -58,21 +58,6 @@ module Shipit
 
     def render_raw_commit_id_link(commit)
       link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
-    end
-
-    private
-
-    def deploy_button_disabled?(commit)
-      !commit.deployable? || !commit.stack.deployable?
-    end
-
-    def deploy_button_caption(commit)
-      state = commit.status.state
-      state = 'locked' if commit.stack.locked? && !ignore_lock?
-      if commit.deployable?
-        state = commit.stack.active_task? ? 'deploying' : 'enabled'
-      end
-      t("deploy_button.caption.#{state}")
     end
   end
 end

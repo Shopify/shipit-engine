@@ -45,6 +45,7 @@ Style/Next:
 
 Metrics/LineLength:
   Exclude:
+    - test/**/*
     - lib/tasks/teams.rake
   Max: 120
 

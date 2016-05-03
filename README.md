@@ -250,6 +250,18 @@ deploy:
 ```
 <br>
 
+**<code>deploy.max_commits</code>** allow to set a limit to the number of commits being shipped per deploys.
+
+Human users will be warned that they are not respecting the recommandation, but allowed to continue.
+
+For example:
+
+```yaml
+deploy:
+  max_commits: 5
+```
+<br>
+
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to disabled unless Capistrano is detected.
 
 For example:

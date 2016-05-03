@@ -65,7 +65,7 @@ cyclimse:
         ]
       },
       "dependencies": {"override": []},
-      "deploy": {"override": null},
+      "deploy": {"max_commits": 2, "override": null},
       "rollback": {"override": ["echo 'Rollback!'"]},
       "fetch": ["echo '42'"],
       "tasks": {

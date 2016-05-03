@@ -155,7 +155,9 @@ module Shipit
     end
 
     def undeployed_commits
-      commits.reachable.newer_than(last_deployed_commit).order(id: :desc)
+      scope = commits.reachable.newer_than(last_deployed_commit).order(id: :asc)
+      yield scope if block_given?
+      scope.map.with_index { |c, i| UndeployedCommit.new(c, i) }.reverse
     end
 
     def last_successful_deploy
@@ -288,7 +290,8 @@ module Shipit
     end
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
-             :deploy_variables, :filter_task_envs, :filter_deploy_envs, to: :cached_deploy_spec
+             :deploy_variables, :filter_task_envs, :filter_deploy_envs, :maximum_commits_per_deploy,
+             to: :cached_deploy_spec
 
     def monitoring?
       monitoring.present?
