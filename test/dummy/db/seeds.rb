@@ -72,6 +72,7 @@ module Shipit
             ]
           },
           "deploy": {
+            "max_commits": 3,
             "override": [
               "bundle exec cap $ENVIRONMENT deploy"
             ]

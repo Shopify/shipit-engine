@@ -21,16 +21,22 @@
 
 en:
   deploy_button:
+    hint:
+      max_commits: It is recommended not to deploy more than %{maximum} commits at once.
     caption:
       pending: CI Pending...
       failure: CI Failure
       error: CI Error
       unknown: Not Run
       locked: Locked
-      deploying: Deploy in progress...
-      enabled: Deploy
+      deploying: A Deploy is in Progress...
+      allowed: Deploy
       missing: Missing CI
-
+  redeploy_button:
+    caption:
+      deploying: A Deploy is in Progress...
+      allowed: Deploy
+      locked: Locked
   deploy_spec:
     hint:
       deploy: Impossible to detect how to deploy this application. Please define `deploy.override` in your shipit.yml

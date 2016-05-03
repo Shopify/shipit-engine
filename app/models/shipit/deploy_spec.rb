@@ -63,6 +63,10 @@ module Shipit
     end
     alias_method :dependencies_steps!, :dependencies_steps
 
+    def maximum_commits_per_deploy
+      config('deploy', 'max_commits')
+    end
+
     def deploy_steps
       around_steps('deploy') do
         config('deploy', 'override') { discover_deploy_steps }
