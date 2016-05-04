@@ -1,6 +1,7 @@
 AllCops:
   RunRailsCops: true
   Exclude:
+    - bin/*
     - Gemfile
     - lib/snippets/**/*
     - vendor/**/*
@@ -8,7 +9,6 @@ AllCops:
     - db/schema.rb
     - db/migrate/*
     - test/dummy/**/*
-    - bin/rails
     - lib/shipit-engine.rb
 
 inherit_from:

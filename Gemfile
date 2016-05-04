@@ -5,7 +5,6 @@ gemspec
 gem 'mysql2'
 gem 'pg'
 gem 'sqlite3'
-gem 'therubyracer', platform: :ruby
 
 group :development do
   gem 'sucker_punch', require: %w(sucker_punch sucker_punch/async_syntax)
