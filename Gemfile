@@ -2,9 +2,12 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'mysql2'
-gem 'pg'
 gem 'sqlite3'
+
+group :ci do
+  gem 'mysql2'
+  gem 'pg'
+end
 
 group :development do
   gem 'sucker_punch', require: %w(sucker_punch sucker_punch/async_syntax)

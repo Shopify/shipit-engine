@@ -1,0 +1,35 @@
+# This file is for Shopify employees development environment.
+# If you are an external contributor you don't have to bother with it.
+name: shipit-engine
+
+up:
+  - homebrew:
+    - openssl
+    - sqlite
+  - ruby:
+      version: 2.1.8
+  - railgun
+  - bundler:
+      without: ci
+
+commands:
+  bootstrap: bin/bootstrap shopify
+  console: test/dummy/bin/rails console
+  server: test/dummy/bin/rails server -b 192.168.64.1 -p 55330
+  test: bin/rake
+
+open:
+  shipit: http://shipit-engine.localhost
+
+railgun:
+  image: dev:railgun-common-services-0.2.x
+  services:
+    redis: 6379
+    nginx: 80
+  ip_address: 192.168.64.85
+  memory: 2G
+  cores: 2
+  disk: 2G
+  proxy:
+    shipit-engine.localhost: 55330
+

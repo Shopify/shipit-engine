@@ -9,6 +9,7 @@ module Shipit
     initializer 'shipit.config' do |app|
       Rails.application.routes.default_url_options[:host] = Shipit.host
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
+      Pubsubstub.redis_url = Shipit.redis_url.to_s
 
       app.config.assets.paths << Emoji.images_path
       app.config.assets.precompile += %w(
