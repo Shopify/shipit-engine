@@ -2,7 +2,8 @@ module Shipit
   module StacksHelper
     COMMIT_TITLE_LENGTH = 79
 
-    def redeploy_button(commit)
+    def redeploy_button(deployed_commit)
+      commit = UndeployedCommit.new(deployed_commit, 0)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
 
@@ -10,7 +11,7 @@ module Shipit
         classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
       end
 
-      link_to(t("deploy_button.caption.#{commit.redeploy_state(bypass_safeties?)}"), url, class: classes)
+      link_to(t("redeploy_button.caption.#{commit.redeploy_state(bypass_safeties?)}"), url, class: classes)
     end
 
     def bypass_safeties?

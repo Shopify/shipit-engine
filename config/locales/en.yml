@@ -35,7 +35,7 @@ en:
   redeploy_button:
     caption:
       deploying: A Deploy is in Progress...
-      allowed: Deploy
+      allowed: Redeploy
       locked: Locked
   deploy_spec:
     hint:
