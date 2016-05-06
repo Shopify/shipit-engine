@@ -17,6 +17,7 @@ tmp/*
 shared/*
 config/database.yml
 config/secrets.yml
+config/secrets.development.yml
 data/*
 coverage/*
 public/assets/*
@@ -28,6 +29,5 @@ test/dummy/log/*.log
 test/dummy/tmp/*
 test/dummy/data/*
 test/dummy/.sass-cache
-test/dummy/config/secrets.yml
 
 .byebug_history
