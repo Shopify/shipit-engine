@@ -372,7 +372,7 @@ You can create custom tasks that users execute directly from a stack's overview 
 tasks:
   restart:
     action: "Restart Application"
-    description: "Sometimes needed if you the application to restart but don't want to ship any new code."
+    description: "Sometimes needed if you want the application to restart but don't want to ship any new code."
     steps:
       - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
 ```
@@ -394,7 +394,7 @@ Tasks like deploys can prompt for user defined environment variables:
 tasks:
   restart:
     action: "Restart Application"
-    description: "Sometimes needed if you the application to restart but don't want to ship any new code."
+    description: "Sometimes needed if you want the application to restart but don't want to ship any new code."
     steps:
       - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
     variables:
