@@ -1,0 +1,76 @@
+# This is a non exhaustive example of the most commonly used shipit.yml sections.
+
+# Review is the deploy confirmation page. You can display a number of custom things here.
+review:
+  # A list of checkboxes.
+  checklist:
+    - Did you notify X?
+    - Do you have the <a href="https://example.com/dash">monitoring dashboard</a> open,
+  # Some monitoring graphs.
+  monitoring:
+    # Either as images.
+    - image: "https://example.com/monitoring"
+      width: 360
+      height: 180
+    # Or iframes.
+    - iframe: "https://example.com/monitoring"
+      width: 360
+      height: 180
+
+# The dependencies step if for installing your deploy script dependencies only.
+dependencies:
+  # Shipit will try to detect your dependency system, for example if you have a Gemfile
+  # it will run `bundle install`.
+  # But if you are using something else you can specify it here.
+  override:
+    - npm install
+
+  # If you use Bundler, Shipit ignore most groups by default expecting all your deploy
+  # dependencies to be in the `deploy` group. You can change that default exclusion list here.
+  bundler:
+    without:
+      - default
+      - production
+      - development
+      - test
+      - staging
+      - benchmark
+      - debug
+      - assets
+
+# If this section is provided, shipit will execute that command every minute to verify
+# which revision is actually running in production. It's useful if you sometimes deploy manually.
+# That command must output a Git SHA.
+fetch:
+  - curl --silent https://example.com/status/version
+
+deploy:
+  # Like for dependencies, Shipit will try to guess how to deploy your repository.
+  # e.g. `cap production deploy` if your repo contains a `Capfile`.
+
+  # If you need to do things before the deploy you can specify them in the `pre` step.
+  pre:
+    - script/decrypt-secrets
+
+  # If Shipit can't infer how to deploy your app you'll have to override the default commands.
+  override:
+    - script/deploy
+
+  # If you want things to happen after your deploy is successful you can specify them in the `post` step.
+  post:
+    - script/notify-deploy-complete
+
+# If your deploys have a fast rollback procedure you can define it here.
+# This will make rollback buttons appear in the interface.
+rollback:
+  override:
+    - script/rollback
+
+# Sometime you might want to trigger custom scripts on Shipit, this section allows you to define
+# arbitrary tasks that you can trigger from the interface.
+tasks:
+  flush_cache:
+    action: "Flush cache"
+    description: "Flushes the application memcache cluster"
+    steps:
+      - script/flush-cache

@@ -33,7 +33,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 * [Format and content of shipit.yml](#configuring-shipit)
 * [Format and content of secrets.yml](#configuring-secrets)
 * [Script parameters](#script-parameters)
-* [Free samples](#sample-file)
+* [Free samples](/examples/shipit.yml)
 
 * * *
 
