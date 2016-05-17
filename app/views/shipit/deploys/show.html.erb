@@ -4,7 +4,7 @@
   <% else %>
     deploying
   <% end %>
-  <span class="short-sha"><%= render_commit_id_link(@deploy.until_commit) %></span>
+  <span class="short-sha"><%= link_to_github_deploy(@deploy) %></span>
   <%= timeago_tag(@deploy.created_at, force: true) %>
 <% end %>
 
