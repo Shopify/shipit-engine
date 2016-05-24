@@ -144,6 +144,8 @@ module Shipit
         'locked'
       else
         significant_statuses = undeployed_commits.map(&:significant_status)
+        significant_statuses << last_deployed_commit.significant_status unless last_deployed_commit.blank?
+
         last_finalized_status = significant_statuses.reject { |s| %w(pending unknown).include?(s.state) }.first
         last_finalized_status.try!(:simple_state) || 'pending'
       end

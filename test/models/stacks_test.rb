@@ -403,18 +403,42 @@ module Shipit
       assert_equal 'success', @stack.merge_status
     end
 
-    test "#merge_status returns pending if all undeployed commits are in pending or unknown state" do
+    test "#merge_status returns pending if all undeployed commits and last deployed commit are in pending or unknown state" do
       shipit_commits(:fifth).statuses.destroy_all
       shipit_commits(:fourth).statuses.update_all(state: 'pending')
-      @stack.expects(:last_deployed_commit).returns(shipit_commits(:third))
+      shipit_commits(:third).statuses.update_all(state: 'pending')
+      @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:third))
 
       assert_equal 'pending', @stack.merge_status
     end
 
-    test "#merge_status returns pending if there are no undeployed commits" do
-      @stack.expects(:last_deployed_commit).returns(shipit_commits(:fifth))
+    test "#merge_status returns pending if there are no undeployed commits and no deployed commits" do
+      @stack.deploys_and_rollbacks.last.update(status: 'success', until_commit: shipit_commits(:fifth))
 
       assert_equal 'pending', @stack.merge_status
+    end
+
+    test "#merge_status returns state of last deployed commit if there are no undeployed commits waiting" do
+      shipit_commits(:fifth).statuses.destroy_all
+      @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:fourth))
+
+      shipit_commits(:fourth).statuses.update_all(state: 'success')
+      assert_equal 'success', @stack.merge_status
+
+      shipit_commits(:fourth).statuses.last.update(state: 'failure')
+      assert_equal 'failure', @stack.merge_status
+    end
+
+    test "#merge_status returns state of last deployed commit if all undeployed commits are in pending or unknown state" do
+      shipit_commits(:fifth).statuses.destroy_all
+      shipit_commits(:fourth).statuses.update_all(state: 'pending')
+      @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:third))
+
+      shipit_commits(:third).statuses.update_all(state: 'success')
+      assert_equal 'success', @stack.merge_status
+
+      shipit_commits(:third).statuses.last.update(state: 'failure')
+      assert_equal 'failure', @stack.merge_status
     end
 
     test "#handle_github_redirections update the stack if the repository was renamed" do
