@@ -456,7 +456,7 @@ The settings in the `secrets.yml` file relate to the ways that GitHub connects w
 For example:
 
 ```yml
-development:
+production:
   secret_key_base: s3cr3t # This needs to be a very long, fully random
 ```
 <br>
@@ -474,7 +474,7 @@ After you change the list of time you have to invoke `bin/rake teams:fetch` in p
 For example:
 
 ```yml
-development:
+production:
   github_oauth:
     id: (your application's Client ID)
     secret: (your application's Client Secret)
@@ -491,7 +491,7 @@ If you specify an `access_token`, you don't need a `login` and `password`. The o
 For example:
 
 ```yml
-development:
+production:
   github_api:
     access_token: 10da65c687f6degaf5475ce12a980d5vd8c44d2a
 ```
@@ -501,7 +501,7 @@ development:
 
 For example:
 ```yml
-development:
+production:
   host: 'http://localhost:3000'
 ```
 <br>
@@ -511,7 +511,7 @@ development:
 For example:
 
 ```yml
-development:
+production:
   redis_url: "redis://127.0.0.1:6379/7"
 ```
 
@@ -521,9 +521,19 @@ If you use GitHub Enterprise, you must also specify the `github_domain`.
 
 For example:
 ```yml
-development:
+production:
   github_domain: "github.example.com"
 
+```
+
+<br>
+
+**`commands_inactivity_timeout`** is the duration after which shipit will terminate a command if no ouput was received. Default is `300` (5 minutes).
+
+For example:
+```yml
+production:
+  commands_inactivity_timeout: 900 # 15 minutes
 ```
 
 <h2 id="script-parameters">Script parameters</h2>

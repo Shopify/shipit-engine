@@ -15,7 +15,7 @@ module Shipit
 
     attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
 
-    def initialize(*args, default_timeout: 5.minutes.to_i, env: {}, chdir:)
+    def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
       @args, options = parse_arguments(args)
       @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
       @env = env

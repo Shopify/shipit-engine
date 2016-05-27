@@ -193,6 +193,10 @@ module Shipit
     @bootstrap_view_path ||= Engine.root.join('app/views/bootstrap')
   end
 
+  def default_inactivity_timeout
+    secrets.commands_inactivity_timeout || 5.minutes.to_i
+  end
+
   protected
 
   def revision_file
