@@ -21,7 +21,7 @@ $(document).on 'click', '.disabled, .btn--disabled', (event) ->
   event.preventDefault()
 
 jQuery ->
-  $notificationNotice = $('.notifications')
+  $notificationNotice = $('.enable-notifications')
 
   if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
     $button = $notificationNotice.find('button')
