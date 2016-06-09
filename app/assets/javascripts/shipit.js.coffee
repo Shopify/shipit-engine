@@ -20,7 +20,13 @@
 $(document).on 'click', '.disabled, .btn--disabled', (event) ->
   event.preventDefault()
 
+$(document).on 'click', '.enable-notifications .banner__dismiss', (event) ->
+  $(event.target).closest('.banner').addClass('hidden')
+  localStorage.setItem("dismissed-enable-notifications", true)
+
 jQuery ->
+  if(localStorage.getItem("dismissed-enable-notifications"))
+    return
   $notificationNotice = $('.enable-notifications')
 
   if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
