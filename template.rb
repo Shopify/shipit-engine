@@ -141,7 +141,7 @@ if yes?("Are you hosting Shipit on Heroku? (y/n)")
 end
 
 after_bundle do
-  rake 'railties:install:migrations db:create db:migrate'
+  run 'bundle exec rake railties:install:migrations db:create db:migrate'
 
   git :init
   run "echo '.env' >> .gitignore"
