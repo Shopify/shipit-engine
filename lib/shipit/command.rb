@@ -170,12 +170,25 @@ module Shipit
     end
 
     def kill_and_wait(sig, wait, &block)
+      retry_count = 5
       kill(sig, &block)
       begin
         with_timeout(wait) do
           read_stream(@out, &block)
         end
-      rescue TimedOut, Errno::EIO # EIO is somewhat expected on Linux: http://stackoverflow.com/a/10306782
+      rescue TimedOut
+      rescue Errno::EIO # EIO is somewhat expected on Linux: http://stackoverflow.com/a/10306782
+        # If we try to read the stream right after sending a signal, we often get an Errno::EIO.
+        if status = Process.wait(@pid, Process::WNOHANG)
+          return status
+        else
+          # If we let the child a little bit of time, it solves it.
+          retry_count -= 1
+          if retry_count > 0
+            sleep 0.05
+            retry
+          end
+        end
       end
       Process.wait(@pid, Process::WNOHANG)
     end
