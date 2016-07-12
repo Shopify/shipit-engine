@@ -468,17 +468,17 @@ module Shipit
       assert_equal 120, @stack.estimated_deploy_duration
     end
 
-    test "#trigger_continuous_deploy bails out if the stack isn't deployable" do
+    test "#trigger_continuous_delivery bails out if the stack isn't deployable" do
       refute_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
       assert_no_enqueued_jobs do
         assert_no_difference -> { Deploy.count } do
-          @stack.trigger_continuous_deploy
+          @stack.trigger_continuous_delivery
         end
       end
     end
 
-    test "#trigger_continuous_deploy bails out if the stack is deployable but was deployed too recently" do
+    test "#trigger_continuous_delivery bails out if the stack is deployable but was deployed too recently" do
       @stack.tasks.active.each(&:error!)
       assert_predicate @stack, :deployable?
       @stack.last_active_task.update(ended_at: 20.seconds.ago)
@@ -486,18 +486,18 @@ module Shipit
 
       assert_no_enqueued_jobs do
         assert_no_difference -> { Deploy.count } do
-          @stack.trigger_continuous_deploy
+          @stack.trigger_continuous_delivery
         end
       end
     end
 
-    test "#trigger_continuous_deploy trigger a deploy if all conditions are met" do
+    test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
       @stack.tasks.active.each(&:error!)
       assert_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
 
       assert_no_difference -> { Deploy.count } do
-        @stack.trigger_continuous_deploy
+        @stack.trigger_continuous_delivery
       end
     end
 

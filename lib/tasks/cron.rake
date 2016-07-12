@@ -2,6 +2,7 @@ namespace :cron do
   desc "Updates deployed revisions"
   task minutely: :environment do
     Shipit::Stack.refresh_deployed_revisions
+    Shipit::Stack.schedule_continuous_delivery
   end
 
   desc "Rolls-up output chunks for completed deploys older than an hour"

@@ -69,6 +69,12 @@ module Shipit
       find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
     end
 
+    def self.schedule_continuous_delivery
+      where(continuous_deployment: true).find_each do |stack|
+        ContinuousDeliveryJob.perform_later(stack)
+      end
+    end
+
     def undeployed_commits?
       undeployed_commits_count > 0
     end
@@ -103,7 +109,7 @@ module Shipit
       deploy
     end
 
-    def trigger_continuous_deploy
+    def trigger_continuous_delivery
       return unless deployable?
       return if deployed_too_recently?
 

@@ -6,7 +6,7 @@ module Shipit
 
     def perform(stack)
       return unless stack.continuous_deployment?
-      stack.trigger_continuous_deploy
+      stack.trigger_continuous_delivery
     end
   end
 end
