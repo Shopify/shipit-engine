@@ -62,7 +62,7 @@ module Shipit
     validates :lock_reason, length: {maximum: 4096}
 
     serialize :cached_deploy_spec, DeploySpec
-    delegate :find_task_definition, :supports_rollback?,
+    delegate :find_task_definition, :supports_rollback?, :links,
              :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
 
     def self.refresh_deployed_revisions

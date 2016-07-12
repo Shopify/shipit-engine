@@ -151,6 +151,10 @@ module Shipit
       config('machine', 'cleanup') { true }
     end
 
+    def links
+      config('links') { {} }
+    end
+
     private
 
     def around_steps(section)

@@ -24,6 +24,13 @@
     </li>
   </ul>
   <ul class="nav__list nav__list--secondary">
+    <% if stack.links.present? %>
+      <% stack.links.each do |name, url| %>
+        <li class="nav__list__item">
+          <%= link_to name.humanize, url, :target => '_blank', :class => "#{name.dasherize}-url" %>
+        </li>
+      <% end %>
+    <% end %>
     <li class="nav__list__item">
       <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name) %>
     </li>
