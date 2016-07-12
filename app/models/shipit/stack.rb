@@ -105,9 +105,16 @@ module Shipit
 
     def trigger_continuous_deploy
       return unless deployable?
+      return if deployed_too_recently?
       if commit = last_deployable_commit
         return if commit.deployed?
         trigger_deploy(commit, Shipit.user)
+      end
+    end
+
+    def deployed_too_recently?
+      if task = last_active_task
+        task.ended_at? && (task.ended_at + pause_between_deploys).future?
       end
     end
 
@@ -164,6 +171,10 @@ module Shipit
 
     def last_successful_deploy
       deploys_and_rollbacks.success.order(created_at: :desc).first
+    end
+
+    def last_active_task
+      tasks.exclusive.last
     end
 
     def last_deployed_commit
@@ -293,7 +304,7 @@ module Shipit
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
              :deploy_variables, :filter_task_envs, :filter_deploy_envs, :maximum_commits_per_deploy,
-             to: :cached_deploy_spec
+             :pause_between_deploys, to: :cached_deploy_spec
 
     def monitoring?
       monitoring.present?

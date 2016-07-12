@@ -50,13 +50,13 @@ Metrics/LineLength:
   Max: 120
 
 Metrics/MethodLength:
-  Max: 26
+  Enabled: false
 
 Metrics/ClassLength:
-  Max: 400
+  Enabled: false
 
 Metrics/ModuleLength:
-  Max: 400
+  Enabled: false
 
 Metrics/AbcSize:
   Max: 35

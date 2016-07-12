@@ -16,7 +16,7 @@ shipit:
         ]
       },
       "dependencies": {"override": []},
-      "deploy": {"override": null, "variables": [{"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0}]},
+      "deploy": {"override": null, "interval": 60, "variables": [{"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0}]},
       "rollback": {"override": ["echo 'Rollback!'"]},
       "fetch": ["echo '42'"],
       "tasks": {
@@ -65,7 +65,7 @@ cyclimse:
         ]
       },
       "dependencies": {"override": []},
-      "deploy": {"max_commits": 2, "override": null},
+      "deploy": {"max_commits": 2, "interval": 60, "override": null},
       "rollback": {"override": ["echo 'Rollback!'"]},
       "fetch": ["echo '42'"],
       "tasks": {

@@ -67,6 +67,10 @@ module Shipit
       config('deploy', 'max_commits')
     end
 
+    def pause_between_deploys
+      Duration.parse(config('deploy', 'interval') { 0 })
+    end
+
     def deploy_steps
       around_steps('deploy') do
         config('deploy', 'override') { discover_deploy_steps }

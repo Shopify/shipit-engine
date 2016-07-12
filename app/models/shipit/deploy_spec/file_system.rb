@@ -44,7 +44,12 @@ module Shipit
           },
           'plugins' => plugins,
           'dependencies' => {'override' => dependencies_steps},
-          'deploy' => {'override' => deploy_steps, 'variables' => deploy_variables.map(&:to_h), 'max_commits' => nil},
+          'deploy' => {
+            'override' => deploy_steps,
+            'variables' => deploy_variables.map(&:to_h),
+            'max_commits' => maximum_commits_per_deploy,
+            'interval' => pause_between_deploys,
+          },
           'rollback' => {'override' => rollback_steps},
           'fetch' => fetch_deployed_revision_steps,
           'tasks' => cacheable_tasks,
