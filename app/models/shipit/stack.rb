@@ -106,10 +106,17 @@ module Shipit
     def trigger_continuous_deploy
       return unless deployable?
       return if deployed_too_recently?
-      if commit = last_deployable_commit
+
+      if commit = next_commit_to_deploy
         return if commit.deployed?
         trigger_deploy(commit, Shipit.user)
       end
+    end
+
+    def next_commit_to_deploy
+      commits_to_deploy = commits.order(id: :asc).newer_than(last_deployed_commit).reachable.preload(:statuses)
+      commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
+      commits_to_deploy.to_a.reverse.find(&:deployable?)
     end
 
     def deployed_too_recently?
@@ -183,10 +190,6 @@ module Shipit
       else
         NoDeployedCommit
       end
-    end
-
-    def last_deployable_commit
-      commits.order(id: :desc).newer_than(last_deployed_commit).reachable.preload(:statuses).to_a.find(&:deployable?)
     end
 
     def filter_visible_statuses(statuses)

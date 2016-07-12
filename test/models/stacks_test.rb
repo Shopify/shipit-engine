@@ -500,5 +500,31 @@ module Shipit
         @stack.trigger_continuous_deploy
       end
     end
+
+    test "#next_commit_to_deploy returns the last deployable commit" do
+      @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
+      assert_equal shipit_commits(:second), @stack.last_deployed_commit
+
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
+
+      fifth_commit = shipit_commits(:fifth)
+      fifth_commit.statuses.create!(state: 'success', context: 'ci/travis')
+      assert_predicate fifth_commit, :deployable?
+
+      assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
+    end
+
+    test "#next_commit_to_deploy respects the deploy.max_commits directive" do
+      @stack.tasks.destroy_all
+
+      fifth_commit = shipit_commits(:fifth)
+      fifth_commit.statuses.create!(state: 'success', context: 'ci/travis')
+      assert_predicate fifth_commit, :deployable?
+
+      assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
+
+      @stack.expects(:maximum_commits_per_deploy).returns(3).at_least_once
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
+    end
   end
 end
