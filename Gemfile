@@ -16,7 +16,7 @@ end
 group :development, :test do
   gem 'faker'
   gem 'fakeweb'
-  gem 'rubocop', '0.34.0'
+  gem 'rubocop', '~> 0.41.2'
 end
 
 group :test do

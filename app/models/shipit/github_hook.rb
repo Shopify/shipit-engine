@@ -45,8 +45,6 @@ module Shipit
       create_hook!
     end
 
-    private
-
     def endpoint_url
       raise NotImplementedError.new('Subclasses must implement a `endpoint_url` method')
     end

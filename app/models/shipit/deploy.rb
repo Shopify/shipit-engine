@@ -18,7 +18,7 @@ module Shipit
         'success' => 'success',
         'error' => 'error',
         'aborted' => 'error',
-      }
+      }.freeze
 
       def append_status(task_status)
         if github_status = GITHUB_STATUSES[task_status]

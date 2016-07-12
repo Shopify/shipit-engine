@@ -21,7 +21,7 @@ module Shipit
     REPO_OWNER_MAX_SIZE = 39
     REPO_NAME_MAX_SIZE = 100
     ENVIRONMENT_MAX_SIZE = 50
-    REQUIRED_HOOKS = %i(push status)
+    REQUIRED_HOOKS = %i(push status).freeze
 
     has_many :commits, dependent: :destroy
     has_many :tasks, dependent: :destroy

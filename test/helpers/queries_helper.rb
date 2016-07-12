@@ -7,7 +7,7 @@ module QueriesHelper
     counter = SQLCounter.new(ignored_sql)
     subscriber = ActiveSupport::Notifications.subscribe('sql.active_record', counter)
     yield counter
-    queries = counter.log.size == 0 ? '' : "\nQueries:\n#{counter.log.join("\n")}"
+    queries = counter.log.empty? ? '' : "\nQueries:\n#{counter.log.join("\n")}"
     assert_equal num, counter.log.size, "#{counter.log.size} instead of #{num} queries were executed.#{queries}"
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber)

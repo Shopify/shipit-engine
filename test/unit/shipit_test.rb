@@ -57,7 +57,8 @@ module Shipit
     test ".github_teams merges the teams and team keys in a single array" do
       Rails.application.secrets.stubs(:github_oauth).returns(
         'team' => 'shopify/developers',
-        'teams' => ['shopify/developers', 'cyclimse/cooks'])
+        'teams' => ['shopify/developers', 'cyclimse/cooks'],
+      )
       assert_equal(['cyclimse/cooks', 'shopify/developers'], Shipit.github_teams.map(&:handle))
     end
   end

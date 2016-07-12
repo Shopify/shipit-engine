@@ -1,5 +1,7 @@
+Rails:
+  Enabled: true
 AllCops:
-  RunRailsCops: true
+  TargetRubyVersion: 2.1
   Exclude:
     - bin/*
     - Gemfile
@@ -17,6 +19,9 @@ inherit_from:
 Rails/FindEach:
   Enabled: false
 
+Rails/OutputSafety:
+  Enabled: false
+
 Lint/RescueException:
   Enabled: false
 
@@ -28,14 +33,6 @@ Lint/HandleExceptions:
 
 Lint/EndAlignment:
   Enabled: false
-
-Style/NumericLiterals:
-  Exclude:
-    - db/schema.rb
-
-Style/SingleSpaceBeforeFirstArg:
-  Exclude:
-    - db/schema.rb
 
 Style/DoubleNegation:
   Enabled: false
@@ -88,7 +85,10 @@ Style/RedundantReturn:
 Style/IndentHash:
   Enabled: false
 
-Style/TrailingComma:
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInLiteral:
   EnforcedStyleForMultiline: comma
 
 Style/ClassAndModuleChildren:
@@ -114,4 +114,25 @@ Style/ExtraSpacing:
   AllowForAlignment: false
 
 Style/GuardClause:
+  Enabled: false
+
+Style/UnneededPercentQ:
+  Enabled: false
+
+Style/Alias:
+  Enabled: false
+
+Style/MultilineHashBraceLayout:
+  Enabled: false
+
+Style/IndentationWidth:
+  Enabled: false # totally broken
+
+Style/IndentArray:
+  Enabled: false # broken
+
+Style/ElseAlignment:
+  Enabled: false # broken
+
+Style/ParallelAssignment:
   Enabled: false

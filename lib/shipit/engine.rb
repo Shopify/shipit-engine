@@ -21,7 +21,7 @@ module Shipit
         shipit_bs.css
       )
       app.config.assets.precompile << proc do |path|
-        path =~ /\Aplugins\/[\-\w]+\.(js|css)\Z/
+        path =~ %r{\Aplugins/[\-\w]+\.(js|css)\Z}
       end
       app.config.assets.precompile << proc do |path|
         path.start_with?('emoji/') && path.end_with?('.png')

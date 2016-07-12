@@ -1,7 +1,7 @@
 module Shipit
   class CommitChecks
     OUTPUT_TTL = 10.minutes.to_i
-    FINAL_STATUSES = %w(failed error success)
+    FINAL_STATUSES = %w(failed error success).freeze
 
     def initialize(commit)
       @commit = commit

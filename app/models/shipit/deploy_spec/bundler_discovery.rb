@@ -1,7 +1,7 @@
 module Shipit
   class DeploySpec
     module BundlerDiscovery
-      DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug)
+      DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug).freeze
 
       def discover_dependencies_steps
         discover_bundler || super
