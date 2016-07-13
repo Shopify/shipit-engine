@@ -183,7 +183,7 @@ module Shipit
     end
 
     def last_successful_deploy
-      deploys_and_rollbacks.success.order(created_at: :desc).first
+      deploys_and_rollbacks.success.last
     end
 
     def last_active_task
