@@ -174,13 +174,14 @@ module Shipit
     test "#creating a commit update the undeployed_commits_count" do
       walrus = shipit_users(:walrus)
       assert_equal 1, @stack.undeployed_commits_count
-      @stack.commits.create(author: walrus,
-                            committer: walrus,
-                            sha: "ab12",
-                            authored_at: DateTime.now,
-                            committed_at: DateTime.now,
-                            message: "more fish!")
-
+      @stack.commits.create!(
+        author: walrus,
+        committer: walrus,
+        sha: "ab12",
+        authored_at: DateTime.now,
+        committed_at: DateTime.now,
+        message: "more fish!",
+      )
       @stack.reload
       assert_equal 2, @stack.undeployed_commits_count
     end
