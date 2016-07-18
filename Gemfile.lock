@@ -29,7 +29,7 @@ PATH
       securecompare (~> 1.0.0)
       sprockets (>= 2.12.3)
       sprockets-rails (>= 2.3.2)
-      state_machines-activerecord (~> 0.3.0)
+      state_machines-activerecord (~> 0.4.0)
       validate_url (~> 1.0.0)
 
 GEM
@@ -266,8 +266,8 @@ GEM
     state_machines-activemodel (0.4.0)
       activemodel (>= 4.1, < 5.1)
       state_machines (>= 0.4.0)
-    state_machines-activerecord (0.3.0)
-      activerecord (~> 4.1)
+    state_machines-activerecord (0.4.0)
+      activerecord (>= 4.1, < 5.1)
       state_machines-activemodel (>= 0.3.0)
     sucker_punch (2.0.0)
       concurrent-ruby (~> 1.0.0)
