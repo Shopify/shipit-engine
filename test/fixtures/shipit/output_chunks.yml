@@ -1,47 +1,47 @@
 shipit:
-  task: shipit
+  task_id: 1 # shipit
   text: "deploy deploy deploy, faiiil"
 
 shipit2:
-  task: shipit
+  task_id: 1 # shipit
   text: "Migrating some stuff"
 
 shipit3:
-  task: shipit
+  task_id: 1 # shipit
   text: "Compiling all the sass"
 
 shipit4:
-  task: shipit
+  task_id: 1 # shipit
   text: "Making ops cry"
 
 shipit5:
-  task: shipit
+  task_id: 1 # shipit
   text: "sudo rm -rf /"
 
 shipit6:
-  task: shipit
+  task_id: 1 # shipit
   text: "sudo chmod -R 777 /"
 
 shipit_running:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "deploy deploy deploy, faiiil"
 
 shipit_running:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "Migrating some stuff"
 
 shipit_running3:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "Compiling all the sass"
 
 shipit_running4:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "Making ops cry"
 
 shipit_running5:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "sudo rm -rf /"
 
 shipit_running6:
-  task: shipit_running
+  task_id: 5 # shipit_running
   text: "sudo chmod -R 777 /"

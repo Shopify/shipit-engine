@@ -1,4 +1,5 @@
 shipit:
+  id: 1
   user: walrus
   since_commit_id: 1 # first
   until_commit_id: 2 # second
@@ -12,6 +13,7 @@ shipit:
   ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
 
 shipit2:
+  id: 2
   user: walrus
   since_commit_id: 2 # second
   until_commit_id: 3 # third
@@ -25,6 +27,7 @@ shipit2:
   ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
 
 shipit_restart:
+  id: 3
   user: walrus
   since_commit_id: 2 # second
   until_commit_id: 2 # second
@@ -49,6 +52,7 @@ shipit_restart:
   ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
 
 shipit_pending:
+  id: 4
   since_commit_id: 2 # second
   until_commit_id: 4 # fourth
   type: Shipit::Deploy
@@ -59,6 +63,7 @@ shipit_pending:
   created_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
 
 shipit_running:
+  id: 5
   user: walrus
   since_commit_id: 3
   until_commit_id: 4
@@ -71,6 +76,7 @@ shipit_running:
   started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
 
 shipit_complete:
+  id: 6
   user: bob
   since_commit_id: 3
   until_commit_id: 4
@@ -84,6 +90,7 @@ shipit_complete:
   ended_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
 
 shipit_aborted:
+  id: 7
   user: bob
   since_commit_id: 3
   until_commit_id: 4
@@ -98,8 +105,9 @@ shipit_aborted:
   ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
 
 shipit_rollback:
+  id: 8
   user: bob
-  deploy: shipit_aborted
+  parent_id: 7 # shipit_aborted
   since_commit_id: 3
   until_commit_id: 4
   type: Shipit::Rollback
