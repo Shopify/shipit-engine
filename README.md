@@ -8,7 +8,7 @@
 * control the pace of development by pushing, locking, and rolling back deploys from within Shipit
 * enforce checklists and provide monitoring right at the point of deployment.
 
-Shipit's compatible with just about anything that you can deploy using a script. It natively detects stacks using [bundler](http://bundler.io/) and [Capistrano](http://capistranorb.com/), and it has tools that make it easy to deploy to [Heroku](https://www.heroku.com/) or [RubyGems](https://rubygems.org/). At Shopify, we've used Shipit to sychronize and deploy hundreds of projects across dozens of teams, using Python, Rails, RubyGems, Java, and Go.
+Shipit is compatible with just about anything that you can deploy using a script. It natively detects stacks using [bundler](http://bundler.io/) and [Capistrano](http://capistranorb.com/), and it has tools that make it easy to deploy to [Heroku](https://www.heroku.com/) or [RubyGems](https://rubygems.org/). At Shopify, we've used Shipit to synchronize and deploy hundreds of projects across dozens of teams, using Python, Rails, RubyGems, Java, and Go.
 
 This guide aims to help you [set up](#installation-and-setup), [use](#using-shipit), and [understand](#reference) Shipit.
 
@@ -41,7 +41,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 <h3 id="installation">Installation</h3>
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), redis, and Ruby 2.1 or superior.*
+*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.1 or superior.*
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
@@ -61,7 +61,7 @@ Shipit should just work right out of the box &mdash; you probably won't need to 
 
 1. If you locked the gem to a specific version in your Gemfile, update it there.
 2. Update the `shipit-engine` gem with `bundle update shipit-engine`.
-3. Install new migrations with `rake shipit:install:migrations db:migrate`
+3. Install new migrations with `rake shipit:install:migrations db:migrate`.
 
 * * *
 
@@ -90,7 +90,7 @@ A **stack** is composed of a GitHub repository, a branch, and a deployment envir
     * deploy any undeployed commits by clicking **Deploy**
     * rollback to an earlier build by clicking **Rollback to this deploy**
     * adjust the stack's settings by clicking the gear icon in the page header
-    * perform any custom tasks that are defined in the `shipit.yml` file.
+    * perform any custom tasks that are defined in the `shipit.yml` file
 4. When you're ready to deploy an undeployed commit, click the relevant **Deploy** button on the stack's overview page.
 5. From the **Deploy** page, complete the checklist, then click **Create deploy**.
 
@@ -105,27 +105,27 @@ From a stack's **Settings** page, you can:
 * change the deploy URL
 * enable and disable continuous deployment
 * lock and unlock deploys through Shipit
-* resychronize the stack with GitHub
-* delete the stack from Shipit.
+* resynchronize the stack with GitHub
+* delete the stack from Shipit
 
 * * *
 
-<h2 id="reference">III. REFERENCE</h3>
+<h2 id="reference">III. REFERENCE</h2>
 
-<h3 id="configuring-shipit">Configuring <code>shipit.yml</code></h2>
+<h3 id="configuring-shipit">Configuring <code>shipit.yml</code></h3>
 
 The settings in the `shipit.yml` file relate to the different things you can do with Shipit:
 
-* [Installing dependencies](#installing-dependencies) (`dependencies`)
+* [Installing Dependencies](#installing-dependencies) (`dependencies`)
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`, `machine.directory`, `machine.cleanup`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
-* [Custom tasks](#custom-tasks) (`restart`, `unlock`)
+* [Custom Tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
-Aslo, if your repository is deployed different ways depending on the environment, you can have alternative `shipit.yml` by including the environment name.
+Also, if your repository is deployed different ways depending on the environment, you can have an alternative `shipit.yml` by including the environment name.
 
 For example for a stack like: `my-org/my-repo/staging`, `shipit.staging.yml` will have priority over `shipit.yml`.
 
@@ -135,11 +135,11 @@ For example for a stack like: `my-org/my-repo/staging`, `shipit.staging.yml` wil
 
 The **<code>dependencies</code>** step allows you to install all the packages your deploy script needs.
 
-<h4 id="bundler-support">Bundler</h3>
+<h4 id="bundler-support">Bundler</h4>
 
 If your application uses Bundler, Shipit will detect it automatically and take care of the `bundle install` and prefix your commands with `bundle exec`.
 
-By default the following gem groups will be ignored:
+By default, the following gem groups will be ignored:
 
   - `default`
   - `production`
@@ -162,7 +162,7 @@ dependencies:
       - debug
 ```
 
-<h4 id="other-dependencies">Other dependencies</h3>
+<h4 id="other-dependencies">Other dependencies</h4>
 
 If your deploy script uses another tool to install dependencies, you can install them manually via `dependencies.override`:
 
@@ -172,24 +172,24 @@ dependencies:
     - npm install
 ```
 
-**<code>dependencies.pre</code>** If you wish to execute commands before Shipit install the dependencies you can specify them here:
+**<code>dependencies.pre</code>** If you wish to execute commands before Shipit installs the dependencies, you can specify them here.
 
 For example:
 
 ```yml
-depedencies:
+dependencies:
   pre:
     - mkdir tmp/
     - cp -R /var/cache/ tmp/cache
 ```
 <br>
 
-**<code>dependencies.post</code>** If you wish to execute commands after Shipit installed the dependencies you can specify them here:
+**<code>dependencies.post</code>** If you wish to execute commands after Shipit installed the dependencies, you can specify them here:
 
 For example:
 
 ```yml
-depedencies:
+dependencies:
   post:
     - cp -R tmp/cache /var/cache/
 ```
@@ -211,7 +211,7 @@ deploy:
 ```
 <br>
 
-**<code>deploy.pre</code>** If you wish to execute commands before Shipit execute your deploy script you can specify them here:
+**<code>deploy.pre</code>** If you wish to execute commands before Shipit executes your deploy script, you can specify them here.
 
 For example:
 
@@ -222,7 +222,7 @@ deploy:
 ```
 <br>
 
-**<code>deploy.post</code>** If you wish to execute commands after Shipit executed your deploy script you can specify them here:
+**<code>deploy.post</code>** If you wish to execute commands after Shipit executed your deploy script, you can specify them here.
 
 For example:
 
@@ -234,7 +234,7 @@ deploy:
 <br>
 
 
-You can also accept custom environment variables defined by the user that trigger the deploy:
+You can also accept custom environment variables defined by the user that triggers the deploy:
 
 **<code>deploy.variables</code>** contains an array of variable definitions.
 
@@ -250,9 +250,9 @@ deploy:
 ```
 <br>
 
-**<code>deploy.max_commits</code>** allow to set a limit to the number of commits being shipped per deploys.
+**<code>deploy.max_commits</code>** allows you to set a limit to the number of commits being shipped per deploys.
 
-Human users will be warned that they are not respecting the recommandation, but allowed to continue.
+Human users will be warned that they are not respecting the recommendation, but allowed to continue.
 
 For example:
 
@@ -262,7 +262,7 @@ deploy:
 ```
 <br>
 
-**<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to disabled unless Capistrano is detected.
+**<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to `disabled` unless Capistrano is detected.
 
 For example:
 
@@ -273,7 +273,7 @@ rollback:
 ```
 <br>
 
-**<code>rollback.pre</code>** If you wish to execute commands before Shipit execute your rollback script you can specify them here:
+**<code>rollback.pre</code>** If you wish to execute commands before Shipit executes your rollback script, you can specify them here:
 
 For example:
 
@@ -284,7 +284,7 @@ rollback:
 ```
 <br>
 
-**<code>rollback.post</code>** If you wish to execute commands after Shipit executed your rollback script you can specify them here:
+**<code>rollback.post</code>** If you wish to execute commands after Shipit executed your rollback script, you can specify them here:
 
 For example:
 
@@ -296,7 +296,7 @@ rollback:
 <br>
 
 
-**<code>fetch</code>** contains an array of the shell commands that Shipit executes to check the revision of the currently-deployed version. This key defaults to disabled.
+**<code>fetch</code>** contains an array of the shell commands that Shipit executes to check the revision of the currently-deployed version. This key defaults to `disabled`.
 
 For example:
 ```yml
@@ -316,7 +316,7 @@ machine:
 
 <h3 id="directory">Directory</h3>
 
-**<code>machine.directory</code>** specify a subfolder in which to execute all tasks. Useful for repositories containing multiple applications or if you don't want your deploy scripts to be located at the root.
+**<code>machine.directory</code>** specifies a subfolder in which to execute all tasks. Useful for repositories containing multiple applications or if you don't want your deploy scripts to be located at the root.
 
 For example:
 ```yml
@@ -326,7 +326,7 @@ machine:
 
 <h3 id="cleanup">Cleanup</h3>
 
-**<code>machine.cleanup</code>** specify wether or not the deploy working directory should cleaned up once the deploy completed. Defaults to `true`, but can be useful to disable temporarily to investigate bugs.
+**<code>machine.cleanup</code>** specifies whether or not the deploy working directory should be cleaned up once the deploy completed. Defaults to `true`, but can be useful to disable temporarily to investigate bugs.
 
 For example:
 ```yml
@@ -377,7 +377,7 @@ tasks:
       - ssh deploy@myserver.example.com 'touch myapp/restart.txt'
 ```
 
-By default custom tasks are not allowed to be triggered while a deploy is running. But if it's safe for that specific task you can change that behavior with the `allow_concurrency` attribute:
+By default, custom tasks are not allowed to be triggered while a deploy is running. But if it's safe for that specific task, you can change that behavior with the `allow_concurrency` attribute:
 
 ```yml
 tasks:
@@ -467,9 +467,9 @@ The value for `id` is your application's  *Client ID*, and the value for `secret
 
 The `teams` key is optional, and required only if you want to restrict access to a set of GitHub teams.
 
-If it's missing the Shipit installation will be public unless you setup another authentication method.
+If it's missing, the Shipit installation will be public unless you setup another authentication method.
 
-After you change the list of time you have to invoke `bin/rake teams:fetch` in production so that a webhook is setup to keep the list of members up to date.
+After you change the list of teams, you have to invoke `bin/rake teams:fetch` in production so that a webhook is setup to keep the list of members up to date.
 
 For example:
 
@@ -528,7 +528,7 @@ production:
 
 <br>
 
-**`commands_inactivity_timeout`** is the duration after which shipit will terminate a command if no ouput was received. Default is `300` (5 minutes).
+**`commands_inactivity_timeout`** is the duration after which Shipit will terminate a command if no ouput was received. Default is `300` (5 minutes).
 
 For example:
 ```yml
@@ -540,8 +540,8 @@ production:
 
 Your deploy scripts have access to the following environment variables:
 
-* `SHIPIT`: Set to "1" allow your script to know it's executed by Shipit
-* `SHIPIT_LINK`: URL to the task output, usefull to broadcast it in an IRC channel
+* `SHIPIT`: Set to `1` to allow your script to know it's executed by Shipit
+* `SHIPIT_LINK`: URL to the task output, useful to broadcast it in an IRC channel
 * `USER`: Full name of the user that triggered the deploy/task
 * `EMAIL`: Email of the user that triggered the deploy/task (if available)
 * `ENVIRONMENT`: The stack environment (e.g `production` / `staging`)
