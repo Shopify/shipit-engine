@@ -383,6 +383,10 @@ module Shipit
     end
 
     test "updating the stack doesn't emit a hook if only `updated_at` is changed" do
+      # force a save to make sure `cached_deploy_spec` serialization is consistent with how Active Record would
+      # serialize it.
+      @stack.update(updated_at: 2.days.ago)
+
       expect_no_hook(:stack) do
         @stack.update(updated_at: Time.zone.now)
       end
