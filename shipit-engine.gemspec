@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'safe_yaml', '~> 1.0.4'
   s.add_dependency 'omniauth-github', '~> 1.1.2'
   s.add_dependency 'responders', '~> 2.1.0'
-  s.add_dependency 'attr_encrypted', '~> 2.0.0'
+  s.add_dependency 'attr_encrypted', '~> 3.0.0'
 
   s.add_dependency 'sprockets', '>= 2.12.3'
   s.add_dependency 'sprockets-rails', '>= 2.3.2'

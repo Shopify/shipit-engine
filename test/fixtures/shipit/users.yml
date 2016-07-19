@@ -2,8 +2,8 @@ walrus:
   name:  Lando Walrussian
   email: walrus@shopify.com
   login: walrus
-  encrypted_github_access_token: FuQv9jpHmMZ8Px64xmqASJtKlefv # t0k3n
-  encrypted_github_access_token_iv: "QNS4smChXEXtOjxb\n"
+  encrypted_github_access_token: "ffHk4diyVKppJGfwfJefMizxF45H\n" # t0k3n
+  encrypted_github_access_token_iv: "gRSldoTZ+fmrIDoY\n"
 
 bob:
   name:  Bob the Builder
@@ -20,3 +20,10 @@ shipit:
   name: Shipit
   email: shipit@example.com
   login: shipit
+
+legacy:
+  name:  Legacy Walrussian
+  email: legacy@shopify.com
+  login: legacy
+  encrypted_github_access_token: FuQv9jpHmMZ8Px64xmqASJtKlefv # t0k3n
+  encrypted_github_access_token_iv: "QNS4smChXEXtOjxb\n"

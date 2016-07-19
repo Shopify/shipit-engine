@@ -35,6 +35,14 @@ module Shipit
       end
     end
 
+    alias_method :original_github_access_token, :github_access_token
+    def github_access_token
+      original_github_access_token
+    rescue OpenSSL::Cipher::CipherError
+      update_columns(encrypted_github_access_token: nil, encrypted_github_access_token_iv: nil)
+      nil
+    end
+
     def github_api
       return Shipit.github_api unless github_access_token
 

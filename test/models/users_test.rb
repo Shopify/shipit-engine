@@ -107,6 +107,22 @@ module Shipit
       assert_equal Shipit.github_api, AnonymousUser.new.github_api
     end
 
+    test "users with legacy encrypted access token get their token reset automatically" do
+      # See: https://github.com/attr-encrypted/attr_encrypted/blob/53266da546a21afaa1f1b93a461b912f4ccf363b/README.md#upgrading-from-attr_encrypted-v2x-to-v3x
+      legacy = shipit_users(:legacy)
+      assert_not_nil legacy.encrypted_github_access_token
+      assert_not_nil legacy.encrypted_github_access_token_iv
+
+      assert_nil legacy.github_access_token
+      legacy.reload
+      assert_nil legacy.encrypted_github_access_token
+      assert_nil legacy.encrypted_github_access_token_iv
+
+      legacy.update!(github_access_token: 't0k3n')
+      legacy.reload
+      assert_equal 't0k3n', legacy.github_access_token
+    end
+
     private
 
     def fetch_user
