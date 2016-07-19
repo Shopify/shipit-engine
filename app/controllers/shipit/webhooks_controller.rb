@@ -15,11 +15,22 @@ module Shipit
       head :ok
     end
 
+    params do
+      requires :sha, String
+      requires :state, String
+      accepts :description, String
+      accepts :target_url, String
+      accepts :context, String
+      accepts :created_at, String
+
+      accepts :branches, Array do
+        requires :name, String
+      end
+    end
     def state
-      branches = params[:branches] || []
-      if branches.find { |branch| branch[:name] == stack.branch }
-        commit = stack.commits.find_by_sha!(params[:sha])
-        commit.add_status(params.permit(:state, :description, :target_url, :context, :created_at))
+      if params.branches.map(&:name).include?(stack.branch)
+        commit = stack.commits.find_by_sha!(params.sha)
+        commit.create_status_from_github!(params)
       end
       head :ok
     end

@@ -13,17 +13,23 @@ module Shipit
 
     delegate :broadcast_update, to: :commit
 
-    def self.replicate_from_github!(github_status)
-      find_or_create_by!(
-        state: github_status.state,
-        description: github_status.description,
-        target_url: github_status.rels.try(:[], :target).try(:href),
-        context: github_status.context,
-        created_at: github_status.created_at,
-      )
+    class << self
+      def replicate_from_github!(github_status)
+        find_or_create_by!(
+          state: github_status.state,
+          description: github_status.description,
+          target_url: github_status.target_url,
+          context: github_status.context,
+          created_at: github_status.created_at,
+        )
+      end
     end
 
     delegate :stack, to: :commit
+
+    def unknown?
+      false
+    end
 
     def ignored?
       stack.soft_failing_statuses.include?(context)

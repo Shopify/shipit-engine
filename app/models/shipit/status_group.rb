@@ -9,7 +9,7 @@ module Shipit
       @statuses = visible_statuses
     end
 
-    delegate :pending?, :success?, :error?, :failure?, :state, to: :significant_status
+    delegate :pending?, :success?, :error?, :failure?, :unknown?, :state, to: :significant_status
 
     def description
       "#{success_count} / #{statuses.count} checks OK"

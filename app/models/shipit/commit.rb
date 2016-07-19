@@ -82,22 +82,14 @@ module Shipit
     def refresh_statuses!
       github_statuses = stack.handle_github_redirections { Shipit.github_api.statuses(github_repo_name, sha) }
       github_statuses.each do |status|
-        statuses.replicate_from_github!(status)
+        create_status_from_github!(status)
       end
     end
 
-    def add_status(status_attributes)
-      previous_status = significant_status
-      statuses.create!(status_attributes)
-      reload # to get the statuses into the right order (since sorted :desc)
-      new_status = significant_status
-
-      payload = {commit: self, stack: stack, status: new_status.state}
-      Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
-      if previous_status.simple_state != new_status.simple_state && !new_status.pending?
-        Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
+    def create_status_from_github!(github_status)
+      add_status do
+        statuses.replicate_from_github!(github_status)
       end
-      new_status
     end
 
     def checks
@@ -193,6 +185,20 @@ module Shipit
     end
 
     private
+
+    def add_status
+      previous_status = significant_status
+      yield
+      reload # to get the statuses into the right order (since sorted :desc)
+      new_status = significant_status
+
+      payload = {commit: self, stack: stack, status: new_status.state}
+      Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
+      if previous_status.simple_state != new_status.simple_state && (!new_status.pending? || previous_status.unknown?)
+        Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
+      end
+      new_status
+    end
 
     def missing_statuses
       stack.required_statuses - last_statuses.map(&:context)

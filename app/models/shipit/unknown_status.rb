@@ -5,6 +5,10 @@ module Shipit
     end
     alias_method :simple_state, :state
 
+    def unknown?
+      true
+    end
+
     def pending?
       false
     end

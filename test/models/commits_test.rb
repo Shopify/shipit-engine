@@ -157,8 +157,13 @@ module Shipit
     end
 
     test "refresh_statuses! pull state from github" do
-      rels = {target: mock(href: 'http://example.com')}
-      status = mock(state: 'success', description: nil, context: 'default', rels: rels, created_at: 1.day.ago)
+      status = mock(
+        state: 'success',
+        description: nil,
+        context: 'default',
+        target_url: 'http://example.com',
+        created_at: 1.day.ago,
+      )
       Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
       assert_difference '@commit.statuses.count', 1 do
         @commit.refresh_statuses!
@@ -292,6 +297,7 @@ module Shipit
     end
 
     expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
+      'unknown' => %w(pending success failure error),
       'pending' => %w(success failure error),
       'success' => %w(failure error),
       'failure' => %w(success),
@@ -299,7 +305,7 @@ module Shipit
     }
     expected_webhook_transitions.each do |initial_state, firing_states|
       initial_status_attributes = {state: initial_state, description: 'abc', context: 'ci/travis'}
-      expected_webhook_transitions.keys.each do |new_state|
+      (expected_webhook_transitions.keys - %w(unknown)).each do |new_state|
         should_fire = firing_states.include?(new_state)
         action = should_fire ? 'fires' : 'does not fire'
         test "#add_status #{action} for status from #{initial_state} to #{new_state}" do
@@ -308,11 +314,16 @@ module Shipit
           refute commit.stack.ignore_ci
           commit.statuses.destroy_all
           commit.reload
-          commit.statuses.create!(initial_status_attributes.merge(created_at: 10.days.ago.to_s(:db)))
+          unless initial_state == 'unknown'
+            commit.statuses.create!(initial_status_attributes.merge(created_at: 10.days.ago.to_s(:db)))
+          end
           assert_equal initial_state, commit.state
 
           expected_status_attributes = {state: new_state, description: initial_state, context: 'ci/travis'}
-          add_status = -> { commit.add_status(expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))) }
+          add_status = lambda do
+            attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))
+            commit.create_status_from_github!(OpenStruct.new(attrs))
+          end
           expect_hook_emit(commit, :commit_status, expected_status_attributes) do
             if should_fire
               expect_hook_emit(commit, :deployable_status, expected_status_attributes, &add_status)
@@ -329,7 +340,13 @@ module Shipit
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
 
       expect_no_hook(:deployable_status) do
-        commit.add_status(state: 'failure', description: 'Sad', context: 'ci/hidden', created_at: 1.day.ago.to_s(:db))
+        github_status = OpenStruct.new(
+          state: 'failure',
+          description: 'Sad',
+          context: 'ci/hidden',
+          created_at: 1.day.ago.to_s(:db),
+        )
+        commit.create_status_from_github!(github_status)
       end
     end
 
@@ -338,12 +355,13 @@ module Shipit
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
 
       expect_no_hook(:deployable_status) do
-        commit.add_status(
+        github_status = OpenStruct.new(
           state: 'failure',
           description: 'Sad',
           context: 'ci/ok_to_fail',
           created_at: 1.day.ago.to_s(:db),
         )
+        commit.create_status_from_github!(github_status)
       end
     end
 
