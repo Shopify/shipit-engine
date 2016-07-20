@@ -86,7 +86,7 @@ module Shipit
         definition: find_task_definition(definition_id),
         until_commit_id: commit.id,
         since_commit_id: commit.id,
-        env: filter_task_envs(definition_id, (env || {})),
+        env: filter_task_envs(definition_id, (env.try!(:to_h) || {})),
       )
       task.enqueue
       task
@@ -98,7 +98,7 @@ module Shipit
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
-        env: filter_deploy_envs(env || {}),
+        env: filter_deploy_envs(env.try!(:to_h) || {}),
       )
     end
 

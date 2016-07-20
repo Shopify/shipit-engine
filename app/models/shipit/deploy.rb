@@ -42,7 +42,7 @@ module Shipit
         parent_id: id,
         since_commit: stack.last_deployed_commit,
         until_commit: until_commit,
-        env: env || {},
+        env: env.try!(:to_h) || {},
       )
     end
 
