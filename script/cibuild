@@ -9,8 +9,6 @@ run_test_suite(){
   bundle exec rake db:seed
 }
 
-cp -n test/dummy/config/secrets.example.yml test/dummy/config/secrets.yml || true
-
 case $SUITE in
   mysql)
     echo "Testing MySQL"
