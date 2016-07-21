@@ -36,6 +36,8 @@ module Shipit
         If you haven't created an application on GitHub yet, you can do so in the
         #{link_to 'Settings', Shipit.github_url('/settings/applications/new'), target: '_blank'}
         section of your profile. You can also create applications for organizations.
+        When setting up your application in Github, set the Homepage URL to your domain
+        and the Authorization callback URL to '<yourdomain>/github/auth/github/callback'.
       MESSAGE
     end
 
