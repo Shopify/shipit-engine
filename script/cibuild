@@ -5,8 +5,7 @@ set -e
 set -x
 
 run_test_suite(){
-  bundle exec rake db:create db:schema:load
-  bundle exec rake test
+  bundle exec rake db:create db:schema:load db:migrate test
   bundle exec rake db:seed
 }
 
