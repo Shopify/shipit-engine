@@ -2,21 +2,11 @@ language: ruby
 sudo: false
 script: 'script/cibuild'
 cache: bundler
-env:
-  matrix:
-    - SUITE=mysql
-    - SUITE=pg
-    - SUITE=sqlite3
-rvm:
-  - 2.2.3
-gemfile:
-  - Gemfile
-  - gemfiles/Gemfile-rails5
 matrix:
   include:
     - rvm: 2.2.3
-      env: SUITE=rubocop
-      gemfile: Gemfile
+      env: SUITE=sqlite3
+      gemfile: gemfiles/Gemfile-rails5
 
 notifications:
   email: false
