@@ -9,7 +9,7 @@ module Shipit
 
     def dump(array)
       return nil if array.blank?
-      array.join(',')
+      Array.wrap(array).join(',')
     end
   end
 end
