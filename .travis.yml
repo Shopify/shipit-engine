@@ -1,3 +1,9 @@
+addons:
+  apt:
+    sources:
+      - travis-ci/sqlite3
+    packages:
+      - sqlite3
 language: ruby
 sudo: false
 script: 'script/cibuild'
