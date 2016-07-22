@@ -1,3 +1,9 @@
+addons:
+  apt:
+    sources:
+      - travis-ci/sqlite3
+    packages:
+      - sqlite3 # https://github.com/rails/rails/issues/24288#issuecomment-206011385
 language: ruby
 sudo: false
 script: 'script/cibuild'
@@ -14,12 +20,6 @@ gemfile:
   - gemfiles/Gemfile-rails5
 matrix:
   fast_finish: true
-  allow_failures:
-    # Can't get db:schema:load to work with Rails 5 and sqlite3, allowing failures for now
-    # https://github.com/Shopify/shipit-engine/pull/593#issuecomment-233947579
-    - rvm: 2.2.3
-      env: SUITE=sqlite3
-      gemfile: gemfiles/Gemfile-rails5
   include:
     - rvm: 2.2.3
       env: SUITE=rubocop
