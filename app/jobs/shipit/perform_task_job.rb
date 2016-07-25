@@ -53,24 +53,26 @@ module Shipit
 
     def perform_task
       Bundler.with_clean_env do
-        capture_all @commands.install_dependencies
-        capture_all @commands.perform
+        capture_all! @commands.install_dependencies
+        capture_all! @commands.perform
       end
     end
 
     def checkout_repository
       @task.acquire_git_cache_lock do
-        capture @commands.fetch
-        capture @commands.clone
+        unless capture @commands.fetched?(@task.until_commit)
+          capture! @commands.fetch
+        end
       end
-      capture @commands.checkout(@task.until_commit)
+      capture! @commands.clone
+      capture! @commands.checkout(@task.until_commit)
     end
 
-    def capture_all(commands)
-      commands.map { |c| capture(c) }
+    def capture_all!(commands)
+      commands.map { |c| capture!(c) }
     end
 
-    def capture(command)
+    def capture!(command)
       command.start do
         @task.ping
         check_for_abort
@@ -81,6 +83,14 @@ module Shipit
         @task.write(line)
       end
       @task.write("\n")
+      command.success?
+    end
+
+    def capture(command)
+      capture!(command)
+      command.success?
+    rescue Command::Error
+      false
     end
   end
 end

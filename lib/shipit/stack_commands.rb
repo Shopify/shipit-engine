@@ -16,6 +16,15 @@ module Shipit
       end
     end
 
+    def fetched?(commit)
+      git_dir = File.join(@stack.git_path, '.git')
+      if Dir.exist?(git_dir)
+        git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
+      else
+        Command.new('test', '-d', git_dir, env: env, chdir: @stack.deploys_path)
+      end
+    end
+
     def fetch_deployed_revision
       with_temporary_working_directory do |dir|
         spec = DeploySpec::FileSystem.new(dir, @stack.environment)
@@ -33,13 +42,15 @@ module Shipit
     end
 
     def with_temporary_working_directory(commit: nil)
-      @stack.acquire_git_cache_lock do
-        fetch.run!
-        git('checkout', '--force', "origin/#{@stack.branch}", env: env, chdir: @stack.git_path).run!
+      if commit
+        @stack.acquire_git_cache_lock do
+          fetch.run! unless fetched?(commit).tap(&:run).success?
+        end
       end
+
       Dir.mktmpdir do |dir|
         git('clone', @stack.git_path, @stack.repo_name, chdir: dir).run!
-        git('checkout', commit.sha, chdir: dir) if commit
+        git('checkout', commit.sha, chdir: dir).run! if commit
         yield Pathname.new(File.join(dir, @stack.repo_name))
       end
     end

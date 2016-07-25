@@ -1,6 +1,6 @@
 module Shipit
   class TaskCommands < Commands
-    delegate :fetch, to: :stack_commands
+    delegate :fetch, :fetched?, to: :stack_commands
 
     def initialize(task)
       @task = task

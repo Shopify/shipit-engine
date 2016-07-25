@@ -9,7 +9,6 @@ module Shipit
 
       if branch == stack.branch
         GithubSyncJob.perform_later(stack_id: stack.id)
-        GitMirrorUpdateJob.perform_later(stack)
       end
 
       head :ok

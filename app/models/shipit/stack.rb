@@ -238,12 +238,12 @@ module Shipit
       File.join(base_path, "git")
     end
 
-    def acquire_git_cache_lock(timeout: 15, &block)
+    def acquire_git_cache_lock(timeout: 15, expiration: 60, &block)
       Redis::Lock.new(
         "stack:#{id}:git-cache-lock",
         Shipit.redis,
         timeout: timeout,
-        expiration: 60,
+        expiration: expiration,
       ).lock(&block)
     end
 

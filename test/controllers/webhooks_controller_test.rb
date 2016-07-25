@@ -16,15 +16,6 @@ module Shipit
       end
     end
 
-    test ":push with the target branch queues a GitMirrorUpdateJob" do
-      request.headers['X-Github-Event'] = 'push'
-      params = payload(:push_master)
-
-      assert_enqueued_with(job: GitMirrorUpdateJob, args: [@stack]) do
-        post :push, {stack_id: @stack.id}.merge(params)
-      end
-    end
-
     test ":push does not enqueue a job if not the target branch" do
       request.headers['X-Github-Event'] = 'push'
       params = payload(:push_not_master)

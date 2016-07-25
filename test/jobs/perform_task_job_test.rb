@@ -9,10 +9,12 @@ module Shipit
     end
 
     test "#perform fetch commits from the API" do
+      @job.stubs(:capture!)
       @job.stubs(:capture)
       @commands = stub(:commands)
       Commands.expects(:for).with(@deploy).returns(@commands)
 
+      @commands.expects(:fetched?).once.returns(false)
       @commands.expects(:fetch).once
       @commands.expects(:clone).once
       @commands.expects(:checkout).with(@deploy.until_commit).once
@@ -27,7 +29,7 @@ module Shipit
     test "#perform enqueues a FetchDeployedRevisionJob" do
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture)
+      @job.stubs(:capture!)
 
       assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
         @job.perform(@deploy)
@@ -37,14 +39,14 @@ module Shipit
     test "marks deploy as successful" do
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture)
+      @job.stubs(:capture!)
 
       @job.perform(@deploy)
       assert_equal 'success', @deploy.reload.status
     end
 
     test "marks deploy as `error` if any application error is raised" do
-      @job.expects(:capture).raises("some error")
+      @job.expects(:capture!).raises("some error")
       assert_nothing_raised do
         @job.perform(@deploy)
       end
@@ -53,30 +55,31 @@ module Shipit
     end
 
     test "marks deploy as `failed` if a command exit with an error code" do
-      @job.expects(:capture).raises(Command::Error.new('something'))
+      @job.expects(:capture!).at_least_once.raises(Command::Error.new('something'))
       @job.perform(@deploy)
       assert_equal 'failed', @deploy.reload.status
     end
 
     test "bail out if deploy is not pending" do
       @deploy.run!
-      @job.expects(:capture).never
+      @job.expects(:capture!).never
+      @job.expects(:capture!).never
       @job.perform(@deploy)
     end
 
     test "mark deploy as error if a command timeout" do
-      Command.any_instance.expects(:timed_out?).returns(true)
-      Command.any_instance.expects(:terminate!)
-      assert_nothing_raised do
-        @job.perform(@deploy)
-      end
+      Command.any_instance.expects(:stream!).at_least_once.raises(Command::TimedOut)
+
+      @job.perform(@deploy)
+
       assert_equal 'failed', @deploy.reload.status
       assert_includes @deploy.chunk_output, 'TimedOut'
     end
 
     test "records stack support for rollbacks and fetching deployed revision" do
-      @job.stubs(:capture)
+      @job.stubs(:capture!)
       @commands = stub(:commands)
+      @commands.stubs(:fetched?).returns([])
       @commands.stubs(:fetch).returns([])
       @commands.stubs(:clone).returns([])
       @commands.stubs(:checkout).returns([])
