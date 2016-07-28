@@ -17,6 +17,7 @@ module Shipit
           capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
         end
       end
+      self
     rescue Command::Error
       self.status = 'failed'
     rescue
@@ -40,6 +41,10 @@ module Shipit
     def status=(status)
       redis.set('status', status, ex: OUTPUT_TTL)
       @status = status
+    end
+
+    def success?
+      status == 'success'
     end
 
     def finished?

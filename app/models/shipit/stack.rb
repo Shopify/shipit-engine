@@ -115,6 +115,8 @@ module Shipit
 
       if commit = next_commit_to_deploy
         return if commit.deployed?
+        return if checks? && !commit.checks.run.success?
+
         trigger_deploy(commit, Shipit.user)
       end
     end

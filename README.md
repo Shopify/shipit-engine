@@ -436,7 +436,7 @@ review:
 <br>
 
 **<code>review.checks</code>** contains a list of commands that will be executed during the pre-deploy review step.
-Their output appears on the deployment page in Shipit.
+Their output appears on the deployment page in Shipit, and if continuous delivery is enabled, deploys will only be triggered if those commands are successful.
 
 For example:
 
@@ -445,6 +445,8 @@ review:
   checks:
     - bundle exec rake db:migrate:status
 ```
+
+
 
 ***
 <h2 id="configuring-secrets">Configuring <code>secrets.yml</code></h2>
