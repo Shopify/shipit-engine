@@ -473,8 +473,11 @@ module Shipit
     end
 
     test "#trigger_continuous_delivery bails out if the stack isn't deployable" do
+      Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
+
       refute_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
+
       assert_no_enqueued_jobs do
         assert_no_difference -> { Deploy.count } do
           @stack.trigger_continuous_delivery
@@ -483,6 +486,8 @@ module Shipit
     end
 
     test "#trigger_continuous_delivery bails out if the stack is deployable but was deployed too recently" do
+      Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
+
       @stack.tasks.active.each(&:error!)
       assert_predicate @stack, :deployable?
       @stack.last_active_task.update(ended_at: 20.seconds.ago)

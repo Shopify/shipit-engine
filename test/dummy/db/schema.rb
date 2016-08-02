@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160526192650) do
+ActiveRecord::Schema.define(version: 20160802092812) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -130,22 +130,23 @@ ActiveRecord::Schema.define(version: 20160526192650) do
   add_index "output_chunks", ["task_id"], name: "index_output_chunks_on_task_id"
 
   create_table "stacks", force: :cascade do |t|
-    t.string   "repo_name",                 limit: 100,                          null: false
-    t.string   "repo_owner",                limit: 39,                           null: false
-    t.string   "environment",               limit: 50,    default: "production", null: false
+    t.string   "repo_name",                         limit: 100,                          null: false
+    t.string   "repo_owner",                        limit: 39,                           null: false
+    t.string   "environment",                       limit: 50,    default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "branch",                    limit: 255,   default: "master",     null: false
-    t.string   "deploy_url",                limit: 255
-    t.string   "lock_reason",               limit: 4096
-    t.integer  "tasks_count",               limit: 4,     default: 0,            null: false
-    t.boolean  "continuous_deployment",                   default: false,        null: false
-    t.integer  "undeployed_commits_count",  limit: 4,     default: 0,            null: false
-    t.text     "cached_deploy_spec",        limit: 65535
-    t.integer  "lock_author_id",            limit: 4
+    t.string   "branch",                            limit: 255,   default: "master",     null: false
+    t.string   "deploy_url",                        limit: 255
+    t.string   "lock_reason",                       limit: 4096
+    t.integer  "tasks_count",                       limit: 4,     default: 0,            null: false
+    t.boolean  "continuous_deployment",                           default: false,        null: false
+    t.integer  "undeployed_commits_count",          limit: 4,     default: 0,            null: false
+    t.text     "cached_deploy_spec",                limit: 65535
+    t.integer  "lock_author_id",                    limit: 4
     t.boolean  "ignore_ci"
     t.datetime "inaccessible_since"
-    t.integer  "estimated_deploy_duration",               default: 1,            null: false
+    t.integer  "estimated_deploy_duration",                       default: 1,            null: false
+    t.datetime "continuous_delivery_delayed_since"
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true

@@ -106,19 +106,36 @@ module Shipit
       deploy = build_deploy(*args)
       deploy.save!
       deploy.enqueue
+      continuous_delivery_resumed!
       deploy
     end
 
+    def continuous_delivery_resumed!
+      update!(continuous_delivery_delayed_since: nil)
+    end
+
+    def continuous_delivery_delayed?
+      continuous_delivery_delayed_since? && continuous_deployment? && checks?
+    end
+
+    def continuous_delivery_delayed!
+      touch(:continuous_delivery_delayed_since, :updated_at) unless continuous_delivery_delayed?
+    end
+
     def trigger_continuous_delivery
-      return unless deployable?
-      return if deployed_too_recently?
+      commit = next_commit_to_deploy
 
-      if commit = next_commit_to_deploy
-        return if commit.deployed?
-        return if checks? && !commit.checks.run.success?
-
-        trigger_deploy(commit, Shipit.user)
+      if !deployable? || deployed_too_recently? || commit.nil? || commit.deployed?
+        continuous_delivery_resumed!
+        return
       end
+
+      if checks? && !EphemeralCommitChecks.new(commit).run.success?
+        continuous_delivery_delayed!
+        return
+      end
+
+      trigger_deploy(commit, Shipit.user)
     end
 
     def next_commit_to_deploy

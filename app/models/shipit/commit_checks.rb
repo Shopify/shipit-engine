@@ -1,5 +1,5 @@
 module Shipit
-  class CommitChecks
+  class CommitChecks < EphemeralCommitChecks
     OUTPUT_TTL = 10.minutes.to_i
     FINAL_STATUSES = %w(failed error success).freeze
 
@@ -7,31 +7,28 @@ module Shipit
       @commit = commit
     end
 
-    def run
-      self.status = 'running'
-      commands = StackCommands.new(stack)
-      commands.with_temporary_working_directory(commit: commit) do |directory|
-        deploy_spec = DeploySpec::FileSystem.new(directory, stack.environment)
-        Bundler.with_clean_env do
-          capture_all(build_commands(deploy_spec.dependencies_steps, chdir: directory))
-          capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
-        end
-      end
-      self
-    rescue Command::Error
-      self.status = 'failed'
-    rescue
-      self.status = 'error'
-      raise
-    else
-      self.status = 'success'
+    def synchronize(&block)
+      @lock ||= Redis::Lock.new('lock', redis, expiration: 1, timeout: 2)
+      @lock.lock(&block)
     end
 
     def schedule
-      if redis.set('output', '', ex: OUTPUT_TTL, nx: true)
-        self.status = 'scheduled'
-        PerformCommitChecksJob.perform_later(commit: commit)
+      return false if redis.get('status').present?
+      synchronize do
+        return false if redis.get('status').present?
+
+        initialize_redis_state
       end
+      PerformCommitChecksJob.perform_later(commit: commit)
+      true
+    end
+
+    def initialize_redis_state
+      redis.pipelined do
+        redis.set('output', '', ex: OUTPUT_TTL)
+        redis.set('status', 'scheduled', ex: OUTPUT_TTL)
+      end
+      @status = 'scheduled'
     end
 
     def status
@@ -39,16 +36,8 @@ module Shipit
     end
 
     def status=(status)
-      redis.set('status', status, ex: OUTPUT_TTL)
+      redis.set('status', status)
       @status = status
-    end
-
-    def success?
-      status == 'success'
-    end
-
-    def finished?
-      FINAL_STATUSES.include?(status)
     end
 
     def output(since: 0)
@@ -61,35 +50,8 @@ module Shipit
 
     private
 
-    def build_commands(commands, chdir:)
-      commands.map { |c| Command.new(c, env: Shipit.env, chdir: chdir) }
-    end
-
-    def capture_all(commands)
-      commands.map { |c| capture(c) }
-    end
-
-    def capture(command)
-      command.start
-      write("$ #{command}\n")
-      command.stream! do |line|
-        write(line)
-      end
-    rescue Command::Error => error
-      write(error.message)
-      raise
-    ensure
-      write("\n")
-    end
-
-    attr_reader :commit
-
     def redis
       @redis ||= Shipit.redis("commit:#{commit.id}:checks")
-    end
-
-    def stack
-      @stack ||= commit.stack
     end
   end
 end

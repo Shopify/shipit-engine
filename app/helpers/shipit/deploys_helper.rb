@@ -12,7 +12,7 @@ module Shipit
 
     def render_checks(commit)
       return unless commit.stack.checks?
-      render 'shipit/deploys/checks', commit: commit
+      render 'shipit/commit_checks/checks', commit: commit
     end
 
     def render_monitoring_panel(panel_spec)
