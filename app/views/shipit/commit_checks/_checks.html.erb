@@ -1,0 +1,13 @@
+<%= javascript_include_tag 'task' %>
+
+<section>
+  <header class="section-header">
+    <h2>Checks</h2>
+  </header>
+
+  <%- url = stack_tail_commit_checks_path(commit.stack, sha: commit.sha, since: 0) -%>
+
+  <div class="task-output-container">
+    <pre class="commit-checks" data-status="<%= commit.checks.status %>"><code data-next-chunks-url="<%= url %>"></code></pre>
+  </div>
+</section>

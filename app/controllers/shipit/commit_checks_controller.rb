@@ -1,12 +1,19 @@
 module Shipit
   class CommitChecksController < ShipitController
+    def show
+      checks.schedule
+    end
+
     params do
       accepts :since, Integer, default: 0
     end
     def tail
       output = checks.output(since: params.since)
-      next_offset = params.since + output.bytesize
-      url = stack_tail_commit_checks_path(stack, sha: commit.sha, since: next_offset) unless checks.finished?
+      url = nil
+      unless checks.finished?
+        next_offset = params.since + output.bytesize
+        url = stack_tail_commit_checks_path(stack, sha: commit.sha, since: next_offset)
+      end
 
       render json: {url: url, output: output, status: checks.status}
     end

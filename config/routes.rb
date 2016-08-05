@@ -62,6 +62,7 @@ Shipit::Engine.routes.draw do
   end
 
   scope '/*stack_id', stack_id: stack_id_format, as: :stack do
+    get '/commit/:sha/checks' => 'commit_checks#show', as: :commit_checks
     get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: {format: :json}
 
     resources :rollbacks, only: %i(create)

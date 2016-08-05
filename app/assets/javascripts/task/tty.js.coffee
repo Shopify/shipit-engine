@@ -1,10 +1,34 @@
 class OutputLines
   constructor: (@screen, @render) ->
+    @renderingCache = {}
+
+  append: (lines) ->
+    @screen.append(@renderLines(@filter(lines)))
+
+  setFilter: ->
+    true
+
+  filter: (lines) ->
+    lines
+
+  highlight: (line) ->
+    line
+
+  renderLines: (lines) ->
+    for line in lines
+      @highlight(@renderingCache[line] ||= @render(line))
+
+class @ClusterizeOutputLines extends OutputLines
+  constructor: (@screen, @render) ->
+    super
+    @raw = []
     @query = ''
     @highlightRegexp = null
-    @raw = []
-    @renderingCache = {}
     @stripCache = {}
+
+  append: (lines) ->
+    @raw = @raw.concat(lines)
+    super
 
   setFilter: (query) ->
     if @query = query
@@ -17,20 +41,12 @@ class OutputLines
   reset: ->
     @screen.update(@renderLines(@filter(@raw)))
 
-  filter: (lines) ->
-    return lines unless @query
-    line for line in lines when @strip(line).includes(@query)
-
   strip: (line) ->
     @stripCache[line] ||= AnsiStream.strip(line)
 
-  append: (lines) ->
-    @raw = @raw.concat(lines)
-    @screen.append(@renderLines(@filter(lines)))
-
-  renderLines: (lines) ->
-    for line in lines
-      @highlight(@renderingCache[line] ||= @render(line))
+  filter: (lines) ->
+    return lines unless @query
+    line for line in lines when @strip(line).includes(@query)
 
   buildHighlightRegexp: (query) ->
     pattern = query.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/(\s+)/g, '(<[^>]+>)*$1(<[^>]+>)*')
@@ -40,7 +56,6 @@ class OutputLines
     return renderedLine unless @query
 
     renderedLine.replace(@highlightRegexp, '<mark>$1</mark>').replace(/(<mark>[^<>]*)((<[^>]+>)+)([^<>]*<\/mark>)/, '$1</mark>$2<mark>$4');
-
 
 class @TTY
   FORMATTERS = []
@@ -55,14 +70,17 @@ class @TTY
   constructor: ($body) ->
     @outputLines = []
     @$code = $body.find('code')
-    @$container = @$code.closest('.clusterize-scroll')
-    scroller = new Clusterize(
-      no_data_text: 'Loading...'
-      tag: 'div'
-      contentElem: @$code[0]
-      scrollElem: @$container[0]
-    )
-    @output = new OutputLines(scroller, (line) => @createLine(@formatChunks(line)))
+    @$container = @$code.closest('.task-output-container')
+    if @$container.hasClass('clusterize-scroll')
+      scroller = new Clusterize(
+        no_data_text: 'Loading...'
+        tag: 'div'
+        contentElem: @$code[0]
+        scrollElem: @$container[0]
+      )
+      @output = new ClusterizeOutputLines(scroller, (line) => @createLine(@formatChunks(line)))
+    else
+      @output = new OutputLines(@$code, (line) => @createLine(@formatChunks(line)))
 
   filterOutput: (query) =>
     @output.setFilter(query)

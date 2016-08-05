@@ -26,7 +26,7 @@ group :test do
   gem 'simplecov', require: false
 end
 
-group :debug do
+group :development, :test do
   gem 'byebug'
   gem 'pry'
 end

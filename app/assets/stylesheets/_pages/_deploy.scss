@@ -194,6 +194,7 @@
     border-color: $green;
   }
 
+  &[data-status="failed"],
   &[data-status="failure"],
   &[data-status="error"] {
     border-color: $bright-red;
