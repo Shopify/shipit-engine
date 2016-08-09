@@ -1,17 +1,20 @@
 module Shipit
   class Commands
-    def self.for(model)
-      "#{model.class.name}Commands".constantize.new(model)
-    end
+    class << self
+      def for(model)
+        "#{model.class.name}Commands".constantize.new(model)
+      end
 
-    def self.git_version
-      @git_version ||= begin
-        `git --version` =~ /([\d\.]+)/
+      def git_version
+        @git_version ||= parse_git_version(`git --version`)
+      end
+
+      def parse_git_version(raw_git_version)
+        raw_git_version =~ /(\d+\.\d+\.\d+)/
         raise 'git command not found' unless $1
         Gem::Version.new($1)
       end
     end
-
     delegate :git_version, to: :class
 
     def env
