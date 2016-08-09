@@ -127,12 +127,12 @@ class CreateBaseline < ActiveRecord::Migration
       t.integer  "stack_id",        limit: 4,                         null: false
       t.integer  "since_commit_id", limit: 4,                         null: false
       t.integer  "until_commit_id", limit: 4,                         null: false
-      t.string   "status",          limit: 255,   default: "pending", null: false
+      t.string   "status",          limit: 10,    default: "pending", null: false
       t.datetime "created_at"
       t.datetime "updated_at"
       t.integer  "user_id",         limit: 4
       t.boolean  "rolled_up",                     default: false,     null: false
-      t.string   "type",            limit: 255
+      t.string   "type",            limit: 20
       t.integer  "parent_id",       limit: 4
       t.integer  "additions",       limit: 4,     default: 0
       t.integer  "deletions",       limit: 4,     default: 0
