@@ -33,3 +33,6 @@ railgun:
   proxy:
     shipit-engine.localhost: 55330
 
+packages:
+  - git@github.com:Shopify/dev-shopify.git
+
