@@ -32,7 +32,7 @@ module Shipit
       super.merge(
         'ENVIRONMENT' => @stack.environment,
         'BRANCH' => @stack.branch,
-        'USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
+        'SHIPIT_USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
         'EMAIL' => @task.author.email,
         'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
         'SHIPIT_LINK' => permalink,

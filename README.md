@@ -546,7 +546,7 @@ Your deploy scripts have access to the following environment variables:
 
 * `SHIPIT`: Set to `1` to allow your script to know it's executed by Shipit
 * `SHIPIT_LINK`: URL to the task output, useful to broadcast it in an IRC channel
-* `USER`: Full name of the user that triggered the deploy/task
+* `SHIPIT_USER`: Full name of the user that triggered the deploy/task
 * `EMAIL`: Email of the user that triggered the deploy/task (if available)
 * `ENVIRONMENT`: The stack environment (e.g `production` / `staging`)
 * `BRANCH`: The stack branch (e.g `master`)
