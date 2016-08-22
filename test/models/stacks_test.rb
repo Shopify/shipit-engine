@@ -535,5 +535,37 @@ module Shipit
       @stack.expects(:maximum_commits_per_deploy).returns(3).at_least_once
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
     end
+
+    test "#lock sets reason, user and locked_since" do
+      reason = "Here comes the walrus"
+      user = shipit_users(:walrus)
+      @stack.lock(reason, user)
+      assert @stack.locked?
+      assert_equal reason, @stack.lock_reason
+      assert_equal user, @stack.lock_author
+      assert_not_nil user, @stack.locked_since
+    end
+
+    test "#unlock deletes reason, user and locked_since" do
+      user = shipit_users(:walrus)
+      @stack.lock("Here comes the walrus", user)
+      @stack.unlock
+      refute @stack.locked?
+      assert_nil @stack.lock_reason
+      assert_nil @stack.locked_since
+      assert_not_equal user, @stack.lock_author
+    end
+
+    test "#lock does not overwrite locked_since if already locked" do
+      @stack.lock("Here comes the walrus", shipit_users(:walrus))
+      old_time = @stack.locked_since
+
+      new_reason = "Its still coming!"
+      @stack.lock(new_reason, shipit_users(:walrus))
+
+      assert @stack.locked?
+      assert_equal new_reason, @stack.lock_reason
+      assert_equal old_time, @stack.locked_since
+    end
   end
 end

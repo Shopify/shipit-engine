@@ -53,6 +53,14 @@ module Shipit
       unless @stack.update(update_params)
         options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
       end
+
+      reason = params[:stack][:lock_reason]
+      if reason.present?
+        @stack.lock(reason, current_user)
+      elsif @stack.locked?
+        @stack.unlock
+      end
+
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
     end
 
@@ -77,10 +85,8 @@ module Shipit
     end
 
     def update_params
-      params.require(:stack).permit(:deploy_url, :lock_reason, :environment,
-                                    :continuous_deployment, :ignore_ci).tap do |params|
-        params[:lock_author_id] = params[:lock_reason].present? ? current_user.id : nil
-      end
+      params.require(:stack).permit(:deploy_url, :environment,
+                                    :continuous_deployment, :ignore_ci)
     end
   end
 end
