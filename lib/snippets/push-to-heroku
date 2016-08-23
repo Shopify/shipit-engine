@@ -13,7 +13,7 @@ function yellow() {
 HEROKU_APP=$1
 HEROKU_RELEASES=`heroku releases --app $HEROKU_APP 2>&1`
 GIT_COMMAND=${GIT_COMMAND:="git push git@heroku.com:$HEROKU_APP.git $SHA:master $GIT_FLAGS"}
-POST_MIGRATION_DEPLOY="${POST_MIGRATION_DEPLOY:=true}"
+POST_MIGRATION_DEPLOY=${POST_MIGRATION_DEPLOY:="true"}
 
 if [[ -z "${HEROKU_APP}" ]]; then
   red "Usage: $0 <app-name>"
@@ -33,7 +33,7 @@ if [[ $? -ne 0 ]]; then
   exit 1;
 fi
 
-HEROKU_LAST_GOOD_RELEASE=`echo "${HEROKU_RELEASES}" | head -n2 | tail -n1 | sed -e 's/^\(v[0-9]\+\).*/\1/'`
+HEROKU_LAST_GOOD_RELEASE=`echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | sed -e 's/^\(v[0-9]\+\).*/\1/'`
 green "Current heroku release: ${HEROKU_LAST_GOOD_RELEASE}"
 
 green "Pushing to heroku."
@@ -63,7 +63,7 @@ if [[ "${MIGRATIONS}" != "" ]]; then
     exit 1
   fi
 
-  if [[ "${POST_MIGRATION_DEPLOY}" ]]; then
+  if [[ "${POST_MIGRATION_DEPLOY}" == "true" ]]; then
     green "Post-migration dyno restart."
     heroku restart --app $HEROKU_APP
   fi
