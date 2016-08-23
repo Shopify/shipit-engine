@@ -10,7 +10,7 @@ module Shipit
         if stack.locked?
           render json: {message: 'Already locked'}, status: :conflict
         else
-          stack.update(lock_reason: params.reason, lock_author: current_user)
+          stack.lock(params.reason, current_user)
           render_resource stack
         end
       end
@@ -19,12 +19,12 @@ module Shipit
         requires :reason, String, presence: true
       end
       def update
-        stack.update(lock_reason: params.reason, lock_author: current_user)
+        stack.lock(params.reason, current_user)
         render_resource stack
       end
 
       def destroy
-        stack.update(lock_reason: nil, lock_author: nil)
+        stack.unlock
         render_resource stack
       end
     end

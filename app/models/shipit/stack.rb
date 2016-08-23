@@ -317,6 +317,16 @@ module Shipit
       lock_reason.present?
     end
 
+    def lock(reason, user)
+      params = {lock_reason: reason, lock_author: user}
+      params[:locked_since] = Time.current if locked_since.nil?
+      update!(params)
+    end
+
+    def unlock
+      update!(lock_reason: nil, lock_author: nil, locked_since: nil)
+    end
+
     def to_param
       [repo_owner, repo_name, environment].join('/')
     end

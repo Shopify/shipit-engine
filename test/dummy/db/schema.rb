@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160802092812) do
+ActiveRecord::Schema.define(version: 20160822131405) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -147,6 +147,7 @@ ActiveRecord::Schema.define(version: 20160802092812) do
     t.datetime "inaccessible_since"
     t.integer  "estimated_deploy_duration",                       default: 1,            null: false
     t.datetime "continuous_delivery_delayed_since"
+    t.datetime "locked_since"
   end
 
   add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
