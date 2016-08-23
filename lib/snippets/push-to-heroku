@@ -62,11 +62,12 @@ if [ "$MIGRATIONS" != "" ]; then
     exit 1
   fi
 
-  green "Post-migration dyno restart."
-  heroku restart --app $HEROKU_APP
+  if [ -z $NO_POST_MIGRATION_RESTART ]; then
+    green "Post-migration dyno restart."
+    heroku restart --app $HEROKU_APP
+  fi
 else
   green "There are no pending migrations."
 fi
 
 green "All done."
-
