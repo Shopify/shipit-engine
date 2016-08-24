@@ -45,15 +45,17 @@ if [[ $? -ne 0 ]]; then
   exit 1;
 fi
 
-MIGRATIONS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
+MIGRATION_STATUS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
 
-if [[ "${MIGRATIONS}" != "" ]]; then
+if [[ "${MIGRATION_STATUS}" != "" ]]; then
   green "There are pending migrations to apply:"
-  echo $MIGRATIONS
+  echo $MIGRATION_STATUS
 
   green "Migrating database."
   heroku run rake db:migrate --app $HEROKU_APP
-  if [[ $? -ne 0 ]]; then
+
+  POST_MIGRATION_STATUS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
+  if [[ "${POST_MIGRATION_STATUS}" != "" ]]; then
     red "Migration failed! This is bad."
     red "Please contact a heroku collaborator for ${HEROKU_APP}:"
     heroku sharing --app $HEROKU_APP
