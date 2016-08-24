@@ -13,8 +13,9 @@ function yellow() {
 HEROKU_APP=$1
 HEROKU_RELEASES=`heroku releases --app $HEROKU_APP 2>&1`
 GIT_COMMAND=${GIT_COMMAND:="git push git@heroku.com:$HEROKU_APP.git $SHA:master $GIT_FLAGS"}
+POST_MIGRATION_DEPLOY=${POST_MIGRATION_DEPLOY:="true"}
 
-if [ -z $HEROKU_APP ]; then
+if [[ -z "${HEROKU_APP}" ]]; then
   red "Usage: $0 <app-name>"
   red "Supported environment variables:"
   red "  - GIT_COMMAND: override the entire 'git push' command."
@@ -24,49 +25,50 @@ fi
 
 echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | grep '^\(v[0-9]\+\)' >/dev/null
 
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 ]]; then
   red "Error detecting current heroku release. Message from 'heroku releases':"
-  echo "$HEROKU_RELEASES"
-  red "Please contact a heroku collaborator for $HEROKU_APP:"
+  echo "${HEROKU_RELEASES}"
+  red "Please contact a heroku collaborator for ${HEROKU_APP}:"
   heroku sharing --app $HEROKU_APP
   exit 1;
 fi
 
 HEROKU_LAST_GOOD_RELEASE=`echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | sed -e 's/^\(v[0-9]\+\).*/\1/'`
-green "Current heroku release: $HEROKU_LAST_GOOD_RELEASE"
+green "Current heroku release: ${HEROKU_LAST_GOOD_RELEASE}"
 
 green "Pushing to heroku."
 $GIT_COMMAND
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 ]]; then
   red "Heroku push rejected. See message above."
-  red "Please contact a heroku collaborator for $HEROKU_APP:"
+  red "Please contact a heroku collaborator for ${HEROKU_APP}:"
   heroku sharing --app $HEROKU_APP
   exit 1;
 fi
 
 MIGRATIONS=`heroku run rake db:migrate:status --app $HEROKU_APP | grep -e '^\s*down'`
 
-if [ "$MIGRATIONS" != "" ]; then
+if [[ "${MIGRATIONS}" != "" ]]; then
   green "There are pending migrations to apply:"
   echo $MIGRATIONS
 
   green "Migrating database."
   heroku run rake db:migrate --app $HEROKU_APP
-  if [ $? -ne 0 ]; then
+  if [[ $? -ne 0 ]]; then
     red "Migration failed! This is bad."
-    red "Please contact a heroku collaborator for $HEROKU_APP:"
+    red "Please contact a heroku collaborator for ${HEROKU_APP}:"
     heroku sharing --app $HEROKU_APP
-    red "The app $HEROKU_APP will now be reverted to its last working version $HEROKU_LAST_GOOD_RELEASE."
+    red "The app ${HEROKU_APP} will now be reverted to its last working version ${HEROKU_LAST_GOOD_RELEASE}."
     heroku releases:rollback $HEROKU_LAST_GOOD_RELEASE --app $HEROKU_APP
     red "Abort."
     exit 1
   fi
 
-  green "Post-migration dyno restart."
-  heroku restart --app $HEROKU_APP
+  if [[ "${POST_MIGRATION_DEPLOY}" == "true" ]]; then
+    green "Post-migration dyno restart."
+    heroku restart --app $HEROKU_APP
+  fi
 else
   green "There are no pending migrations."
 fi
 
 green "All done."
-
