@@ -8,8 +8,16 @@ module Shipit
         render_resources stacks
       end
 
+      params do
+        requires :repo_owner, String
+        requires :repo_name, String
+        accepts :environment, String
+        accepts :branch, String
+        accepts :deploy_url, String
+        accepts :ignore_ci, Boolean
+      end
       def create
-        @stack = Stack.new(create_params)
+        @stack = Stack.new(params)
         @stack.save!
         render_resource @stack
       end
@@ -22,10 +30,6 @@ module Shipit
 
       def stack
         @stack ||= stacks.from_param!(params[:id])
-      end
-
-      def create_params
-        params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url, :ignore_ci)
       end
     end
   end
