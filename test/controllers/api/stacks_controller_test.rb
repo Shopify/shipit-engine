@@ -8,6 +8,51 @@ module Shipit
         @stack = shipit_stacks(:shipit)
       end
 
+      test "#create fails with insufficient permissions" do
+        @client.permissions.delete('write:stack')
+        @client.save!
+
+        assert_no_difference 'Stack.count' do
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+        end
+
+        assert_response :forbidden
+        assert_json 'message', 'This operation requires the `write:stack` permission'
+      end
+
+      test "#create fails with invalid stack" do
+        assert_no_difference "Stack.count" do
+          post :create, repo_owner: 'some', repo_name: 'owner/path'
+        end
+        assert_response :unprocessable_entity
+        assert_json 'errors', 'repo_name' => ['is invalid']
+      end
+
+      test "#create creates a stack and renders it back" do
+        assert_difference -> { Stack.count } do
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+        end
+
+        assert_response :ok
+        assert_json 'id', Stack.last.id
+      end
+
+      test "#create fails to create stack if it already exists" do
+        Stack.create!(
+          repo_name: 'rails',
+          repo_owner: 'rails',
+          environment: 'staging',
+          branch: 'staging',
+        )
+
+        assert_no_difference -> { Stack.count } do
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+        end
+
+        assert_response :unprocessable_entity
+        assert_json 'errors', 'repo_name' => ['cannot be used more than once with this environment']
+      end
+
       test "#index returns a list of stacks" do
         stack = Stack.last
 
