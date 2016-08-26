@@ -17,9 +17,7 @@ module Shipit
         accepts :ignore_ci, Boolean
       end
       def create
-        @stack = Stack.new(params)
-        @stack.save!
-        render_resource @stack
+        render_resource Stack.create(params)
       end
 
       def show

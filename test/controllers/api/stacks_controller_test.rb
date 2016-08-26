@@ -12,15 +12,8 @@ module Shipit
         @client.permissions.delete('write:stack')
         @client.save!
 
-        params = {
-          repo_name: "rails",
-          repo_owner: "rails",
-          environment: "staging",
-          branch: "staging",
-        }
-
         assert_no_difference 'Stack.count' do
-          post :create, params
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
         end
 
         assert_response :forbidden
@@ -32,18 +25,12 @@ module Shipit
           post :create, repo_owner: 'some', repo_name: 'owner/path'
         end
         assert_response :unprocessable_entity
+        assert_json 'errors', 'repo_name' => ['is invalid']
       end
 
       test "#create creates a stack and renders it back" do
-        params = {
-          repo_name: "rails",
-          repo_owner: "rails",
-          environment: "staging",
-          branch: "staging",
-        }
-
-        assert_difference "Stack.count" do
-          post :create, params
+        assert_difference -> { Stack.count } do
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
         end
 
         assert_response :ok
@@ -51,25 +38,19 @@ module Shipit
       end
 
       test "#create fails to create stack if it already exists" do
-        params = {
-          repo_name: "rails",
-          repo_owner: "rails",
-          environment: "staging",
-          branch: "staging",
-        }
+        Stack.create!(
+          repo_name: 'rails',
+          repo_owner: 'rails',
+          environment: 'staging',
+          branch: 'staging',
+        )
 
-        assert_difference "Stack.count" do
-          post :create, params
-        end
-
-        assert_response :ok
-        assert_json 'id', Stack.last.id
-
-        assert_no_difference "Stack.count" do
-          post :create, params
+        assert_no_difference -> { Stack.count } do
+          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
         end
 
         assert_response :unprocessable_entity
+        assert_json 'errors', 'repo_name' => ['cannot be used more than once with this environment']
       end
 
       test "#index returns a list of stacks" do

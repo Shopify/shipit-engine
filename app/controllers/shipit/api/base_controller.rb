@@ -8,7 +8,6 @@ module Shipit
 
       rescue_from ApiClient::InsufficientPermission, with: :insufficient_permission
       rescue_from EnvironmentVariables::NotPermitted, with: :validation_error
-      rescue_from ActiveRecord::RecordInvalid, with: :validation_error
       rescue_from TaskDefinition::NotFound, with: :not_found
 
       class << self
