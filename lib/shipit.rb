@@ -175,6 +175,10 @@ module Shipit
     {'SHIPIT' => '1'}.merge(secrets.env || {})
   end
 
+  def shell_paths
+    [Shipit::Engine.root.join('lib', 'snippets').to_s]
+  end
+
   def revision
     @revision ||= begin
       if revision_file.exist?

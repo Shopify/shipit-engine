@@ -69,7 +69,7 @@ module Shipit
 
     def with_full_path
       old_path = ENV['PATH']
-      ENV['PATH'] = "#{ENV['PATH']}:#{Shipit::Engine.root.join('lib', 'snippets')}"
+      ENV['PATH'] = "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}"
       yield
     ensure
       ENV['PATH'] = old_path
