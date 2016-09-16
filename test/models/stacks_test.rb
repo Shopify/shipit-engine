@@ -475,6 +475,7 @@ module Shipit
     test "#trigger_continuous_delivery bails out if the stack isn't deployable" do
       Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
 
+      @stack.lock('yada yada yada', AnonymousUser.new)
       refute_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
 
@@ -488,9 +489,12 @@ module Shipit
     test "#trigger_continuous_delivery bails out if the stack is deployable but was deployed too recently" do
       Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
 
-      @stack.tasks.active.each(&:error!)
+      @stack.tasks.delete_all
+      deploy = @stack.trigger_deploy(shipit_commits(:first), AnonymousUser.new)
+      deploy.run!
+      deploy.complete!
+
       assert_predicate @stack, :deployable?
-      @stack.last_active_task.update(ended_at: 20.seconds.ago)
       assert_predicate @stack, :deployed_too_recently?
 
       assert_no_enqueued_jobs do
@@ -500,12 +504,32 @@ module Shipit
       end
     end
 
-    test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
-      @stack.tasks.active.each(&:error!)
+    test "#trigger_continuous_delivery bails out if the commit was already unsuccessfully deployed" do
+      Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
+
+      @stack.tasks.delete_all
+
       assert_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
 
-      assert_no_difference -> { Deploy.count } do
+      commit = @stack.next_commit_to_deploy
+      deploy = @stack.trigger_deploy(commit, AnonymousUser.new)
+      deploy.error!
+      assert_predicate commit, :deploy_failed?
+
+      assert_no_enqueued_jobs do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
+    test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
+      @stack.tasks.delete_all
+      assert_predicate @stack, :deployable?
+      refute_predicate @stack, :deployed_too_recently?
+
+      assert_difference -> { Deploy.count }, +1 do
         @stack.trigger_continuous_delivery
       end
     end

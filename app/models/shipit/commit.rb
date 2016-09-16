@@ -184,6 +184,10 @@ module Shipit
       stack.last_deployed_commit.id >= id
     end
 
+    def deploy_failed?
+      stack.deploys.unsuccessful.where(until_commit_id: id).any?
+    end
+
     private
 
     def add_status

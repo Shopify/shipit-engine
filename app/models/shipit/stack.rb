@@ -130,7 +130,7 @@ module Shipit
         return
       end
 
-      if checks? && !EphemeralCommitChecks.new(commit).run.success?
+      if commit.deploy_failed? || (checks? && !EphemeralCommitChecks.new(commit).run.success?)
         continuous_delivery_delayed!
         return
       end

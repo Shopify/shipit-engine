@@ -3,6 +3,7 @@ module Shipit
     PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
+    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping).freeze
 
     attr_accessor :pid
 
@@ -22,6 +23,7 @@ module Shipit
     scope :completed, -> { where(status: COMPLETED_STATUSES) }
     scope :active, -> { where(status: ACTIVE_STATUSES) }
     scope :exclusive, -> { where(allow_concurrency: false) }
+    scope :unsuccessful, -> { where(status: UNSUCCESSFUL_STATUSES) }
 
     scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
