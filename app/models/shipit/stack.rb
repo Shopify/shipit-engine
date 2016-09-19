@@ -58,7 +58,7 @@ module Shipit
     validates :repo_owner, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_OWNER_MAX_SIZE}
     validates :repo_name, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_NAME_MAX_SIZE}
     validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
-    validates :deploy_url, format: {with: URI.regexp(%w(http https))}, allow_blank: true
+    validates :deploy_url, format: {with: URI.regexp(%w(http https ssh))}, allow_blank: true
 
     validates :lock_reason, length: {maximum: 4096}
 

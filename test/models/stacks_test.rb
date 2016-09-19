@@ -592,11 +592,13 @@ module Shipit
       assert_equal old_time, @stack.locked_since
     end
 
-    test "stack should contains valid deploy_url" do
+    test "stack contains valid deploy_url" do
       @stack.deploy_url = "Javascript:alert(0);//"
-      assert_not @stack.valid?
+      assert_not_predicate @stack, :valid?
       @stack.deploy_url = "https://shopify.com"
-      assert @stack.valid?
+      assert_predicate @stack, :valid?
+      @stack.deploy_url = "ssh://abc"
+      assert_predicate @stack, :valid?
     end
   end
 end
