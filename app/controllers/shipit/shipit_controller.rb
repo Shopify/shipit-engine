@@ -10,12 +10,14 @@ module Shipit
 
     helper Shipit::Engine.routes.url_helpers
     include Shipit::Engine.routes.url_helpers
+    include ActionView::Helpers::DateHelper
 
     before_action(
       :toogle_bootstrap_feature,
       :ensure_required_settings,
       :force_github_authentication,
       :set_variant,
+      :check_github_status
     )
 
     # Respond to HTML by default
@@ -65,6 +67,15 @@ module Shipit
 
       request.format = :html
       request.variant = :partial
+    end
+
+    def check_github_status
+      github_status = Rails.cache.read('github::status')
+      return if github_status.nil? || github_status[:status] == 'good'
+
+      flash[:warning] = "It seems that GitHub is having issues:
+        status: #{github_status[:status]} '#{github_status[:body]}'
+        updated: #{time_ago_in_words(github_status[:last_updated])} ago"
     end
   end
 end

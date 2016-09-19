@@ -3,6 +3,7 @@ namespace :cron do
   task minutely: :environment do
     Shipit::Stack.refresh_deployed_revisions
     Shipit::Stack.schedule_continuous_delivery
+    Shipit::GithubStatus.refresh_status
   end
 
   desc "Rolls-up output chunks for completed deploys older than an hour"
