@@ -15,15 +15,11 @@ env:
     - SUITE=sqlite3
 rvm:
   - 2.2.3
-gemfile:
-  - Gemfile
-  - gemfiles/Gemfile-rails5
 matrix:
   fast_finish: true
   include:
     - rvm: 2.2.3
       env: SUITE=rubocop
-      gemfile: Gemfile
 
 notifications:
   email: false
