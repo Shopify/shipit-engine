@@ -8,9 +8,7 @@ module Shipit
       end
 
       def refresh_status
-        Rails.cache.fetch(CACHE_KEY) do
-          Shipit.github_api.github_status
-        end
+        Rails.cache.write(CACHE_KEY, Shipit.github_api.github_status)
       end
     end
   end
