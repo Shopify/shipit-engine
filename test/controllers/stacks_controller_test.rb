@@ -166,5 +166,20 @@ module Shipit
       get :lookup, id: @stack.id
       assert_redirected_to stack_path(@stack)
     end
+
+    test "#create does not create stack with invalid deploy_url" do
+      params = {}
+      params[:stack] = {
+        repo_name: "rails",
+        repo_owner: "rails",
+        environment: "staging",
+        branch: "staging",
+        deploy_url: "Javascript:alert(1);",
+      }
+
+      post :create, params
+      assert_response :success
+      assert_equal "Deploy url is invalid", flash[:warning]
+    end
   end
 end
