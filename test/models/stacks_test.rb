@@ -591,5 +591,12 @@ module Shipit
       assert_equal new_reason, @stack.lock_reason
       assert_equal old_time, @stack.locked_since
     end
+
+    test "stack should contains valid deploy_url" do
+      @stack.deploy_url = "Javascript:alert(0);//"
+      assert_not @stack.valid?
+      @stack.deploy_url = "https://shopify.com"
+      assert @stack.valid?
+    end
   end
 end
