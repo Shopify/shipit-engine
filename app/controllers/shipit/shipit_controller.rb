@@ -17,7 +17,7 @@ module Shipit
       :ensure_required_settings,
       :force_github_authentication,
       :set_variant,
-      :check_github_status
+      :check_github_status,
     )
 
     # Respond to HTML by default
