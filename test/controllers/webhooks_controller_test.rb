@@ -12,7 +12,7 @@ module Shipit
       params = payload(:push_master)
 
       assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :push, {stack_id: @stack.id}.merge(params)
+        post :push, params: {stack_id: @stack.id}.merge(params)
       end
     end
 
@@ -20,7 +20,7 @@ module Shipit
       request.headers['X-Github-Event'] = 'push'
       params = payload(:push_not_master)
       assert_no_enqueued_jobs do
-        post :push, {stack_id: @stack.id}.merge(params)
+        post :push, params: {stack_id: @stack.id}.merge(params)
       end
     end
 
@@ -31,7 +31,7 @@ module Shipit
       commit = shipit_commits(:first)
 
       assert_difference 'commit.statuses.count', 1 do
-        post :state, {stack_id: @stack.id}.merge(status_payload)
+        post :state, params: {stack_id: @stack.id}.merge(status_payload)
       end
 
       status = commit.statuses.last
@@ -46,14 +46,14 @@ module Shipit
       request.headers['X-Github-Event'] = 'status'
       params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
       assert_raises ActiveRecord::RecordNotFound do
-        post :state, {stack_id: @stack.id}.merge(params)
+        post :state, params: {stack_id: @stack.id}.merge(params)
       end
     end
 
     test ":state in an untracked branche bails out" do
       request.headers['X-Github-Event'] = 'status'
       params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
-      post :state, {stack_id: @stack.id}.merge(params)
+      post :state, params: {stack_id: @stack.id}.merge(params)
       assert_response :ok
     end
 
@@ -61,7 +61,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'ping'
 
       assert_no_enqueued_jobs do
-        post :state, stack_id: @stack.id, zen: "Git is beautiful"
+        post :state, params: {stack_id: @stack.id, zen: 'Git is beautiful'}
         assert_response :ok
       end
     end
@@ -70,7 +70,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'ping'
 
       assert_no_enqueued_jobs do
-        post :state, stack_id: @stack.id
+        post :state, params: {stack_id: @stack.id}
         assert_response :ok
       end
     end
@@ -86,7 +86,7 @@ module Shipit
 
       GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
-      post :push, {stack_id: @stack.id}.merge(params)
+      post :push, params: {stack_id: @stack.id}.merge(params)
       assert_response :unprocessable_entity
     end
 
@@ -99,13 +99,13 @@ module Shipit
 
       GithubHook.any_instance.expects(:verify_signature).with(signature, URI.encode_www_form(params)).returns(false)
 
-      post :push, {stack_id: @stack.id}.merge(params)
+      post :push, params: {stack_id: @stack.id}.merge(params)
       assert_response :unprocessable_entity
     end
 
     test ":membership creates the mentioned team on the fly" do
       assert_difference -> { Team.count }, 1 do
-        post :membership, membership_params.merge(team: {
+        post :membership, params: membership_params.merge(team: {
           id: 48,
           name: 'Ouiche Cooks',
           slug: 'ouiche-cooks',
@@ -118,42 +118,42 @@ module Shipit
     test ":membership creates the mentioned user on the fly" do
       Shipit.github_api.expects(:user).with('george').returns(george)
       assert_difference -> { User.count }, 1 do
-        post :membership, membership_params.merge(member: {login: 'george'})
+        post :membership, params: membership_params.merge(member: {login: 'george'})
         assert_response :ok
       end
     end
 
     test ":membership can delete an user membership" do
       assert_difference -> { Membership.count }, -1 do
-        post :membership, membership_params.merge(_action: 'removed')
+        post :membership, params: membership_params.merge(_action: 'removed')
         assert_response :ok
       end
     end
 
     test ":membership can append an user membership" do
       assert_difference -> { Membership.count }, 1 do
-        post :membership, membership_params.merge(member: {login: 'bob'})
+        post :membership, params: membership_params.merge(member: {login: 'bob'})
         assert_response :ok
       end
     end
 
     test ":membership can append an user twice" do
       assert_no_difference -> { Membership.count } do
-        post :membership, membership_params
+        post :membership, params: membership_params
         assert_response :ok
       end
     end
 
     test ":membership can delete an user twice" do
       assert_no_difference -> { Membership.count } do
-        post :membership, membership_params.merge(_action: 'removed', member: {login: 'bob'})
+        post :membership, params: membership_params.merge(_action: 'removed', member: {login: 'bob'})
         assert_response :ok
       end
     end
 
     test ":membership can append a user membership for an organization with capitals" do
       assert_difference -> { Membership.count }, 1 do
-        post :membership, membership_params.merge(organization: {login: 'Shopify'}, member: {login: 'bob'})
+        post :membership, params: membership_params.merge(organization: {login: 'Shopify'}, member: {login: 'bob'})
         assert_response :ok
       end
     end

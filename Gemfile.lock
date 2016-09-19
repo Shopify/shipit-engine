@@ -11,7 +11,7 @@ PATH
       activesupport (~> 5.0.0)
       ansi_stream (~> 0.0.6)
       attr_encrypted (~> 3.0.0)
-      autoprefixer-rails (~> 6.3.2)
+      autoprefixer-rails (~> 6.4.1)
       bootstrap (= 4.0.0.alpha3)
       coffee-rails (~> 4.1.0)
       explicit-parameters (~> 0.2.0)
@@ -85,7 +85,7 @@ GEM
     ast (2.3.0)
     attr_encrypted (3.0.3)
       encryptor (~> 3.0.0)
-    autoprefixer-rails (6.3.7)
+    autoprefixer-rails (6.4.1.1)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)

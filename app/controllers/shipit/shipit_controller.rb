@@ -42,7 +42,7 @@ module Shipit
         teams = Shipit.github_teams
         unless teams.empty? || current_user.teams.where(id: teams).exists?
           team_list = teams.map(&:handle).to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          render text: "You must be a member of #{team_list} to access this application.", status: :forbidden
+          render plain: "You must be a member of #{team_list} to access this application.", status: :forbidden
         end
       else
         redirect_to Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url)

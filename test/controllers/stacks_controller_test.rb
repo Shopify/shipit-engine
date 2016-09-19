@@ -61,33 +61,32 @@ module Shipit
     end
 
     test "#show is success" do
-      get :show, id: @stack.to_param
+      get :show, params: {id: @stack.to_param}
       assert_response :ok
     end
 
     test "#show handles locked stacks without a lock_author" do
       @stack.update!(lock_reason: "I am a lock with no author")
-      get :show, id: @stack.to_param
+      get :show, params: {id: @stack.to_param}
     end
 
     test "#show auto-links URLs in lock reason" do
       @stack.update!(lock_reason: 'http://google.com')
-      get :show, id: @stack.to_param
+      get :show, params: {id: @stack.to_param}
       assert_response :ok
       assert_select 'a[href="http://google.com"]'
     end
 
     test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
-      params = {}
-      params[:stack] = {
-        repo_name: "rails",
-        repo_owner: "rails",
-        environment: "staging",
-        branch: "staging",
-      }
-
       assert_difference "Stack.count" do
-        post :create, params
+        post :create, params: {
+          stack: {
+            repo_name: 'rails',
+            repo_owner: 'rails',
+            environment: 'staging',
+            branch: 'staging',
+          },
+        }
       end
 
       assert_redirected_to stack_path(Stack.last)
@@ -95,27 +94,27 @@ module Shipit
 
     test "#create when not valid renders new" do
       assert_no_difference "Stack.count" do
-        post :create, stack: {repo_owner: 'some', repo_name: 'owner/path'}
+        post :create, params: {stack: {repo_owner: 'some', repo_name: 'owner/path'}}
       end
       assert_response :success
     end
 
     test "#destroy enqueues a DestroyStackJob" do
       assert_enqueued_with(job: DestroyStackJob, args: [@stack]) do
-        delete :destroy, id: @stack.to_param
+        delete :destroy, params: {id: @stack.to_param}
       end
       assert_redirected_to stacks_path
     end
 
     test "#settings is success" do
-      get :settings, id: @stack.to_param
+      get :settings, params: {id: @stack.to_param}
       assert_response :success
     end
 
     test "#update allows to lock the stack" do
       refute @stack.locked?
 
-      patch :update, id: @stack.to_param, stack: {lock_reason: 'Went out to eat some chips!'}
+      patch :update, params: {id: @stack.to_param, stack: {lock_reason: 'Went out to eat some chips!'}}
       @stack.reload
       assert @stack.locked?
       assert_equal shipit_users(:walrus), @stack.lock_author
@@ -125,7 +124,7 @@ module Shipit
       @stack.update!(lock_reason: 'Went out to eat some chips!')
       assert @stack.locked?
 
-      patch :update, id: @stack.to_param, stack: {lock_reason: ''}
+      patch :update, params: {id: @stack.to_param, stack: {lock_reason: ''}}
       @stack.reload
       refute @stack.locked?
       assert_instance_of AnonymousUser, @stack.lock_author
@@ -136,7 +135,7 @@ module Shipit
 
       assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
         assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-          post :refresh, id: @stack.to_param
+          post :refresh, params: {id: @stack.to_param}
         end
       end
 
@@ -145,25 +144,25 @@ module Shipit
 
     test "#sync_webhooks queues #{Stack::REQUIRED_HOOKS.count} SetupGithubHookJob" do
       assert_enqueued_jobs(Stack::REQUIRED_HOOKS.count) do
-        post :sync_webhooks, id: @stack.to_param
+        post :sync_webhooks, params: {id: @stack.to_param}
       end
       assert_redirected_to stack_settings_path(@stack)
     end
 
     test "#clear_git_cache queues a ClearGitCacheJob" do
       assert_enqueued_with(job: ClearGitCacheJob, args: [@stack]) do
-        post :clear_git_cache, id: @stack.to_param
+        post :clear_git_cache, params: {id: @stack.to_param}
       end
       assert_redirected_to stack_settings_path(@stack)
     end
 
     test "#update redirects to return_to parameter" do
-      patch :update, id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)
+      patch :update, params: {id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)}
       assert_redirected_to stack_path(@stack)
     end
 
     test "#lookup redirects to the canonical URL" do
-      get :lookup, id: @stack.id
+      get :lookup, params: {id: @stack.id}
       assert_redirected_to stack_path(@stack)
     end
   end
