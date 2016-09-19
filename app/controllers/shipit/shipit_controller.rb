@@ -69,7 +69,7 @@ module Shipit
     end
 
     def check_github_status
-      github_status = Rails.cache.read('github::status')
+      github_status = Shipit::GithubStatus.status
       return if github_status.nil? || github_status[:status] == 'good'
 
       flash[:warning] = "It seems that GitHub is having issues:
