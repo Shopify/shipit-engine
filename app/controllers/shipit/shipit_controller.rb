@@ -10,7 +10,6 @@ module Shipit
 
     helper Shipit::Engine.routes.url_helpers
     include Shipit::Engine.routes.url_helpers
-    include ActionView::Helpers::DateHelper
 
     before_action(
       :toogle_bootstrap_feature,
@@ -75,7 +74,7 @@ module Shipit
 
       flash[:warning] = "It seems that GitHub is having issues:
         status: #{github_status[:status]} '#{github_status[:body]}'
-        updated: #{time_ago_in_words(github_status[:last_updated])} ago"
+        updated: #{self.class.helpers.time_ago_in_words(github_status[:last_updated])} ago"
     end
   end
 end
