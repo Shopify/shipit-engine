@@ -21,7 +21,6 @@ end
 
 group :test do
   gem 'spy'
-  gem 'test_after_commit'
   gem 'mocha'
   gem 'simplecov', require: false
 end

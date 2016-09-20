@@ -13,7 +13,7 @@ module Shipit
         @client.save!
 
         assert_no_difference 'Stack.count' do
-          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
         end
 
         assert_response :forbidden
@@ -22,7 +22,7 @@ module Shipit
 
       test "#create fails with invalid stack" do
         assert_no_difference "Stack.count" do
-          post :create, repo_owner: 'some', repo_name: 'owner/path'
+          post :create, params: {repo_owner: 'some', repo_name: 'owner/path'}
         end
         assert_response :unprocessable_entity
         assert_json 'errors', 'repo_name' => ['is invalid']
@@ -30,7 +30,7 @@ module Shipit
 
       test "#create creates a stack and renders it back" do
         assert_difference -> { Stack.count } do
-          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
         end
 
         assert_response :ok
@@ -46,7 +46,7 @@ module Shipit
         )
 
         assert_no_difference -> { Stack.count } do
-          post :create, repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'
+          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
         end
 
         assert_response :unprocessable_entity
@@ -65,7 +65,7 @@ module Shipit
       end
 
       test "#index is paginable" do
-        get :index, page_size: 1
+        get :index, params: {page_size: 1}
         assert_json do |list|
           assert_instance_of Array, list
           assert_equal 1, list.size
@@ -77,7 +77,7 @@ module Shipit
       end
 
       test "the `next` link is not provided when the last page is reached" do
-        get :index, page_size: Stack.count
+        get :index, params: {page_size: Stack.count}
         assert_no_link 'next'
       end
 
@@ -97,7 +97,7 @@ module Shipit
       end
 
       test "#show renders the stack" do
-        get :show, id: @stack.to_param
+        get :show, params: {id: @stack.to_param}
         assert_response :ok
         assert_json 'id', @stack.id
       end

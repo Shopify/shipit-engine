@@ -1,10 +1,10 @@
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
-if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.1.0")
-  raise Thor::Error, "You need at least Ruby 2.1.0 to install shipit"
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.2.2')
+  raise Thor::Error, "You need at least Ruby 2.2.2 to install shipit"
 end
-if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new("4.2.0")
-  raise Thor::Error, "You need at least Rails 4.2.0 to install shipit"
+if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('5.0.0')
+  raise Thor::Error, "You need at least Rails 5.0.0 to install shipit"
 end
 
 route %(mount Shipit::Engine, at: '/')
