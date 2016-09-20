@@ -28,7 +28,7 @@
 
   <% github_status = Shipit::GithubStatus.status
      unless github_status.nil? || github_status[:status] == 'good' %>
-    <div class="banner github-status banner--red">
+    <div class="banner github-status banner--orange hidden">
       <div class="banner__inner wrapper">
         <div class="banner__content">
           <h2 class="banner__title">GitHub is having issues</h2>

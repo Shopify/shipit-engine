@@ -20,19 +20,26 @@
 $(document).on 'click', '.disabled, .btn--disabled', (event) ->
   event.preventDefault()
 
-$(document).on 'click', '.enable-notifications .banner__dismiss', (event) ->
+$(document).on 'click', '.banner__dismiss', (event) ->
   $(event.target).closest('.banner').addClass('hidden')
+
+$(document).on 'click', '.enable-notifications .banner__dismiss', (event) ->
   localStorage.setItem("dismissed-enable-notifications", true)
 
-jQuery ->
-  if(localStorage.getItem("dismissed-enable-notifications"))
-    return
-  $notificationNotice = $('.enable-notifications')
+$(document).on 'click', '.github-status .banner__dismiss', (event) ->
+  localStorage.setItem("dismissed-github-status", true)
 
-  if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
-    $button = $notificationNotice.find('button')
-    $button.on 'click', ->
-      $.notifyRequest()
-      $notificationNotice.addClass('hidden')
-    $notificationNotice.removeClass('hidden')
+jQuery ->
+  unless(localStorage.getItem("dismissed-enable-notifications"))
+    $notificationNotice = $('.enable-notifications')
+
+    if $.notifyCheck() == $.NOTIFY_NOT_ALLOWED
+      $button = $notificationNotice.find('button')
+      $button.on 'click', ->
+        $.notifyRequest()
+        $notificationNotice.addClass('hidden')
+      $notificationNotice.removeClass('hidden')
+
+  unless(localStorage.getItem("dismissed-github-status"))
+    $('.github-status').removeClass('hidden')
 
