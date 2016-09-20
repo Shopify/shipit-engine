@@ -16,7 +16,6 @@ module Shipit
       :ensure_required_settings,
       :force_github_authentication,
       :set_variant,
-      :check_github_status,
     )
 
     # Respond to HTML by default
@@ -66,15 +65,6 @@ module Shipit
 
       request.format = :html
       request.variant = :partial
-    end
-
-    def check_github_status
-      github_status = Shipit::GithubStatus.status
-      return if github_status.nil? || github_status[:status] == 'good'
-
-      flash[:warning] = "It seems that GitHub is having issues:
-        status: #{github_status[:status]} '#{github_status[:body]}'
-        updated: #{self.class.helpers.time_ago_in_words(github_status[:last_updated])} ago"
     end
   end
 end
