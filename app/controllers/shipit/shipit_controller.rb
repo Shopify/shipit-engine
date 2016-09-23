@@ -11,12 +11,7 @@ module Shipit
     helper Shipit::Engine.routes.url_helpers
     include Shipit::Engine.routes.url_helpers
 
-    before_action(
-      :toogle_bootstrap_feature,
-      :ensure_required_settings,
-      :force_github_authentication,
-      :set_variant,
-    )
+    before_action :toogle_bootstrap_feature, :ensure_required_settings, :force_github_authentication
 
     # Respond to HTML by default
     respond_to :html
@@ -58,13 +53,6 @@ module Shipit
       return unless session[:user_id].present?
       User.find(session[:user_id])
     rescue ActiveRecord::RecordNotFound
-    end
-
-    def set_variant
-      return unless request.negotiate_mime('text/partial+html')
-
-      request.format = :html
-      request.variant = :partial
     end
   end
 end
