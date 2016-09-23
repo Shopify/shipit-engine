@@ -61,6 +61,10 @@ module Shipit
       true
     end
 
+    def authorized?
+      @authorized ||= Shipit.github_teams.empty? || teams.where(id: Shipit.github_teams.map(&:id)).exists?
+    end
+
     def stacks_contributed_to
       return [] unless id
       Commit.where('author_id = :id or committer_id = :id', id: id).distinct.pluck(:stack_id)

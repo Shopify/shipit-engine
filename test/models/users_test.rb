@@ -123,6 +123,25 @@ module Shipit
       assert_equal 't0k3n', legacy.github_access_token
     end
 
+    test "users are always logged_in?" do
+      assert_predicate @user, :logged_in?
+    end
+
+    test "users are always authorized? if Shipit.github_teams is empty" do
+      Shipit.stubs(:github_teams).returns([])
+      assert_predicate @user, :authorized?
+    end
+
+    test "users are not authorized? if they aren't part of any Shipit.github_teams" do
+      Shipit.stubs(:github_teams).returns([shipit_teams(:cyclimse_cooks)])
+      refute_predicate @user, :authorized?
+    end
+
+    test "users are authorized? if they are part of any Shipit.github_teams" do
+      Shipit.stubs(:github_teams).returns([shipit_teams(:shopify_developers)])
+      assert_predicate @user, :authorized?
+    end
+
     private
 
     def fetch_user

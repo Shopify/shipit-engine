@@ -23,6 +23,10 @@ module Shipit
       false
     end
 
+    def authorized?
+      false
+    end
+
     def stacks_contributed_to
       []
     end
