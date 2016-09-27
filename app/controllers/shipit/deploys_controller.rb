@@ -3,7 +3,7 @@ module Shipit
     include ChunksHelper
 
     before_action :load_stack
-    before_action :load_deploy, only: %i(show rollback)
+    before_action :load_deploy, only: %i(show rollback revert)
     before_action :load_until_commit, only: :create
 
     def new
@@ -28,6 +28,11 @@ module Shipit
 
     def rollback
       @rollback = @deploy.build_rollback
+    end
+
+    def revert
+      previous_deploy = @stack.deploys.success.where(until_commit_id: @deploy.since_commit_id).order(id: :desc).first!
+      redirect_to rollback_stack_deploy_path(@stack, previous_deploy)
     end
 
     private

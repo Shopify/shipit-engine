@@ -83,6 +83,7 @@ Shipit::Engine.routes.draw do
       get ':sha', sha: sha_format, on: :new, action: :new, as: ''
       member do
         get :rollback
+        get :revert
       end
     end
   end

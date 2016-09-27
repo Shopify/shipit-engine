@@ -99,5 +99,10 @@ module Shipit
       end
       assert_select '#new_rollback #force', 1
     end
+
+    test ":revert redirect to the proper rollback page" do
+      get :revert, params: {stack_id: @stack.to_param, id: shipit_deploys(:shipit2).id}
+      assert_redirected_to rollback_stack_deploy_path(@stack, shipit_deploys(:shipit))
+    end
   end
 end
