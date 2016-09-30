@@ -20,7 +20,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 * [Installation](#installation)
 * [Configuring shipit.yml and secrets.yml](#configuring-ymls)
-* [Updating and existing installation](#updating-shipit)
+* [Updating an existing installation](#updating-shipit)
 
 **II. USING SHIPIT**
 
