@@ -11,7 +11,9 @@ module Shipit
     helper Shipit::Engine.routes.url_helpers
     include Shipit::Engine.routes.url_helpers
 
-    before_action :toogle_bootstrap_feature, :ensure_required_settings, :force_github_authentication
+    before_action :toogle_bootstrap_feature, :ensure_required_settings
+
+    include Shipit::Authentication
 
     # Respond to HTML by default
     respond_to :html
@@ -30,29 +32,6 @@ module Shipit
       return if Shipit.all_settings_present?
 
       render 'shipit/missing_settings'
-    end
-
-    def force_github_authentication
-      if current_user.logged_in?
-        unless current_user.authorized?
-          team_handles = Shipit.github_teams.map(&:handle)
-          team_list = team_handles.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          render plain: "You must be a member of #{team_list} to access this application.", status: :forbidden
-        end
-      else
-        redirect_to Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url)
-      end
-    end
-
-    def current_user
-      @current_user ||= find_current_user || AnonymousUser.new
-    end
-    helper_method :current_user
-
-    def find_current_user
-      return unless session[:user_id].present?
-      User.find(session[:user_id])
-    rescue ActiveRecord::RecordNotFound
     end
   end
 end
