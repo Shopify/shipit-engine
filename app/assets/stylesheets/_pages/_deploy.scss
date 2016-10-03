@@ -54,7 +54,7 @@
   }
 }
 
-.task-output-container {
+.task-output-container.task-output-container-main-page {
   height: calc(100vh - 9rem - 4rem - 1px); // .header and .deploy-banner. -1px is to floor the result
 }
 
