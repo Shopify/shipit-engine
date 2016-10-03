@@ -6,7 +6,15 @@ module Shipit
     has_one :author
     has_one :committer
 
-    attributes :additions, :deletions, :authored_at, :committed_at, :html_url, :pull_request
+    attributes :additions, :deletions, :authored_at, :committed_at, :html_url, :pull_request, :status, :deployed
+
+    def deployed
+      object.deployed?
+    end
+
+    def status
+      object.significant_status.state
+    end
 
     def html_url
       github_commit_url(object)
