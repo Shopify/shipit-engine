@@ -18,10 +18,12 @@ module Shipit
     def github_commit_range_url(stack, since_commit, until_commit)
       github_repo_url(stack.repo_owner, stack.repo_name, 'compare', "#{since_commit.sha}...#{until_commit.sha}")
     end
+    module_function :github_commit_range_url
 
     def github_user_url(user, *args)
       [Shipit.github_url, user, *args].join('/')
     end
+    module_function :github_user_url
 
     def render_github_user(user)
       link_to(github_user_url(user.login), class: 'user main-user') do
@@ -32,6 +34,7 @@ module Shipit
     def github_repo_url(owner, repo, *args)
       github_user_url(owner, repo, *args)
     end
+    module_function :github_repo_url
 
     def github_commit_url(commit)
       github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'commit', commit.sha)

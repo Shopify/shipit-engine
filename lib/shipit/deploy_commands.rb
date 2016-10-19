@@ -9,10 +9,15 @@ module Shipit
       super.merge(
         'SHA' => commit.sha,
         'REVISION' => commit.sha,
+        'DIFF_LINK' => diff_url,
       )
     end
 
     protected
+
+    def diff_url
+      Shipit::GithubUrlHelper.github_commit_range_url(@stack, *@task.commit_range)
+    end
 
     def permalink
       Shipit::Engine.routes.url_helpers.stack_deploy_url(@stack, @task)
