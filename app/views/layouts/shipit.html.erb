@@ -32,8 +32,10 @@
       <div class="banner__inner wrapper">
         <div class="banner__content">
           <h2 class="banner__title">GitHub is having issues</h2>
-            "<i><%= github_status[:body] %></i>"
-            <% unless github_status[:last_updated].nil? %>
+            <% if github_status[:body].present? %>
+              "<i><%= github_status[:body] %></i>"
+            <% end %>
+            <% if github_status[:last_updated].present? %>
               <%= time_ago_in_words(github_status[:last_updated]) %> ago
             <% end %>
         </div>
