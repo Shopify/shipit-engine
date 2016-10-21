@@ -35,7 +35,7 @@
             <% if github_status[:body].present? %>
               "<i><%= github_status[:body] %></i>"
             <% end %>
-            <% unless github_status[:last_updated].nil? %>
+            <% if github_status[:last_updated].present? %>
               <%= time_ago_in_words(github_status[:last_updated]) %> ago
             <% end %>
         </div>
