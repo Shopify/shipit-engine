@@ -18,6 +18,7 @@ module Shipit
       ended_at
       updated_at
       created_at
+      env
     ))
 
     def revision
