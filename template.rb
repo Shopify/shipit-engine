@@ -11,7 +11,7 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'thin'
-gem 'shipit-engine', github: 'Shopify/shipit-engine'
+gem 'shipit-engine', '>= 0.13'
 gem 'dotenv-rails'
 gem 'redis-rails'
 

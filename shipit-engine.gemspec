@@ -39,8 +39,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'attr_encrypted', '~> 3.0.0'
 
   s.add_dependency 'sprockets-rails', '>= 2.3.2'
-  s.add_dependency 'sass-rails', '~> 5.0.3'
-  s.add_dependency 'coffee-rails', '~> 4.1.0'
+  s.add_dependency 'sass-rails', '~> 5.0'
+  s.add_dependency 'coffee-rails', '~> 4.2'
   s.add_dependency 'jquery-rails', '~> 4.1.0'
   s.add_dependency 'rails-timeago', '~> 2.13.0'
   s.add_dependency 'lodash-rails', '~> 4.6.1'
