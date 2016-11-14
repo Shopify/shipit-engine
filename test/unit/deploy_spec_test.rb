@@ -37,14 +37,14 @@ module Shipit
     end
 
     test '#dependencies_steps returns `bundle install` if a `Gemfile` is present' do
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:bundle_install).returns(['bundle install'])
       assert_equal ['bundle install'], @spec.dependencies_steps
     end
 
     test "#dependencies_steps prepend and append pre and post steps" do
       @spec.stubs(:load_config).returns('dependencies' => {'pre' => ['before'], 'post' => ['after']})
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:bundle_install).returns(['bundle install'])
       assert_equal ['before', 'bundle install', 'after'], @spec.dependencies_steps
     end
@@ -111,14 +111,14 @@ module Shipit
     end
 
     test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
     end
 
     test "#deploy_steps prepend and append pre and post steps" do
       @spec.stubs(:load_config).returns('deploy' => {'pre' => ['before'], 'post' => ['after']})
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy', 'after'], @spec.deploy_steps
     end
@@ -136,14 +136,14 @@ module Shipit
     end
 
     test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['bundle exec cap $ENVIRONMENT deploy:rollback'], @spec.rollback_steps
     end
 
     test "#rollback_steps prepend and append pre and post steps" do
       @spec.stubs(:load_config).returns('rollback' => {'pre' => ['before'], 'post' => ['after']})
-      @spec.expects(:bundler?).returns(true)
+      @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy:rollback', 'after'], @spec.rollback_steps
     end
@@ -260,6 +260,17 @@ module Shipit
       definition = @spec.find_task_definition('restart')
 
       assert_equal ['bundle exec foo'], definition.steps
+    end
+
+    test "task definitions do not prepend bundle exec if depedency step is overridden" do
+      @spec.expects(:load_config).returns(
+        'dependencies' => {'override' => []},
+        'tasks' => {'restart' => {'steps' => %w(foo)}},
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      definition = @spec.find_task_definition('restart')
+
+      assert_equal ['foo'], definition.steps
     end
 
     test "task definitions prepend bundle exec before serialization" do

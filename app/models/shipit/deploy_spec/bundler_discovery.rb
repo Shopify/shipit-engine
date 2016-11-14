@@ -12,8 +12,11 @@ module Shipit
       end
 
       def bundle_exec(command)
-        return command unless bundler?
-        "bundle exec #{command}"
+        if bundler? && dependencies_steps.include?(remove_ruby_version_from_gemfile)
+          "bundle exec #{command}"
+        else
+          command
+        end
       end
 
       def bundle_install
@@ -51,10 +54,7 @@ module Shipit
       end
 
       def coerce_task_definition(config)
-        return super unless bundler?
-        config['steps'] ||= []
-        config['steps'] = config['steps'].map(&method(:bundle_exec))
-        config
+        config.merge('steps' => Array(config['steps']).map(&method(:bundle_exec)))
       end
     end
   end
