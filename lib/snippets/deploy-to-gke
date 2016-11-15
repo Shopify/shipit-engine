@@ -1,0 +1,156 @@
+#!/usr/bin/env ruby
+
+# Usage: deploy-to-gke <app's namespace> <gcloud deployment> <gcloud project>
+
+# Requires the following to be available on Shipit machine:
+#  - gcloud binary available on the shipit machine's path
+#  - kubectl binary available in the shipit machine's path
+#  - $GCLOUD_CREDENTIALS_DIR/my-gcloud-project-name.json must exist
+
+# Optionally, the following variables can be used to override script defaults:
+#  - K8S_TEMPLATE_FOLDER: location of Kubernetes files to deploy. Default is config/deploy/#{environment}.
+
+require 'open3'
+require 'securerandom'
+require 'erb'
+require 'json'
+require 'yaml'
+require 'shellwords'
+require 'tempfile'
+
+class GKEDeployment
+  class FatalDeploymentError < StandardError; end
+
+  def initialize(namespace:, gcloud_deployment:, gcloud_project:, environment:, current_sha:, key_dir:, template_folder: nil)
+    @namespace = namespace
+    @gcloud_deployment = gcloud_deployment
+    @gcloud_project = gcloud_project
+    @current_sha = current_sha
+    @key_file = "#{key_dir}/#{@gcloud_project}.json"
+    @template_path = './' + (template_folder || "config/deploy/#{environment}")
+
+    # Validate params + check existance of auth key and template(s)
+    enforce_required_params
+    preliminary_check
+
+    # Max length of podname is only 63chars so try to save some room by truncating sha to 8 chars
+    @id = current_sha[0...8] + "-#{SecureRandom.hex(4)}"
+  end
+
+  def run
+    authorize_gcloud
+    fetch_clusters.each do |cluster|
+      set_kubectl_cluster(cluster)
+      apply_all_templates
+    end
+  rescue FatalDeploymentError => error
+    print_error(error.message)
+    exit 1
+  end
+
+  def template_variables
+    {
+      'current_sha' => @current_sha,
+      'deployment_id' => @id,
+    }
+  end
+
+  private
+
+  def enforce_required_params
+    [@namespace, @gcloud_project, @gcloud_deployment, @current_sha, @key_file].each do |required_param|
+      raise ArgumentError, "#{required_param} is required" unless required_param && !required_param.empty?
+    end
+  end
+
+  def preliminary_check
+    raise FatalDeploymentError, "Project config missing at #{@key_file}" unless File.file?(@key_file)
+    raise FatalDeploymentError, "#{@template_path} doesn't exist" unless File.directory?(@template_path)
+    raise FatalDeploymentError, "#{@template_path} doesn't have files with postfix .yml or .yml.erb" unless Dir.entries(@template_path).select {|file| file =~ /\.yml(.erb)?$/}.size > 0
+  end
+
+  def apply_all_templates
+    found = 0
+    Dir.foreach(@template_path) do |file|
+      file_path = "#{@template_path}/#{file}"
+      if File.extname(file) == '.yml'
+        found += 1
+        run_command('kubectl', 'apply', '-f', file_path, "--namespace=#{@namespace}")
+      elsif File.extname(file) == '.erb'
+        found += 1
+        render_and_apply_template(file_path)
+      end
+    end
+    raise FatalDeploymentError, "No templates found in #{@template_path}" if found.zero?
+  end
+
+  def render_and_apply_template(file_path)
+    erb_template = ERB.new(File.read(file_path))
+    erb_binding = binding
+    template_variables.each do |var_name, value|
+      erb_binding.local_variable_set(var_name, value)
+    end
+    content = erb_template.result(erb_binding)
+
+    f = Tempfile.new(['kube_template', '.yml'])
+    f.write(content)
+    f.close
+    run_command('kubectl', 'apply', '-f', f.path, "--namespace=#{@namespace}")
+  ensure
+    f.unlink if f
+  end
+
+  def authorize_gcloud
+    status = run_command('gcloud', '-q', 'auth', 'activate-service-account', '--key-file', @key_file)
+    status = run_command('gcloud', '-q', 'config', 'set', 'project', @gcloud_project) if status
+    raise FatalDeploymentError, "Failed to set gcloud project #{@gcloud_project}" unless status
+  end
+
+  def set_kubectl_cluster(cluster)
+    cluster_name = cluster[0]
+    cluster_zone = cluster[1]
+    status = run_command('gcloud', '-q', 'container', 'clusters', 'get-credentials', cluster_name, '--zone', cluster_zone)
+    raise FatalDeploymentError, "Failed to set cluster #{cluster_name}/#{cluster_zone}" unless status
+  end
+
+  def fetch_clusters
+    result = query_deployments
+    result['resources'].each_with_object([]) do |resource, data|
+      next unless resource['type'] == 'container.v1.cluster'
+      properties = YAML.load(resource['finalProperties'])
+      data << [resource['name'], properties['zone']]
+    end
+  end
+
+  def run_command(*args)
+    puts Shellwords.join(args)
+    out, err, st = Open3.capture3(*args)
+    puts out
+    print_error(err) unless st.success?
+    st.success?
+  end
+
+  def print_error(msg)
+    puts "\033[0;31m#{msg}\033[0m"
+  end
+
+  def query_deployments
+    out, err, st = Open3.capture3('gcloud', '-q', 'deployment-manager', 'deployments', 'describe', @gcloud_deployment, '--format=json')
+    unless st.success?
+      print_error(err)
+      raise FatalDeploymentError, "Failed to fetch cluster with deployment #{@gcloud_deployment}"
+    end
+    JSON.parse(out)
+  end
+end
+
+deployment = GKEDeployment.new(
+  namespace: ARGV[0],
+  gcloud_deployment: ARGV[1],
+  gcloud_project: ARGV[2],
+  environment: ENV['ENVIRONMENT'],
+  template_folder: ENV['K8S_TEMPLATE_FOLDER'],
+  current_sha: ENV['REVISION'],
+  key_dir: ENV['GCLOUD_CREDENTIALS_DIR']
+)
+deployment.run
