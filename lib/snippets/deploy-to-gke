@@ -75,7 +75,7 @@ class GKEDeployment
       file_path = "#{@template_path}/#{file}"
       if File.extname(file) == '.yml'
         found += 1
-        run_command('kubectl', 'apply', '-f', file_path, "--namespace=#{@namespace}")
+        apply_template(file_path)
       elsif File.extname(file) == '.erb'
         found += 1
         render_and_apply_template(file_path)
@@ -95,12 +95,18 @@ class GKEDeployment
     f = Tempfile.new(['kube_template', '.yml'])
     f.write(content)
     f.close
-    run_command('kubectl', 'apply', '-f', f.path, "--namespace=#{@namespace}")
+    apply_template(f.path, original_path: file_path)
   ensure
     f.unlink if f
   end
 
+  def apply_template(path, original_path: nil)
+    status = run_command('kubectl', 'apply', '-f', path, "--namespace=#{@namespace}")
+    raise FatalDeploymentError, "Failed to apply template #{original_path || path}" unless status
+  end
+
   def authorize_gcloud
+    ENV['GOOGLE_APPLICATION_CREDENTIALS'] = @key_file
     status = run_command('gcloud', '-q', 'auth', 'activate-service-account', '--key-file', @key_file)
     status = run_command('gcloud', '-q', 'config', 'set', 'project', @gcloud_project) if status
     raise FatalDeploymentError, "Failed to set gcloud project #{@gcloud_project}" unless status
