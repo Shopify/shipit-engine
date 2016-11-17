@@ -106,6 +106,7 @@ class GKEDeployment
   end
 
   def authorize_gcloud
+    ENV['GOOGLE_APPLICATION_CREDENTIALS'] = @key_file
     status = run_command('gcloud', '-q', 'auth', 'activate-service-account', '--key-file', @key_file)
     status = run_command('gcloud', '-q', 'config', 'set', 'project', @gcloud_project) if status
     raise FatalDeploymentError, "Failed to set gcloud project #{@gcloud_project}" unless status
