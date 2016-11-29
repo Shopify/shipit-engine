@@ -6,7 +6,11 @@
     <%= form.fields_for field_name do |field| %>
       <% variables.each do |variable| %>
         <p class="variables-fields">
-          <%= field.text_field variable.name, value: variable.default %>
+          <% if variable.select %>
+            <%= field.select variable.name, options_for_select([["Please select...", { disabled: "disabled", selected: true }]] + variable.select) %>
+          <% else %>
+            <%= field.text_field variable.name, value: variable.default %>
+          <% end %>
           <%= field.label variable.name, variable.title || variable.name %>
         </p>
       <% end %>

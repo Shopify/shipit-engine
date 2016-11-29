@@ -250,6 +250,23 @@ deploy:
 ```
 <br>
 
+**<code>deploy.variables.select</code>** will turn the input into a `<select>` of values.
+
+For example:
+
+```yaml
+deploy:
+  variables:
+    -
+      name: REGION
+      title: Run a deploy in a given region
+      select:
+        - east
+        - west
+        - north
+```
+<br>
+
 **<code>deploy.max_commits</code>** allows you to set a limit to the number of commits being shipped per deploys.
 
 Human users will be warned that they are not respecting the recommendation, but allowed to continue.

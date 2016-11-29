@@ -34,8 +34,8 @@ module Shipit
         checklist: [],
         allow_concurrency: true,
         variables: [
-          {'name' => 'FOO', 'title' => 'Set to 0 to foo', 'default' => '1'},
-          {'name' => 'BAR', 'title' => 'Set to 1 to bar', 'default' => '0'},
+          {'name' => 'FOO', 'title' => 'Set to 0 to foo', 'default' => '1', 'select' => nil},
+          {'name' => 'BAR', 'title' => 'Set to 1 to bar', 'default' => '0', 'select' => nil},
         ],
       }
       assert_equal as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json
