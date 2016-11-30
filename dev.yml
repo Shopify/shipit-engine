@@ -16,7 +16,7 @@ commands:
   bootstrap: bin/bootstrap shopify
   console: test/dummy/bin/rails console
   server: test/dummy/bin/rails server -b 192.168.64.1 -p 55330
-  test: bin/rake
+  test: bin/rails test "$@"
 
 open:
   shipit: http://shipit-engine.localhost
