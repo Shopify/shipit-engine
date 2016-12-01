@@ -42,9 +42,10 @@ module Shipit
     end
 
     def refresh
-      RefreshStatusesJob.perform_later(stack_id: @stack.id)
-      GithubSyncJob.perform_later(stack_id: @stack.id)
-      flash[:success] = 'Refresh scheduled'
+      flash[:error] = 'Sorry we disabled that button to limit GitHub API usage'
+      # RefreshStatusesJob.perform_later(stack_id: @stack.id)
+      # GithubSyncJob.perform_later(stack_id: @stack.id)
+      # flash[:success] = 'Refresh scheduled'
       redirect_to request.referer.presence || stack_path(@stack)
     end
 
