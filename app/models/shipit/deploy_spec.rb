@@ -85,6 +85,10 @@ module Shipit
       Array.wrap(config('deploy', 'variables')).map(&VariableDefinition.method(:new))
     end
 
+    def default_deploy_env
+      deploy_variables.map { |v| [v.name, v.default] }.to_h
+    end
+
     def rollback_steps
       around_steps('rollback') do
         config('rollback', 'override') { discover_rollback_steps }

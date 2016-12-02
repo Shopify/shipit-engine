@@ -1,5 +1,7 @@
 # Unreleased
 
+*   Properly set default env on deploys triggered by continuous delivery
+
 # 0.14.0
 
 *   Do not prepend `bundle exec` to custom tasks if `depedencies.override` is set.
