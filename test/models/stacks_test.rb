@@ -534,6 +534,13 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery use default env vars" do
+      @stack.tasks.delete_all
+
+      deploy = @stack.trigger_continuous_delivery
+      assert_equal({'SAFETY_DISABLED' => '0'}, deploy.env)
+    end
+
     test "#next_commit_to_deploy returns the last deployable commit" do
       @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
       assert_equal shipit_commits(:second), @stack.last_deployed_commit

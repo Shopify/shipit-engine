@@ -136,7 +136,7 @@ module Shipit
         return
       end
 
-      trigger_deploy(commit, Shipit.user)
+      trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
     end
 
     def next_commit_to_deploy
