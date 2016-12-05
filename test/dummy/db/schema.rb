@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160822131405) do
+ActiveRecord::Schema.define(version: 20161205144522) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -20,9 +19,8 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.datetime "updated_at",                             null: false
     t.string   "name",        limit: 255,   default: ""
     t.integer  "stack_id",    limit: 4
+    t.index ["creator_id"], name: "index_api_clients_on_creator_id"
   end
-
-  add_index "api_clients", ["creator_id"], name: "index_api_clients_on_creator_id"
 
   create_table "commit_deployment_statuses", force: :cascade do |t|
     t.integer  "commit_deployment_id"
@@ -31,9 +29,8 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.string   "api_url"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.index ["commit_deployment_id"], name: "index_commit_deployment_statuses_on_commit_deployment_id"
   end
-
-  add_index "commit_deployment_statuses", ["commit_deployment_id"], name: "index_commit_deployment_statuses_on_commit_deployment_id"
 
   create_table "commit_deployments", force: :cascade do |t|
     t.integer  "commit_id"
@@ -42,10 +39,9 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.string   "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["commit_id", "task_id"], name: "index_commit_deployments_on_commit_id_and_task_id", unique: true
+    t.index ["task_id"], name: "index_commit_deployments_on_task_id"
   end
-
-  add_index "commit_deployments", ["commit_id", "task_id"], name: "index_commit_deployments_on_commit_id_and_task_id", unique: true
-  add_index "commit_deployments", ["task_id"], name: "index_commit_deployments_on_task_id"
 
   create_table "commits", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4,                     null: false
@@ -60,19 +56,18 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.datetime "committed_at",                               null: false
     t.integer  "additions",    limit: 4
     t.integer  "deletions",    limit: 4
+    t.index ["author_id"], name: "index_commits_on_author_id"
+    t.index ["committer_id"], name: "index_commits_on_committer_id"
+    t.index ["created_at"], name: "index_commits_on_created_at"
+    t.index ["stack_id"], name: "index_commits_on_stack_id"
   end
-
-  add_index "commits", ["author_id"], name: "index_commits_on_author_id"
-  add_index "commits", ["committer_id"], name: "index_commits_on_committer_id"
-  add_index "commits", ["created_at"], name: "index_commits_on_created_at"
-  add_index "commits", ["stack_id"], name: "index_commits_on_stack_id"
 
   create_table "deliveries", force: :cascade do |t|
     t.integer  "hook_id",          limit: 4,                            null: false
-    t.string   "status",           limit: 255,      default: "pending", null: false
+    t.string   "status",           limit: 50,       default: "pending", null: false
     t.string   "url",              limit: 4096,                         null: false
     t.string   "content_type",     limit: 255,                          null: false
-    t.string   "event",            limit: 255,                          null: false
+    t.string   "event",            limit: 50,                           null: false
     t.text     "payload",          limit: 16777215,                     null: false
     t.integer  "response_code",    limit: 4
     t.text     "response_headers", limit: 65535
@@ -80,6 +75,9 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.datetime "delivered_at"
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
+    t.index ["created_at"], name: "index_deliveries_on_created_at"
+    t.index ["hook_id", "event", "status"], name: "index_deliveries_on_hook_id_and_event_and_status"
+    t.index ["status", "event"], name: "index_deliveries_on_status_and_event"
   end
 
   create_table "github_hooks", force: :cascade do |t|
@@ -92,10 +90,9 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.string   "api_url",      limit: 255
     t.string   "type",         limit: 255
     t.string   "organization", limit: 39
+    t.index ["organization", "event"], name: "index_github_hooks_on_organization_and_event", unique: true
+    t.index ["stack_id", "event"], name: "index_github_hooks_on_stack_id_and_event", unique: true
   end
-
-  add_index "github_hooks", ["organization", "event"], name: "index_github_hooks_on_organization_and_event", unique: true
-  add_index "github_hooks", ["stack_id", "event"], name: "index_github_hooks_on_stack_id_and_event", unique: true
 
   create_table "hooks", force: :cascade do |t|
     t.integer  "stack_id",     limit: 4
@@ -106,28 +103,25 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.boolean  "insecure_ssl",              default: false,  null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
+    t.index ["stack_id"], name: "index_hooks_on_stack_id"
   end
-
-  add_index "hooks", ["stack_id"], name: "index_hooks_on_stack_id"
 
   create_table "memberships", force: :cascade do |t|
     t.integer  "team_id",    limit: 4
     t.integer  "user_id",    limit: 4
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.index ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
   end
-
-  add_index "memberships", ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true
-  add_index "memberships", ["user_id"], name: "index_memberships_on_user_id"
 
   create_table "output_chunks", force: :cascade do |t|
     t.integer  "task_id",    limit: 4
     t.text     "text",       limit: 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["task_id"], name: "index_output_chunks_on_task_id"
   end
-
-  add_index "output_chunks", ["task_id"], name: "index_output_chunks_on_task_id"
 
   create_table "stacks", force: :cascade do |t|
     t.string   "repo_name",                         limit: 100,                          null: false
@@ -148,9 +142,8 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.integer  "estimated_deploy_duration",                       default: 1,            null: false
     t.datetime "continuous_delivery_delayed_since"
     t.datetime "locked_since"
+    t.index ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
   end
-
-  add_index "stacks", ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
 
   create_table "statuses", force: :cascade do |t|
     t.string   "state",       limit: 255
@@ -160,9 +153,8 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.integer  "commit_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["commit_id"], name: "index_statuses_on_commit_id"
   end
-
-  add_index "statuses", ["commit_id"], name: "index_statuses_on_commit_id"
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "stack_id",              limit: 4,                         null: false
@@ -185,15 +177,14 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.boolean  "allow_concurrency",                   default: false,     null: false
     t.datetime "started_at"
     t.datetime "ended_at"
+    t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
+    t.index ["since_commit_id"], name: "index_tasks_on_since_commit_id"
+    t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"
+    t.index ["type", "stack_id", "parent_id"], name: "index_tasks_by_stack_and_parent"
+    t.index ["type", "stack_id", "status"], name: "index_tasks_by_stack_and_status"
+    t.index ["until_commit_id"], name: "index_tasks_on_until_commit_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
   end
-
-  add_index "tasks", ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
-  add_index "tasks", ["since_commit_id"], name: "index_tasks_on_since_commit_id"
-  add_index "tasks", ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"
-  add_index "tasks", ["type", "stack_id", "parent_id"], name: "index_tasks_by_stack_and_parent"
-  add_index "tasks", ["type", "stack_id", "status"], name: "index_tasks_by_stack_and_status"
-  add_index "tasks", ["until_commit_id"], name: "index_tasks_on_until_commit_id"
-  add_index "tasks", ["user_id"], name: "index_tasks_on_user_id"
 
   create_table "teams", force: :cascade do |t|
     t.integer  "github_id",    limit: 4
@@ -203,9 +194,8 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.string   "organization", limit: 39
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.index ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true
   end
-
-  add_index "teams", ["organization", "slug"], name: "index_teams_on_organization_and_slug", unique: true
 
   create_table "users", force: :cascade do |t|
     t.integer  "github_id",                        limit: 4
@@ -218,8 +208,7 @@ ActiveRecord::Schema.define(version: 20160822131405) do
     t.string   "avatar_url",                       limit: 255
     t.string   "encrypted_github_access_token"
     t.string   "encrypted_github_access_token_iv"
+    t.index ["login"], name: "index_users_on_login"
   end
-
-  add_index "users", ["login"], name: "index_users_on_login"
 
 end

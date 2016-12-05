@@ -1,6 +1,10 @@
 # Unreleased
 
-*   Properly set default env on deploys triggered by continuous delivery
+*   Properly set default env on deploys triggered by continuous delivery.
+
+*   Add `cron:purge_deliveries` task to only keep one month of hook delivery history.
+
+*   Add `cron:hourly` task to call `cron:rollup`, `cron:refresh_users` and `cron:purge_deliveries` together.
 
 # 0.14.0
 
