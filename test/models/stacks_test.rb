@@ -258,16 +258,6 @@ module Shipit
       end
     end
 
-    test "#active_task? cache is cleared if a deploy change state" do
-      assert_queries(1) do
-        10.times { @stack.active_task? }
-      end
-      @stack.tasks.where(status: 'running').first.error!
-      assert_queries(1) do
-        10.times { @stack.active_task? }
-      end
-    end
-
     test "#deployable? returns true if stack is not locked and is not deploying" do
       @stack.deploys.destroy_all
       assert @stack.deployable?

@@ -1,5 +1,7 @@
 # Unreleased
 
+*   Bust caches from a delayed background job to avoid deadlocks on heavy traffic installations.
+
 *   Properly delete statuses when a commit is destroyed.
 
 *   Properly set default env on deploys triggered by continuous delivery.

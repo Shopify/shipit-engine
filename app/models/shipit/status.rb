@@ -1,16 +1,19 @@
 module Shipit
   class Status < ActiveRecord::Base
+    include DeferedTouch
+
     STATES = %w(pending success failure error).freeze
     enum state: STATES.zip(STATES).to_h
 
-    belongs_to :stack, touch: true, required: true
-    belongs_to :commit, touch: true, required: true
+    belongs_to :stack, required: true
+    belongs_to :commit, required: true
+
+    defered_touch stack: :updated_at, commit: :updated_at
 
     validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 
     after_create :enable_ci_on_stack
     after_commit :schedule_continuous_delivery, :broadcast_update, on: :create
-    after_commit :touch_commit
 
     delegate :broadcast_update, to: :commit
 
@@ -47,10 +50,6 @@ module Shipit
 
     def enable_ci_on_stack
       commit.stack.enable_ci!
-    end
-
-    def touch_commit
-      commit.touch
     end
 
     def schedule_continuous_delivery
