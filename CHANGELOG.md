@@ -1,5 +1,7 @@
 # Unreleased
 
+*   Properly delete statuses when a commit is destroyed.
+
 *   Properly set default env on deploys triggered by continuous delivery.
 
 *   Add `cron:purge_deliveries` task to only keep one month of hook delivery history.
