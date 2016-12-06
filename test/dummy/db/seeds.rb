@@ -109,6 +109,7 @@ module Shipit
         description: "Your tests ran on travis-ci",
         target_url: "https://example.com",
         commit_id: commit.id,
+        stack_id: commit.stack_id,
         created_at: Time.now,
         updated_at: Time.now,
       )
@@ -120,6 +121,7 @@ module Shipit
           description: "Your tests ran on circle-ci",
           target_url: "https://example.com",
           commit_id: commit.id,
+          stack_id: commit.stack_id,
           created_at: Time.now,
           updated_at: Time.now,
         )

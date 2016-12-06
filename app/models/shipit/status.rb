@@ -3,7 +3,8 @@ module Shipit
     STATES = %w(pending success failure error).freeze
     enum state: STATES.zip(STATES).to_h
 
-    belongs_to :commit, touch: true
+    belongs_to :stack, touch: true, required: true
+    belongs_to :commit, touch: true, required: true
 
     validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 
@@ -14,8 +15,9 @@ module Shipit
     delegate :broadcast_update, to: :commit
 
     class << self
-      def replicate_from_github!(github_status)
+      def replicate_from_github!(stack_id, github_status)
         find_or_create_by!(
+          stack_id: stack_id,
           state: github_status.state,
           description: github_status.description,
           target_url: github_status.target_url,
@@ -24,8 +26,6 @@ module Shipit
         )
       end
     end
-
-    delegate :stack, to: :commit
 
     def unknown?
       false

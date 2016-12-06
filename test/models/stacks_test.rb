@@ -548,7 +548,7 @@ module Shipit
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
 
       fifth_commit = shipit_commits(:fifth)
-      fifth_commit.statuses.create!(state: 'success', context: 'ci/travis')
+      fifth_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
       assert_predicate fifth_commit, :deployable?
 
       assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
@@ -558,7 +558,7 @@ module Shipit
       @stack.tasks.destroy_all
 
       fifth_commit = shipit_commits(:fifth)
-      fifth_commit.statuses.create!(state: 'success', context: 'ci/travis')
+      fifth_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
       assert_predicate fifth_commit, :deployable?
 
       assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy

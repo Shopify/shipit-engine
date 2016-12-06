@@ -1,6 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 first_pending:
+  stack: shipit
   commit_id: 1 # first
   description: lets go
   context: ci/travis
@@ -9,6 +10,7 @@ first_pending:
   target_url: "http://www.example.com"
 
 second_pending_travis:
+  stack: shipit
   commit_id: 2 # second
   description: lets go
   context: ci/travis
@@ -17,6 +19,7 @@ second_pending_travis:
   target_url: "http://www.example.com"
 
 second_pending_coveralls:
+  stack: shipit
   commit_id: 2 # second
   description: lets go
   context: metrics/coveralls
@@ -25,6 +28,7 @@ second_pending_coveralls:
   target_url: "http://www.example.com"
 
 second_success_travis:
+  stack: shipit
   commit_id: 2 # second
   description: lets go
   context: ci/travis
@@ -33,6 +37,7 @@ second_success_travis:
   target_url: "http://www.example.com"
 
 second_failure_coveralls:
+  stack: shipit
   commit_id: 2 # second
   description: lets go
   context: metrics/coveralls
@@ -41,6 +46,7 @@ second_failure_coveralls:
   target_url: "http://www.example.com"
 
 third_success_travis:
+  stack: shipit
   commit_id: 3 # third
   description: lets go
   context: ci/travis
@@ -49,6 +55,7 @@ third_success_travis:
   target_url: "http://www.example.com"
 
 third_success_coveralls:
+  stack: shipit
   commit_id: 3 # third
   description: lets go
   context: metrics/coveralls
@@ -57,6 +64,7 @@ third_success_coveralls:
   target_url: "http://www.example.com"
 
 fourth_pending_travis:
+  stack: shipit
   commit_id: 4 # fourth
   description: lets go
   context: ci/travis
@@ -65,6 +73,7 @@ fourth_pending_travis:
   target_url: "http://www.example.com"
 
 fourth_success_coveralls:
+  stack: shipit
   commit_id: 4 # fourth
   description: lets go
   context: metrics/coveralls
@@ -73,6 +82,7 @@ fourth_success_coveralls:
   target_url: "http://www.example.com"
 
 cyclimse_success_travis:
+  stack: cyclimse
   commit_id: 6 # cyclimse_first
   description: lets go
   context: ci/travis
