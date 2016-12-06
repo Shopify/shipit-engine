@@ -1,5 +1,7 @@
 module Shipit
   class Task < ActiveRecord::Base
+    include DeferredTouch
+
     PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
@@ -10,9 +12,11 @@ module Shipit
     belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
 
     belongs_to :user
-    belongs_to :stack, touch: true, counter_cache: true
+    belongs_to :stack, counter_cache: true
     belongs_to :until_commit, class_name: 'Commit'
     belongs_to :since_commit, class_name: 'Commit'
+
+    deferred_touch stack: :updated_at
 
     has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all
 

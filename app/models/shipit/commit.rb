@@ -1,18 +1,20 @@
 module Shipit
   class Commit < ActiveRecord::Base
+    include DeferredTouch
+
     AmbiguousRevision = Class.new(StandardError)
 
-    belongs_to :stack, touch: true
+    belongs_to :stack
     has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy
     has_many :commit_deployments, dependent: :destroy
+
+    deferred_touch stack: :updated_at
 
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
     after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, :schedule_continuous_delivery, on: :create
-
-    after_touch :touch_stack
 
     belongs_to :author, class_name: 'User', inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', inverse_of: :commits
@@ -206,10 +208,6 @@ module Shipit
 
     def missing_statuses
       stack.required_statuses - last_statuses.map(&:context)
-    end
-
-    def touch_stack
-      stack.touch
     end
   end
 end

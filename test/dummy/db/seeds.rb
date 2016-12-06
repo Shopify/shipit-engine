@@ -6,6 +6,8 @@ FakeWeb.register_uri(:post, %r{https://example\.com/}, status: %w(200 OK))
 
 # Cheap hack to allow rake db:seed to work
 module Shipit
+  previous_deferred_touch = Shipit::DeferredTouch.enabled
+  Shipit::DeferredTouch.enabled = false
   Stack.send(:define_method, :setup_hooks) {}
   Stack.send(:define_method, :sync_github) {}
   Commit.send(:define_method, :fetch_stats!) {}
@@ -178,4 +180,6 @@ module Shipit
       ended_at: Time.now.utc,
     )
   end
+ensure
+  Shipit::DeferredTouch.enabled = previous_deferred_touch
 end

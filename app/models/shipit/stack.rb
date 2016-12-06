@@ -50,7 +50,6 @@ module Shipit
     after_commit :broadcast_update, on: :update
     after_commit :emit_merge_status_hooks, on: :update
     after_commit :setup_hooks, :sync_github, on: :create
-    after_touch :clear_cache
 
     validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
                                        message: 'cannot be used more than once with this environment'}
