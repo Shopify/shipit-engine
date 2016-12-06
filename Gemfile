@@ -9,10 +9,6 @@ group :ci do
   gem 'pg'
 end
 
-group :development do
-  gem 'sucker_punch', require: %w(sucker_punch sucker_punch/async_syntax)
-end
-
 group :development, :test do
   gem 'faker'
   gem 'fakeweb'
