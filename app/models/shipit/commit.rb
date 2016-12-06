@@ -88,7 +88,7 @@ module Shipit
 
     def create_status_from_github!(github_status)
       add_status do
-        statuses.replicate_from_github!(github_status)
+        statuses.replicate_from_github!(stack_id, github_status)
       end
     end
 

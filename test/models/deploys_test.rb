@@ -185,7 +185,7 @@ module Shipit
     end
 
     test "transitioning to success triggers next deploy when stack uses CD" do
-      shipit_commits(:fifth).statuses.create!(state: 'success')
+      shipit_commits(:fifth).statuses.create!(stack_id: @stack.id, state: 'success')
 
       deploy = shipit_deploys(:shipit_running)
       deploy.stack.tasks.where.not(id: deploy.id).update_all(status: 'success')
@@ -200,7 +200,7 @@ module Shipit
     end
 
     test "transitioning to success skips CD deploy when stack doesn't use it" do
-      shipit_commits(:fifth).statuses.create!(state: 'success')
+      shipit_commits(:fifth).statuses.create!(stack_id: @stack.id, state: 'success')
 
       deploy = shipit_deploys(:shipit_running)
 

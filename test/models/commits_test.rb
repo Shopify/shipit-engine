@@ -70,7 +70,7 @@ module Shipit
 
       assert_difference "Deploy.count" do
         assert_enqueued_with(job: ContinuousDeliveryJob, args: [@stack]) do
-          @stack.commits.last.statuses.create!(state: 'success', context: 'ci/travis')
+          @stack.commits.last.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
         end
         ContinuousDeliveryJob.new.perform(@stack)
       end
@@ -81,7 +81,7 @@ module Shipit
       @stack.trigger_deploy(@commit, @commit.committer)
 
       assert_no_difference "Deploy.count" do
-        @commit.statuses.create!(state: 'success', context: 'ci/travis')
+        @commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
       end
     end
 
@@ -90,7 +90,7 @@ module Shipit
       @stack.reload.update!(continuous_deployment: true, lock_reason: "Maintenance ongoing")
 
       assert_no_difference "Deploy.count" do
-        @commit.statuses.create!(state: 'success', context: 'ci/travis')
+        @commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
       end
     end
 
@@ -116,7 +116,7 @@ module Shipit
       )
 
       assert_no_difference "Deploy.count" do
-        @commit.statuses.create!(state: 'success')
+        @commit.statuses.create!(stack_id: @stack.id, state: 'success')
       end
     end
 
@@ -124,7 +124,7 @@ module Shipit
       @stack.reload.update!(continuous_deployment: true)
 
       assert_no_difference "Deploy.count" do
-        @stack.last_deployed_commit.statuses.create!(state: 'success')
+        @stack.last_deployed_commit.statuses.create!(stack_id: @stack.id, state: 'success')
       end
     end
 
@@ -132,7 +132,7 @@ module Shipit
       @stack.reload.deploys.destroy_all
 
       assert_no_difference "Deploy.count" do
-        @commit.statuses.create!(state: 'success')
+        @commit.statuses.create!(stack_id: @stack.id, state: 'success')
       end
     end
 
@@ -141,19 +141,21 @@ module Shipit
       @stack.deploys.destroy_all
 
       assert_no_difference "Deploy.count" do
-        @commit.statuses.create!(state: 'failure')
+        @commit.statuses.create!(stack_id: @stack.id, state: 'failure')
       end
     end
 
     test "creating broadcasts an update event" do
       expect_event(@stack)
       walrus = shipit_users(:walrus)
-      @stack.commits.create(author: walrus,
-                            committer: walrus,
-                            sha: "ab12",
-                            authored_at: DateTime.now,
-                            committed_at: DateTime.now,
-                            message: "more fish!")
+      @stack.commits.create(
+        author: walrus,
+        committer: walrus,
+        sha: "ab12",
+        authored_at: DateTime.now,
+        committed_at: DateTime.now,
+        message: "more fish!",
+      )
     end
 
     test "refresh_statuses! pull state from github" do
@@ -241,8 +243,8 @@ module Shipit
     test "#state doesn't consider statuses that are hidden or allowed to fail" do
       assert_equal 'pending', @commit.state
 
-      @commit.statuses.create!(context: 'metrics/coveralls', state: 'failure')
-      @commit.statuses.create!(context: 'metrics/performance', state: 'failure')
+      @commit.statuses.create!(stack_id: @stack.id, context: 'metrics/coveralls', state: 'failure')
+      @commit.statuses.create!(stack_id: @stack.id, context: 'metrics/performance', state: 'failure')
       assert_equal 'failure', @commit.reload.state
 
       @commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {
@@ -316,7 +318,11 @@ module Shipit
           commit.statuses.destroy_all
           commit.reload
           unless initial_state == 'unknown'
-            commit.statuses.create!(initial_status_attributes.merge(created_at: 10.days.ago.to_s(:db)))
+            attrs = initial_status_attributes.merge(
+              stack_id: commit.stack_id,
+              created_at: 10.days.ago.to_s(:db),
+            )
+            commit.statuses.create!(attrs)
           end
           assert_equal initial_state, commit.state
 
@@ -388,10 +394,10 @@ module Shipit
 
     test "#significant_status hierarchy uses failures and errors, then pending, then successes, then UnknownStatus" do
       commit = shipit_commits(:first)
-      pending = commit.statuses.new(state: 'pending', context: 'ci/pending')
-      failure = commit.statuses.new(state: 'failure', context: 'ci/failure')
-      error = commit.statuses.new(state: 'error', context: 'ci/error')
-      success = commit.statuses.new(state: 'success', context: 'ci/success')
+      pending = commit.statuses.new(stack_id: @stack.id, state: 'pending', context: 'ci/pending')
+      failure = commit.statuses.new(stack_id: @stack.id, state: 'failure', context: 'ci/failure')
+      error = commit.statuses.new(stack_id: @stack.id, state: 'error', context: 'ci/error')
+      success = commit.statuses.new(stack_id: @stack.id, state: 'success', context: 'ci/success')
 
       commit.reload.statuses = [pending, failure, success, error]
       assert_includes [error, failure], commit.significant_status

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161205144522) do
+ActiveRecord::Schema.define(version: 20161206105318) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20161205144522) do
     t.integer  "commit_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "stack_id",                                      null: false
     t.index ["commit_id"], name: "index_statuses_on_commit_id"
   end
 
