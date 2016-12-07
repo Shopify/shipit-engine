@@ -46,6 +46,7 @@ require 'shipit/deploy_commands'
 require 'shipit/rollback_commands'
 require 'shipit/environment_variables'
 require 'shipit/stat'
+require 'shipit/strip_cache_control'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
@@ -111,8 +112,10 @@ module Shipit
         logger: Rails.logger,
         serializer: NullSerializer,
       )
+      builder.use StripCacheControl
       builder.use Octokit::Response::RaiseError
       builder.adapter Faraday.default_adapter
+      yield builder if block_given?
     end
   end
 

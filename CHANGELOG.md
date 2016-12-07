@@ -1,5 +1,8 @@
 # Unreleased
 
+*   Disregard GitHub's Cache-Control max-age directives, because they impose a 60 seconds resolution
+    which is way too slow.
+
 *   Bust caches from a delayed background job to avoid deadlocks on heavy traffic installations.
 
 *   Properly delete statuses when a commit is destroyed.
