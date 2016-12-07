@@ -13,6 +13,7 @@ module Shipit
 
       handle_github_errors do
         new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
+        logger.info "[GithubSyncJob] Found #{new_commits.size} new commits (#{new_commits.join(' ')})"
 
         @stack.transaction do
           shared_parent.try!(:detach_children!)
@@ -20,6 +21,7 @@ module Shipit
             @stack.commits.create_from_github!(gh_commit)
           end
         end
+        logger.info "[GithubSyncJob] Created #{new_commits.size} commits (#{new_commits.join(' ')})"
       end
       CacheDeploySpecJob.perform_later(@stack)
     end
