@@ -463,6 +463,24 @@ review:
     - bundle exec rake db:migrate:status
 ```
 
+<h3 id="shell-commands-timeout">Shell commands timeout</h3>
+
+All the shell commands can take an optional `timeout` parameter to limit their duration:
+
+```yml
+deploy:
+  override:
+    - ./script/deploy:
+        timeout: 30
+  post:
+    - ./script/notify_deploy_end: { timeout: 15 }
+review:
+  checks:
+    - bundle exec rake db:migrate:status:
+        timeout: 60
+```
+
+See also `commands_inactivity_timeout` in `secrets.yml` for a global timeout setting.
 
 
 ***
