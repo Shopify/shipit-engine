@@ -43,6 +43,7 @@ class GKEDeployment
       set_kubectl_cluster(cluster)
       apply_all_templates
     end
+    puts_green("Successfully deployed to GKE")
   rescue FatalDeploymentError => error
     print_error(error.message)
     exit 1
@@ -140,6 +141,10 @@ class GKEDeployment
     puts "\033[0;31m#{msg}\033[0m"
   end
 
+  def puts_green(msg)
+    puts "\x1b[32m#{msg}\x1b[0m"
+  end
+
   def query_deployments
     out, err, st = Open3.capture3('gcloud', '-q', 'deployment-manager', 'deployments', 'describe', @gcloud_deployment, '--format=json')
     unless st.success?
@@ -156,7 +161,7 @@ deployment = GKEDeployment.new(
   gcloud_project: ARGV[2],
   environment: ENV['ENVIRONMENT'],
   template_folder: ENV['K8S_TEMPLATE_FOLDER'],
-  current_sha: ENV['REVISION'],
+  current_sha: ENV['REVISION'] || ENV['LAST_DEPLOYED_SHA'],
   key_dir: ENV['GCLOUD_CREDENTIALS_DIR']
 )
 deployment.run
