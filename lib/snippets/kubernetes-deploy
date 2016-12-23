@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-# Usage: deploy-kubernetes <app's namespace> <kube context>
+# Usage: kubernetes-deploy <app's namespace> <kube context>
 
 # Prerequisites:
 #  - kubectl binary must be available in the shipit machine's path
-#  - ENV['KUBECONFIG_FILE'] must point to a valid kubeconfig file
+#  - ENV['KUBECONFIG'] must point to a valid kubeconfig file
 #  - The kubeconfig file must contain a named context for each cluster you want to deploy to
 #  - The users needed by the named contexts must already be authorized outside this script
 
@@ -23,6 +23,33 @@ require 'logger'
 class KubernetesDeploy
   class FatalDeploymentError < StandardError; end
 
+  # Things removed from default prune whitelist:
+  # core/v1/Namespace -- not namespaced
+  # core/v1/PersistentVolume -- not namespaced
+  # core/v1/Endpoints -- not managed manually
+  # core/v1/PersistentVolumeClaim -- want to leave these alone?
+  # core/v1/ReplicationController -- old resource we don't use
+  # extensions/v1beta1/ReplicaSet -- not managed manually
+  # core/v1/Secret -- may have been kubectl applied (by an admin) and will never be in the repo
+  PRUNE_WHITELIST = %w(
+    core/v1/ConfigMap
+    core/v1/Pod
+    core/v1/Service
+    batch/v1/Job
+    extensions/v1beta1/DaemonSet
+    extensions/v1beta1/Deployment
+    extensions/v1beta1/HorizontalPodAutoscaler
+    extensions/v1beta1/Ingress
+    apps/v1beta1/StatefulSet
+  ).freeze
+
+  PREDEPLOY_SEQUENCE = %w(
+    secret
+    configmap
+    persistentvolumeclaim
+    pod
+  )
+
   def initialize(namespace:, environment:, current_sha:, template_folder: nil, kubeconfig:, context:)
     @namespace = namespace
     @context = context
@@ -36,7 +63,9 @@ class KubernetesDeploy
   def run
     validate_configuration
     set_kubectl_context
-    apply_all_templates
+    resource_map = generate_resource_map
+    predeploy_priority_resources(resource_map)
+    apply_templates(resource_map.values.flatten, prune: true)
   rescue FatalDeploymentError => error
     logger.fatal(error.message)
     exit 1
@@ -51,14 +80,50 @@ class KubernetesDeploy
 
   private
 
+  def predeploy_priority_resources(resource_map)
+    PREDEPLOY_SEQUENCE.each do |resource_type|
+      apply_templates(resource_map[resource_type]) if resource_map.key?(resource_type)
+    end
+  end
+
+  def generate_resource_map
+    resource_map = {}
+    Dir.foreach(@template_path) do |filename|
+      next unless filename.end_with?(".yml.erb") || filename.end_with?(".yml")
+      file_content = File.read(File.join(@template_path, filename))
+
+      split_templates(filename, file_content).each do |resource_template|
+        rendered_template = File.extname(filename) == ".erb" ? render_erb(resource_template) : resource_template
+        f = Tempfile.new(filename)
+        f.write(rendered_template)
+        f.close
+        resource_name, err, st = run_kubectl("apply", "-f", f.path, "--dry-run", "--output=name")
+        unless st.success?
+          logger.error(rendered_template)
+          raise FatalDeploymentError, "Dry run failed for template #{File.basename(f.path)}."
+        end
+
+        type, n = resource_name.split("/", 2)
+        resource_map[type] ||= []
+        resource_map[type] << { name: n, type: type, value: rendered_template, tempfile: f, deployed: false }
+      end
+    end
+    resource_map
+  end
+
+  def split_templates(filename, value)
+    templates = []
+    YAML.load_stream(value) { |doc| templates << YAML.dump(doc) }
+    templates
+  rescue Psych::SyntaxError => e
+    logger.error(value)
+    raise FatalDeploymentError, "Template #{filename} cannot be parsed: #{e.message}"
+  end
+
   def validate_configuration
     errors = []
     if @kubeconfig.nil? || !File.file?(@kubeconfig)
       errors << "Kube config not found at #{@kubeconfig}"
-    else
-      _, err, st = run_kubectl("get", "namespaces")
-      kubectl_configured = st.success?
-      errors << "Kube config is not valid (#{err})" unless kubectl_configured
     end
 
     if @current_sha.nil?  || @current_sha.empty?
@@ -73,9 +138,6 @@ class KubernetesDeploy
 
     if @namespace.nil? || @namespace.empty?
       errors << "Namespace must be specified"
-    elsif kubectl_configured
-      _, _, st = run_kubectl("get", "namespace", @namespace)
-      errors << "Namespace #{@namespace} does not exist" unless st.success?
     end
 
     if @context.nil? || @context.empty?
@@ -85,44 +147,27 @@ class KubernetesDeploy
     raise FatalDeploymentError, "Configuration invalid: #{errors.join(", ")}" if errors.length.nonzero?
   end
 
-  def apply_all_templates
-    found = 0
-    Dir.foreach(@template_path) do |file|
-      file_path = "#{@template_path}/#{file}"
-      if File.extname(file) == '.yml'
-        found += 1
-        apply_template(file_path)
-      elsif File.extname(file) == '.erb'
-        found += 1
-        render_and_apply_template(file_path)
-      end
+  def apply_templates(templates, prune: false)
+    command = ["apply", "--namespace=#{@namespace}"]
+    templates.each { |t| command.push("-f", t[:tempfile].path) }
+    if prune
+      command.push("--prune", "--all")
+      PRUNE_WHITELIST.each { |type| command.push("--prune-whitelist=#{type}") }
     end
-    raise FatalDeploymentError, "No templates found in #{@template_path}" if found.zero?
+    run_kubectl(*command)
   end
 
-  def render_and_apply_template(file_path)
-    erb_template = ERB.new(File.read(file_path))
+  def render_erb(content)
+    erb_template = ERB.new(content)
     erb_binding = binding
     template_variables.each do |var_name, value|
       erb_binding.local_variable_set(var_name, value)
     end
-    content = erb_template.result(erb_binding)
-
-    f = Tempfile.new(['kube_template', '.yml'])
-    f.write(content)
-    f.close
-    apply_template(f.path, original_path: file_path)
-  ensure
-    f.unlink if f
-  end
-
-  def apply_template(path, original_path: nil)
-    _, _, status = run_kubectl('apply', '-f', path, "--namespace=#{@namespace}")
-    raise FatalDeploymentError, "Failed to apply template #{original_path || path}" unless status.success?
+    erb_template.result(erb_binding)
   end
 
   def set_kubectl_context
-    out, err, st = run_kubectl("config","get-contexts", "-o", "name")
+    out, err, st = run_kubectl("config","get-contexts", "-o", "name", namespaced: false)
     available_contexts = out.split("\n")
     if !st.success?
       raise FatalDeploymentError, err
@@ -130,12 +175,13 @@ class KubernetesDeploy
       raise FatalDeploymentError, "Context #{@context} is not available. Valid contexts: #{available_contexts}"
     end
 
-    _, err, st = run_kubectl("config", "use-context", @context)
+    _, err, st = run_kubectl("config", "use-context", @context, namespaced: false)
     raise FatalDeploymentError, "Kubectl config is not valid: #{err}" unless st.success?
   end
 
-  def run_kubectl(*args)
+  def run_kubectl(*args, namespaced: true)
     args = args.unshift("kubectl").push("--kubeconfig=#{@kubeconfig}")
+    args.push("--namespace=#{@namespace}") if namespaced
     logger.debug Shellwords.join(args)
     out, err, st = Open3.capture3(*args)
     logger.debug(out.shellescape)
@@ -146,11 +192,12 @@ class KubernetesDeploy
   def logger
     @logger ||= begin
       l = Logger.new(STDOUT)
-      l.level = ENV["DEBUG"] ? Logger::DEBUG : Logger::INFO
+      l.level = Logger::DEBUG
       l.formatter = proc do |severity, _datetime, _progname, msg|
         case severity
-        when "FATAL" then "\x1b[91m[#{severity}]\t#{msg}\x1b[0m\n"
-        when "WARN", "ERROR" then "\033[0;33m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "FATAL" then "\033[0;31m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "WARN" then "\033[0;33m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "ERROR" then "\033[0;35m[#{severity}]\t#{msg}\x1b[0m\n"
         else "[#{severity}]\t#{msg}\n"
         end
       end
@@ -165,6 +212,6 @@ deployment = KubernetesDeploy.new(
   environment: ENV['ENVIRONMENT'],
   current_sha: ENV['REVISION'],
   template_folder: ENV['K8S_TEMPLATE_FOLDER'],
-  kubeconfig: ENV['KUBECONFIG_FILE']
+  kubeconfig: ENV['KUBECONFIG']
 )
 deployment.run
