@@ -1,15 +1,14 @@
 #!/usr/bin/env ruby
 
-# Usage: deploy-kubernetes <app's namespace> <kube context>
+# Usage: kubernetes-deploy <app's namespace> <kube context>
 
 # Prerequisites:
-#  - kubectl binary must be available in the shipit machine's path
-#  - ENV['KUBECONFIG_FILE'] must point to a valid kubeconfig file
-#  - The kubeconfig file must contain a named context for each cluster you want to deploy to
-#  - The users needed by the named contexts must already be authorized outside this script
+#  - kubectl 1.5.1+ binary must be available in the shipit machine's path
+#  - ENV['KUBECONFIG'] must point to a valid kubeconfig file that includes all the contexts you want to deploy to
+#  - ENV['GOOGLE_APPLICATION_CREDENTIALS'] must point to the credentials for an authenticated service account if your user's auth provider is gcp
 
 # Optionally, the following variables can be used to override script defaults:
-#  - ENV['K8S_TEMPLATE_FOLDER']: location of Kubernetes files to deploy. Default is config/deploy/#{environment}.
+#  - ENV['K8S_TEMPLATE_FOLDER']: Location of Kubernetes files to deploy. Default is config/deploy/#{environment}.
 
 require 'open3'
 require 'securerandom'
@@ -23,11 +22,10 @@ require 'logger'
 class KubernetesDeploy
   class FatalDeploymentError < StandardError; end
 
-  def initialize(namespace:, environment:, current_sha:, template_folder: nil, kubeconfig:, context:)
+  def initialize(namespace:, environment:, current_sha:, template_folder: nil, context:)
     @namespace = namespace
     @context = context
     @current_sha = current_sha
-    @kubeconfig = kubeconfig
     @template_path = File.expand_path('./' + (template_folder || "config/deploy/#{environment}"))
     # Max length of podname is only 63chars so try to save some room by truncating sha to 8 chars
     @id = current_sha[0...8] + "-#{SecureRandom.hex(4)}" if current_sha
@@ -36,6 +34,7 @@ class KubernetesDeploy
   def run
     validate_configuration
     set_kubectl_context
+    validate_namespace
     apply_all_templates
   rescue FatalDeploymentError => error
     logger.fatal(error.message)
@@ -53,12 +52,8 @@ class KubernetesDeploy
 
   def validate_configuration
     errors = []
-    if @kubeconfig.nil? || !File.file?(@kubeconfig)
-      errors << "Kube config not found at #{@kubeconfig}"
-    else
-      _, err, st = run_kubectl("get", "namespaces")
-      kubectl_configured = st.success?
-      errors << "Kube config is not valid (#{err})" unless kubectl_configured
+    if ENV["KUBECONFIG"].nil? || !File.file?(ENV["KUBECONFIG"])
+      errors << "Kube config not found at #{ENV["KUBECONFIG"]}"
     end
 
     if @current_sha.nil?  || @current_sha.empty?
@@ -73,9 +68,6 @@ class KubernetesDeploy
 
     if @namespace.nil? || @namespace.empty?
       errors << "Namespace must be specified"
-    elsif kubectl_configured
-      _, _, st = run_kubectl("get", "namespace", @namespace)
-      errors << "Namespace #{@namespace} does not exist" unless st.success?
     end
 
     if @context.nil? || @context.empty?
@@ -83,6 +75,7 @@ class KubernetesDeploy
     end
 
     raise FatalDeploymentError, "Configuration invalid: #{errors.join(", ")}" if errors.length.nonzero?
+    logger.info("All required parameters and files are present")
   end
 
   def apply_all_templates
@@ -117,8 +110,10 @@ class KubernetesDeploy
   end
 
   def apply_template(path, original_path: nil)
-    _, _, status = run_kubectl('apply', '-f', path, "--namespace=#{@namespace}")
+    logger.info("Applying #{original_path || path}")
+    out, _, status = run_kubectl('apply', '-f', path, "--namespace=#{@namespace}")
     raise FatalDeploymentError, "Failed to apply template #{original_path || path}" unless status.success?
+    logger.info(out)
   end
 
   def set_kubectl_context
@@ -132,15 +127,22 @@ class KubernetesDeploy
 
     _, err, st = run_kubectl("config", "use-context", @context)
     raise FatalDeploymentError, "Kubectl config is not valid: #{err}" unless st.success?
+    logger.info("Kubectl configured")
+  end
+
+  def validate_namespace
+    _, _, st = run_kubectl("get", "namespace", @namespace)
+    raise FatalDeploymentError, "Failed to validate namespace #{@namespace}" unless st.success?
+    logger.info("Namespace validated")
   end
 
   def run_kubectl(*args)
-    args = args.unshift("kubectl").push("--kubeconfig=#{@kubeconfig}")
+    args = args.unshift("kubectl")
     logger.debug Shellwords.join(args)
     out, err, st = Open3.capture3(*args)
     logger.debug(out.shellescape)
     logger.warn(err) unless st.success?
-    [out.chomp!, err.chomp!, st]
+    [out.chomp, err.chomp, st]
   end
 
   def logger
@@ -149,8 +151,9 @@ class KubernetesDeploy
       l.level = ENV["DEBUG"] ? Logger::DEBUG : Logger::INFO
       l.formatter = proc do |severity, _datetime, _progname, msg|
         case severity
-        when "FATAL" then "\x1b[91m[#{severity}]\t#{msg}\x1b[0m\n"
-        when "WARN", "ERROR" then "\033[0;33m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "FATAL" then "\033[0;31m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "ERROR", "WARN" then "\033[0;31m[#{severity}]\t#{msg}\x1b[0m\n"
+        when "INFO" then "\033[0;36m#{msg}\x1b[0m\n"
         else "[#{severity}]\t#{msg}\n"
         end
       end
@@ -164,7 +167,6 @@ deployment = KubernetesDeploy.new(
   context: ARGV[1],
   environment: ENV['ENVIRONMENT'],
   current_sha: ENV['REVISION'],
-  template_folder: ENV['K8S_TEMPLATE_FOLDER'],
-  kubeconfig: ENV['KUBECONFIG_FILE']
+  template_folder: ENV['K8S_TEMPLATE_FOLDER']
 )
 deployment.run
