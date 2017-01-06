@@ -62,7 +62,7 @@ class KubernetesDeploy
 
     if !File.directory?(@template_path)
       errors << "Template path #{@template_path} doesn't exist"
-    elsif Dir.entries(@template_path).select {|file| file =~ /\.yml(.erb)?$/}.size.zero?
+    elsif Dir.entries(@template_path).none? { |file| file =~ /\.yml(\.erb)?$/ }
       errors << "#{@template_path} doesn't contain valid templates (postfix .yml or .yml.erb)"
     end
 
@@ -74,23 +74,24 @@ class KubernetesDeploy
       errors << "Context must be specified"
     end
 
-    raise FatalDeploymentError, "Configuration invalid: #{errors.join(", ")}" if errors.length.nonzero?
+    raise FatalDeploymentError, "Configuration invalid: #{errors.join(", ")}" unless errors.empty?
     logger.info("All required parameters and files are present")
   end
 
   def apply_all_templates
-    found = 0
+    found = false
     Dir.foreach(@template_path) do |file|
       file_path = "#{@template_path}/#{file}"
-      if File.extname(file) == '.yml'
-        found += 1
+      case File.extname(file)
+      when '.yml'
+        found ||= true
         apply_template(file_path)
-      elsif File.extname(file) == '.erb'
-        found += 1
+      when '.erb'
+        found ||= true
         render_and_apply_template(file_path)
       end
     end
-    raise FatalDeploymentError, "No templates found in #{@template_path}" if found.zero?
+    raise FatalDeploymentError, "No templates found in #{@template_path}" unless found
   end
 
   def render_and_apply_template(file_path)
@@ -105,8 +106,6 @@ class KubernetesDeploy
     f.write(content)
     f.close
     apply_template(f.path, original_path: file_path)
-  ensure
-    f.unlink if f
   end
 
   def apply_template(path, original_path: nil)
