@@ -21,12 +21,12 @@ require 'tempfile'
 class GKEDeployment
   class FatalDeploymentError < StandardError; end
 
-  def initialize(namespace:, gcloud_deployment:, gcloud_project:, environment:, current_sha:, key_dir:, template_folder: nil)
+  def initialize(namespace:, gcloud_deployment:, gcloud_project:, environment:, current_sha:, key_file:, template_folder: nil)
     @namespace = namespace
     @gcloud_deployment = gcloud_deployment
     @gcloud_project = gcloud_project
     @current_sha = current_sha
-    @key_file = "#{key_dir}/#{@gcloud_project}.json"
+    @key_file = key_file
     @template_path = './' + (template_folder || "config/deploy/#{environment}")
 
     # Validate params + check existance of auth key and template(s)
@@ -106,7 +106,6 @@ class GKEDeployment
   end
 
   def authorize_gcloud
-    ENV['GOOGLE_APPLICATION_CREDENTIALS'] = @key_file
     status = run_command('gcloud', '-q', 'auth', 'activate-service-account', '--key-file', @key_file)
     status = run_command('gcloud', '-q', 'config', 'set', 'project', @gcloud_project) if status
     raise FatalDeploymentError, "Failed to set gcloud project #{@gcloud_project}" unless status
@@ -157,6 +156,6 @@ deployment = GKEDeployment.new(
   environment: ENV['ENVIRONMENT'],
   template_folder: ENV['K8S_TEMPLATE_FOLDER'],
   current_sha: ENV['REVISION'],
-  key_dir: ENV['GCLOUD_CREDENTIALS_DIR']
+  key_file: ENV['GOOGLE_APPLICATION_CREDENTIALS']
 )
 deployment.run
