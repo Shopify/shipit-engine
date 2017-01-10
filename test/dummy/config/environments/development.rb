@@ -42,4 +42,6 @@ Rails.application.configure do
     Shipit::DeferredTouch.enabled = false
   end
   config.active_job.queue_adapter = :async
+  
+  Pubsubstub.use_persistent_connections = false
 end
