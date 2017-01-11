@@ -45,12 +45,10 @@ class KubernetesDeploy
   ).freeze
 
   PREDEPLOY_SEQUENCE = %w(
-    configmap
-    persistentvolumeclaim
-    pod
+    ConfigMap
+    PersistentVolumeClaim
+    Pod
   )
-
-  STEP_COMPLETION_TIMEOUT_MINUTES = 20
 
   def initialize(namespace:, environment:, current_sha:, template_folder: nil, context:)
     @namespace = namespace
@@ -104,6 +102,10 @@ class KubernetesDeploy
       next if matching_resources.empty?
       deploy_resources(matching_resources)
       wait_for_completion(matching_resources)
+      fail_count = matching_resources.count { |r| r.deploy_failed? || r.deploy_timed_out? }
+      if fail_count > 0
+        raise FatalDeploymentError, "#{fail_count} priority resources failed to deploy"
+      end
     end
   end
 
@@ -143,29 +145,30 @@ class KubernetesDeploy
   end
 
   def report_final_status(resources)
-    if resources.all?(&:succeeded?)
+    if resources.all?(&:deploy_succeeded?)
       log_green("Deploy succeeded!")
     else
-      fail_list = resources.select(&:failed?).map(&:id)
+      fail_list = resources.select { |r| r.deploy_failed? || r.deploy_timed_out? }.map(&:id)
       KubernetesDeploy.logger.error("The following resources failed to deploy: #{fail_list.join(", ")}")
       raise FatalDeploymentError, "#{fail_list.length} resources failed to deploy"
     end
   end
 
-  def wait_for_completion(resources_to_deploy)
-    timeout = Time.now.utc + (60 * STEP_COMPLETION_TIMEOUT_MINUTES)
+  def wait_for_completion(watched_resources)
     delay_sync_until = Time.now.utc
-
-    while !resources_to_deploy.empty?
-      if Time.now.utc > timeout
-        Kubernetes.logger.error("Phase #{@current_phase} timed out deploying the following resources: #{resources_to_deploy.map(&:id).join(", ")}")
-        raise FatalDeploymentError, "Deploy phase #{@current_phase} failed to complete within #{STEP_COMPLETION_TIMEOUT_MINUTES} minutes"
-      elsif Time.now.utc < delay_sync_until
+    while watched_resources.present?
+      if Time.now.utc < delay_sync_until
         sleep (delay_sync_until - Time.now.utc)
       end
       delay_sync_until = Time.now.utc + 3 # don't pummel the API if the sync is fast
-      resources_to_deploy.each(&:sync)
-      resources_to_deploy = resources_to_deploy.reject(&:deployed?)
+      watched_resources.each(&:sync)
+      newly_finished_resources, watched_resources = watched_resources.partition(&:deploy_finished?)
+      newly_finished_resources.each do |resource|
+        next unless resource.deploy_failed? || resource.deploy_timed_out?
+        KubernetesDeploy.logger.error("#{resource.id} failed to deploy with status '#{resource.status}'.")
+        KubernetesDeploy.logger.warn("Continuing to poll status of other resources in this phase. You may wish to abort the deploy.")
+        KubernetesDeploy.logger.error(resource.status_data)
+      end
     end
   end
 
@@ -215,6 +218,7 @@ class KubernetesDeploy
     resources.each do |r|
       KubernetesDeploy.logger.info("- #{r.id}")
       command.push("-f", r.file.path)
+      r.deploy_started = Time.now.utc
     end
 
     if prune
@@ -276,8 +280,8 @@ class KubernetesDeploy
       l.level = ENV["DEBUG"] ? Logger::DEBUG : Logger::INFO
       l.formatter = proc do |severity, _datetime, _progname, msg|
         case severity
-        when "FATAL" then "\033[0;31m[#{severity}]\t#{msg}\x1b[0m\n" # red
-        when "ERROR", "WARN" then "\033[0;33m[#{severity}]\t#{msg}\x1b[0m\n" # yellow
+        when "FATAL", "ERROR" then "\033[0;31m[#{severity}]\t#{msg}\x1b[0m\n" # red
+        when "WARN" then "\033[0;33m[#{severity}]\t#{msg}\x1b[0m\n" # yellow
         when "INFO" then "\033[0;36m#{msg}\x1b[0m\n" # blue
         else "[#{severity}]\t#{msg}\n"
         end
@@ -290,15 +294,16 @@ class KubernetesDeploy
     extend ActiveSupport::DescendantsTracker
 
     attr_reader :name, :namespace, :file
-    attr_writer :type
+    attr_writer :type, :deploy_started
 
+    TIMEOUT = 60 * 5
 
     def self.handled_type
-      name.split('::').last.downcase
+      name.split('::').last
     end
 
     def self.for_type(type, name, namespace, file)
-      if subclass = descendants.find { |subclass| subclass.handled_type == type }
+      if subclass = descendants.find { |subclass| subclass.handled_type.downcase == type }
         subclass.new(name, namespace, file)
       else
         self.new(name, namespace, file).tap { |r| r.type = type }
@@ -318,11 +323,11 @@ class KubernetesDeploy
       log_status(status_data)
     end
 
-    def failed?
+    def deploy_failed?
       false
     end
 
-    def succeeded?
+    def deploy_succeeded?
       KubernetesDeploy.logger.warn("Don't know how to monitor resources of type #{type}. Assuming #{id} deployed successfully.")
       true
     end
@@ -332,26 +337,43 @@ class KubernetesDeploy
     end
 
     def status
-      @status || "Unknown"
+      @status ||= "Unknown"
+      deploy_timed_out? ? "Timed out with status #{@status}" : @status
     end
 
     def type
       @type || self.class.handled_type
     end
 
-    def deployed?
-      failed? || succeeded?
+    def deploy_finished?
+      deploy_failed? || deploy_succeeded? || deploy_timed_out?
+    end
+
+    def deploy_timed_out?
+      return false unless @deploy_started
+      !deploy_succeeded? && !deploy_failed? && (Time.now.utc - @deploy_started > self.class::TIMEOUT)
     end
 
     def status_data
       {
-        group: type.capitalize + "s",
+        group: group_name,
         name: name,
         status_string: status,
         exists: exists?,
-        failed: failed?,
-        succeeded: succeeded?
+        succeeded: deploy_succeeded?,
+        failed: deploy_failed?,
+        timed_out: deploy_timed_out?,
+        events: fetch_events
       }
+    end
+
+    def group_name
+      type + "s"
+    end
+
+    def fetch_events
+      out, _ = run_kubectl("get", "events", "--output=jsonpath={range .items[?(@.involvedObject.name==\"#{name}\")]}{.involvedObject.kind}   {.metadata.creationTimestamp}  {.reason}   {.count}   {.message}{\"\\n\"}{end}")
+      out.split("\n").select { |event_log| event_log.match(/\A#{type}/i) }
     end
 
     def run_kubectl(*args)
@@ -369,7 +391,9 @@ class KubernetesDeploy
     end
   end
 
-  class Configmap < KubernetesResource
+  class ConfigMap < KubernetesResource
+    TIMEOUT = 30
+
     def initialize(name, namespace, file)
       @name, @namespace, @file = name, namespace, file
     end
@@ -381,11 +405,11 @@ class KubernetesDeploy
       log_status(status_data)
     end
 
-    def succeeded?
+    def deploy_succeeded?
       exists?
     end
 
-    def failed?
+    def deploy_failed?
       false
     end
 
@@ -395,6 +419,8 @@ class KubernetesDeploy
   end
 
   class PersistentVolumeClaim < KubernetesResource
+    TIMEOUT = 60 * 5
+
     def initialize(name, namespace, file)
       @name, @namespace, @file = name, namespace, file
     end
@@ -405,11 +431,11 @@ class KubernetesDeploy
       log_status(status_data)
     end
 
-    def succeeded?
+    def deploy_succeeded?
       @status == "Bound"
     end
 
-    def failed?
+    def deploy_failed?
       @status == "Lost"
     end
 
@@ -419,6 +445,8 @@ class KubernetesDeploy
   end
 
   class Ingress < KubernetesResource
+    TIMEOUT = 30
+
     def initialize(name, namespace, file)
       @name, @namespace, @file = name, namespace, file
     end
@@ -430,37 +458,48 @@ class KubernetesDeploy
       log_status(status_data)
     end
 
-    def succeeded?
+    def deploy_succeeded?
       exists?
     end
 
-    def failed?
+    def deploy_failed?
       false
     end
 
     def exists?
       @found
     end
+
+    def group_name
+      "Ingresses"
+    end
   end
 
   class Service < KubernetesResource
+    TIMEOUT = 60 * 15
+
     def initialize(name, namespace, file)
       @name, @namespace, @file = name, namespace, file
     end
 
     def sync
-      endpoints, st = run_kubectl("get", "endpoints", @name, "--output=jsonpath={.subsets[*].addresses[*].ip}")
-      @num_endpoints = endpoints.split.length
-      @status = "#{@num_endpoints} endpoints"
+      _, st = run_kubectl("get", type, @name)
       @found = st.success?
+      if @found
+        endpoints, st = run_kubectl("get", "endpoints", @name, "--output=jsonpath={.subsets[*].addresses[*].ip}")
+        @num_endpoints = (st.success? ? endpoints.split.length : 0)
+      else
+        @num_endpoints = 0
+      end
+      @status = "#{@num_endpoints} endpoints"
       log_status(status_data)
     end
 
-    def succeeded?
+    def deploy_succeeded?
       @num_endpoints > 0
     end
 
-    def failed?
+    def deploy_failed?
       false
     end
 
@@ -470,93 +509,130 @@ class KubernetesDeploy
   end
 
   class Pod < KubernetesResource
+    TIMEOUT = 60 * 5
+
     def initialize(name, namespace, file, parent: nil)
       @name, @namespace, @file, @parent = name, namespace, file, parent
       @bare = !@parent
     end
 
     def sync
-      out, st = run_kubectl("get", type, @name, "-a", "--output=jsonpath={.spec.containers[*].name}{\"//\"}{.status.phase}")
+      out, st = run_kubectl("get", type, @name, "-a", "--output=jsonpath={.status.phase}{\"//\"}{.spec.containers[*].name}")
       @found = st.success?
+
       if @found
-        container_list, @status = out.split("//")
-        @containers = container_list.split(/\s+/)
+        @phase, container_list = out.split("//")
+
+        if @deploy_started && @phase == "Pending"
+          container_states, st = run_kubectl("get", type, @name, "-a", "--output=jsonpath={.status.containerStatuses[*].state}")
+          container_states.split("\n").each do |state|
+            state.match(/ImagePullBackOff|RunContainerError/) do |bad_state|
+              reason_data = state.match(/message:[^\]]+/) || []
+              KubernetesDeploy.logger.warn("#{id} has container in state #{bad_state} (#{reason_data[0]}).")
+            end
+          end
+        end
+
+        @containers = container_list.split
+        if @phase == "Failed"
+          fail_reason, st = run_kubectl("get", type, @name, "-a", "--output=jsonpath={.status.reason}")
+          @status = "#{@phase} (Reason: #{fail_reason})"
+          KubernetesDeploy.logger.error("#{id} failed: #{@status}")
+        else
+          @ready, _ = run_kubectl("get", type, @name, "-a", "--output=jsonpath={.status.conditions[?(@.type==\"Ready\")].status}")
+          @status = "#{@phase} (Ready: #{@ready})"
+        end
+      else # reset
+        @status = @phase = nil
+        @ready = false
+        @containers = []
       end
+
       fetch_logs
       log_status(status_data)
     end
 
-    def succeeded?
-      @bare ? (@status == "Succeeded") : (@status == "Running")
+    def deploy_succeeded?
+      if @bare
+        @phase == "Succeeded"
+      else
+        @phase == "Running" && @ready == "True"
+      end
     end
 
-    def failed?
-      @status == "Failed"
+    def deploy_failed?
+      @phase == "Failed"
     end
 
     def exists?
       @found
     end
 
+    def group_name
+      @bare ? "Bare pods" : @parent
+    end
+
     def status_data
-      group = @bare ? "Bare pods" : @parent
-      super.merge(
-        group: group,
-        logs: @logs
-      )
+      super.merge(logs: @logs)
     end
 
     private
 
     def fetch_logs
       @logs = {}
-      return if !@found || @containers.empty?
+      return @logs unless @found && @deploy_started
+      return @logs if @containers.empty?
 
       @containers.each do |container_name|
-        out, _ = run_kubectl("logs", @name, "--timestamps=true", "--since=#{STEP_COMPLETION_TIMEOUT_MINUTES}m")
-        next if out.empty?
+        out, _ = run_kubectl("logs", @name, "--timestamps=true", "--since-time=#{@deploy_started.to_datetime.rfc3339}")
+        next if out.blank?
         @logs[container_name] = out
-        if @bare && deployed? && !@already_displayed
+        if @bare && deploy_finished? && !@already_displayed
           KubernetesDeploy.logger.info "Logs from #{id} container #{container_name}:"
           STDOUT.puts "#{out}"
           @already_displayed = true
         end
       end
+      @logs
     end
   end
 
   class Deployment < KubernetesResource
+    TIMEOUT = 60 * 15
+
     def initialize(name, namespace, file)
       @name, @namespace, @file = name, namespace, file
     end
 
     def sync
-      deployment_stats, st = run_kubectl("get", type, @name)
+      status_blob, st = run_kubectl("get", type, @name, "--output=jsonpath={.status}")
       @found = st.success?
       if @found
-        # deployment_stats looks like this:
-        # NAME                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        # jobs                  1         1         1            1           43d
-        labels, statuses = deployment_stats.split("\n")
-        labels = labels.split(/\s+/)[1..4]
-        statuses = statuses.split(/\s+/)[1..4]
-        @rollout_data = labels.zip(statuses).to_h # { "DESIRED" => 1 } etc.
+        @rollout_data = status_blob.scan(/\b([A-Za-z]*replicas)\:(\d+)/i).to_h
+        @status, _ = run_kubectl("rollout", "status", type, @name, "--watch=false")
 
-        @status, _ = run_kubectl("rollout", "status", type, @name)
         pod_names, st = run_kubectl("get", "pods", "-a", "-l", "name=#{name}", "--output=jsonpath={range .items[*]}{ .metadata.name }//{end}")
-        @pods = pod_names.split("//").map do |pod_name|
-          Pod.new(pod_name, namespace, nil, parent: "#{@name.capitalize} deployment").tap(&:sync)
-        end
+        @pods = init_pods(pod_names.split("//"))
+      else
+        @rollout_data = {}
+        @status = nil
+        @pods = []
       end
       log_status(status_data)
     end
 
-    def succeeded?
-      @rollout_data && @rollout_data.values.uniq.length == 1 # num desired, current, up-to-date and available are equal
+    def deploy_succeeded?
+      return false unless @rollout_data.key?("availableReplicas")
+      @rollout_data["availableReplicas"].to_i > 0 && # TODO: should actually ensure at least one NEW pod
+      @rollout_data.values.uniq.length == 1 # num desired, current, up-to-date and available are equal
     end
 
-    def failed?
-      @pods && @pods.all?(&:failed?) # TODO: this likely needs to be a threshold instead
+    def deploy_failed?
+      @pods.present? && @pods.all?(&:deploy_failed?) # TODO: this needs to look at the new pods only
+    end
+
+    def deploy_timed_out?
+      super || @pods.present? && @pods.all?(&:deploy_timed_out?) # TODO: this needs to look at the new pods only
     end
 
     def exists?
@@ -564,7 +640,18 @@ class KubernetesDeploy
     end
 
     def status_data
-      super.merge(pods: @rollout_data)
+      super.merge(replicas: @rollout_data)
+    end
+
+    private
+
+    def init_pods(pod_names)
+      pod_names.map do |pod_name|
+        pod = Pod.new(pod_name, namespace, nil, parent: "#{@name.capitalize} deployment")
+        pod.deploy_started = @deploy_started
+        pod.sync
+        pod
+      end
     end
   end
 end
