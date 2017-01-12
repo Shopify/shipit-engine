@@ -390,5 +390,51 @@ module Shipit
     test "#clear_working_directory? returns true by default" do
       assert_predicate @spec, :clear_working_directory?
     end
+
+    test 'bundler installs take priority over npm installs' do
+      @spec.expects(:discover_package_json).never
+      @spec.stubs(:discover_bundler).returns(['fake bundler task']).once
+
+      assert_equal ['fake bundler task'], @spec.dependencies_steps
+    end
+
+    test 'Gems deploys take priority over npm deploys' do
+      @spec.expects(:discover_npm_package).never
+      @spec.stubs(:discover_gem).returns(['fake gem task']).once
+
+      assert_equal ['fake gem task'], @spec.deploy_steps
+    end
+
+    test '#npm? is false if there is no package.json' do
+      @spec.expects(:package_json).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
+      refute @spec.npm?
+    end
+
+    test '#npm? is false if npm package is private' do
+      file = Pathname.new('/tmp/fake_package.json')
+      file.write('{"private": true}')
+
+      @spec.expects(:package_json).returns(file)
+      refute @spec.npm?
+    end
+
+    test '#npm? is true if npm package is public' do
+      file = Pathname.new('/tmp/fake_package.json')
+      file.write('{"private": false}')
+
+      @spec.expects(:package_json).returns(file)
+
+      assert @spec.npm?
+    end
+
+    test '#dependencies_steps returns `npm install` if a `package.json` is present' do
+      @spec.expects(:npm?).returns(true).at_least_once
+      assert_equal ['npm install --no-progress'], @spec.dependencies_steps
+    end
+
+    test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
+      @spec.stubs(:npm?).returns(true)
+      assert_equal ['assert-npm-version-tag', 'npm publish'], @spec.deploy_steps
+    end
   end
 end
