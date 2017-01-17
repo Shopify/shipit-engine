@@ -1,6 +1,7 @@
 module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
+      include KubernetesDiscovery
       include PypiDiscovery
       include RubygemsDiscovery
       include CapistranoDiscovery
@@ -33,7 +34,7 @@ module Shipit
             'require' => required_statuses,
           },
           'machine' => {
-            'environment' => machine_env,
+            'environment' => discover_machine_env.merge(machine_env),
             'directory' => directory,
             'cleanup' => true,
           },

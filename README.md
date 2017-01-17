@@ -320,6 +320,19 @@ For example:
 fetch:
   curl --silent https://app.example.com/services/ping/version
 ```
+<h3 id="kubernetes">Kubernetes</h3>
+
+**<code>kubernetes</code>** allows to specify a Kubernetes namespace and context to deploy to.
+
+For example:
+```yml
+kubernetes:
+  namespace: my-app-production
+  context: tier4
+```
+
+**<code>kubernetes.template_dir</code>** allows to specify a Kubernetes template directory. It defaults to `./config/deploy/$ENVIRONMENT`
+
 <h3 id="environment">Environment</h3>
 
 **<code>machine.environment</code>** contains the extra environment variables that you want to provide during task execution.
