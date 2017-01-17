@@ -116,6 +116,16 @@ module Shipit
       assert_equal ['bundle exec cap $ENVIRONMENT deploy'], @spec.deploy_steps
     end
 
+    test "#deploy_steps returns `kubernetes-deploy <namespace> <context>` if `kubernetes` is present" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      assert_equal ['kubernetes-deploy foo bar'], @spec.deploy_steps
+    end
+
     test "#deploy_steps prepend and append pre and post steps" do
       @spec.stubs(:load_config).returns('deploy' => {'pre' => ['before'], 'post' => ['after']})
       @spec.expects(:bundler?).returns(true).at_least_once
@@ -148,9 +158,30 @@ module Shipit
       assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy:rollback', 'after'], @spec.rollback_steps
     end
 
-    test '#machine_env return an environment hash' do
+    test "#rollback_steps returns `kubernetes-deploy <namespace> <context>` if `kubernetes` is present" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      assert_equal ['kubernetes-deploy foo bar'], @spec.rollback_steps
+    end
+
+    test '#machine_env returns an environment hash' do
       @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
       assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
+    end
+
+    test '#discover_machine_env contains K8S_TEMPLATE_FOLDER if `kubernetes.template_dir` is present' do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+          'template_dir' => '/egg/spam',
+        },
+      )
+      assert_equal '/egg/spam', @spec.discover_machine_env['K8S_TEMPLATE_FOLDER']
     end
 
     test '#load_config can grab the env-specific shipit.yml file' do

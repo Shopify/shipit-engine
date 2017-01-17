@@ -186,6 +186,10 @@ module Shipit
     def discover_fetch_deployed_revision_steps
     end
 
+    def discover_machine_env
+      {}
+    end
+
     def task_not_found!(id)
       raise TaskDefinition::NotFound.new("No definition for task #{id.inspect}")
     end
