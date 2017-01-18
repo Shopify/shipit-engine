@@ -22,7 +22,7 @@ module Shipit
 
         [
           Shellwords.join([
-            'kubernetes-deploy',
+            Gem.bin_path("kubernetes-deploy"),
             kube_config['namespace'],
             kube_config['context'],
           ]),
