@@ -55,4 +55,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'faraday-http-cache', '~> 1.2.2'
   s.add_dependency 'redis-objects', '~> 1.2.1'
   s.add_dependency 'redis-namespace', '~> 1.5.2'
+  s.add_dependency 'kubernetes-deploy', '~> 0.1'
 end

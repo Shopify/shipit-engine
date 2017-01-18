@@ -123,7 +123,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ['kubernetes-deploy foo bar'], @spec.deploy_steps
+      assert_equal ["#{Gem.bin_path('kubernetes-deploy')} foo bar"], @spec.deploy_steps
     end
 
     test "#deploy_steps prepend and append pre and post steps" do
@@ -165,7 +165,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ['kubernetes-deploy foo bar'], @spec.rollback_steps
+      assert_equal ["#{Gem.bin_path('kubernetes-deploy')} foo bar"], @spec.rollback_steps
     end
 
     test '#machine_env returns an environment hash' do
