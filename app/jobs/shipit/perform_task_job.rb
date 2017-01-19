@@ -52,7 +52,7 @@ module Shipit
     end
 
     def perform_task
-      Bundler.with_clean_env do
+      Bundler.with_original_env do
         capture_all! @commands.install_dependencies
         capture_all! @commands.perform
       end
