@@ -33,6 +33,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 * [Format and content of shipit.yml](#configuring-shipit)
 * [Format and content of secrets.yml](#configuring-secrets)
 * [Script parameters](#script-parameters)
+* [Configuring providers](#configuring-providers)
 * [Free samples](/examples/shipit.yml)
 
 * * *
@@ -607,3 +608,16 @@ These variables are accessible only during deploys and rollback:
 
 * `REVISION`: the git SHA of the revision that must be deployed in production
 * `SHA`: alias for REVISION
+
+<h2 id="configuring-providers">Configuring providers</h2>
+
+### Heroku
+
+To use Heroku integration (`lib/snippets/push-to-heroku`), make sure that the environment has [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli) available.
+
+### Kubernetes
+
+For Kubernetes, you have to provision Shipit environment with the following tools:
+
+* `kubectl`
+* `kubernetes-deploy` [gem](https://github.com/Shopify/kubernetes-deploy)
