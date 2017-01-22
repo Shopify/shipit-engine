@@ -8,15 +8,11 @@ module Shipit
       end
 
       def discover_package_json
-        (yarn_install if yarn?) || (npm_install if npm?)
-      end
-
-      def yarn_install
-        [%(yarn install --no-progress)]
+        npm_install if (yarn? || npm?)
       end
 
       def npm_install
-        [%(npm install --no-progress)]
+        [js_command('install --no-progress')]
       end
 
       def discover_review_checklist
@@ -56,22 +52,29 @@ module Shipit
         file('./yarn.lock')
       end
 
-      def discover_deploy_steps
-        (publish_yarn_package if yarn?) || (publish_npm_package if npm?) || super
+      def discover_npm_package
+        publish_npm_package if (yarn? || npm?)
       end
 
-      def publish_yarn_package
-        check_tags = 'assert-npm-version-tag'
-        publish = 'yarn publish'
-
-        [check_tags, publish]
+      def discover_deploy_steps
+        discover_npm_package || super
       end
 
       def publish_npm_package
         check_tags = 'assert-npm-version-tag'
-        publish = 'npm publish'
+        publish = js_command('publish')
 
         [check_tags, publish]
+      end
+
+      def js_command(command_args)
+        runner = if yarn?
+          'yarn'
+        else
+          'npm'
+        end
+
+        "#{runner} #{command_args}"
       end
     end
   end

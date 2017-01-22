@@ -427,6 +427,11 @@ module Shipit
       assert @spec.npm?
     end
 
+    test 'npm packages have a checklist' do
+      @spec.stubs(:npm?).returns(true).at_least_once
+      assert_match /npm version/, @spec.review_checklist[0]
+    end
+
     test '#dependencies_steps returns `npm install` if a `package.json` is present' do
       @spec.expects(:npm?).returns(true).at_least_once
       assert_equal ['npm install --no-progress'], @spec.dependencies_steps
@@ -491,8 +496,13 @@ module Shipit
     end
 
     test '#publish_yarn_package checks if version tag exists, and then invokes yarn publish script' do
-      @spec.stubs(:yarn?).returns(true)
+      @spec.stubs(:yarn?).returns(true).at_least_once
       assert_equal ['assert-npm-version-tag', 'yarn publish'], @spec.deploy_steps
+    end
+
+    test 'yarn checklist takes precedence over npm checklist' do
+      @spec.stubs(:yarn?).returns(true).at_least_once
+      assert_match /yarn version/, @spec.review_checklist[0]
     end
   end
 end
