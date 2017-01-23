@@ -427,6 +427,11 @@ module Shipit
       assert @spec.npm?
     end
 
+    test 'npm packages have a checklist' do
+      @spec.stubs(:npm?).returns(true).at_least_once
+      assert_match(/npm version/, @spec.review_checklist[0])
+    end
+
     test '#dependencies_steps returns `npm install` if a `package.json` is present' do
       @spec.expects(:npm?).returns(true).at_least_once
       assert_equal ['npm install --no-progress'], @spec.dependencies_steps
@@ -435,6 +440,69 @@ module Shipit
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish'], @spec.deploy_steps
+    end
+
+    test 'bundler installs take priority over yarn installs' do
+      @spec.expects(:discover_yarn).never
+      @spec.stubs(:discover_bundler).returns(['fake bundler task']).once
+
+      assert_equal ['fake bundler task'], @spec.dependencies_steps
+    end
+
+    test 'Gems deploys take priority over yarn deploys' do
+      @spec.expects(:discover_yarn_package).never
+      @spec.stubs(:discover_gem).returns(['fake gem task']).once
+
+      assert_equal ['fake gem task'], @spec.deploy_steps
+    end
+
+    test '#yarn? is false if there is no package.json' do
+      @spec.expects(:package_json).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
+      @spec.expects(:yarn_lock).returns(Shipit::Engine.root.join('Gemfile'))
+
+      refute @spec.yarn?
+    end
+
+    test '#yarn? is false if there is no yarn.lock' do
+      @spec.expects(:yarn_lock).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
+
+      refute @spec.yarn?
+    end
+
+    test '#yarn? is false if a private package.json and yarn.lock are present' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"private": true}')
+
+      @spec.expects(:package_json).returns(package_json)
+      @spec.expects(:yarn_lock).returns(Shipit::Engine.root.join('Gemfile'))
+      refute @spec.yarn?
+    end
+
+    test '#yarn? is true if a public package.json and yarn.lock are present' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"private": false}')
+
+      yarn_lock = Pathname.new('/tmp/fake_yarn.lock')
+      yarn_lock.write('')
+
+      @spec.expects(:package_json).returns(package_json)
+      @spec.expects(:yarn_lock).returns(yarn_lock)
+      assert @spec.yarn?
+    end
+
+    test '#dependencies_steps returns `yarn install` if a `yarn.lock` is present' do
+      @spec.expects(:yarn?).returns(true).at_least_once
+      assert_equal ['yarn install --no-progress'], @spec.dependencies_steps
+    end
+
+    test '#publish_yarn_package checks if version tag exists, and then invokes yarn publish script' do
+      @spec.stubs(:yarn?).returns(true).at_least_once
+      assert_equal ['assert-npm-version-tag', 'yarn publish'], @spec.deploy_steps
+    end
+
+    test 'yarn checklist takes precedence over npm checklist' do
+      @spec.stubs(:yarn?).returns(true).at_least_once
+      assert_match(/yarn version/, @spec.review_checklist[0])
     end
   end
 end
