@@ -8,7 +8,7 @@ module Shipit
       end
 
       def discover_package_json
-        npm_install if (yarn? || npm?)
+        npm_install if yarn? || npm?
       end
 
       def npm_install
@@ -53,7 +53,7 @@ module Shipit
       end
 
       def discover_npm_package
-        publish_npm_package if (yarn? || npm?)
+        publish_npm_package if yarn? || npm?
       end
 
       def discover_deploy_steps

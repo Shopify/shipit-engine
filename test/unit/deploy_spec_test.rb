@@ -429,7 +429,7 @@ module Shipit
 
     test 'npm packages have a checklist' do
       @spec.stubs(:npm?).returns(true).at_least_once
-      assert_match /npm version/, @spec.review_checklist[0]
+      assert_match(/npm version/, @spec.review_checklist[0])
     end
 
     test '#dependencies_steps returns `npm install` if a `package.json` is present' do
@@ -502,7 +502,7 @@ module Shipit
 
     test 'yarn checklist takes precedence over npm checklist' do
       @spec.stubs(:yarn?).returns(true).at_least_once
-      assert_match /yarn version/, @spec.review_checklist[0]
+      assert_match(/yarn version/, @spec.review_checklist[0])
     end
   end
 end
