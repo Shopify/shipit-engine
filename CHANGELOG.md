@@ -1,6 +1,10 @@
 # Unreleased
 
-*   Add a `kubernetes` section in `shipit.yml` for first class k8s support.
+# 0.15.0
+
+*   Add NPM package publishing support with either yarn or npm.
+
+*   Add a `kubernetes` section in `shipit.yml` for first class k8s support (Still alpha).
 
 *   Disregard GitHub's Cache-Control max-age directives, because they impose a 60 seconds resolution
     which is way too slow.
