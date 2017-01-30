@@ -1,0 +1,5 @@
+shipit_fetching:
+  stack: shipit
+  number: 63
+  merge_status: fetching
+  merge_requested_at: <%= 1.minute.ago.to_s(:db) %>

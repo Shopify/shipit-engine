@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161206105318) do
+ActiveRecord::Schema.define(version: 20170130113633) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -121,6 +121,28 @@ ActiveRecord::Schema.define(version: 20161206105318) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["task_id"], name: "index_output_chunks_on_task_id"
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
+    t.integer  "stack_id",                                    null: false
+    t.integer  "number",                                      null: false
+    t.string   "title",              limit: 256
+    t.integer  "github_id",          limit: 8
+    t.string   "api_url",            limit: 1024
+    t.string   "state"
+    t.integer  "head_id"
+    t.boolean  "mergeable"
+    t.integer  "additions",                       default: 0, null: false
+    t.integer  "deletions",                       default: 0, null: false
+    t.string   "merge_status",                                null: false
+    t.datetime "merge_requested_at",                          null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.index ["head_id"], name: "index_pull_requests_on_head_id"
+    t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
+    t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
+    t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
+    t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
   end
 
   create_table "stacks", force: :cascade do |t|
