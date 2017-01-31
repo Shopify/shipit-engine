@@ -21,6 +21,7 @@ module Shipit
     REPO_OWNER_MAX_SIZE = 39
     REPO_NAME_MAX_SIZE = 100
     ENVIRONMENT_MAX_SIZE = 50
+    DEFAULT_MAX_COMMITS_PER_DEPLOY = 8
     REQUIRED_HOOKS = %i(push status).freeze
 
     has_many :commits, dependent: :destroy
@@ -179,17 +180,20 @@ module Shipit
     end
 
     def merge_status
-      if locked?
-        'locked'
+      return 'locked' if locked?
+      return 'failure' if branch_status == 'failure'
+      if undeployed_commits_count > (maximum_commits_per_deploy || DEFAULT_MAX_COMMITS_PER_DEPLOY) * 1.5
+        'backlogged'
       else
-        last_commits = undeployed_commits
-        last_commits << last_deployed_commit unless last_deployed_commit.blank?
-        last_commits.each do |commit|
-          status = commit.status
-          return status.simple_state unless status.pending? || status.unknown?
-        end
-        'pending'
+        'success'
       end
+    end
+
+    def branch_status
+      significant_statuses = undeployed_commits.map(&:significant_status)
+
+      last_finalized_status = significant_statuses.reject { |s| %w(pending unknown missing).include?(s.state) }.first
+      last_finalized_status.try!(:simple_state) || 'pending'
     end
 
     def status

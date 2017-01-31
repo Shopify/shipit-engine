@@ -42,12 +42,11 @@ module Shipit
       assert_equal status_payload['created_at'], status.created_at.iso8601
     end
 
-    test ":state with a unexisting commit trows ActiveRecord::RecordNotFound" do
+    test ":state with a unexisting commit respond with 200 OK" do
       request.headers['X-Github-Event'] = 'status'
       params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
-      assert_raises ActiveRecord::RecordNotFound do
-        post :state, params: {stack_id: @stack.id}.merge(params)
-      end
+      post :state, params: {stack_id: @stack.id}.merge(params)
+      assert_response :ok
     end
 
     test ":state in an untracked branche bails out" do
