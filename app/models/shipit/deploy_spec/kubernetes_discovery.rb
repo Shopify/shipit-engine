@@ -9,24 +9,21 @@ module Shipit
         discover_kubernetes || super
       end
 
-      def discover_machine_env
-        env = super
-        env = env.merge('K8S_TEMPLATE_FOLDER' => kube_config['template_dir']) if kube_config['template_dir']
-        env
-      end
-
       private
 
       def discover_kubernetes
         return unless kube_config.present?
 
-        [
-          Shellwords.join([
-            "kubernetes-deploy",
-            kube_config['namespace'],
-            kube_config['context'],
-          ]),
-        ]
+        cmd = ["kubernetes-deploy"]
+        if kube_config['template_dir']
+          cmd << '--template-dir'
+          cmd << kube_config['template_dir']
+        end
+
+        cmd << kube_config['namespace']
+        cmd << kube_config['context']
+
+        [Shellwords.join(cmd)]
       end
 
       def kube_config
