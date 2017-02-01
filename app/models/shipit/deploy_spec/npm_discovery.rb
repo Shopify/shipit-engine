@@ -62,7 +62,8 @@ module Shipit
 
       def publish_npm_package
         check_tags = 'assert-npm-version-tag'
-        publish = js_command('publish')
+        # `yarn publish` requires user input, so always use npm.
+        publish = 'npm publish'
 
         [check_tags, publish]
       end
