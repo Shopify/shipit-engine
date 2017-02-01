@@ -182,11 +182,13 @@ module Shipit
       if locked?
         'locked'
       else
-        significant_statuses = undeployed_commits.map(&:significant_status)
-        significant_statuses << last_deployed_commit.significant_status unless last_deployed_commit.blank?
-
-        last_finalized_status = significant_statuses.reject { |s| %w(pending unknown).include?(s.state) }.first
-        last_finalized_status.try!(:simple_state) || 'pending'
+        last_commits = undeployed_commits
+        last_commits << last_deployed_commit unless last_deployed_commit.blank?
+        last_commits.each do |commit|
+          status = commit.status
+          return status.simple_state unless status.pending? || status.unknown?
+        end
+        'pending'
       end
     end
 
@@ -215,14 +217,6 @@ module Shipit
       else
         NoDeployedCommit
       end
-    end
-
-    def filter_visible_statuses(statuses)
-      statuses.reject { |s| hidden_statuses.include?(s.context) }
-    end
-
-    def filter_meaningful_statuses(statuses)
-      filter_visible_statuses(statuses).reject { |s| soft_failing_statuses.include?(s.context) }
     end
 
     def deployable?

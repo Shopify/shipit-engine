@@ -254,29 +254,19 @@ module Shipit
       assert_equal 'pending', @commit.reload.state
     end
 
-    test "#last_statuses returns the list of the most recent status of each context" do
-      assert_equal 4, shipit_commits(:second).statuses.count
-      assert_equal 2, shipit_commits(:second).last_statuses.count
-    end
-
-    test "#last_statuses returns [UnknownStatus] if the commit has no statuses" do
+    test "#status returns an unknown if the commit has no statuses" do
       commit = shipit_commits(:second)
       commit.statuses = []
-      assert_equal UnknownStatus.new(commit), commit.significant_status
+      assert_predicate commit.status, :unknown?
     end
 
-    test "#status returns UnknownStatus if the commit has no status" do
+    test "#status rejects the statuses that are specified in the deploy spec's `ci.hide`" do
       commit = shipit_commits(:second)
-      commit.statuses = []
-      assert_equal UnknownStatus.new(commit), commit.status
-    end
-
-    test "#visible_statuses rejects the statuses that are specified in the deploy spec's `ci.hide`" do
-      commit = shipit_commits(:second)
-      assert_equal 2, commit.visible_statuses.count
+      assert_predicate commit.status, :group?
+      assert_equal 2, commit.status.size
       commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => 'metrics/coveralls'}))
       commit.reload
-      assert_equal 1, commit.visible_statuses.size
+      refute_predicate commit.status, :group?
     end
 
     test "#deployable? is true if commit status is 'success'" do
@@ -372,27 +362,7 @@ module Shipit
       end
     end
 
-    test "#visible_statuses forward the last_statuses to the stack" do
-      commit = shipit_commits(:second)
-      stack = commit.stack
-      stack.expects(:filter_visible_statuses).with(commit.last_statuses)
-      commit.visible_statuses
-    end
-
-    test "#meaningful_statuses forward the last_statuses to the stack" do
-      commit = shipit_commits(:second)
-      stack = commit.stack
-      stack.expects(:filter_meaningful_statuses).with(commit.last_statuses)
-      commit.meaningful_statuses
-    end
-
-    test "#significant_status is UnknownStatus when the commit has no statuses" do
-      commit = shipit_commits(:first)
-      commit.statuses = []
-      assert_equal UnknownStatus.new(commit), commit.significant_status
-    end
-
-    test "#significant_status hierarchy uses failures and errors, then pending, then successes, then UnknownStatus" do
+    test "#status hierarchy uses failures and errors, then pending, then successes, then Status::Unknown" do
       commit = shipit_commits(:first)
       pending = commit.statuses.new(stack_id: @stack.id, state: 'pending', context: 'ci/pending')
       failure = commit.statuses.new(stack_id: @stack.id, state: 'failure', context: 'ci/failure')
@@ -400,28 +370,22 @@ module Shipit
       success = commit.statuses.new(stack_id: @stack.id, state: 'success', context: 'ci/success')
 
       commit.reload.statuses = [pending, failure, success, error]
-      assert_includes [error, failure], commit.significant_status
+      assert_equal 'error', commit.status.state
 
       commit.reload.statuses = [pending, failure, success]
-      assert_equal failure, commit.significant_status
+      assert_equal 'failure', commit.status.state
 
       commit.reload.statuses = [pending, error, success]
-      assert_equal error, commit.significant_status
+      assert_equal 'error', commit.status.state
 
       commit.reload.statuses = [success, pending]
-      assert_equal pending, commit.significant_status
+      assert_equal 'pending', commit.status.state
 
       commit.reload.statuses = [success]
-      assert_equal success, commit.significant_status
+      assert_equal 'success', commit.status.state
 
       commit.reload.statuses = []
-      assert_equal UnknownStatus.new(commit), commit.significant_status
-    end
-
-    test "#significant_status is UnknownStatus when the commit has statuses but none meaningful" do
-      commit = shipit_commits(:first)
-      commit.stubs(meaningful_statuses: [])
-      assert_equal UnknownStatus.new(commit), commit.significant_status
+      assert_equal 'unknown', commit.status.state
     end
 
     private

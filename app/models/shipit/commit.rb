@@ -21,7 +21,8 @@ module Shipit
 
     scope :reachable, -> { where(detached: false) }
 
-    delegate :broadcast_update, :github_repo_name, to: :stack
+    delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses,
+             :soft_failing_statuses, to: :stack
 
     def self.newer_than(commit)
       return all unless commit
@@ -69,7 +70,7 @@ module Shipit
     end
 
     def reload(*)
-      @last_statuses = nil
+      @status = nil
       super
     end
 
@@ -156,30 +157,8 @@ module Shipit
       )
     end
 
-    def visible_statuses
-      stack.filter_visible_statuses(last_statuses).presence || [UnknownStatus.new(self)]
-    end
-
-    def meaningful_statuses
-      stack.filter_meaningful_statuses(last_statuses).presence || [UnknownStatus.new(self)]
-    end
-
-    def last_statuses
-      @last_statuses ||= statuses.to_a.uniq(&:context).sort_by(&:context).presence || [UnknownStatus.new(self)]
-    end
-
     def status
-      visibles = visible_statuses
-      status = visibles.size > 1 ? StatusGroup.new(significant_status, visibles) : visibles.first
-      missing_statuses.empty? ? status : MissingStatus.new(status, missing_statuses)
-    end
-
-    def significant_status
-      statuses = meaningful_statuses
-      return UnknownStatus.new(self) if statuses.empty?
-      return statuses.first if statuses.all?(&:success?)
-      non_success_statuses = statuses.reject(&:success?)
-      non_success_statuses.reject(&:pending?).first || non_success_statuses.first || UnknownStatus.new(self)
+      @status ||= Status::Group.compact(self, statuses)
     end
 
     def deployed?
@@ -193,10 +172,10 @@ module Shipit
     private
 
     def add_status
-      previous_status = significant_status
+      previous_status = status
       yield
       reload # to get the statuses into the right order (since sorted :desc)
-      new_status = significant_status
+      new_status = status
 
       payload = {commit: self, stack: stack, status: new_status.state}
       Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
@@ -204,10 +183,6 @@ module Shipit
         Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
       end
       new_status
-    end
-
-    def missing_statuses
-      stack.required_statuses - last_statuses.map(&:context)
     end
   end
 end
