@@ -495,9 +495,9 @@ module Shipit
       assert_equal ['yarn install --no-progress'], @spec.dependencies_steps
     end
 
-    test '#publish_yarn_package checks if version tag exists, and then invokes yarn publish script' do
+    test '#publish_yarn_package checks if version tag exists, and then invokes npm publish script' do
       @spec.stubs(:yarn?).returns(true).at_least_once
-      assert_equal ['assert-npm-version-tag', 'yarn publish'], @spec.deploy_steps
+      assert_equal ['assert-npm-version-tag', 'npm publish'], @spec.deploy_steps
     end
 
     test 'yarn checklist takes precedence over npm checklist' do
