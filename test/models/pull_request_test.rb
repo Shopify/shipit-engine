@@ -4,19 +4,21 @@ module Shipit
   class PullRequestTest < ActiveSupport::TestCase
     setup do
       @stack = shipit_stacks(:shipit)
+      @pr = shipit_pull_requests(:shipit_pending)
+      @user = shipit_users(:walrus)
     end
 
     test ".request_merge! creates a record and schedule a refresh" do
       pull_request = nil
       assert_enqueued_with(job: RefreshPullRequestJob) do
-        pull_request = PullRequest.request_merge!(@stack, 64)
+        pull_request = PullRequest.request_merge!(@stack, 64, @user)
       end
       assert_predicate pull_request, :persisted?
     end
 
     test ".request_merge! only track pull requests once" do
       assert_difference -> { PullRequest.count }, +1 do
-        5.times { PullRequest.request_merge!(@stack, 64) }
+        5.times { PullRequest.request_merge!(@stack, 65, @user) }
       end
     end
 
@@ -78,6 +80,44 @@ module Shipit
       assert_not_nil pull_request.head
       assert_predicate pull_request.head, :detached?
       assert_predicate pull_request.head, :success?
+    end
+
+    test "#reject! records the reason" do
+      @pr.reject!('conflict')
+      assert_equal 'conflict', @pr.rejection_reason
+    end
+
+    test "transitionning from rejected to any other state clear the rejection reason" do
+      @pr.reject!('conflict')
+      assert_equal 'conflict', @pr.rejection_reason
+      @pr.retry!
+      assert_nil @pr.rejection_reason
+      assert_nil @pr.reload.rejection_reason
+    end
+
+    test "#reject_unless_mergeable! returns `false` if the PR is not yet mergeable" do
+      @pr.update!(mergeable: nil)
+      assert_predicate @pr, :not_mergeable_yet?
+      assert_equal false, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :pending?
+    end
+
+    test "#reject_unless_mergeable! rejects the PR if it has a merge conflict" do
+      @pr.update!(mergeable: false)
+
+      assert_predicate @pr, :merge_conflict?
+      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :rejected?
+      assert_equal 'merge_conflict', @pr.rejection_reason
+    end
+
+    test "#reject_unless_mergeable! rejects the PR if it has a failing or pending CI status" do
+      @pr.head.statuses.create!(stack: @pr.stack, state: 'pending', context: 'ci/circle')
+
+      refute_predicate @pr, :all_status_checks_passed?
+      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :rejected?
+      assert_equal 'ci_failing', @pr.rejection_reason
     end
   end
 end

@@ -12,7 +12,9 @@ class CreateShipitPullRequests < ActiveRecord::Migration[5.0]
       t.integer :additions, null: false, default: 0
       t.integer :deletions, null: false, default: 0
       t.string :merge_status, null: false
+      t.string :rejection_reason, null: true
       t.datetime :merge_requested_at, null: false
+      t.references :merge_requested_by
       t.timestamps
 
       t.index [:stack_id, :number], unique: true

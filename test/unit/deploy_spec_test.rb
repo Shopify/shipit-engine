@@ -256,7 +256,15 @@ module Shipit
       assert_instance_of DeploySpec::FileSystem, @spec
       assert_instance_of DeploySpec, @spec.cacheable
       config = {
-        'ci' => {'hide' => [], 'allow_failures' => [], 'require' => []},
+        'ci' => {
+          'pr' => {
+            'require' => [],
+            'ignore' => [],
+          },
+          'hide' => [],
+          'allow_failures' => [],
+          'require' => [],
+        },
         'machine' => {'environment' => {}, 'directory' => nil, 'cleanup' => true},
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
         'dependencies' => {'override' => []},
@@ -378,6 +386,68 @@ module Shipit
     test "#hidden_statuses is an array even if the value is present" do
       @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
       assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+    end
+
+    test "pull_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'hide' => %w(ci/circleci ci/jenkins),
+          'allow_failures' => %w(ci/circleci ci/travis),
+        },
+      )
+      assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.pull_request_ignored_statuses.sort
+    end
+
+    test "pull_request_ignored_statuses defaults to empty if `ci.pr` is present" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'pr' => {'foo' => 'bar'},
+          'hide' => %w(ci/circleci ci/jenkins),
+          'allow_failures' => %w(ci/circleci ci/travis),
+        },
+      )
+      assert_equal [], @spec.pull_request_ignored_statuses
+    end
+
+    test "pull_request_ignored_statuses returns `ci.pr.ignore` if present" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'pr' => {'ignore' => 'bar'},
+          'hide' => %w(ci/circleci ci/jenkins),
+          'allow_failures' => %w(ci/circleci ci/travis),
+        },
+      )
+      assert_equal ['bar'], @spec.pull_request_ignored_statuses
+    end
+
+    test "pull_request_required_statuses defaults to ci.require" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'require' => %w(ci/circleci ci/jenkins),
+        },
+      )
+      assert_equal %w(ci/circleci ci/jenkins), @spec.pull_request_required_statuses
+    end
+
+    test "pull_request_required_statuses defaults to empty if `ci.pr` is present" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'pr' => {'foo' => 'bar'},
+          'require' => %w(ci/circleci ci/jenkins),
+        },
+      )
+      assert_equal [], @spec.pull_request_required_statuses
+    end
+
+    test "pull_request_required_statuses returns `ci.pr.require` if present" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'pr' => {'require' => 'bar'},
+          'hide' => %w(ci/circleci ci/jenkins),
+          'allow_failures' => %w(ci/circleci ci/travis),
+        },
+      )
+      assert_equal ['bar'], @spec.pull_request_required_statuses
     end
 
     test "#file is impacted by `machine.directory`" do

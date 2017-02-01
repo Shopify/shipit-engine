@@ -143,6 +143,22 @@ module Shipit
       Array.wrap(config('ci', 'allow_failures'))
     end
 
+    def pull_request_required_statuses
+      if config('ci', 'pr')
+        Array.wrap(config('ci', 'pr', 'require'))
+      else
+        required_statuses
+      end
+    end
+
+    def pull_request_ignored_statuses
+      if config('ci', 'pr')
+        Array.wrap(config('ci', 'pr', 'ignore'))
+      else
+        soft_failing_statuses | hidden_statuses
+      end
+    end
+
     def review_checks
       config('review', 'checks') || []
     end

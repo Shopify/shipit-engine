@@ -216,7 +216,7 @@ module Shipit
     end
 
     test "#destroy also destroy associated Commits" do
-      assert_difference -> { Commit.count }, -5 do
+      assert_difference -> { Commit.count }, -shipit_stacks(:shipit).commits.count do
         shipit_stacks(:shipit).destroy
       end
     end
@@ -258,19 +258,33 @@ module Shipit
       end
     end
 
-    test "#deployable? returns true if stack is not locked and is not deploying" do
+    test "#deployable? returns true if the stack is not locked and is not deploying" do
       @stack.deploys.destroy_all
-      assert @stack.deployable?
+      assert_predicate @stack, :deployable?
     end
 
-    test "#deployable? returns false if stack is locked" do
+    test "#deployable? returns false if the stack is locked" do
       @stack.update!(lock_reason: 'Maintenance operation')
-      refute @stack.deployable?
+      refute_predicate @stack, :deployable?
     end
 
-    test "#deployable? returns false if stack is deploying" do
+    test "#deployable? returns false if the stack is deploying" do
       @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new)
-      refute @stack.deployable?
+      refute_predicate @stack, :deployable?
+    end
+
+    test "#allows_merges? returns true if the stack is not locked and the branch is green" do
+      assert_predicate @stack, :allows_merges?
+    end
+
+    test "#allows_merges? returns false if the stack is locked" do
+      @stack.update!(lock_reason: 'Maintenance operation')
+      refute_predicate @stack, :allows_merges?
+    end
+
+    test "#allows_merges? returns false if the branch is failing" do
+      @stack.undeployed_commits.last.statuses.create!(context: 'ci/travis', state: 'failure', stack: @stack)
+      refute_predicate @stack, :allows_merges?
     end
 
     test "#monitoring is empty if cached_deploy_spec is blank" do

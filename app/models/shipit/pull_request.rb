@@ -1,9 +1,42 @@
 module Shipit
   class PullRequest < ApplicationRecord
+    InvalidTransition = Class.new(StandardError)
+
+    class StatusChecker < Status::Group
+      def initialize(commit, statuses, deploy_spec)
+        @deploy_spec = deploy_spec
+        super(commit, statuses)
+      end
+
+      private
+
+      attr_reader :deploy_spec
+
+      def reject_hidden(statuses)
+        statuses.reject { |s| ignored_statuses.include?(s.context) }
+      end
+
+      def reject_allowed_to_fail(statuses)
+        statuses.reject { |s| ignored_statuses.include?(s.context) }
+      end
+
+      def ignored_statuses
+        deploy_spec.try!(:pull_request_ignored_statuses) || []
+      end
+
+      def required_statuses
+        deploy_spec.try!(:pull_request_required_statuses) || []
+      end
+    end
+
     belongs_to :stack
     belongs_to :head, class_name: 'Shipit::Commit'
+    belongs_to :merge_requested_by, class_name: 'Shipit::User'
 
     validates :number, presence: true, uniqueness: {scope: :stack_id}
+
+    scope :pending, -> { where(merge_status: 'pending') }
+    scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
 
     state_machine :merge_status, initial: :fetching do
       state :fetching
@@ -25,26 +58,86 @@ module Shipit
       end
 
       event :complete do
-        transition pending: :complete
+        transition pending: :merged
       end
 
       event :retry do
         transition %i(rejected canceled) => :pending
       end
+
+      before_transition rejected: any do |pr|
+        pr.rejection_reason = nil
+      end
     end
 
-    def self.request_merge!(stack, number)
+    def self.schedule_merges
+      Shipit::Stack.where(id: pending.uniq.pluck(:stack_id)).find_each do |stack|
+        MergePullRequestsJob.perform_later(stack)
+      end
+    end
+
+    def self.request_merge!(stack, number, user)
+      now = Time.now.utc
       pull_request = begin
-        create_with(merge_requested_at: Time.now.utc).find_or_create_by!(
+        create_with(
+          merge_requested_at: now,
+          merge_requested_by: user,
+        ).find_or_create_by!(
           stack: stack,
           number: number,
         )
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-
+      pull_request.update!(merge_requested_at: now, merge_requested_by: user)
       pull_request.schedule_refresh!
       pull_request
+    end
+
+    def reject!(reason)
+      self.rejection_reason = reason.presence
+      super()
+      true
+    end
+
+    def reject_unless_mergeable!
+      return reject!('merge_conflict') if merge_conflict?
+      return reject!('ci_failing') unless all_status_checks_passed?
+      false
+    end
+
+    def merge!
+      raise InvalidTransition unless pending?
+
+      return false if not_mergeable_yet?
+
+      Shipit.github_api.merge_pull_request(
+        stack.github_repo_name,
+        number,
+        '',
+        sha: head.sha,
+        commit_message: 'Merged by Shipit',
+        merge_method: 'merge',
+      )
+      complete!
+      return true
+    rescue Octokit::MethodNotAllowed # merge conflict
+      reject!('merge_conflict')
+      return true
+    rescue Octokit::Conflict # shas didn't match, PR was updated.
+      return false
+    end
+
+    def all_status_checks_passed?
+      StatusChecker.new(head, head.statuses, stack.cached_deploy_spec).success?
+    end
+
+    def merge_conflict?
+      mergeable == false
+    end
+
+    def not_mergeable_yet?
+      mergeable.nil?
     end
 
     def schedule_refresh!

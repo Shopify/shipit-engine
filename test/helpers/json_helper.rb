@@ -4,7 +4,7 @@ module JSONHelper
     if block_given?
       yield value
     elsif args.size == 1
-      if args.first == nil
+      if args.first.nil?
         assert_nil value
       else
         assert_equal args.first, value

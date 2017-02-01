@@ -25,6 +25,7 @@ module Shipit
     REQUIRED_HOOKS = %i(push status).freeze
 
     has_many :commits, dependent: :destroy
+    has_many :pull_requests, dependent: :destroy
     has_many :tasks, dependent: :destroy
     has_many :deploys
     has_many :rollbacks
@@ -190,10 +191,11 @@ module Shipit
     end
 
     def branch_status
-      significant_statuses = undeployed_commits.map(&:significant_status)
-
-      last_finalized_status = significant_statuses.reject { |s| %w(pending unknown missing).include?(s.state) }.first
-      last_finalized_status.try!(:simple_state) || 'pending'
+      undeployed_commits.each do |commit|
+        state = commit.status.simple_state
+        return state unless %w(pending unknown missing).freeze.include?(state)
+      end
+      'pending'
     end
 
     def status
@@ -225,6 +227,10 @@ module Shipit
 
     def deployable?
       !locked? && !active_task?
+    end
+
+    def allows_merges?
+      !locked? && merge_status == 'success'
     end
 
     def repo_name=(name)

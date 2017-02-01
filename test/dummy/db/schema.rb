@@ -124,21 +124,24 @@ ActiveRecord::Schema.define(version: 20170130113633) do
   end
 
   create_table "pull_requests", force: :cascade do |t|
-    t.integer  "stack_id",                                    null: false
-    t.integer  "number",                                      null: false
-    t.string   "title",              limit: 256
-    t.integer  "github_id",          limit: 8
-    t.string   "api_url",            limit: 1024
+    t.integer  "stack_id",                                       null: false
+    t.integer  "number",                                         null: false
+    t.string   "title",                 limit: 256
+    t.integer  "github_id",             limit: 8
+    t.string   "api_url",               limit: 1024
     t.string   "state"
     t.integer  "head_id"
     t.boolean  "mergeable"
-    t.integer  "additions",                       default: 0, null: false
-    t.integer  "deletions",                       default: 0, null: false
-    t.string   "merge_status",                                null: false
-    t.datetime "merge_requested_at",                          null: false
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.integer  "additions",                          default: 0, null: false
+    t.integer  "deletions",                          default: 0, null: false
+    t.string   "merge_status",                                   null: false
+    t.string   "rejection_reason"
+    t.datetime "merge_requested_at",                             null: false
+    t.integer  "merge_requested_by_id"
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
+    t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
     t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
     t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
     t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
