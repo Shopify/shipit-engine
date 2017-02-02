@@ -13,7 +13,7 @@ module Shipit
     end
 
     def status
-      object.significant_status.state
+      object.status.state
     end
 
     def html_url

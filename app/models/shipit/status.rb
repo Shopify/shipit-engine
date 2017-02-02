@@ -1,5 +1,6 @@
 module Shipit
   class Status < ActiveRecord::Base
+    include Common
     include DeferredTouch
 
     STATES = %w(pending success failure error).freeze
@@ -28,22 +29,6 @@ module Shipit
           created_at: github_status.created_at,
         )
       end
-    end
-
-    def unknown?
-      false
-    end
-
-    def ignored?
-      stack.soft_failing_statuses.include?(context)
-    end
-
-    def group?
-      false
-    end
-
-    def simple_state
-      state == 'error' ? 'failure' : state
     end
 
     private

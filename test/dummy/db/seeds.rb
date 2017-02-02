@@ -26,6 +26,11 @@ module Shipit
       deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/",
       cached_deploy_spec: DeploySpec.load(%(
         {
+          "ci": {
+            "hide": ["ci/hidden"],
+            "require": ["ci/travis"],
+            "allow_failures": ["ci/not-important"]
+          },
           "dependencies": {
             "bundler": {
               "without": [
@@ -103,16 +108,18 @@ module Shipit
         deletions: Faker::Number.number(3),
       )
 
-      Status.create!(
-        state: %w(pending success error failure).sample,
-        context: 'ci/travis',
-        description: "Your tests ran on travis-ci",
-        target_url: "https://example.com",
-        commit_id: commit.id,
-        stack_id: commit.stack_id,
-        created_at: Time.now,
-        updated_at: Time.now,
-      )
+      if (i % 4) != 0
+        Status.create!(
+          state: %w(pending success error failure).sample,
+          context: 'ci/travis',
+          description: "Your tests ran on travis-ci",
+          target_url: "https://example.com",
+          commit_id: commit.id,
+          stack_id: commit.stack_id,
+          created_at: Time.now,
+          updated_at: Time.now,
+        )
+      end
 
       if (i % 5) == 0
         Status.create!(

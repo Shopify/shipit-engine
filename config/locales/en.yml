@@ -43,9 +43,7 @@ en:
       rollback: Impossible to detect how to rollback this application. Please define `rollback.override` in your shipit.yml
       fetch: Impossible to detect how to fetch the deployed revision for this application. Please define `fetch` in your shipit.yml
   missing_status:
-    description:
-      one: "%{missing_statuses} is required for deploy but was not sent"
-      other: "%{missing_statuses} are required for deploy but were not sent"
+    description: "%{context} is required for deploy but was not sent yet."
   deploys:
     description: "deploy of %{sha}"
   rollbacks:
