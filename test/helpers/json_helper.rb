@@ -4,7 +4,11 @@ module JSONHelper
     if block_given?
       yield value
     elsif args.size == 1
-      assert_equal args.first, value
+      if args.first == nil
+        assert_nil value
+      else
+        assert_equal args.first, value
+      end
     else
       raise ArgumentError, "Missing either expected_value or a block"
     end
