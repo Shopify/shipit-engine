@@ -1,5 +1,6 @@
 module Shipit
   class PullRequest < ApplicationRecord
+    WAITING_STATUSES = %w(fetching pending).freeze
     InvalidTransition = Class.new(StandardError)
 
     class StatusChecker < Status::Group
@@ -35,6 +36,7 @@ module Shipit
 
     validates :number, presence: true, uniqueness: {scope: :stack_id}
 
+    scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { where(merge_status: 'pending') }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
 
@@ -54,7 +56,7 @@ module Shipit
       end
 
       event :cancel do
-        transition pending: :canceled
+        transition %i(fetching pending) => :canceled
       end
 
       event :complete do
@@ -81,7 +83,7 @@ module Shipit
       pull_request = begin
         create_with(
           merge_requested_at: now,
-          merge_requested_by: user,
+          merge_requested_by: user.presence,
         ).find_or_create_by!(
           stack: stack,
           number: number,
@@ -89,7 +91,8 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-      pull_request.update!(merge_requested_at: now, merge_requested_by: user)
+      pull_request.update!(merge_requested_at: now, merge_requested_by: user.presence)
+      pull_request.retry! if pull_request.rejected? || pull_request.canceled?
       pull_request.schedule_refresh!
       pull_request
     end
@@ -130,6 +133,10 @@ module Shipit
 
     def all_status_checks_passed?
       StatusChecker.new(head, head.statuses, stack.cached_deploy_spec).success?
+    end
+
+    def waiting?
+      WAITING_STATUSES.include?(merge_status)
     end
 
     def merge_conflict?

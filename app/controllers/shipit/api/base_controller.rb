@@ -25,9 +25,13 @@ module Shipit
       private
 
       def authenticate_api_client
-        @current_api_client = authenticate_with_http_basic do |*parts|
-          token = parts.select(&:present?).join('--')
-          ApiClient.authenticate(token)
+        @current_api_client = if Shipit.disable_api_authentication
+          UnlimitedApiClient.new
+        else
+          authenticate_with_http_basic do |*parts|
+            token = parts.select(&:present?).join('--')
+            ApiClient.authenticate(token)
+          end
         end
         return if @current_api_client
         headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'

@@ -56,6 +56,8 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
+  attr_accessor :disable_api_authentication
+
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end

@@ -1,5 +1,9 @@
 module Shipit
   class AnonymousUser
+    def present?
+      false
+    end
+
     def email
       'anonymous@example.com'
     end
