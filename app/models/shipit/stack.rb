@@ -182,7 +182,7 @@ module Shipit
     def merge_status
       return 'locked' if locked?
       return 'failure' if %w(failure error).freeze.include?(branch_status)
-      if undeployed_commits_count > maximum_commits_per_deploy * 1.5
+      if maximum_commits_per_deploy && (undeployed_commits_count > maximum_commits_per_deploy * 1.5)
         'backlogged'
       else
         'success'
