@@ -90,3 +90,11 @@ cyclimse_success_travis:
   state: success
   target_url: "http://www.example.com"
 
+shipit_pending_pr_success_travis:
+  stack: shipit
+  commit_id: 8 # shipit_pending_pr_head
+  description: Super feature
+  context: ci/travis
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"

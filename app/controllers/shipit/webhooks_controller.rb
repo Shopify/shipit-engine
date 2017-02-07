@@ -27,8 +27,7 @@ module Shipit
       end
     end
     def state
-      if params.branches.map(&:name).include?(stack.branch)
-        commit = stack.commits.find_by_sha!(params.sha)
+      if commit = stack.commits.find_by_sha(params.sha)
         commit.create_status_from_github!(params)
       end
       head :ok

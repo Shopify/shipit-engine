@@ -24,6 +24,7 @@ module Shipit
     REQUIRED_HOOKS = %i(push status).freeze
 
     has_many :commits, dependent: :destroy
+    has_many :pull_requests, dependent: :destroy
     has_many :tasks, dependent: :destroy
     has_many :deploys
     has_many :rollbacks
@@ -179,17 +180,21 @@ module Shipit
     end
 
     def merge_status
-      if locked?
-        'locked'
+      return 'locked' if locked?
+      return 'failure' if %w(failure error).freeze.include?(branch_status)
+      if undeployed_commits_count > maximum_commits_per_deploy * 1.5
+        'backlogged'
       else
-        last_commits = undeployed_commits
-        last_commits << last_deployed_commit unless last_deployed_commit.blank?
-        last_commits.each do |commit|
-          status = commit.status
-          return status.simple_state unless status.pending? || status.unknown?
-        end
-        'pending'
+        'success'
       end
+    end
+
+    def branch_status
+      undeployed_commits.each do |commit|
+        state = commit.status.simple_state
+        return state unless %w(pending unknown missing).freeze.include?(state)
+      end
+      'pending'
     end
 
     def status
@@ -221,6 +226,10 @@ module Shipit
 
     def deployable?
       !locked? && !active_task?
+    end
+
+    def allows_merges?
+      !locked? && merge_status == 'success'
     end
 
     def repo_name=(name)

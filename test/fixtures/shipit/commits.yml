@@ -88,3 +88,17 @@ undeployed_stack_first:
   additions: 1
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+shipit_pending_pr_head:
+  id: 8
+  sha: 424278037b872fd9a6690523e411ecb3aa181355
+  message: "Super feature"
+  stack: shipit
+  author: walrus
+  committer: walrus
+  authored_at: <%= 10.days.ago.to_s(:db) %>
+  committed_at: <%= 9.days.ago.to_s(:db) %>
+  additions: 42
+  deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  detached: true

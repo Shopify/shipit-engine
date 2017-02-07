@@ -9,7 +9,7 @@ module Shipit
       end
 
       test "#index returns a list of commits" do
-        commit = @stack.commits.last
+        commit = @stack.commits.reachable.last
 
         get :index, params: {stack_id: @stack.to_param}
         assert_response :ok

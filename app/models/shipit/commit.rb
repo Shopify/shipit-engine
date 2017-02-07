@@ -74,8 +74,10 @@ module Shipit
       super
     end
 
-    def self.create_from_github!(commit)
-      from_github(commit).save!
+    def self.create_from_github!(commit, extra_attributes = {})
+      record = from_github(commit)
+      record.update!(extra_attributes)
+      record
     end
 
     def schedule_refresh_statuses!

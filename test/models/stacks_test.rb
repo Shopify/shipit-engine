@@ -216,7 +216,7 @@ module Shipit
     end
 
     test "#destroy also destroy associated Commits" do
-      assert_difference -> { Commit.count }, -5 do
+      assert_difference -> { Commit.count }, -shipit_stacks(:shipit).commits.count do
         shipit_stacks(:shipit).destroy
       end
     end
@@ -258,19 +258,33 @@ module Shipit
       end
     end
 
-    test "#deployable? returns true if stack is not locked and is not deploying" do
+    test "#deployable? returns true if the stack is not locked and is not deploying" do
       @stack.deploys.destroy_all
-      assert @stack.deployable?
+      assert_predicate @stack, :deployable?
     end
 
-    test "#deployable? returns false if stack is locked" do
+    test "#deployable? returns false if the stack is locked" do
       @stack.update!(lock_reason: 'Maintenance operation')
-      refute @stack.deployable?
+      refute_predicate @stack, :deployable?
     end
 
-    test "#deployable? returns false if stack is deploying" do
+    test "#deployable? returns false if the stack is deploying" do
       @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new)
-      refute @stack.deployable?
+      refute_predicate @stack, :deployable?
+    end
+
+    test "#allows_merges? returns true if the stack is not locked and the branch is green" do
+      assert_predicate @stack, :allows_merges?
+    end
+
+    test "#allows_merges? returns false if the stack is locked" do
+      @stack.update!(lock_reason: 'Maintenance operation')
+      refute_predicate @stack, :allows_merges?
+    end
+
+    test "#allows_merges? returns false if the branch is failing" do
+      @stack.undeployed_commits.last.statuses.create!(context: 'ci/travis', state: 'failure', stack: @stack)
+      refute_predicate @stack, :allows_merges?
     end
 
     test "#monitoring is empty if cached_deploy_spec is blank" do
@@ -377,42 +391,26 @@ module Shipit
       assert_equal 'success', @stack.merge_status
     end
 
-    test "#merge_status returns pending if all undeployed commits and last deployed commit are in pending or unknown state" do
+    test "#merge_status returns success if all undeployed commits and last deployed commit are in pending or unknown state" do
       shipit_commits(:fifth).statuses.destroy_all
       shipit_commits(:fourth).statuses.update_all(state: 'pending')
       shipit_commits(:third).statuses.update_all(state: 'pending')
       @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:third))
 
-      assert_equal 'pending', @stack.merge_status
+      assert_equal 'success', @stack.merge_status
     end
 
-    test "#merge_status returns pending if there are no undeployed commits and no deployed commits" do
+    test "#merge_status returns success if there are no undeployed commits and no deployed commits" do
       @stack.deploys_and_rollbacks.last.update(status: 'success', until_commit: shipit_commits(:fifth))
 
-      assert_equal 'pending', @stack.merge_status
+      assert_equal 'success', @stack.merge_status
     end
 
-    test "#merge_status returns state of last deployed commit if there are no undeployed commits waiting" do
-      shipit_commits(:fifth).statuses.destroy_all
-      @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:fourth))
-
-      shipit_commits(:fourth).statuses.update_all(state: 'success')
-      assert_equal 'success', @stack.merge_status
-
-      shipit_commits(:fourth).statuses.last.update(state: 'failure')
-      assert_equal 'failure', @stack.merge_status
-    end
-
-    test "#merge_status returns state of last deployed commit if all undeployed commits are in pending or unknown state" do
-      shipit_commits(:fifth).statuses.destroy_all
-      shipit_commits(:fourth).statuses.update_all(state: 'pending')
-      @stack.deploys_and_rollbacks.last.update!(status: 'success', until_commit: shipit_commits(:third))
-
-      shipit_commits(:third).statuses.update_all(state: 'success')
-      assert_equal 'success', @stack.merge_status
-
-      shipit_commits(:third).statuses.last.update(state: 'failure')
-      assert_equal 'failure', @stack.merge_status
+    test "#merge_status returns backlogged if there are too many undeployed commits" do
+      @stack.deploys_and_rollbacks.destroy_all
+      @stack.update_undeployed_commits_count
+      @stack.reload
+      assert_equal 'backlogged', @stack.merge_status
     end
 
     test "#handle_github_redirections update the stack if the repository was renamed" do
@@ -527,11 +525,11 @@ module Shipit
     test "#next_commit_to_deploy respects the deploy.max_commits directive" do
       @stack.tasks.destroy_all
 
-      fifth_commit = shipit_commits(:fifth)
+      fifth_commit = shipit_commits(:third)
       fifth_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
       assert_predicate fifth_commit, :deployable?
 
-      assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
 
       @stack.expects(:maximum_commits_per_deploy).returns(3).at_least_once
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy

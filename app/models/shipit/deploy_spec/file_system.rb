@@ -30,6 +30,10 @@ module Shipit
       def cacheable_config
         (config || {}).deep_merge(
           'ci' => {
+            'pr' => {
+              'require' => pull_request_required_statuses,
+              'ignore' => pull_request_ignored_statuses,
+            },
             'hide' => hidden_statuses,
             'allow_failures' => soft_failing_statuses,
             'require' => required_statuses,

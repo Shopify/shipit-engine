@@ -64,7 +64,7 @@ module Shipit
     alias_method :dependencies_steps!, :dependencies_steps
 
     def maximum_commits_per_deploy
-      config('deploy', 'max_commits')
+      config('deploy', 'max_commits') { 8 }
     end
 
     def pause_between_deploys
@@ -141,6 +141,22 @@ module Shipit
 
     def soft_failing_statuses
       Array.wrap(config('ci', 'allow_failures'))
+    end
+
+    def pull_request_required_statuses
+      if config('ci', 'pr')
+        Array.wrap(config('ci', 'pr', 'require'))
+      else
+        required_statuses
+      end
+    end
+
+    def pull_request_ignored_statuses
+      if config('ci', 'pr')
+        Array.wrap(config('ci', 'pr', 'ignore'))
+      else
+        soft_failing_statuses | hidden_statuses
+      end
     end
 
     def review_checks

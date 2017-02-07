@@ -6,7 +6,7 @@ module Shipit
       return if stack.inaccessible?
 
       commands = Commands.for(stack)
-      commands.with_temporary_working_directory(commit: stack.commits.last) do |path|
+      commands.with_temporary_working_directory(commit: stack.commits.reachable.last) do |path|
         stack.update!(cached_deploy_spec: DeploySpec::FileSystem.new(path, stack.environment))
       end
     end
