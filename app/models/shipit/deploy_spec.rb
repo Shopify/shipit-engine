@@ -64,7 +64,7 @@ module Shipit
     alias_method :dependencies_steps!, :dependencies_steps
 
     def maximum_commits_per_deploy
-      config('deploy', 'max_commits')
+      config('deploy', 'max_commits') { 8 }
     end
 
     def pause_between_deploys

@@ -98,4 +98,3 @@ shipit_pending_pr_success_travis:
   created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
-  
