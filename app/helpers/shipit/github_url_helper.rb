@@ -40,8 +40,14 @@ module Shipit
       github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'commit', commit.sha)
     end
 
-    def github_pull_request_url(commit)
-      github_repo_url(commit.stack.repo_owner, commit.stack.repo_name, 'pull', commit.pull_request_number)
+    def github_pull_request_url(pull_request_or_commit)
+      stack = pull_request_or_commit.stack
+      number = if pull_request_or_commit.respond_to?(:pull_request_number)
+        pull_request_or_commit.pull_request_number
+      else
+        pull_request_or_commit.number
+      end
+      github_repo_url(stack.repo_owner, stack.repo_name, 'pull', number)
     end
 
     def link_to_github_deploy(deploy)

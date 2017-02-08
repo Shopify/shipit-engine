@@ -40,6 +40,9 @@ module Shipit
     scope :pending, -> { where(merge_status: 'pending') }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
 
+    after_save :record_merge_status_change
+    after_commit :emit_hooks
+
     state_machine :merge_status, initial: :fetching do
       state :fetching
       state :pending
@@ -169,6 +172,16 @@ module Shipit
     end
 
     private
+
+    def record_merge_status_change
+      @merge_status_changed ||= merge_status_changed?
+    end
+
+    def emit_hooks
+      return unless @merge_status_changed
+      @merge_status_changed = nil
+      Hook.emit('merge', stack, pull_request: self, status: merge_status, stack: stack)
+    end
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)
       if commit = stack.commits.by_sha(sha)

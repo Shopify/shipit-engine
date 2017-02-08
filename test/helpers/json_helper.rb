@@ -1,23 +1,24 @@
 module JSONHelper
-  def assert_json(path = nil, *args)
-    value = follow_path(path.to_s.split('.'))
+  UNDEFINED = Object.new.freeze
+  private_constant :UNDEFINED
+
+  def assert_json(path = nil, expected_value = UNDEFINED, document: response.body)
+    value = follow_path(path.to_s.split('.'), document: document)
     if block_given?
       yield value
-    elsif args.size == 1
-      if args.first.nil?
-        assert_nil value
-      else
-        assert_equal args.first, value
-      end
-    else
+    elsif expected_value == UNDEFINED
       raise ArgumentError, "Missing either expected_value or a block"
+    elsif expected_value.nil?
+      assert_nil value
+    else
+      assert_equal expected_value, value
     end
   end
 
-  def assert_json_keys(path, keys = nil)
+  def assert_json_keys(path, keys = nil, document: response.body)
     keys, path = path, nil if keys.nil?
 
-    value = follow_path(path.to_s.split('.'))
+    value = follow_path(path.to_s.split('.'), document: document)
     case value
     when Hash
       assert_equal keys.sort, value.keys.sort
@@ -26,10 +27,10 @@ module JSONHelper
     end
   end
 
-  def assert_no_json(path)
+  def assert_no_json(path, document: response.body)
     segments = path.to_s.split('.')
     last_segment = segments.pop
-    leaf = follow_path(segments)
+    leaf = follow_path(segments, document: document)
     case leaf
     when Hash
       refute leaf.key?(last_segment), "Expected #{leaf.inspect} not to include #{last_segment.inspect}"
@@ -42,7 +43,8 @@ module JSONHelper
 
   private
 
-  def follow_path(segments)
+  def follow_path(segments, document:)
+    parsed_json = ActiveSupport::JSON.decode(document)
     segments.inject(parsed_json) do |object, key|
       case object
       when Hash
@@ -55,9 +57,5 @@ module JSONHelper
         assert false, "Expected #{object.inspect} to be a Hash or Array"
       end
     end
-  end
-
-  def parsed_json
-    @parsed_json ||= ActiveSupport::JSON.decode(response.body)
   end
 end

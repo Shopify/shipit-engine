@@ -119,5 +119,16 @@ module Shipit
       assert_predicate @pr, :rejected?
       assert_equal 'ci_failing', @pr.rejection_reason
     end
+
+    test "status transitions emit hooks" do
+      job = assert_enqueued_with(job: EmitEventJob) do
+        @pr.reject!('conflict')
+      end
+      params = job.arguments.first
+      assert_equal 'merge', params['event']
+      assert_json 'status', 'rejected', document: params['payload']
+      assert_json 'pull_request.rejection_reason', 'conflict', document: params['payload']
+      assert_json 'pull_request.number', @pr.number, document: params['payload']
+    end
   end
 end

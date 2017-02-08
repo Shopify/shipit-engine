@@ -16,6 +16,7 @@ module Shipit
       commit_status
       deployable_status
       merge_status
+      merge
     ).freeze
 
     belongs_to :stack, required: false
