@@ -33,7 +33,11 @@ module Shipit
     end
 
     def github_change_url(commit)
-      commit.pull_request_url || github_commit_url(commit)
+      if commit.pull_request?
+        github_pull_request_url(commit)
+      else
+        github_commit_url(commit)
+      end
     end
 
     def render_commit_message(commit)
@@ -54,7 +58,7 @@ module Shipit
     end
 
     def pull_request_link(commit)
-      link_to("##{commit.pull_request_number}", commit.pull_request_url, target: '_blank', class: 'number')
+      link_to("##{commit.pull_request_number}", github_pull_request_url(commit), target: '_blank', class: 'number')
     end
 
     def render_raw_commit_id_link(commit)

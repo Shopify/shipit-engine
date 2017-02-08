@@ -8,9 +8,11 @@ module Shipit
     has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy
     has_many :commit_deployments, dependent: :destroy
+    belongs_to :pull_request, inverse_of: :merge_commit
 
     deferred_touch stack: :updated_at
 
+    before_create :identify_pull_request
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
@@ -115,28 +117,20 @@ module Shipit
       children.detach!
     end
 
-    def pull_request_url
-      parsed && Shipit.github_url("/#{stack.repo_owner}/#{stack.repo_name}/pull/#{pull_request_number}")
-    end
-
-    def pull_request_number
-      parsed && parsed['pr_id'].to_i
-    end
-
-    def pull_request_title
-      parsed && parsed['pr_title']
-    end
-
     def pull_request?
-      !!parsed
+      pull_request_number.present?
+    end
+
+    def pull_request_number # TODO: remove in a few versions when it is assumed the commits table was backfilled
+      super || message_parser.pull_request_number
+    end
+
+    def pull_request_title # TODO: remove in a few versions when it is assumed the commits table was backfilled
+      super || message_parser.pull_request_title
     end
 
     def short_sha
       sha[0..9]
-    end
-
-    def parsed
-      @parsed ||= message.match(/\AMerge pull request #(?<pr_id>\d+) from [\w\-.\/]+\n\n(?<pr_title>.*)/)
     end
 
     def schedule_continuous_delivery
@@ -171,7 +165,23 @@ module Shipit
       stack.deploys.unsuccessful.where(until_commit_id: id).any?
     end
 
+    def identify_pull_request
+      return unless message_parser.pull_request?
+      if pull_request = stack.pull_requests.find_by_number(message_parser.pull_request_number)
+        self.pull_request = pull_request
+        self.pull_request_number = pull_request.number
+        self.pull_request_title = pull_request.title
+        self.author = pull_request.merge_requested_by if pull_request.merge_requested_by
+      end
+      self.pull_request_number ||= message_parser.pull_request_number
+      self.pull_request_title ||= message_parser.pull_request_title
+    end
+
     private
+
+    def message_parser
+      @message_parser ||= CommitMessage.new(message)
+    end
 
     def add_status
       previous_status = status

@@ -8,8 +8,10 @@ shipit_fetching:
 shipit_pending:
   stack: shipit
   number: 62
+  title: Super duper nice feature
   merge_status: pending
   merge_requested_at: <%= 5.minute.ago.to_s(:db) %>
+  merge_requested_by: walrus
   github_id: 42424424242424
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/62
   state: open
@@ -23,6 +25,7 @@ shipit_pending_unmergeable:
   number: 61
   merge_status: pending
   merge_requested_at: <%= 4.minute.ago.to_s(:db) %>
+  merge_requested_by: walrus
   github_id: 43434434343434
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/61
   state: open
@@ -35,6 +38,7 @@ shipit_pending_not_mergeable_yet:
   stack: shipit
   number: 64
   merge_status: pending
+  merge_requested_by: walrus
   merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
   github_id: 45454454545454
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/64

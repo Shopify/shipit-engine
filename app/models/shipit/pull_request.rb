@@ -33,6 +33,7 @@ module Shipit
     belongs_to :stack
     belongs_to :head, class_name: 'Shipit::Commit'
     belongs_to :merge_requested_by, class_name: 'Shipit::User'
+    has_one :merge_commit, class_name: 'Shipit::Commit'
 
     validates :number, presence: true, uniqueness: {scope: :stack_id}
 
@@ -120,7 +121,7 @@ module Shipit
       Shipit.github_api.merge_pull_request(
         stack.github_repo_name,
         number,
-        '',
+        merge_message,
         sha: head.sha,
         commit_message: 'Merged by Shipit',
         merge_method: 'merge',
@@ -169,6 +170,11 @@ module Shipit
       self.additions = github_pull_request.additions
       self.deletions = github_pull_request.deletions
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha, detached: true)
+    end
+
+    def merge_message
+      return title unless merge_requested_by
+      "#{title}\n\nMerge-Requested-By: #{merge_requested_by.login}\n"
     end
 
     private
