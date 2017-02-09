@@ -256,11 +256,11 @@ module Shipit
       assert_instance_of DeploySpec::FileSystem, @spec
       assert_instance_of DeploySpec, @spec.cacheable
       config = {
+        'merge' => {
+          'require' => [],
+          'ignore' => [],
+        },
         'ci' => {
-          'pr' => {
-            'require' => [],
-            'ignore' => [],
-          },
           'hide' => [],
           'allow_failures' => [],
           'require' => [],
@@ -398,10 +398,12 @@ module Shipit
       assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.pull_request_ignored_statuses.sort
     end
 
-    test "pull_request_ignored_statuses defaults to empty if `ci.pr` is present" do
+    test "pull_request_ignored_statuses defaults to empty if `ci.pr.require` is present" do
       @spec.expects(:load_config).returns(
+        'merge' => {
+          'require' => 'bar',
+        },
         'ci' => {
-          'pr' => {'foo' => 'bar'},
           'hide' => %w(ci/circleci ci/jenkins),
           'allow_failures' => %w(ci/circleci ci/travis),
         },
@@ -411,8 +413,10 @@ module Shipit
 
     test "pull_request_ignored_statuses returns `ci.pr.ignore` if present" do
       @spec.expects(:load_config).returns(
+        'merge' => {
+          'ignore' => 'bar',
+        },
         'ci' => {
-          'pr' => {'ignore' => 'bar'},
           'hide' => %w(ci/circleci ci/jenkins),
           'allow_failures' => %w(ci/circleci ci/travis),
         },
@@ -429,20 +433,24 @@ module Shipit
       assert_equal %w(ci/circleci ci/jenkins), @spec.pull_request_required_statuses
     end
 
-    test "pull_request_required_statuses defaults to empty if `ci.pr` is present" do
+    test "pull_request_required_statuses defaults to empty if `merge.ignore` is present" do
       @spec.expects(:load_config).returns(
+        'merge' => {
+          'ignore' => 'bar',
+        },
         'ci' => {
-          'pr' => {'foo' => 'bar'},
           'require' => %w(ci/circleci ci/jenkins),
         },
       )
       assert_equal [], @spec.pull_request_required_statuses
     end
 
-    test "pull_request_required_statuses returns `ci.pr.require` if present" do
+    test "pull_request_required_statuses returns `merge.require` if present" do
       @spec.expects(:load_config).returns(
+        'merge' => {
+          'require' => 'bar',
+        },
         'ci' => {
-          'pr' => {'require' => 'bar'},
           'hide' => %w(ci/circleci ci/jenkins),
           'allow_failures' => %w(ci/circleci ci/travis),
         },
