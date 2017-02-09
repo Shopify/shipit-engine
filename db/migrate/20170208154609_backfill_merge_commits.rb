@@ -1,11 +1,13 @@
 class BackfillMergeCommits < ActiveRecord::Migration[5.0]
   def change
-    Shipit::Commit.find_in_batches do |commits|
-      commits.each do |commit|
-        commit.identify_pull_request
-        commit.save!
+    ActiveRecord::Base.no_touching do
+      Shipit::Commit.find_in_batches do |commits|
+        commits.each do |commit|
+          commit.identify_pull_request
+          commit.save!
+        end
+        print '.'
       end
-      print '.'
     end
   end
 end

@@ -77,7 +77,12 @@ module Shipit
 
     def schedule_touches
       return unless self.class.deferred_touches
-      touches = self.class.deferred_touches.map { |m, fk, a| [m, self[fk], a].join('|') }
+      deferred_touches = self.class.deferred_touches.reject do |m, _fk, _a|
+        ActiveRecord::NoTouching.applied_to?(m.constantize)
+      end
+      return if deferred_touches.empty?
+
+      touches = deferred_touches.map { |m, fk, a| [m, self[fk], a].join('|') }
       Shipit.redis.sadd(SET_KEY, touches)
       if DeferredTouch.enabled
         Rails.cache.fetch(CACHE_KEY, expires_in: THROTTLE_TTL) do
