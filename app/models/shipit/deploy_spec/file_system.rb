@@ -2,11 +2,11 @@ module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
       include NpmDiscovery
-      include KubernetesDiscovery
       include PypiDiscovery
       include RubygemsDiscovery
       include CapistranoDiscovery
       include BundlerDiscovery
+      include KubernetesDiscovery
 
       def initialize(app_dir, env)
         @app_dir = Pathname(app_dir)
