@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130113633) do
+ActiveRecord::Schema.define(version: 20170208154609) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -44,18 +44,21 @@ ActiveRecord::Schema.define(version: 20170130113633) do
   end
 
   create_table "commits", force: :cascade do |t|
-    t.integer  "stack_id",     limit: 4,                     null: false
-    t.integer  "author_id",    limit: 4,                     null: false
-    t.integer  "committer_id", limit: 4,                     null: false
-    t.string   "sha",          limit: 40,                    null: false
-    t.text     "message",      limit: 65535,                 null: false
+    t.integer  "stack_id",            limit: 4,                     null: false
+    t.integer  "author_id",           limit: 4,                     null: false
+    t.integer  "committer_id",        limit: 4,                     null: false
+    t.string   "sha",                 limit: 40,                    null: false
+    t.text     "message",             limit: 65535,                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "detached",                   default: false, null: false
-    t.datetime "authored_at",                                null: false
-    t.datetime "committed_at",                               null: false
-    t.integer  "additions",    limit: 4
-    t.integer  "deletions",    limit: 4
+    t.boolean  "detached",                          default: false, null: false
+    t.datetime "authored_at",                                       null: false
+    t.datetime "committed_at",                                      null: false
+    t.integer  "additions",           limit: 4
+    t.integer  "deletions",           limit: 4
+    t.integer  "pull_request_number"
+    t.string   "pull_request_title",  limit: 1024
+    t.integer  "pull_request_id"
     t.index ["author_id"], name: "index_commits_on_author_id"
     t.index ["committer_id"], name: "index_commits_on_committer_id"
     t.index ["created_at"], name: "index_commits_on_created_at"

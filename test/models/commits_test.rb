@@ -30,11 +30,6 @@ module Shipit
       assert_nil @commit.pull_request_title
     end
 
-    test "#pull_request_url build the pull request url from the message" do
-      assert_equal 'https://github.com/shopify/shipit-engine/pull/31', @pr.pull_request_url
-      assert_nil @commit.pull_request_url
-    end
-
     test "#newer_than(nil) returns all commits" do
       assert_equal @stack.commits.all.to_a, @stack.commits.newer_than(nil).to_a
     end
@@ -386,6 +381,68 @@ module Shipit
 
       commit.reload.statuses = []
       assert_equal 'unknown', commit.status.state
+    end
+
+    test "merge commits are linked to the matching Pull Request if there is one" do
+      commit = @stack.commits.create!(
+        author: shipit_users(:shipit),
+        authored_at: Time.now,
+        committer: shipit_users(:shipit),
+        committed_at: Time.now,
+        sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
+        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+      )
+      pull_request = shipit_pull_requests(:shipit_pending)
+
+      assert_predicate commit, :pull_request?
+      assert_equal 62, commit.pull_request_number
+      assert_equal pull_request.title, commit.pull_request_title
+      assert_equal pull_request, commit.pull_request
+    end
+
+    test "merge commits infer pull request number and title from the message if it's not a known pull request" do
+      commit = @stack.commits.create!(
+        author: shipit_users(:shipit),
+        authored_at: Time.now,
+        committer: shipit_users(:shipit),
+        committed_at: Time.now,
+        sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
+        message: "Merge pull request #99 from shipit-engine/yoloshipit\n\nyoloshipit!",
+      )
+
+      assert_predicate commit, :pull_request?
+      assert_equal 99, commit.pull_request_number
+      assert_equal 'yoloshipit!', commit.pull_request_title
+      assert_nil commit.pull_request
+    end
+
+    test "the merge requester if known overrides the commit author" do
+      commit = @stack.commits.create!(
+        author: shipit_users(:shipit),
+        authored_at: Time.now,
+        committer: shipit_users(:shipit),
+        committed_at: Time.now,
+        sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
+        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+      )
+
+      assert_equal shipit_users(:walrus), commit.author
+    end
+
+    test "#pull_request_number and #pull_request_title are nil if the message is not a merge commit message" do
+      commit = @stack.commits.create!(
+        author: shipit_users(:shipit),
+        authored_at: Time.now,
+        committer: shipit_users(:shipit),
+        committed_at: Time.now,
+        sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
+        message: "Yoloshipit!",
+      )
+
+      refute_predicate commit, :pull_request?
+      assert_nil commit.pull_request_number
+      assert_nil commit.pull_request_title
+      assert_nil commit.pull_request
     end
 
     private
