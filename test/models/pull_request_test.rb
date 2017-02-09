@@ -83,13 +83,13 @@ module Shipit
     end
 
     test "#reject! records the reason" do
-      @pr.reject!('conflict')
-      assert_equal 'conflict', @pr.rejection_reason
+      @pr.reject!('merge_conflict')
+      assert_equal 'merge_conflict', @pr.rejection_reason
     end
 
     test "transitionning from rejected to any other state clear the rejection reason" do
-      @pr.reject!('conflict')
-      assert_equal 'conflict', @pr.rejection_reason
+      @pr.reject!('merge_conflict')
+      assert_equal 'merge_conflict', @pr.rejection_reason
       @pr.retry!
       assert_nil @pr.rejection_reason
       assert_nil @pr.reload.rejection_reason
@@ -120,14 +120,23 @@ module Shipit
       assert_equal 'ci_failing', @pr.rejection_reason
     end
 
+    test "#reject_unless_mergeable! rejects the PR if it has been enqueued for too ling" do
+      @pr.update!(merge_requested_at: 5.hours.ago)
+
+      assert_predicate @pr, :timedout?
+      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :rejected?
+      assert_equal 'timedout', @pr.rejection_reason
+    end
+
     test "status transitions emit hooks" do
       job = assert_enqueued_with(job: EmitEventJob) do
-        @pr.reject!('conflict')
+        @pr.reject!('merge_conflict')
       end
       params = job.arguments.first
       assert_equal 'merge', params['event']
       assert_json 'status', 'rejected', document: params['payload']
-      assert_json 'pull_request.rejection_reason', 'conflict', document: params['payload']
+      assert_json 'pull_request.rejection_reason', 'merge_conflict', document: params['payload']
       assert_json 'pull_request.number', @pr.number, document: params['payload']
     end
   end

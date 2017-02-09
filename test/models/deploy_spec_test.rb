@@ -259,6 +259,7 @@ module Shipit
         'merge' => {
           'require' => [],
           'ignore' => [],
+          'timeout' => 3600,
         },
         'ci' => {
           'hide' => [],
@@ -398,7 +399,7 @@ module Shipit
       assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.pull_request_ignored_statuses.sort
     end
 
-    test "pull_request_ignored_statuses defaults to empty if `ci.pr.require` is present" do
+    test "pull_request_ignored_statuses defaults to empty if `merge.require` is present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'require' => 'bar',
@@ -411,7 +412,7 @@ module Shipit
       assert_equal [], @spec.pull_request_ignored_statuses
     end
 
-    test "pull_request_ignored_statuses returns `ci.pr.ignore` if present" do
+    test "pull_request_ignored_statuses returns `merge.ignore` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'ignore' => 'bar',
@@ -456,6 +457,29 @@ module Shipit
         },
       )
       assert_equal ['bar'], @spec.pull_request_required_statuses
+    end
+
+    test "pull_request_timeout defaults to 1 hour" do
+      @spec.expects(:load_config).returns({})
+      assert_equal 3600, @spec.pull_request_timeout.to_i
+    end
+
+    test "pull_request_timeout defaults to 1 hour if `merge.timeout` cannot be parsed" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'timeout' => 'ALSKhfjsdkf',
+        },
+      )
+      assert_equal 3600, @spec.pull_request_timeout.to_i
+    end
+
+    test "pull_request_timeout returns `merge.timeout` if present" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'timeout' => '5m30s',
+        },
+      )
+      assert_equal 330, @spec.pull_request_timeout.to_i
     end
 
     test "#file is impacted by `machine.directory`" do

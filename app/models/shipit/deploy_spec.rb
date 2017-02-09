@@ -159,6 +159,12 @@ module Shipit
       end
     end
 
+    def pull_request_timeout
+      Duration.parse(config('merge', 'timeout') { '1h' })
+    rescue Duration::ParseError
+      Duration.parse('1h')
+    end
+
     def review_checks
       config('review', 'checks') || []
     end
