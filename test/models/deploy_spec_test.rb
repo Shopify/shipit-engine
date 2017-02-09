@@ -126,6 +126,18 @@ module Shipit
       assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps
     end
 
+    test "#deploy_steps returns kubernetes-deploy command if both capfile and `kubernetes` are present" do
+      @spec.stubs(:bundler?).returns(true)
+      @spec.stubs(:capistrano?).returns(true)
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps
+    end
+
     test "#deploy_steps returns kubernetes command if `kubernetes` is present and template_dir is set" do
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
@@ -170,6 +182,18 @@ module Shipit
     end
 
     test "#rollback_steps returns `kubernetes-deploy <namespace> <context>` if `kubernetes` is present" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      assert_equal ["kubernetes-deploy foo bar"], @spec.rollback_steps
+    end
+
+    test "#rollback_steps returns kubernetes-deploy command when both capfile and `kubernetes` are present" do
+      @spec.stubs(:bundler?).returns(true)
+      @spec.stubs(:capistrano?).returns(true)
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
