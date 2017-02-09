@@ -18,6 +18,8 @@ module Shipit
         merged: true,
         message: "Pull Request successfully merged",
       }.to_json)
+      branch_url = "https://api.github.com/repos/shopify/shipit-engine/git/refs/heads/feature-62"
+      FakeWeb.register_uri(:delete, branch_url, status: %w(204 No content))
 
       @job.perform(@stack)
 

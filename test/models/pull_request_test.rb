@@ -36,6 +36,7 @@ module Shipit
           additions: 24,
           deletions: 5,
           head: stub(
+            ref: 'super-branch',
             sha: head_sha,
           ),
         ),
@@ -76,6 +77,7 @@ module Shipit
 
       assert_predicate pull_request, :mergeable?
       assert_predicate pull_request, :pending?
+      assert_equal 'super-branch', pull_request.branch
 
       assert_not_nil pull_request.head
       assert_predicate pull_request.head, :detached?
