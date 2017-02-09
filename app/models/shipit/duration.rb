@@ -1,5 +1,7 @@
 module Shipit
   class Duration < ActiveSupport::Duration
+    ParseError = Class.new(ArgumentError)
+
     FORMAT = /
       \A
       (?<days>\d+d)?
@@ -18,7 +20,7 @@ module Shipit
     class << self
       def parse(value)
         unless match = FORMAT.match(value.to_s)
-          raise ArgumentError, "not a duration: #{value.inspect}"
+          raise ParseError, "not a duration: #{value.inspect}"
         end
         parts = []
         UNITS.values.each do |unit|

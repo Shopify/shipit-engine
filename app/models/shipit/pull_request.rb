@@ -1,6 +1,7 @@
 module Shipit
   class PullRequest < ApplicationRecord
     WAITING_STATUSES = %w(fetching pending).freeze
+    REJECTION_REASONS = %w(ci_failing merge_conflict timedout).freeze
     InvalidTransition = Class.new(StandardError)
 
     class StatusChecker < Status::Group
@@ -100,6 +101,9 @@ module Shipit
     end
 
     def reject!(reason)
+      unless REJECTION_REASONS.include?(reason)
+        raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"
+      end
       self.rejection_reason = reason.presence
       super()
       true
@@ -108,6 +112,7 @@ module Shipit
     def reject_unless_mergeable!
       return reject!('merge_conflict') if merge_conflict?
       return reject!('ci_failing') unless all_status_checks_passed?
+      return reject!('timedout') if timedout?
       false
     end
 
@@ -139,6 +144,12 @@ module Shipit
 
     def waiting?
       WAITING_STATUSES.include?(merge_status)
+    end
+
+    def timedout?
+      timeout = stack.cached_deploy_spec.try!(:pull_request_timeout)
+      return false unless timeout
+      (merge_requested_at + timeout).past?
     end
 
     def merge_conflict?
