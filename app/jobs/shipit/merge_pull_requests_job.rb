@@ -1,6 +1,7 @@
 module Shipit
   class MergePullRequestsJob < BackgroundJob
     include BackgroundJob::Unique
+    on_duplicate :drop
 
     def perform(stack)
       pull_requests = stack.pull_requests.to_be_merged.to_a
