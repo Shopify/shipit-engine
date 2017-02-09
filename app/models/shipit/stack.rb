@@ -139,6 +139,10 @@ module Shipit
       trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
     end
 
+    def schedule_merges
+      MergePullRequestsJob.perform_later(self)
+    end
+
     def next_commit_to_deploy
       commits_to_deploy = commits.order(id: :asc).newer_than(last_deployed_commit).reachable.preload(:statuses)
       commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy

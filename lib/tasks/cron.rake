@@ -4,6 +4,7 @@ namespace :cron do
     Shipit::Stack.refresh_deployed_revisions
     Shipit::Stack.schedule_continuous_delivery
     Shipit::GithubStatus.refresh_status
+    Shipit::PullRequest.schedule_merges
   end
 
   task hourly: [:rollup, :purge_deliveries, :refresh_users]

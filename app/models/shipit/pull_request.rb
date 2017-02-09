@@ -77,9 +77,7 @@ module Shipit
     end
 
     def self.schedule_merges
-      Shipit::Stack.where(id: pending.uniq.pluck(:stack_id)).find_each do |stack|
-        MergePullRequestsJob.perform_later(stack)
-      end
+      Shipit::Stack.where(id: pending.uniq.pluck(:stack_id)).find_each(&:schedule_merges)
     end
 
     def self.request_merge!(stack, number, user)
