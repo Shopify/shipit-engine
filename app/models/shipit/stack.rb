@@ -51,6 +51,7 @@ module Shipit
     after_commit :broadcast_update, on: :update
     after_commit :emit_merge_status_hooks, on: :update
     after_commit :setup_hooks, :sync_github, on: :create
+    after_commit :schedule_merges_if_necessary, on: :update
 
     validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
                                        message: 'cannot be used more than once with this environment'}
@@ -448,6 +449,12 @@ module Shipit
     def update_defaults
       self.environment = 'production' if environment.blank?
       self.branch = 'master' if branch.blank?
+    end
+
+    def schedule_merges_if_necessary
+      if previous_changes.include?('lock_reason') && previous_changes['lock_reason'].last.blank?
+        schedule_merges
+      end
     end
 
     def emit_lock_hooks

@@ -225,6 +225,13 @@ module Shipit
       end
     end
 
+    test "transitioning to success schedule a MergePullRequests job" do
+      @deploy = shipit_deploys(:shipit_running)
+      assert_enqueued_with(job: MergePullRequestsJob, args: [@deploy.stack]) do
+        @deploy.complete!
+      end
+    end
+
     test "transitioning to success schedule a fetch of the deployed revision" do
       @deploy = shipit_deploys(:shipit_running)
       assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do

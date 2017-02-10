@@ -327,6 +327,16 @@ module Shipit
       end
     end
 
+    test "unlocking the stack triggers a MergePullRequests job" do
+      assert_no_enqueued_jobs(only: MergePullRequestsJob) do
+        @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
+      end
+
+      assert_enqueued_with(job: MergePullRequestsJob, args: [@stack]) do
+        @stack.update(lock_reason: nil)
+      end
+    end
+
     test "the git cache lock prevent concurrent access to the git cache" do
       @stack.acquire_git_cache_lock do
         assert_raises Redis::Lock::LockTimeout do

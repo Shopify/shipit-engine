@@ -357,6 +357,22 @@ module Shipit
       end
     end
 
+    test "#add_status schedule a MergePullRequests job if the commit transition to `pending` or `success`" do
+      commit = shipit_commits(:second)
+      github_status = OpenStruct.new(
+        state: 'success',
+        description: 'Cool',
+        context: 'metrics/coveralls',
+        created_at: 1.day.ago.to_s(:db),
+      )
+
+      assert_equal 'failure', commit.state
+      assert_enqueued_with(job: MergePullRequestsJob, args: [@commit.stack]) do
+        commit.create_status_from_github!(github_status)
+        assert_equal 'success', commit.state
+      end
+    end
+
     test "#status hierarchy uses failures and errors, then pending, then successes, then Status::Unknown" do
       commit = shipit_commits(:first)
       pending = commit.statuses.new(stack_id: @stack.id, state: 'pending', context: 'ci/pending')
