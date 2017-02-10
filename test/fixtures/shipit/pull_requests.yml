@@ -15,6 +15,7 @@ shipit_pending:
   github_id: 42424424242424
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/62
   state: open
+  branch: feature-62
   head_id: 8
   mergeable: true
   additions: 23
@@ -29,6 +30,7 @@ shipit_pending_unmergeable:
   github_id: 43434434343434
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/61
   state: open
+  branch: feature-61
   head_id: 8
   mergeable: false
   additions: 23
@@ -43,6 +45,7 @@ shipit_pending_not_mergeable_yet:
   github_id: 45454454545454
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/64
   state: open
+  branch: feature-64
   head_id: 8
   mergeable: null
   additions: 23

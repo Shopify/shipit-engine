@@ -129,6 +129,11 @@ module Shipit
         commit_message: 'Merged by Shipit',
         merge_method: 'merge',
       )
+      begin
+        Shipit.github_api.delete_branch(stack.github_repo_name, branch)
+      rescue Octokit::UnprocessableEntity
+        # branch was already deleted somehow
+      end
       complete!
       return true
     rescue Octokit::MethodNotAllowed # merge conflict
@@ -178,6 +183,7 @@ module Shipit
       self.mergeable = github_pull_request.mergeable
       self.additions = github_pull_request.additions
       self.deletions = github_pull_request.deletions
+      self.branch = github_pull_request.head.ref
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha, detached: true)
     end
 
