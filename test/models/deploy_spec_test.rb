@@ -283,7 +283,7 @@ module Shipit
         'merge' => {
           'require' => [],
           'ignore' => [],
-          'timeout' => 3600,
+          'revalidate_after' => nil,
         },
         'ci' => {
           'hide' => [],
@@ -483,27 +483,27 @@ module Shipit
       assert_equal ['bar'], @spec.pull_request_required_statuses
     end
 
-    test "pull_request_timeout defaults to 1 hour" do
+    test "revalidate_pull_requests_after defaults to `nil" do
       @spec.expects(:load_config).returns({})
-      assert_equal 3600, @spec.pull_request_timeout.to_i
+      assert_nil @spec.revalidate_pull_requests_after
     end
 
-    test "pull_request_timeout defaults to 1 hour if `merge.timeout` cannot be parsed" do
+    test "revalidate_pull_requests_after defaults to `nil` if `merge.timeout` cannot be parsed" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'timeout' => 'ALSKhfjsdkf',
+          'revalidate_after' => 'ALSKhfjsdkf',
         },
       )
-      assert_equal 3600, @spec.pull_request_timeout.to_i
+      assert_nil @spec.revalidate_pull_requests_after
     end
 
-    test "pull_request_timeout returns `merge.timeout` if present" do
+    test "revalidate_after returns `merge.revalidate_after` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'timeout' => '5m30s',
+          'revalidate_after' => '5m30s',
         },
       )
-      assert_equal 330, @spec.pull_request_timeout.to_i
+      assert_equal 330, @spec.revalidate_pull_requests_after.to_i
     end
 
     test "#file is impacted by `machine.directory`" do

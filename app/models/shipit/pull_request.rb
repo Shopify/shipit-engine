@@ -1,7 +1,7 @@
 module Shipit
   class PullRequest < ApplicationRecord
     WAITING_STATUSES = %w(fetching pending).freeze
-    REJECTION_REASONS = %w(ci_failing merge_conflict timedout).freeze
+    REJECTION_REASONS = %w(ci_failing merge_conflict expired).freeze
     InvalidTransition = Class.new(StandardError)
 
     class StatusChecker < Status::Group
@@ -112,7 +112,6 @@ module Shipit
     def reject_unless_mergeable!
       return reject!('merge_conflict') if merge_conflict?
       return reject!('ci_failing') unless all_status_checks_passed?
-      return reject!('timedout') if timedout?
       false
     end
 
@@ -120,6 +119,7 @@ module Shipit
       raise InvalidTransition unless pending?
 
       return false if not_mergeable_yet?
+      return reject!('expired') if need_revalidation?
 
       Shipit.github_api.merge_pull_request(
         stack.github_repo_name,
@@ -151,8 +151,8 @@ module Shipit
       WAITING_STATUSES.include?(merge_status)
     end
 
-    def timedout?
-      timeout = stack.cached_deploy_spec.try!(:pull_request_timeout)
+    def need_revalidation?
+      timeout = stack.cached_deploy_spec.try!(:revalidate_pull_requests_after)
       return false unless timeout
       (merge_requested_at + timeout).past?
     end

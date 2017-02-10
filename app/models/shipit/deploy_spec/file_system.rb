@@ -32,7 +32,7 @@ module Shipit
           'merge' => {
             'require' => pull_request_required_statuses,
             'ignore' => pull_request_ignored_statuses,
-            'timeout' => pull_request_timeout.to_i,
+            'revalidate_after' => revalidate_pull_requests_after.try!(:to_i),
           },
           'ci' => {
             'hide' => hidden_statuses,
