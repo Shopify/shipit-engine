@@ -159,10 +159,13 @@ module Shipit
       end
     end
 
-    def pull_request_timeout
-      Duration.parse(config('merge', 'timeout') { '1h' })
-    rescue Duration::ParseError
-      Duration.parse('1h')
+    def revalidate_pull_requests_after
+      if timeout = config('merge', 'revalidate_after')
+        begin
+          Duration.parse(timeout)
+        rescue Duration::ParseError
+        end
+      end
     end
 
     def review_checks

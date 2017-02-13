@@ -122,13 +122,13 @@ module Shipit
       assert_equal 'ci_failing', @pr.rejection_reason
     end
 
-    test "#reject_unless_mergeable! rejects the PR if it has been enqueued for too ling" do
+    test "#merge! rejects the PR if it has been enqueued for too long" do
       @pr.update!(merge_requested_at: 5.hours.ago)
 
-      assert_predicate @pr, :timedout?
-      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :need_revalidation?
+      assert_equal true, @pr.merge!
       assert_predicate @pr, :rejected?
-      assert_equal 'timedout', @pr.rejection_reason
+      assert_equal 'expired', @pr.rejection_reason
     end
 
     test "status transitions emit hooks" do

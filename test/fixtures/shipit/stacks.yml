@@ -40,6 +40,9 @@ shipit:
           "allow_concurrency": true
         }
       },
+      "merge": {
+        "revalidate_after": 900
+      },
       "ci": {
         "hide": ["ci/hidden"],
         "allow_failures": ["ci/ok_to_fail"]
