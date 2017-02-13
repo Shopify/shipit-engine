@@ -185,15 +185,20 @@ module Shipit
     end
 
     def add_status
+      already_deployed = deployed?
+
       previous_status = status
       yield
       reload # to get the statuses into the right order (since sorted :desc)
       new_status = status
 
-      payload = {commit: self, stack: stack, status: new_status.state}
-      Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
+      unless already_deployed
+        payload = {commit: self, stack: stack, status: new_status.state}
+        Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
+      end
+
       if previous_status.simple_state != new_status.simple_state
-        if !new_status.pending? || previous_status.unknown?
+        if !already_deployed && (!new_status.pending? || previous_status.unknown?)
           Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
         end
         if new_status.pending? || new_status.success?

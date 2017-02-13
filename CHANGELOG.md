@@ -1,5 +1,7 @@
 # Unreleased
 
+* Prevent `commit_status` and `deployable_status` hooks from firing if the commit is already deployed.
+
 # 0.15.0
 
 *   Add NPM package publishing support with either yarn or npm.
