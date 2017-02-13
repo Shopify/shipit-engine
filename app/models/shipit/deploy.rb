@@ -6,6 +6,7 @@ module Shipit
 
     state_machine :status do
       after_transition to: :success, do: :schedule_continuous_delivery
+      after_transition to: :success, do: :schedule_merges
       after_transition to: :success, do: :update_undeployed_commits_count
       after_transition to: :aborted, do: :trigger_revert_if_required
       after_transition any => any, do: :update_commit_deployments
@@ -161,6 +162,10 @@ module Shipit
     def denormalize_commit_stats
       self.additions = commits.map(&:additions).compact.sum
       self.deletions = commits.map(&:deletions).compact.sum
+    end
+
+    def schedule_merges
+      stack.schedule_merges
     end
 
     def schedule_continuous_delivery

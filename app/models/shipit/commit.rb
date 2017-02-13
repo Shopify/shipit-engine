@@ -192,8 +192,13 @@ module Shipit
 
       payload = {commit: self, stack: stack, status: new_status.state}
       Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
-      if previous_status.simple_state != new_status.simple_state && (!new_status.pending? || previous_status.unknown?)
-        Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
+      if previous_status.simple_state != new_status.simple_state
+        if !new_status.pending? || previous_status.unknown?
+          Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
+        end
+        if new_status.pending? || new_status.success?
+          stack.schedule_merges
+        end
       end
       new_status
     end
