@@ -328,8 +328,10 @@ module Shipit
     end
 
     test "#add_status does not fire webhooks for invisible statuses" do
+      @stack.deploys_and_rollbacks.destroy_all
       commit = shipit_commits(:second)
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
+      refute_predicate commit, :deployed?
 
       expect_no_hook(:deployable_status) do
         github_status = OpenStruct.new(
@@ -343,14 +345,31 @@ module Shipit
     end
 
     test "#add_status does not fire webhooks for non-meaningful statuses" do
+      @stack.deploys_and_rollbacks.destroy_all
       commit = shipit_commits(:second)
       assert commit.stack.hooks.where(events: ['commit_status']).size >= 1
+      refute_predicate commit, :deployed?
 
       expect_no_hook(:deployable_status) do
         github_status = OpenStruct.new(
           state: 'failure',
           description: 'Sad',
           context: 'ci/ok_to_fail',
+          created_at: 1.day.ago.to_s(:db),
+        )
+        commit.create_status_from_github!(github_status)
+      end
+    end
+
+    test "#add_status does not fire webhooks for already deployed commits" do
+      commit = shipit_commits(:second)
+      assert_predicate commit, :deployed?
+
+      expect_no_hook(:deployable_status) do
+        github_status = OpenStruct.new(
+          state: 'failure',
+          description: 'Sad',
+          context: 'ci/travis',
           created_at: 1.day.ago.to_s(:db),
         )
         commit.create_status_from_github!(github_status)
