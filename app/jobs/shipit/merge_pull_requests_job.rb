@@ -13,7 +13,13 @@ module Shipit
       return false unless stack.allows_merges?
 
       pull_requests.select(&:pending?).each do |pull_request|
-        return false unless pull_request.merge!
+        pull_request.refresh!
+        begin
+          pull_request.merge!
+        rescue PullRequest::NotReady
+          MergePullRequestsJob.set(wait: 10.seconds).perform_later(stack)
+          return false
+        end
       end
     end
   end

@@ -39,10 +39,20 @@ module Shipit
       assert_predicate @pending_pr.reload, :rejected?
     end
 
-    test "perform rejects PRs but do not attempt to merge any if the stack doesn't allow merges" do
+    test "#perform rejects PRs but do not attempt to merge any if the stack doesn't allow merges" do
       PullRequest.any_instance.stubs(:refresh!)
       @stack.update!(lock_reason: 'Maintenance')
       @job.perform(@stack)
+      assert_predicate @pending_pr.reload, :pending?
+    end
+
+    test "#perform schedules a new job if the first PR in the queue is not mergeable yet" do
+      PullRequest.any_instance.stubs(:refresh!)
+
+      @pending_pr.update!(mergeable: nil)
+      assert_enqueued_with(job: MergePullRequestsJob) do
+        @job.perform(@stack)
+      end
       assert_predicate @pending_pr.reload, :pending?
     end
   end
