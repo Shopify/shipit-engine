@@ -24,6 +24,11 @@
         </div>
 
         <div class="field-wrapper">
+          <%= f.check_box :merge_queue_enabled %>
+          <%= f.label :merge_queue_enabled, 'Enable merge queue' %>
+        </div>
+
+        <div class="field-wrapper">
           <%= f.check_box :ignore_ci %>
           <%= f.label :ignore_ci, "Don't require CI to deploy" %>
         </div>

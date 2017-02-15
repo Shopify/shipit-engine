@@ -15,6 +15,7 @@ module Shipit
         accepts :branch, String
         accepts :deploy_url, String
         accepts :ignore_ci, Boolean
+        accepts :merge_queue_enabled, Boolean
       end
       def create
         render_resource Stack.create(params)
