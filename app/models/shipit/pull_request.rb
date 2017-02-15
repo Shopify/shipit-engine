@@ -5,6 +5,7 @@ module Shipit
     WAITING_STATUSES = %w(fetching pending).freeze
     REJECTION_REASONS = %w(ci_failing merge_conflict expired).freeze
     InvalidTransition = Class.new(StandardError)
+    NotReady = Class.new(StandardError)
 
     class StatusChecker < Status::Group
       def initialize(commit, statuses, deploy_spec)
@@ -122,8 +123,11 @@ module Shipit
     def merge!
       raise InvalidTransition unless pending?
 
-      return false if not_mergeable_yet?
-      return reject!('expired') if need_revalidation?
+      raise NotReady if not_mergeable_yet?
+      if need_revalidation?
+        reject!('expired')
+        return false
+      end
 
       Shipit.github_api.merge_pull_request(
         stack.github_repo_name,
@@ -142,9 +146,9 @@ module Shipit
       return true
     rescue Octokit::MethodNotAllowed # merge conflict
       reject!('merge_conflict')
-      return true
-    rescue Octokit::Conflict # shas didn't match, PR was updated.
       return false
+    rescue Octokit::Conflict # shas didn't match, PR was updated.
+      raise NotReady
     end
 
     def all_status_checks_passed?

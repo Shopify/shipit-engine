@@ -126,9 +126,20 @@ module Shipit
       @pr.update!(merge_requested_at: 5.hours.ago)
 
       assert_predicate @pr, :need_revalidation?
-      assert_equal true, @pr.merge!
+      assert_equal false, @pr.merge!
       assert_predicate @pr, :rejected?
       assert_equal 'expired', @pr.rejection_reason
+    end
+
+    test "#merge! raises a PullRequest::NotReady if the PR isn't mergeable yet" do
+      @pr.update!(mergeable: nil)
+
+      assert_predicate @pr, :not_mergeable_yet?
+      assert_raises PullRequest::NotReady do
+        @pr.merge!
+      end
+      @pr.reload
+      assert_predicate @pr, :pending?
     end
 
     test "status transitions emit hooks" do
