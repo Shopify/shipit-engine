@@ -65,7 +65,7 @@ module Shipit
       end
 
       event :cancel do
-        transition %i(fetching pending) => :canceled
+        transition any => :canceled
       end
 
       event :complete do
