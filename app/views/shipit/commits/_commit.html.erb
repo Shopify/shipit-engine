@@ -1,5 +1,5 @@
 <li class="commit" id="commit-<%= commit.id %>">
-  <%= render 'shipit/commits/commit_author', commit: commit %>
+  <%= render 'shipit/shared/author', author: commit.author %>
   <%= render commit.status %>
   <div class="commit-details">
     <span class="commit-title"><%= render_commit_message_with_link commit %></span>

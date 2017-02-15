@@ -24,6 +24,7 @@ shipit_pending:
 shipit_pending_unmergeable:
   stack: shipit
   number: 61
+  title: Other cool feature
   merge_status: pending
   merge_requested_at: <%= 4.minute.ago.to_s(:db) %>
   merge_requested_by: walrus

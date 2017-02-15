@@ -105,9 +105,9 @@ p {
 a {
   text-decoration: none;
   cursor: pointer;
-  color: #248af2;
+  color: $blue;
     &.subdued { color: #999; }
-    &.subdued:hover { color: #248af2; }
+    &.subdued:hover { color: $blue; }
 }
 
 .more {

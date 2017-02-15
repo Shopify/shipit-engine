@@ -22,6 +22,11 @@
     <li class="nav__list__item">
       <%= link_to 'Timeline', index_stack_tasks_path(stack) %>
     </li>
+    <% if stack.merge_queue_enabled? %>
+      <li class="nav__list__item">
+        <%= link_to "Pull Requests (#{stack.pull_requests.pending.count})", stack_pull_requests_path(stack) %>
+      </li>
+    <% end %>
   </ul>
   <ul class="nav__list nav__list--secondary">
     <% if stack.links.present? %>
