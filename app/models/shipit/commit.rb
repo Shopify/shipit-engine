@@ -125,6 +125,10 @@ module Shipit
       super || message_parser.pull_request_number
     end
 
+    def title
+      pull_request_title || message
+    end
+
     def pull_request_title # TODO: remove in a few versions when it is assumed the commits table was backfilled
       super || message_parser.pull_request_title
     end

@@ -40,17 +40,18 @@ module Shipit
       end
     end
 
-    def render_commit_message(message)
-      content_tag(:span, emojify(message.to_s.truncate(COMMIT_TITLE_LENGTH)), class: 'event-message')
+    def render_commit_message(pull_request_or_commit)
+      message = pull_request_or_commit.title.to_s.truncate(COMMIT_TITLE_LENGTH)
+      content_tag(:span, emojify(message), class: 'event-message')
     end
 
     def render_pull_request_title_with_link(pull_request)
-      message = render_commit_message(pull_request.title)
+      message = render_commit_message(pull_request)
       link_to(message, github_pull_request_url(pull_request), target: '_blank')
     end
 
     def render_commit_message_with_link(commit)
-      message = render_commit_message(commit.pull_request_title || commit.message)
+      message = render_commit_message(commit)
       link_to(message, github_change_url(commit), target: '_blank')
     end
 
