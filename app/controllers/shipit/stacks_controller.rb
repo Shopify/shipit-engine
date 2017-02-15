@@ -85,8 +85,13 @@ module Shipit
     end
 
     def update_params
-      params.require(:stack).permit(:deploy_url, :environment,
-                                    :continuous_deployment, :ignore_ci)
+      params.require(:stack).permit(
+        :deploy_url,
+        :environment,
+        :continuous_deployment,
+        :ignore_ci,
+        :merge_queue_enabled,
+      )
     end
   end
 end

@@ -234,7 +234,7 @@ module Shipit
     end
 
     def allows_merges?
-      !locked? && merge_status == 'success'
+      merge_queue_enabled? && !locked? && merge_status == 'success'
     end
 
     def repo_name=(name)

@@ -282,6 +282,11 @@ module Shipit
       refute_predicate @stack, :allows_merges?
     end
 
+    test "#allows_merges? returns false if the merge queue is disabled" do
+      @stack.update!(merge_queue_enabled: false)
+      refute_predicate @stack, :allows_merges?
+    end
+
     test "#allows_merges? returns false if the branch is failing" do
       @stack.undeployed_commits.last.statuses.create!(context: 'ci/travis', state: 'failure', stack: @stack)
       refute_predicate @stack, :allows_merges?
