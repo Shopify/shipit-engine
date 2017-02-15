@@ -1,7 +1,7 @@
 <%- read_only ||= false -%>
 
 <li class="task" id="task-<%= task.id %>" data-status="<%= task.status %>">
-  <%= render 'shipit/commits/commit_author', commit: task %>
+  <%= render 'shipit/shared/author', author: task.author %>
   <a href="<%= stack_task_path(@stack, task) %>" class="status status--<%= task.status %>" data-tooltip="<%= task.status.capitalize %>">
     <i class="status__icon"></i>
     <span class="visually-hidden"><%= task.status %></span>

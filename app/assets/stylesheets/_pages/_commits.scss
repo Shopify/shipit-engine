@@ -2,7 +2,7 @@
 // COMMIT LIST
 // =============================================================================
 
-.commit-list, .task-list {
+.commit-list, .task-list, .pr-list {
   list-style-type: none;
   margin: 0; padding: 0;
 }
@@ -11,7 +11,7 @@
   float: right;
 }
 
-.commit, .task {
+.commit, .task, .pr {
   padding: .75rem 0;
   display: flex;
   flex-direction: column;
@@ -70,7 +70,7 @@
 // COMMIT DETAILS
 // -----------------------------------------------------------------------------
 
-.commit-details {
+.commit-details, .pr-details {
   flex-grow: 1;
 
   @include media(tablet-down) {
@@ -88,11 +88,17 @@
   }
 }
 
-.commit-title a {
-  color: #333;
+.commit-title, .pr-title {
+  a {
+    color: #333;
+  }
 }
 
-.commit-meta {
+.pr-details .pr-number .number {
+  color: $blue;
+}
+
+.commit-meta, .pr-meta {
   font-size: 0.8em;
   color: #999;
   margin: 0;

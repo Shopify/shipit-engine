@@ -40,13 +40,18 @@ module Shipit
       end
     end
 
-    def render_commit_message(commit)
-      message = commit.pull_request_title || commit.message
-      content_tag(:span, emojify(message.truncate(COMMIT_TITLE_LENGTH)), class: 'event-message')
+    def render_commit_message(message)
+      content_tag(:span, emojify(message.to_s.truncate(COMMIT_TITLE_LENGTH)), class: 'event-message')
+    end
+
+    def render_pull_request_title_with_link(pull_request)
+      message = render_commit_message(pull_request.title)
+      link_to(message, github_pull_request_url(pull_request), target: '_blank')
     end
 
     def render_commit_message_with_link(commit)
-      link_to(render_commit_message(commit), github_change_url(commit), target: '_blank')
+      message = render_commit_message(commit.pull_request_title || commit.message)
+      link_to(message, github_change_url(commit), target: '_blank')
     end
 
     def render_commit_id_link(commit)
@@ -57,8 +62,13 @@ module Shipit
       end
     end
 
-    def pull_request_link(commit)
-      link_to("##{commit.pull_request_number}", github_pull_request_url(commit), target: '_blank', class: 'number')
+    def pull_request_link(pull_request_or_commit)
+      number = if pull_request_or_commit.respond_to?(:pull_request_number)
+        pull_request_or_commit.pull_request_number
+      else
+        pull_request_or_commit.number
+      end
+      link_to("##{number}", github_pull_request_url(pull_request_or_commit), target: '_blank', class: 'number')
     end
 
     def render_raw_commit_id_link(commit)

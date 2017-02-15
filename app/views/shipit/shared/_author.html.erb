@@ -1,0 +1,7 @@
+<a href="<%= github_user_url(author.login) %>" class="commit-author">
+  <%= github_avatar(author, size: 80, class: 'commit-author__avatar') %>
+  <div class="commit-author__name">
+    <span class="commit-author__name__real-name"><%= author.name %></span>
+    <span class="commit-author__name__username"><%= author.login %></span>
+  </div>
+</a>

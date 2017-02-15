@@ -134,6 +134,22 @@ module Shipit
         )
       end
     end
+
+    stack.pull_requests.create!(
+      number: Faker::Number.number(3),
+      title: Faker::Company.catch_phrase,
+      merge_status: 'pending',
+      merge_requested_at: 5.minute.ago,
+      merge_requested_by: users.sample,
+      github_id: Faker::Number.number(8),
+      api_url: 'https://api.github.com/repos/shopify/shipit-engine/pulls/62',
+      state: 'open',
+      branch: "feature-#{Faker::Number.number(3)}",
+      head_id: nil,
+      mergeable: true,
+      additions: Faker::Number.number(3),
+      deletions: Faker::Number.number(3),
+    )
   end
 
   def create_chunks

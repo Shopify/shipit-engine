@@ -1,5 +1,7 @@
 module Shipit
   class PullRequest < ApplicationRecord
+    include DeferredTouch
+
     WAITING_STATUSES = %w(fetching pending).freeze
     REJECTION_REASONS = %w(ci_failing merge_conflict expired).freeze
     InvalidTransition = Class.new(StandardError)
@@ -35,6 +37,8 @@ module Shipit
     belongs_to :head, class_name: 'Shipit::Commit'
     belongs_to :merge_requested_by, class_name: 'Shipit::User'
     has_one :merge_commit, class_name: 'Shipit::Commit'
+
+    deferred_touch stack: :updated_at
 
     validates :number, presence: true, uniqueness: {scope: :stack_id}
 

@@ -1,0 +1,18 @@
+<li class="pr" id="pr-<%= pull_request.id %>">
+  <%= render 'shipit/shared/author', author: pull_request.merge_requested_by %>
+  <div class="pr-details">
+    <span class="pr-number">
+      <%= pull_request_link(pull_request) %>
+    </span>
+    <span class="pr-title">
+      <%= render_pull_request_title_with_link pull_request %>
+    </span>
+    <p class="pr-meta">
+      <span class="code-additions">+<%= pull_request.additions %></span>
+      <span class="code-deletions">-<%= pull_request.deletions %></span>
+    </p>
+    <p class="pr-meta">
+      Enqueued <%= timeago_tag(pull_request.merge_requested_at, force: true) %>
+    </p>
+  </div>
+</li>
