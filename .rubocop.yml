@@ -139,3 +139,6 @@ Style/ParallelAssignment:
 
 Style/IfUnlessModifier:
   Enabled: false
+
+Performance/Casecmp:
+  Enabled: false # ugly
