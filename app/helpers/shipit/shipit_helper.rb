@@ -1,5 +1,14 @@
 module Shipit
   module ShipitHelper
+    def subscribe(url, *selectors)
+      content_for(:update_subscription) do
+        [
+          tag('meta', name: 'subscription-channel', content: url),
+          *selectors.map { |s| tag('meta', name: 'subscription-selector', content: s) },
+        ].join("\n").html_safe
+      end
+    end
+
     def emojify(content)
       h(content).to_str.gsub(/:([\w+-]+):/) do |match|
         if emoji = Emoji.find_by_alias($1)

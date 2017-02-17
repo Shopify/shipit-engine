@@ -1,3 +1,5 @@
+<% subscribe events_path(channels: ["stack.#{@stack.id}"]), '.pr-list', '.header' %>
+
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
 
 <div class="wrapper">
