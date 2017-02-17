@@ -86,6 +86,17 @@ module Shipit
       Shipit::Stack.where(id: pending.uniq.pluck(:stack_id)).find_each(&:schedule_merges)
     end
 
+    def self.extract_number(stack, number_or_url)
+      case number_or_url
+      when /\A#?(\d+)\z/
+        $1.to_i
+      when %r{\Ahttps://#{Regexp.escape(Shipit.github_domain)}/([^/]+)/([^/]+)/pull/(\d+)}
+        return unless $1.downcase == stack.repo_owner.downcase
+        return unless $2.downcase == stack.repo_name.downcase
+        return $3.to_i
+      end
+    end
+
     def self.request_merge!(stack, number, user)
       now = Time.now.utc
       pull_request = begin

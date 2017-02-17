@@ -4,6 +4,16 @@ module Shipit
       @pull_requests = stack.pull_requests.to_be_merged
     end
 
+    def create
+      if pr_number = PullRequest.extract_number(stack, params[:number_or_url])
+        pull_request = PullRequest.request_merge!(stack, pr_number, current_user)
+        flash[:success] = "Pull request ##{pull_request.number} added to the queue."
+      else
+        flash[:warning] = "Invalid or missing pull request number."
+      end
+      redirect_to stack_pull_requests_path
+    end
+
     def destroy
       pull_request = stack.pull_requests.find(params[:id])
       pull_request.cancel!

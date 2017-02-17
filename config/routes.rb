@@ -89,7 +89,7 @@ Shipit::Engine.routes.draw do
       end
     end
 
-    resources :pull_requests, only: %i(index destroy)
+    resources :pull_requests, only: %i(index destroy create)
   end
   get '/stacks/:id' => 'stacks#lookup'
 end

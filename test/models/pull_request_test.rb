@@ -22,6 +22,18 @@ module Shipit
       end
     end
 
+    test ".extract_number can get a pull request number from different formats" do
+      assert_equal 42, PullRequest.extract_number(@stack, '42')
+      assert_equal 42, PullRequest.extract_number(@stack, '#42')
+      assert_equal 42, PullRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
+
+      assert_nil PullRequest.extract_number(@stack, 'https://github.com/ACME/shipit-engine/pull/42')
+
+      Shipit.expects(:github_domain).returns('github.acme.com').at_least_once
+      assert_equal 42, PullRequest.extract_number(@stack, 'https://github.acme.com/Shopify/shipit-engine/pull/42')
+      assert_nil PullRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
+    end
+
     test "refresh! pulls state from GitHub" do
       pull_request = shipit_pull_requests(:shipit_fetching)
 
