@@ -394,6 +394,38 @@ ci:
     - ci/circleci
 ```
 
+<h3 id="merge-queue">Merge Queue</h3>
+
+The merge queue allow to register pull requests for them to be merged by Shipit once the stack is clear (no lock, no failing CI, no backlog). It can be enabled on a per stack basis via the settings page.
+
+It can be customized via several `shipit.yml` properties:
+
+**<code>merge.revalidate_after</code>** a duration after which pull requests that couldn't be merged are rejected from the queue. Defaults to unlimited.
+
+For example:
+```yml
+merge:
+  revalidate_after: 12m30s
+```
+
+**<code>merge.require</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) that you want Shipit to consider as failing if they aren't present on the pull request. Defaults to `ci.require` if present, or empty otherwise.
+
+For example:
+```yml
+merge:
+  require:
+    - continuous-integration/travis-ci/push
+```
+
+**<code>merge.ignore</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) that you want Shipit not to consider when merging pull requests. Defaults to the union of `ci.allow_failures` and `ci.hide` if any is present or empty otherwise.
+
+For example:
+```yml
+merge:
+  ignore:
+    - codeclimate
+```
+
 <h3 id="custom-tasks">Custom tasks</h3>
 
 You can create custom tasks that users execute directly from a stack's overview page in Shipit. To create a new custom task, specify its parameters in the `tasks` section of the `shipit.yml` file. For example:
