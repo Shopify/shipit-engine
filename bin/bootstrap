@@ -14,5 +14,5 @@ fi
 bundle check || bundle install $bundler_flags
 
 rm -rf test/dummy/db/migrate/*.rb
-bundle exec rake db:drop db:create db:schema:load db:migrate db:seed
-bundle exec rake db:drop db:create db:schema:load RAILS_ENV=test
+bundle exec rake db:drop db:create db:schema:load db:migrate
+bundle exec rake db:seed
