@@ -71,15 +71,13 @@
       </table>
     </div>
 
-    <div class="setting-section">
+    <div class="setting-section setting-ccmenu">
       <h5>Miscellaneous</h5>
-      <table>
-        <tr>
-          <td>CCTray/CCMenu URL</td>
-          <td id="ccmenu-url" style="width: 100%"><%= button_to "Fetch URL", "javascript:fetchCCMenuURL()", class: 'btn' %></td>
-        </tr>
-      </table>
-        <%#input type="text" disabled value="<%= ccmenu_url(stack_id: @stack.to_param, token: @cc_token) >"%>
+      <div class="field-wrapper">
+        <label>CCMenu URL</label>
+        <input id="ccmenu-url" class="hidden" type="text" disabled />
+      </div>
+      <%= button_to "Fetch URL", "", class: 'btn', data: {remote: ccmenu_url_url(stack_id: @stack.to_param)} %>
     </div>
 
     <div class="setting-section">
@@ -90,11 +88,3 @@
 
   </section>
 </div>
-<script type="text/javascript">
-function fetchCCMenuURL() {
-  $.ajax({url: "<%= ccmenu_url_url(stack_id: @stack.to_param) %>", success: function(result){
-    console.log(result);
-    $("#ccmenu-url").html("<input type='text' disabled value='" + result.ccmenu_url + "'/>");
-  }});
-}
-</script>

@@ -11,8 +11,8 @@ module Shipit
     private
 
     def client
-      @client ||= Shipit::ApiClient.create_with(permissions: %w(read:stack))
-                                   .find_or_create_by!(creator: current_user, name: 'CCMenu Client')
+      @client ||= ApiClient.create_with(permissions: %w(read:stack))
+                           .find_or_create_by!(creator: current_user, name: 'CCMenu Client')
     end
 
     def stack

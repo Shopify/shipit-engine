@@ -11,19 +11,10 @@ module Shipit
         def ended_at
           Time.now.utc
         end
-
-        def status
-          false
-        end
-
-        alias_method :running?, :status
-        alias_method :failed?, :status
-        alias_method :error?, :status
-        alias_method :success?, :status
       end
 
       def show
-        latest_deploy = stack.deploys.first || NoDeploy.new
+        latest_deploy = stack.deploys_and_rollbacks.last || NoDeploy.new
         render 'shipit/ccmenu/project.xml.builder', formats: [:xml], locals: {stack: stack, deploy: latest_deploy}
       end
 
