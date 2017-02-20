@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215123538) do
+ActiveRecord::Schema.define(version: 20170220152410) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -239,7 +239,9 @@ ActiveRecord::Schema.define(version: 20170215123538) do
     t.string   "avatar_url",                       limit: 255
     t.string   "encrypted_github_access_token"
     t.string   "encrypted_github_access_token_iv"
+    t.index ["github_id"], name: "index_users_on_github_id"
     t.index ["login"], name: "index_users_on_login"
+    t.index ["updated_at"], name: "index_users_on_updated_at"
   end
 
 end
