@@ -4,7 +4,7 @@ module Shipit
   class CcmenuUrlController < ShipitController
     def fetch
       uri = URI(api_stack_ccmenu_url(stack_id: stack.to_param))
-      uri.user = client.authentication_token
+      uri.query = {'token' => client.authentication_token}.to_query
       render json: {ccmenu_url: uri.to_s}
     end
 

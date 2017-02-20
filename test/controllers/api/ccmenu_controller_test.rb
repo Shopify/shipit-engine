@@ -15,8 +15,15 @@ module Shipit
         assert_json 'message', 'This operation requires the `read:stack` permission'
       end
 
-      test "#show renders the stack" do
+      test "#show renders the xml" do
         get :show, params: {stack_id: @stack.to_param}
+        assert_response :ok
+        assert_payload 'name', @stack.to_param
+      end
+
+      test "can authenticate with query string token" do
+        request.headers['Authorization'] = 'bleh'
+        get :show, params: {stack_id: @stack.to_param, token: @client.authentication_token}
         assert_response :ok
         assert_payload 'name', @stack.to_param
       end

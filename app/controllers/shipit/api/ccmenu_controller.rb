@@ -32,6 +32,11 @@ module Shipit
       def stack
         @stack ||= Stack.from_param!(params[:stack_id])
       end
+
+      def authenticate_api_client
+        @current_api_client = ApiClient.authenticate(params[:token])
+        super unless @current_api_client
+      end
     end
   end
 end

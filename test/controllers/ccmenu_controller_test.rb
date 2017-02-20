@@ -22,11 +22,12 @@ module Shipit
       end
     end
 
-    test ":fetch url includes api token as username" do
+    test ":fetch url includes api token on query string" do
       get :fetch, params: {stack_id: @stack.to_param}
       data = JSON.parse(response.body)
       client = ApiClient.last
-      assert_equal client.authentication_token, URI(data['ccmenu_url']).user
+      query = Rack::Utils.parse_nested_query(URI(data['ccmenu_url']).query)
+      assert_equal client.authentication_token, query['token']
     end
   end
 end
