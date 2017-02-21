@@ -2,7 +2,7 @@ require 'uri'
 require 'test_helper'
 
 module Shipit
-  class CcmenuUrlControllerTest < ActionController::TestCase
+  class CCMenuUrlControllerTest < ActionController::TestCase
     setup do
       @stack = shipit_stacks(:shipit)
       @user = shipit_users(:walrus)

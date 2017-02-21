@@ -1,7 +1,7 @@
 require 'uri'
 
 module Shipit
-  class CcmenuUrlController < ShipitController
+  class CCMenuUrlController < ShipitController
     def fetch
       uri = URI(api_stack_ccmenu_url(stack_id: stack.to_param))
       uri.query = {'token' => client.authentication_token}.to_query

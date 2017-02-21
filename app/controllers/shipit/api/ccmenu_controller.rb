@@ -1,6 +1,6 @@
 module Shipit
   module Api
-    class CcmenuController < BaseController
+    class CCMenuController < BaseController
       require_permission :read, :stack
 
       class NoDeploy
