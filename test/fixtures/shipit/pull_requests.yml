@@ -11,6 +11,7 @@ shipit_pending:
   title: Super duper nice feature
   merge_status: pending
   merge_requested_at: <%= 5.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 5.minute.ago.to_s(:db) %>
   merge_requested_by: walrus
   github_id: 42424424242424
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/62
@@ -27,6 +28,7 @@ shipit_pending_unmergeable:
   title: Other cool feature
   merge_status: pending
   merge_requested_at: <%= 4.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 4.minute.ago.to_s(:db) %>
   merge_requested_by: walrus
   github_id: 43434434343434
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/61
@@ -43,6 +45,7 @@ shipit_pending_not_mergeable_yet:
   merge_status: pending
   merge_requested_by: walrus
   merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
   github_id: 45454454545454
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/64
   state: open
