@@ -41,3 +41,13 @@ jQuery ($) ->
 
   $('[data-event-stream]').each ->
     listenToEventSource($(this).data('event-stream'))
+
+  $(document).on 'click', '.setting-ccmenu input[type=submit]', (event) ->
+    event.preventDefault()
+    $(event.target).prop('disabled', true)
+    $.get(event.target.dataset.remote).done((data) ->
+      $('#ccmenu-url').val(data.ccmenu_url).removeClass('hidden')
+      $(event.target).addClass('hidden')
+    ).fail(->
+      $(event.target).prop('disabled', false)
+    )

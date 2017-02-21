@@ -30,6 +30,7 @@ Shipit::Engine.routes.draw do
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
+      get '/ccmenu' => 'ccmenu#show', as: :ccmenu
       resource :lock, only: %i(create update destroy)
       resources :tasks, only: %i(index show) do
         resource :output, only: :show
@@ -42,6 +43,10 @@ Shipit::Engine.routes.draw do
     end
 
     resources :hooks, only: %i(index create show update destroy)
+  end
+
+  scope '/ccmenu/*stack_id', stack_id: stack_id_format, as: :ccmenu_url do
+    get '/' => 'ccmenu_url#fetch'
   end
 
   # Humans
