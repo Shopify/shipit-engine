@@ -1,3 +1,5 @@
+<% subscribe events_path(channels: ["stack.#{@stack.id}"]), '#layout-content' %>
+
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
 
 <% if !@stack.ignore_ci && !@stack.ci_enabled? %>
@@ -63,8 +65,7 @@
   </div>
 <% end %>
 
-<div class="wrapper" data-event-stream="<%= events_path(channels: ["stack.#{@stack.id}"]) %>">
-
+<div class="wrapper">
   <section>
     <header class="section-header">
       <h2>Undeployed Commits</h2>

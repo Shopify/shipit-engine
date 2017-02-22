@@ -5,7 +5,7 @@
   <%= favicon_link_tag %>
   <%= stylesheet_link_tag :shipit, media: 'all' %>
   <%= javascript_include_tag :shipit %>
-
+  <%= yield :update_subscription %>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -26,51 +26,53 @@
     </div>
   </div>
 
-  <% github_status = Shipit::GithubStatus.status
-     unless github_status.nil? || github_status[:status] == 'good' %>
-    <div class="banner github-status banner--orange hidden">
-      <div class="banner__inner wrapper">
-        <div class="banner__content">
-          <h2 class="banner__title">GitHub is having issues</h2>
-            <% if github_status[:body].present? %>
-              "<i><%= github_status[:body] %></i>"
-            <% end %>
-            <% if github_status[:last_updated].present? %>
-              <%= time_ago_in_words(github_status[:last_updated]) %> ago
-            <% end %>
-        </div>
-
-        <a class="banner__dismiss">&times;</a>
-      </div>
-    </div>
-  <% end %>
-
-  <header class="header">
-    <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}", class: 'powered-by' %>
-    <div class="wrapper">
-      <div class="header__inner">
-        <a href="/" class="logo">
-          <span class="visually-hidden">Shipit</span>
-        </a>
-        <div class="header__page-title">
-          <%= yield :page_title %>
-        </div>
-        <% if content_for? :primary_navigation %>
-          <div class="header__page-actions">
-            <%= yield :primary_navigation %>
+  <div id="layout-content">
+    <% github_status = Shipit::GithubStatus.status
+       unless github_status.nil? || github_status[:status] == 'good' %>
+      <div class="banner github-status banner--orange hidden">
+        <div class="banner__inner wrapper">
+          <div class="banner__content">
+            <h2 class="banner__title">GitHub is having issues</h2>
+              <% if github_status[:body].present? %>
+                "<i><%= github_status[:body] %></i>"
+              <% end %>
+              <% if github_status[:last_updated].present? %>
+                <%= time_ago_in_words(github_status[:last_updated]) %> ago
+              <% end %>
           </div>
+
+          <a class="banner__dismiss">&times;</a>
+        </div>
+      </div>
+    <% end %>
+
+    <header class="header">
+      <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}", class: 'powered-by' %>
+      <div class="wrapper">
+        <div class="header__inner">
+          <a href="/" class="logo">
+            <span class="visually-hidden">Shipit</span>
+          </a>
+          <div class="header__page-title">
+            <%= yield :page_title %>
+          </div>
+          <% if content_for? :primary_navigation %>
+            <div class="header__page-actions">
+              <%= yield :primary_navigation %>
+            </div>
+          <% end %>
+        </div>
+        <% if content_for? :secondary_navigation %>
+          <nav class="nav">
+            <%= yield :secondary_navigation %>
+          </nav>
         <% end %>
       </div>
-      <% if content_for? :secondary_navigation %>
-        <nav class="nav">
-          <%= yield :secondary_navigation %>
-        </nav>
-      <% end %>
-    </div>
-  </header>
+    </header>
 
-  <div class="main <%= content_for(:main_classes) %>" data-layout-content>
-    <%= yield %>
+    <div class="main <%= content_for(:main_classes) %>">
+      <%= yield %>
+    </div>
   </div>
 </body>
 </html>

@@ -20,28 +20,6 @@ jQuery ($) ->
 
   displayIgnoreCiMessage()
 
-  updatePage = (message) ->
-    payload = JSON.parse(message.data)
-    $('[data-layout-content]').load("#{payload.url} [data-layout-content] > *", -> $('time[data-time-ago]').timeago())
-
-  retries = 0
-  listenToEventSource = (url) ->
-    source = new EventSource(url)
-    source.addEventListener 'stack.update', updatePage
-    interval = setInterval ->
-      switch source.readyState
-        when source.CLOSED
-          clearInterval(interval)
-          if retries > 0
-            retries -= 1
-            listenToEventSource(url)
-        else
-          retries = 2
-    , 30000
-
-  $('[data-event-stream]').each ->
-    listenToEventSource($(this).data('event-stream'))
-
   $(document).on 'click', '.setting-ccmenu input[type=submit]', (event) ->
     event.preventDefault()
     $(event.target).prop('disabled', true)
