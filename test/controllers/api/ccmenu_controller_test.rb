@@ -42,6 +42,12 @@ module Shipit
         assert_payload 'lastBuildStatus', 'Failure'
       end
 
+      test "stacks with no deploys render correctly" do
+        stack = Stack.create!(repo_owner: 'foo', repo_name: 'bar')
+        get :show, params: {stack_id: stack.to_param}
+        assert_payload 'lastBuildStatus', 'Success'
+      end
+
       private
 
       def get_project_from_xml(xml)

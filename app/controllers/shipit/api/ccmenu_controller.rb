@@ -11,6 +11,10 @@ module Shipit
         def ended_at
           Time.now.utc
         end
+
+        def running?
+          false
+        end
       end
 
       def show
