@@ -106,6 +106,10 @@
   @include media(desktop) {
     @include truncate;
   }
+
+  .warning {
+    color: $orange;
+  }
 }
 
 .utc-timecode {

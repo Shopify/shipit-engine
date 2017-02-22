@@ -1,7 +1,7 @@
 module Shipit
   class PullRequestsController < ShipitController
     def index
-      @pull_requests = stack.pull_requests.to_be_merged
+      @pull_requests = stack.pull_requests.queued
     end
 
     def create

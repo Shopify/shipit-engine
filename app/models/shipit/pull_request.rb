@@ -3,7 +3,8 @@ module Shipit
     include DeferredTouch
 
     WAITING_STATUSES = %w(fetching pending).freeze
-    REJECTION_REASONS = %w(ci_failing merge_conflict expired).freeze
+    QUEUED_STATUSES = %w(pending revalidating).freeze
+    REJECTION_REASONS = %w(ci_failing merge_conflict).freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
@@ -46,6 +47,7 @@ module Shipit
     scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { where(merge_status: 'pending') }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
+    scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
 
     after_save :record_merge_status_change
     after_commit :emit_hooks
@@ -56,6 +58,7 @@ module Shipit
       state :rejected
       state :canceled
       state :merged
+      state :revalidating
 
       event :fetched do
         transition fetching: :pending
@@ -63,6 +66,10 @@ module Shipit
 
       event :reject do
         transition pending: :rejected
+      end
+
+      event :revalidate do
+        transition pending: :revalidating
       end
 
       event :cancel do
@@ -74,11 +81,19 @@ module Shipit
       end
 
       event :retry do
-        transition %i(rejected canceled) => :pending
+        transition %i(rejected canceled revalidating) => :pending
       end
 
       before_transition rejected: any do |pr|
         pr.rejection_reason = nil
+      end
+
+      before_transition %i(fetching rejected canceled) => :pending do |pr|
+        pr.merge_requested_at = Time.now.utc
+      end
+
+      before_transition any => :pending do |pr|
+        pr.revalidated_at = Time.now.utc
       end
     end
 
@@ -110,8 +125,8 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-      pull_request.update!(merge_requested_at: now, merge_requested_by: user.presence)
-      pull_request.retry! if pull_request.rejected? || pull_request.canceled?
+      pull_request.update!(merge_requested_by: user.presence)
+      pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
       pull_request.schedule_refresh!
       pull_request
     end
@@ -136,7 +151,7 @@ module Shipit
 
       raise NotReady if not_mergeable_yet?
       if need_revalidation?
-        reject!('expired')
+        revalidate!
         return false
       end
 
@@ -173,7 +188,7 @@ module Shipit
     def need_revalidation?
       timeout = stack.cached_deploy_spec.try!(:revalidate_pull_requests_after)
       return false unless timeout
-      (merge_requested_at + timeout).past?
+      (revalidated_at + timeout).past?
     end
 
     def merge_conflict?

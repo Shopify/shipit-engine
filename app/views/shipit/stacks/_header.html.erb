@@ -24,7 +24,7 @@
     </li>
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
-        <%= link_to "Pull Requests (#{stack.pull_requests.pending.count})", stack_pull_requests_path(stack) %>
+        <%= link_to "Pull Requests (#{stack.pull_requests.queued.count})", stack_pull_requests_path(stack) %>
       </li>
     <% end %>
   </ul>

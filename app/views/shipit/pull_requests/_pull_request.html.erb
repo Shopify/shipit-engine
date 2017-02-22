@@ -13,8 +13,16 @@
     </p>
     <p class="pr-meta">
       Enqueued <%= timeago_tag(pull_request.merge_requested_at, force: true) %>
+      <% if pull_request.revalidating? %>
+        <em class="warning">Need revalidation.</em>
+      <% end %>
     </p>
   </div>
+  <% if pull_request.revalidating? %>
+    <div class="commit-actions">
+      <%= button_to 'Confirm', stack_pull_requests_path(pull_request.stack, number_or_url: pull_request.number), class: 'btn btn--warning', method: 'post' %>
+    </div>
+  <% end %>
   <div class="commit-actions">
     <%= button_to 'Cancel', stack_pull_request_path(pull_request.stack, pull_request), class: 'btn btn--warning', method: 'delete' %>
   </div>

@@ -22,6 +22,36 @@ module Shipit
       end
     end
 
+    test ".request_merge! retry canceled pull requests" do
+      original_merge_requested_at = @pr.merge_requested_at
+      @pr.cancel!
+      assert_predicate @pr, :canceled?
+      PullRequest.request_merge!(@stack, @pr.number, @user)
+      assert_predicate @pr.reload, :pending?
+      assert_not_equal original_merge_requested_at, @pr.merge_requested_at
+      assert_in_delta Time.now.utc, @pr.merge_requested_at, 1
+    end
+
+    test ".request_merge! retry rejected pull requests" do
+      original_merge_requested_at = @pr.merge_requested_at
+      @pr.reject!('merge_conflict')
+      assert_predicate @pr, :rejected?
+      PullRequest.request_merge!(@stack, @pr.number, @user)
+      assert_predicate @pr.reload, :pending?
+      assert_not_equal original_merge_requested_at, @pr.merge_requested_at
+      assert_in_delta Time.now.utc, @pr.merge_requested_at, 1
+      assert_nil @pr.rejection_reason
+    end
+
+    test ".request_merge! retry revalidating pull requests but keep the original request time" do
+      original_merge_requested_at = @pr.merge_requested_at
+      @pr.revalidate!
+      assert_predicate @pr, :revalidating?
+      PullRequest.request_merge!(@stack, @pr.number, @user)
+      assert_predicate @pr.reload, :pending?
+      assert_equal original_merge_requested_at, @pr.merge_requested_at
+    end
+
     test ".extract_number can get a pull request number from different formats" do
       assert_equal 42, PullRequest.extract_number(@stack, '42')
       assert_equal 42, PullRequest.extract_number(@stack, '#42')
@@ -134,13 +164,12 @@ module Shipit
       assert_equal 'ci_failing', @pr.rejection_reason
     end
 
-    test "#merge! rejects the PR if it has been enqueued for too long" do
-      @pr.update!(merge_requested_at: 5.hours.ago)
+    test "#merge! revalidates the PR if it has been enqueued for too long" do
+      @pr.update!(revalidated_at: 5.hours.ago)
 
       assert_predicate @pr, :need_revalidation?
       assert_equal false, @pr.merge!
-      assert_predicate @pr, :rejected?
-      assert_equal 'expired', @pr.rejection_reason
+      assert_predicate @pr, :revalidating?
     end
 
     test "#merge! raises a PullRequest::NotReady if the PR isn't mergeable yet" do
