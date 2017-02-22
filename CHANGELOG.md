@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.16.0
+
+* Add a CCMenu compatible API.
+
 * Implement an optional merge queue, allowing to schedule pull requests to be merged as soon as the targeted branch is clear.
 
 * Prevent `commit_status` and `deployable_status` hooks from firing if the commit is already deployed.
