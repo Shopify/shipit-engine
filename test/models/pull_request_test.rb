@@ -193,5 +193,12 @@ module Shipit
       assert_json 'pull_request.rejection_reason', 'merge_conflict', document: params['payload']
       assert_json 'pull_request.number', @pr.number, document: params['payload']
     end
+
+    test "#merge! doesnt delete the branch if there are open PRs against it" do
+      Shipit.github_api.expects(:merge_pull_request).once.returns(true)
+      Shipit.github_api.expects(:pull_requests).once.with(@stack.github_repo_name, base: @pr.branch).returns([1])
+      Shipit.github_api.expects(:delete_branch).never.returns(false)
+      assert_equal true, @pr.merge!
+    end
   end
 end
