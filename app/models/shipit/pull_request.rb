@@ -164,7 +164,9 @@ module Shipit
         merge_method: 'merge',
       )
       begin
-        Shipit.github_api.delete_branch(stack.github_repo_name, branch)
+        if Shipit.github_api.pull_requests(stack.github_repo_name, base: branch).empty?
+          Shipit.github_api.delete_branch(stack.github_repo_name, branch)
+        end
       rescue Octokit::UnprocessableEntity
         # branch was already deleted somehow
       end

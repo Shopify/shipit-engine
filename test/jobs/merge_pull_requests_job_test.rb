@@ -20,6 +20,8 @@ module Shipit
       }.to_json)
       branch_url = "https://api.github.com/repos/shopify/shipit-engine/git/refs/heads/feature-62"
       FakeWeb.register_uri(:delete, branch_url, status: %w(204 No content))
+      pulls_url = "https://api.github.com/repos/shopify/shipit-engine/pulls?base=feature-62"
+      FakeWeb.register_uri(:get, pulls_url, status: %w(200 OK), body: '[]')
 
       @job.perform(@stack)
 
