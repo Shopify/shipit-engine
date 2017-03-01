@@ -95,6 +95,10 @@ module Shipit
       before_transition any => :pending do |pr|
         pr.revalidated_at = Time.now.utc
       end
+
+      before_transition %i(pending) => :merged do |pr|
+        Stack.increment_counter(:undeployed_commits_count, pr.stack_id)
+      end
     end
 
     def self.schedule_merges

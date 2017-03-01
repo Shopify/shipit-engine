@@ -200,5 +200,15 @@ module Shipit
       Shipit.github_api.expects(:delete_branch).never.returns(false)
       assert_equal true, @pr.merge!
     end
+
+    test "#merge! increments undeployed_commits_count" do
+      Shipit.github_api.expects(:merge_pull_request).once.returns(true)
+      Shipit.github_api.expects(:pull_requests).once.returns([])
+      Shipit.github_api.expects(:delete_branch).once.returns(true)
+      assert_difference '@stack.undeployed_commits_count' do
+        @pr.merge!
+        @stack.reload
+      end
+    end
   end
 end
