@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-controller="<%= controller_name %>" data-action="<%= action_name %>">
+<html lang="<%= I18n.locale %>" data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 <head>
   <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
   <%= favicon_link_tag %>
