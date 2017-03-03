@@ -96,6 +96,7 @@ module Shipit
 
     def build_deploy(until_commit, user, env: nil)
       since_commit = last_deployed_commit.presence || commits.first
+
       deploys.build(
         user_id: user.id,
         until_commit: until_commit,
@@ -105,7 +106,12 @@ module Shipit
     end
 
     def trigger_deploy(*args)
-      deploy = build_deploy(*args)
+      deploy = if args.size == 1 && args.first.is_a?(Deploy)
+        args.first
+      else
+        build_deploy(*args)
+      end
+
       deploy.save!
       deploy.enqueue
       continuous_delivery_resumed!
@@ -132,12 +138,14 @@ module Shipit
         return
       end
 
-      if commit.deploy_failed? || (checks? && !EphemeralCommitChecks.new(commit).run.success?)
+      deploy = build_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
+
+      if commit.deploy_failed? || (checks? && !EphemeralCommitChecks.new(commit).run.success?) || deploy.too_dangerous?
         continuous_delivery_delayed!
         return
       end
 
-      trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
+      trigger_deploy(deploy)
     end
 
     def schedule_merges

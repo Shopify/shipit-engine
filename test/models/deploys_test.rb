@@ -444,6 +444,18 @@ module Shipit
       assert_predicate @deploy, :alive?
     end
 
+    test "#too_dangerous? returns true if list of undeployed commits contains a commit and it's revert" do
+      refute @deploy.too_dangerous?
+      create_revert(@deploy.commits.last)
+      assert @deploy.reload.too_dangerous?
+    end
+
+    test "#too_dangerous? returns true if list of undeployed commits contains a commit of a PR that reverts it" do
+      refute @deploy.too_dangerous?
+      create_revert(@deploy.commits.last, pr: true)
+      assert @deploy.reload.too_dangerous?
+    end
+
     private
 
     def expect_event(deploy)
