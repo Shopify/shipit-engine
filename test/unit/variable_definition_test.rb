@@ -18,6 +18,7 @@ module Shipit
       assert_equal "Variable title", subject.title
       assert_equal "Variable default", subject.default
       assert_nil subject.select
+      assert subject.default_provided?
     end
 
     test "#initialize name is required" do
@@ -46,6 +47,15 @@ module Shipit
       subject = Shipit::VariableDefinition.new(@attributes)
 
       assert_nil subject.select
+    end
+
+    test "#default_provided?" do
+      attributes = {
+        "name" => "Variable name",
+        "title" => "Variable title",
+      }
+      subject = Shipit::VariableDefinition.new(attributes)
+      refute subject.default_provided?
     end
 
     test "#to_h returns hash version" do

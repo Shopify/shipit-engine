@@ -49,7 +49,7 @@ module Shipit
     end
 
     def variables_with_defaults
-      @variables_with_defaults ||= variables.select { |v| v.default.present? }
+      @variables_with_defaults ||= variables.select(&:default_provided?)
     end
 
     private
