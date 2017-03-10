@@ -9,6 +9,8 @@ module Shipit
       @pending_pr = shipit_pull_requests(:shipit_pending)
       @unmergeable_pr = shipit_pull_requests(:shipit_pending_unmergeable)
       @not_ready_pr = shipit_pull_requests(:shipit_pending_not_mergeable_yet)
+      @closed_pr = shipit_pull_requests(:shipit_pending_closed)
+      @merged_pr = shipit_pull_requests(:shipit_pending_merged)
     end
 
     test "#perform rejects unmergeable PRs and merge the others" do
@@ -56,6 +58,20 @@ module Shipit
         @job.perform(@stack)
       end
       assert_predicate @pending_pr.reload, :pending?
+    end
+
+    test "#perform cancels merge requests for closed PRs" do
+      @pending_pr.cancel!
+      PullRequest.any_instance.stubs(:refresh!)
+      @job.perform(@stack)
+      assert_predicate @closed_pr.reload, :canceled?
+    end
+
+    test "#perform completes merge requests for already merged PRs" do
+      @pending_pr.cancel!
+      PullRequest.any_instance.stubs(:refresh!)
+      @job.perform(@stack)
+      assert_predicate @merged_pr.reload, :merged?
     end
   end
 end
