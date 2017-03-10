@@ -48,6 +48,10 @@ module Shipit
       EnvironmentVariables.with(env).permit(variables)
     end
 
+    def variables_with_defaults
+      @variables_with_defaults ||= variables.select(&:default_provided?)
+    end
+
     private
 
     def task_variables(config_variables)

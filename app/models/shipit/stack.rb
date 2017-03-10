@@ -82,13 +82,20 @@ module Shipit
     end
 
     def trigger_task(definition_id, user, env: nil)
+      definition = find_task_definition(definition_id)
+      env = env.try!(:to_h) || {}
+
+      definition.variables_with_defaults.each do |variable|
+        env[variable.name] ||= variable.default
+      end
+
       commit = last_deployed_commit.presence || commits.first
       task = tasks.create(
         user_id: user.id,
-        definition: find_task_definition(definition_id),
+        definition: definition,
         until_commit_id: commit.id,
         since_commit_id: commit.id,
-        env: filter_task_envs(definition_id, (env.try!(:to_h) || {})),
+        env: definition.filter_envs(env),
       )
       task.enqueue
       task

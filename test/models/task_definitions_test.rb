@@ -12,6 +12,8 @@ module Shipit
         'variables' => [
           {'name' => 'FOO', 'title' => 'Set to 0 to foo', 'default' => '1'},
           {'name' => 'BAR', 'title' => 'Set to 1 to bar', 'default' => '0'},
+          {'name' => 'WALRUS', 'title' => 'Use with caution', 'default' => ' '},
+          {'name' => 'NODEFAULT', 'title' => 'Variable without default'},
         ],
       )
     end
@@ -25,6 +27,11 @@ module Shipit
       assert_nil TaskDefinition.dump(nil)
     end
 
+    test "#variables" do
+      assert_equal 4, @definition.variables.size
+      assert_equal 3, @definition.variables_with_defaults.size
+    end
+
     test "serialization works" do
       as_json = {
         id: 'restart',
@@ -36,6 +43,8 @@ module Shipit
         variables: [
           {'name' => 'FOO', 'title' => 'Set to 0 to foo', 'default' => '1', 'select' => nil},
           {'name' => 'BAR', 'title' => 'Set to 1 to bar', 'default' => '0', 'select' => nil},
+          {'name' => 'WALRUS', 'title' => 'Use with caution', 'default' => ' ', 'select' => nil},
+          {'name' => 'NODEFAULT', 'title' => 'Variable without default', 'default' => '', 'select' => nil},
         ],
       }
       assert_equal as_json, TaskDefinition.load(TaskDefinition.dump(@definition)).as_json
