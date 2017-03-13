@@ -209,6 +209,14 @@ module Shipit
       RefreshPullRequestJob.perform_later(self)
     end
 
+    def closed?
+      state == "closed"
+    end
+
+    def merged_upstream?
+      closed? && merged_at
+    end
+
     def refresh!
       update!(github_pull_request: Shipit.github_api.pull_request(stack.github_repo_name, number))
       head.refresh_statuses!
@@ -225,6 +233,7 @@ module Shipit
       self.deletions = github_pull_request.deletions
       self.branch = github_pull_request.head.ref
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha, detached: true)
+      self.merged_at = github_pull_request.merged_at
     end
 
     def merge_message

@@ -8,6 +8,9 @@ module Shipit
       pull_requests.each do |pull_request|
         pull_request.refresh!
         pull_request.reject_unless_mergeable!
+        if pull_request.closed?
+          pull_request.merged_upstream? ? pull_request.complete! : pull_request.cancel!
+        end
       end
 
       return false unless stack.allows_merges?

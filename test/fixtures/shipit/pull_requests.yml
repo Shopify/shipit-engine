@@ -54,3 +54,36 @@ shipit_pending_not_mergeable_yet:
   mergeable: null
   additions: 23
   deletions: 43
+
+shipit_pending_closed:
+  stack: shipit
+  number: 65
+  merge_status: pending
+  merge_requested_by: walrus
+  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  github_id: 43243243243243
+  api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/65
+  state: closed
+  branch: feature-64
+  head_id: 8
+  mergeable: null
+  additions: 23
+  deletions: 43
+
+shipit_pending_merged:
+  stack: shipit
+  number: 66
+  merge_status: pending
+  merge_requested_by: walrus
+  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
+  merged_at: <%= 2.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  github_id: 43243243243232
+  api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/66
+  state: closed
+  branch: feature-64
+  head_id: 8
+  mergeable: null
+  additions: 23
+  deletions: 43

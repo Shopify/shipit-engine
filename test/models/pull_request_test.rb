@@ -18,7 +18,7 @@ module Shipit
 
     test ".request_merge! only track pull requests once" do
       assert_difference -> { PullRequest.count }, +1 do
-        5.times { PullRequest.request_merge!(@stack, 65, @user) }
+        5.times { PullRequest.request_merge!(@stack, 999, @user) }
       end
     end
 
@@ -77,6 +77,7 @@ module Shipit
           mergeable: true,
           additions: 24,
           deletions: 5,
+          merged_at: nil,
           head: stub(
             ref: 'super-branch',
             sha: head_sha,

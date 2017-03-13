@@ -1,5 +1,7 @@
 # Unreleased
 
+* Pull requests in the merge queue which are closed on Github will be marked as merged/cancelled as appropriate.
+
 # 0.16.0
 
 * Add a CCMenu compatible API.
