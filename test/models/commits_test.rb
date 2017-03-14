@@ -6,6 +6,7 @@ module Shipit
       @stack = shipit_stacks(:shipit)
       @pr = @stack.commits.new
       @pr.message = "Merge pull request #31 from Shopify/improve-polling\n\nSeveral improvements to polling"
+      @stack.reload
       @commit = shipit_commits(:first)
     end
 
@@ -211,7 +212,7 @@ module Shipit
 
     test "#creating a commit for new stack updates deployed_at to nil" do
       walrus = shipit_users(:walrus)
-      stack = stacks(:undeployed_stack)
+      stack = shipit_stacks(:undeployed_stack)
       stack.commits.create!(
         author: walrus,
         committer: walrus,
