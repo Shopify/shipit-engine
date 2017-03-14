@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170310164315) do
+ActiveRecord::Schema.define(version: 20170314145604) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text     "permissions", limit: 65535
@@ -174,6 +174,7 @@ ActiveRecord::Schema.define(version: 20170310164315) do
     t.datetime "continuous_delivery_delayed_since"
     t.datetime "locked_since"
     t.boolean  "merge_queue_enabled",                             default: false,        null: false
+    t.datetime "deployed_at"
     t.index ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
   end
 

@@ -209,6 +209,21 @@ module Shipit
       end
     end
 
+    test "#creating a commit for new stack updates deployed_at to nil" do
+      walrus = shipit_users(:walrus)
+      stack = stacks(:undeployed_stack)
+      stack.commits.create!(
+        author: walrus,
+        committer: walrus,
+        sha: "ab12",
+        authored_at: DateTime.now,
+        committed_at: DateTime.now,
+        message: "more fish!",
+      )
+      stack.reload
+      assert_nil stack.deployed_at
+    end
+
     test ".by_sha! raises if the sha prefix matches multiple commits" do
       clone = Commit.new(@commit.attributes.except('id'))
       clone.sha[8..-1] = 'abc12'

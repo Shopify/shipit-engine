@@ -225,6 +225,12 @@ module Shipit
       end
     end
 
+    test "transitions to any state updates last deploy time to shipit record" do
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.complete!
+      assert_equal @deploy.updated_at, @stack.deployed_at
+    end
+
     test "transitioning to success schedule a MergePullRequests job" do
       @deploy = shipit_deploys(:shipit_running)
       assert_enqueued_with(job: MergePullRequestsJob, args: [@deploy.stack]) do

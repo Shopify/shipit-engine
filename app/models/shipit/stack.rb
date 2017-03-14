@@ -379,8 +379,8 @@ module Shipit
 
     def update_undeployed_commits_count(after_commit = nil)
       after_commit ||= last_deployed_commit
-      undeployed_commits = commits.reachable.newer_than(after_commit).select('count(*) as count')
-      self.class.where(id: id).update_all("undeployed_commits_count = (#{undeployed_commits.to_sql})")
+      undeployed_commits = commits.reachable.newer_than(after_commit).count
+      update(undeployed_commits_count: undeployed_commits)
     end
 
     def broadcast_update
