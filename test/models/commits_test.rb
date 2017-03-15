@@ -210,7 +210,7 @@ module Shipit
       end
     end
 
-    test "#creating a commit for new stack updates deployed_at to nil" do
+    test "#creating a commit for new stack updates last_deployed_at to nil" do
       walrus = shipit_users(:walrus)
       stack = shipit_stacks(:undeployed_stack)
       stack.commits.create!(
@@ -222,7 +222,7 @@ module Shipit
         message: "more fish!",
       )
       stack.reload
-      assert_nil stack.deployed_at
+      assert_nil stack.last_deployed_at
     end
 
     test ".by_sha! raises if the sha prefix matches multiple commits" do

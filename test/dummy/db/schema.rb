@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(version: 20170314145604) do
     t.datetime "continuous_delivery_delayed_since"
     t.datetime "locked_since"
     t.boolean  "merge_queue_enabled",                             default: false,        null: false
-    t.datetime "deployed_at"
+    t.datetime "last_deployed_at"
     t.index ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
   end
 

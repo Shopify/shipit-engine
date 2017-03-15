@@ -229,7 +229,7 @@ module Shipit
       @deploy = shipit_deploys(:shipit_running)
       @deploy.complete!
       @stack.reload
-      assert_in_delta @deploy.updated_at, @stack.deployed_at, 1
+      assert_in_delta @deploy.ended_at, @stack.last_deployed_at, 1
     end
 
     test "transitioning to success schedule a MergePullRequests job" do

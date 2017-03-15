@@ -183,7 +183,7 @@ module Shipit
     end
 
     def update_last_deploy_time
-      stack.update(deployed_at: updated_at)
+      stack.update(last_deployed_at: ended_at)
     end
   end
 end
