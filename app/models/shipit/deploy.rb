@@ -10,6 +10,7 @@ module Shipit
       after_transition to: :success, do: :update_undeployed_commits_count
       after_transition to: :aborted, do: :trigger_revert_if_required
       after_transition any => any, do: :update_commit_deployments
+      after_transition any => any, do: :update_last_deploy_time
     end
 
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
@@ -179,6 +180,10 @@ module Shipit
 
     def update_undeployed_commits_count
       stack.update_undeployed_commits_count(until_commit)
+    end
+
+    def update_last_deploy_time
+      stack.update(last_deployed_at: ended_at)
     end
   end
 end

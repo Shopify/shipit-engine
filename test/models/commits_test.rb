@@ -6,6 +6,7 @@ module Shipit
       @stack = shipit_stacks(:shipit)
       @pr = @stack.commits.new
       @pr.message = "Merge pull request #31 from Shopify/improve-polling\n\nSeveral improvements to polling"
+      @stack.reload
       @commit = shipit_commits(:first)
     end
 
@@ -207,6 +208,21 @@ module Shipit
       assert_raises Commit::AmbiguousRevision do
         Commit.by_sha!(@commit.sha[0..3])
       end
+    end
+
+    test "#creating a commit for new stack updates last_deployed_at to nil" do
+      walrus = shipit_users(:walrus)
+      stack = shipit_stacks(:undeployed_stack)
+      stack.commits.create!(
+        author: walrus,
+        committer: walrus,
+        sha: "ab12",
+        authored_at: DateTime.now,
+        committed_at: DateTime.now,
+        message: "more fish!",
+      )
+      stack.reload
+      assert_nil stack.last_deployed_at
     end
 
     test ".by_sha! raises if the sha prefix matches multiple commits" do

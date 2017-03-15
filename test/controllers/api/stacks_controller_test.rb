@@ -101,6 +101,12 @@ module Shipit
         assert_response :ok
         assert_json 'id', @stack.id
       end
+
+      test "#show returns last_deployed_at column for stack" do
+        get :show, params: {id: @stack.to_param}
+        assert_response :ok
+        assert_json 'last_deployed_at', @stack.last_deployed_at
+      end
     end
   end
 end
