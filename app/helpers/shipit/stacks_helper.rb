@@ -22,11 +22,15 @@ module Shipit
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
       data = {}
+
       if commit.deploy_disallowed?
         classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
-      elsif commit.deploy_discouraged?
+      elsif commit.deploy_too_big?
         classes.push('btn--warning')
         data[:tooltip] = t('deploy_button.hint.max_commits', maximum: commit.stack.maximum_commits_per_deploy)
+      elsif commit.revert_being_left_behind?
+        classes.push('btn--warning')
+        data[:tooltip] = t('deploy_button.hint.revert_left_behind')
       end
 
       link_to(t("deploy_button.caption.#{commit.deploy_state(bypass_safeties?)}"), url, class: classes, data: data)

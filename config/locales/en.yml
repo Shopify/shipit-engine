@@ -23,6 +23,7 @@ en:
   deploy_button:
     hint:
       max_commits: It is recommended not to deploy more than %{maximum} commits at once.
+      revert_left_behind: "Looks like this deploy contains a commit that has been reverted. Are you sure it is safe to deploy the commit without it's revert?"
     caption:
       pending: CI Pending...
       failure: CI Failure

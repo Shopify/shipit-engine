@@ -284,6 +284,18 @@ module Shipit
       refute_predicate commit, :deployable?
     end
 
+    test "#safe_to_deploy? is false if list of undeployed commits contains a commit and it's revert" do
+      assert @commit.safe_to_deploy?
+      create_revert(@commit)
+      refute @commit.safe_to_deploy?
+    end
+
+    test "#safe_to_deploy? is false if list of undeployed commits contains a commit of a PR that reverts it" do
+      assert @commit.safe_to_deploy?
+      create_revert(@commit, pr: true)
+      refute @commit.safe_to_deploy?
+    end
+
     expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
       'unknown' => %w(pending success failure error),
       'pending' => %w(success failure error),

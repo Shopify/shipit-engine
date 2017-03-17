@@ -147,7 +147,7 @@ module Shipit
     def next_commit_to_deploy
       commits_to_deploy = commits.order(id: :asc).newer_than(last_deployed_commit).reachable.preload(:statuses)
       commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
-      commits_to_deploy.to_a.reverse.find(&:deployable?)
+      commits_to_deploy.to_a.reverse.find { |commit| commit.deployable? && commit.safe_to_deploy? }
     end
 
     def deployed_too_recently?
