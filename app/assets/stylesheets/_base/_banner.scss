@@ -6,10 +6,14 @@
   background: $blue;
   padding: 1.75rem 0;
   position: relative;
-}
 
-.banner a {
-  color: #fff;
+  a {
+    color: #fff;
+  }
+
+  .icon {
+    background-color: #fff;
+  }
 }
 
 .banner__inner {
