@@ -294,6 +294,12 @@ module Shipit
       refute_predicate shipit_commits(:fifth), :deployable?
     end
 
+    test "#deployable? is false if commit is locked" do
+      commit = shipit_commits(:cyclimse_first)
+      commit.update!(locked: true)
+      refute_predicate commit, :deployable?
+    end
+
     test "#deployable? is false if a required status is missing" do
       commit = shipit_commits(:cyclimse_first)
       commit.stack.stubs(:required_statuses).returns(%w(ci/very-important))

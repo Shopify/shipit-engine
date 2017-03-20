@@ -106,7 +106,7 @@ a {
   text-decoration: none;
   cursor: pointer;
   color: $blue;
-    &.subdued { color: #999; }
+    &.subdued { color: $grey; }
     &.subdued:hover { color: $blue; }
 }
 

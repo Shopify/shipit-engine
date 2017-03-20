@@ -24,17 +24,17 @@ en:
     hint:
       max_commits: It is recommended not to deploy more than %{maximum} commits at once.
     caption:
-      pending: CI Pending...
-      failure: CI Failure
-      error: CI Error
+      pending: Pending CI
+      failure: Failing CI
+      error: Failing CI
       unknown: Not Run
       locked: Locked
-      deploying: A Deploy is in Progress...
+      deploying: A Deploy is in Progress
       allowed: Deploy
       missing: Missing CI
   redeploy_button:
     caption:
-      deploying: A Deploy is in Progress...
+      deploying: A Deploy is in Progress
       allowed: Redeploy
       locked: Locked
   deploy_spec:

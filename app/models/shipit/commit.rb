@@ -106,7 +106,7 @@ module Shipit
     delegate :pending?, :success?, :error?, :failure?, :state, to: :status
 
     def deployable?
-      success? || stack.ignore_ci?
+      !locked? && (success? || stack.ignore_ci?)
     end
 
     def children

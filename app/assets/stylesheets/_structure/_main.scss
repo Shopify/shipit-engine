@@ -40,7 +40,7 @@
         & > p {
           margin: 0;
           padding: .7rem 0;
-          color: #999;
+          color: $grey;
           font-size: .875rem;
             .repo-name { font-weight: 500; color: #777; }
         }
@@ -140,7 +140,7 @@ pre {
 }
 
 .less-important {
-    color: #999;
+    color: $grey;
     margin-bottom: 0em;
     margin-top: 1em;
     p {

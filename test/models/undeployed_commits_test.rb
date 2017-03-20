@@ -43,8 +43,8 @@ module Shipit
       assert_equal 'allowed', @commit.deploy_state
     end
 
-    test "#deploy_state returns `locked` if the stack is locked" do
-      @stack.update!(lock_reason: "Let's eat some chips!")
+    test "#deploy_state returns `locked` if the commit is locked" do
+      @commit.update!(locked: true)
       assert_equal 'locked', @commit.deploy_state
     end
 
@@ -70,11 +70,6 @@ module Shipit
 
     test "#redeploy_state returns `allowed` by default" do
       assert_equal 'allowed', @commit.redeploy_state
-    end
-
-    test "#redeploy_state returns `locked` if the stack is locked" do
-      @stack.update!(lock_reason: "Let's eat some chips!")
-      assert_equal 'locked', @commit.redeploy_state
     end
 
     test "#redeploy_state returns `allowed` if the stack is locked but the safeties are ignored" do

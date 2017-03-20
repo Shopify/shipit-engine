@@ -11,7 +11,7 @@ module Shipit
       state = deployable? ? 'allowed' : status.state
       unless bypass_safeties
         state = 'deploying' if stack.active_task?
-        state = 'locked' if stack.locked?
+        state = 'locked' if locked?
       end
       state
     end
@@ -19,7 +19,6 @@ module Shipit
     def redeploy_state(bypass_safeties = false)
       state = 'allowed'
       unless bypass_safeties
-        state = 'locked' if stack.locked?
         state = 'deploying' if stack.active_task?
       end
       state

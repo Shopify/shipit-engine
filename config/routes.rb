@@ -73,6 +73,7 @@ Shipit::Engine.routes.draw do
     get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: {format: :json}
 
     resources :rollbacks, only: %i(create)
+    resources :commits, only: %i(update)
     resources :tasks, only: %i(show) do
       collection do
         get '' => 'tasks#index', as: :index

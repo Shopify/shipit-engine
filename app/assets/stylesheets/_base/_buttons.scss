@@ -28,7 +28,7 @@
 }
 
 .btn--disabled {
-  color: #999;
+  color: $grey;
   background-color: #fafafa;
   cursor: default;
 }
@@ -38,7 +38,7 @@
   border: none;
   background-color: $bright-red;
   &.btn-disabled {
-    color: #999;
+    color: $grey;
     background-color: $light-red;
   }
 }
@@ -47,7 +47,7 @@
   color: #fff;
   background-color: $orange;
   &.btn-disabled {
-    color: #999;
+    color: $grey;
     background-color: $light-orange;
   }
 }
