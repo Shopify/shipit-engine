@@ -126,11 +126,23 @@ module Shipit
     end
 
     def title
-      pull_request_title || message
+      pull_request_title || message_header
+    end
+
+    def message_header
+      message.lines.first.strip
     end
 
     def pull_request_title # TODO: remove in a few versions when it is assumed the commits table was backfilled
       super || message_parser.pull_request_title
+    end
+
+    def revert?
+      title.start_with?('Revert "') && title.end_with?('"')
+    end
+
+    def revert_of?(commit)
+      title == %(Revert "#{commit.title}") || title == %(Revert "#{commit.message_header}")
     end
 
     def short_sha
