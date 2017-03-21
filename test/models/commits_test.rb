@@ -502,6 +502,55 @@ module Shipit
       assert_nil commit.pull_request
     end
 
+    test "#revert? returns false if the message doesn't follow the revert convention" do
+      commit = Commit.new(message: "Revert stuff")
+      refute_predicate commit, :revert?
+    end
+
+    test "#revert? returns true for commits reverted by GitHub" do
+      commit = Commit.new(
+        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\"",
+      )
+      assert_predicate commit, :revert?
+    end
+
+    test "#revert? returns true for commits reverted from CLI" do
+      commit = Commit.new(
+        message: "Revert \"Super Feature\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa.",
+      )
+      assert_predicate commit, :revert?
+    end
+
+    test "#revert_of? works with pull requests reverted on GitHub" do
+      commit = Commit.new(
+        message: "Merge pull request #16 from byroot/casperisfine-patch-1\n\nCreate README.md",
+      )
+      revert = Commit.new(
+        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\"",
+      )
+      assert revert.revert_of?(commit)
+    end
+
+    test "#revert_of? works with commits reverted from CLI" do
+      commit = Commit.new(
+        message: "Create README.md",
+      )
+      revert = Commit.new(
+        message: "Revert \"Create README.md\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa.",
+      )
+      assert revert.revert_of?(commit)
+    end
+
+    test "#revert_of? works with pull requests reverted from CLI" do
+      commit = Commit.new(
+        message: "Merge pull request #19 from byroot/casperisfine-patch-1\n\nUpdate README.md",
+      )
+      revert = Commit.new(
+        message: "Revert \"Merge pull request #19 from byroot/casperisfine-patch-1\"\n\nThis reverts commit fa3722ef8372b47160f5d96010d3c54743d192f9, reversing\nchanges made to 868b6f65f759d003c04d056f2f928f18d6813c7e.",
+      )
+      assert revert.revert_of?(commit)
+    end
+
     private
 
     def expect_event(stack)
