@@ -14,8 +14,8 @@
       <%= timeago_tag(commit.committed_at, force: true) %>
     </p>
   </div>
-  <div class="commit-lock">
-    <%= link_to stack_commit_path(commit.stack, commit) do %>
+  <div class="commit-lock" >
+    <%= link_to stack_commit_path(commit.stack, commit), 'data-tooltip' => (commit.locked? ? 'This commit is unsafe to deploy. Click to mark it as safe' : 'This commit is safe to deploy. Click to mark it as unsafe') do %>
       <i class="icon icon--lock"></i>
     <% end %>
   </div>
