@@ -1,6 +1,6 @@
 # Unreleased
 
-* Automatically lock impacted commits when a revert is merged. This include the reverted commit as well as all it's childs up to the revert. 
+* Automatically lock impacted commits when a revert is merged. This include the reverted commit as well as all its children up to the revert. 
 
 * Allow to lock undeployed commits, to prevent them from being deployed.
 
