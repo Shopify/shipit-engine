@@ -63,7 +63,7 @@
 }
 
 .commit-author__name__username {
-  color: #999;
+  color: $grey;
 }
 
 
@@ -98,9 +98,30 @@
   color: $blue;
 }
 
+.commit-lock {
+  display: inline-block;
+  .icon {
+    background-color: #ddd;
+  }
+
+  &:hover .icon {
+    background-color: darken(#ddd, 20%);
+  }
+}
+
+.commit.locked .commit-lock {
+  .icon {
+    background-color: $bright-red;
+  }
+
+  &:hover .icon {
+    background-color: darken($bright-red, 20%);
+  }
+}
+
 .commit-meta, .pr-meta {
   font-size: 0.8em;
-  color: #999;
+  color: $grey;
   margin: 0;
 
   @include media(desktop) {
@@ -133,6 +154,11 @@
 
   @include media(desktop) {
     margin-left: 1rem;
+    min-width: 10rem;
+
+    .btn {
+      float: right;
+    }
   }
 }
 
@@ -285,5 +311,5 @@
 
 .commit-summary__sha {
   font-size: 0.875rem;
-  color: #999;
+  color: $grey;
 }

@@ -1,3 +1,13 @@
+$(document).on 'click', '.commit-lock a', (event) ->
+  event.preventDefault()
+  $commit = $(event.target).closest('.commit')
+  $link = $(event.target).closest('a')
+
+  locked = $commit.hasClass('locked')
+  $commit.toggleClass('locked')
+
+  $.ajax($link.attr('href'), method: 'PATCH', data: {commit: {locked: !locked}})
+
 jQuery ($) ->
   displayIgnoreCiMessage = ->
     ignoreCiMessage = $(".ignoring-ci")

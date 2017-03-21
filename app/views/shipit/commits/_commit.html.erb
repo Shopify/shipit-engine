@@ -1,4 +1,4 @@
-<li class="commit" id="commit-<%= commit.id %>">
+<li class="commit <%= 'locked' if commit.locked? %>" id="commit-<%= commit.id %>">
   <%= render 'shipit/shared/author', author: commit.author %>
   <%= render commit.status %>
   <div class="commit-details">
@@ -13,6 +13,11 @@
     <p class="commit-meta">
       <%= timeago_tag(commit.committed_at, force: true) %>
     </p>
+  </div>
+  <div class="commit-lock">
+    <%= link_to stack_commit_path(commit.stack, commit) do %>
+      <i class="icon icon--lock"></i>
+    <% end %>
   </div>
   <div class="commit-actions">
     <%= deploy_button(commit) %>
