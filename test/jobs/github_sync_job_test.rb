@@ -40,7 +40,7 @@ module Shipit
       @stack.deploys_and_rollbacks.destroy_all
 
       initial_queue = [
-        ["fix all teh things", false],
+        ["fix all the things", false],
         ["yoloshipit!", false],
         ["fix it!", false],
         ["sheep it!", false],
@@ -76,7 +76,7 @@ module Shipit
 
       final_queue = [
         ['Revert "fix it!"', false],
-        ["fix all teh things", true],
+        ["fix all the things", true],
         ["yoloshipit!", true],
         ["fix it!", true],
         ["sheep it!", false],
