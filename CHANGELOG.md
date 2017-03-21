@@ -1,5 +1,7 @@
 # Unreleased
 
+* Automatically lock impacted commits when a revert is merged. This include the reverted commit as well as all it's childs up to the revert. 
+
 * Allow to lock undeployed commits, to prevent them from being deployed.
 
 * Pull requests in the merge queue which are closed on Github will be marked as merged/cancelled as appropriate.
