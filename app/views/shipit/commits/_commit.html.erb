@@ -15,7 +15,10 @@
     </p>
   </div>
   <div class="commit-lock">
-    <%= link_to stack_commit_path(commit.stack, commit) do %>
+    <%= link_to stack_commit_path(commit.stack, commit), class: 'action-lock-commit', data: {tooltip: t('commit.lock')} do %>
+      <i class="icon icon--lock"></i>
+    <% end %>
+    <%= link_to stack_commit_path(commit.stack, commit), class: 'action-unlock-commit', data: {tooltip: t('commit.unlock')} do %>
       <i class="icon icon--lock"></i>
     <% end %>
   </div>
