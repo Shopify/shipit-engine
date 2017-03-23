@@ -107,6 +107,10 @@
   &:hover .icon {
     background-color: darken(#ddd, 20%);
   }
+
+  .action-unlock-commit {
+    display: none;
+  }
 }
 
 .commit.locked .commit-lock {
@@ -116,6 +120,14 @@
 
   &:hover .icon {
     background-color: darken($bright-red, 20%);
+  }
+
+  .action-lock-commit {
+    display: none;
+  }
+
+  .action-unlock-commit {
+    display: inline-block;
   }
 }
 
