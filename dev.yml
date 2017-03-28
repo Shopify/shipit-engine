@@ -7,7 +7,7 @@ up:
     - openssl
     - sqlite
   - ruby:
-      version: 2.3.1
+      version: 2.3.3
   - railgun
   - bundler:
       without: ci
