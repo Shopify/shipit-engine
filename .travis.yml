@@ -14,11 +14,11 @@ env:
     - SUITE=pg
     - SUITE=sqlite3
 rvm:
-  - 2.2.3
+  - 2.3.1
 matrix:
   fast_finish: true
   include:
-    - rvm: 2.2.3
+    - rvm: 2.3.1
       env: SUITE=rubocop
 
 notifications:
