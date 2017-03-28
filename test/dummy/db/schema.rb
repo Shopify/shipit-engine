@@ -192,24 +192,24 @@ ActiveRecord::Schema.define(version: 20170320124156) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.integer  "stack_id",              limit: 4,                         null: false
-    t.integer  "since_commit_id",       limit: 4,                         null: false
-    t.integer  "until_commit_id",       limit: 4,                         null: false
-    t.string   "status",                limit: 10,    default: "pending", null: false
+    t.integer  "stack_id",              limit: 4,                            null: false
+    t.integer  "since_commit_id",       limit: 4,                            null: false
+    t.integer  "until_commit_id",       limit: 4,                            null: false
+    t.string   "status",                limit: 10,       default: "pending", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id",               limit: 4
-    t.boolean  "rolled_up",                           default: false,     null: false
+    t.boolean  "rolled_up",                              default: false,     null: false
     t.string   "type",                  limit: 20
     t.integer  "parent_id",             limit: 4
-    t.integer  "additions",             limit: 4,     default: 0
-    t.integer  "deletions",             limit: 4,     default: 0
+    t.integer  "additions",             limit: 4,        default: 0
+    t.integer  "deletions",             limit: 4,        default: 0
     t.text     "definition",            limit: 65535
-    t.binary   "gzip_output"
-    t.boolean  "rollback_once_aborted",               default: false,     null: false
+    t.binary   "gzip_output",           limit: 16777215
+    t.boolean  "rollback_once_aborted",                  default: false,     null: false
     t.text     "env"
-    t.integer  "confirmations",                       default: 0,         null: false
-    t.boolean  "allow_concurrency",                   default: false,     null: false
+    t.integer  "confirmations",                          default: 0,         null: false
+    t.boolean  "allow_concurrency",                      default: false,     null: false
     t.datetime "started_at"
     t.datetime "ended_at"
     t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
