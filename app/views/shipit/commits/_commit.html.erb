@@ -14,8 +14,11 @@
       <%= timeago_tag(commit.committed_at, force: true) %>
     </p>
   </div>
-  <div class="commit-lock">
-    <%= link_to stack_commit_path(commit.stack, commit) do %>
+  <div class="commit-lock" >
+    <%= link_to stack_commit_path(commit.stack, commit), class: 'action-lock-commit', data: {tooltip: t('commit.lock')} do %>
+      <i class="icon icon--lock"></i>
+    <% end %>
+    <%= link_to stack_commit_path(commit.stack, commit), class: 'action-unlock-commit', data: {tooltip: t('commit.unlock'), confirm: t('commit.confirm_unlock')} do %>
       <i class="icon icon--lock"></i>
     <% end %>
   </div>
