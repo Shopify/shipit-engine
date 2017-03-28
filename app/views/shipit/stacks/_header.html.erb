@@ -6,9 +6,6 @@
 
 <% content_for :primary_navigation do %>
   <%= link_to 'Refresh statuses & commits', stack_refresh_path(stack), method: 'post', class: "header__btn btn" %>
-  <% stack.task_definitions.each do |definition| %>
-      <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: %w(header__btn stack-action btn trigger-deploy) %>
-  <% end %>
 <% end %>
 
 <% content_for :secondary_navigation do %>
@@ -25,6 +22,11 @@
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
         <%= link_to "Pull Requests (#{stack.pull_requests.queued.count})", stack_pull_requests_path(stack) %>
+      </li>
+    <% end %>
+    <% stack.task_definitions.each do |definition| %>
+      <li class="nav__list__item">
+        <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: %w(header__btn stack-action btn trigger-deploy) %>
       </li>
     <% end %>
   </ul>
