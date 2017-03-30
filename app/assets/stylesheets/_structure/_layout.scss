@@ -95,3 +95,15 @@
     margin-left: 1.5em;
   }
 }
+
+.nav__list__item--has-children {
+  position: relative;
+
+  &::after {
+    display: inline-block;
+    content: '';
+    background-image: asset-data-url('caretDown.svg');
+    width: 16px;
+    height: 16px;
+  }
+}
