@@ -22,7 +22,7 @@
 .header__inner {
   display: flex;
   flex-wrap: wrap;
-  padding: 1.5em 0;
+  padding: $spacing-loose 0;
   position: relative;
 }
 
@@ -35,13 +35,13 @@
 }
 
 .header__btn {
-  margin: .4em .5em .4em 0;
+  margin: 0.4em 0.5em 0.4em 0;
 }
 
 .powered-by {
   float: right;
   position: relative;
-  top: .5rem;
+  top: 0.5rem;
   right: 1rem;
   font-size: 12px;
   color: $grey;
@@ -75,7 +75,6 @@
 
 .nav {
   display: flex;
-  margin-bottom: 1.5rem;
 }
 
 .nav__list {
@@ -90,20 +89,70 @@
 
 .nav__list__item {
   display: inline-block;
+  cursor: pointer;
+  color: $blue;
+  padding-bottom: $spacing-loose;
 
-  & + & {
-    margin-left: 1.5em;
+  + .nav__list__item {
+    margin-left: $spacing-loose;
+  }
+}
+
+.nav__list__sub__item {
+  list-style: none;
+  white-space: nowrap;
+
+  + .nav__list__sub__item {
+    margin-top: $spacing-tight;
+  }
+}
+
+.nav__sub__list {
+  position: absolute;
+  top: calc(100% - #{$spacing-tight});
+  z-index: 20;
+  background-color: white;
+  padding: $spacing-tight;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  border: 1px solid $grey-light;
+  border-radius: 3px;
+  transition:
+    opacity 0.25s ease-in-out,
+    transform 0.25s ease-in-out;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -7px;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid $grey-light;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    height: 12px;
+    width: 12px;
+    transform: rotate(45deg);
   }
 }
 
 .nav__list__item--has-children {
   position: relative;
+  display: inline-flex;
 
   &::after {
     display: inline-block;
     content: '';
     background-image: asset-data-url('caretDown.svg');
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover .nav__sub__list {
+    opacity: 1;
+    pointer-events: initial;
+    transform: translateY(0);
   }
 }

@@ -15,13 +15,22 @@
   box-shadow: 0 0 0 1px rgba(#000, 0.15);
 }
 
+.btn--plain {
+  border: 0;
+  background: none;
+  font-size: inherit;
+  color: inherit;
+}
+
 .btn--primary {
   background-color: $blue;
   color: #fff;
   box-shadow: none;
+
   &.btn--disabled {
     box-shadow: 0 0 0 1px rgba(#000, 0.15);
   }
+
   &.btn--warning {
     background-color: $yellow;
   }
@@ -37,6 +46,7 @@
   color: #fff;
   border: none;
   background-color: $bright-red;
+
   &.btn-disabled {
     color: $grey;
     background-color: $light-red;
@@ -46,6 +56,7 @@
 .btn--alert {
   color: #fff;
   background-color: $orange;
+
   &.btn-disabled {
     color: $grey;
     background-color: $light-orange;
