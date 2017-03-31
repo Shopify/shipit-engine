@@ -24,12 +24,22 @@
         <%= link_to "Pull Requests (#{stack.pull_requests.queued.count})", stack_pull_requests_path(stack) %>
       </li>
     <% end %>
-    <% stack.task_definitions.each do |definition| %>
-      <li class="nav__list__item">
-        <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: %w(header__btn stack-action btn trigger-deploy) %>
+
+    <% if stack.task_definitions.present? %>
+      <li class="nav__list__item nav__list__item--has-children">
+        Tasks
+
+        <ul class="nav__sub__list">
+          <% stack.task_definitions.each do |definition| %>
+            <li class="nav__list__sub__item">
+              <%= link_to "#{definition.action}…", new_stack_tasks_path(stack, definition_id: definition.id), class: "trigger-deploy" %>
+            </li>
+          <% end %>
+        </ul>
       </li>
     <% end %>
   </ul>
+
   <ul class="nav__list nav__list--secondary">
     <% if stack.links.present? %>
       <% stack.links.each do |name, url| %>
