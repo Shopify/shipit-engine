@@ -21,12 +21,14 @@
 
 .header__inner {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   padding: spacing(loose) 0;
   position: relative;
 }
 
 .header__page-title {
+  flex-basis: 50%;
   flex-grow: 1;
 }
 
@@ -58,11 +60,12 @@
   height: 40px;
   transition: transform 0.3s ease-in-out;
   text-indent: -9999px;
-  position: absolute;
-  top: 50%;
   right: 100%;
   margin-right: spacing();
-  margin-top: -20px;
+
+  @include media(mobile-up) {
+    position: absolute;
+  }
 
   &:hover {
     transform: rotate(-25deg);

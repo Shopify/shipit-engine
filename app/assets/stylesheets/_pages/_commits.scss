@@ -102,7 +102,7 @@
 }
 
 .commit-lock {
-  padding: $spacing;
+  padding: spacing();
   display: inline-block;
 
   .icon {
@@ -192,7 +192,7 @@
 
 .status {
   flex-shrink: 0;
-  margin-right: $spacing-tight;
+  margin-right: spacing();
 
   @include media(tablet-down) {
     margin-bottom: 1rem;
