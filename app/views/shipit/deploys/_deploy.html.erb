@@ -2,32 +2,35 @@
 
 <li class="task deploy" id="task-<%= deploy.id %>" data-status="<%= deploy.status %>">
   <%= render 'shipit/shared/author', author: deploy.author %>
-  <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
-    <i class="status__icon"></i>
-    <span class="visually-hidden"><%= deploy.status %></span>
-  </a>
+
   <div class="commit-details">
-    <span class="commit-title">
-      <a href="<%= stack_deploy_path(@stack, deploy) %>">
-        <%= render_commit_message deploy.until_commit %>
-      </a>
-    </span>
-    <p class="commit-meta">
-      <%= deploy.rollback? ? 'rolled back' : 'deployed' %>
-      <span class="sha"><%= link_to_github_deploy(deploy) %></span>
-      <span class="code-additions">+<%= deploy.additions %></span>
-      <span class="code-deletions">-<%= deploy.deletions %></span>
-    </p>
-    <p class="commit-meta">
-      <% if read_only %>
-        <span class="utc-timecode">on <%= deploy.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
-      <% else %>
-        <%= timeago_tag(deploy.created_at, force: true) %>
-      <% end %>
-      <% if deploy.duration? %>
-        in <%= deploy.duration %>
-      <% end %>
-    </p>
+    <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
+      <i class="status__icon"></i>
+      <span class="visually-hidden"><%= deploy.status %></span>
+    </a>
+    <div class="commit-data">
+      <span class="commit-title">
+        <a href="<%= stack_deploy_path(@stack, deploy) %>">
+          <%= render_commit_message deploy.until_commit %>
+        </a>
+      </span>
+      <p class="commit-meta">
+        <%= deploy.rollback? ? 'rolled back' : 'deployed' %>
+        <span class="sha"><%= link_to_github_deploy(deploy) %></span>
+        <span class="code-additions">+<%= deploy.additions %></span>
+        <span class="code-deletions">-<%= deploy.deletions %></span>
+      </p>
+      <p class="commit-meta">
+        <% if read_only %>
+          <span class="utc-timecode">on <%= deploy.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
+        <% else %>
+          <%= timeago_tag(deploy.created_at, force: true) %>
+        <% end %>
+        <% if deploy.duration? %>
+          in <%= deploy.duration %>
+        <% end %>
+      </p>
+    </div>
   </div>
   <% unless read_only %>
     <div class="commit-actions">

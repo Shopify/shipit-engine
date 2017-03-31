@@ -11,12 +11,14 @@
   float: right;
 }
 
-.commit, .task, .pr {
+.commit,
+.task,
+.pr {
   padding: .75rem 0;
   display: flex;
   flex-direction: column;
 
-  @include media(desktop) {
+  @include media(mobile-up) {
     flex-direction: row;
     align-items: center;
   }
@@ -66,17 +68,18 @@
   color: $grey;
 }
 
-
 // COMMIT DETAILS
 // -----------------------------------------------------------------------------
 
-.commit-details, .pr-details {
-  flex-grow: 1;
+.commit-details,
+.pr-details {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
 
-  @include media(tablet-down) {
-    margin-bottom: 1rem;
-    order: -1;
-  }
+.commit-data {
+  flex: 1 0 auto;
 }
 
 .commit-title {
@@ -99,7 +102,9 @@
 }
 
 .commit-lock {
+  padding: $spacing;
   display: inline-block;
+
   .icon {
     background-color: #ddd;
   }
@@ -187,6 +192,7 @@
 
 .status {
   flex-shrink: 0;
+  margin-right: $spacing-tight;
 
   @include media(tablet-down) {
     margin-bottom: 1rem;
