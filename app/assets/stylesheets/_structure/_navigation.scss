@@ -1,0 +1,89 @@
+// NAVIGATION
+// -----------------------------------------------------------------------------
+
+.nav {
+  display: flex;
+}
+
+.nav__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__list--primary {
+  flex-grow: 1;
+}
+
+.nav__list__item {
+  display: inline-block;
+  cursor: pointer;
+  color: $blue;
+  padding-bottom: spacing(loose);
+
+  + .nav__list__item {
+    margin-left: spacing(loose);
+  }
+}
+
+.nav__list__sub__item {
+  list-style: none;
+  white-space: nowrap;
+
+  + .nav__list__sub__item {
+    margin-top: spacing(tight);
+  }
+}
+
+$tool-tip-size: 12px;
+$tool-tip-offset: $tool-tip-size / 2 + 1;
+$sub-nav-offset: -10px;
+
+.nav__sub__list {
+  position: absolute;
+  top: calc(100% - #{spacing(tight)});
+  z-index: 10;
+  background-color: white;
+  padding: spacing(tight);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY($sub-nav-offset);
+  border: 1px solid $grey-light;
+  border-radius: 3px;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -1 * $tool-tip-offset;
+    background-color: white;
+    border: 1px solid $grey-light;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    height: $tool-tip-size;
+    width: $tool-tip-size;
+    transform: rotate(45deg);
+  }
+}
+
+.nav__list__item--has-children {
+  position: relative;
+  display: inline-flex;
+
+  &::after {
+    display: inline-block;
+    content: '';
+    background-image: asset-data-url('caret-down.svg');
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover .nav__sub__list {
+    opacity: 1;
+    pointer-events: initial;
+    transform: translateY(0);
+  }
+}
