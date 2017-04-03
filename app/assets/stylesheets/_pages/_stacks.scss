@@ -61,7 +61,7 @@
   }
 
   &.selected a {
-    background-color: $blue;
+    background-color: color(blue);
     outline: none;
     span { color: #fff; }
     small { color: rgba(#fff, .8); }
@@ -74,7 +74,7 @@
   border-radius: 4px;
   display: block;
     &:hover, &:focus {
-      background-color: $blue;
+      background-color: color(blue);
       outline: none;
       span { color: #fff; }
       small { color: rgba(#fff, .8); }
@@ -154,7 +154,7 @@
     }
   }
   input:focus {
-    border-color: $blue;
+    border-color: color(blue);
   }
 }
 

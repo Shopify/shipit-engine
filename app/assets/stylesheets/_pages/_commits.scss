@@ -63,7 +63,7 @@
 }
 
 .commit-author__name__username {
-  color: $grey;
+  color: color(gray);
 }
 
 
@@ -95,7 +95,7 @@
 }
 
 .pr-details .pr-number .number {
-  color: $blue;
+  color: color(blue);
 }
 
 .commit-lock {
@@ -111,17 +111,17 @@
 
 .commit.locked .commit-lock {
   .icon {
-    background-color: $bright-red;
+    background-color: color(red, bright);
   }
 
   &:hover .icon {
-    background-color: darken($bright-red, 20%);
+    background-color: darken(color(red, bright), 20%);
   }
 }
 
 .commit-meta, .pr-meta {
   font-size: 0.8em;
-  color: $grey;
+  color: color(gray);
   margin: 0;
 
   @include media(desktop) {
@@ -129,7 +129,7 @@
   }
 
   .warning {
-    color: $orange;
+    color: color(orange);
   }
 }
 
@@ -138,11 +138,11 @@
 }
 
 .code-additions {
-  color: $green;
+  color: color(green);
 }
 
 .code-deletions {
-  color: $red;
+  color: color(red);
 }
 
 
@@ -211,7 +211,7 @@
 
 .status--running,
 [data-deploy-status='running'] {
-  border-color: $blue;
+  border-color: color(blue);
 
   .status__icon {
     background-image: asset-data-url("deploying.svg");
@@ -222,7 +222,7 @@
 
 .status--aborting,
 [data-deploy-status='aborting'] {
-  border-color: $orange;
+  border-color: color(orange);
 
   .status__icon {
     background-image: asset-data-url("aborting.svg");
@@ -232,7 +232,7 @@
 
 .status--aborted,
 [data-deploy-status='aborted'] {
-  border-color: $orange;
+  border-color: color(orange);
 
   .status__icon {
     background-image: asset-data-url("aborted.svg");
@@ -241,7 +241,7 @@
 
 .status--flapping,
 [data-deploy-status='flapping'] {
-  border-color: $orange;
+  border-color: color(orange);
 
   .status__icon {
     background-image: asset-data-url("flapping.svg");
@@ -250,7 +250,7 @@
 
 .status--success,
 [data-deploy-status='success'] {
-  border-color: $green;
+  border-color: color(green);
 
   .status__icon {
     background-image: asset-data-url("success.svg");
@@ -261,7 +261,7 @@
 .status--failed,
 [data-deploy-status='failure'],
 [data-deploy-status='failed'] {
-  border-color: $bright-red;
+  border-color: color(red, bright);
 
   .status__icon {
     background-image: asset-data-url("failure.svg");
@@ -311,5 +311,5 @@
 
 .commit-summary__sha {
   font-size: 0.875rem;
-  color: $grey;
+  color: color(gray);
 }

@@ -16,7 +16,7 @@
 .header {
   border-bottom: 1px solid #e5e5e5;
   background-color: #fff;
-  color: $grey;
+  color: color(gray);
 }
 
 .header__inner {
@@ -44,7 +44,7 @@
   top: spacing(tight);
   right: spacing();
   font-size: 12px;
-  color: $grey;
+  color: color(gray);
 }
 
 

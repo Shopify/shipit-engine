@@ -91,11 +91,11 @@
 
 .status-item__service {
   .status-item--success & {
-    color: $green;
+    color: color(green);
   }
 
   .status-item--pending & {
-    color: $dark-yellow;
+    color: color(yellow, dark);
   }
 
   .status-item--error & {
@@ -104,7 +104,7 @@
 
   .status-item--failed &,
   .status-item--failure & {
-    color: $bright-red;
+    color: color(red, bright);
   }
 }
 

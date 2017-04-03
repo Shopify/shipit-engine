@@ -26,8 +26,8 @@ $border-radius: 4px;
 }
 
 @mixin failure {
-  color: $red;
-  border-color: $red;
+  color: color(red);
+  border-color: color(red);
 }
 
 @mixin flexbox() {
@@ -81,7 +81,7 @@ $border-radius: 4px;
 }
 
 ::selection {
-  background: $blue;
+  background: color(blue);
   color: #fff;
 }
 
@@ -105,9 +105,9 @@ p {
 a {
   text-decoration: none;
   cursor: pointer;
-  color: $blue;
-    &.subdued { color: $grey; }
-    &.subdued:hover { color: $blue; }
+  color: color(blue);
+    &.subdued { color: color(gray); }
+    &.subdued:hover { color: color(blue); }
 }
 
 .more {

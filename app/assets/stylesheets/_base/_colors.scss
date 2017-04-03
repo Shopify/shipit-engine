@@ -1,19 +1,58 @@
-// =============================================================================
-// COLORS
-// =============================================================================
+$color-palette-data: (
+  blue: (
+    banner: #96A9BA,
+    base: #248AF2
+  ),
 
-$banner-blue: #96A9BA;
-$banner-red: #EE6A6A;
-$blue: #248AF2;
-$green: #25C351;
-$red: #F39494;
-$bright-red: #F73B3B;
-$light-red: #ffd9d6;
-$yellow: #FFC66C;
-$dark-yellow: #CEA61B;
-$orange: #FFAD4C;
-$light-orange: #ffebcc;
-$slate: #2E343A;
-$terminal-black: #272C30;
-$grey: #999;
-$grey-light: #e0e0e0;
+  green: (
+    base: #25C351
+  ),
+
+  red: (
+    banner: #EE6A6A,
+    base: #F39494,
+    bright: #F73B3B,
+    light: #FFD9D6
+  ),
+
+  yellow: (
+    dark: #CEA61B,
+    base: #FFC66C
+  ),
+
+  orange: (
+    base: #FFAD4C,
+    light: #FFEBCC
+  ),
+
+  slate: (
+    base: #2E343A,
+    dark: #272C30
+  ),
+
+  gray: (
+    base: #999999,
+    light: #e0e0e0
+  )
+);
+
+
+/// Returns the color value for a given color name and group.
+///
+/// @param {String} $hue - The color's hue.
+/// @param {String} $value - The darkness/lightness of the color. Defaults to base.
+/// @return {Color} The color value.
+
+@function color($hue, $value: base) {
+  $fetched-color: map-get(map-get($color-palette-data, $hue), $value);
+
+  @if map-has-key($color-palette-data, $fetched-color) {
+    $fetched-color: map-get(map-get($color-palette-data, $fetched-color), $value);
+  }
+
+  @if type-of($fetched-color) == color {
+    @return $fetched-color;
+  } @else {
+    @error 'Color `#{$hue} - #{$value}` not found. Available colors: #{available-names($color-palette-data)}';
+  }
+}

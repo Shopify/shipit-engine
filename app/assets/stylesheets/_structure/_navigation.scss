@@ -18,7 +18,7 @@
 .nav__list__item {
   display: inline-block;
   cursor: pointer;
-  color: $blue;
+  color: color(blue);
   padding-bottom: spacing(loose);
 
   + .nav__list__item {
@@ -48,7 +48,7 @@ $sub-nav-offset: -10px;
   opacity: 0;
   pointer-events: none;
   transform: translateY($sub-nav-offset);
-  border: 1px solid $grey-light;
+  border: 1px solid color(gray, light);
   border-radius: 3px;
   transition:
     opacity 0.2s ease-in-out,
@@ -60,7 +60,7 @@ $sub-nav-offset: -10px;
     position: absolute;
     top: -1 * $tool-tip-offset;
     background-color: white;
-    border: 1px solid $grey-light;
+    border: 1px solid color(gray, light);
     border-right-color: transparent;
     border-bottom-color: transparent;
     height: $tool-tip-size;

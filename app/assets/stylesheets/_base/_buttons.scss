@@ -6,7 +6,7 @@
   display: inline-block;
   font-family: inherit;
   background: #fff;
-  color: $blue;
+  color: color(blue);
   padding: .75em 1em;
   font-size: 14px;
   border-radius: 4px;
@@ -23,7 +23,7 @@
 }
 
 .btn--primary {
-  background-color: $blue;
+  background-color: color(blue);
   color: #fff;
   box-shadow: none;
 
@@ -32,12 +32,12 @@
   }
 
   &.btn--warning {
-    background-color: $yellow;
+    background-color: color(yellow);
   }
 }
 
 .btn--disabled {
-  color: $grey;
+  color: color(gray);
   background-color: #fafafa;
   cursor: default;
 }
@@ -45,21 +45,21 @@
 .btn--delete {
   color: #fff;
   border: none;
-  background-color: $bright-red;
+  background-color: color(red, bright);
 
   &.btn-disabled {
-    color: $grey;
-    background-color: $light-red;
+    color: color(gray);
+    background-color: color(red, light);
   }
 }
 
 .btn--alert {
   color: #fff;
-  background-color: $orange;
+  background-color: color(orange);
 
   &.btn-disabled {
-    color: $grey;
-    background-color: $light-orange;
+    color: color(gray);
+    background-color: color(orange, light);
   }
 }
 

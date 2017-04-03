@@ -95,7 +95,7 @@
   &[data-status="failure"],
   &[data-status="error"] {
     .deploy-banner-status {
-      background-color: $bright-red;
+      background-color: color(red, bright);
       width: 100%;
     }
   }
@@ -103,25 +103,25 @@
   &[data-status="aborted"],
   &[data-status="flapping"] {
     .deploy-banner-status {
-      background-color: $orange;
+      background-color: color(orange);
       width: 100%;
     }
   }
 
   &[data-status="success"] .deploy-banner-status {
-    background-color: $green;
+    background-color: color(green);
     width: 100%;
   }
 
   &[data-status="running"] .deploy-banner-status {
-    background-color: $blue;
+    background-color: color(blue);
     width: 0%;
     z-index: 9999;
     -webkit-animation: loading-slide 1.2s linear infinite;
   }
 
   &[data-status="aborting"] .deploy-banner-status {
-    background-color: $orange;
+    background-color: color(orange);
     width: 0%;
     z-index: 9999;
     -webkit-animation: loading-slide 1.2s linear infinite;
@@ -168,7 +168,7 @@
 }
 
 .sidebar {
-  background-color: $slate;
+  background-color: color(slate);
   color: white;
   overflow: hidden;
   height: calc(100vh - 9rem - 1px); // .header. -1px is to floor the result
@@ -189,20 +189,20 @@
 }
 
 .commit-checks {
-  border: .25rem solid $terminal-black;
+  border: .25rem solid color(slate, dark);
   &[data-status="success"] {
-    border-color: $green;
+    border-color: color(green);
   }
 
   &[data-status="failed"],
   &[data-status="failure"],
   &[data-status="error"] {
-    border-color: $bright-red;
+    border-color: color(red, bright);
   }
 
   &[data-status="scheduled"],
   &[data-status="running"] {
-    border-color: $dark-yellow;
+    border-color: color(yellow, dark);
   }
 }
 

@@ -40,7 +40,7 @@
         & > p {
           margin: 0;
           padding: .7rem 0;
-          color: $grey;
+          color: color(gray);
           font-size: .875rem;
             .repo-name { font-weight: 500; color: #777; }
         }
@@ -49,7 +49,7 @@
   }
 
 pre {
-  background-color: $terminal-black;
+  background-color: color(slate, dark);
   min-height: 100%;
   overflow-x: auto;
   color: #fff;
@@ -69,11 +69,11 @@ pre {
 }
 
 .repo-header {
-  background-color: $blue;
+  background-color: color(blue);
   padding: 1.75rem 0;
   @include clearfix;
-    &.success { background-color: $green; }
-    &.failure { background-color: $bright-red; }
+    &.success { background-color: color(green); }
+    &.failure { background-color: color(red, bright); }
 
   a {
     color: #fff;
@@ -140,7 +140,7 @@ pre {
 }
 
 .less-important {
-    color: $grey;
+    color: color(gray);
     margin-bottom: 0em;
     margin-top: 1em;
     p {

@@ -3,7 +3,7 @@
 // =============================================================================
 
 .banner {
-  background: $blue;
+  background: color(blue);
   padding: 1.75rem 0;
   position: relative;
 
@@ -62,13 +62,13 @@
 // -----------------------------------------------------------------------------
 
 .banner--orange {
-  background: $orange;
+  background: color(orange);
 }
 
 .banner--blue {
-  background: $banner-blue;
+  background: color(blue, banner);
 }
 
 .banner--red {
-  background: $banner-red;
+  background: color(red, banner);
 }
