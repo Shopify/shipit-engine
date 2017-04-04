@@ -106,10 +106,6 @@ a {
   text-decoration: none;
   cursor: pointer;
   color: $blue;
-
-  &:hover {
-    color: rgba($blue, 0.7);
-  }
 }
 
 .more {

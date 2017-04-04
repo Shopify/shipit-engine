@@ -3,6 +3,8 @@
 
 .nav {
   display: flex;
+  flex-wrap: wrap;
+  padding-bottom: spacing(tight);
 }
 
 .nav__list {
@@ -19,11 +21,8 @@
   display: inline-block;
   cursor: pointer;
   color: $blue;
-  padding-bottom: spacing(loose);
-
-  + .nav__list__item {
-    margin-left: spacing(loose);
-  }
+  padding: spacing(tight);
+  margin-left: -1 * spacing(tight);
 }
 
 .nav__list__sub__item {
@@ -41,7 +40,7 @@ $sub-nav-offset: -10px;
 
 .nav__sub__list {
   position: absolute;
-  top: calc(100% - #{spacing(tight)});
+  top: 100%;
   z-index: 10;
   background-color: white;
   padding: spacing(tight);
