@@ -10,6 +10,8 @@
 
 # 0.16.0
 
+* Move uncommon tasks to drop down menu.
+
 * Add a CCMenu compatible API.
 
 * Implement an optional merge queue, allowing to schedule pull requests to be merged as soon as the targeted branch is clear.

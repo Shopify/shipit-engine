@@ -106,8 +106,6 @@ a {
   text-decoration: none;
   cursor: pointer;
   color: $blue;
-    &.subdued { color: $grey; }
-    &.subdued:hover { color: $blue; }
 }
 
 .more {
@@ -146,7 +144,6 @@ h5 {
 }
 
 [data-tooltip], [data-tooltip-multiline] { // Add this attribute to the element that needs a tooltip
-
   position: relative;
   cursor: pointer;
   -webkit-transform: translate3d(0,0,0);
