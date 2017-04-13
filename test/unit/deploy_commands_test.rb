@@ -134,6 +134,13 @@ module Shipit
       assert_equal @deploy.stack.last_deployed_commit.sha, command.env['LAST_DEPLOYED_SHA']
     end
 
+    test "#perform calls cap $environment deploy with the TASK_ID in the environment" do
+      commands = @commands.perform
+      assert_equal 1, commands.length
+      command = commands.first
+      assert_equal @deploy.id.to_s, command.env['TASK_ID']
+    end
+
     test "#perform transliterates the user name" do
       @deploy.user = User.new(login: 'Sirupsen', name: "Simon Hørup Eskildsen")
       commands = @commands.perform

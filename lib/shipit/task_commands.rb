@@ -37,6 +37,7 @@ module Shipit
         'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
         'SHIPIT_LINK' => permalink,
         'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
+        'TASK_ID' => @task.id.to_s,
       ).merge(deploy_spec.machine_env).merge(@task.env)
     end
 

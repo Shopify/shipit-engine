@@ -8,6 +8,8 @@
 
 * Pull requests in the merge queue which are closed on Github will be marked as merged/cancelled as appropriate.
 
+* TASK_ID environment variable is now available to tasks and deploy scripts.
+
 # 0.16.0
 
 * Move uncommon tasks to drop down menu.

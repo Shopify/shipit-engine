@@ -634,6 +634,7 @@ Your deploy scripts have access to the following environment variables:
 * `BRANCH`: The stack branch (e.g `master`)
 * `LAST_DEPLOYED_SHA`: The git SHA of the last deployed commit
 * `DIFF_LINK`: URL to the diff on GitHub.
+* `TASK_ID`: ID of the task that is running
 * All the content of the `secrets.yml` `env` key
 * All the content of the `shipit.yml` `machine.environment` key
 
