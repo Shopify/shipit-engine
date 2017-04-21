@@ -3,6 +3,8 @@ Shipit::Engine.routes.draw do
   sha_format = /[\da-f]{6,40}/
   root to: 'stacks#index'
 
+  default_url_options protocol: :https if Rails.env.production?
+
   mount Pubsubstub::StreamAction.new, at: "/events", as: :events
 
   # Robots
