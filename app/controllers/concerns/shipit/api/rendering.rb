@@ -10,15 +10,12 @@ module Shipit
 
       def render_resource(resource, options = {})
         if resource.destroyed?
-          options[:status] = :no_content
-          options[:text] = nil
+          head :no_content, options.reverse_merge(content_type: 'application/json')
         elsif resource.errors.any?
-          options[:json] = {errors: resource.errors}
-          options[:status] = :unprocessable_entity
+          render options.reverse_merge(status: :unprocessable_entity, json: {errors: resource.errors})
         else
-          options[:json] = resource
+          render options.reverse_merge(json: resource)
         end
-        render options
       end
     end
   end
