@@ -18,15 +18,18 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rake', '~> 10.0'
 
-  # Rails minus actioncable
-  s.add_dependency 'actionpack', '~> 5.0.0'
-  s.add_dependency 'actionview', '~> 5.0.0'
-  s.add_dependency 'activejob', '~> 5.0.0'
-  s.add_dependency 'activemodel', '~> 5.0.0'
-  s.add_dependency 'activerecord', '~> 5.0.0'
-  s.add_dependency 'activesupport', '~> 5.0.0'
-  s.add_dependency 'railties', '~> 5.0.0'
-
+  if ENV['RAILS_NEXT']
+    s.add_dependency 'rails', '5.1.0.rc2'
+  else
+    # Rails minus actioncable
+    s.add_dependency 'actionpack', '~> 5.0.0'
+    s.add_dependency 'actionview', '~> 5.0.0'
+    s.add_dependency 'activejob', '~> 5.0.0'
+    s.add_dependency 'activemodel', '~> 5.0.0'
+    s.add_dependency 'activerecord', '~> 5.0.0'
+    s.add_dependency 'activesupport', '~> 5.0.0'
+    s.add_dependency 'railties', '~> 5.0.0'
+  end
   s.add_dependency 'securecompare', '~> 1.0.0'
   s.add_dependency 'validate_url', '~> 1.0.0'
   s.add_dependency 'explicit-parameters', '~> 0.2.0'

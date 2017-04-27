@@ -154,7 +154,7 @@ module Shipit
   end
 
   def github_oauth_credentials
-    secrets.github_oauth || {}
+    (secrets.github_oauth || {}).to_h.stringify_keys
   end
 
   def github_oauth_options

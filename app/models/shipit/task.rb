@@ -242,8 +242,14 @@ module Shipit
       File.join(stack.deploys_path, id.to_s)
     end
 
-    def record_status_change
-      @status_changed ||= status_changed?
+    if Rails.gem_version >= Gem::Version.new('5.1.0.beta1')
+      def record_status_change
+        @status_changed ||= saved_change_to_attribute?(:status)
+      end
+    else
+      def record_status_change
+        @status_changed ||= status_changed?
+      end
     end
 
     def emit_hooks

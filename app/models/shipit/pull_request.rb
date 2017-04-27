@@ -243,8 +243,14 @@ module Shipit
 
     private
 
-    def record_merge_status_change
-      @merge_status_changed ||= merge_status_changed?
+    if Rails.gem_version >= Gem::Version.new('5.1.0.beta1')
+      def record_merge_status_change
+        @merge_status_changed ||= saved_change_to_attribute?(:merge_status)
+      end
+    else
+      def record_merge_status_change
+        @merge_status_changed ||= merge_status_changed?
+      end
     end
 
     def emit_hooks
