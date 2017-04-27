@@ -2,8 +2,8 @@ module Shipit
   class User < ActiveRecord::Base
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
 
-    has_many :teams, through: :memberships
     has_many :memberships
+    has_many :teams, through: :memberships
     has_many :authored_commits, class_name: :Commit, foreign_key: :author_id, inverse_of: :author
     has_many :commits, foreign_key: :committer_id, inverse_of: :committer
     has_many :tasks

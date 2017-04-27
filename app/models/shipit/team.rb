@@ -2,8 +2,8 @@ module Shipit
   class Team < ActiveRecord::Base
     REQUIRED_HOOKS = %i(membership).freeze
 
-    has_many :members, class_name: :User, through: :memberships, source: :user
     has_many :memberships
+    has_many :members, class_name: :User, through: :memberships, source: :user
 
     has_many :github_hooks,
       -> { where(event: REQUIRED_HOOKS) },
