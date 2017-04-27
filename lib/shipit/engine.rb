@@ -4,6 +4,8 @@ module Shipit
   class Engine < ::Rails::Engine
     isolate_namespace Shipit
 
+    Encoding.default_internal = Encoding.default_external = Encoding::UTF_8
+
     paths['app/models'] << 'app/serializers' << 'app/serializers/concerns'
 
     initializer 'shipit.config' do |app|
