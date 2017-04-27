@@ -507,6 +507,24 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery bails out if the commit was reverted" do
+      Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
+
+      @stack.tasks.delete_all
+
+      assert_predicate @stack, :deployable?
+      refute_predicate @stack, :deployed_too_recently?
+
+      commit = @stack.next_commit_to_deploy
+      create_revert(commit)
+
+      assert_no_enqueued_jobs do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
     test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
       @stack.tasks.delete_all
       assert_predicate @stack, :deployable?

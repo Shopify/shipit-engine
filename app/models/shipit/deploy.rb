@@ -37,6 +37,11 @@ module Shipit
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
+    def reload(*args)
+      @commits = @commits_since = @default_since_commit_id = nil
+      super
+    end
+
     def build_rollback(user = nil, env: nil)
       Rollback.new(
         user_id: user.try!(:id),
@@ -135,6 +140,27 @@ module Shipit
 
     def confirmed?
       confirmations.abs >= CONFIRMATIONS_REQUIRED
+    end
+
+    def too_dangerous?
+      revert_being_left_behind?
+    end
+
+    def revert_being_left_behind?
+      return if commits_since.empty?
+
+      commits_since.each do |commit|
+        matches = commit.message.match(/^\s*Revert "(.*)"\s*$/)
+        next unless matches
+        parent_message = matches[1]
+
+        commits.each do |other_commit|
+          next if commit == other_commit
+          return true if parent_message == other_commit.message
+        end
+      end
+
+      false
     end
 
     private

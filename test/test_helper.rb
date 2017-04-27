@@ -39,6 +39,7 @@ class ActiveSupport::TestCase
   include ApiHelper
   include HooksHelper
   include ActiveJob::TestHelper
+  include CommitsHelper
 
   setup do
     @routes = Shipit::Engine.routes
