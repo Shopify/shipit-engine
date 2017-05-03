@@ -346,6 +346,21 @@ module Shipit
       assert_equal ['bundle exec foo'], definition.steps
     end
 
+    test "#task_definitions returns kubernetes commands as well as comands from the config" do
+      @spec.stubs(:load_config).returns(
+        'tasks' => {'another_task' => {'steps' => %w(foo)}},
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      tasks = @spec.task_definitions
+      assert_equal 2, tasks.size
+
+      restart_task = tasks.find { |t| t.id == "restart" }
+      assert_equal ["kubernetes-restart foo bar"], restart_task.steps
+    end
+
     test "task definitions returns an array of VariableDefinition instances" do
       @spec.expects(:load_config).returns('tasks' =>
         {'restart' =>

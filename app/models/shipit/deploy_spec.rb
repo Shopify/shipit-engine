@@ -108,11 +108,14 @@ module Shipit
     end
 
     def task_definitions
-      (config('tasks') || {}).map { |name, definition| TaskDefinition.new(name, coerce_task_definition(definition)) }
+      discover_task_definitions.merge(config('tasks') || {}).map do |name, definition|
+        TaskDefinition.new(name, coerce_task_definition(definition))
+      end
     end
 
     def find_task_definition(id)
-      TaskDefinition.new(id, coerce_task_definition(config('tasks', id)) || task_not_found!(id))
+      definition = config('tasks', id) || discover_task_definitions[id]
+      TaskDefinition.new(id, coerce_task_definition(definition) || task_not_found!(id))
     end
 
     def filter_deploy_envs(env)
@@ -193,6 +196,10 @@ module Shipit
     end
 
     def discover_review_checklist
+    end
+
+    def discover_task_definitions
+      {}
     end
 
     def discover_dependencies_steps

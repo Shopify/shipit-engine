@@ -9,6 +9,20 @@ module Shipit
         discover_kubernetes || super
       end
 
+      def discover_task_definitions
+        if kube_config.present?
+          {
+            'restart' => {
+              'action' => "Restart application",
+              'description' => "Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility",
+              'steps' => [kubernetes_restart_cmd],
+            },
+          }
+        else
+          super
+        end
+      end
+
       private
 
       def discover_kubernetes
@@ -20,14 +34,22 @@ module Shipit
           cmd << kube_config['template_dir']
         end
 
-        cmd << kube_config['namespace']
-        cmd << kube_config['context']
+        cmd << kube_config.fetch('namespace')
+        cmd << kube_config.fetch('context')
 
         [Shellwords.join(cmd)]
       end
 
       def kube_config
         @kube_config ||= config('kubernetes') || {}
+      end
+
+      def kubernetes_restart_cmd
+        Shellwords.join([
+          "kubernetes-restart",
+          kube_config.fetch('namespace'),
+          kube_config.fetch('context'),
+        ])
       end
     end
   end
