@@ -17,25 +17,16 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"] - Dir["test/dummy/tmp/**/*"] - Dir["test/dummy/log/**/*"]
 
   s.add_dependency 'rake', '~> 10.0'
-
-  # Rails minus actioncable
-  s.add_dependency 'actionpack', '~> 5.0.0'
-  s.add_dependency 'actionview', '~> 5.0.0'
-  s.add_dependency 'activejob', '~> 5.0.0'
-  s.add_dependency 'activemodel', '~> 5.0.0'
-  s.add_dependency 'activerecord', '~> 5.0.0'
-  s.add_dependency 'activesupport', '~> 5.0.0'
-  s.add_dependency 'railties', '~> 5.0.0'
-
+  s.add_dependency 'rails', '~> 5.1.0'
   s.add_dependency 'securecompare', '~> 1.0.0'
   s.add_dependency 'validate_url', '~> 1.0.0'
-  s.add_dependency 'explicit-parameters', '~> 0.2.0'
+  s.add_dependency 'explicit-parameters', '~> 0.3.0'
   s.add_dependency 'state_machines-activerecord', '~> 0.4.0'
   s.add_dependency 'active_model_serializers', '~> 0.9.3'
   s.add_dependency 'pubsubstub', '~> 0.1.2'
   s.add_dependency 'safe_yaml', '~> 1.0.4'
   s.add_dependency 'omniauth-github', '~> 1.1.2'
-  s.add_dependency 'responders', '~> 2.1.0'
+  s.add_dependency 'responders', '~> 2.4.0'
   s.add_dependency 'attr_encrypted', '~> 3.0.0'
 
   s.add_dependency 'sprockets-rails', '>= 2.3.2'
