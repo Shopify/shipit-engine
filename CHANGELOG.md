@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.18.0
+
+* Upgrade to Rails 5.1
+
 # 0.17.0
 
 * More explicit removal of dependent records when destroying a stack. Reduces total amount of calls to database and speed up removal.
