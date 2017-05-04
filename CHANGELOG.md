@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.17.0
+
 * More explicit removal of dependent records when destroying a stack. Reduces total amount of calls to database and speed up removal.
 
 * Automatically lock impacted commits when a revert is merged. This include the reverted commit as well as all its children up to the revert.
