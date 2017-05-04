@@ -16,15 +16,19 @@ module Shipit
     end
 
     test "tasks defined in the shipit.yml can't be triggered if the stack is being deployed" do
-      assert @stack.active_task?
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
+
+      assert_predicate @stack, :active_task?
       assert_no_difference -> { @stack.tasks.count } do
         post :create, params: {stack_id: @stack, definition_id: @definition.id}
       end
       assert_redirected_to new_stack_tasks_path(@stack, @definition)
     end
 
-    test "tasks defined in the shipit.yml can be triggered anyway if force apram is present" do
-      assert @stack.active_task?
+    test "tasks defined in the shipit.yml can be triggered anyway if force param is present" do
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
+
+      assert_predicate @stack, :active_task?
       assert_difference -> { @stack.tasks.count } do
         post :create, params: {stack_id: @stack, definition_id: @definition.id, force: 'true'}
       end

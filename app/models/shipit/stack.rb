@@ -81,7 +81,7 @@ module Shipit
       undeployed_commits_count > 0
     end
 
-    def trigger_task(definition_id, user, env: nil)
+    def trigger_task(definition_id, user, env: nil, force: false)
       definition = find_task_definition(definition_id)
       env = env.try!(:to_h) || {}
 
@@ -96,18 +96,20 @@ module Shipit
         until_commit_id: commit.id,
         since_commit_id: commit.id,
         env: definition.filter_envs(env),
+        allow_concurrency: definition.allow_concurrency? || force,
       )
       task.enqueue
       task
     end
 
-    def build_deploy(until_commit, user, env: nil)
+    def build_deploy(until_commit, user, env: nil, force: false)
       since_commit = last_deployed_commit.presence || commits.first
       deploys.build(
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
         env: filter_deploy_envs(env.try!(:to_h) || {}),
+        allow_concurrency: force,
       )
     end
 
@@ -144,7 +146,10 @@ module Shipit
         return
       end
 
-      trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
+      begin
+        trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
+      rescue Task::ConcurrentTaskRunning
+      end
     end
 
     def schedule_merges

@@ -39,7 +39,7 @@ module Shipit
     end
 
     test ":create redirects back to the :new page if there is an active deploy" do
-      shipit_deploys(:shipit_running).update_column(:status, 'running')
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
       assert_no_difference '@stack.deploys.count' do
         post :create, params: {stack_id: @stack.to_param, rollback: {parent_id: @deploy.id}}
       end

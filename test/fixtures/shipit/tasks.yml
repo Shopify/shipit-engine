@@ -61,6 +61,7 @@ shipit_pending:
   additions: 432
   deletions: 406
   created_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  allow_concurrency: true
 
 shipit_running:
   id: 5
@@ -74,6 +75,7 @@ shipit_running:
   deletions: 342
   created_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
+  allow_concurrency: true
 
 shipit_complete:
   id: 6

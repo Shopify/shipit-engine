@@ -11,7 +11,8 @@ module Shipit
       def create
         commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
         param_error!(:force, "Can't deploy a locked stack") if !params.force && stack.locked?
-        render_resource stack.trigger_deploy(commit, current_user, env: params.env), status: :accepted
+        deploy = stack.trigger_deploy(commit, current_user, env: params.env, force: params.force)
+        render_resource deploy, status: :accepted
       end
     end
   end

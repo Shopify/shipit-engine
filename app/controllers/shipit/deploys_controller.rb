@@ -20,10 +20,15 @@ module Shipit
     end
 
     def create
-      return redirect_to new_stack_deploy_path(@stack, sha: @until_commit.sha) if !params[:force] && @stack.active_task?
-
-      @deploy = @stack.trigger_deploy(@until_commit, current_user, env: deploy_params[:env])
+      @deploy = @stack.trigger_deploy(
+        @until_commit,
+        current_user,
+        env: deploy_params[:env],
+        force: params[:force].present?,
+      )
       respond_with(@deploy.stack, @deploy)
+    rescue Task::ConcurrentTaskRunning
+      redirect_to new_stack_deploy_path(@stack, sha: @until_commit.sha)
     end
 
     def rollback
