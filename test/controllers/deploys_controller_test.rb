@@ -32,7 +32,7 @@ module Shipit
     end
 
     test ":new shows a warning if a deploy is already running" do
-      shipit_deploys(:shipit_running).update_column(:status, 'running')
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
 
       get :new, params: {stack_id: @stack.to_param, sha: @commit.sha}
       assert_response :success
@@ -70,7 +70,7 @@ module Shipit
     end
 
     test ":create redirect back to :new with a warning if there is an active deploy" do
-      shipit_deploys(:shipit_running).update_column(:status, 'running')
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
 
       assert_no_difference '@stack.deploys.count' do
         post :create, params: {stack_id: @stack.to_param, deploy: {until_commit_id: @commit.id}}
@@ -90,7 +90,7 @@ module Shipit
     end
 
     test ":rollback shows a warning if a deploy is already running" do
-      shipit_deploys(:shipit_running).update_column(:status, 'running')
+      shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
 
       get :rollback, params: {stack_id: @stack.to_param, id: @deploy.id}
       assert_response :success

@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix a race condition allowing for duplicate deploys
+
 # 0.18.0
 
 * Upgrade to Rails 5.1

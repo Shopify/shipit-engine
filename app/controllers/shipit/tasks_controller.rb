@@ -28,10 +28,15 @@ module Shipit
     def create
       @definition = stack.find_task_definition(params[:definition_id])
 
-      if @definition.allow_concurrency? || params[:force] || !@stack.active_task?
-        @task = stack.trigger_task(params[:definition_id], current_user, env: task_params[:env])
+      begin
+        @task = stack.trigger_task(
+          params[:definition_id],
+          current_user,
+          env: task_params[:env],
+          force: params[:force].present?,
+        )
         redirect_to [stack, @task]
-      else
+      rescue Task::ConcurrentTaskRunning
         redirect_to new_stack_tasks_path(stack, @definition)
       end
     end

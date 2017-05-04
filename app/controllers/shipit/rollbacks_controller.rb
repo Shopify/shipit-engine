@@ -4,9 +4,10 @@ module Shipit
     before_action :load_deploy
 
     def create
-      return redirect_to rollback_stack_deploy_path(@stack, @deploy) if !params[:force] && @stack.active_task?
-      @rollback = @deploy.trigger_rollback(current_user, env: rollback_params[:env])
+      @rollback = @deploy.trigger_rollback(current_user, env: rollback_params[:env], force: params[:force].present?)
       redirect_to stack_deploy_path(@stack, @rollback)
+    rescue Task::ConcurrentTaskRunning
+      redirect_to rollback_stack_deploy_path(@stack, @deploy)
     end
 
     private

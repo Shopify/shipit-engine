@@ -2,6 +2,8 @@ module Shipit
   class Task < ActiveRecord::Base
     include DeferredTouch
 
+    ConcurrentTaskRunning = Class.new(StandardError)
+
     PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
@@ -32,6 +34,7 @@ module Shipit
     scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
     after_save :record_status_change
+    after_create :prevent_concurrency, unless: :allow_concurrency?
     after_commit :emit_hooks
 
     class << self
@@ -263,6 +266,10 @@ module Shipit
     end
 
     private
+
+    def prevent_concurrency
+      raise ConcurrentTaskRunning if stack.tasks.active.exclusive.count > 1
+    end
 
     def status_key
       "shipit:task:#{id}"

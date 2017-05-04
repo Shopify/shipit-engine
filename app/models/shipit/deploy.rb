@@ -37,7 +37,7 @@ module Shipit
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
-    def build_rollback(user = nil, env: nil)
+    def build_rollback(user = nil, env: nil, force: false)
       Rollback.new(
         user_id: user.try!(:id),
         stack_id: stack_id,
@@ -45,12 +45,13 @@ module Shipit
         since_commit: stack.last_deployed_commit,
         until_commit: until_commit,
         env: env.try!(:to_h) || {},
+        allow_concurrency: force,
       )
     end
 
     # Rolls the stack back to this deploy
-    def trigger_rollback(user = AnonymousUser.new, env: nil)
-      rollback = build_rollback(user, env: env)
+    def trigger_rollback(user = AnonymousUser.new, env: nil, force: false)
+      rollback = build_rollback(user, env: env, force: force)
       rollback.save!
       rollback.enqueue
 
