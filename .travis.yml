@@ -13,9 +13,6 @@ env:
     - SUITE=mysql
     - SUITE=pg
     - SUITE=sqlite3
-    - RAILS_NEXT=1 SUITE=mysql
-    - RAILS_NEXT=1 SUITE=pg
-    - RAILS_NEXT=1 SUITE=sqlite3
 rvm:
   - 2.2.3
   - 2.3.3
