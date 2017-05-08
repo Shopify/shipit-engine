@@ -1,4 +1,4 @@
-class CreateBaseline < ActiveRecord::Migration
+class CreateBaseline < ActiveRecord::Migration[4.2]
   def change
     create_table "api_clients", force: :cascade do |t|
       t.text     "permissions", limit: 65535

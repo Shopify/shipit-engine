@@ -1,4 +1,4 @@
-class CreateShipitCommitDeployments < ActiveRecord::Migration
+class CreateShipitCommitDeployments < ActiveRecord::Migration[4.2]
   def change
     create_table :commit_deployments do |t|
       t.references :commit, foreign_key: true
