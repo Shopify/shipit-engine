@@ -1,4 +1,4 @@
-class SchemaConstraintsCleanup < ActiveRecord::Migration
+class SchemaConstraintsCleanup < ActiveRecord::Migration[4.2]
   # Set reasonable size limit to a bunch of indexed string columns. They were defaulted to 255
   def change
     change_column :github_hooks, :event, :string, limit: 50, null: false # The biggest existing event is 27
