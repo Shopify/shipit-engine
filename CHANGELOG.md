@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.18.1
+
 * Handle environment hash with symbol keys
 * Fix a race condition allowing for duplicate deploys
 
