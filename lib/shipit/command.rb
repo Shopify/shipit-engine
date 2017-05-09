@@ -86,7 +86,7 @@ module Shipit
       FileUtils.mkdir_p(@chdir)
       with_full_path do
         begin
-          @out, child_in, @pid = PTY.spawn(@env, *interpolated_arguments, chdir: @chdir)
+          @out, child_in, @pid = PTY.spawn(@env.stringify_keys, *interpolated_arguments, chdir: @chdir)
           child_in.close
         rescue Errno::ENOENT
           raise NotFound, "#{Shellwords.split(interpolated_arguments.first).first}: command not found"
