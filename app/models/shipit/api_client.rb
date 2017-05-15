@@ -3,7 +3,7 @@ module Shipit
     InsufficientPermission = Class.new(StandardError)
 
     belongs_to :creator, class_name: 'User'
-    belongs_to :stack
+    belongs_to :stack, optional: true
 
     validates :creator, :name, presence: true
 

@@ -36,8 +36,8 @@ module Shipit
     end
 
     belongs_to :stack
-    belongs_to :head, class_name: 'Shipit::Commit'
-    belongs_to :merge_requested_by, class_name: 'Shipit::User'
+    belongs_to :head, class_name: 'Shipit::Commit', optional: true
+    belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
 
     deferred_touch stack: :updated_at

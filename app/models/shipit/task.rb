@@ -13,7 +13,7 @@ module Shipit
 
     belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
 
-    belongs_to :user
+    belongs_to :user, optional: true
     belongs_to :stack, counter_cache: true
     belongs_to :until_commit, class_name: 'Commit'
     belongs_to :since_commit, class_name: 'Commit'

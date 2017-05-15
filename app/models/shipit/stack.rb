@@ -32,7 +32,7 @@ module Shipit
     has_many :github_hooks, dependent: :destroy, class_name: 'Shipit::GithubHook::Repo'
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
-    belongs_to :lock_author, class_name: :User
+    belongs_to :lock_author, class_name: :User, optional: true
 
     def lock_author(*)
       super || AnonymousUser.new
