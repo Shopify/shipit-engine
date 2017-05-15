@@ -367,6 +367,7 @@ machine:
 ```
 
 <h3 id="ci">CI</h3>
+
 **<code>ci.require</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to disallow deploys if any of them is missing.
 
 For example:
