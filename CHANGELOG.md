@@ -1,5 +1,6 @@
 # Unreleased
 
+* Index `pull_requests` table by `merge_status`.
 * Fix Rails 5.1 compatibility issue when `active_record.belongs_to_required_by_default` is enabled.
 
 # 0.18.1
