@@ -41,6 +41,14 @@ module Shipit
       def durations
         pluck(:started_at, :ended_at).select { |s, e| s && e }.map { |s, e| e - s }
       end
+
+      def last_successful
+        success.last
+      end
+
+      def current
+        active.exclusive.last
+      end
     end
 
     state_machine :status, initial: :pending do

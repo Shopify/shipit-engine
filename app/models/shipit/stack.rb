@@ -226,7 +226,7 @@ module Shipit
     end
 
     def last_successful_deploy
-      deploys_and_rollbacks.success.last
+      deploys_and_rollbacks.last_successful
     end
 
     def last_active_task
@@ -332,7 +332,7 @@ module Shipit
 
     def active_task
       return @active_task if defined?(@active_task)
-      @active_task ||= tasks.active.exclusive.last
+      @active_task ||= tasks.current
     end
 
     def locked?
