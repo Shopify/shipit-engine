@@ -1,5 +1,6 @@
 # Unreleased
 
+* Expose the `branch` field for stacks.
 * Fix `index_tasks_by_stack_and_status`'s order.
 * Index `commits` table by `(sha, stack_id)`.
 * Index `pull_requests` table by `merge_status`.
