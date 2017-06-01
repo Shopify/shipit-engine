@@ -152,10 +152,10 @@ module Shipit
     )
   end
 
-  def create_chunks
-    100.times.map do
+  def write_output(task)
+    100.times do
       status = "\x1b[%s;1m[ %s ]\x1b[0m" % [["31", "error"], ["32", "success"]].sample
-      OutputChunk.new(text: "[ #{Faker::Date.backward} ] #{status} #{Faker::Lorem.paragraph}\n")
+      task.write("[ #{Faker::Date.backward} ] #{status} #{Faker::Lorem.paragraph}\n")
     end
   end
 
@@ -165,28 +165,29 @@ module Shipit
         since_commit_id: commits.first.id,
         until_commit_id: commits.last.id,
         status:          "success",
-        chunks:          create_chunks,
         additions: Faker::Number.number(3),
         deletions: Faker::Number.number(3),
         started_at: Random.rand(15.minutes.to_i).seconds.ago,
         ended_at: Time.now.utc,
         user: users.sample,
       )
+      write_output(deploy)
       deploy.write("$ cap production deploy SHA=yolo")
     end
 
     last_deploy = stack.deploys.last
-    stack.rollbacks.create!(
+    rollback = stack.rollbacks.create!(
+      deploy: last_deploy,
       since_commit_id: last_deploy.until_commit_id,
       until_commit_id: last_deploy.since_commit_id,
       status: 'success',
       user: users.sample,
-      chunks: create_chunks,
       started_at: Random.rand(15.minutes.to_i).seconds.ago,
       ended_at: Time.now.utc,
     )
+    write_output(rollback)
 
-    stack.tasks.create!(
+    task = stack.tasks.create!(
       since_commit_id: stack.last_deployed_commit.id,
       until_commit_id: stack.last_deployed_commit.id,
       status: "success",
@@ -196,9 +197,9 @@ module Shipit
         'description' => 'Restart unicorns and resques',
         'steps' => ['cap $ENVIRONMENT restart'],
       ),
-      chunks: create_chunks,
       started_at: Random.rand(15.minutes.to_i).seconds.ago,
       ended_at: Time.now.utc,
     )
+    write_output(rollback)
   end
 end
