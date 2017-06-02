@@ -5,7 +5,7 @@ module Shipit
     has_one :lock_author
     attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url, :deploy_url, :pull_requests_url,
                :deploy_spec, :undeployed_commits_count, :is_locked, :lock_reason, :continuous_deployment, :created_at,
-               :updated_at, :locked_since, :last_deployed_at
+               :updated_at, :locked_since, :last_deployed_at, :branch
 
     def url
       api_stack_url(object)
