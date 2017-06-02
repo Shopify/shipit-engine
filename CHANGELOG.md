@@ -1,5 +1,6 @@
 # Unreleased
 
+* Add elementary fragment caching to speedup stacks#show
 * Expose the `branch` field for stacks.
 * Fix `index_tasks_by_stack_and_status`'s order.
 * Index `commits` table by `(sha, stack_id)`.
