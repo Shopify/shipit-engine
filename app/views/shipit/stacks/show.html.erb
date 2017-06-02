@@ -1,4 +1,4 @@
-<% cache @stack do %>
+<% cache [@stack, params[:force]] do %>
   <% subscribe events_path(channels: ["stack.#{@stack.id}"]), '#layout-content' %>
 
   <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
