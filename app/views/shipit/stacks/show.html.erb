@@ -23,7 +23,7 @@
     <div class="banner banner--red">
       <div class="banner__inner wrapper">
         <div class="banner__content">
-          <h2 class="banner__title">This repository seems to be missing!</h2>
+          <h2 class="banner__title">This repository or branch seems to be missing!</h2>
           <p class="banner__text">
             <%= link_to @stack.github_repo_name, github_repo_url(@stack.repo_owner, @stack.repo_name) %>
             has been inaccessible for <%= time_ago_in_words(@stack.inaccessible_since) %>.
