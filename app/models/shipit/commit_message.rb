@@ -1,6 +1,6 @@
 module Shipit
   class CommitMessage
-    GITHUB_MERGE_COMMIT_PATTERN = %r{\AMerge pull request #(?<pr_id>\d+) from [\w\-./]+\n\n(?<pr_title>.*)}
+    GITHUB_MERGE_COMMIT_PATTERN = /\AMerge pull request #(?<pr_id>\d+) from \S+\n\n(?<pr_title>.*)/
 
     def initialize(text)
       @text = text

@@ -16,9 +16,9 @@ module Shipit
     end
 
     test "#pull_request? detects pull requests with unusual branch names" do
-      @pr.message = "Merge pull request #7 from Shopify/bump-to-v1.0.1\n\nBump to v1.0.1"
+      @pr.message = "Merge pull request #7 from Shopify/bump-👉-v1.0.1\n\nBump 👉 v1.0.1"
       assert @pr.pull_request?
-      assert_equal "Bump to v1.0.1", @pr.pull_request_title
+      assert_equal "Bump 👉 v1.0.1", @pr.pull_request_title
     end
 
     test "#pull_request_number extract the pull request id from the message" do
