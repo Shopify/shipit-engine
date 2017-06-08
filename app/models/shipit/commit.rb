@@ -109,6 +109,21 @@ module Shipit
       !locked? && (success? || stack.ignore_ci?)
     end
 
+    def safe_to_deploy?
+      !revert_being_left_behind?
+    end
+
+    def revert_being_left_behind?
+      revert_commits = stack.commits.reachable.newer_than(id).where("LOWER(message) LIKE '%revert%'")
+
+      revert_commits.each do |revert_commit|
+        next unless matches = revert_commit.message.match(/^\s*Revert "(.*)"\s*$/m)
+        return true if message == matches[1]
+      end
+
+      false
+    end
+
     def children
       self.class.where(stack_id: stack_id).newer_than(self)
     end
@@ -150,7 +165,7 @@ module Shipit
     end
 
     def schedule_continuous_delivery
-      return unless deployable? && stack.continuous_deployment? && stack.deployable?
+      return unless deployable? && safe_to_deploy? && stack.continuous_deployment? && stack.deployable?
       ContinuousDeliveryJob.perform_later(stack)
     end
 

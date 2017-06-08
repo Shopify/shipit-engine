@@ -28,15 +28,15 @@ module Shipit
       assert_predicate @commit, :deploy_disallowed?
     end
 
-    test "#deploy_discouraged? returns false if the commit index is lower than the maximum commits per deploy" do
+    test "#deploy_too_big? returns false if the commit index is lower than the maximum commits per deploy" do
       assert_equal 2, @stack.maximum_commits_per_deploy
-      refute_predicate @commit, :deploy_discouraged?
+      refute_predicate @commit, :deploy_too_big?
     end
 
-    test "#deploy_discouraged? returns true if the commit index is equal or bigger then the maximum commits per deploy" do
+    test "#deploy_too_big? returns true if the commit index is equal or bigger then the maximum commits per deploy" do
       @commit = UndeployedCommit.new(@real_commit, 2)
       assert_equal 2, @stack.maximum_commits_per_deploy
-      assert_predicate @commit, :deploy_discouraged?
+      assert_predicate @commit, :deploy_too_big?
     end
 
     test "#deploy_state returns `allowed` by default" do

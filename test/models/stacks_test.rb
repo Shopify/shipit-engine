@@ -507,6 +507,24 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery bails out if the commit was reverted" do
+      Hook.stubs(:emit) # TODO: Once on rails 5, use assert_no_enqueued_jobs(only: Shipit::PerformTaskJob)
+
+      @stack.tasks.delete_all
+
+      assert_predicate @stack, :deployable?
+      refute_predicate @stack, :deployed_too_recently?
+
+      commit = @stack.next_commit_to_deploy
+      create_revert(commit)
+
+      assert_no_enqueued_jobs do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
     test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
       @stack.tasks.delete_all
       assert_predicate @stack, :deployable?
@@ -535,6 +553,44 @@ module Shipit
       assert_predicate fifth_commit, :deployable?
 
       assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
+    end
+
+    test "#next_commit_to_deploy returns nil if the only commit is a commit that has an undeployable revert" do
+      @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
+      assert_equal shipit_commits(:second), @stack.last_deployed_commit
+
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
+      create_revert(@stack.next_commit_to_deploy)
+
+      assert_nil @stack.next_commit_to_deploy
+    end
+
+    test "#next_commit_to_deploy returns an ealier commit if the newer one has an undeployable revert" do
+      @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
+      assert_equal shipit_commits(:second), @stack.last_deployed_commit
+      @stack.commits.newer_than(shipit_commits(:fourth)).destroy_all
+
+      shipit_commits(:fourth).statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
+
+      assert_equal shipit_commits(:fourth), @stack.next_commit_to_deploy
+
+      create_revert(shipit_commits(:fourth))
+
+      assert_equal shipit_commits(:third), @stack.reload.next_commit_to_deploy
+    end
+
+    test "#next_commit_to_deploy returns the revert of a previously undeployed commit if the revert is deployable" do
+      @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
+      assert_equal shipit_commits(:second), @stack.last_deployed_commit
+
+      next_commit = @stack.next_commit_to_deploy
+      assert_equal shipit_commits(:third), next_commit
+      @stack.commits.newer_than(next_commit).destroy_all
+
+      revert = create_revert(next_commit)
+      revert.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
+
+      assert_equal revert, @stack.reload.next_commit_to_deploy
     end
 
     test "#next_commit_to_deploy respects the deploy.max_commits directive" do

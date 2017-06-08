@@ -28,7 +28,7 @@ module Shipit
       !deployable? || !stack.deployable?
     end
 
-    def deploy_discouraged?
+    def deploy_too_big?
       stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
     end
   end
