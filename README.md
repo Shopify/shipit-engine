@@ -16,6 +16,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 * * *
 <h2 id="toc">Table of contents</h2>
+
 **I. INSTALLATION & SETUP**
 
 * [Installation](#installation)
