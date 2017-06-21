@@ -104,11 +104,14 @@ module Shipit
 
     def build_deploy(until_commit, user, env: nil, force: false)
       since_commit = last_deployed_commit.presence || commits.first
+      deploy_environment = filter_deploy_envs(env.try!(:to_h) || {})
+      deploy_environment["FORCED_DEPLOY"] = force ? "1" : "0"
+
       deploys.build(
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
-        env: filter_deploy_envs(env.try!(:to_h) || {}),
+        env: deploy_environment,
         allow_concurrency: force,
       )
     end
