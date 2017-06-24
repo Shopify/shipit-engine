@@ -6,6 +6,7 @@
 * Index `commits` table by `(sha, stack_id)`.
 * Index `pull_requests` table by `merge_status`.
 * Fix Rails 5.1 compatibility issue when `active_record.belongs_to_required_by_default` is enabled.
+* Truncate `Shipit.user_access_tokens_key` to 32 bytes.
 
 # 0.18.1
 
