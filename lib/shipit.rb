@@ -130,7 +130,7 @@ module Shipit
   end
 
   def user_access_tokens_key
-    (secrets.user_access_tokens_key.presence || secrets.secret_key_base).slice(0, 32)
+    (secrets.user_access_tokens_key.presence || secrets.secret_key_base).byteslice(0, 32)
   end
 
   def host
