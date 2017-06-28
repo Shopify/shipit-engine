@@ -15,7 +15,9 @@ env:
     - SUITE=sqlite3
 rvm:
   - 2.2.3
-  - 2.3.3
+  - 2.3.4
+  - '2.4'
+
 matrix:
   fast_finish: true
   include:
