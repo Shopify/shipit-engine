@@ -1,12 +1,12 @@
 # Unreleased
 
+* Fix MRI 2.4 support (https://github.com/attr-encrypted/attr_encrypted/issues/258)
 * Add elementary fragment caching to speedup stacks#show
 * Expose the `branch` field for stacks.
 * Fix `index_tasks_by_stack_and_status`'s order.
 * Index `commits` table by `(sha, stack_id)`.
 * Index `pull_requests` table by `merge_status`.
 * Fix Rails 5.1 compatibility issue when `active_record.belongs_to_required_by_default` is enabled.
-* Truncate `Shipit.user_access_tokens_key` to 32 bytes.
 
 # 0.18.1
 
