@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.19.0
+
 * Fix MRI 2.4 support (https://github.com/attr-encrypted/attr_encrypted/issues/258)
 * Add elementary fragment caching to speedup stacks#show
 * Expose the `branch` field for stacks.
