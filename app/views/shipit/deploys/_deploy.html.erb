@@ -20,6 +20,7 @@
         <span class="sha"><%= link_to_github_deploy(deploy) %></span>
         <span class="code-additions">+<%= deploy.additions %></span>
         <span class="code-deletions">-<%= deploy.deletions %></span>
+        <% if deploy.ignored_safeties? %><span class="ignored-safeties">ignoring safeties</span><% end %>
       </p>
       <p class="commit-meta">
         <% if read_only %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524125249) do
+ActiveRecord::Schema.define(version: 20170629141736) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -214,6 +214,7 @@ ActiveRecord::Schema.define(version: 20170524125249) do
     t.boolean "allow_concurrency", default: false, null: false
     t.datetime "started_at"
     t.datetime "ended_at"
+    t.boolean "ignored_safeties", default: false, null: false
     t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
     t.index ["since_commit_id"], name: "index_tasks_on_since_commit_id"
     t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"

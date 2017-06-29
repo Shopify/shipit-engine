@@ -19,6 +19,7 @@ module Shipit
       updated_at
       created_at
       env
+      ignored_safeties
     ))
 
     def revision

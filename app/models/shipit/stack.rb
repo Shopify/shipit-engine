@@ -97,6 +97,7 @@ module Shipit
         since_commit_id: commit.id,
         env: definition.filter_envs(env),
         allow_concurrency: definition.allow_concurrency? || force,
+        ignored_safeties: force,
       )
       task.enqueue
       task
@@ -110,6 +111,7 @@ module Shipit
         since_commit: since_commit,
         env: filter_deploy_envs(env.try!(:to_h) || {}),
         allow_concurrency: force,
+        ignored_safeties: force || !until_commit.deployable?,
       )
     end
 

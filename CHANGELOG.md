@@ -1,5 +1,7 @@
 # Unreleased
 
+* Marks deploys that are triggered while ignoring safety features.
+
 # 0.19.0
 
 * Fix MRI 2.4 support (https://github.com/attr-encrypted/attr_encrypted/issues/258)

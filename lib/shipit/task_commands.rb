@@ -38,6 +38,7 @@ module Shipit
         'SHIPIT_LINK' => permalink,
         'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
         'TASK_ID' => @task.id.to_s,
+        'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
       ).merge(deploy_spec.machine_env).merge(@task.env)
     end
 

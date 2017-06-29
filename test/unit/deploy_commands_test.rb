@@ -188,6 +188,12 @@ module Shipit
       assert_equal 'BAR', command.env['FOO']
     end
 
+    test "IGNORED_SAFETIES is exposed" do
+      assert_equal '0', @commands.env['IGNORED_SAFETIES']
+      @deploy.ignored_safeties = true
+      assert_equal '1', @commands.env['IGNORED_SAFETIES']
+    end
+
     test "#clear_working_directory rm -rf the working directory" do
       FileUtils.expects(:rm_rf).with(@deploy.working_directory)
       @commands.clear_working_directory
