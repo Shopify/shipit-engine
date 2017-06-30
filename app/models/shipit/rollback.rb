@@ -2,6 +2,10 @@ module Shipit
   class Rollback < Deploy
     belongs_to :deploy, foreign_key: :parent_id
 
+    state_machine :status do
+      after_transition to: :success, do: :lock_reverted_commits
+    end
+
     def rollback?
       true
     end
@@ -29,6 +33,10 @@ module Shipit
     end
 
     private
+
+    def lock_reverted_commits
+      stack.lock_reverted_commits!
+    end
 
     def create_commit_deployments
       # Rollback events are confusing in GitHub
