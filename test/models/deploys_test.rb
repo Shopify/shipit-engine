@@ -339,6 +339,11 @@ module Shipit
       assert_equal @user, @stack.lock_author
     end
 
+    test "#trigger_rollback marks the rollback as `ignored_safeties` if the force option was used" do
+      rollback = @deploy.trigger_rollback(@user, force: true)
+      assert_predicate rollback, :ignored_safeties?
+    end
+
     test "abort! transition to `aborting`" do
       @deploy.ping
       @deploy.abort!

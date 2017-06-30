@@ -46,6 +46,7 @@ module Shipit
         until_commit: until_commit,
         env: env.try!(:to_h) || {},
         allow_concurrency: force,
+        ignored_safeties: force,
       )
     end
 

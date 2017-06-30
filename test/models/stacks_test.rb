@@ -123,13 +123,29 @@ module Shipit
       assert_equal @stack.commits.first.id, deploy.since_commit_id
     end
 
-    test "#trigger_deploy enqueue  a deploy job" do
+    test "#trigger_deploy enqueues a deploy job" do
       @stack.deploys.destroy_all
       Deploy.any_instance.expects(:enqueue).once
 
       last_commit = shipit_commits(:third)
       deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
       assert_instance_of Deploy, deploy
+    end
+
+    test "#trigger_deploy marks the deploy as `ignored_safeties` if the commit wasn't deployable" do
+      last_commit = shipit_commits(:fifth)
+      refute_predicate last_commit, :deployable?
+
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
+      assert_predicate deploy, :ignored_safeties?
+    end
+
+    test "#trigger_deploy doesn't mark the deploy as `ignored_safeties` if the commit was deployable" do
+      last_commit = shipit_commits(:third)
+      assert_predicate last_commit, :deployable?
+
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
+      refute_predicate deploy, :ignored_safeties?
     end
 
     test "#update_deployed_revision bail out if there is an active deploy" do
