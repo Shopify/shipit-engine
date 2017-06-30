@@ -221,6 +221,24 @@ module Shipit
       :default
     end
 
+    def lock_reverted_commits!
+      commits_to_lock = []
+
+      backlog = undeployed_commits.to_a
+      until backlog.empty?
+        backlog = backlog.drop_while { |c| !c.revert? }
+        if revert = backlog.shift
+          commits_to_lock += backlog.reverse.drop_while { |c| !revert.revert_of?(c) }
+        end
+      end
+
+      unless commits_to_lock.empty?
+        if commits.where(id: commits_to_lock.map(&:id).uniq).update_all(locked: true) > 1
+          touch
+        end
+      end
+    end
+
     def undeployed_commits
       scope = commits.reachable.newer_than(last_deployed_commit).order(id: :asc)
       yield scope if block_given?

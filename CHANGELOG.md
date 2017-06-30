@@ -1,6 +1,7 @@
 # Unreleased
 
-* Marks deploys that are triggered while ignoring safety features.
+* Reconsider all undeployed commits for locking after a rollback has completed (https://github.com/Shopify/shipit-engine/issues/707).
+* Marks deploys that are triggered while ignoring safety features (https://github.com/Shopify/shipit-engine/issues/699).
 
 # 0.19.0
 
