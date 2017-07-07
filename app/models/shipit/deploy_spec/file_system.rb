@@ -64,7 +64,7 @@ module Shipit
       end
 
       def cacheable_tasks
-        (config('tasks') || {}).map { |k, c| [k, coerce_task_definition(c)] }.to_h
+        discover_task_definitions.map { |k, c| [k, coerce_task_definition(c)] }.to_h
       end
 
       def config(*)

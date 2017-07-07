@@ -338,7 +338,7 @@ module Shipit
     end
 
     test "task definitions prepend bundle exec before serialization" do
-      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+      @spec.expects(:discover_task_definitions).returns('restart' => {'steps' => %w(foo)})
       @spec.expects(:bundler?).returns(true).at_least_once
 
       cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
