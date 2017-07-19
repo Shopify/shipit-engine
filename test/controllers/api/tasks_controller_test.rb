@@ -81,6 +81,14 @@ module Shipit
         post :trigger, params: {stack_id: @stack.to_param, task_name: 'doesnt_exist'}
         assert_response :not_found
       end
+
+      test "#trigger returns 409 when a task is already running" do
+        shipit_deploys(:shipit_running).update!(allow_concurrency: false, status: 'running')
+        assert_predicate @stack, :active_task?
+        post :trigger, params: {stack_id: @stack.to_param, task_name: 'restart'}
+        assert_response :conflict
+        assert_json 'message', 'A task is already running.'
+      end
     end
   end
 end
