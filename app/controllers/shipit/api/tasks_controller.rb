@@ -17,6 +17,10 @@ module Shipit
       end
       def trigger
         render_resource stack.trigger_task(params[:task_name], current_user, env: params.env), status: :accepted
+      rescue Shipit::Task::ConcurrentTaskRunning
+        render status: :conflict, json: {
+          message: 'A task is already running.',
+        }
       end
     end
   end
