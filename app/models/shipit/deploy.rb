@@ -118,7 +118,7 @@ module Shipit
     end
 
     def reject!
-      return if failed?
+      return if failed? || aborted?
       transaction do
         flap! unless flapping?
         update!(confirmations: [confirmations - 1, -1].min)

@@ -431,6 +431,16 @@ module Shipit
       end
     end
 
+    test "#reject! bails out if the deploy is canceled already" do
+      @deploy = shipit_deploys(:shipit_aborted)
+      assert_predicate @deploy, :aborted?
+
+      Deploy::CONFIRMATIONS_REQUIRED.times do
+        @deploy.reject!
+        assert_predicate @deploy, :aborted?
+      end
+    end
+
     test "#reject! first transition to flapping then ultimately to failed if the deploy was successful" do
       assert_predicate @deploy, :success?
 
