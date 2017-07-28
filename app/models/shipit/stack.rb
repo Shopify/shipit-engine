@@ -191,14 +191,15 @@ module Shipit
       commits.reachable.first.try!(:sha)
     end
 
-    def merge_status
+    def merge_status(backlog_leniency_factor: 1.5)
       return 'locked' if locked?
       return 'failure' if %w(failure error).freeze.include?(branch_status)
-      if maximum_commits_per_deploy && (undeployed_commits_count > maximum_commits_per_deploy * 1.5)
-        'backlogged'
-      else
-        'success'
-      end
+      return 'backlogged' if backlogged?(backlog_leniency_factor: backlog_leniency_factor)
+      'success'
+    end
+
+    def backlogged?(backlog_leniency_factor: 1.5)
+      maximum_commits_per_deploy && (undeployed_commits_count > maximum_commits_per_deploy * backlog_leniency_factor)
     end
 
     def branch_status
