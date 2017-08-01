@@ -606,5 +606,35 @@ module Shipit
       @stack.deploy_url = "ssh://abc"
       assert_predicate @stack, :valid?
     end
+
+    test "setup_hooks doesn't create a hook when release is present" do
+      @stack.github_hooks.create!(event: 'release')
+      assert_difference '@stack.github_hooks.count', Stack::REQUIRED_HOOKS.size - 1 do
+        @stack.setup_hooks
+      end
+    end
+
+    test "setup_hooks doesn't create a hook when push is present" do
+      @stack.github_hooks.create!(event: 'push')
+      assert_difference '@stack.github_hooks.count', Stack::REQUIRED_HOOKS.size - 1 do
+        @stack.setup_hooks
+      end
+    end
+
+    test "setup_hooks doesn't create a hook when status is present" do
+      @stack.github_hooks.create!(event: 'status')
+      assert_difference '@stack.github_hooks.count', Stack::REQUIRED_HOOKS.size - 1 do
+        @stack.setup_hooks
+      end
+    end
+
+    test "setup_hooks sets up all hooks and defaults to push" do
+      assert_difference '@stack.github_hooks.count', Stack::REQUIRED_HOOKS.size do
+        @stack.setup_hooks
+      end
+      refute @stack.github_hooks.exist?(event: 'release'), 'release hook should not exist'
+      assert @stack.github_hooks.exist?(event: 'push'), 'push hook should exist'
+      assert @stack.github_hooks.exist?(event: 'status'), 'status hook should exist'
+    end
   end
 end
