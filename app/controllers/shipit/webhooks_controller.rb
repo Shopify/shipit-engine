@@ -14,6 +14,17 @@ module Shipit
       head :ok
     end
 
+    def release
+      release = params['release']
+      branch = release['target_commitish'].gsub('refs/heads/', '')
+
+      if branch == stack.branch
+        GithubSyncJob.perform_later(stack_id: stack.id)
+      end
+
+      head :ok
+    end
+
     params do
       requires :sha, String
       requires :state, String

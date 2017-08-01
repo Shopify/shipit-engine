@@ -10,7 +10,7 @@ Shipit::Engine.routes.draw do
 
   resources :stacks, only: %i(new create index) do
     resource :webhooks, only: [] do
-      post :push, :state
+      post :push, :state, :release
     end
   end
 

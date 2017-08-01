@@ -24,6 +24,23 @@ module Shipit
       end
     end
 
+    test ":release with the target branch queues a GithubSyncJob" do
+      request.headers['X-Github-Event'] = 'release'
+      params = payload(:release_master)
+
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
+        post :release, params: {stack_id: @stack.id}.merge(params)
+      end
+    end
+
+    test ":release does not enqueue a job if not the target branch" do
+      request.headers['X-Github-Event'] = 'release'
+      params = payload(:release_not_master)
+      assert_no_enqueued_jobs do
+        post :release, params: {stack_id: @stack.id}.merge(params)
+      end
+    end
+
     test ":state create a Status for the specific commit" do
       request.headers['X-Github-Event'] = 'status'
 

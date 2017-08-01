@@ -21,7 +21,10 @@ module Shipit
     REPO_OWNER_MAX_SIZE = 39
     REPO_NAME_MAX_SIZE = 100
     ENVIRONMENT_MAX_SIZE = 50
-    REQUIRED_HOOKS = %i(push status).freeze
+    REQUIRED_HOOKS = [
+      'status',
+      %i(push release)
+    ].freeze
 
     has_many :commits, dependent: :destroy
     has_many :pull_requests, dependent: :destroy
@@ -319,9 +322,9 @@ module Shipit
       [repo_owner, repo_name].join('/')
     end
 
-    def github_commits
+    def github_commits(sha: branch)
       handle_github_redirections do
-        Shipit.github_api.commits(github_repo_name, sha: branch)
+        Shipit.github_api.commits(github_repo_name, sha: sha)
       end
     rescue Octokit::Conflict
       [] # Repository is empty...
@@ -418,7 +421,13 @@ module Shipit
 
     def setup_hooks
       REQUIRED_HOOKS.each do |event|
-        hook = github_hooks.find_or_create_by!(event: event)
+        hook = if event.is_a?(Array)
+          # An array indicated one or the other, so find the first one
+          # or create using the first one otherwise
+          github_hooks.find_by(event: event) || github_hooks.create!(event: event.first)
+        else
+          github_hooks.find_or_create_by!(event: event)
+        end
         hook.schedule_setup!
       end
     end
