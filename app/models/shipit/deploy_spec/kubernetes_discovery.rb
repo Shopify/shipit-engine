@@ -16,6 +16,7 @@ module Shipit
               'action' => "Restart application",
               'description' => "Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility",
               'steps' => [kubernetes_restart_cmd],
+              'bundler' => false,
             },
           }
         else
