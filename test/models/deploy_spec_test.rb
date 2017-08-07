@@ -337,6 +337,14 @@ module Shipit
       assert_equal ['foo'], definition.steps
     end
 
+    test "task definitions do not prepend bundle exec if `bundler == false`" do
+      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo), 'bundler' => false}})
+      @spec.stubs(:bundler?).returns(true)
+      definition = @spec.find_task_definition('restart')
+
+      assert_equal ['foo'], definition.steps
+    end
+
     test "task definitions prepend bundle exec before serialization" do
       @spec.expects(:discover_task_definitions).returns('restart' => {'steps' => %w(foo)})
       @spec.expects(:bundler?).returns(true).at_least_once
@@ -357,7 +365,20 @@ module Shipit
       tasks = @spec.task_definitions
       assert_equal 2, tasks.size
 
-      restart_task = tasks.find { |t| t.id == "restart" }
+      restart_task = @spec.find_task_definition('restart')
+      assert_equal ["kubernetes-restart foo bar"], restart_task.steps
+    end
+
+    test "#task_definitions returns kubernetes commands without `bundle exec` in a bundler project" do
+      @spec.stubs(:bundler?).returns(true)
+      @spec.stubs(:load_config).returns(
+        'tasks' => {'another_task' => {'steps' => %w(foo)}},
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      restart_task = @spec.find_task_definition('restart')
       assert_equal ["kubernetes-restart foo bar"], restart_task.steps
     end
 

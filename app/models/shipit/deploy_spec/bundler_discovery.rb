@@ -54,6 +54,7 @@ module Shipit
       end
 
       def coerce_task_definition(config)
+        return config if config.fetch('bundler', nil) == false
         config.merge('steps' => Array(config['steps']).map(&method(:bundle_exec)))
       end
     end
