@@ -6,7 +6,6 @@ module Shipit
       @app_dir = '/tmp/'
       @spec = DeploySpec::FileSystem.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns({})
-      Shipit.stubs(:automatically_prepend_bundle_exec).returns(true)
     end
 
     test '#supports_fetch_deployed_revision? returns false by default' do

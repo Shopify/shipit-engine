@@ -57,6 +57,7 @@ module Shipit
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication
+  attr_writer :automatically_prepend_bundle_exec
 
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
@@ -207,8 +208,14 @@ module Shipit
   end
 
   def automatically_prepend_bundle_exec
-    # Prepending `bundle exec` automatically is deprecated
-    Rails.env.production? && ENV.fetch('SHIPIT_PREPEND_BUNDLE_EXEC', '1') != '0'
+    unless defined?(@automatically_prepend_bundle_exec)
+      ActiveSupport::Deprecation.warn(
+        'Automatically prepending `bundle exec` will be removed in a future version of Shipit, '\
+        'set `Shipit.automatically_prepend_bundle_exec = false` to test the new behaviour.',
+      )
+      @automatically_prepend_bundle_exec = true
+    end
+    @automatically_prepend_bundle_exec
   end
 
   protected
