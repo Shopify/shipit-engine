@@ -54,7 +54,16 @@ module Shipit
       end
 
       def coerce_task_definition(config)
-        config.merge('steps' => Array(config['steps']).map(&method(:bundle_exec)))
+        coerced_steps = Array(config['steps']).map do |command|
+          should_prepend_bundle_exec?(command) ? bundle_exec(command) : command
+        end
+        config.merge('steps' => coerced_steps)
+      end
+
+      private
+
+      def should_prepend_bundle_exec?(command)
+        Shipit.automatically_prepend_bundle_exec && !command.start_with?('bundle exec')
       end
     end
   end

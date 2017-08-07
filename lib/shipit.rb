@@ -206,6 +206,11 @@ module Shipit
     secrets.commands_inactivity_timeout || 5.minutes.to_i
   end
 
+  def automatically_prepend_bundle_exec
+    # Prepending `bundle exec` automatically is deprecated
+    Rails.env.production? && ENV.fetch('SHIPIT_PREPEND_BUNDLE_EXEC', '1') != '0'
+  end
+
   protected
 
   def revision_file

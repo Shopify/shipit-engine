@@ -6,6 +6,7 @@ module Shipit
       @app_dir = '/tmp/'
       @spec = DeploySpec::FileSystem.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns({})
+      Shipit.stubs(:automatically_prepend_bundle_exec).returns(true)
     end
 
     test '#supports_fetch_deployed_revision? returns false by default' do
@@ -318,9 +319,27 @@ module Shipit
       assert_equal 'SAFETY_DISABLED', variable_definition.name
     end
 
-    test "task definitions prepend bundle exec if necessary" do
+    test "task definitions prepend bundle exec if enabled" do
+      Shipit.expects(:automatically_prepend_bundle_exec).returns(true).at_least_once
       @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
       @spec.expects(:bundler?).returns(true).at_least_once
+      definition = @spec.find_task_definition('restart')
+
+      assert_equal ['bundle exec foo'], definition.steps
+    end
+
+    test "task definitions do not prepend bundle exec if disabled" do
+      Shipit.expects(:automatically_prepend_bundle_exec).returns(false).at_least_once
+      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+      definition = @spec.find_task_definition('restart')
+
+      assert_equal ['foo'], definition.steps
+    end
+
+    test "task definitions do not prepend bundle exec if the task already does" do
+      Shipit.expects(:automatically_prepend_bundle_exec).returns(true).at_least_once
+      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => ['bundle exec foo']}})
+      @spec.stubs(:bundler?).returns(true)
       definition = @spec.find_task_definition('restart')
 
       assert_equal ['bundle exec foo'], definition.steps
