@@ -3,6 +3,7 @@
 * Fix caching of discovered tasks.
 * Reconsider all undeployed commits for locking after a rollback has completed (https://github.com/Shopify/shipit-engine/issues/707).
 * Marks deploys that are triggered while ignoring safety features (https://github.com/Shopify/shipit-engine/issues/699).
+* Automatically prepending `bundle exec` to tasks is deprecated, set `Shipit.automatically_prepend_bundle_exec = false` to test the future behaviour before it is enforced.
 
 # 0.19.0
 
