@@ -42,9 +42,9 @@ module Shipit
     end
 
     def with_temporary_working_directory(commit: nil)
-      if commit
-        @stack.acquire_git_cache_lock do
-          fetch.run! unless fetched?(commit).tap(&:run).success?
+      @stack.acquire_git_cache_lock do
+        if !commit || !fetched?(commit).tap(&:run).success?
+          fetch.run!
         end
       end
 
