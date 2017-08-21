@@ -55,5 +55,13 @@ module Shipit
       @hook.stack_id = 42
       assert @hook.scoped?
     end
+
+    test "#purge_old_deliveries!" do
+      Hook.deliver(:deploy, @stack, 'foo' => 42)
+
+      assert_difference -> { Delivery.count }, -1 do
+        @hook.purge_old_deliveries!(keep: 1)
+      end
+    end
   end
 end

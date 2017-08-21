@@ -2,6 +2,8 @@ module Shipit
   class Hook < ActiveRecord::Base
     default_scope { order :id }
 
+    DELIVERIES_LOG_SIZE = 500
+
     CONTENT_TYPES = {
       'json' => 'application/json',
       'form' => 'application/x-www-form-urlencoded',
@@ -75,6 +77,12 @@ module Shipit
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
       ).schedule!
+    end
+
+    def purge_old_deliveries!(keep: DELIVERIES_LOG_SIZE)
+      if cut_off_time = deliveries.order(created_at: :desc).limit(1).offset(keep).pluck(:created_at).first
+        deliveries.where('created_at > ?', cut_off_time).delete_all
+      end
     end
 
     private

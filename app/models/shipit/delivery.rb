@@ -5,12 +5,12 @@ module Shipit
 
     belongs_to :hook
 
-    scope :due_for_deletion, -> { where('created_at < ?', 1.month.ago) }
-
     validates :url, presence: true, url: {no_local: true, allow_blank: true}
     validates :content_type, presence: true
 
     serialize :response_headers, JSON
+
+    after_commit :purge_old_deliveries, on: :create
 
     def schedule!
       DeliverHookJob.perform_later(self)
@@ -28,6 +28,10 @@ module Shipit
     end
 
     private
+
+    def purge_old_deliveries
+      PurgeOldDeliveriesJob.perform_later(hook)
+    end
 
     def http
       Faraday::Connection.new do |connection|
