@@ -1,5 +1,6 @@
 # Unreleased
 
+* Change hook deliveries history to only keep 500 for each hooks.
 * Fix FetchDeployedRevisionJob failing for stacks with no git cache
 * Fix caching of discovered tasks.
 * Reconsider all undeployed commits for locking after a rollback has completed (https://github.com/Shopify/shipit-engine/issues/707).
