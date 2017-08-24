@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.20.0
+
 * Change hook deliveries history to only keep 500 for each hooks.
 * Fix FetchDeployedRevisionJob failing for stacks with no git cache
 * Fix caching of discovered tasks.
