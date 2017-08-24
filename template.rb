@@ -11,7 +11,7 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'thin'
-gem 'shipit-engine', '>= 0.13'
+gem 'shipit-engine', '>= 0.20'
 gem 'dotenv-rails'
 gem 'redis-rails'
 
