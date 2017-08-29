@@ -441,14 +441,14 @@ module Shipit
       @stack.deploys_and_rollbacks.destroy_all
       @stack.update_undeployed_commits_count
       @stack.reload
-      assert_equal 'backlogged', @stack.merge_status
+      assert_equal 'backlogged', @stack.merge_status(backlog_leniency_factor: 1.5)
     end
 
     test "#merge_status returns success with a higher leniency factor" do
       @stack.deploys_and_rollbacks.destroy_all
       @stack.update_undeployed_commits_count
       @stack.reload
-      assert_equal 'success', @stack.merge_status(backlog_leniency_factor: 2.0)
+      assert_equal 'success', @stack.merge_status(backlog_leniency_factor: 3.0)
     end
 
     test "#handle_github_redirections update the stack if the repository was renamed" do
