@@ -102,7 +102,7 @@ module Shipit
     end
 
     def self.schedule_merges
-      Shipit::Stack.where(id: pending.uniq.pluck(:stack_id)).find_each(&:schedule_merges)
+      Shipit::Stack.where(merge_queue_enabled: true).find_each(&:schedule_merges)
     end
 
     def self.extract_number(stack, number_or_url)
