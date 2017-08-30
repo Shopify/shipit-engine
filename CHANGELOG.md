@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix hook deliveries purge mechanism that wasn't deleting the correct records.
+
 # 0.20.0
 
 * Change hook deliveries history to only keep 500 for each hooks.

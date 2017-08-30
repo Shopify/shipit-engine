@@ -59,9 +59,14 @@ module Shipit
     test "#purge_old_deliveries!" do
       Hook.deliver(:deploy, @stack, 'foo' => 42)
 
-      assert_difference -> { Delivery.count }, -1 do
+      previous_ids = @hook.deliveries.order(created_at: :desc).pluck(:id)
+
+      assert_difference -> { @hook.deliveries.count }, -1 do
         @hook.purge_old_deliveries!(keep: 1)
       end
+
+      after_ids = @hook.deliveries.order(created_at: :desc).pluck(:id)
+      assert_equal previous_ids[0..-2], after_ids
     end
   end
 end
