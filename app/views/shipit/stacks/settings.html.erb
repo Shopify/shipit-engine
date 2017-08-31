@@ -14,6 +14,10 @@
         </div>
 
         <div class="field-wrapper">
+          <span>Branch: <%= @stack.branch %></span>
+        </div>
+
+        <div class="field-wrapper">
           <%= f.label :deploy_url, 'Deploy URL (Where is this stack deployed to?)' %>
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
         </div>
