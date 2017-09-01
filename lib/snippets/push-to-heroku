@@ -23,7 +23,7 @@ if [[ -z "${HEROKU_APP}" ]]; then
   exit 1;
 fi
 
-echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | grep '^\(v[0-9]\+\)' >/dev/null
+echo "$HEROKU_RELEASES" | grep 'Current: \(v[0-9]\+\)' >/dev/null
 
 if [[ $? -ne 0 ]]; then
   red "Error detecting current heroku release. Message from 'heroku releases':"
@@ -33,7 +33,7 @@ if [[ $? -ne 0 ]]; then
   exit 1;
 fi
 
-HEROKU_LAST_GOOD_RELEASE=`echo "$HEROKU_RELEASES" | head -n2 | tail -n1 | sed -e 's/^\(v[0-9]\+\).*/\1/'`
+HEROKU_LAST_GOOD_RELEASE=`echo "$HEROKU_RELEASES" | grep 'Current: \(v[0-9]\+\)' | sed -e 's/.*\(v[0-9]\+\).*/\1/'`
 green "Current heroku release: ${HEROKU_LAST_GOOD_RELEASE}"
 
 green "Pushing to heroku."

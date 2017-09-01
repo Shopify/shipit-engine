@@ -649,7 +649,7 @@ These variables are accessible only during deploys and rollback:
 
 ### Heroku
 
-To use Heroku integration (`lib/snippets/push-to-heroku`), make sure that the environment has [Heroku toolbelt](https://devcenter.heroku.com/articles/heroku-cli) available.
+To use Heroku integration (`lib/snippets/push-to-heroku`), make sure that the environment has [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) available.
 
 ### Kubernetes
 
