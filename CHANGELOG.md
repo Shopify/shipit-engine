@@ -1,5 +1,7 @@
 # Unreleased
 
+* Improve hook deliveries purge mechanism to reduce database contention.
+
 # 0.20.1
 
 * Fix hook deliveries purge mechanism that wasn't deleting the correct records.

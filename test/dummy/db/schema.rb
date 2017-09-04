@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170629141736) do
+ActiveRecord::Schema.define(version: 20170904103242) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -80,9 +80,8 @@ ActiveRecord::Schema.define(version: 20170629141736) do
     t.datetime "delivered_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_at"], name: "index_deliveries_on_created_at"
     t.index ["hook_id", "event", "status"], name: "index_deliveries_on_hook_id_and_event_and_status"
-    t.index ["status", "event"], name: "index_deliveries_on_status_and_event"
+    t.index ["hook_id", "status"], name: "index_deliveries_on_hook_id_and_status"
   end
 
   create_table "github_hooks", force: :cascade do |t|
