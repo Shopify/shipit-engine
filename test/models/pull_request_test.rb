@@ -29,7 +29,7 @@ module Shipit
       PullRequest.request_merge!(@stack, @pr.number, @user)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
-      assert_in_delta Time.now.utc, @pr.merge_requested_at, 1
+      assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
     end
 
     test ".request_merge! retry rejected pull requests" do
@@ -39,7 +39,7 @@ module Shipit
       PullRequest.request_merge!(@stack, @pr.number, @user)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
-      assert_in_delta Time.now.utc, @pr.merge_requested_at, 1
+      assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
       assert_nil @pr.rejection_reason
     end
 

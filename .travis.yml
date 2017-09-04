@@ -1,3 +1,4 @@
+dist: precise # https://github.com/travis-ci/travis-ci/issues/8331
 addons:
   apt:
     sources:
