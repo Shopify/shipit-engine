@@ -17,6 +17,7 @@ module Shipit
 
       pull_requests.select(&:pending?).each do |pull_request|
         pull_request.refresh!
+        next unless pull_request.all_status_checks_passed?
         begin
           pull_request.merge!
         rescue PullRequest::NotReady
