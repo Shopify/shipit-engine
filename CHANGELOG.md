@@ -1,5 +1,7 @@
 # Unreleased
 
+* Pull requests with pending CI will no longer be rejected immediately from the merge queue, they will remain on the queue until CI completes, or the PR needs revalidating.
+
 # 0.20.1
 
 * Fix hook deliveries purge mechanism that wasn't deleting the correct records.

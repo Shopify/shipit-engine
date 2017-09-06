@@ -146,7 +146,7 @@ module Shipit
 
     def reject_unless_mergeable!
       return reject!('merge_conflict') if merge_conflict?
-      return reject!('ci_failing') unless all_status_checks_passed?
+      return reject!('ci_failing') if any_status_checks_failed?
       false
     end
 
@@ -185,6 +185,11 @@ module Shipit
 
     def all_status_checks_passed?
       StatusChecker.new(head, head.statuses, stack.cached_deploy_spec).success?
+    end
+
+    def any_status_checks_failed?
+      status = StatusChecker.new(head, head.statuses, stack.cached_deploy_spec)
+      status.failure? || status.error?
     end
 
     def waiting?

@@ -11,6 +11,7 @@ module Shipit
       @not_ready_pr = shipit_pull_requests(:shipit_pending_not_mergeable_yet)
       @closed_pr = shipit_pull_requests(:shipit_pending_closed)
       @merged_pr = shipit_pull_requests(:shipit_pending_merged)
+      @mergable_pending_ci = shipit_pull_requests(:shipit_mergeable_pending_ci)
     end
 
     test "#perform rejects unmergeable PRs and merge the others" do
@@ -72,6 +73,14 @@ module Shipit
       PullRequest.any_instance.stubs(:refresh!)
       @job.perform(@stack)
       assert_predicate @merged_pr.reload, :merged?
+    end
+
+    test "#perform does not reject pull requests with pending statuses" do
+      PullRequest.any_instance.stubs(:refresh!)
+      @pending_pr.cancel!
+      @job.perform(@stack)
+      refute_predicate @mergable_pending_ci.reload, :rejected?
+      refute_predicate @mergable_pending_ci.reload, :merged?
     end
   end
 end

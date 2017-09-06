@@ -1,8 +1,6 @@
 dist: precise # https://github.com/travis-ci/travis-ci/issues/8331
 addons:
   apt:
-    sources:
-      - travis-ci/sqlite3
     packages:
       - sqlite3 # https://github.com/rails/rails/issues/24288#issuecomment-206011385
 language: ruby

@@ -156,13 +156,23 @@ module Shipit
       assert_equal 'merge_conflict', @pr.rejection_reason
     end
 
-    test "#reject_unless_mergeable! rejects the PR if it has a failing or pending CI status" do
-      @pr.head.statuses.create!(stack: @pr.stack, state: 'pending', context: 'ci/circle')
+    test "#reject_unless_mergeable! rejects the PR if it has a failing CI status" do
+      @pr.head.statuses.create!(stack: @pr.stack, state: 'failure', context: 'ci/circle')
 
       refute_predicate @pr, :all_status_checks_passed?
+      assert_predicate @pr, :any_status_checks_failed?
       assert_equal true, @pr.reject_unless_mergeable!
       assert_predicate @pr, :rejected?
       assert_equal 'ci_failing', @pr.rejection_reason
+    end
+
+    test "#reject_unless_mergeable! does not reject the PR if it has a pending CI status" do
+      @pr.head.statuses.create!(stack: @pr.stack, state: 'pending', context: 'ci/circle')
+
+      refute_predicate @pr, :all_status_checks_passed?
+      refute_predicate @pr, :any_status_checks_failed?
+      assert_equal false, @pr.reject_unless_mergeable!
+      refute_predicate @pr, :rejected?
     end
 
     test "#merge! revalidates the PR if it has been enqueued for too long" do

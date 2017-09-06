@@ -87,3 +87,20 @@ shipit_pending_merged:
   mergeable: null
   additions: 23
   deletions: 43
+
+shipit_mergeable_pending_ci:
+  stack: shipit
+  number: 67
+  title: Super duper nice feature
+  merge_status: pending
+  merge_requested_at: <%= 5.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 5.minute.ago.to_s(:db) %>
+  merge_requested_by: walrus
+  github_id: 424244242424241
+  api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/67
+  state: open
+  branch: feature-67
+  head_id: 4
+  mergeable: true
+  additions: 23
+  deletions: 43
