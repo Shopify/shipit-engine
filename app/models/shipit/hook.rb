@@ -80,9 +80,8 @@ module Shipit
     end
 
     def purge_old_deliveries!(keep: DELIVERIES_LOG_SIZE)
-      if cut_off_time = deliveries.order(created_at: :desc).limit(1).offset(keep).pluck(:created_at).first
-        deliveries.where('created_at <= ?', cut_off_time).delete_all
-      end
+      delivery_ids = deliveries.sent.order(id: :desc).offset(keep).pluck(:id)
+      deliveries.where(id: delivery_ids).delete_all
     end
 
     private
