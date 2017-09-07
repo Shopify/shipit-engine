@@ -221,5 +221,10 @@ module Shipit
         @stack.reload
       end
     end
+
+    test "#all_status_checks_passed? returns false when head commit is unknown" do
+      @pr.update(head_id: nil)
+      refute_predicate @pr, :all_status_checks_passed?
+    end
   end
 end
