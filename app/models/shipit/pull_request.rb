@@ -184,6 +184,7 @@ module Shipit
     end
 
     def all_status_checks_passed?
+      return false unless head
       StatusChecker.new(head, head.statuses, stack.cached_deploy_spec).success?
     end
 
