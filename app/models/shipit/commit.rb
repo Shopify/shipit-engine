@@ -194,6 +194,14 @@ module Shipit
       self.pull_request_title = message_parser.pull_request_title unless self[:pull_request_title]
     end
 
+    def deploy_requested_at
+      if pull_request.try!(:merged?)
+        pull_request.merge_requested_at
+      else
+        created_at
+      end
+    end
+
     private
 
     def message_parser
