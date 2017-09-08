@@ -68,16 +68,16 @@ module Shipit
       assert_predicate @closed_pr.reload, :canceled?
     end
 
-    test "#perform completes merge requests for already merged PRs" do
+    test "#perform cancels merge requests for manually merged PRs" do
       @pending_pr.cancel!
       PullRequest.any_instance.stubs(:refresh!)
       @job.perform(@stack)
-      assert_predicate @merged_pr.reload, :merged?
+      assert_predicate @merged_pr.reload, :canceled?
     end
 
     test "#perform does not reject pull requests with pending statuses" do
-      PullRequest.any_instance.stubs(:refresh!)
       @pending_pr.cancel!
+      PullRequest.any_instance.stubs(:refresh!)
       @job.perform(@stack)
       refute_predicate @mergable_pending_ci.reload, :rejected?
       refute_predicate @mergable_pending_ci.reload, :merged?
