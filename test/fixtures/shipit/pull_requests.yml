@@ -104,3 +104,21 @@ shipit_mergeable_pending_ci:
   mergeable: true
   additions: 23
   deletions: 43
+
+cyclimse_pending_merged:
+  id: 99
+  stack: cyclimse
+  number: 66
+  merge_status: merged
+  merge_requested_by: walrus
+  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
+  merged_at: <%= 2.minute.ago.to_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  github_id: 43243243243232
+  api_url: https://api.github.com/repos/shopify/cyclimse/pulls/66
+  state: closed
+  branch: feature-64
+  head_id: 8
+  mergeable: null
+  additions: 23
+  deletions: 43

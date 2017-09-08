@@ -551,6 +551,24 @@ module Shipit
       assert revert.revert_of?(commit)
     end
 
+    test "deploy_requested_at defaults to commit created_at" do
+      assert_equal @commit.deploy_requested_at, @commit.created_at
+    end
+
+    test "when merged via the queue, deploy_requested_at is merge_requested_at" do
+      commit = shipit_commits(:cyclimse_merged)
+      assert_predicate commit, :pull_request?
+      assert_equal commit.pull_request, shipit_pull_requests(:cyclimse_pending_merged)
+      assert_equal commit.deploy_requested_at, commit.pull_request.merge_requested_at
+    end
+
+    test "when merged manually after being queued, deploy_requested_at is created_at" do
+      pr = shipit_pull_requests(:cyclimse_pending_merged)
+      pr.cancel!
+      commit = shipit_commits(:cyclimse_merged)
+      assert_equal commit.deploy_requested_at, commit.created_at
+    end
+
     private
 
     def expect_event(stack)
