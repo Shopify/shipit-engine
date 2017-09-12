@@ -21,18 +21,6 @@ commands:
 open:
   shipit: http://shipit-engine.localhost
 
-railgun:
-  image: dev:railgun-common-services-0.2.x
-  services:
-    redis: 6379
-    nginx: 80
-  ip_address: 192.168.64.85
-  memory: 2G
-  cores: 2
-  disk: 2G
-  proxy:
-    shipit-engine.localhost: 55330
-
 packages:
   - git@github.com:Shopify/dev-shopify.git
 
