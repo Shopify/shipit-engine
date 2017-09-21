@@ -15,4 +15,4 @@ services:
   - nginx
 
 hostnames:
-  - shipit-engine.localhost: { proxy_to_host_port: 55330 }
+  - shipit-engine.myshopify.io: { proxy_to_host_port: 55330 }
