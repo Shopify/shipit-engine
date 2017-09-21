@@ -46,7 +46,7 @@ module Shipit
 
       def identify_user
         user_login = request.headers['X-Shipit-User'].presence
-        User.find_by(login: user_login) if user_login
+        User.where('lower(login) = ?', user_login.downcase).first if user_login
       end
 
       def stacks

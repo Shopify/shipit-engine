@@ -40,6 +40,13 @@ module Shipit
         deploy.user == @user
       end
 
+      test "#create normalises the claimed user" do
+        request.headers['X-Shipit-User'] = @user.login.swapcase
+        post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+        deploy = Deploy.last
+        assert_equal deploy.user, @user
+      end
+
       test "#create renders a 422 if the sha isn't found" do
         post :create, params: {stack_id: @stack.to_param, sha: '123443543545'}
         assert_response :unprocessable_entity
