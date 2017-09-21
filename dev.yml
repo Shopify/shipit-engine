@@ -19,7 +19,7 @@ commands:
   test: bin/rails test "$@"
 
 open:
-  shipit: http://shipit-engine.localhost
+  shipit: https://shipit-engine.myshopify.io
 
 packages:
   - git@github.com:Shopify/dev-shopify.git
