@@ -21,7 +21,7 @@
     </ul>
   </section>
 
-  <% cache @stack do %>
+  <% cache [@stack, params[:force]] do %>
     <section>
       <header class="section-header">
         <h2>Previous Deploys</h2>
