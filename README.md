@@ -122,6 +122,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`, `machine.directory`, `machine.cleanup`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
+* [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`)
 * [Custom Tasks](#custom-tasks) (`restart`, `unlock`)
 * [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
 
