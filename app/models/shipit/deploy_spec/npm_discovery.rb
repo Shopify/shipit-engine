@@ -40,6 +40,15 @@ module Shipit
         JSON.parse(file.read)['private'].blank?
       end
 
+      def dist_tag(version)
+        # Pre-release SemVer tags such as 'beta', 'alpha', 'rc' and 'next'
+        # are treated as 'next' npm dist-tags.
+        # An 1.0.0-beta.1 would be installable using both:
+        # `yarn add package@1.0.0-beta.1` and `yarn add package@next`
+        return 'next' if ['-beta', '-alpha', '-rc', '-next'].any? { |tag| version.include? tag }
+        'latest'
+      end
+
       def package_json
         file('package.json')
       end
@@ -60,10 +69,14 @@ module Shipit
         discover_npm_package || super
       end
 
+      def package_version
+        JSON.parse(package_json.read)['version']
+      end
+
       def publish_npm_package
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
-        publish = 'npm publish'
+        publish = "npm publish --tag #{dist_tag(package_version)}"
 
         [check_tags, publish]
       end
