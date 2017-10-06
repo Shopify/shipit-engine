@@ -123,8 +123,8 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Environment](#environment) (`machine.environment`, `machine.directory`, `machine.cleanup`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`)
-* [Custom Tasks](#custom-tasks) (`restart`, `unlock`)
-* [Review Process](#review-process) (`monitor`, `checklist`, `checks`)
+* [Custom Tasks](#custom-tasks) (`tasks`)
+* [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
@@ -270,7 +270,7 @@ deploy:
 ```
 <br>
 
-**<code>deploy.max_commits</code>** define the maximum number of commits that should be shipped per deploys. Defaults to `8`.
+**<code>deploy.max_commits</code>** defines the maximum number of commits that should be shipped per deploys. Defaults to `8`.
 
 Human users will be warned that they are not respecting the recommendation, but allowed to continue.
 However continuous delivery will respect this limit. If there is no deployable commits in this range, a human intervention will be required.
@@ -442,7 +442,7 @@ merge:
 
 You can create custom tasks that users execute directly from a stack's overview page in Shipit. To create a new custom task, specify its parameters in the `tasks` section of the `shipit.yml` file. For example:
 
-**<code>tasks</code>** restarts the application.
+**<code>tasks.restart</code>** restarts the application.
 
 ```yml
 tasks:
