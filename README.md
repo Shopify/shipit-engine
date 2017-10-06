@@ -282,6 +282,15 @@ deploy:
 ```
 <br>
 
+**<code>deploy.interval</code>** defines the interval between the end of a deploy and the next deploy, when continuous delivery is enabled. You can use s, m, h, d as units for seconds, minutes, hours, and days. Defaults to 0, which means a new deploy will start as soon as the current one finishes.
+
+For example, this will wait 5 minutes after the end of a deploy before starting a new one:
+
+```yaml
+deploy:
+  interval: 5m
+```
+
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to `disabled` unless Capistrano is detected.
 
 For example:
