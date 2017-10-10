@@ -71,7 +71,7 @@ module Shipit
     end
 
     def refresh_from_github!
-      update!(github_user: Shipit.github_api.user(login))
+      update!(github_user: Shipit.github_api.user(github_id))
     rescue Octokit::NotFound
       identify_renamed_user!
     end

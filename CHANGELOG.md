@@ -1,5 +1,6 @@
 # Unreleased
 
+* Use GitHub ID to refresh users via API to avoid login escaping issues.
 * Improve hook deliveries purge mechanism to reduce database contention.
 * Pull requests with pending CI will no longer be rejected immediately from the merge queue, they will remain on the queue until CI completes, or the PR needs revalidating.
 

@@ -69,7 +69,7 @@ module Shipit
     end
 
     test "#refresh_from_github! update the user with the latest data from GitHub's API" do
-      Shipit.github_api.expects(:user).with('walrus').returns(@github_user)
+      Shipit.github_api.expects(:user).with(@user.github_id).returns(@github_user)
       @user.refresh_from_github!
       @user.reload
 
@@ -82,7 +82,7 @@ module Shipit
       user.update!(github_id: @github_user.id)
       commit = user.authored_commits.last
 
-      Shipit.github_api.expects(:user).with(user.login).raises(Octokit::NotFound)
+      Shipit.github_api.expects(:user).with(user.github_id).raises(Octokit::NotFound)
       Shipit.github_api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
 
       assert_equal 'bob', user.login
