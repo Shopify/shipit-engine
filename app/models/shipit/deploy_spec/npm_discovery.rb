@@ -21,12 +21,14 @@ module Shipit
 
       def discover_yarn_checklist
         [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
-          yarn version --new-version <strong>&lt;major|minor|patch&gt;</strong> && git push --tags</pre>)] if yarn?
+          yarn version --new-version <strong>&lt;major|minor|patch&gt;</strong>
+          && git push --follow-tags</pre>)] if yarn?
       end
 
       def discover_npm_checklist
         [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
-          npm version <strong>&lt;major|minor|patch&gt;</strong> && git push --tags</pre>)] if npm?
+          npm version <strong>&lt;major|minor|patch&gt;</strong>
+          && git push --follow-tags</pre>)] if npm?
       end
 
       def npm?
