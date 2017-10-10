@@ -578,14 +578,6 @@ module Shipit
       refute @spec.npm?
     end
 
-    test '#npm? is false if npm package is private' do
-      file = Pathname.new('/tmp/fake_package.json')
-      file.write('{"private": true}')
-
-      @spec.expects(:package_json).returns(file)
-      refute @spec.npm?
-    end
-
     test '#npm? is true if npm package is public' do
       file = Pathname.new('/tmp/fake_package.json')
       file.write('{"private": false}')
@@ -595,9 +587,37 @@ module Shipit
       assert @spec.npm?
     end
 
+    test '#npm? is false if npm package is private' do
+      file = Pathname.new('/tmp/fake_package.json')
+      file.write('{"private": true}')
+
+      @spec.expects(:package_json).returns(file)
+      refute @spec.npm?
+    end
+
     test 'npm packages have a checklist' do
       @spec.stubs(:npm?).returns(true).at_least_once
       assert_match(/npm version/, @spec.review_checklist[0])
+    end
+
+    test '#package_version returns the version number' do
+      file = Pathname.new('/tmp/fake_package.json')
+      file.write('{"version": "1.0.0-beta.1"}')
+
+      @spec.expects(:package_json).returns(file)
+      assert_equal '1.0.0-beta.1', @spec.package_version
+    end
+
+    test '#dist_tag returns "latest" if the version does not contains a standard pre-release tag' do
+      assert_equal 'latest', @spec.dist_tag('1.0.0')
+      assert_equal 'latest', @spec.dist_tag('1.0.0-shopifyv4')
+    end
+
+    test '#dist_tag returns "next" if the version contains a pre-release tag' do
+      assert_equal 'next', @spec.dist_tag('1.0.0-alpha.1')
+      assert_equal 'next', @spec.dist_tag('1.0.0-beta')
+      assert_equal 'next', @spec.dist_tag('1.0.0-rc.3')
+      assert_equal 'next', @spec.dist_tag('1.0.0-next')
     end
 
     test '#dependencies_steps returns `npm install` if a `package.json` is present' do
@@ -607,7 +627,14 @@ module Shipit
 
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
-      assert_equal ['assert-npm-version-tag', 'npm publish'], @spec.deploy_steps
+      @spec.stubs(:package_version).returns('1.0.0')
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
+    end
+
+    test '#publish_npm_package checks if version tag and a pre-release flag exist, and then invokes npm deploy script' do
+      @spec.stubs(:npm?).returns(true)
+      @spec.stubs(:package_version).returns('1.0.0-alpha.1')
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag next'], @spec.deploy_steps
     end
 
     test 'bundler installs take priority over yarn installs' do
@@ -665,7 +692,8 @@ module Shipit
 
     test '#publish_yarn_package checks if version tag exists, and then invokes npm publish script' do
       @spec.stubs(:yarn?).returns(true).at_least_once
-      assert_equal ['assert-npm-version-tag', 'npm publish'], @spec.deploy_steps
+      @spec.stubs(:package_version).returns('1.0.0')
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
     end
 
     test 'yarn checklist takes precedence over npm checklist' do
