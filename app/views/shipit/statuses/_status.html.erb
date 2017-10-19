@@ -1,4 +1,4 @@
-<a class="status status--<%= status.state %> <%= :disabled unless status.target_url.present? %>" <% unless status.group? %>data-tooltip="<%= status.description.presence || status.state.capitalize %>"<% end %> href="<%= status.target_url%>" target="_blank">
+<a class="status status--<%= status.state %> <%= 'disabled' unless status.target_url.present? %>" <%= 'disabled' unless status.target_url.present? %> <% unless status.group? %>data-tooltip="<%= status.description.presence || status.state.capitalize %>"<% end %> href="<%= status.target_url%>" target="_blank">
   <i class="status__icon"></i>
   <span class="visually-hidden"><%= status.state %></span>
 </a>
