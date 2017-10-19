@@ -29,7 +29,7 @@ if [[ $? -ne 0 ]]; then
   red "Error detecting current heroku release. Message from 'heroku releases':"
   echo "${HEROKU_RELEASES}"
   red "Please contact a heroku collaborator for ${HEROKU_APP}:"
-  heroku sharing --app $HEROKU_APP
+  heroku access --app $HEROKU_APP
   exit 1;
 fi
 
@@ -41,7 +41,7 @@ $GIT_COMMAND
 if [[ $? -ne 0 ]]; then
   red "Heroku push rejected. See message above."
   red "Please contact a heroku collaborator for ${HEROKU_APP}:"
-  heroku sharing --app $HEROKU_APP
+  heroku access --app $HEROKU_APP
   exit 1;
 fi
 
@@ -58,7 +58,7 @@ if [[ "${MIGRATION_STATUS}" != "" ]]; then
   if [[ "${POST_MIGRATION_STATUS}" != "" ]]; then
     red "Migration failed! This is bad."
     red "Please contact a heroku collaborator for ${HEROKU_APP}:"
-    heroku sharing --app $HEROKU_APP
+    heroku access --app $HEROKU_APP
     red "The app ${HEROKU_APP} will now be reverted to its last working version ${HEROKU_LAST_GOOD_RELEASE}."
     heroku releases:rollback $HEROKU_LAST_GOOD_RELEASE --app $HEROKU_APP
     red "Abort."
