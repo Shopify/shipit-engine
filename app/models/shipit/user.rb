@@ -9,6 +9,7 @@ module Shipit
     has_many :tasks
 
     attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
+    attribute :github_access_token
 
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
