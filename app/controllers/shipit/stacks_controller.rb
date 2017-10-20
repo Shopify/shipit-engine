@@ -66,6 +66,7 @@ module Shipit
 
     def sync_webhooks
       @stack.setup_hooks
+      flash[:success] = 'Webhooks syncing scheduled'
       redirect_to stack_settings_path(@stack)
     end
 
