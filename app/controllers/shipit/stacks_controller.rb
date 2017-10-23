@@ -71,6 +71,7 @@ module Shipit
 
     def clear_git_cache
       ClearGitCacheJob.perform_later(@stack)
+      flash[:success] = 'Git Cache clearing scheduled'
       redirect_to stack_settings_path(@stack)
     end
 

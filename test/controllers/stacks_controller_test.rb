@@ -156,6 +156,11 @@ module Shipit
       assert_redirected_to stack_settings_path(@stack)
     end
 
+    test "#clear_git_cache displays a flash message" do
+      post :clear_git_cache, params: {id: @stack.to_param}
+      assert_equal 'Git Cache clearing scheduled', flash[:success]
+    end
+
     test "#update redirects to return_to parameter" do
       patch :update, params: {id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)}
       assert_redirected_to stack_path(@stack)
