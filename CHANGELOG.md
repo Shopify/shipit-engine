@@ -1,5 +1,6 @@
 # Unreleased
 
+* Fix failing membership webhooks for non fully downcase organization names.
 * Fix status group links not being disabled when the status url is missing (https://github.com/Shopify/shipit-engine/issues/742).
 * Use GitHub ID to refresh users via API to avoid login escaping issues.
 * Improve hook deliveries purge mechanism to reduce database contention.
