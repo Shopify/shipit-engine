@@ -88,7 +88,7 @@ module Shipit
       @webhook ||= if params[:stack_id]
         stack.github_hooks.find_by!(event: event)
       else
-        GithubHook::Organization.find_by!(organization: params.organization.login.downcase, event: event)
+        GithubHook::Organization.find_by!(organization: params.organization.login, event: event)
       end
     end
 
