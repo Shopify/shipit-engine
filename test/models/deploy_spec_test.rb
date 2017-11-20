@@ -284,6 +284,8 @@ module Shipit
           'require' => [],
           'ignore' => [],
           'revalidate_after' => nil,
+          'require_rebase_commits' => nil,
+          'require_rebase_after' => nil,
         },
         'ci' => {
           'hide' => [],
@@ -699,6 +701,20 @@ module Shipit
     test 'yarn checklist takes precedence over npm checklist' do
       @spec.stubs(:yarn?).returns(true).at_least_once
       assert_match(/yarn version/, @spec.review_checklist[0])
+    end
+
+    test "require_rebase_commits defaults to `nil" do
+      @spec.expects(:load_config).returns({})
+      assert_nil @spec.require_rebase_commits
+    end
+
+    test "require_rebase_after defaults to `nil` if `merge.require_rebase_after` cannot be parsed" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'require_rebase_after' => 'badbadbad',
+        },
+      )
+      assert_nil @spec.require_rebase_after
     end
   end
 end

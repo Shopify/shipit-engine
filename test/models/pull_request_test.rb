@@ -234,5 +234,28 @@ module Shipit
       @pr.update(head_id: nil)
       refute_predicate @pr, :all_status_checks_passed?
     end
+
+    test "#stale? returns false by default" do
+      refute_predicate @pr, :stale?
+    end
+
+    test "#stale? returns true when the branch falls behind the maximum commits" do
+      @pr.base_commit = shipit_commits(:second)
+      Shipit.github_api.expects(:compare).with(@stack.github_repo_name, @pr.base_commit.sha, @pr.head.sha).returns(
+        stub(
+          behind_by: 10,
+        )
+      )
+      @pr.stack.cached_deploy_spec = DeploySpec.new({ 'merge' => { 'require_rebase_commits' => 1 }})
+      assert_predicate @pr, :stale?
+    end
+
+    test "#stale? returns true when the branch falls behind the maximum age" do
+      @pr.base_commit = shipit_commits(:second)
+      @pr.base_commit.committed_at = 1.day.ago
+      @pr.head.committed_at = 1.hour.ago
+      @pr.stack.cached_deploy_spec = DeploySpec.new({ 'merge' => { 'require_rebase_after' => '1h' }})
+      assert_predicate @pr, :stale?
+    end
   end
 end

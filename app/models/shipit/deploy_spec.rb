@@ -167,6 +167,19 @@ module Shipit
       end
     end
 
+    def require_rebase_commits
+      config('merge', 'require_rebase_commits')
+    end
+
+    def require_rebase_after
+      if timeout = config('merge', 'require_rebase_after')
+        begin
+          Duration.parse(timeout)
+        rescue Duration::ParseError
+        end
+      end
+    end
+
     def review_checks
       config('review', 'checks') || []
     end
