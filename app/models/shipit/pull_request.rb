@@ -37,6 +37,7 @@ module Shipit
 
     belongs_to :stack
     belongs_to :head, class_name: 'Shipit::Commit', optional: true
+    belongs_to :base_commit, class_name: 'Shipit::Commit', optional: true
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
 
@@ -240,6 +241,8 @@ module Shipit
       self.branch = github_pull_request.head.ref
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha, detached: true)
       self.merged_at = github_pull_request.merged_at
+      self.base_ref = github_pull_request.base.ref
+      self.base_commit = find_or_create_commit_from_github_by_sha!(github_pull_request.base.sha, detached: true)
     end
 
     def merge_message

@@ -68,6 +68,7 @@ module Shipit
       pull_request = shipit_pull_requests(:shipit_fetching)
 
       head_sha = '64b3833d39def7ec65b57b42f496eb27ab4980b6'
+      base_sha = 'ba7ab50e02286f7d6c60c1ef75258133dd9ea763'
       Shipit.github_api.expects(:pull_request).with(@stack.github_repo_name, pull_request.number).returns(
         stub(
           id: 4_857_578,
@@ -82,6 +83,10 @@ module Shipit
             ref: 'super-branch',
             sha: head_sha,
           ),
+          base: stub(
+            ref:  'default-branch',
+            sha: base_sha,
+          )
         ),
       )
 
@@ -91,22 +96,25 @@ module Shipit
         name: 'Bob the Builder',
         email: 'bob@bob.com',
       )
-      Shipit.github_api.expects(:commit).with(@stack.github_repo_name, head_sha).returns(
-        stub(
-          sha: head_sha,
-          author: author,
-          committer: author,
-          commit: stub(
-            message: 'Great feature',
-            author: stub(date: 1.day.ago),
-            committer: stub(date: 1.day.ago),
+
+      [head_sha, base_sha].each do |sha|
+        Shipit.github_api.expects(:commit).with(@stack.github_repo_name, sha).returns(
+          stub(
+            sha: sha,
+            author: author,
+            committer: author,
+            commit: stub(
+              message: 'Great feature',
+              author: stub(date: 1.day.ago),
+              committer: stub(date: 1.day.ago),
+            ),
+            stats: stub(
+              additions: 24,
+              deletions: 5,
+            ),
           ),
-          stats: stub(
-            additions: 24,
-            deletions: 5,
-          ),
-        ),
-      )
+        )
+      end
 
       Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, head_sha).returns([stub(
         state: 'success',

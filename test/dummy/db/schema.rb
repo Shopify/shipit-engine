@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904103242) do
+ActiveRecord::Schema.define(version: 20171120161420) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -147,6 +147,8 @@ ActiveRecord::Schema.define(version: 20170904103242) do
     t.string "branch"
     t.datetime "revalidated_at"
     t.datetime "merged_at"
+    t.string "base_ref", limit: 1024
+    t.integer "base_commit_id"
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
     t.index ["merge_status"], name: "index_pull_requests_on_merge_status"
