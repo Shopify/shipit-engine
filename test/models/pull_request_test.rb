@@ -86,7 +86,7 @@ module Shipit
           base: stub(
             ref:  'default-branch',
             sha: base_sha,
-          )
+          ),
         ),
       )
 
@@ -183,6 +183,13 @@ module Shipit
       refute_predicate @pr, :rejected?
     end
 
+    test "#reject_unless_mergeable! rejects the PR if it is stale" do
+      @pr.stubs(:stale?).returns(true)
+      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :rejected?
+      assert_equal 'requires_rebase', @pr.rejection_reason
+    end
+
     test "#merge! revalidates the PR if it has been enqueued for too long" do
       @pr.update!(revalidated_at: 5.hours.ago)
 
@@ -241,21 +248,30 @@ module Shipit
 
     test "#stale? returns true when the branch falls behind the maximum commits" do
       @pr.base_commit = shipit_commits(:second)
-      Shipit.github_api.expects(:compare).with(@stack.github_repo_name, @pr.base_commit.sha, @pr.head.sha).returns(
+      @pr.base_ref = 'default-branch'
+      Shipit.github_api.expects(:compare).with(@stack.github_repo_name, @pr.base_ref, @pr.head.sha).returns(
         stub(
           behind_by: 10,
-        )
+        ),
       )
-      @pr.stack.cached_deploy_spec = DeploySpec.new({ 'merge' => { 'require_rebase_commits' => 1 }})
+      spec = {'merge' => {'require_rebase_commits' => 1}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       assert_predicate @pr, :stale?
     end
 
     test "#stale? returns true when the branch falls behind the maximum age" do
       @pr.base_commit = shipit_commits(:second)
-      @pr.base_commit.committed_at = 1.day.ago
-      @pr.head.committed_at = 1.hour.ago
-      @pr.stack.cached_deploy_spec = DeploySpec.new({ 'merge' => { 'require_rebase_after' => '1h' }})
+      @pr.head.committed_at = 2.hours.ago
+      spec = {'merge' => {'max_divergence' => {'age' => '1h'}}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       assert_predicate @pr, :stale?
+    end
+
+    test "#stale? is false when base_commit information is missing" do
+      @pr.base_commit = nil
+      spec = {'merge' => {'max_divergence' => {'age' => '1h', 'commits' => 10}}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
+      refute_predicate @pr, :stale?
     end
   end
 end

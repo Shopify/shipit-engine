@@ -229,6 +229,7 @@ module Shipit
       update!(github_pull_request: Shipit.github_api.pull_request(stack.github_repo_name, number))
       head.refresh_statuses!
       fetched! if fetching?
+      @comparison = nil
     end
 
     def github_pull_request=(github_pull_request)
@@ -252,9 +253,10 @@ module Shipit
     end
 
     def stale?
+      return false unless base_commit
       spec = stack.cached_deploy_spec
-      if max_branch_age = spec.require_rebase_after
-        return true if head.committed_at > base_commit.committed_at + max_branch_age
+      if max_branch_age = spec.max_divergence_age
+        return true if Time.now.utc - head.committed_at > max_branch_age
       end
       if commit_count_limit = spec.require_rebase_commits
         return true if comparison.behind_by > commit_count_limit
@@ -262,15 +264,15 @@ module Shipit
       false
     end
 
-    private
-
     def comparison
       @comparison ||= Shipit.github_api.compare(
         stack.github_repo_name,
-        base_commit.sha,
+        base_ref,
         head.sha,
       )
     end
+
+    private
 
     if Rails.gem_version >= Gem::Version.new('5.1.0.beta1')
       def record_merge_status_change
