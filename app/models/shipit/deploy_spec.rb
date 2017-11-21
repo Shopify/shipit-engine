@@ -167,12 +167,12 @@ module Shipit
       end
     end
 
-    def require_rebase_commits
-      config('merge', 'require_rebase_commits')
+    def max_divergence_commits
+      config('merge', 'max_divergence', 'commits')
     end
 
-    def require_rebase_after
-      if timeout = config('merge', 'require_rebase_after')
+    def max_divergence_age
+      if timeout = config('merge', 'max_divergence', 'age')
         begin
           Duration.parse(timeout)
         rescue Duration::ParseError

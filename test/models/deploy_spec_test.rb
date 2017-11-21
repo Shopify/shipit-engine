@@ -284,8 +284,10 @@ module Shipit
           'require' => [],
           'ignore' => [],
           'revalidate_after' => nil,
-          'require_rebase_commits' => nil,
-          'require_rebase_after' => nil,
+          'max_divergence' => {
+            'commits' => nil,
+            'age' => nil,
+          },
         },
         'ci' => {
           'hide' => [],
@@ -703,18 +705,20 @@ module Shipit
       assert_match(/yarn version/, @spec.review_checklist[0])
     end
 
-    test "require_rebase_commits defaults to `nil" do
+    test "max_divergence_commits defaults to `nil" do
       @spec.expects(:load_config).returns({})
-      assert_nil @spec.require_rebase_commits
+      assert_nil @spec.max_divergence_commits
     end
 
-    test "require_rebase_after defaults to `nil` if `merge.require_rebase_after` cannot be parsed" do
+    test "max_divergence_age defaults to `nil` if `merge.max_divergence.age` cannot be parsed" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'require_rebase_after' => 'badbadbad',
+          'max_divergence' => {
+            'age' => 'badbadbad',
+          },
         },
       )
-      assert_nil @spec.require_rebase_after
+      assert_nil @spec.max_divergence_age
     end
   end
 end

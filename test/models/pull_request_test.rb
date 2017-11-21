@@ -254,7 +254,7 @@ module Shipit
           behind_by: 10,
         ),
       )
-      spec = {'merge' => {'require_rebase_commits' => 1}}
+      spec = {'merge' => {'max_divergence' => {'commits' => 1}}}
       @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       assert_predicate @pr, :stale?
     end

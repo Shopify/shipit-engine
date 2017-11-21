@@ -258,7 +258,7 @@ module Shipit
       if max_branch_age = spec.max_divergence_age
         return true if Time.now.utc - head.committed_at > max_branch_age
       end
-      if commit_count_limit = spec.require_rebase_commits
+      if commit_count_limit = spec.max_divergence_commits
         return true if comparison.behind_by > commit_count_limit
       end
       false

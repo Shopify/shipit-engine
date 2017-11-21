@@ -122,7 +122,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Deployment](#deployment) (`deploy`, `rollback`, `fetch`)
 * [Environment](#environment) (`machine.environment`, `machine.directory`, `machine.cleanup`)
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
-* [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`)
+* [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`, `merge.max_divergence`)
 * [Custom Tasks](#custom-tasks) (`tasks`)
 * [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
 
@@ -436,6 +436,24 @@ For example:
 merge:
   ignore:
     - codeclimate
+```
+
+**<code>merge.max_divergence.commits</code>** the maximum number of commits a pull request can be behind its merge base, after which pull requests are rejected from the merge queue.
+
+For example:
+```yml
+merge:
+  max_divergence:
+    commits: 50
+```
+
+**<code>merge.max_divergence.age</code>** a duration after the commit date of the merge base, after which pull requests will be rejected from the merge queue.
+
+For example:
+```yml
+merge:
+  max_divergence:
+    age: 72h
 ```
 
 <h3 id="custom-tasks">Custom tasks</h3>
