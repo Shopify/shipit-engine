@@ -68,6 +68,7 @@ module Shipit
       pull_request = shipit_pull_requests(:shipit_fetching)
 
       head_sha = '64b3833d39def7ec65b57b42f496eb27ab4980b6'
+      base_sha = 'ba7ab50e02286f7d6c60c1ef75258133dd9ea763'
       Shipit.github_api.expects(:pull_request).with(@stack.github_repo_name, pull_request.number).returns(
         stub(
           id: 4_857_578,
@@ -82,6 +83,10 @@ module Shipit
             ref: 'super-branch',
             sha: head_sha,
           ),
+          base: stub(
+            ref:  'default-branch',
+            sha: base_sha,
+          ),
         ),
       )
 
@@ -91,22 +96,25 @@ module Shipit
         name: 'Bob the Builder',
         email: 'bob@bob.com',
       )
-      Shipit.github_api.expects(:commit).with(@stack.github_repo_name, head_sha).returns(
-        stub(
-          sha: head_sha,
-          author: author,
-          committer: author,
-          commit: stub(
-            message: 'Great feature',
-            author: stub(date: 1.day.ago),
-            committer: stub(date: 1.day.ago),
+
+      [head_sha, base_sha].each do |sha|
+        Shipit.github_api.expects(:commit).with(@stack.github_repo_name, sha).returns(
+          stub(
+            sha: sha,
+            author: author,
+            committer: author,
+            commit: stub(
+              message: 'Great feature',
+              author: stub(date: 1.day.ago),
+              committer: stub(date: 1.day.ago),
+            ),
+            stats: stub(
+              additions: 24,
+              deletions: 5,
+            ),
           ),
-          stats: stub(
-            additions: 24,
-            deletions: 5,
-          ),
-        ),
-      )
+        )
+      end
 
       Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, head_sha).returns([stub(
         state: 'success',
@@ -175,6 +183,13 @@ module Shipit
       refute_predicate @pr, :rejected?
     end
 
+    test "#reject_unless_mergeable! rejects the PR if it is stale" do
+      @pr.stubs(:stale?).returns(true)
+      assert_equal true, @pr.reject_unless_mergeable!
+      assert_predicate @pr, :rejected?
+      assert_equal 'requires_rebase', @pr.rejection_reason
+    end
+
     test "#merge! revalidates the PR if it has been enqueued for too long" do
       @pr.update!(revalidated_at: 5.hours.ago)
 
@@ -225,6 +240,38 @@ module Shipit
     test "#all_status_checks_passed? returns false when head commit is unknown" do
       @pr.update(head_id: nil)
       refute_predicate @pr, :all_status_checks_passed?
+    end
+
+    test "#stale? returns false by default" do
+      refute_predicate @pr, :stale?
+    end
+
+    test "#stale? returns true when the branch falls behind the maximum commits" do
+      @pr.base_commit = shipit_commits(:second)
+      @pr.base_ref = 'default-branch'
+      Shipit.github_api.expects(:compare).with(@stack.github_repo_name, @pr.base_ref, @pr.head.sha).returns(
+        stub(
+          behind_by: 10,
+        ),
+      )
+      spec = {'merge' => {'max_divergence' => {'commits' => 1}}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
+      assert_predicate @pr, :stale?
+    end
+
+    test "#stale? returns true when the branch falls behind the maximum age" do
+      @pr.base_commit = shipit_commits(:second)
+      @pr.head.committed_at = 2.hours.ago
+      spec = {'merge' => {'max_divergence' => {'age' => '1h'}}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
+      assert_predicate @pr, :stale?
+    end
+
+    test "#stale? is false when base_commit information is missing" do
+      @pr.base_commit = nil
+      spec = {'merge' => {'max_divergence' => {'age' => '1h', 'commits' => 10}}}
+      @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
+      refute_predicate @pr, :stale?
     end
   end
 end

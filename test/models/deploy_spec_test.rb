@@ -284,6 +284,10 @@ module Shipit
           'require' => [],
           'ignore' => [],
           'revalidate_after' => nil,
+          'max_divergence' => {
+            'commits' => nil,
+            'age' => nil,
+          },
         },
         'ci' => {
           'hide' => [],
@@ -699,6 +703,22 @@ module Shipit
     test 'yarn checklist takes precedence over npm checklist' do
       @spec.stubs(:yarn?).returns(true).at_least_once
       assert_match(/yarn version/, @spec.review_checklist[0])
+    end
+
+    test "max_divergence_commits defaults to `nil" do
+      @spec.expects(:load_config).returns({})
+      assert_nil @spec.max_divergence_commits
+    end
+
+    test "max_divergence_age defaults to `nil` if `merge.max_divergence.age` cannot be parsed" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'max_divergence' => {
+            'age' => 'badbadbad',
+          },
+        },
+      )
+      assert_nil @spec.max_divergence_age
     end
   end
 end

@@ -167,6 +167,19 @@ module Shipit
       end
     end
 
+    def max_divergence_commits
+      config('merge', 'max_divergence', 'commits')
+    end
+
+    def max_divergence_age
+      if timeout = config('merge', 'max_divergence', 'age')
+        begin
+          Duration.parse(timeout)
+        rescue Duration::ParseError
+        end
+      end
+    end
+
     def review_checks
       config('review', 'checks') || []
     end

@@ -4,7 +4,7 @@ module Shipit
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
-    REJECTION_REASONS = %w(ci_failing merge_conflict).freeze
+    REJECTION_REASONS = %w(ci_failing merge_conflict requires_rebase).freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
@@ -37,6 +37,7 @@ module Shipit
 
     belongs_to :stack
     belongs_to :head, class_name: 'Shipit::Commit', optional: true
+    belongs_to :base_commit, class_name: 'Shipit::Commit', optional: true
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
 
@@ -147,6 +148,7 @@ module Shipit
     def reject_unless_mergeable!
       return reject!('merge_conflict') if merge_conflict?
       return reject!('ci_failing') if any_status_checks_failed?
+      return reject!('requires_rebase') if stale?
       false
     end
 
@@ -227,6 +229,7 @@ module Shipit
       update!(github_pull_request: Shipit.github_api.pull_request(stack.github_repo_name, number))
       head.refresh_statuses!
       fetched! if fetching?
+      @comparison = nil
     end
 
     def github_pull_request=(github_pull_request)
@@ -240,11 +243,33 @@ module Shipit
       self.branch = github_pull_request.head.ref
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha, detached: true)
       self.merged_at = github_pull_request.merged_at
+      self.base_ref = github_pull_request.base.ref
+      self.base_commit = find_or_create_commit_from_github_by_sha!(github_pull_request.base.sha, detached: true)
     end
 
     def merge_message
       return title unless merge_requested_by
       "#{title}\n\nMerge-Requested-By: #{merge_requested_by.login}\n"
+    end
+
+    def stale?
+      return false unless base_commit
+      spec = stack.cached_deploy_spec
+      if max_branch_age = spec.max_divergence_age
+        return true if Time.now.utc - head.committed_at > max_branch_age
+      end
+      if commit_count_limit = spec.max_divergence_commits
+        return true if comparison.behind_by > commit_count_limit
+      end
+      false
+    end
+
+    def comparison
+      @comparison ||= Shipit.github_api.compare(
+        stack.github_repo_name,
+        base_ref,
+        head.sha,
+      )
     end
 
     private
