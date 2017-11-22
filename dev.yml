@@ -2,6 +2,8 @@
 # If you are an external contributor you don't have to bother with it.
 name: shipit-engine
 
+type: rails
+
 up:
   - homebrew:
     - openssl
@@ -12,10 +14,13 @@ up:
   - bundler:
       without: ci
 
+server:
+  root: test/dummy
+  port: 55330
+
 commands:
   bootstrap: bin/bootstrap shopify
   console: test/dummy/bin/rails console
-  server: test/dummy/bin/rails server -b 192.168.64.1 -p 55330
   test: bin/rails test "$@"
 
 open:
