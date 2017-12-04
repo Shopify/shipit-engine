@@ -25,7 +25,3 @@ commands:
 
 open:
   shipit: https://shipit-engine.myshopify.io
-
-packages:
-  - git@github.com:Shopify/dev-shopify.git
-
