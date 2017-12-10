@@ -577,6 +577,18 @@ module Shipit
       assert_equal ['fake gem task'], @spec.deploy_steps
     end
 
+    test 'lerna monorepos take priority over solo npm deploys' do
+      @spec.expects(:discover_npm_package).never
+      @spec.stubs(:discover_lerna_packages).returns(['fake monorepo task']).once
+
+      assert_equal ['fake monorepo task'], @spec.deploy_steps
+    end
+
+    test '#lerna? is false if there is no lerna.json' do
+      @spec.expects(:lerna_json).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
+      refute @spec.lerna?
+    end
+
     test '#npm? is false if there is no package.json' do
       @spec.expects(:package_json).returns(Shipit::Engine.root.join("tmp-#{SecureRandom.hex}"))
       refute @spec.npm?
@@ -599,9 +611,22 @@ module Shipit
       refute @spec.npm?
     end
 
+    test 'lerna monorepos have a checklist' do
+      @spec.stubs(:lerna?).returns(true).at_least_once
+      assert_match(/lerna publish --skip-npm/, @spec.review_checklist[0])
+    end
+
     test 'npm packages have a checklist' do
       @spec.stubs(:npm?).returns(true).at_least_once
       assert_match(/npm version/, @spec.review_checklist[0])
+    end
+
+    test '#lerna_version returns the monorepo root version number' do
+      file = Pathname.new('/tmp/fake_lerna.json')
+      file.write('{"version": "1.0.0-beta.1"}')
+
+      @spec.expects(:lerna_json).returns(file)
+      assert_equal '1.0.0-beta.1', @spec.lerna_version
     end
 
     test '#package_version returns the version number' do
@@ -624,15 +649,33 @@ module Shipit
       assert_equal 'next', @spec.dist_tag('1.0.0-next')
     end
 
+    test '#dependencies_steps returns lerna setup if a `lerna.json` is present' do
+      @spec.expects(:lerna?).returns(true).at_least_once
+      assert_equal ['npm install --no-progress', 'node_modules/.bin/lerna bootstrap'], @spec.dependencies_steps
+    end
+
     test '#dependencies_steps returns `npm install` if a `package.json` is present' do
       @spec.expects(:npm?).returns(true).at_least_once
       assert_equal ['npm install --no-progress'], @spec.dependencies_steps
+    end
+
+    test '#publish_lerna_packages checks if version tag exists, and then invokes lerna deploy script' do
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_version).returns('1.0.0')
+      assert_equal 'assert-lerna-version-tag', @spec.deploy_steps[0]
+      assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0')
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
+    end
+
+    test '#publish_lerna_packages guesses npm tag' do
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_version).returns('1.0.0-alpha.1')
+      assert_match(/--npm-tag next/, @spec.deploy_steps.last)
     end
 
     test '#publish_npm_package checks if version tag and a pre-release flag exist, and then invokes npm deploy script' do
