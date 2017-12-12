@@ -53,7 +53,19 @@ module Shipit
       end
 
       def publish_lerna_packages
-        check_tags = 'assert-lerna-version-tag'
+        return publish_independent_packages if lerna_version == 'independent'
+        publish_fixed_version_packages
+      end
+
+      def publish_independent_packages
+        [
+          'assert-lerna-independent-version-tags',
+          'publish-lerna-independent-packages',
+        ]
+      end
+
+      def publish_fixed_version_packages
+        check_tags = 'assert-lerna-fixed-version-tag'
         # `yarn publish` requires user input, so always use npm.
         version = lerna_version
         publish =

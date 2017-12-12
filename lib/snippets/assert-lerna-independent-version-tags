@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+TAGS=$(git tag --points-at HEAD)
+
+if [ -z "$TAGS" ]; then
+  HEAD_REV=$(git rev-parse HEAD)
+  echo -e "\033[1;31mNo tags associated with $HEAD_REV.  Did you push your commits and tags?\033[0m"
+  exit 1
+fi
+
+for TAG in $TAGS
+do
+  PACKAGE_NAME=$(echo "$TAG" | cut -d \@ -f 1)
+  TAG_PACKAGE_VERSION=$(echo "$TAG" | cut -d \@ -f 2)
+  ACTUAL_PACKAGE_VERSION=$(node -e "console.log(require('./packages/$PACKAGE_NAME/package.json').version)")
+
+  if [ "$TAG_PACKAGE_VERSION" != "$ACTUAL_PACKAGE_VERSION" ]; then
+    echo -e "\033[1;31m$PACKAGE_NAME is tagged as $TAG_PACKAGE_VERSION, but its package.json version is $ACTUAL_PACKAGE_VERSION.\033[0m"
+    exit 1
+  fi
+done
+
+echo -e "\033[0;32mAll clear!\033[0m"
+exit 0
