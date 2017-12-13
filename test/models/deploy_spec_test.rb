@@ -659,10 +659,17 @@ module Shipit
       assert_equal ['npm install --no-progress'], @spec.dependencies_steps
     end
 
-    test '#publish_lerna_packages checks if version tag exists, and then invokes lerna deploy script' do
+    test '#publish_lerna_packages checks if independent version tags exist, and then invokes lerna deploy script' do
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_version).returns('independent')
+      assert_equal 'assert-lerna-independent-version-tags', @spec.deploy_steps[0]
+      assert_equal 'publish-lerna-independent-packages', @spec.deploy_steps[1]
+    end
+
+    test '#publish_lerna_packages checks if fixed version tag exists, and then invokes lerna deploy script' do
       @spec.stubs(:lerna?).returns(true)
       @spec.stubs(:lerna_version).returns('1.0.0')
-      assert_equal 'assert-lerna-version-tag', @spec.deploy_steps[0]
+      assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
