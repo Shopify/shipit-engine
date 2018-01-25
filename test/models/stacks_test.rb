@@ -573,36 +573,40 @@ module Shipit
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
     end
 
-    test "#lock sets reason, user and locked_since" do
+    test "setting #lock_reason also sets #locked_since" do
+      assert_predicate @stack.locked_since, :nil?
+
+      @stack.update!(lock_reason: "Here comes the walrus")
+      refute_predicate @stack.locked_since, :nil?
+
+      @stack.update!(lock_reason: nil)
+      assert_predicate @stack.locked_since, :nil?
+    end
+
+    test "updating #lock_reason preserves #locked_since" do
+      @stack.update!(lock_reason: "Here comes the walrus")
+      expected = @stack.locked_since
+
+      @stack.update!(lock_reason: "The walrus strikes back")
+      assert_equal expected, @stack.locked_since
+    end
+
+    test "#lock sets reason and user" do
       reason = "Here comes the walrus"
       user = shipit_users(:walrus)
       @stack.lock(reason, user)
       assert @stack.locked?
       assert_equal reason, @stack.lock_reason
       assert_equal user, @stack.lock_author
-      assert_not_nil user, @stack.locked_since
     end
 
-    test "#unlock deletes reason, user and locked_since" do
+    test "#unlock deletes reason and user" do
       user = shipit_users(:walrus)
       @stack.lock("Here comes the walrus", user)
       @stack.unlock
       refute @stack.locked?
       assert_nil @stack.lock_reason
-      assert_nil @stack.locked_since
       assert_not_equal user, @stack.lock_author
-    end
-
-    test "#lock does not overwrite locked_since if already locked" do
-      @stack.lock("Here comes the walrus", shipit_users(:walrus))
-      old_time = @stack.locked_since
-
-      new_reason = "Its still coming!"
-      @stack.lock(new_reason, shipit_users(:walrus))
-
-      assert @stack.locked?
-      assert_equal new_reason, @stack.lock_reason
-      assert_equal old_time, @stack.locked_since
     end
 
     test "stack contains valid deploy_url" do

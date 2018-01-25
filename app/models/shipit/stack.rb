@@ -44,6 +44,7 @@ module Shipit
 
     before_validation :update_defaults
     before_destroy :clear_local_files
+    before_save :set_locked_since
     after_commit :emit_lock_hooks
     after_commit :emit_added_hooks, on: :create
     after_commit :emit_updated_hooks, on: :update
@@ -362,7 +363,6 @@ module Shipit
 
     def lock(reason, user)
       params = {lock_reason: reason, lock_author: user}
-      params[:locked_since] = Time.current if locked_since.nil?
       update!(params)
     end
 
@@ -484,6 +484,16 @@ module Shipit
     def update_defaults
       self.environment = 'production' if environment.blank?
       self.branch = 'master' if branch.blank?
+    end
+
+    def set_locked_since
+      return unless lock_reason_changed?
+
+      if lock_reason.blank?
+        self.locked_since = nil
+      else
+        self.locked_since ||= Time.now
+      end
     end
 
     def schedule_merges_if_necessary
