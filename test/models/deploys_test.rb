@@ -264,7 +264,7 @@ module Shipit
       @deploy = shipit_deploys(:shipit_running)
       @deploy.ping
       @deploy.pid = 42
-      @deploy.abort!(rollback_once_aborted: true)
+      @deploy.abort!(rollback_once_aborted: true, aborted_by: @user)
 
       assert_difference -> { @stack.rollbacks.count }, 1 do
         assert_enqueued_with(job: PerformTaskJob) do
@@ -346,12 +346,12 @@ module Shipit
 
     test "abort! transition to `aborting`" do
       @deploy.ping
-      @deploy.abort!
+      @deploy.abort!(aborted_by: @user)
       assert_equal 'aborting', @deploy.status
     end
 
     test "abort! schedule the rollback if `rollback_once_aborted` is true" do
-      @deploy.abort!(rollback_once_aborted: true)
+      @deploy.abort!(rollback_once_aborted: true, aborted_by: @user)
       assert_predicate @deploy.reload, :rollback_once_aborted?
     end
 
@@ -359,11 +359,11 @@ module Shipit
       @deploy.ping
       aborts = []
 
-      @deploy.abort!
+      @deploy.abort!(aborted_by: @user)
       @deploy.should_abort? { |abort_count| aborts << abort_count }
       assert_equal [1], aborts
 
-      3.times { @deploy.abort! }
+      3.times { @deploy.abort!(aborted_by: @user) }
       @deploy.should_abort? { |abort_count| aborts << abort_count }
       assert_equal [1, 2, 3, 4], aborts
     end
@@ -373,7 +373,7 @@ module Shipit
       refute_predicate @deploy, :alive?
       refute_predicate @deploy, :finished?
 
-      @deploy.abort!
+      @deploy.abort!(aborted_by: @user)
       assert_predicate @deploy, :error?
     end
 

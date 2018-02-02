@@ -14,6 +14,7 @@ module Shipit
     belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
 
     belongs_to :user, optional: true
+    belongs_to :aborted_by, class_name: 'User', optional: true
     belongs_to :stack, counter_cache: true
     belongs_to :until_commit, class_name: 'Commit'
     belongs_to :since_commit, class_name: 'Commit'
@@ -236,8 +237,8 @@ module Shipit
       end
     end
 
-    def abort!(rollback_once_aborted: false)
-      update!(rollback_once_aborted: rollback_once_aborted)
+    def abort!(rollback_once_aborted: false, aborted_by:)
+      update!(rollback_once_aborted: rollback_once_aborted, aborted_by_id: aborted_by.id)
 
       if alive?
         aborting

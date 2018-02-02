@@ -70,6 +70,7 @@ module Shipit
       @task.reload
       assert_response :success
       assert_equal 'aborting', @task.reload.status
+      assert_equal shipit_users(:walrus).id, @task.aborted_by_id
       assert_equal false, @task.rollback_once_aborted?
     end
 
@@ -81,6 +82,7 @@ module Shipit
       @task.reload
       assert_response :success
       assert_equal 'aborting', @task.status
+      assert_equal shipit_users(:walrus).id, @task.aborted_by_id
       assert_equal true, @task.rollback_once_aborted?
     end
 
