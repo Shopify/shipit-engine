@@ -21,6 +21,7 @@
         <span class="code-additions">+<%= deploy.additions %></span>
         <span class="code-deletions">-<%= deploy.deletions %></span>
         <% if deploy.ignored_safeties? %><span class="ignored-safeties">ignoring safeties</span><% end %>
+        <% if deploy.aborted_by %><span class="aborted-by">aborted by <%= deploy.aborted_by.login %></span><% end %>
       </p>
       <p class="commit-meta">
         <% if read_only %>

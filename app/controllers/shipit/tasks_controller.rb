@@ -42,7 +42,7 @@ module Shipit
     end
 
     def abort
-      task.abort!(rollback_once_aborted: params[:rollback].present?)
+      task.abort!(rollback_once_aborted: params[:rollback].present?, aborted_by: current_user)
       head :ok
     end
 
