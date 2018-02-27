@@ -46,6 +46,9 @@ Metrics/LineLength:
     - lib/tasks/teams.rake
   Max: 120
 
+Metrics/BlockLength:
+  Enabled: false
+
 Metrics/MethodLength:
   Enabled: false
 

@@ -35,11 +35,6 @@ Lint/UnneededSplatExpansion:
   Exclude:
     - 'app/serializers/shipit/task_serializer.rb'
 
-# Offense count: 11
-# Configuration parameters: CountComments, ExcludedMethods.
-Metrics/BlockLength:
-  Max: 81
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Performance/TimesMap:
