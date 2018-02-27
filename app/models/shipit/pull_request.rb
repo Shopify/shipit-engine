@@ -113,7 +113,7 @@ module Shipit
       when %r{\Ahttps://#{Regexp.escape(Shipit.github_domain)}/([^/]+)/([^/]+)/pull/(\d+)}
         return unless $1.downcase == stack.repo_owner.downcase
         return unless $2.downcase == stack.repo_name.downcase
-        return $3.to_i
+        $3.to_i
       end
     end
 
