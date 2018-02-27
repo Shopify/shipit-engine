@@ -288,7 +288,7 @@ module Shipit
     end
 
     def base_path
-      Rails.root.join('data/stacks', repo_owner, repo_name, environment)
+      Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path

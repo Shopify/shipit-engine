@@ -4,7 +4,7 @@ module Shipit
   class StacksTest < ActiveSupport::TestCase
     def setup
       @stack = shipit_stacks(:shipit)
-      @expected_base_path = Rails.root.join('data/stacks', @stack.to_param).to_s
+      @expected_base_path = Rails.root.join('data', 'stacks', @stack.to_param).to_s
       GithubHook.any_instance.stubs(:teardown!)
     end
 

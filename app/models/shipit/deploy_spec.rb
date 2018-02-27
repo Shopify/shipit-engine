@@ -15,7 +15,7 @@ module Shipit
       end
 
       def bundle_path
-        Rails.root.join('data/bundler')
+        Rails.root.join('data', 'bundler')
       end
     end
 
