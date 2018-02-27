@@ -26,7 +26,7 @@ module Shipit
       private
 
       def discover_kubernetes
-        return unless kube_config.present?
+        return if kube_config.blank?
 
         cmd = ["kubernetes-deploy"]
         if kube_config['template_dir']
