@@ -31,6 +31,9 @@ Rails/SkipsModelValidations:
 Lint/RescueException:
   Enabled: false
 
+Lint/RescueWithoutErrorClass:
+  Enabled: false
+
 Lint/AssignmentInCondition:
   Enabled: false
 
@@ -100,7 +103,7 @@ Style/TrailingCommaInLiteral:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-Style/PredicateName:
+Naming/PredicateName:
   Exclude:
     - app/serializers/**/*
 
