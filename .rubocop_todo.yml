@@ -47,25 +47,6 @@ Rails/ApplicationJob:
   Exclude:
     - 'app/jobs/shipit/background_job.rb'
 
-# Offense count: 14
-# Cop supports --auto-correct.
-Rails/ApplicationRecord:
-  Exclude:
-    - 'app/models/shipit/api_client.rb'
-    - 'app/models/shipit/commit.rb'
-    - 'app/models/shipit/commit_deployment.rb'
-    - 'app/models/shipit/commit_deployment_status.rb'
-    - 'app/models/shipit/delivery.rb'
-    - 'app/models/shipit/github_hook.rb'
-    - 'app/models/shipit/hook.rb'
-    - 'app/models/shipit/membership.rb'
-    - 'app/models/shipit/output_chunk.rb'
-    - 'app/models/shipit/stack.rb'
-    - 'app/models/shipit/status.rb'
-    - 'app/models/shipit/task.rb'
-    - 'app/models/shipit/team.rb'
-    - 'app/models/shipit/user.rb'
-
 # Offense count: 1
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
