@@ -14,8 +14,10 @@ module Shipit
       end
 
       def discover_pypi_checklist
-        [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
-          git tag -a -m "Version <strong>x.y.z</strong>" v<strong>x.y.z</strong> && git push --tags)] if egg?
+        if egg?
+          [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
+            git tag -a -m "Version <strong>x.y.z</strong>" v<strong>x.y.z</strong> && git push --tags)]
+        end
       end
 
       def egg?

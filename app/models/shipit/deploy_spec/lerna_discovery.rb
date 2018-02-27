@@ -20,15 +20,17 @@ module Shipit
       end
 
       def discover_lerna_checklist
-        [%(
-          <strong>Don't forget version and tag before publishing!</strong>
-          You can do this with:<br/>
-          <pre>
-          lerna publish --skip-npm
-          && git add -A
-          && git push --follow-tags
-          </pre>
-        )] if lerna?
+        if lerna?
+          [%(
+            <strong>Don't forget version and tag before publishing!</strong>
+            You can do this with:<br/>
+            <pre>
+            lerna publish --skip-npm
+            && git add -A
+            && git push --follow-tags
+            </pre>
+          )]
+        end
       end
 
       def lerna?
