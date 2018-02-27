@@ -31,7 +31,7 @@ Rails/SkipsModelValidations:
 Lint/RescueException:
   Enabled: false
 
-Lint/RescueWithoutErrorClass:
+Style/RescueStandardError:
   Enabled: false
 
 Lint/AssignmentInCondition:
