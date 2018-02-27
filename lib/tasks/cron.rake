@@ -7,7 +7,7 @@ namespace :cron do
     Shipit::PullRequest.schedule_merges
   end
 
-  task hourly: [:rollup, :refresh_users]
+  task hourly: %i(rollup refresh_users)
 
   desc "Rolls-up output chunks for completed deploys older than an hour"
   task rollup: :environment do

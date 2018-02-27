@@ -142,3 +142,10 @@ Style/IfUnlessModifier:
 
 Performance/Casecmp:
   Enabled: false # ugly
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '()'
+    '%I': '()'
+    '%w': '()'
+    '%W': '()'
