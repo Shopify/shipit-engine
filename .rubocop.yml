@@ -25,6 +25,9 @@ Rails/OutputSafety:
 Rails/ApplicationRecord:
   Enabled: false
 
+Rails/SkipsModelValidations:
+  Enabled: false
+
 Lint/RescueException:
   Enabled: false
 

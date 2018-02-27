@@ -54,26 +54,6 @@ Rails/Date:
   Exclude:
     - 'test/models/status_test.rb'
 
-# Offense count: 28
-# Configuration parameters: Blacklist.
-# Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
-Rails/SkipsModelValidations:
-  Exclude:
-    - 'app/models/concerns/shipit/deferred_touch.rb'
-    - 'app/models/shipit/commit.rb'
-    - 'app/models/shipit/pull_request.rb'
-    - 'app/models/shipit/stack.rb'
-    - 'app/models/shipit/task.rb'
-    - 'app/models/shipit/user.rb'
-    - 'lib/tasks/dev.rake'
-    - 'test/controllers/deploys_controller_test.rb'
-    - 'test/controllers/rollbacks_controller_test.rb'
-    - 'test/jobs/chunk_rollup_job_test.rb'
-    - 'test/models/deploys_test.rb'
-    - 'test/models/hook_test.rb'
-    - 'test/models/stacks_test.rb'
-    - 'test/models/undeployed_commits_test.rb'
-
 # Offense count: 22
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
