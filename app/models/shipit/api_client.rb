@@ -20,7 +20,7 @@ module Shipit
 
     class << self
       def authenticate(token)
-        find_by_id(message_verifier.verify(token).to_i)
+        find_by(id: message_verifier.verify(token).to_i)
       rescue Shipit::SimpleMessageVerifier::InvalidSignature
       end
 

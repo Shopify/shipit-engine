@@ -32,7 +32,7 @@ module Shipit
     end
 
     def find_current_user
-      session[:user_id].present? && User.find_by_id(session[:user_id])
+      session[:user_id].present? && User.find_by(id: session[:user_id])
     end
   end
 end

@@ -54,7 +54,7 @@ module Shipit
     end
 
     def lookup_commit(sha)
-      @stack.commits.find_by_sha(sha)
+      @stack.commits.find_by(sha: sha)
     end
   end
 end

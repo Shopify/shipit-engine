@@ -23,7 +23,7 @@ module Shipit
     delegate :checks, to: :commit
 
     def commit
-      @commit ||= stack.commits.find_by_sha!(params[:sha])
+      @commit ||= stack.commits.find_by!(sha: params[:sha])
     end
 
     def stack

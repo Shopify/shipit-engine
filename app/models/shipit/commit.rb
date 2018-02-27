@@ -183,7 +183,7 @@ module Shipit
 
     def identify_pull_request
       return unless message_parser.pull_request?
-      if pull_request = stack.pull_requests.find_by_number(message_parser.pull_request_number)
+      if pull_request = stack.pull_requests.find_by(number: message_parser.pull_request_number)
         self.pull_request = pull_request
         self.pull_request_number = pull_request.number
         self.pull_request_title = pull_request.title
