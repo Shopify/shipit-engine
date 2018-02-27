@@ -24,7 +24,7 @@ module Shipit
         get :callback
       end
 
-      user = User.find_by_login('shipit-user')
+      user = User.find_by(login: 'shipit-user')
       assert_equal 's3cr3t', user.github_access_token
       assert_equal 44, user.github_id
     end

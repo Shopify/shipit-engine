@@ -50,7 +50,7 @@ module QueriesHelper
 
       # FIXME: this seems bad. we should probably have a better way to indicate
       # the query was cached
-      return if 'CACHE' == values[:name] || ignore.any? { |x| x =~ sql }
+      return if values[:name] == 'CACHE' || ignore.any? { |x| x =~ sql }
       log << sql
     end
   end

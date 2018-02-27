@@ -22,7 +22,16 @@ Rails/FindEach:
 Rails/OutputSafety:
   Enabled: false
 
+Rails/ApplicationRecord:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
 Lint/RescueException:
+  Enabled: false
+
+Style/RescueStandardError:
   Enabled: false
 
 Lint/AssignmentInCondition:
@@ -45,6 +54,9 @@ Metrics/LineLength:
     - test/**/*
     - lib/tasks/teams.rake
   Max: 120
+
+Metrics/BlockLength:
+  Enabled: false
 
 Metrics/MethodLength:
   Enabled: false
@@ -82,9 +94,6 @@ Style/ModuleFunction:
 Style/RedundantReturn:
   AllowMultipleReturnValues: true
 
-Style/IndentHash:
-  Enabled: false
-
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
@@ -94,12 +103,9 @@ Style/TrailingCommaInLiteral:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-Style/PredicateName:
+Naming/PredicateName:
   Exclude:
     - app/serializers/**/*
-
-Style/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
 
 Style/StringLiterals:
   Enabled: false
@@ -110,9 +116,6 @@ Style/PerlBackrefs:
 Style/TrivialAccessors:
   AllowPredicates: true
 
-Style/ExtraSpacing:
-  AllowForAlignment: false
-
 Style/GuardClause:
   Enabled: false
 
@@ -122,16 +125,25 @@ Style/UnneededPercentQ:
 Style/Alias:
   Enabled: false
 
-Style/MultilineHashBraceLayout:
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Layout/MultilineHashBraceLayout:
   Enabled: false
 
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Enabled: false # totally broken
 
-Style/IndentArray:
+Layout/IndentHash:
+  Enabled: false
+
+Layout/IndentArray:
   Enabled: false # broken
 
-Style/ElseAlignment:
+Layout/ElseAlignment:
   Enabled: false # broken
 
 Style/ParallelAssignment:
@@ -142,3 +154,10 @@ Style/IfUnlessModifier:
 
 Performance/Casecmp:
   Enabled: false # ugly
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '()'
+    '%I': '()'
+    '%w': '()'
+    '%W': '()'

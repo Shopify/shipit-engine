@@ -11,7 +11,7 @@ module Shipit
     end
 
     def include_url?
-      !url.blank?
+      url.present?
     end
 
     def output

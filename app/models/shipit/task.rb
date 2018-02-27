@@ -178,7 +178,7 @@ module Shipit
     def output
       gzip = self[:gzip_output]
 
-      if gzip.nil? || gzip.empty?
+      if gzip.blank?
         ''
       else
         ActiveSupport::Gzip.decompress(gzip)

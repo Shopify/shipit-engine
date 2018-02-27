@@ -13,7 +13,7 @@ module Shipit
       rescue DeploySpec::Error
       end
 
-      return unless sha.present?
+      return if sha.blank?
 
       begin
         stack.update_deployed_revision(sha)

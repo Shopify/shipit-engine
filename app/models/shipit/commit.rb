@@ -121,7 +121,8 @@ module Shipit
       pull_request_number.present?
     end
 
-    def pull_request_number # TODO: remove in a few versions when it is assumed the commits table was backfilled
+    # TODO: remove in a few versions when it is assumed the commits table was backfilled
+    def pull_request_number
       super || message_parser.pull_request_number
     end
 
@@ -133,7 +134,8 @@ module Shipit
       message.lines.first.strip
     end
 
-    def pull_request_title # TODO: remove in a few versions when it is assumed the commits table was backfilled
+    # TODO: remove in a few versions when it is assumed the commits table was backfilled
+    def pull_request_title
       super || message_parser.pull_request_title
     end
 
@@ -183,7 +185,7 @@ module Shipit
 
     def identify_pull_request
       return unless message_parser.pull_request?
-      if pull_request = stack.pull_requests.find_by_number(message_parser.pull_request_number)
+      if pull_request = stack.pull_requests.find_by(number: message_parser.pull_request_number)
         self.pull_request = pull_request
         self.pull_request_number = pull_request.number
         self.pull_request_title = pull_request.title

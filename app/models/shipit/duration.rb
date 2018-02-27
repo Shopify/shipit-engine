@@ -23,7 +23,7 @@ module Shipit
           raise ParseError, "not a duration: #{value.inspect}"
         end
         parts = []
-        UNITS.values.each do |unit|
+        UNITS.each_value do |unit|
           if value = match[unit]
             parts << [unit, value.to_i]
           end

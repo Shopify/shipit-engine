@@ -9,7 +9,7 @@ module Shipit
       end
 
       def show
-        render_resource stack.pull_requests.find_by_number!(params[:id])
+        render_resource stack.pull_requests.find_by!(number: params[:id])
       end
 
       def update

@@ -14,8 +14,10 @@ module Shipit
       end
 
       def discover_gem_checklist
-        [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
-          git tag v<strong>x.y.z</strong> && git push --tags)] if gem?
+        if gem?
+          [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
+            git tag v<strong>x.y.z</strong> && git push --tags)]
+        end
       end
 
       def gem?
