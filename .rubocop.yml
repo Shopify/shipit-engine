@@ -82,9 +82,6 @@ Style/ModuleFunction:
 Style/RedundantReturn:
   AllowMultipleReturnValues: true
 
-Style/IndentHash:
-  Enabled: false
-
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
@@ -98,9 +95,6 @@ Style/PredicateName:
   Exclude:
     - app/serializers/**/*
 
-Style/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
 Style/StringLiterals:
   Enabled: false
 
@@ -109,9 +103,6 @@ Style/PerlBackrefs:
 
 Style/TrivialAccessors:
   AllowPredicates: true
-
-Style/ExtraSpacing:
-  AllowForAlignment: false
 
 Style/GuardClause:
   Enabled: false
@@ -122,16 +113,25 @@ Style/UnneededPercentQ:
 Style/Alias:
   Enabled: false
 
-Style/MultilineHashBraceLayout:
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Layout/MultilineHashBraceLayout:
   Enabled: false
 
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Enabled: false # totally broken
 
-Style/IndentArray:
+Layout/IndentHash:
+  Enabled: false
+
+Layout/IndentArray:
   Enabled: false # broken
 
-Style/ElseAlignment:
+Layout/ElseAlignment:
   Enabled: false # broken
 
 Style/ParallelAssignment:
