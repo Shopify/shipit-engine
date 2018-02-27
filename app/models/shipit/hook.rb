@@ -31,8 +31,8 @@ module Shipit
     serialize :events, Shipit::CSVSerializer
 
     scope :global, -> { where(stack_id: nil) }
-    scope :scoped_to, -> (stack) { where(stack_id: stack.id) }
-    scope :for_stack, -> (stack_id) { where(stack_id: [nil, stack_id]) }
+    scope :scoped_to, ->(stack) { where(stack_id: stack.id) }
+    scope :for_stack, ->(stack_id) { where(stack_id: [nil, stack_id]) }
 
     class << self
       def emit(event, stack, payload)
