@@ -44,7 +44,7 @@ module Shipit
     end
 
     def success?
-      code.zero?
+      !code.nil? && code.zero?
     end
 
     def exit_message
