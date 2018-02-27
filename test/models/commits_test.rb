@@ -148,8 +148,8 @@ module Shipit
         author: walrus,
         committer: walrus,
         sha: "ab12",
-        authored_at: DateTime.now,
-        committed_at: DateTime.now,
+        authored_at: Time.now,
+        committed_at: Time.now,
         message: "more fish!",
       )
     end
@@ -176,8 +176,8 @@ module Shipit
         author: walrus,
         committer: walrus,
         sha: "ab12",
-        authored_at: DateTime.now,
-        committed_at: DateTime.now,
+        authored_at: Time.now,
+        committed_at: Time.now,
         message: "more fish!",
       )
       @stack.reload
@@ -217,8 +217,8 @@ module Shipit
         author: walrus,
         committer: walrus,
         sha: "ab12",
-        authored_at: DateTime.now,
-        committed_at: DateTime.now,
+        authored_at: Time.now,
+        committed_at: Time.now,
         message: "more fish!",
       )
       stack.reload
