@@ -43,6 +43,7 @@ module Shipit
             'hide' => hidden_statuses,
             'allow_failures' => soft_failing_statuses,
             'require' => required_statuses,
+            'blocking' => blocking_statuses,
           },
           'machine' => {
             'environment' => discover_machine_env.merge(machine_env),

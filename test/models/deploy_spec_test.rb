@@ -293,6 +293,7 @@ module Shipit
           'hide' => [],
           'allow_failures' => [],
           'require' => [],
+          'blocking' => [],
         },
         'machine' => {'environment' => {}, 'directory' => nil, 'cleanup' => true},
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
@@ -457,6 +458,16 @@ module Shipit
     test "#hidden_statuses is an array even if the value is present" do
       @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
       assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+    end
+
+    test "#required_statuses automatically includes #blocking_statuses" do
+      @spec.expects(:load_config).returns(
+        'ci' => {
+          'require' => %w(ci/circleci),
+          'blocking' => %w(soc/compliance),
+        },
+      )
+      assert_equal %w(ci/circleci soc/compliance), @spec.required_statuses
     end
 
     test "pull_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do

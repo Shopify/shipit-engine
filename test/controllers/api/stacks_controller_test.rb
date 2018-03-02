@@ -60,7 +60,7 @@ module Shipit
         assert_response :ok
         assert_json '0.id', stack.id
         assert_json do |stacks|
-          assert_equal 3, stacks.size
+          assert_equal Stack.count, stacks.size
         end
       end
 

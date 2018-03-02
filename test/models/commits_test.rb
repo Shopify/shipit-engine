@@ -306,6 +306,37 @@ module Shipit
       refute_predicate commit, :deployable?
     end
 
+    test "#deployable? is false if a blocking status is missing on a previous undeployed commit" do
+      blocking_commit = shipit_commits(:soc_second)
+      blocking_commit.statuses.delete_all
+
+      assert_predicate blocking_commit, :pending?
+      assert_predicate blocking_commit, :blocking?
+
+      commit = shipit_commits(:soc_third)
+      refute_predicate commit, :deployable?
+    end
+
+    test "#deployable? is false if a blocking status is failing on a previous undeployed commit" do
+      blocking_commit = shipit_commits(:soc_second)
+      blocking_commit.statuses.update_all(state: 'failure')
+
+      assert_predicate blocking_commit, :failure?
+      assert_predicate blocking_commit, :blocking?
+
+      commit = shipit_commits(:soc_third)
+      refute_predicate commit, :deployable?
+    end
+
+    test "#deployable? is true if no blocking status is failing or missing on a previous undeployed commit" do
+      blocking_commit = shipit_commits(:soc_second)
+      assert_predicate blocking_commit, :success?
+      refute_predicate blocking_commit, :blocking?
+
+      commit = shipit_commits(:soc_third)
+      assert_predicate commit, :deployable?
+    end
+
     expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
       'unknown' => %w(pending success failure error),
       'pending' => %w(success failure error),

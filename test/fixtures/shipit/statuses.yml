@@ -98,3 +98,30 @@ shipit_pending_pr_success_travis:
   created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
+
+soc_first:
+  stack: soc
+  commit_id: 101 # soc_first
+  description: Woops
+  context: soc/compliance
+  created_at: <%= 9.days.ago.to_s(:db) %>
+  state: failure
+  target_url: "http://www.example.com"
+
+soc_second:
+  stack: soc
+  commit_id: 102 # soc_second
+  description: All good
+  context: soc/compliance
+  created_at: <%= 7.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"
+
+soc_third:
+  stack: soc
+  commit_id: 103 # soc_third
+  description: All good
+  context: soc/compliance
+  created_at: <%= 7.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"

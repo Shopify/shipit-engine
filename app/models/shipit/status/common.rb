@@ -37,6 +37,10 @@ module Shipit
         commit.hidden_statuses.include?(context)
       end
 
+      def blocking?
+        !success? && commit.blocking_statuses.include?(context)
+      end
+
       def required?
         commit.required_statuses.include?(context)
       end
