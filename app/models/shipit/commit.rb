@@ -23,12 +23,17 @@ module Shipit
 
     scope :reachable, -> { where(detached: false) }
 
-    delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses,
+    delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
              :soft_failing_statuses, to: :stack
 
     def self.newer_than(commit)
       return all unless commit
       where('id > ?', commit.try(:id) || commit)
+    end
+
+    def self.older_than(commit)
+      return all unless commit
+      where('id < ?', commit.try(:id) || commit)
     end
 
     def self.until(commit)
@@ -103,10 +108,18 @@ module Shipit
       @checks ||= CommitChecks.new(self)
     end
 
-    delegate :pending?, :success?, :error?, :failure?, :state, to: :status
+    delegate :pending?, :success?, :error?, :failure?, :blocking?, :state, to: :status
 
     def deployable?
-      !locked? && (success? || stack.ignore_ci?)
+      !locked? && (stack.ignore_ci? || (success? && !blocked?))
+    end
+
+    def blocked?
+      return false if stack.blocking_statuses.empty?
+
+      # TODO: Perfs might be horrible here if the range is big.
+      # We should look at fetching the undeployed commits only once
+      stack.commits.reachable.newer_than(stack.last_deployed_commit).older_than(self).any?(&:blocking?)
     end
 
     def children

@@ -120,3 +120,17 @@ shipit_rollback:
   created_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+
+soc_deploy:
+  id: 9
+  user: walrus
+  since_commit_id: 101 # soc_first
+  until_commit_id: 101 # soc_first
+  type: Shipit::Deploy
+  stack: soc
+  status: success
+  additions: 1
+  deletions: 1
+  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>

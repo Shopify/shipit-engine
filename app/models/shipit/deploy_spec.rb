@@ -135,11 +135,15 @@ module Shipit
     end
 
     def required_statuses
-      Array.wrap(config('ci', 'require'))
+      (Array.wrap(config('ci', 'require')) + blocking_statuses).uniq
     end
 
     def soft_failing_statuses
       Array.wrap(config('ci', 'allow_failures'))
+    end
+
+    def blocking_statuses
+      Array.wrap(config('ci', 'blocking'))
     end
 
     def pull_request_required_statuses
