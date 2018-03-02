@@ -12,7 +12,7 @@ module Shipit
     def emojify(content)
       if content.present?
         h(content).to_str.gsub(/:([\w+-]+):/) do |match|
-          if emoji = Emoji.find_by(alias: $1)
+          if emoji = Emoji.find_by_alias($1)
             %(
               <img
                 alt="##{$1}"

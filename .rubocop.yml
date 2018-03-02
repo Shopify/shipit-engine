@@ -22,6 +22,9 @@ Rails/FindEach:
 Rails/OutputSafety:
   Enabled: false
 
+Rails/DynamicFindBy:
+  Enabled: false
+
 Rails/ApplicationRecord:
   Enabled: false
 
