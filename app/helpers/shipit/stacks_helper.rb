@@ -21,15 +21,20 @@ module Shipit
     def deploy_button(commit)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
+      deploy_state = commit.deploy_state(bypass_safeties?)
       data = {}
+
       if commit.deploy_disallowed?
         classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
+        if deploy_state == 'blocked'
+          data[:tooltip] = t('deploy_button.hint.blocked')
+        end
       elsif commit.deploy_discouraged?
         classes.push('btn--warning')
         data[:tooltip] = t('deploy_button.hint.max_commits', maximum: commit.stack.maximum_commits_per_deploy)
       end
 
-      link_to(t("deploy_button.caption.#{commit.deploy_state(bypass_safeties?)}"), url, class: classes, data: data)
+      link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data: data)
     end
 
     def github_change_url(commit)

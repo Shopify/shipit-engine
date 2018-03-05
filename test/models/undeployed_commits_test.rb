@@ -68,6 +68,15 @@ module Shipit
       assert_equal 'failure', @commit.deploy_state(true)
     end
 
+    test "#deploy_state returns `blocked` if a previous commit is blocking" do
+      blocking_commit = shipit_commits(:soc_second)
+      blocking_commit.statuses.delete_all
+      assert_predicate blocking_commit, :blocking?
+
+      commit = UndeployedCommit.new(shipit_commits(:soc_third), 0)
+      assert_equal 'blocked', commit.deploy_state
+    end
+
     test "#redeploy_state returns `allowed` by default" do
       assert_equal 'allowed', @commit.redeploy_state
     end

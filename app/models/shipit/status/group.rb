@@ -52,6 +52,10 @@ module Shipit
         true
       end
 
+      def blocking?
+        statuses.any?(&:blocking?)
+      end
+
       private
 
       def reject_hidden(statuses)
