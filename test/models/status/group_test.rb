@@ -24,6 +24,12 @@ module Shipit
       assert_equal 'failure', @group.state
     end
 
+    test "#blocking? returns true if any of the status is blocking" do
+      blocking_status = shipit_statuses(:soc_first)
+      assert_predicate blocking_status, :blocking?
+      Status::Group.new(blocking_status.commit, [blocking_status])
+    end
+
     test ".compact returns a regular status if there is only one visible status" do
       status = Status::Group.compact(@commit, @commit.statuses.where(context: 'ci/travis'))
       assert_instance_of Status, status

@@ -9,9 +9,15 @@ module Shipit
 
     def deploy_state(bypass_safeties = false)
       state = deployable? ? 'allowed' : status.state
+
       unless bypass_safeties
-        state = 'deploying' if stack.active_task?
-        state = 'locked' if locked?
+        if blocked?
+          state = 'blocked'
+        elsif locked?
+          state = 'locked'
+        elsif stack.active_task?
+          state = 'deploying'
+        end
       end
       state
     end
@@ -30,6 +36,11 @@ module Shipit
 
     def deploy_discouraged?
       stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
+    end
+
+    def blocked?
+      return @blocked if defined?(@blocked)
+      @blocked = super
     end
   end
 end
