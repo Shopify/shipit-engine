@@ -10,7 +10,7 @@ module Shipit
       return if github_id?
       response = begin
         create_status_on_github(author.github_api)
-      rescue Octokit::NotFound, Octokit::Forbidden
+      rescue Octokit::ClientError
         raise if Shipit.github_api == author.github_api
         # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
         # user.
