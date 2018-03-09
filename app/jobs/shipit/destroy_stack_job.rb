@@ -26,8 +26,10 @@ module Shipit
       Shipit::Hook.where(stack_id: stack.id).delete_all
       Shipit::PullRequest.where(stack_id: stack.id).delete_all
       tasks_ids = Shipit::Task.where(stack_id: stack.id).pluck(:id)
-      Shipit::OutputChunk.where(task_id: tasks_ids).delete_all
-      Shipit::Task.where(id: tasks_ids).delete_all
+      tasks_ids.each_slice(100) do |ids|
+        Shipit::OutputChunk.where(task_id: ids).delete_all
+        Shipit::Task.where(id: ids).delete_all
+      end
       stack.destroy!
     end
   end
