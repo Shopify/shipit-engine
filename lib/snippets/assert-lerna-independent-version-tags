@@ -10,8 +10,7 @@ fi
 
 for TAG in $TAGS
 do
-  FIRST_LETTER=${TAG:0:1}
-  if [ "$FIRST_LETTER" == '@' ]; then
+  if [[ "${TAG}" == @* ]]; then
     TAG=$(echo "$TAG" | cut -d \/ -f 2)
   fi
 
