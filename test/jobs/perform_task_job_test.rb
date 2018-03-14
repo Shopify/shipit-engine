@@ -67,12 +67,21 @@ module Shipit
       @job.perform(@deploy)
     end
 
-    test "mark deploy as error if a command timeout" do
-      Command.any_instance.expects(:stream!).at_least_once.raises(Command::TimedOut)
+    test "mark deploy as error an unexpected exception is raised" do
+      Command.any_instance.expects(:stream!).at_least_once.raises(Command::Denied)
 
       @job.perform(@deploy)
 
       assert_equal 'failed', @deploy.reload.status
+      assert_includes @deploy.chunk_output, 'Denied'
+    end
+
+    test "mark deploy as timedout if a command timeout" do
+      Command.any_instance.expects(:stream!).at_least_once.raises(Command::TimedOut)
+
+      @job.perform(@deploy)
+
+      assert_equal 'timedout', @deploy.reload.status
       assert_includes @deploy.chunk_output, 'TimedOut'
     end
 

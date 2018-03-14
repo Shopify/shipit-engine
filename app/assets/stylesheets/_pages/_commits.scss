@@ -281,7 +281,9 @@
 }
 
 .status--error,
-[data-deploy-status='error'] {
+[data-deploy-status='error'],
+.status--timedout,
+[data-deploy-status='timedout'] {
   border-color: #333;
 
   .status__icon {
