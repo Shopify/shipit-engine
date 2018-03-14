@@ -10,6 +10,10 @@ fi
 
 for TAG in $TAGS
 do
+  if [[ "${TAG}" == @* ]]; then
+    TAG=$(echo "$TAG" | cut -d \/ -f 2)
+  fi
+
   PACKAGE_NAME=$(echo "$TAG" | cut -d \@ -f 1)
   TAG_PACKAGE_VERSION=$(echo "$TAG" | cut -d \@ -f 2)
   ACTUAL_PACKAGE_VERSION=$(node -e "console.log(require('./packages/$PACKAGE_NAME/package.json').version)")

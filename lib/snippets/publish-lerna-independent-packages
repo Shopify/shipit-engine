@@ -15,7 +15,12 @@ const taggedPackages = execSync('git tag --points-at HEAD')
   .toString()
   .trim()
   .split('\n')
-  .map(tag => tag.split('@')[0]);
+  .map(tag => {
+    if (tag.startsWith('@')) {
+      return `@${tag.split('@')[1]}`;
+    }
+    return tag.split('@')[0];
+  });
 
 const repository = new Repository('.');
 const unsortedPackages = PackageUtilities.getPackages({rootPath: '.', packageConfigs: repository.packageConfigs});
