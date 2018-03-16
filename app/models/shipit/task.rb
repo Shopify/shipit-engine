@@ -89,6 +89,10 @@ module Shipit
         transition all => :error
       end
 
+      event :giveup do # :timeout would cause a name clash
+        transition all => :timedout
+      end
+
       event :aborting do
         transition all - %i(aborted) => :aborting
       end
@@ -98,7 +102,7 @@ module Shipit
       end
 
       event :flap do
-        transition %i(failed error success) => :flapping
+        transition %i(failed error timedout success) => :flapping
       end
 
       state :pending
@@ -106,6 +110,7 @@ module Shipit
       state :failed
       state :success
       state :error
+      state :timedout
       state :aborting
       state :aborted
       state :flapping
@@ -122,6 +127,10 @@ module Shipit
       else
         failure!
       end
+    end
+
+    def report_timeout!(_error)
+      giveup!
     end
 
     def report_error!(error)

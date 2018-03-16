@@ -93,7 +93,8 @@
   }
 
   &[data-status="failure"],
-  &[data-status="error"] {
+  &[data-status="error"],
+  &[data-status="timedout"] {
     .deploy-banner-status {
       background-color: $bright-red;
       width: 100%;
@@ -196,7 +197,8 @@
 
   &[data-status="failed"],
   &[data-status="failure"],
-  &[data-status="error"] {
+  &[data-status="error"],
+  &[data-status="timedout"] {
     border-color: $bright-red;
   }
 
