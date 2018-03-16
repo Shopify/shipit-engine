@@ -3,6 +3,15 @@ require 'json'
 module Shipit
   class DeploySpec
     module NpmDiscovery
+      # https://docs.npmjs.com/cli/publish
+      PUBLIC = 'public'.freeze
+      PRIVATE = 'restricted'.freeze
+      VALID_ACCESS = [PUBLIC, PRIVATE].freeze
+
+      NPM_REGISTRY = "https://registry.npmjs.org/".freeze
+      PACKAGE_CLOUD_REGISTRY = "https://packages.shopify.io/shopify/node/npm/".freeze
+      VALID_REGISTRY = [NPM_REGISTRY, PACKAGE_CLOUD_REGISTRY].freeze
+
       def discover_dependencies_steps
         discover_package_json || super
       end
@@ -23,7 +32,7 @@ module Shipit
         if yarn?
           [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
             yarn version --new-version <strong>&lt;major|minor|patch&gt;</strong>
-            && git push --follow-tags</pre>)]
+            && git push --follow-tags</pre>), publish_config_checklist.first]
         end
       end
 
@@ -31,8 +40,13 @@ module Shipit
         if npm?
           [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
             npm version <strong>&lt;major|minor|patch&gt;</strong>
-            && git push --follow-tags</pre>)]
+            && git push --follow-tags</pre>), publish_config_checklist.first]
         end
+      end
+
+      def publish_config_checklist
+        [%(<strong>Don't forget publishConfig settings in your package.json!</strong> See
+          <a target="_blank" href="https://development.shopify.io/guides/gems/">docs</a>)]
       end
 
       def npm?
@@ -79,7 +93,73 @@ module Shipit
         JSON.parse(package_json.read)['version']
       end
 
+      def publish_config
+        JSON.parse(package_json.read)['publishConfig']
+      end
+
+      def publish_config_access
+        publish_config['access']
+      end
+
+      def publish_config_registry
+        publish_config['registry'] || publish_config['@shopify:registry']
+      end
+
+      def package_name
+        JSON.parse(package_json.read)['name']
+      end
+
+      def scoped_package?
+        package_name.start_with?('@shopify')
+      end
+
+      def publish?
+        return false if publish_config.blank?
+        return false unless valid_publish_config_access?
+        return false unless valid_publish_config_registry?
+      end
+
+      def valid_publish_config_access?
+        return false if publish_config_access.blank?
+        return false unless VALID_ACCESS.include?(publish_config_access)
+        true
+      end
+
+      def valid_publish_config_registry?
+        return false if publish_config_registry.blank?
+        return false unless VALID_REGISTRY.include?(publish_config_registry)
+        return false unless appropriately_scoped_registry?
+        return false unless valid_private_config?
+        true
+      end
+
+      def appropriately_scoped_registry?
+        return false if package_name.blank?
+        missing_scoped_registry = scoped_package? && publish_config['@shopify:registry'].blank?
+        return false if missing_scoped_registry
+        true
+      end
+
+      def valid_private_config?
+        valid_registry_when_private? && package_scoped_when_private?
+      end
+
+      def valid_registry_when_private?
+        private_package = publish_config_access == PRIVATE
+        invalid_registry = publish_config_registry != PACKAGE_CLOUD_REGISTRY
+        return false if private_package && invalid_registry
+        true
+      end
+
+      def package_scoped_when_private?
+        private_package = publish_config_access == PRIVATE
+        return false if private_package && !scoped_package?
+        true
+      end
+
       def publish_npm_package
+        return ['misconfigured-npm-publish-config'] unless publish?
+
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
         publish = "npm publish --tag #{dist_tag(package_version)}"

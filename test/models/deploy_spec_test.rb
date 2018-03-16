@@ -684,9 +684,138 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
+    test '#publish? is false when publishConfig is missing in package_json' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"name": "foo"}')
+
+      @spec.expects(:package_json).returns(package_json)
+      refute @spec.publish?
+    end
+
+    test '#publish_config returns publishConfig in package.json' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"publishConfig": "foo"}')
+
+      @spec.expects(:package_json).returns(package_json)
+      assert_equal "foo", @spec.publish_config
+    end
+
+    test '#valid_publish_config_access? is false when publishConfig.access is missing' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"publishConfig": {}}')
+
+      @spec.expects(:package_json).returns(package_json)
+      refute @spec.valid_publish_config_access?
+    end
+
+    test '#valid_publish_config_access? is false when publishConfig.access is invalid' do
+      @spec.stubs(:publish_config_access).returns('foo')
+      refute @spec.valid_publish_config_access?
+    end
+
+    test '#valid_publish_config_access? is true when publishConfig.access is public or restricted' do
+      @spec.stubs(:publish_config_access).returns('public')
+      assert @spec.valid_publish_config_access?
+
+      @spec.stubs(:publish_config_access).returns('restricted')
+      assert @spec.valid_publish_config_access?
+    end
+
+    test '#publish_config_access returns publishConfig.access in package.json' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"publishConfig": {
+          "access": "foo"
+        }
+      }')
+      @spec.expects(:package_json).returns(package_json)
+      assert_equal "foo", @spec.publish_config_access
+    end
+
+    test '#valid_publish_config_registry? is false when publishConfig.registry is invalid' do
+      @spec.stubs(:publish_config_registry).returns('foo')
+      refute @spec.valid_publish_config_registry?
+    end
+
+    test '#valid_publish_config_registry? is true when publishConfig.registry is valid' do
+      @spec.stubs(:appropriately_scoped_registry?).returns(true)
+      @spec.stubs(:valid_private_config?).returns(true)
+
+      @spec.stubs(:publish_config_registry).returns('https://registry.npmjs.org/')
+      assert @spec.valid_publish_config_registry?
+
+      @spec.stubs(:publish_config_registry).returns('https://packages.shopify.io/shopify/node/npm/')
+      assert @spec.valid_publish_config_registry?
+    end
+
+    test '#publish_config_registry returns publishConfig.registry in package.json' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"publishConfig": {
+          "registry": "foo"
+        }
+      }')
+      @spec.expects(:package_json).returns(package_json)
+      assert_equal "foo", @spec.publish_config_registry
+    end
+
+    test "#appropriately_scoped_registry? is false if @shopify scoped packages uses 'registry'" do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{
+        "name": "@shopify/polaris",
+        "publishConfig": {
+          "registry": "foo"
+        }
+      }')
+      @spec.stubs(:package_json).returns(package_json).at_least_once
+      refute @spec.appropriately_scoped_registry?
+    end
+
+    test "#appropriately_scoped_registry? is true if @shopify scoped packages uses '@shopify:registry'" do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{
+        "name": "@shopify/polaris",
+        "publishConfig": {
+          "@shopify:registry": "foo"
+        }
+      }')
+      @spec.stubs(:package_json).returns(package_json)
+
+      assert @spec.appropriately_scoped_registry?
+    end
+
+    test "#valid_registry_when_private? is true when package is public" do
+      @spec.stubs(:publish_config_access).returns("public")
+      @spec.stubs(:publish_config_registry).returns("https://registry.npmjs.org/")
+      assert @spec.valid_registry_when_private?
+    end
+
+    test "#valid_registry_when_private? is false if private packages use the wrong registry" do
+      @spec.stubs(:publish_config_access).returns("restricted")
+      @spec.stubs(:publish_config_registry).returns("https://registry.npmjs.org/")
+      refute @spec.valid_registry_when_private?
+    end
+
+    test "#valid_registry_when_private? is true if private packages use the correct registry" do
+      @spec.stubs(:publish_config_access).returns("restricted")
+      @spec.stubs(:publish_config_registry).returns("https://packages.shopify.io/shopify/node/npm/")
+      assert @spec.valid_registry_when_private?
+    end
+
+    test "#package_scoped_when_private? is false when packages are not @shopify scoped" do
+      @spec.stubs(:package_name).returns("polaris")
+      @spec.stubs(:publish_config_access).returns("restricted")
+      refute @spec.package_scoped_when_private?
+    end
+
+    test "#package_scoped_when_private? is true when packages are @shopify scoped" do
+      @spec.stubs(:package_name).returns("@shopify/polaris")
+      @spec.stubs(:publish_config_access).returns("restricted")
+      assert @spec.package_scoped_when_private?
+    end
+
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0')
+      @spec.stubs(:publish?).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
     end
 
@@ -699,6 +828,7 @@ module Shipit
     test '#publish_npm_package checks if version tag and a pre-release flag exist, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0-alpha.1')
+      @spec.stubs(:publish?).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag next'], @spec.deploy_steps
     end
 
@@ -758,6 +888,7 @@ module Shipit
     test '#publish_yarn_package checks if version tag exists, and then invokes npm publish script' do
       @spec.stubs(:yarn?).returns(true).at_least_once
       @spec.stubs(:package_version).returns('1.0.0')
+      @spec.stubs(:publish?).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
     end
 
