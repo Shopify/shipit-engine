@@ -56,8 +56,10 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
-  attr_accessor :disable_api_authentication
+  attr_accessor :disable_api_authentication, :timeout_exit_codes
   attr_writer :automatically_prepend_bundle_exec
+
+  self.timeout_exit_codes = [].freeze
 
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'

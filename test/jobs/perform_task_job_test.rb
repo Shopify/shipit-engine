@@ -85,6 +85,21 @@ module Shipit
       assert_includes @deploy.chunk_output, 'TimedOut'
     end
 
+    test "mark deploy as timedout if a command exit in one of the codes in Shipit.timeout_exit_codes" do
+      previous_exit_codes = Shipit.timeout_exit_codes
+      begin
+        Shipit.timeout_exit_codes = [70].freeze
+
+        Command.any_instance.expects(:stream!).at_least_once.raises(Command::Failed.new('Blah', 70))
+
+        @job.perform(@deploy)
+
+        assert_equal 'timedout', @deploy.reload.status
+      ensure
+        Shipit.timeout_exit_codes = previous_exit_codes
+      end
+    end
+
     test "records stack support for rollbacks and fetching deployed revision" do
       @job.stubs(:capture!)
       @commands = stub(:commands)

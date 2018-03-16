@@ -120,10 +120,12 @@ module Shipit
       status.in?(ACTIVE_STATUSES)
     end
 
-    def report_failure!(_error)
+    def report_failure!(error)
       reload
       if aborting?
         aborted!
+      elsif error.respond_to?(:exit_code) && Shipit.timeout_exit_codes.include?(error.exit_code)
+        giveup!
       else
         failure!
       end

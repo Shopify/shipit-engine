@@ -8,10 +8,18 @@ module Shipit
     MAX_READ = 64.kilobytes
 
     Error = Class.new(StandardError)
-    Failed = Class.new(Error)
     NotFound = Class.new(Error)
     Denied = Class.new(Error)
     TimedOut = Class.new(Error)
+
+    class Failed < Error
+      attr_reader :exit_code
+
+      def initialize(message, exit_code)
+        super(message)
+        @exit_code = exit_code
+      end
+    end
 
     attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
 
@@ -121,7 +129,7 @@ module Shipit
 
     def stream!(&block)
       stream(&block)
-      raise Failed.new(exit_message) unless success?
+      raise Failed.new(exit_message, code) unless success?
       self
     end
 
