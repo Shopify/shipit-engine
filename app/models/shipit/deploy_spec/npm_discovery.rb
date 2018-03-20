@@ -97,7 +97,7 @@ module Shipit
       end
 
       def publish_config_access
-        publish_config['access']
+        publish_config['access'] || PRIVATE
       end
 
       def package_name
@@ -111,10 +111,10 @@ module Shipit
       def publish?
         return false if publish_config.blank?
         return false unless valid_publish_config_access?
+        return false unless package_scoped_when_private?
       end
 
       def valid_publish_config_access?
-        return false if publish_config_access.blank?
         return false unless VALID_ACCESS.include?(publish_config_access)
         true
       end
@@ -125,8 +125,33 @@ module Shipit
         true
       end
 
+      def local_npmrc
+        file(".npmrc")
+      end
+
+      def npmrc_contents(registry)
+        "always-auth=true\n#{registry}"
+      end
+
+      def registry
+        if publish_config_access == "public"
+          return scoped_package? ? "@shopify:registry=#{NPM_REGISTRY}" : "registry=#{NPM_REGISTRY}"
+        end
+
+        PACKAGE_CLOUD_REGISTRY
+      end
+
+      def generate_local_npmrc
+        File.delete(local_npmrc) if File.exist?(local_npmrc)
+        File.write(local_npmrc, npmrc_contents(registry))
+      end
+
       def publish_npm_package
-        return ['misconfigured-npm-publish-config'] unless publish?
+        if publish?
+          generate_local_npmrc
+        else
+          return ['misconfigured-npm-publish-config']
+        end
 
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
