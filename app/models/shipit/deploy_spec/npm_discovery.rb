@@ -104,9 +104,10 @@ module Shipit
       end
 
       def publish?
-        return false if publish_config.blank?
-        return false unless valid_publish_config_access?
-        return false unless package_scoped_when_private?
+        return true if ENV['ENFORCE_PUBLISH_CONFIG'].nil?
+
+        return false if ENV['ENFORCE_PUBLISH_CONFIG'] && publish_config.blank?
+        valid_publish_config_access? && package_scoped_when_private?
       end
 
       def valid_publish_config_access?
@@ -128,7 +129,7 @@ module Shipit
       end
 
       def registry
-        if publish_config_access == "public"
+        if publish_config_access == PUBLIC
           return scoped_package? ? "@shopify:registry=#{NPM_REGISTRY}" : "registry=#{NPM_REGISTRY}"
         end
 
@@ -146,7 +147,7 @@ module Shipit
         generate_local_npmrc
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
-        publish = "npm publish --tag #{dist_tag(package_version)}"
+        publish = "npm publish --tag #{dist_tag(package_version)} --access #{publish_config_access}"
 
         [check_tags, publish]
       end

@@ -684,12 +684,21 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
-    test '#publish? is false when publishConfig is missing in package_json' do
+    test '#publish? is false when publishConfig is missing in package_json and ENFORCE_PUBLISH_CONFIG is set' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{"name": "foo"}')
+      ENV['ENFORCE_PUBLISH_CONFIG'] = '1'
+
+      @spec.expects(:package_json).returns(package_json)
+      refute @spec.publish?
+    end
+
+    test '#publish? is true when ENFORCE_PUBLISH_CONFIG is unset' do
       package_json = Pathname.new('/tmp/fake_package.json')
       package_json.write('{"name": "foo"}')
 
       @spec.expects(:package_json).returns(package_json)
-      refute @spec.publish?
+      assert @spec.publish?
     end
 
     test '#publish_config returns publishConfig in package.json' do
@@ -753,8 +762,9 @@ module Shipit
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0')
       @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
-      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
     end
 
     test '#npmrc_contents returns a private package configuration' do
@@ -787,8 +797,9 @@ module Shipit
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0-alpha.1')
       @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
-      assert_equal ['assert-npm-version-tag', 'npm publish --tag next'], @spec.deploy_steps
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag next --access restricted'], @spec.deploy_steps
     end
 
     test 'bundler installs take priority over yarn installs' do
@@ -848,8 +859,9 @@ module Shipit
       @spec.stubs(:yarn?).returns(true).at_least_once
       @spec.stubs(:package_version).returns('1.0.0')
       @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
-      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest'], @spec.deploy_steps
+      assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
     end
 
     test 'yarn checklist takes precedence over npm checklist' do
