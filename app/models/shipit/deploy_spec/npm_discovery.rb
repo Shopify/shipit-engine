@@ -31,7 +31,7 @@ module Shipit
         if yarn?
           [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
             yarn version --new-version <strong>&lt;major|minor|patch&gt;</strong>
-            && git push --follow-tags</pre>), publish_config_checklist.first]
+            && git push --follow-tags</pre>)]
         end
       end
 
@@ -39,13 +39,8 @@ module Shipit
         if npm?
           [%(<strong>Don't forget version and tag before publishing!</strong> You can do this with:<br/>
             npm version <strong>&lt;major|minor|patch&gt;</strong>
-            && git push --follow-tags</pre>), publish_config_checklist.first]
+            && git push --follow-tags</pre>)]
         end
-      end
-
-      def publish_config_checklist
-        [%(<strong>Don't forget publishConfig settings in your package.json!</strong> See
-          <a target="_blank" href="https://development.shopify.io/guides/gems/">docs</a>)]
       end
 
       def npm?
@@ -115,14 +110,13 @@ module Shipit
       end
 
       def valid_publish_config_access?
-        return false unless VALID_ACCESS.include?(publish_config_access)
-        true
+        VALID_ACCESS.include?(publish_config_access)
       end
 
+      # ensure private packages are scoped
       def package_scoped_when_private?
-        private_package = publish_config_access == PRIVATE
-        return false if private_package && !scoped_package?
-        true
+        return true if publish_config_access == PUBLIC
+        publish_config_access == PRIVATE && scoped_package?
       end
 
       def local_npmrc
@@ -142,17 +136,14 @@ module Shipit
       end
 
       def generate_local_npmrc
-        File.delete(local_npmrc) if File.exist?(local_npmrc)
-        File.write(local_npmrc, npmrc_contents(registry))
+        contents = npmrc_contents(registry)
+        File.write(local_npmrc, contents) unless local_npmrc.exist?
       end
 
       def publish_npm_package
-        if publish?
-          generate_local_npmrc
-        else
-          return ['misconfigured-npm-publish-config']
-        end
+        return ['misconfigured-npm-publish-config'] unless publish?
 
+        generate_local_npmrc
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
         publish = "npm publish --tag #{dist_tag(package_version)}"

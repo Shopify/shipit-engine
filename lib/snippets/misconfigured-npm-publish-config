@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-echo -e "\033[1;31mpublishConfig setting in your package.json is misconfigured.\033[0m"
-echo -e "\033[1;31mSee documentation: https://development.shopify.io/guides/gems/\033[0m"
+echo -e "\033[1;31mPlease add a publishConfig with an access setting to your package.json.  e.g.,\033[0m"
+echo -e "\n\033[1;31m\"publishConfig:\" {\n\t \"access\": \"<public|restricted>\" \n} \033[0m"
 exit 1

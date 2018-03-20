@@ -731,15 +731,21 @@ module Shipit
       assert_equal "foo", @spec.publish_config_access
     end
 
-    test "#package_scoped_when_private? is false when private packages are not @shopify scoped" do
-      @spec.stubs(:package_name).returns("polaris")
+    test "#package_scoped_when_private? is false when private packages are not scoped" do
+      @spec.stubs(:scoped_package?).returns(false)
       @spec.stubs(:publish_config_access).returns("restricted")
       refute @spec.package_scoped_when_private?
     end
 
-    test "#package_scoped_when_private? is true when private packages are @shopify scoped" do
-      @spec.stubs(:package_name).returns("@shopify/polaris")
+    test "#package_scoped_when_private? is true when private packages are scoped" do
+      @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns("restricted")
+      assert @spec.package_scoped_when_private?
+    end
+
+    test "#package_scoped_when_private? is true when public packages are not scoped" do
+      @spec.stubs(:scoped_package?).returns(false)
+      @spec.stubs(:publish_config_access).returns("public")
       assert @spec.package_scoped_when_private?
     end
 
