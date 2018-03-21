@@ -103,7 +103,7 @@ module Shipit
         package_name.start_with?('@shopify')
       end
 
-      def publish?
+      def valid_publish_config?
         return true if ENV['ENFORCE_PUBLISH_CONFIG'].nil?
 
         return false if ENV['ENFORCE_PUBLISH_CONFIG'] && publish_config.blank?
@@ -142,7 +142,7 @@ module Shipit
       end
 
       def publish_npm_package
-        return ['misconfigured-npm-publish-config'] unless publish?
+        return ['misconfigured-npm-publish-config'] unless valid_publish_config?
 
         generate_local_npmrc
         check_tags = 'assert-npm-version-tag'

@@ -684,21 +684,18 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
-    test '#publish? is false when publishConfig is missing in package_json and ENFORCE_PUBLISH_CONFIG is set' do
+    test '#valid_publish_config? is false when publishConfig is missing in package_json and ENFORCE_PUBLISH_CONFIG is set' do
       package_json = Pathname.new('/tmp/fake_package.json')
       package_json.write('{"name": "foo"}')
       ENV['ENFORCE_PUBLISH_CONFIG'] = '1'
 
       @spec.expects(:package_json).returns(package_json)
-      refute @spec.publish?
+      refute @spec.valid_publish_config?
     end
 
-    test '#publish? is true when ENFORCE_PUBLISH_CONFIG is unset' do
-      package_json = Pathname.new('/tmp/fake_package.json')
-      package_json.write('{"name": "foo"}')
-
-      @spec.expects(:package_json).returns(package_json)
-      assert @spec.publish?
+    test '#valid_publish_config? is true when ENFORCE_PUBLISH_CONFIG is unset' do
+      ENV['ENFORCE_PUBLISH_CONFIG'] = nil
+      assert @spec.valid_publish_config?
     end
 
     test '#publish_config returns publishConfig in package.json' do
@@ -761,7 +758,7 @@ module Shipit
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0')
-      @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
@@ -796,7 +793,7 @@ module Shipit
     test '#publish_npm_package checks if version tag and a pre-release flag exist, and then invokes npm deploy script' do
       @spec.stubs(:npm?).returns(true)
       @spec.stubs(:package_version).returns('1.0.0-alpha.1')
-      @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag next --access restricted'], @spec.deploy_steps
@@ -858,7 +855,7 @@ module Shipit
     test '#publish_yarn_package checks if version tag exists, and then invokes npm publish script' do
       @spec.stubs(:yarn?).returns(true).at_least_once
       @spec.stubs(:package_version).returns('1.0.0')
-      @spec.stubs(:publish?).returns(true)
+      @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:generate_local_npmrc).returns(true)
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
