@@ -1,5 +1,6 @@
 # Unreleased
 
+* Revalidate merge request as soon as they are expired, and not when they could be merged again.
 * Allow to configure Shipit to intepret some exit statuses as timeouts instead of regular failures.
 * Distinguish deploy timeouts from deploy failures.
 * Added blocking statuses. If they are missing or failing, they will prevent deploy even if they were reported on any of the commits in the deploy range.

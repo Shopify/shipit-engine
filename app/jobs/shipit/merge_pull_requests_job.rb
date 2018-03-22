@@ -9,6 +9,7 @@ module Shipit
         pull_request.refresh!
         pull_request.reject_unless_mergeable!
         pull_request.cancel! if pull_request.closed?
+        pull_request.revalidate! if pull_request.need_revalidation?
       end
 
       return false unless stack.allows_merges?
