@@ -5,9 +5,9 @@
     <% cache deploy.author do %>
       <%= render 'shipit/shared/author', author: deploy.author %>
     <% end %>
-    <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy.status.capitalize %>">
+    <a href="<%= stack_deploy_path(@stack, deploy) %>" class="status status--<%= deploy.status %>" data-tooltip="<%= deploy_status_in_words(deploy.status) %>">
       <i class="status__icon"></i>
-      <span class="visually-hidden"><%= deploy.status %></span>
+      <span class="visually-hidden"><%= deploy_status_in_words(deploy.status) %></span>
     </a>
     <div class="commit-details">
       <span class="commit-title">

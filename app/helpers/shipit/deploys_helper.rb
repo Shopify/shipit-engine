@@ -24,5 +24,14 @@ module Shipit
         content_tag(:span, "#{panel_spec.inspect} is not a valid monitoring panel spec")
       end
     end
+
+    def deploy_status_in_words(status)
+      case status
+      when 'timedout'
+        "Timed out"
+      else
+        status.capitalize
+      end
+    end
   end
 end
