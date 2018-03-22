@@ -256,11 +256,7 @@ module Shipit
     end
 
     def last_deployed_commit
-      if deploy = last_successful_deploy
-        deploy.until_commit
-      else
-        NoDeployedCommit
-      end
+      last_successful_deploy.try!(:until_commit) || NoDeployedCommit
     end
 
     def deployable?
