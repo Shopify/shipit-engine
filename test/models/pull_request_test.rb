@@ -190,14 +190,6 @@ module Shipit
       assert_equal 'requires_rebase', @pr.rejection_reason
     end
 
-    test "#merge! revalidates the PR if it has been enqueued for too long" do
-      @pr.update!(revalidated_at: 5.hours.ago)
-
-      assert_predicate @pr, :need_revalidation?
-      assert_equal false, @pr.merge!
-      assert_predicate @pr, :revalidating?
-    end
-
     test "#merge! raises a PullRequest::NotReady if the PR isn't mergeable yet" do
       @pr.update!(mergeable: nil)
 

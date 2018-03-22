@@ -156,10 +156,6 @@ module Shipit
       raise InvalidTransition unless pending?
 
       raise NotReady if not_mergeable_yet?
-      if need_revalidation?
-        revalidate!
-        return false
-      end
 
       Shipit.github_api.merge_pull_request(
         stack.github_repo_name,

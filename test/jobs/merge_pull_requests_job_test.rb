@@ -11,6 +11,7 @@ module Shipit
       @not_ready_pr = shipit_pull_requests(:shipit_pending_not_mergeable_yet)
       @closed_pr = shipit_pull_requests(:shipit_pending_closed)
       @merged_pr = shipit_pull_requests(:shipit_pending_merged)
+      @expired_pr = shipit_pull_requests(:shipit_pending_expired)
       @mergable_pending_ci = shipit_pull_requests(:shipit_mergeable_pending_ci)
     end
 
@@ -49,6 +50,13 @@ module Shipit
       @stack.update!(lock_reason: 'Maintenance')
       @job.perform(@stack)
       assert_predicate @pending_pr.reload, :pending?
+    end
+
+    test "#perform revalidate PRs but do not attempt to merge any if the stack doesn't allow merges" do
+      PullRequest.any_instance.stubs(:refresh!)
+      @stack.update!(lock_reason: 'Maintenance')
+      @job.perform(@stack)
+      assert_predicate @expired_pr.reload, :revalidating?
     end
 
     test "#perform schedules a new job if the first PR in the queue is not mergeable yet" do
