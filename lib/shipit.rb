@@ -183,6 +183,14 @@ module Shipit
     {'SHIPIT' => '1'}.merge(secrets.env || {})
   end
 
+  def enforce_publish_config?
+    secrets.enforce_publish_config.presence
+  end
+
+  def private_npm_registry
+    secrets.private_npm_registry
+  end
+
   def shell_paths
     [Shipit::Engine.root.join('lib', 'snippets').to_s]
   end
@@ -219,6 +227,7 @@ module Shipit
     end
     @automatically_prepend_bundle_exec
   end
+
 
   protected
 

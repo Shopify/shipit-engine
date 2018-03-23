@@ -684,17 +684,19 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
-    test '#valid_publish_config? is false when publishConfig is missing in package_json and ENFORCE_PUBLISH_CONFIG is set' do
+    test '#valid_publish_config? is false when publishConfig is missing in package_json and Shipit.enforce_publish_config? is set' do
+      Shipit.stubs(:enforce_publish_config?).returns(true)
+      Shipit.stubs(:private_npm_registry).returns('some_private_registry')
+
       package_json = Pathname.new('/tmp/fake_package.json')
       package_json.write('{"name": "foo"}')
-      ENV['ENFORCE_PUBLISH_CONFIG'] = '1'
 
       @spec.expects(:package_json).returns(package_json)
       refute @spec.valid_publish_config?
     end
 
-    test '#valid_publish_config? is true when ENFORCE_PUBLISH_CONFIG is unset' do
-      ENV['ENFORCE_PUBLISH_CONFIG'] = nil
+    test '#valid_publish_config? is true when shipit does not enforce a publishConfig' do
+      @spec.stubs(:lerna_version).returns('1.0.0')
       assert @spec.valid_publish_config?
     end
 
@@ -765,8 +767,10 @@ module Shipit
     end
 
     test '#npmrc_contents returns a private package configuration' do
-      registry = "@shopify:registry=https://packages.shopify.io/shopify/node/npm/"
+      Shipit.stubs(:private_npm_registry).returns('some_private_registry')
       @spec.stubs(:publish_config_access).returns('restricted')
+      @spec.stubs(:scoped_package?).returns(true)
+      registry = "@shopify:registry=some_private_registry"
       assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
     end
 

@@ -9,7 +9,6 @@ module Shipit
       VALID_ACCESS = [PUBLIC, PRIVATE].freeze
 
       NPM_REGISTRY = "https://registry.npmjs.org/".freeze
-      PACKAGE_CLOUD_REGISTRY = "@shopify:registry=https://packages.shopify.io/shopify/node/npm/".freeze
 
       def discover_dependencies_steps
         discover_package_json || super
@@ -104,9 +103,10 @@ module Shipit
       end
 
       def valid_publish_config?
-        return true if ENV['ENFORCE_PUBLISH_CONFIG'].nil?
+        return true unless Shipit.enforce_publish_config?
 
-        return false if ENV['ENFORCE_PUBLISH_CONFIG'] && publish_config.blank?
+        return false if Shipit.private_npm_registry.nil?
+        return false if publish_config.blank?
         valid_publish_config_access? && package_scoped_when_private?
       end
 
@@ -129,11 +129,12 @@ module Shipit
       end
 
       def registry
+        prefix = scoped_package? ? "@shopify:registry" : "registry"
         if publish_config_access == PUBLIC
-          return scoped_package? ? "@shopify:registry=#{NPM_REGISTRY}" : "registry=#{NPM_REGISTRY}"
+          return "#{prefix}=#{NPM_REGISTRY}"
         end
 
-        PACKAGE_CLOUD_REGISTRY
+        "#{prefix}=#{Shipit.private_npm_registry}"
       end
 
       def generate_local_npmrc
