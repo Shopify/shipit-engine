@@ -90,14 +90,17 @@ module Shipit
       end
 
       before_transition %i(fetching rejected canceled) => :pending do |pr|
+        Rails.logger.info("[PullRequest] enqueued pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         pr.merge_requested_at = Time.now.utc
       end
 
       before_transition any => :pending do |pr|
+        Rails.logger.info("[PullRequest] revalidated pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         pr.revalidated_at = Time.now.utc
       end
 
       before_transition %i(pending) => :merged do |pr|
+        Rails.logger.info("[PullRequest] merged pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         Stack.increment_counter(:undeployed_commits_count, pr.stack_id)
       end
     end
@@ -140,6 +143,7 @@ module Shipit
       unless REJECTION_REASONS.include?(reason)
         raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"
       end
+      Rails.logger.info("[PullRequest] rejected pr_number=#{number} stack_id=#{stack_id} reason=#{reason}")
       self.rejection_reason = reason.presence
       super()
       true
