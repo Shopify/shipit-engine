@@ -59,6 +59,18 @@ module Shipit
         assert_json 'errors', 'sha' => ['is too short (minimum is 6 characters)']
       end
 
+      test "#create renders a 409 if a concurrent task is already running" do
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+        end
+
+        assert_no_difference -> { @stack.deploys.count } do
+          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+        end
+
+        assert_response :conflict
+      end
+
       test "#create refuses to deploy locked stacks" do
         @stack.update!(lock_reason: 'Something broken')
 

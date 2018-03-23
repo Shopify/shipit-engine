@@ -9,6 +9,7 @@ module Shipit
       rescue_from ApiClient::InsufficientPermission, with: :insufficient_permission
       rescue_from EnvironmentVariables::NotPermitted, with: :validation_error
       rescue_from TaskDefinition::NotFound, with: :not_found
+      rescue_from Task::ConcurrentTaskRunning, with: :conflict
 
       class << self
         def require_permission(operation, scope, options = {})
@@ -71,6 +72,10 @@ module Shipit
 
       def not_found(_error)
         render status: :not_found, json: {status: '404', error: 'Not Found'}
+      end
+
+      def conflict(_error)
+        render status: :conflict, json: {status: '409', error: 'Conflict'}
       end
     end
   end
