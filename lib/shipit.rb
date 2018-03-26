@@ -140,6 +140,14 @@ module Shipit
     secrets.host.presence
   end
 
+  def enforce_publish_config
+    secrets.enforce_publish_config.presence ? secrets.enforce_publish_config : nil
+  end
+
+  def private_npm_registry
+    secrets.private_npm_registry.presence ? secrets.private_npm_registry : nil
+  end
+
   def github_teams
     @github_teams ||= github_teams_handles.map { |t| Team.find_or_create_by_handle(t) }
   end
@@ -183,14 +191,6 @@ module Shipit
     {'SHIPIT' => '1'}.merge(secrets.env || {})
   end
 
-  def enforce_publish_config?
-    secrets.enforce_publish_config.presence
-  end
-
-  def private_npm_registry
-    secrets.private_npm_registry
-  end
-
   def shell_paths
     [Shipit::Engine.root.join('lib', 'snippets').to_s]
   end
@@ -227,7 +227,6 @@ module Shipit
     end
     @automatically_prepend_bundle_exec
   end
-
 
   protected
 

@@ -7,7 +7,6 @@ module Shipit
       PUBLIC = 'public'.freeze
       PRIVATE = 'restricted'.freeze
       VALID_ACCESS = [PUBLIC, PRIVATE].freeze
-
       NPM_REGISTRY = "https://registry.npmjs.org/".freeze
 
       def discover_dependencies_steps
@@ -91,7 +90,16 @@ module Shipit
       end
 
       def publish_config_access
-        publish_config['access'] || PRIVATE
+        config = publish_config
+
+        # default to private deploy when we enforce a publishConfig
+        if enforce_publish_config?
+          return PRIVATE if config.blank?
+          config['access'] || PRIVATE
+        end
+
+        return PUBLIC if config.blank?
+        config['access'] || PUBLIC
       end
 
       def package_name
@@ -102,12 +110,19 @@ module Shipit
         package_name.start_with?('@shopify')
       end
 
-      def valid_publish_config?
-        return true unless Shipit.enforce_publish_config?
+      def enforce_publish_config?
+        enforce = Shipit.enforce_publish_config
+        return false if enforce.nil? || enforce.to_s == "0"
+        true
+      end
 
+      def valid_publish_config?
+        return true unless enforce_publish_config?
         return false if Shipit.private_npm_registry.nil?
         return false if publish_config.blank?
-        valid_publish_config_access? && package_scoped_when_private?
+        return true if publish_config_access == PUBLIC
+
+        valid_publish_config_access? && private_scoped_package?
       end
 
       def valid_publish_config_access?
@@ -115,8 +130,7 @@ module Shipit
       end
 
       # ensure private packages are scoped
-      def package_scoped_when_private?
-        return true if publish_config_access == PUBLIC
+      def private_scoped_package?
         publish_config_access == PRIVATE && scoped_package?
       end
 

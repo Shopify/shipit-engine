@@ -684,9 +684,25 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
     end
 
-    test '#valid_publish_config? is false when publishConfig is missing in package_json and Shipit.enforce_publish_config? is set' do
-      Shipit.stubs(:enforce_publish_config?).returns(true)
+    test '#enforce_publish_config? is false when Shipit.enforce_publish_config is nil' do
+      Shipit.stubs(:enforce_publish_config).returns(nil)
+      refute @spec.enforce_publish_config?
+    end
+
+    test '#enforce_publish_config? is false when Shipit.enforce_publish_config is 0' do
+      Shipit.stubs(:enforce_publish_config).returns('0')
+      refute @spec.enforce_publish_config?
+    end
+
+    test '#enforce_publish_config? is true when Shipit.enforce_publish_config is 1' do
+      Shipit.stubs(:enforce_publish_config).returns('1')
+      assert @spec.enforce_publish_config?
+    end
+
+    test '#valid_publish_config? is false when enforce_publish_config? is true and publishConfig is missing from package.json' do
       Shipit.stubs(:private_npm_registry).returns('some_private_registry')
+      @spec.stubs(:enforce_publish_config?).returns(true)
+      @spec.stubs(:publish_config_access).returns('restricted')
 
       package_json = Pathname.new('/tmp/fake_package.json')
       package_json.write('{"name": "foo"}')
@@ -695,12 +711,21 @@ module Shipit
       refute @spec.valid_publish_config?
     end
 
+    test '#valid_publish_config? is true when enforce_publish_config? is true and publishConfig.access is public' do
+      Shipit.stubs(:private_npm_registry).returns('some_private_registry')
+      @spec.stubs(:enforce_publish_config?).returns(true)
+      @spec.stubs(:publish_config_access).returns('public')
+      @spec.stubs(:publish_config).returns('something')
+
+      assert @spec.valid_publish_config?
+    end
+
     test '#valid_publish_config? is true when shipit does not enforce a publishConfig' do
       @spec.stubs(:lerna_version).returns('1.0.0')
       assert @spec.valid_publish_config?
     end
 
-    test '#publish_config returns publishConfig in package.json' do
+    test '#publish_config returns publishConfig from package.json' do
       package_json = Pathname.new('/tmp/fake_package.json')
       package_json.write('{"publishConfig": "foo"}')
 
@@ -721,40 +746,48 @@ module Shipit
       assert @spec.valid_publish_config_access?
     end
 
-    test '#publish_config_access is restricted when publishConfig.access is missing' do
+    test '#publish_config_access is restricted when enforce_publish_config? is true and publishConfig is missing' do
       package_json = Pathname.new('/tmp/fake_package.json')
-      package_json.write('{"publishConfig": {}}')
+      package_json.write('{"name": "@shopify/foo"}')
 
+      @spec.stubs(:enforce_publish_config?).returns(true)
       @spec.expects(:package_json).returns(package_json)
       assert_equal 'restricted', @spec.publish_config_access
     end
 
-    test '#publish_config_access returns publishConfig.access in package.json' do
+    test '#publish_config_access is public when enforce_publish_config? is false and publishConfig is missing' do
       package_json = Pathname.new('/tmp/fake_package.json')
-      package_json.write('{"publishConfig": {
+      package_json.write('{"name": "@shopify/foo"}')
+
+      @spec.stubs(:enforce_publish_config?).returns(false)
+      @spec.expects(:package_json).returns(package_json)
+      assert_equal 'public', @spec.publish_config_access
+    end
+
+    test '#publish_config_access returns publishConfig.access from package.json when enforce_publish_config? is true' do
+      package_json = Pathname.new('/tmp/fake_package.json')
+      package_json.write('{
+        "name": "@shopify/foo",
+        "publishConfig": {
           "access": "foo"
         }
       }')
+
+      @spec.stubs(:enforce_publish_config?).returns(false)
       @spec.expects(:package_json).returns(package_json)
-      assert_equal "foo", @spec.publish_config_access
+      assert_equal 'foo', @spec.publish_config_access
     end
 
-    test "#package_scoped_when_private? is false when private packages are not scoped" do
+    test "#private_scoped_package? is false when private packages are not scoped" do
       @spec.stubs(:scoped_package?).returns(false)
       @spec.stubs(:publish_config_access).returns("restricted")
-      refute @spec.package_scoped_when_private?
+      refute @spec.private_scoped_package?
     end
 
-    test "#package_scoped_when_private? is true when private packages are scoped" do
+    test "#private_scoped_package? is true when private packages are scoped" do
       @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns("restricted")
-      assert @spec.package_scoped_when_private?
-    end
-
-    test "#package_scoped_when_private? is true when public packages are not scoped" do
-      @spec.stubs(:scoped_package?).returns(false)
-      @spec.stubs(:publish_config_access).returns("public")
-      assert @spec.package_scoped_when_private?
+      assert @spec.private_scoped_package?
     end
 
     test '#publish_npm_package checks if version tag exists, and then invokes npm deploy script' do
@@ -762,29 +795,29 @@ module Shipit
       @spec.stubs(:package_version).returns('1.0.0')
       @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
-      @spec.stubs(:generate_local_npmrc).returns(true)
+      @spec.stubs(:registry).returns("@private:registry=some_private_registry")
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
     end
 
-    test '#npmrc_contents returns a private package configuration' do
-      Shipit.stubs(:private_npm_registry).returns('some_private_registry')
-      @spec.stubs(:publish_config_access).returns('restricted')
-      @spec.stubs(:scoped_package?).returns(true)
+    test '#npmrc_contents returns a scoped private package configuration when the package is scoped and private' do
       registry = "@shopify:registry=some_private_registry"
-      assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
-    end
-
-    test '#npmrc_contents returns a public scoped package configuration' do
-      registry = "@shopify:registry=https://registry.npmjs.org/"
-      @spec.stubs(:publish_config_access).returns('public')
+      Shipit.stubs(:private_npm_registry).returns('some_private_registry')
       @spec.stubs(:scoped_package?).returns(true)
+      @spec.stubs(:publish_config_access).returns('restricted')
       assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
     end
 
-    test '#npmrc_contents returns a public non-scoped package configuration' do
-      registry = "registry=https://registry.npmjs.org/"
+    test '#npmrc_contents returns a public scoped package configuration when the package is scoped and public' do
+      registry = "@shopify:registry=https://registry.npmjs.org/"
+      @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns('public')
+      assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
+    end
+
+    test '#npmrc_contents returns a public non-scoped package configuration when the package is not scoped and public' do
+      registry = "registry=https://registry.npmjs.org/"
       @spec.stubs(:scoped_package?).returns(false)
+      @spec.stubs(:publish_config_access).returns('public')
       assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
     end
 
@@ -799,7 +832,7 @@ module Shipit
       @spec.stubs(:package_version).returns('1.0.0-alpha.1')
       @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
-      @spec.stubs(:generate_local_npmrc).returns(true)
+      @spec.stubs(:registry).returns("@private:registry=some_private_registry")
       assert_equal ['assert-npm-version-tag', 'npm publish --tag next --access restricted'], @spec.deploy_steps
     end
 
@@ -861,7 +894,7 @@ module Shipit
       @spec.stubs(:package_version).returns('1.0.0')
       @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
-      @spec.stubs(:generate_local_npmrc).returns(true)
+      @spec.stubs(:registry).returns("@private:registry=some_private_registry")
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
     end
 
