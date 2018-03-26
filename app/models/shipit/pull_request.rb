@@ -52,6 +52,7 @@ module Shipit
 
     after_save :record_merge_status_change
     after_commit :emit_hooks
+    after_save :log_merge_requested_at_bump
 
     state_machine :merge_status, initial: :fetching do
       state :fetching
@@ -89,18 +90,19 @@ module Shipit
         pr.rejection_reason = nil
       end
 
+      after_transition any => any do |pr, transition|
+        pr.debug_log('transitioned', from: transition.from, to: transition.to)
+      end
+
       before_transition %i(fetching rejected canceled) => :pending do |pr|
-        Rails.logger.info("[PullRequest] enqueued pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         pr.merge_requested_at = Time.now.utc
       end
 
       before_transition any => :pending do |pr|
-        Rails.logger.info("[PullRequest] revalidated pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         pr.revalidated_at = Time.now.utc
       end
 
       before_transition %i(pending) => :merged do |pr|
-        Rails.logger.info("[PullRequest] merged pr_number=#{pr.number} stack_id=#{pr.stack_id}")
         Stack.increment_counter(:undeployed_commits_count, pr.stack_id)
       end
     end
@@ -133,7 +135,7 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-      pull_request.update!(merge_requested_by: user.presence)
+      pull_request.update!(merge_requested_by: user) if user.present?
       pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
       pull_request.schedule_refresh!
       pull_request
@@ -143,7 +145,7 @@ module Shipit
       unless REJECTION_REASONS.include?(reason)
         raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"
       end
-      Rails.logger.info("[PullRequest] rejected pr_number=#{number} stack_id=#{stack_id} reason=#{reason}")
+      debug_log('rejected', reason: reason)
       self.rejection_reason = reason.presence
       super()
       true
@@ -272,7 +274,24 @@ module Shipit
       )
     end
 
+    def debug_log(message, data = {})
+      data = data.merge(pr_number: number, stack_id: stack_id, merge_status: merge_status)
+      tags = data.map { |k, v| "#{k}=#{v}" }.join(" ")
+      Rails.logger.info("[PullRequest] #{message} #{tags}")
+    end
+
     private
+
+    def log_merge_requested_at_bump
+      if saved_change_to_merge_requested_at?
+        requested_at_was, requested_at_is = saved_change_to_merge_requested_at,
+        debug_log(
+          'merge_requested_at bumped',
+          requested_at_was: requested_at_was,
+          requested_at_is: requested_at_is,
+        )
+      end
+    end
 
     def record_merge_status_change
       @merge_status_changed ||= saved_change_to_attribute?(:merge_status)
