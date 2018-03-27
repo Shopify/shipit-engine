@@ -107,7 +107,8 @@ module Shipit
       end
 
       def scoped_package?
-        package_name.start_with?('@shopify')
+        return false if publish_config_access == PRIVATE && Shipit.npm_org_scope.nil?
+        package_name.start_with?(Shipit.npm_org_scope)
       end
 
       def enforce_publish_config?
@@ -143,7 +144,9 @@ module Shipit
       end
 
       def registry
-        prefix = scoped_package? ? "@shopify:registry" : "registry"
+        scope = Shipit.npm_org_scope
+        prefix = scoped_package? ? "#{scope}:registry" : "registry"
+
         if publish_config_access == PUBLIC
           return "#{prefix}=#{NPM_REGISTRY}"
         end

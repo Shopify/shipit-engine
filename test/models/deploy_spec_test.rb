@@ -778,6 +778,19 @@ module Shipit
       assert_equal 'foo', @spec.publish_config_access
     end
 
+    test "#scoped_package? is false when Shipit.npm_org_scope is not set and the package is private" do
+      Shipit.stubs(:npm_org_scope).returns(nil)
+      @spec.stubs(:publish_config_access).returns('restricted')
+      refute @spec.scoped_package?
+    end
+
+    test "#scoped_package? is true when Shipit.npm_org_scope is set and package_name starts with scope and the package is private" do
+      Shipit.stubs(:npm_org_scope).returns('@shopify')
+      @spec.stubs(:publish_config_access).returns('restricted')
+      @spec.stubs(:package_name).returns('@shopify/polaris')
+      assert @spec.scoped_package?
+    end
+
     test "#private_scoped_package? is false when private packages are not scoped" do
       @spec.stubs(:scoped_package?).returns(false)
       @spec.stubs(:publish_config_access).returns("restricted")
@@ -801,6 +814,7 @@ module Shipit
 
     test '#npmrc_contents returns a scoped private package configuration when the package is scoped and private' do
       registry = "@shopify:registry=some_private_registry"
+      Shipit.stubs(:npm_org_scope).returns('@shopify')
       Shipit.stubs(:private_npm_registry).returns('some_private_registry')
       @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
@@ -809,6 +823,7 @@ module Shipit
 
     test '#npmrc_contents returns a public scoped package configuration when the package is scoped and public' do
       registry = "@shopify:registry=https://registry.npmjs.org/"
+      Shipit.stubs(:npm_org_scope).returns('@shopify')
       @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns('public')
       assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)

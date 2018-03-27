@@ -141,11 +141,15 @@ module Shipit
   end
 
   def enforce_publish_config
-    secrets.enforce_publish_config.presence ? secrets.enforce_publish_config : nil
+    secrets.enforce_publish_config.presence
+  end
+
+  def npm_org_scope
+    secrets.npm_org_scope.presence
   end
 
   def private_npm_registry
-    secrets.private_npm_registry.presence ? secrets.private_npm_registry : nil
+    secrets.private_npm_registry.presence
   end
 
   def github_teams
