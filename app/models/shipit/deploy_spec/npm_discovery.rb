@@ -107,7 +107,7 @@ module Shipit
       end
 
       def scoped_package?
-        return false if publish_config_access == PRIVATE && Shipit.npm_org_scope.nil?
+        return false if Shipit.npm_org_scope.nil?
         package_name.start_with?(Shipit.npm_org_scope)
       end
 
@@ -154,19 +154,15 @@ module Shipit
         "#{prefix}=#{Shipit.private_npm_registry}"
       end
 
-      def generate_local_npmrc
-        contents = npmrc_contents(registry)
-        File.write(local_npmrc, contents) unless local_npmrc.exist?
-      end
-
       def publish_npm_package
         return ['misconfigured-npm-publish-config'] unless valid_publish_config?
 
-        generate_local_npmrc
+        generate_npmrc = "generate-local-npmrc \"#{npmrc_contents(registry)}\""
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
         publish = "npm publish --tag #{dist_tag(package_version)} --access #{publish_config_access}"
 
+        return [check_tags, generate_npmrc, publish] if enforce_publish_config?
         [check_tags, publish]
       end
 

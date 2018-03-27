@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+const {resolve} = require('path');
+const {existsSync, writeFileSync, readFileSync} = require('fs');
+const npmrc = resolve('.', '.npmrc');
+const npmrcContents = process.argv[2];
+
+if (!npmrcContents) {
+  console.error('npmrc contents not specified.');
+  process.exit(1);
+}
+
+if (existsSync(npmrc)) {
+  console.log('.npmrc already exists.')
+} else {
+  writeFileSync(npmrc, npmrcContents)
+
+  console.log('\nGenerated .npmrc:');
+  console.log(readFileSync(npmrc, {encoding: 'utf8'}))
+}

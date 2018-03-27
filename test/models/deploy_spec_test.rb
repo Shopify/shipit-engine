@@ -904,13 +904,28 @@ module Shipit
       assert_equal ['yarn install --no-progress'], @spec.dependencies_steps
     end
 
-    test '#publish_yarn_package checks if version tag exists, and then invokes npm publish script' do
+    test '#publish_npm_package checks if version tag exists, and then invokes npm publish script' do
       @spec.stubs(:yarn?).returns(true).at_least_once
       @spec.stubs(:package_version).returns('1.0.0')
       @spec.stubs(:valid_publish_config?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:registry).returns("@private:registry=some_private_registry")
       assert_equal ['assert-npm-version-tag', 'npm publish --tag latest --access restricted'], @spec.deploy_steps
+    end
+
+    test '#publish_npm_package checks if version tag exists, generates npmrc, and then invokes npm publish script when enforce_publish_config? is true' do
+      @spec.stubs(:yarn?).returns(true).at_least_once
+      @spec.stubs(:package_version).returns('1.0.0')
+      @spec.stubs(:valid_publish_config?).returns(true)
+
+      @spec.stubs(:publish_config_access).returns('restricted')
+      @spec.stubs(:enforce_publish_config?).returns(true)
+      @spec.stubs(:npmrc_contents).returns('fake')
+
+      generate_npmrc = 'generate-local-npmrc "fake"'
+      npm_publish = 'npm publish --tag latest --access restricted'
+      deploy_steps = ['assert-npm-version-tag', generate_npmrc, npm_publish]
+      assert_equal deploy_steps, @spec.deploy_steps
     end
 
     test 'yarn checklist takes precedence over npm checklist' do
