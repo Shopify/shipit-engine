@@ -140,6 +140,18 @@ module Shipit
     secrets.host.presence
   end
 
+  def enforce_publish_config
+    secrets.enforce_publish_config.presence
+  end
+
+  def npm_org_scope
+    secrets.npm_org_scope.presence
+  end
+
+  def private_npm_registry
+    secrets.private_npm_registry.presence
+  end
+
   def github_teams
     @github_teams ||= github_teams_handles.map { |t| Team.find_or_create_by_handle(t) }
   end

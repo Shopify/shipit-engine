@@ -3,6 +3,12 @@ require 'json'
 module Shipit
   class DeploySpec
     module NpmDiscovery
+      # https://docs.npmjs.com/cli/publish
+      PUBLIC = 'public'.freeze
+      PRIVATE = 'restricted'.freeze
+      VALID_ACCESS = [PUBLIC, PRIVATE].freeze
+      NPM_REGISTRY = "https://registry.npmjs.org/".freeze
+
       def discover_dependencies_steps
         discover_package_json || super
       end
@@ -59,6 +65,10 @@ module Shipit
         file('package.json')
       end
 
+      def package_json_contents
+        @package_json_contents ||= JSON.parse(package_json.read)
+      end
+
       def yarn?
         yarn_lock.exist? && public?
       end
@@ -75,15 +85,88 @@ module Shipit
         discover_npm_package || super
       end
 
+      def package_name
+        package_json_contents['name']
+      end
+
       def package_version
-        JSON.parse(package_json.read)['version']
+        package_json_contents['version']
+      end
+
+      def publish_config
+        package_json_contents['publishConfig']
+      end
+
+      def publish_config_access
+        config = publish_config
+
+        # default to private deploy when we enforce a publishConfig
+        if enforce_publish_config?
+          return PRIVATE if config.blank?
+          config['access'] || PRIVATE
+        end
+
+        return PUBLIC if config.blank?
+        config['access'] || PUBLIC
+      end
+
+      def scoped_package?
+        return false if Shipit.npm_org_scope.nil?
+        package_name.start_with?(Shipit.npm_org_scope)
+      end
+
+      def enforce_publish_config?
+        enforce = Shipit.enforce_publish_config
+        return false if enforce.nil? || enforce.to_s == "0"
+        true
+      end
+
+      def valid_publish_config?
+        return true unless enforce_publish_config?
+        return false if Shipit.private_npm_registry.nil?
+        return false if publish_config.blank?
+        return true if publish_config_access == PUBLIC
+
+        valid_publish_config_access? && private_scoped_package?
+      end
+
+      def valid_publish_config_access?
+        VALID_ACCESS.include?(publish_config_access)
+      end
+
+      # ensure private packages are scoped
+      def private_scoped_package?
+        publish_config_access == PRIVATE && scoped_package?
+      end
+
+      def local_npmrc
+        file(".npmrc")
+      end
+
+      def npmrc_contents(registry)
+        "always-auth=true\n#{registry}"
+      end
+
+      def registry
+        scope = Shipit.npm_org_scope
+        prefix = scoped_package? ? "#{scope}:registry" : "registry"
+
+        if publish_config_access == PUBLIC
+          return "#{prefix}=#{NPM_REGISTRY}"
+        end
+
+        "#{prefix}=#{Shipit.private_npm_registry}"
       end
 
       def publish_npm_package
+        return ['misconfigured-npm-publish-config'] unless valid_publish_config?
+
+        generate_npmrc = "generate-local-npmrc \"#{npmrc_contents(registry)}\""
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
-        publish = "npm publish --tag #{dist_tag(package_version)}"
+        publish = "npm publish --tag #{dist_tag(package_version)} --access #{publish_config_access}"
 
+        return [check_tags, generate_npmrc, publish] if enforce_publish_config?
         [check_tags, publish]
       end
 
