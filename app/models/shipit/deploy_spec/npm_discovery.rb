@@ -65,6 +65,10 @@ module Shipit
         file('package.json')
       end
 
+      def package_json_contents
+        @package_json_contents ||= JSON.parse(package_json.read)
+      end
+
       def yarn?
         yarn_lock.exist? && public?
       end
@@ -81,12 +85,16 @@ module Shipit
         discover_npm_package || super
       end
 
+      def package_name
+        package_json_contents['name']
+      end
+
       def package_version
-        JSON.parse(package_json.read)['version']
+        package_json_contents['version']
       end
 
       def publish_config
-        JSON.parse(package_json.read)['publishConfig']
+        package_json_contents['publishConfig']
       end
 
       def publish_config_access
@@ -100,10 +108,6 @@ module Shipit
 
         return PUBLIC if config.blank?
         config['access'] || PUBLIC
-      end
-
-      def package_name
-        JSON.parse(package_json.read)['name']
       end
 
       def scoped_package?
