@@ -41,7 +41,7 @@ module Shipit
         file('lerna.json')
       end
 
-      def lerna_version
+      def repo_version
         lerna_config = lerna_json.read
         JSON.parse(lerna_config)['version']
       end
@@ -55,12 +55,17 @@ module Shipit
       end
 
       def publish_lerna_packages
-        return publish_independent_packages if lerna_version == 'independent'
+        return publish_independent_packages if repo_version == 'independent'
         publish_fixed_version_packages
+      end
+
+      def check_lerna
+        'assert-acceptable-lerna-version'
       end
 
       def publish_independent_packages
         [
+          check_lerna,
           'assert-lerna-independent-version-tags',
           'publish-lerna-independent-packages',
         ]
@@ -69,7 +74,7 @@ module Shipit
       def publish_fixed_version_packages
         check_tags = 'assert-lerna-fixed-version-tag'
         # `yarn publish` requires user input, so always use npm.
-        version = lerna_version
+        version = repo_version
         publish =
           "node_modules/.bin/lerna publish " \
           "--yes " \
@@ -78,7 +83,7 @@ module Shipit
           "--force-publish=* " \
           "--npm-tag #{dist_tag(version)}"
 
-        [check_tags, publish]
+        [check_lerna, check_tags, publish]
       end
     end
   end

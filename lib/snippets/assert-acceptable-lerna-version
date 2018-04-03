@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+VERSION=$(node --eval "console.log(require('./lerna.json').lerna);")
+echo -e "\033[0;32mTrying to publish using lerna $VERSION\033[0m"
+
+echo $VERSION | grep "^2\.9\.[0-9][0-9]*$" > /dev/null
+if [ $? != '0' ]; then
+  echo -e "\033[1;31mYou are using an unsupported version of lerna; only 2.9.x is supported.\033[0m"
+  exit 1
+fi
+
+echo -e "\033[0;32mAll clear!\033[0m"
+exit 0
