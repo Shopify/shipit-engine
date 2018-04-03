@@ -29,7 +29,9 @@ const packages = PackageUtilities.topologicallyBatchPackages(unsortedPackages, t
   .filter(({name}) => taggedPackages.includes(name));
 
 packages.forEach(({name, version}) => {
-  const command = `node_modules/.bin/lerna publish --yes --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} --scope=${name} --npm-tag=${npmTag(
+  const scope = name.startsWith('@') ? name.split('/')[0] : null;
+  const scopeTag = scope == null ? '' : `--scope=${scope}`
+  const command = `node_modules/.bin/lerna publish --yes --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} ${scopeTag} --npm-tag=${npmTag(
     version,
   )}`;
 
