@@ -28,10 +28,12 @@ const packages = PackageUtilities.topologicallyBatchPackages(unsortedPackages, t
   .reduce((acc, packageGroup) => [...acc, ...packageGroup], [])
   .filter(({name}) => taggedPackages.includes(name));
 
-packages.forEach(({name, version}) => {
-  const command = `node_modules/.bin/lerna publish --yes --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} --scope=${name} --npm-tag=${npmTag(
-    version,
-  )}`;
+packages.forEach(({name, version, isPrivate}) => {
+  const access = isPrivate ? 'restricted' : 'public';
+
+  const command = `node_modules/.bin/lerna exec --scope=${
+    name
+  } -- npm publish --tag ${npmTag(version)} --access ${access}`;
 
   // eslint-disable-next-line no-console
   console.log(command);
