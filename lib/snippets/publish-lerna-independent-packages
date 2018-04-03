@@ -29,9 +29,9 @@ const packages = PackageUtilities.topologicallyBatchPackages(unsortedPackages, t
   .filter(({name}) => taggedPackages.includes(name));
 
 packages.forEach(({name, version}) => {
-  const command = `node_modules/.bin/lerna publish --yes --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} --scope=${name} --npm-tag=${npmTag(
-    version,
-  )}`;
+  const command = `node_modules/.bin/lerna exec --scope=${
+    name
+  } -- npm publish --tag ${npmTag(version)}`;
 
   // eslint-disable-next-line no-console
   console.log(command);
