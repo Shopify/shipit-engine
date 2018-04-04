@@ -385,7 +385,7 @@ For example:
 ```yml
 ci:
   require:
-    - ci/circleci
+    - buildkite/:pipeline_name
 ```
 
 **<code>ci.hide</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to ignore.
@@ -394,7 +394,7 @@ For example:
 ```yml
 ci:
   hide:
-    - ci/circleci
+    - buildkite/:pipeline_name
 ```
 
 **<code>ci.allow_failures</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want to be visible but not to required for deploy.
@@ -403,7 +403,7 @@ For example:
 ```yml
 ci:
   allow_failures:
-    - ci/circleci
+    - buildkite/:pipeline_name
 ```
 
 **<code>ci.blocking</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want to disallow deploys if any of them is missing or failing on any of the commits being deployed.
