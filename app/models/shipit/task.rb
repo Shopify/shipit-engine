@@ -7,7 +7,7 @@ module Shipit
     PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
-    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping).freeze
+    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout).freeze
 
     attr_accessor :pid
 
