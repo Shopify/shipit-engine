@@ -57,11 +57,11 @@ module Shipit
         task.started_at ||= Time.now.utc
       end
 
-      before_transition any => %i(success failed error) do |task|
+      before_transition any => %i(success failed error timedout) do |task|
         task.ended_at ||= Time.now.utc
       end
 
-      after_transition any => %i(success failed error) do |task|
+      after_transition any => %i(success failed error timedout) do |task|
         task.async_refresh_deployed_revision
       end
 
