@@ -143,10 +143,6 @@ module Shipit
         file(".npmrc")
       end
 
-      def npmrc_contents(registry)
-        "always-auth=true\n#{registry}"
-      end
-
       def registry
         scope = Shipit.npm_org_scope
         prefix = scoped_package? ? "#{scope}:registry" : "registry"
@@ -161,7 +157,7 @@ module Shipit
       def publish_npm_package
         return ['misconfigured-npm-publish-config'] unless valid_publish_config?
 
-        generate_npmrc = "generate-local-npmrc \"#{npmrc_contents(registry)}\""
+        generate_npmrc = "generate-local-npmrc \"#{registry}\""
         check_tags = 'assert-npm-version-tag'
         # `yarn publish` requires user input, so always use npm.
         publish = "npm publish --tag #{dist_tag(package_version)} --access #{publish_config_access}"

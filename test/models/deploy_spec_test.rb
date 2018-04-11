@@ -818,7 +818,7 @@ module Shipit
       Shipit.stubs(:private_npm_registry).returns('some_private_registry')
       @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns('restricted')
-      assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
+      assert_equal registry, @spec.registry
     end
 
     test '#npmrc_contents returns a public scoped package configuration when the package is scoped and public' do
@@ -826,14 +826,14 @@ module Shipit
       Shipit.stubs(:npm_org_scope).returns('@shopify')
       @spec.stubs(:scoped_package?).returns(true)
       @spec.stubs(:publish_config_access).returns('public')
-      assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
+      assert_equal registry, @spec.registry
     end
 
     test '#npmrc_contents returns a public non-scoped package configuration when the package is not scoped and public' do
       registry = "registry=https://registry.npmjs.org/"
       @spec.stubs(:scoped_package?).returns(false)
       @spec.stubs(:publish_config_access).returns('public')
-      assert_equal "always-auth=true\n#{registry}", @spec.npmrc_contents(@spec.registry)
+      assert_equal registry, @spec.registry
     end
 
     test '#publish_lerna_packages guesses npm tag' do
@@ -920,7 +920,7 @@ module Shipit
 
       @spec.stubs(:publish_config_access).returns('restricted')
       @spec.stubs(:enforce_publish_config?).returns(true)
-      @spec.stubs(:npmrc_contents).returns('fake')
+      @spec.stubs(:registry).returns('fake')
 
       generate_npmrc = 'generate-local-npmrc "fake"'
       npm_publish = 'npm publish --tag latest --access restricted'
