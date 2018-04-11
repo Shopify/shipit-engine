@@ -23,7 +23,7 @@ dependencies:
   # it will run `bundle install`.
   # But if you are using something else you can specify it here.
   override:
-    - npm install
+    - "npm install"
 
   # If you use Bundler, Shipit ignore most groups by default expecting all your deploy
   # dependencies to be in the `deploy` group. You can change that default exclusion list here.
@@ -54,7 +54,7 @@ deploy:
 
   # If Shipit can't infer how to deploy your app you'll have to override the default commands.
   override:
-    - script/deploy
+    - "script/deploy"
 
   # If you want things to happen after your deploy is successful you can specify them in the `post` step.
   post:
@@ -64,7 +64,7 @@ deploy:
 # This will make rollback buttons appear in the interface.
 rollback:
   override:
-    - script/rollback
+    - "script/rollback"
 
 # Sometime you might want to trigger custom scripts on Shipit, this section allows you to define
 # arbitrary tasks that you can trigger from the interface.

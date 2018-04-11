@@ -172,7 +172,7 @@ If your deploy script uses another tool to install dependencies, you can install
 ```yml
 dependencies:
   override:
-    - npm install
+    - "npm install"
 ```
 
 **<code>dependencies.pre</code>** If you wish to execute commands before Shipit installs the dependencies, you can specify them here.
@@ -210,7 +210,7 @@ For example:
 ```yml
 deploy:
   override:
-    - ./script/deploy
+    - "./script/deploy"
 ```
 <br>
 
@@ -299,7 +299,7 @@ For example:
 ```yml
 rollback:
   override:
-    - ./script/rollback
+    - "./script/rollback"
 ```
 <br>
 
