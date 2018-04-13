@@ -126,8 +126,6 @@ Sidekiq.configure_client do |config|
 end
 CODE
 
-environment 'Shipit.automatically_prepend_bundle_exec = false'
-
 if yes?("Are you hosting Shipit on Heroku? (y/n)")
   inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
 

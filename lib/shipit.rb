@@ -55,7 +55,6 @@ module Shipit
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
-  attr_writer :automatically_prepend_bundle_exec
 
   self.timeout_exit_codes = [].freeze
 
@@ -209,17 +208,6 @@ module Shipit
 
   def default_inactivity_timeout
     secrets.commands_inactivity_timeout || 5.minutes.to_i
-  end
-
-  def automatically_prepend_bundle_exec
-    unless defined?(@automatically_prepend_bundle_exec)
-      ActiveSupport::Deprecation.warn(
-        'Automatically prepending `bundle exec` will be removed in a future version of Shipit, '\
-        'set `Shipit.automatically_prepend_bundle_exec = false` to test the new behaviour.',
-      )
-      @automatically_prepend_bundle_exec = true
-    end
-    @automatically_prepend_bundle_exec
   end
 
   protected

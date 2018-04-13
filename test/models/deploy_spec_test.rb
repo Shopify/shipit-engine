@@ -323,59 +323,19 @@ module Shipit
       assert_equal 'SAFETY_DISABLED', variable_definition.name
     end
 
-    test "task definitions prepend bundle exec by default" do
-      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
-      @spec.expects(:bundler?).returns(true).at_least_once
-      assert_deprecated(/Automatically prepending `bundle exec`/) do
-        definition = @spec.find_task_definition('restart')
-        assert_equal ['bundle exec foo'], definition.steps
-      end
-    end
-
-    test "task definitions prepend bundle exec if enabled" do
-      Shipit.expects(:automatically_prepend_bundle_exec).returns(true).at_least_once
-      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
-      @spec.expects(:bundler?).returns(true).at_least_once
-      definition = @spec.find_task_definition('restart')
-
-      assert_equal ['bundle exec foo'], definition.steps
-    end
-
-    test "task definitions do not prepend bundle exec if disabled" do
-      Shipit.expects(:automatically_prepend_bundle_exec).returns(false).at_least_once
+    test "task definitions don't prepend bundle exec by default" do
       @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
       definition = @spec.find_task_definition('restart')
-
       assert_equal ['foo'], definition.steps
     end
 
-    test "task definitions do not prepend bundle exec if the task already does" do
-      Shipit.expects(:automatically_prepend_bundle_exec).returns(true).at_least_once
-      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => ['bundle exec foo']}})
-      @spec.stubs(:bundler?).returns(true)
-      definition = @spec.find_task_definition('restart')
-
-      assert_equal ['bundle exec foo'], definition.steps
-    end
-
-    test "task definitions do not prepend bundle exec if depedency step is overridden" do
-      @spec.expects(:load_config).returns(
-        'dependencies' => {'override' => []},
-        'tasks' => {'restart' => {'steps' => %w(foo)}},
-      )
-      @spec.expects(:bundler?).returns(true).at_least_once
-      definition = @spec.find_task_definition('restart')
-
-      assert_equal ['foo'], definition.steps
-    end
-
-    test "task definitions prepend bundle exec before serialization" do
+    test "task definitions don't bundle exec before serialization" do
       @spec.expects(:discover_task_definitions).returns('restart' => {'steps' => %w(foo)})
       @spec.expects(:bundler?).returns(true).at_least_once
 
       cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
       definition = cached_spec.find_task_definition('restart')
-      assert_equal ['bundle exec foo'], definition.steps
+      assert_equal ['foo'], definition.steps
     end
 
     test "#task_definitions returns kubernetes commands as well as comands from the config" do
