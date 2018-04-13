@@ -6,6 +6,7 @@ module Shipit
     attr_reader :oauth_teams, :domain, :bot_id
 
     def initialize(config)
+      config = (config || {}).with_indifferent_access
       @domain = config[:domain] || DOMAIN
       @webhook_secret = config[:webhook_secret].presence
       @bot_id = config[:bot_id]
@@ -13,7 +14,7 @@ module Shipit
       @installation_id = config.fetch(:installation_id)
       @private_key = config.fetch(:private_key)
 
-      oauth = config[:oauth] || {}
+      oauth = (config[:oauth] || {}).with_indifferent_access
       @oauth_id = oauth[:id]
       @oauth_secret = oauth[:secret]
       @oauth_teams = Array.wrap(oauth[:teams] || oauth[:teams])
