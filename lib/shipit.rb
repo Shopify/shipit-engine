@@ -30,8 +30,6 @@ require 'faraday-http-cache'
 
 require 'shipit/version'
 
-require 'shipit/template_renderer_extension'
-
 require 'shipit/paginator'
 require 'shipit/null_serializer'
 require 'shipit/csv_serializer'
@@ -207,14 +205,6 @@ module Shipit
         `git rev-parse HEAD`
       end.strip
     end
-  end
-
-  def feature_bootstrap?
-    secrets.features.try!(:include?, 'bootstrap')
-  end
-
-  def bootstrap_view_path
-    @bootstrap_view_path ||= Engine.root.join('app/views/bootstrap')
   end
 
   def default_inactivity_timeout

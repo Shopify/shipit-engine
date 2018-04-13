@@ -1,5 +1,3 @@
-require 'bootstrap'
-
 module Shipit
   class Engine < ::Rails::Engine
     isolate_namespace Shipit
@@ -17,8 +15,6 @@ module Shipit
         task.js
         shipit.js
         shipit.css
-        shipit_bs.js
-        shipit_bs.css
       )
       app.config.assets.precompile << proc do |path|
         path =~ %r{\Aplugins/[\-\w]+\.(js|css)\Z}

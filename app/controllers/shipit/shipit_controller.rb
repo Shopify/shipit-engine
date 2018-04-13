@@ -11,7 +11,7 @@ module Shipit
     helper Shipit::Engine.routes.url_helpers
     include Shipit::Engine.routes.url_helpers
 
-    before_action :toogle_bootstrap_feature, :ensure_required_settings
+    before_action :ensure_required_settings
 
     include Shipit::Authentication
 
@@ -23,10 +23,6 @@ module Shipit
     protect_from_forgery with: :exception
 
     private
-
-    def toogle_bootstrap_feature
-      prepend_view_path(Shipit.bootstrap_view_path) if Shipit.feature_bootstrap?
-    end
 
     def ensure_required_settings
       return if Shipit.all_settings_present?
