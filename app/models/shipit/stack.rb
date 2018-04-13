@@ -45,6 +45,11 @@ module Shipit
       super(user.try!(:logged_in?) ? user : nil)
     end
 
+    scope :repo, ->(full_name) {
+      repo_owner, repo_name = full_name.downcase.split('/')
+      where(repo_owner: repo_owner, repo_name: repo_name)
+    }
+
     before_validation :update_defaults
     before_destroy :clear_local_files
     before_save :set_locked_since
@@ -466,14 +471,14 @@ module Shipit
       tasks.where(type: 'Shipit::Deploy').success.order(id: :desc).limit(100).durations
     end
 
+    def sync_github
+      GithubSyncJob.perform_later(stack_id: id)
+    end
+
     private
 
     def clear_cache
       remove_instance_variable(:@active_task) if defined?(@active_task)
-    end
-
-    def sync_github
-      GithubSyncJob.perform_later(stack_id: id)
     end
 
     def clear_local_files

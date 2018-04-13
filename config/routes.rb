@@ -8,18 +8,7 @@ Shipit::Engine.routes.draw do
   # Robots
   get '/status/version' => 'status#version', as: :version
 
-  resources :stacks, only: %i(new create index) do
-    resource :webhooks, only: [] do
-      post :push, :state
-    end
-  end
-
-  resources :webhooks, only: [] do
-    collection do
-      post :membership
-      get :membership
-    end
-  end
+  resources :webhooks, only: :create
 
   # API
   namespace :api do
@@ -50,6 +39,8 @@ Shipit::Engine.routes.draw do
   end
 
   # Humans
+  resources :stacks, only: %i(new create index)
+
   scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
     get '/', action: :request
     post :callback

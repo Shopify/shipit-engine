@@ -5,14 +5,14 @@
   "created": false,
   "deleted": false,
   "forced": false,
-  "compare": "https://github.com/byroot/junk/compare/16c259864de2...79d29e99cb83",
+  "compare": "https://github.com/Shopify/shipit-engine/compare/16c259864de2...79d29e99cb83",
   "commits": [
     {
       "id": "79d29e99cb83e0ba16c9e30c502a60995e711e5f",
       "distinct": true,
       "message": "modif",
       "timestamp": "2014-02-28T10:27:42-08:00",
-      "url": "https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f",
+      "url": "https://github.com/Shopify/shipit-engine/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f",
       "author": {
         "name": "Guillaume Malette",
         "email": "gmalette@gmail.com",
@@ -35,7 +35,7 @@
     "distinct": true,
     "message": "modif",
     "timestamp": "2014-02-28T10:27:42-08:00",
-    "url": "https://github.com/byroot/junk/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f",
+    "url": "https://github.com/Shopify/shipit-engine/commit/79d29e99cb83e0ba16c9e30c502a60995e711e5f",
     "author": {
       "name": "Guillaume Malette",
       "email": "gmalette@gmail.com",
@@ -54,8 +54,9 @@
   },
   "repository": {
     "id": 17266426,
-    "name": "junk",
-    "url": "https://github.com/byroot/junk",
+    "name": "shipit-engine",
+    "full_name": "Shopify/shipit-engine",
+    "url": "https://github.com/Shopify/shipit-engine",
     "description": "Pure test repo, look elsewhere please.",
     "watchers": 0,
     "stargazers": 0,
@@ -63,7 +64,7 @@
     "fork": false,
     "size": 0,
     "owner": {
-      "name": "byroot",
+      "name": "Shopify",
       "email": "jean.boussier@gmail.com"
     },
     "private": false,
