@@ -6,7 +6,7 @@ module Shipit
 
     belongs_to :stack
     has_many :deploys
-    has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy
+    has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
     has_many :commit_deployments, dependent: :destroy
     belongs_to :pull_request, inverse_of: :merge_commit, optional: true
 

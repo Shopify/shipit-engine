@@ -1,6 +1,6 @@
 module Shipit
   class Rollback < Deploy
-    belongs_to :deploy, foreign_key: :parent_id
+    belongs_to :deploy, foreign_key: :parent_id, inverse_of: false
 
     state_machine :status do
       after_transition to: :success, do: :lock_reverted_commits
