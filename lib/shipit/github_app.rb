@@ -1,12 +1,12 @@
 module Shipit
   class GitHubApp
     def initialize(config)
-      @webhook_secret = config[:webhook_secret]
+      @webhook_secret = config[:webhook_secret].presence
       @private_key = config[:private_key]
     end
 
     def verify_webhook_signature(signature, message)
-      return true unless webhook_secret.present?
+      return true unless webhook_secret
 
       algorithm, signature = signature.split("=", 2)
       return false unless algorithm == 'sha1'

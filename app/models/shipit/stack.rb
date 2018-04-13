@@ -45,10 +45,10 @@ module Shipit
       super(user.try!(:logged_in?) ? user : nil)
     end
 
-    scope :repo, ->(full_name) {
+    def self.repo(full_name)
       repo_owner, repo_name = full_name.downcase.split('/')
       where(repo_owner: repo_owner, repo_name: repo_name)
-    }
+    end
 
     before_validation :update_defaults
     before_destroy :clear_local_files
@@ -59,7 +59,7 @@ module Shipit
     after_commit :emit_removed_hooks, on: :destroy
     after_commit :broadcast_update, on: :update
     after_commit :emit_merge_status_hooks, on: :update
-    after_commit :setup_hooks, :sync_github, on: :create
+    after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
 
     validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
@@ -419,13 +419,6 @@ module Shipit
         {id: id, updated_at: updated_at}.to_json,
         name: 'update',
       )
-    end
-
-    def setup_hooks
-      REQUIRED_HOOKS.each do |event|
-        hook = github_hooks.find_or_create_by!(event: event)
-        hook.schedule_setup!
-      end
     end
 
     def schedule_for_destroy!

@@ -142,18 +142,6 @@ module Shipit
       assert_redirected_to stack_settings_path(@stack)
     end
 
-    test "#sync_webhooks queues #{Stack::REQUIRED_HOOKS.count} SetupGithubHookJob" do
-      assert_enqueued_jobs(Stack::REQUIRED_HOOKS.count) do
-        post :sync_webhooks, params: {id: @stack.to_param}
-      end
-      assert_redirected_to stack_settings_path(@stack)
-    end
-
-    test "#sync_webhooks displays a flash message" do
-      post :sync_webhooks, params: {id: @stack.to_param}
-      assert_equal 'Webhooks syncing scheduled', flash[:success]
-    end
-
     test "#clear_git_cache queues a ClearGitCacheJob" do
       assert_enqueued_with(job: ClearGitCacheJob, args: [@stack]) do
         post :clear_git_cache, params: {id: @stack.to_param}

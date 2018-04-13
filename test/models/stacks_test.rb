@@ -213,12 +213,6 @@ module Shipit
       @stack.update_deployed_revision(last_deploy.since_commit.sha)
     end
 
-    test "#create queues 2 GithubSetupWebhooksJob" do
-      assert_enqueued_with(job: SetupGithubHookJob) do
-        Stack.create!(repo_name: 'rails', repo_owner: 'rails')
-      end
-    end
-
     test "#create queues a GithubSyncJob" do
       assert_enqueued_with(job: GithubSyncJob) do
         Stack.create!(repo_name: 'rails', repo_owner: 'rails')

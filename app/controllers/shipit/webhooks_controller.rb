@@ -105,7 +105,6 @@ module Shipit
         Team.find_or_create_by!(github_id: params.team.id) do |team|
           team.github_team = params.team
           team.organization = params.organization.login
-          team.automatically_setup_hooks = true
         end
       end
 

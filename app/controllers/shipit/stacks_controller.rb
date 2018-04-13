@@ -1,6 +1,6 @@
 module Shipit
   class StacksController < ShipitController
-    before_action :load_stack, only: %i(update destroy settings sync_webhooks clear_git_cache refresh)
+    before_action :load_stack, only: %i(update destroy settings clear_git_cache refresh)
 
     def new
       @stack = Stack.new
@@ -62,12 +62,6 @@ module Shipit
       end
 
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
-    end
-
-    def sync_webhooks
-      @stack.setup_hooks
-      flash[:success] = 'Webhooks syncing scheduled'
-      redirect_to stack_settings_path(@stack)
     end
 
     def clear_git_cache
