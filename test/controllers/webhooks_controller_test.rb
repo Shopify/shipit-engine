@@ -95,7 +95,7 @@ module Shipit
 
     test ":membership creates the mentioned user on the fly" do
       @request.headers['X-Github-Event'] = 'membership'
-      Shipit.github_api.expects(:user).with('george').returns(george)
+      Shipit.github.api.expects(:user).with('george').returns(george)
       assert_difference -> { User.count }, 1 do
         post :create, params: membership_params.merge(member: {login: 'george'})
         assert_response :ok

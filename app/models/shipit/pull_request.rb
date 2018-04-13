@@ -110,7 +110,7 @@ module Shipit
       case number_or_url
       when /\A#?(\d+)\z/
         $1.to_i
-      when %r{\Ahttps://#{Regexp.escape(Shipit.github_domain)}/([^/]+)/([^/]+)/pull/(\d+)}
+      when %r{\Ahttps://#{Regexp.escape(Shipit.github.domain)}/([^/]+)/([^/]+)/pull/(\d+)}
         return unless $1.downcase == stack.repo_owner.downcase
         return unless $2.downcase == stack.repo_name.downcase
         $3.to_i
@@ -157,7 +157,7 @@ module Shipit
 
       raise NotReady if not_mergeable_yet?
 
-      Shipit.github_api.merge_pull_request(
+      Shipit.github.api.merge_pull_request(
         stack.github_repo_name,
         number,
         merge_message,
@@ -166,8 +166,8 @@ module Shipit
         merge_method: 'merge',
       )
       begin
-        if Shipit.github_api.pull_requests(stack.github_repo_name, base: branch).empty?
-          Shipit.github_api.delete_branch(stack.github_repo_name, branch)
+        if Shipit.github.api.pull_requests(stack.github_repo_name, base: branch).empty?
+          Shipit.github.api.delete_branch(stack.github_repo_name, branch)
         end
       rescue Octokit::UnprocessableEntity
         # branch was already deleted somehow
@@ -222,7 +222,7 @@ module Shipit
     end
 
     def refresh!
-      update!(github_pull_request: Shipit.github_api.pull_request(stack.github_repo_name, number))
+      update!(github_pull_request: Shipit.github.api.pull_request(stack.github_repo_name, number))
       head.refresh_statuses!
       fetched! if fetching?
       @comparison = nil
@@ -261,7 +261,7 @@ module Shipit
     end
 
     def comparison
-      @comparison ||= Shipit.github_api.compare(
+      @comparison ||= Shipit.github.api.compare(
         stack.github_repo_name,
         base_ref,
         head.sha,
@@ -284,7 +284,7 @@ module Shipit
       if commit = stack.commits.by_sha(sha)
         return commit
       else
-        github_commit = Shipit.github_api.commit(stack.github_repo_name, sha)
+        github_commit = Shipit.github.api.commit(stack.github_repo_name, sha)
         stack.commits.create_from_github!(github_commit, attributes)
       end
     rescue ActiveRecord::RecordNotUnique

@@ -23,19 +23,19 @@ module Shipit
       response = begin
         create_deployment_on_github(author.github_api)
       rescue Octokit::ClientError
-        raise if Shipit.github_api == author.github_api
+        raise if Shipit.github.api == author.github_api
         # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
         # user.
         #
         # Octokit currently raise NotFound, but I'm convinced it should be Forbidden if the user can see the repository.
         # So to be future proof I catch boths.
-        create_deployment_on_github(Shipit.github_api)
+        create_deployment_on_github(Shipit.github.api)
       end
       update!(github_id: response.id, api_url: response.url)
     end
 
     def pull_request_head
-      pull_request = Shipit.github_api.pull_request(stack.github_repo_name, commit.pull_request_number)
+      pull_request = Shipit.github.api.pull_request(stack.github_repo_name, commit.pull_request_number)
       pull_request.head.sha
     end
 

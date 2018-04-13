@@ -92,7 +92,7 @@ module Shipit
     end
 
     def refresh_statuses!
-      github_statuses = stack.handle_github_redirections { Shipit.github_api.statuses(github_repo_name, sha) }
+      github_statuses = stack.handle_github_redirections { Shipit.github.api.statuses(github_repo_name, sha) }
       github_statuses.each do |status|
         create_status_from_github!(status)
       end
@@ -170,7 +170,7 @@ module Shipit
     end
 
     def github_commit
-      @github_commit ||= Shipit.github_api.commit(github_repo_name, sha)
+      @github_commit ||= Shipit.github.api.commit(github_repo_name, sha)
     end
 
     def schedule_fetch_stats!

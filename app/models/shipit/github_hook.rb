@@ -28,7 +28,7 @@ module Shipit
     end
 
     def api
-      Shipit.github_api
+      Shipit.github.api
     end
 
     class Repo < GithubHook

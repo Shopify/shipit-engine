@@ -69,7 +69,7 @@ module Shipit
     end
 
     test "#refresh_from_github! update the user with the latest data from GitHub's API" do
-      Shipit.github_api.expects(:user).with(@user.github_id).returns(@github_user)
+      Shipit.github.api.expects(:user).with(@user.github_id).returns(@github_user)
       @user.refresh_from_github!
       @user.reload
 
@@ -82,8 +82,8 @@ module Shipit
       user.update!(github_id: @github_user.id)
       commit = user.authored_commits.last
 
-      Shipit.github_api.expects(:user).with(user.github_id).raises(Octokit::NotFound)
-      Shipit.github_api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
+      Shipit.github.api.expects(:user).with(user.github_id).raises(Octokit::NotFound)
+      Shipit.github.api.expects(:commit).with(commit.github_repo_name, commit.sha).returns(mock(author: @github_user))
 
       assert_equal 'bob', user.login
 
@@ -99,12 +99,12 @@ module Shipit
       assert_equal @user.github_access_token, @user.github_api.access_token
     end
 
-    test "#github_api fallbacks to Shipit.github_api if the user doesn't have an access_token" do
-      assert_equal Shipit.github_api, shipit_users(:bob).github_api
+    test "#github_api fallbacks to Shipit.github.api if the user doesn't have an access_token" do
+      assert_equal Shipit.github.api, shipit_users(:bob).github_api
     end
 
-    test "#github_api fallbacks to Shipit.github_api for anonymous users" do
-      assert_equal Shipit.github_api, AnonymousUser.new.github_api
+    test "#github_api fallbacks to Shipit.github.api for anonymous users" do
+      assert_equal Shipit.github.api, AnonymousUser.new.github_api
     end
 
     test "users with legacy encrypted access token get their token reset automatically" do

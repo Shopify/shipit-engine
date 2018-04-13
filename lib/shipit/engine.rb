@@ -29,16 +29,10 @@ module Shipit
       ActiveModel::ArraySerializer._root = false
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
 
-      if Shipit.github_oauth_credentials
+      if Shipit.github.oauth?
         OmniAuth::Strategies::GitHub.configure path_prefix: '/github/auth'
         app.middleware.use OmniAuth::Builder do
-          provider(
-            :github,
-            Shipit.github_oauth_id,
-            Shipit.github_oauth_secret,
-            scope: 'email,repo_deployment',
-            client_options: Shipit.github_oauth_options,
-          )
+          provider(:github, *Shipit.github.oauth_config)
         end
       end
     end

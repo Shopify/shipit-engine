@@ -49,7 +49,7 @@ module Shipit
     end
 
     def github_api
-      Shipit.github_api
+      Shipit.github.api
     end
   end
 end

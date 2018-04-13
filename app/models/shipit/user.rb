@@ -12,7 +12,13 @@ module Shipit
 
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
-        user.github_user = Shipit.github_api.user(login)
+        user.github_user = Shipit.github.api.user(login)
+      end
+    end
+
+    def self.find_or_create_by_github_id!(github_id)
+      find_or_create_by!(github_id: github_id) do |user|
+        user.github_user = Shipit.github.api.user(github_id)
       end
     end
 
@@ -44,7 +50,7 @@ module Shipit
     end
 
     def github_api
-      return Shipit.github_api unless github_access_token
+      return Shipit.github.api unless github_access_token
 
       @github_api ||= begin
         client = Octokit::Client.new(access_token: github_access_token)
@@ -71,7 +77,7 @@ module Shipit
     end
 
     def refresh_from_github!
-      update!(github_user: Shipit.github_api.user(github_id))
+      update!(github_user: Shipit.github.api.user(github_id))
     rescue Octokit::NotFound
       identify_renamed_user!
     end

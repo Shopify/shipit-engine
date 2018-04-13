@@ -8,24 +8,10 @@ module Shipit
       session[:user_id] = shipit_users(:walrus).id
     end
 
-    test "validates that Shipit.github_oauth_id is present" do
-      Shipit.stubs(github_oauth_credentials: {'secret' => 'abc'})
+    test "validates that Shipit.github is present" do
+      Rails.application.secrets.stubs(:github).returns(nil)
       get :index
-      assert_select "#github_oauth_id .missing"
-      assert_select ".missing", count: 1
-    end
-
-    test "validates that Shipit.github_oauth_secret is present" do
-      Shipit.stubs(github_oauth_credentials: {'id' => 'abc'})
-      get :index
-      assert_select "#github_oauth_secret .missing"
-      assert_select ".missing", count: 1
-    end
-
-    test "validates that Shipit.github_api_credentials is present" do
-      Shipit.stubs(github_api_credentials: {})
-      get :index
-      assert_select "#github_api .missing"
+      assert_select "#github_app .missing"
       assert_select ".missing", count: 1
     end
 

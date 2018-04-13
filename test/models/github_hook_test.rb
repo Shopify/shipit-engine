@@ -8,7 +8,7 @@ module Shipit
     end
 
     test "#destroy starts by removing the hook" do
-      Shipit.github_api.expects(:remove_hook).with(@hook.github_repo_name, @hook.github_id)
+      Shipit.github.api.expects(:remove_hook).with(@hook.github_repo_name, @hook.github_id)
       assert_difference -> { GithubHook.count }, -1 do
         @hook.destroy!
       end

@@ -16,9 +16,9 @@ module Shipit
     end
 
     test "#pull_request? detects pull requests with unusual branch names" do
-      @pr.message = "Merge pull request #7 from Shopify/bump-👉-v1.0.1\n\nBump 👉 v1.0.1"
+      @pr.message = "Merge pull request #7 from Shopify/bump--v1.0.1\n\nBump  v1.0.1"
       assert @pr.pull_request?
-      assert_equal "Bump 👉 v1.0.1", @pr.pull_request_title
+      assert_equal "Bump  v1.0.1", @pr.pull_request_title
     end
 
     test "#pull_request_number extract the pull request id from the message" do
@@ -162,7 +162,7 @@ module Shipit
         target_url: 'http://example.com',
         created_at: 1.day.ago,
       )
-      Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
+      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
       assert_difference '@commit.statuses.count', 1 do
         @commit.refresh_statuses!
       end
@@ -186,7 +186,7 @@ module Shipit
 
     test "fetch_stats! pulls additions and deletions from github" do
       commit = stub(stats: stub(additions: 4242, deletions: 2424))
-      Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+      Shipit.github.api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
       @commit.fetch_stats!
       assert_equal 4242, @commit.additions
       assert_equal 2424, @commit.deletions
@@ -194,7 +194,7 @@ module Shipit
 
     test "fetch_stats! doesn't fail if the commits have no stats" do
       commit = stub(stats: nil)
-      Shipit.github_api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
+      Shipit.github.api.expects(:commit).with(@stack.github_repo_name, @commit.sha).returns(commit)
       assert_nothing_raised do
         @commit.fetch_stats!
       end

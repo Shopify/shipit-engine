@@ -6,8 +6,8 @@ module Shipit
       if relation
         @response = relation.get(per_page: 100)
       else
-        yield Shipit.github_api
-        @response = Shipit.github_api.last_response
+        yield Shipit.github.api
+        @response = Shipit.github.api.last_response
       end
     end
 

@@ -82,9 +82,8 @@ module Shipit
   end
 
   def user
-    # TODO: figure this out in context of github app
-    if github.login
-      User.find_or_create_by_login!(github.login)
+    if github.bot_id # TODO: figure a better way to retreive this
+      User.find_or_create_by_github_id!(github.bot_id)
     else
       AnonymousUser.new
     end

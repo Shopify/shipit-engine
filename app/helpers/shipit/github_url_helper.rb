@@ -21,7 +21,7 @@ module Shipit
     module_function :github_commit_range_url
 
     def github_user_url(user, *args)
-      [Shipit.github_url, user, *args].join('/')
+      Shipit.github.url(user, *args)
     end
     module_function :github_user_url
 
