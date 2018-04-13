@@ -1,6 +1,7 @@
 # Unreleased
 
-* The deprecated `Shipit.automatically_prepend_bundle_exec` option was removed
+* Dropped MRI 2.2 support since it's EOL.
+* The deprecated `Shipit.automatically_prepend_bundle_exec` option was removed.
 * Revalidate merge request as soon as they are expired, and not when they could be merged again.
 * Allow to configure Shipit to intepret some exit statuses as timeouts instead of regular failures.
 * Distinguish deploy timeouts from deploy failures.
