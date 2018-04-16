@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.21.0
+
 * Dropped MRI 2.2 support since it's EOL.
 * The deprecated `Shipit.automatically_prepend_bundle_exec` option was removed.
 * Revalidate merge request as soon as they are expired, and not when they could be merged again.
