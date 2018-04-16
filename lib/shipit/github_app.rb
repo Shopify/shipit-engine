@@ -6,15 +6,12 @@ module Shipit
     attr_reader :oauth_teams, :domain, :bot_id
 
     def initialize(config)
-      config = (config || {}).with_indifferent_access
-      @domain = config[:domain] || DOMAIN
-      @webhook_secret = config[:webhook_secret].presence
-      @bot_id = config[:bot_id]
-      @app_id = config.fetch(:app_id)
-      @installation_id = config.fetch(:installation_id)
-      @private_key = config.fetch(:private_key)
+      @config = (config || {}).with_indifferent_access
+      @domain = @config[:domain] || DOMAIN
+      @webhook_secret = @config[:webhook_secret].presence
+      @bot_id = @config[:bot_id]
 
-      oauth = (config[:oauth] || {}).with_indifferent_access
+      oauth = (@config[:oauth] || {}).with_indifferent_access
       @oauth_id = oauth[:id]
       @oauth_secret = oauth[:secret]
       @oauth_teams = Array.wrap(oauth[:teams] || oauth[:teams])
@@ -89,7 +86,19 @@ module Shipit
 
     private
 
-    attr_reader :webhook_secret, :app_id, :installation_id, :private_key, :oauth_id, :oauth_secret
+    attr_reader :webhook_secret, :oauth_id, :oauth_secret
+
+    def app_id
+      @app_id ||= @config.fetch(:app_id)
+    end
+
+    def installation_id
+      @installation_id ||= @config.fetch(:installation_id)
+    end
+
+    def private_key
+      @private_key ||= @config.fetch(:private_key)
+    end
 
     def new_client
       client = Octokit::Client.new(

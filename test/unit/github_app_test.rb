@@ -7,6 +7,12 @@ module Shipit
       @enterprise = app(domain: 'github.example.com')
     end
 
+    test "#initialize doesn't raise if given an empty config" do
+      assert_nothing_raised do
+        GitHubApp.new({})
+      end
+    end
+
     test "#domain defaults to github.com" do
       assert_equal 'github.com', @github.domain
     end
