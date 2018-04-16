@@ -23,6 +23,9 @@ module Shipit
     def id
     end
 
+    def github_id
+    end
+
     def logged_in?
       false
     end
