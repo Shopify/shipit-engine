@@ -9,10 +9,9 @@ module Shipit
 
     test ":push with the target branch queues a GithubSyncJob" do
       request.headers['X-Github-Event'] = 'push'
-      params = payload(:push_master)
 
       assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :create, params: params
+        post :create, body: payload(:push_master), as: :json
       end
     end
 
@@ -20,21 +19,21 @@ module Shipit
       request.headers['X-Github-Event'] = 'push'
       params = payload(:push_not_master)
       assert_no_enqueued_jobs do
-        post :create, params: params
+        post :create, body: params, as: :json
       end
     end
 
     test ":state create a Status for the specific commit" do
       request.headers['X-Github-Event'] = 'status'
 
-      status_payload = payload(:status_master)
       commit = shipit_commits(:first)
 
       assert_difference 'commit.statuses.count', 1 do
-        post :create, params: status_payload
+        post :create, body: payload(:status_master), as: :json
       end
 
       status = commit.statuses.last
+      status_payload = JSON.parse(payload(:status_master))
       assert_equal status_payload['target_url'], status.target_url
       assert_equal status_payload['state'], status.state
       assert_equal status_payload['description'], status.description
@@ -44,15 +43,15 @@ module Shipit
 
     test ":state with a unexisting commit respond with 200 OK" do
       request.headers['X-Github-Event'] = 'status'
-      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}
-      post :create, params: params
+      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}.to_json
+      post :create, body: params, as: :json
       assert_response :ok
     end
 
     test ":state in an untracked branche bails out" do
       request.headers['X-Github-Event'] = 'status'
-      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}
-      post :create, params: params
+      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}.to_json
+      post :create, body: params, as: :json
       assert_response :ok
     end
 
@@ -60,7 +59,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'ping'
 
       assert_no_enqueued_jobs do
-        post :create, params: {zen: 'Git is beautiful'}
+        post :create, body: {zen: 'Git is beautiful'}.to_json, as: :json
         assert_response :ok
       end
     end
@@ -68,27 +67,27 @@ module Shipit
     test "verifies webhook signature" do
       commit = shipit_commits(:first)
 
-      params = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output"}
+      payload = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output"}.to_json
       signature = 'sha1=4848deb1c9642cd938e8caa578d201ca359a8249'
 
       @request.headers['X-Github-Event'] = 'push'
       @request.headers['X-Hub-Signature'] = signature
 
-      Shipit.github.expects(:verify_webhook_signature).with(signature, URI.encode_www_form(params)).returns(false)
+      Shipit.github.expects(:verify_webhook_signature).with(signature, payload).returns(false)
 
-      post :create, params: params
+      post :create, body: payload, as: :json
       assert_response :unprocessable_entity
     end
 
     test ":membership creates the mentioned team on the fly" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Team.count }, 1 do
-        post :create, params: membership_params.merge(team: {
+        post :create, as: :json, body: membership_params.merge(team: {
           id: 48,
           name: 'Ouiche Cooks',
           slug: 'ouiche-cooks',
           url: 'https://example.com',
-        })
+        }).to_json
         assert_response :ok
       end
     end
@@ -97,7 +96,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'membership'
       Shipit.github.api.expects(:user).with('george').returns(george)
       assert_difference -> { User.count }, 1 do
-        post :create, params: membership_params.merge(member: {login: 'george'})
+        post :create, body: membership_params.merge(member: {login: 'george'}).to_json, as: :json
         assert_response :ok
       end
     end
@@ -105,7 +104,7 @@ module Shipit
     test ":membership can delete an user membership" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Membership.count }, -1 do
-        post :create, params: membership_params.merge(_action: 'removed')
+        post :create, body: membership_params.merge(action: 'removed').to_json, as: :json
         assert_response :ok
       end
     end
@@ -113,7 +112,7 @@ module Shipit
     test ":membership can append an user membership" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Membership.count }, 1 do
-        post :create, params: membership_params.merge(member: {login: 'bob'})
+        post :create, body: membership_params.merge(member: {login: 'bob'}).to_json, as: :json
         assert_response :ok
       end
     end
@@ -121,7 +120,7 @@ module Shipit
     test ":membership can append an user twice" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_no_difference -> { Membership.count } do
-        post :create, params: membership_params
+        post :create, body: membership_params.to_json, as: :json
         assert_response :ok
       end
     end
@@ -129,7 +128,7 @@ module Shipit
     test ":membership can delete an user twice" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_no_difference -> { Membership.count } do
-        post :create, params: membership_params.merge(_action: 'removed', member: {login: 'bob'})
+        post :create, body: membership_params.merge(action: 'removed', member: {login: 'bob'}).to_json, as: :json
         assert_response :ok
       end
     end
@@ -137,7 +136,7 @@ module Shipit
     private
 
     def membership_params
-      {_action: 'added', team: team_params, organization: {login: 'shopify'}, member: {login: 'walrus'}}
+      {action: 'added', team: team_params, organization: {login: 'shopify'}, member: {login: 'walrus'}}
     end
 
     def team_params

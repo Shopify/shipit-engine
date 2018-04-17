@@ -72,6 +72,7 @@ module Shipit
 
     class MembershipHandler < Handler
       params do
+        requires :action, String
         requires :team do
           requires :id, Integer
           requires :name, String
@@ -89,7 +90,7 @@ module Shipit
         team = find_or_create_team!
         member = User.find_or_create_by_login!(params.member.login)
 
-        case action
+        case params.action
         when 'added'
           team.add_member(member)
         when 'removed'
@@ -107,12 +108,6 @@ module Shipit
           team.organization = params.organization.login
         end
       end
-
-      def action
-        # GitHub send an `action` parameter that is shadowed by Rails url parameters
-        # It's also impossible to pass an `action` parameters from a test case.
-        params[:_action] || params[:action]
-      end
     end
 
     HANDLERS = {
@@ -123,7 +118,7 @@ module Shipit
 
     def create
       if handler = HANDLERS[event]
-        handler.new(request.parameters).process
+        handler.new(JSON.parse(request.raw_post)).process
       end
 
       head :ok
