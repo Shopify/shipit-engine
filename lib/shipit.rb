@@ -77,8 +77,10 @@ module Shipit
     @github ||= GitHubApp.new(secrets.github)
   end
 
-  def github_api
-    github.api # TODO: get rid of this alias
+  def legacy_github_api
+    if secrets&.github_api.present?
+      @legacy_github_api ||= Octokit::Client.new(access_token: secrets.github_api['access_token'])
+    end
   end
 
   def user

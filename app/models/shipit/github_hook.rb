@@ -3,7 +3,6 @@ module Shipit
     # TODO: app-migration, delete class
     belongs_to :stack, required: false # Required for fixtures
 
-    before_create :generate_secret
     before_destroy :teardown!
 
     delegate :github_repo_name, to: :stack
@@ -21,14 +20,8 @@ module Shipit
       github_id?
     end
 
-    private
-
-    def generate_secret
-      self.secret = SecureRandom.hex
-    end
-
     def api
-      Shipit.github.api
+      Shipit.legacy_github_api
     end
 
     class Repo < GithubHook
