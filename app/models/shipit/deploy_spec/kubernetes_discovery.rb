@@ -28,7 +28,7 @@ module Shipit
       def discover_kubernetes
         return if kube_config.blank?
 
-        cmd = ["kubernetes-deploy"]
+        cmd = ["kubernetes-deploy", "--max-watch-seconds=#{60 * 15}"]
         if kube_config['template_dir']
           cmd << '--template-dir'
           cmd << kube_config['template_dir']
@@ -47,6 +47,7 @@ module Shipit
       def kubernetes_restart_cmd
         Shellwords.join([
           "kubernetes-restart",
+          "--max-watch-seconds=#{60 * 15}",
           kube_config.fetch('namespace'),
           kube_config.fetch('context'),
         ])

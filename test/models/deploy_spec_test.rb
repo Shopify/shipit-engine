@@ -123,7 +123,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps
+      assert_equal ["kubernetes-deploy --max-watch-seconds=900 foo bar"], @spec.deploy_steps
     end
 
     test "#deploy_steps returns kubernetes-deploy command if both capfile and `kubernetes` are present" do
@@ -135,7 +135,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps
+      assert_equal ["kubernetes-deploy --max-watch-seconds=900 foo bar"], @spec.deploy_steps
     end
 
     test "#deploy_steps returns kubernetes command if `kubernetes` is present and template_dir is set" do
@@ -146,7 +146,7 @@ module Shipit
           'template_dir' => 'k8s_templates/',
         },
       )
-      assert_equal ["kubernetes-deploy --template-dir k8s_templates/ foo bar"], @spec.deploy_steps
+      assert_equal ["kubernetes-deploy --max-watch-seconds=900 --template-dir k8s_templates/ foo bar"], @spec.deploy_steps
     end
 
     test "#deploy_steps prepend and append pre and post steps" do
@@ -188,7 +188,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ["kubernetes-deploy foo bar"], @spec.rollback_steps
+      assert_equal ["kubernetes-deploy --max-watch-seconds=900 foo bar"], @spec.rollback_steps
     end
 
     test "#rollback_steps returns kubernetes-deploy command when both capfile and `kubernetes` are present" do
@@ -200,7 +200,7 @@ module Shipit
           'context' => 'bar',
         },
       )
-      assert_equal ["kubernetes-deploy foo bar"], @spec.rollback_steps
+      assert_equal ["kubernetes-deploy --max-watch-seconds=900 foo bar"], @spec.rollback_steps
     end
 
     test '#machine_env returns an environment hash' do
@@ -350,7 +350,7 @@ module Shipit
       assert_equal 2, tasks.size
 
       restart_task = tasks.find { |t| t.id == "restart" }
-      assert_equal ["kubernetes-restart foo bar"], restart_task.steps
+      assert_equal ["kubernetes-restart --max-watch-seconds=900 foo bar"], restart_task.steps
     end
 
     test "task definitions returns an array of VariableDefinition instances" do
