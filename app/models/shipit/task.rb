@@ -11,7 +11,7 @@ module Shipit
 
     attr_accessor :pid
 
-    belongs_to :deploy, foreign_key: :parent_id, required: false # required for fixtures
+    belongs_to :deploy, foreign_key: :parent_id, required: false, inverse_of: false # required for fixtures
 
     belongs_to :user, optional: true
     belongs_to :aborted_by, class_name: 'User', optional: true
@@ -21,7 +21,7 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
-    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all
+    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all, inverse_of: :task
 
     serialize :definition, TaskDefinition
     serialize :env, Hash

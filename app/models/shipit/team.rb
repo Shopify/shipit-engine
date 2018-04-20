@@ -9,7 +9,8 @@ module Shipit
       -> { where(event: REQUIRED_HOOKS) },
       foreign_key: :organization,
       primary_key: :organization,
-      class_name: 'GithubHook::Organization'
+      class_name: 'GithubHook::Organization',
+      inverse_of: false
 
     after_commit :setup_hooks, if: :automatically_setup_hooks?
 

@@ -28,7 +28,10 @@ module Shipit
     has_many :tasks, dependent: :destroy
     has_many :deploys
     has_many :rollbacks
-    has_many :deploys_and_rollbacks, -> { where(type: %w(Shipit::Deploy Shipit::Rollback)) }, class_name: 'Task'
+    has_many :deploys_and_rollbacks,
+             -> { where(type: %w(Shipit::Deploy Shipit::Rollback)) },
+             class_name: 'Task',
+             inverse_of: :stack
     has_many :github_hooks, dependent: :destroy, class_name: 'Shipit::GithubHook::Repo'
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
