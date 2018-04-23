@@ -131,7 +131,7 @@ module Shipit
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
-          'timeout' => 'false',
+          'timeout' => false,
         },
       )
       assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps

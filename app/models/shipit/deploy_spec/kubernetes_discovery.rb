@@ -27,7 +27,7 @@ module Shipit
 
       def timeout_duration
         duration = kube_config.fetch('timeout', '900s')
-        Duration.parse(duration).to_i if duration.present? && duration != 'false'
+        Duration.parse(duration).to_i if duration.present?
       end
 
       def discover_kubernetes
