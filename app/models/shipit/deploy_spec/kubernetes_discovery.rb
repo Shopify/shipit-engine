@@ -25,10 +25,16 @@ module Shipit
 
       private
 
+      def timeout_duration
+        duration = kube_config.fetch('timeout', '900s')
+        Duration.parse(duration).to_i if duration.present?
+      end
+
       def discover_kubernetes
         return if kube_config.blank?
 
         cmd = ["kubernetes-deploy"]
+        cmd += ["--max-watch-seconds", timeout_duration] if timeout_duration
         if kube_config['template_dir']
           cmd << '--template-dir'
           cmd << kube_config['template_dir']
@@ -45,11 +51,13 @@ module Shipit
       end
 
       def kubernetes_restart_cmd
-        Shellwords.join([
+        cmd = [
           "kubernetes-restart",
           kube_config.fetch('namespace'),
           kube_config.fetch('context'),
-        ])
+        ]
+        cmd += ["--max-watch-seconds", timeout_duration] if timeout_duration
+        Shellwords.join(cmd)
       end
     end
   end
