@@ -1,7 +1,7 @@
 Rails:
   Enabled: true
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   Exclude:
     - bin/*
     - Gemfile
@@ -164,3 +164,7 @@ Style/PercentLiteralDelimiters:
     '%I': '()'
     '%w': '()'
     '%W': '()'
+
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
