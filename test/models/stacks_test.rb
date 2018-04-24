@@ -213,12 +213,6 @@ module Shipit
       @stack.update_deployed_revision(last_deploy.since_commit.sha)
     end
 
-    test "#create queues 2 GithubSetupWebhooksJob" do
-      assert_enqueued_with(job: SetupGithubHookJob) do
-        Stack.create!(repo_name: 'rails', repo_owner: 'rails')
-      end
-    end
-
     test "#create queues a GithubSyncJob" do
       assert_enqueued_with(job: GithubSyncJob) do
         Stack.create!(repo_name: 'rails', repo_owner: 'rails')
@@ -455,16 +449,16 @@ module Shipit
       repo_permalink = 'https://api.github.com/repositories/42'
 
       commits_redirection = stub(message: 'Moved Permanently', url: File.join(repo_permalink, '/commits'))
-      Shipit.github_api.expects(:commits).with(@stack.github_repo_name, sha: 'master').returns(commits_redirection)
+      Shipit.github.api.expects(:commits).with(@stack.github_repo_name, sha: 'master').returns(commits_redirection)
 
       repo_redirection = stub(message: 'Moved Permanently', url: repo_permalink)
-      Shipit.github_api.expects(:repo).with('shopify/shipit-engine').returns(repo_redirection)
+      Shipit.github.api.expects(:repo).with('shopify/shipit-engine').returns(repo_redirection)
 
       repo_resource = stub(name: 'shipster', owner: stub(login: 'george'))
-      Shipit.github_api.expects(:get).with(repo_permalink).returns(repo_resource)
+      Shipit.github.api.expects(:get).with(repo_permalink).returns(repo_resource)
 
       commits_resource = stub
-      Shipit.github_api.expects(:commits).with('george/shipster', sha: 'master').returns(commits_resource)
+      Shipit.github.api.expects(:commits).with('george/shipster', sha: 'master').returns(commits_resource)
 
       assert_equal 'shopify/shipit-engine', @stack.github_repo_name
       assert_equal commits_resource, @stack.github_commits

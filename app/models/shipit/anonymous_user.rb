@@ -23,6 +23,9 @@ module Shipit
     def id
     end
 
+    def github_id
+    end
+
     def logged_in?
       false
     end
@@ -49,7 +52,7 @@ module Shipit
     end
 
     def github_api
-      Shipit.github_api
+      Shipit.github.api
     end
   end
 end

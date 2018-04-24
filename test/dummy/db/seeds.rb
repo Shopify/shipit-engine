@@ -6,7 +6,6 @@ FakeWeb.register_uri(:post, %r{https://example\.com/}, status: %w(200 OK))
 
 # Cheap hack to allow rake db:seed to work
 module Shipit
-  Stack.send(:define_method, :setup_hooks) {}
   Stack.send(:define_method, :sync_github) {}
   Commit.send(:define_method, :fetch_stats!) {}
   Commit.send(:define_method, :refresh_statuses!) {}

@@ -59,7 +59,7 @@ module Shipit
 
       assert_nil PullRequest.extract_number(@stack, 'https://github.com/ACME/shipit-engine/pull/42')
 
-      Shipit.expects(:github_domain).returns('github.acme.com').at_least_once
+      Shipit.github.expects(:domain).returns('github.acme.com').at_least_once
       assert_equal 42, PullRequest.extract_number(@stack, 'https://github.acme.com/Shopify/shipit-engine/pull/42')
       assert_nil PullRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
     end
@@ -69,7 +69,7 @@ module Shipit
 
       head_sha = '64b3833d39def7ec65b57b42f496eb27ab4980b6'
       base_sha = 'ba7ab50e02286f7d6c60c1ef75258133dd9ea763'
-      Shipit.github_api.expects(:pull_request).with(@stack.github_repo_name, pull_request.number).returns(
+      Shipit.github.api.expects(:pull_request).with(@stack.github_repo_name, pull_request.number).returns(
         stub(
           id: 4_857_578,
           url: 'https://api.github.com/repos/Shopify/shipit-engine/pulls/64',
@@ -98,7 +98,7 @@ module Shipit
       )
 
       [head_sha, base_sha].each do |sha|
-        Shipit.github_api.expects(:commit).with(@stack.github_repo_name, sha).returns(
+        Shipit.github.api.expects(:commit).with(@stack.github_repo_name, sha).returns(
           stub(
             sha: sha,
             author: author,
@@ -116,7 +116,7 @@ module Shipit
         )
       end
 
-      Shipit.github_api.expects(:statuses).with(@stack.github_repo_name, head_sha).returns([stub(
+      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, head_sha).returns([stub(
         state: 'success',
         description: nil,
         context: 'default',
@@ -213,16 +213,16 @@ module Shipit
     end
 
     test "#merge! doesnt delete the branch if there are open PRs against it" do
-      Shipit.github_api.expects(:merge_pull_request).once.returns(true)
-      Shipit.github_api.expects(:pull_requests).once.with(@stack.github_repo_name, base: @pr.branch).returns([1])
-      Shipit.github_api.expects(:delete_branch).never.returns(false)
+      Shipit.github.api.expects(:merge_pull_request).once.returns(true)
+      Shipit.github.api.expects(:pull_requests).once.with(@stack.github_repo_name, base: @pr.branch).returns([1])
+      Shipit.github.api.expects(:delete_branch).never.returns(false)
       assert_equal true, @pr.merge!
     end
 
     test "#merge! increments undeployed_commits_count" do
-      Shipit.github_api.expects(:merge_pull_request).once.returns(true)
-      Shipit.github_api.expects(:pull_requests).once.returns([])
-      Shipit.github_api.expects(:delete_branch).once.returns(true)
+      Shipit.github.api.expects(:merge_pull_request).once.returns(true)
+      Shipit.github.api.expects(:pull_requests).once.returns([])
+      Shipit.github.api.expects(:delete_branch).once.returns(true)
       assert_difference '@stack.undeployed_commits_count' do
         @pr.merge!
         @stack.reload
@@ -241,7 +241,7 @@ module Shipit
     test "#stale? returns true when the branch falls behind the maximum commits" do
       @pr.base_commit = shipit_commits(:second)
       @pr.base_ref = 'default-branch'
-      Shipit.github_api.expects(:compare).with(@stack.github_repo_name, @pr.base_ref, @pr.head.sha).returns(
+      Shipit.github.api.expects(:compare).with(@stack.github_repo_name, @pr.base_ref, @pr.head.sha).returns(
         stub(
           behind_by: 10,
         ),

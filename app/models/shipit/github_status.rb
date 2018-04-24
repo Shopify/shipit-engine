@@ -8,7 +8,7 @@ module Shipit
       end
 
       def refresh_status
-        Rails.cache.write(CACHE_KEY, Shipit.github_api.github_status)
+        Rails.cache.write(CACHE_KEY, Shipit.github.api.github_status)
       rescue Faraday::Error, Octokit::ServerError
       end
     end

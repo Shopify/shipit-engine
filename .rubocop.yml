@@ -25,6 +25,9 @@ Rails/OutputSafety:
 Rails/DynamicFindBy:
   Enabled: false
 
+Rails/Delegate:
+  Enabled: false
+
 Rails/ApplicationRecord:
   Enabled: false
 

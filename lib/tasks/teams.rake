@@ -14,16 +14,6 @@ namespace :teams do
           puts "Failed to fetch @#{handle} members. Do you have enough permissions?"
           puts "#{error.class}: #{error.message}"
         end
-
-        if team
-          puts "Ensuring webhook presence for #{team.organization}"
-          begin
-            team.setup_hooks(async: false)
-          rescue Octokit::Unauthorized, Octokit::NotFound => error
-            puts "Failed to install webhook on #{team.organization}. Do you have enough permissions?"
-            puts "#{error.class}: #{error.message}"
-          end
-        end
       end
     end
   end

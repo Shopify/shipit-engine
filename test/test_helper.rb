@@ -43,7 +43,7 @@ class ActiveSupport::TestCase
   setup do
     @routes = Shipit::Engine.routes
     Process.stubs(:kill)
-    Shipit.github_api.stubs(:login).returns('shipit')
+    Shipit.github.api.stubs(:login).returns('shipit')
   end
 
   teardown do

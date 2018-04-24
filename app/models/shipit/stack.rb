@@ -45,6 +45,11 @@ module Shipit
       super(user.try!(:logged_in?) ? user : nil)
     end
 
+    def self.repo(full_name)
+      repo_owner, repo_name = full_name.downcase.split('/')
+      where(repo_owner: repo_owner, repo_name: repo_name)
+    end
+
     before_validation :update_defaults
     before_destroy :clear_local_files
     before_save :set_locked_since
@@ -54,7 +59,7 @@ module Shipit
     after_commit :emit_removed_hooks, on: :destroy
     after_commit :broadcast_update, on: :update
     after_commit :emit_merge_status_hooks, on: :update
-    after_commit :setup_hooks, :sync_github, on: :create
+    after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
 
     validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
@@ -279,11 +284,11 @@ module Shipit
     end
 
     def repo_http_url
-      Shipit.github_url("#{repo_owner}/#{repo_name}")
+      Shipit.github.url("#{repo_owner}/#{repo_name}")
     end
 
     def repo_git_url
-      "git@#{Shipit.github_domain}:#{repo_owner}/#{repo_name}.git"
+      "git@#{Shipit.github.domain}:#{repo_owner}/#{repo_name}.git"
     end
 
     def base_path
@@ -322,7 +327,7 @@ module Shipit
 
     def github_commits
       handle_github_redirections do
-        Shipit.github_api.commits(github_repo_name, sha: branch)
+        Shipit.github.api.commits(github_repo_name, sha: branch)
       end
     rescue Octokit::Conflict
       [] # Repository is empty...
@@ -340,9 +345,9 @@ module Shipit
     end
 
     def refresh_repository!
-      resource = Shipit.github_api.repo(github_repo_name)
+      resource = Shipit.github.api.repo(github_repo_name)
       if resource.try(:message) == 'Moved Permanently'
-        resource = Shipit.github_api.get(resource.url)
+        resource = Shipit.github.api.get(resource.url)
       end
       update!(repo_owner: resource.owner.login, repo_name: resource.name)
     end
@@ -416,13 +421,6 @@ module Shipit
       )
     end
 
-    def setup_hooks
-      REQUIRED_HOOKS.each do |event|
-        hook = github_hooks.find_or_create_by!(event: event)
-        hook.schedule_setup!
-      end
-    end
-
     def schedule_for_destroy!
       DestroyStackJob.perform_later(self)
     end
@@ -466,14 +464,14 @@ module Shipit
       tasks.where(type: 'Shipit::Deploy').success.order(id: :desc).limit(100).durations
     end
 
+    def sync_github
+      GithubSyncJob.perform_later(stack_id: id)
+    end
+
     private
 
     def clear_cache
       remove_instance_variable(:@active_task) if defined?(@active_task)
-    end
-
-    def sync_github
-      GithubSyncJob.perform_later(stack_id: id)
     end
 
     def clear_local_files

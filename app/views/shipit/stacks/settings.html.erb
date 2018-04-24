@@ -65,10 +65,6 @@
       <h5>Resynchronize this stack</h5>
       <table>
         <tr>
-          <td><%= button_to "Webhooks", stack_sync_webhooks_path(@stack), class: "btn", method: "post" %></td>
-          <td>Ensure that all required webhooks have been created.</td>
-        </tr>
-        <tr>
           <td><%= button_to "Clear Git Cache", stack_clear_git_cache_path(@stack), class: "btn", method: "post" %></td>
           <td>Delete the local git mirror in case it's in a bad state.</td>
         </tr>

@@ -41,38 +41,10 @@ module Shipit
       tags
     end
 
-    def missing_github_oauth_message
+    def missing_github_app_message
+      # TODO: Document how to create an app
       <<-MESSAGE.html_safe
-        Shipit requires a GitHub application to authenticate users.
-        If you haven't created an application on GitHub yet, you can do so in the
-        #{link_to 'Settings', Shipit.github_url('/settings/applications/new'), target: '_blank'}
-        section of your profile. You can also create applications for organizations.
-        When setting up your application in Github, set the Homepage URL to your domain
-        and the Authorization callback URL to '<yourdomain>/github/auth/github/callback'.
-      MESSAGE
-    end
-
-    def missing_github_oauth_id_message
-      <<-MESSAGE.html_safe
-        Copy the Client ID from your GitHub application,
-        and paste it into the secrets.yml file under <code>github_oauth.id</code>.
-       MESSAGE
-    end
-
-    def missing_github_oauth_secret_message
-      <<-MESSAGE.html_safe
-        Copy the Client Secret from your GitHub application,
-        and paste it into the secrets.yml file under <code>github_oauth.secret</code>.
-       MESSAGE
-    end
-
-    def missing_github_api_credentials_message
-      <<-MESSAGE.html_safe
-        Shipit needs API access to GitHub. You can
-        #{link_to 'create an access token', Shipit.github_url('/settings/tokens'), target: '_blank'}
-        with the following permissions:
-        <code>admin:repo_hook</code>, <code>admin:org_hook</code> and <code>repo</code>
-        and add it to the secrets.yml file under the key <code>github_api.access_token</code>.
+        Shipit requires a GitHub App to authenticate users and perform API calls.
       MESSAGE
     end
 

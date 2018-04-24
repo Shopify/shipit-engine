@@ -30,6 +30,7 @@ require 'faraday-http-cache'
 
 require 'shipit/version'
 
+require 'shipit/github_app'
 require 'shipit/paginator'
 require 'shipit/null_serializer'
 require 'shipit/csv_serializer'
@@ -72,36 +73,21 @@ module Shipit
     Redis::Namespace.new(namespace, redis: @redis)
   end
 
-  def github_domain
-    @github_domain ||= secrets.github_domain.presence || 'github.com'.freeze
+  def github
+    @github ||= GitHubApp.new(secrets.github)
   end
 
-  def github_enterprise?
-    github_domain != 'github.com'
-  end
-
-  def github_url(path = nil)
-    @github_url ||= "https://#{github_domain}".freeze
-    path ? File.join(@github_url, path) : @github_url
-  end
-
-  def github_api_endpoint
-    github_url('/api/v3/') if github_enterprise?
-  end
-
-  def user
-    if github_api.login
-      User.find_or_create_by_login!(github_api.login)
-    else
-      AnonymousUser.new
+  def legacy_github_api
+    if secrets&.github_api.present?
+      @legacy_github_api ||= Octokit::Client.new(access_token: secrets.github_api['access_token'])
     end
   end
 
-  def github_api
-    @github_api ||= begin
-      client = Octokit::Client.new(github_api_credentials)
-      client.middleware = new_faraday_stack
-      client
+  def user
+    if github.bot_id # TODO: figure a better way to retreive this
+      User.find_or_create_by_github_id!(github.bot_id)
+    else
+      AnonymousUser.new
     end
   end
 
@@ -119,10 +105,6 @@ module Shipit
       builder.adapter Faraday.default_adapter
       yield builder if block_given?
     end
-  end
-
-  def github_api_credentials
-    {api_endpoint: github_api_endpoint}.merge((Rails.application.secrets.github_api || {}).symbolize_keys)
   end
 
   def api_clients_secret
@@ -150,39 +132,12 @@ module Shipit
   end
 
   def github_teams
-    @github_teams ||= github_teams_handles.map { |t| Team.find_or_create_by_handle(t) }
-  end
-
-  def github_teams_handles
-    (Array(github_oauth_credentials['team']) + Array(github_oauth_credentials['teams'])).sort.uniq
-  end
-
-  def github_oauth_id
-    github_oauth_credentials['id']
-  end
-
-  def github_oauth_secret
-    github_oauth_credentials['secret']
-  end
-
-  def github_oauth_credentials
-    (secrets.github_oauth || {}).to_h.stringify_keys
-  end
-
-  def github_oauth_options
-    return {} unless github_enterprise?
-    {
-      site: github_api_endpoint,
-      authorize_url: github_url('/login/oauth/authorize'),
-      token_url: github_url('/login/oauth/access_token'),
-    }
+    @github_teams ||= github.oauth_teams.map { |t| Team.find_or_create_by_handle(t) }
   end
 
   def all_settings_present?
     @all_settings_present ||= [
-      github_oauth_id,
-      github_oauth_secret,
-      github_api_credentials,
+      secrets.github, # TODO: handle GitHub settings
       redis_url,
       host,
     ].all?(&:present?)

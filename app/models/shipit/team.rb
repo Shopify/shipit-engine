@@ -12,8 +12,6 @@ module Shipit
       class_name: 'GithubHook::Organization',
       inverse_of: false
 
-    after_commit :setup_hooks, if: :automatically_setup_hooks?
-
     class << self
       def find_or_create_by_handle(handle)
         organization, slug = handle.split('/').map(&:downcase)
@@ -27,7 +25,7 @@ module Shipit
       end
 
       def find_team_on_github(organization, slug)
-        teams = Shipit::OctokitIterator.new { Shipit.github_api.org_teams(organization, per_page: 100) }
+        teams = Shipit::OctokitIterator.new { Shipit.github.api.org_teams(organization, per_page: 100) }
         teams.find { |t| t.slug == slug }
       rescue Octokit::NotFound
       end
@@ -41,20 +39,8 @@ module Shipit
       members.append(member) unless members.include?(member)
     end
 
-    attr_writer :automatically_setup_hooks
-    def automatically_setup_hooks?
-      @automatically_setup_hooks
-    end
-
-    def setup_hooks(async: true)
-      REQUIRED_HOOKS.each do |event|
-        hook = github_hooks.find_or_create_by!(event: event)
-        async ? hook.schedule_setup! : hook.setup!
-      end
-    end
-
     def refresh_members!
-      github_members = Shipit::OctokitIterator.new(Shipit.github_api.get(api_url).rels[:members])
+      github_members = Shipit::OctokitIterator.new(Shipit.github.api.get(api_url).rels[:members])
       members = github_members.map { |u| User.find_or_create_from_github(u) }
       self.members = members
       save!
