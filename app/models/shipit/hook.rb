@@ -39,7 +39,7 @@ module Shipit
         raise "#{event} is not declared in Shipit::Hook::EVENTS" unless EVENTS.include?(event.to_s)
         Shipit::EmitEventJob.perform_later(
           event: event.to_s,
-          stack_id: stack.try!(:id),
+          stack_id: stack&.id,
           payload: coerce_payload(payload),
         )
       end

@@ -23,7 +23,7 @@ module HooksHelper
       args.map.with_index.all? { |value, index| value == call.args[index] }
     end
     matcher = args.map(&:inspect).join(', ')
-    got = called && called.args.map(&:inspect).join(', ')
+    got = called&.args&.map(&:inspect)&.join(', ')
     refute called, "Expected no hook matching: (#{matcher})\n  got: (#{got})"
   end
 

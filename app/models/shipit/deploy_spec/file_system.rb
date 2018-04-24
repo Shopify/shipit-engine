@@ -33,10 +33,10 @@ module Shipit
           'merge' => {
             'require' => pull_request_required_statuses,
             'ignore' => pull_request_ignored_statuses,
-            'revalidate_after' => revalidate_pull_requests_after.try!(:to_i),
+            'revalidate_after' => revalidate_pull_requests_after&.to_i,
             'max_divergence' => {
-              'commits' => max_divergence_commits.try!(:to_i),
-              'age' => max_divergence_age.try!(:to_i),
+              'commits' => max_divergence_commits&.to_i,
+              'age' => max_divergence_age&.to_i,
             },
           },
           'ci' => {

@@ -168,6 +168,5 @@ Style/PercentLiteralDelimiters:
     '%w': '()'
     '%W': '()'
 
-
 Style/FrozenStringLiteralComment:
   Enabled: false

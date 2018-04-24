@@ -39,12 +39,12 @@ module Shipit
 
     def build_rollback(user = nil, env: nil, force: false)
       Rollback.new(
-        user_id: user.try!(:id),
+        user_id: user&.id,
         stack_id: stack_id,
         parent_id: id,
         since_commit: stack.last_deployed_commit,
         until_commit: until_commit,
-        env: env.try!(:to_h) || {},
+        env: env&.to_h || {},
         allow_concurrency: force,
         ignored_safeties: force,
       )
@@ -159,7 +159,7 @@ module Shipit
 
     def default_since_commit_id
       return unless stack
-      @default_since_commit_id ||= last_successful_deploy.try!(:until_commit_id)
+      @default_since_commit_id ||= last_successful_deploy&.until_commit_id
     end
 
     def denormalize_commit_stats

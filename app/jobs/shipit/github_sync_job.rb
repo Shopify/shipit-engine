@@ -15,7 +15,7 @@ module Shipit
         new_commits, shared_parent = fetch_missing_commits { @stack.github_commits }
 
         @stack.transaction do
-          shared_parent.try!(:detach_children!)
+          shared_parent&.detach_children!
           appended_commits = new_commits.map do |gh_commit|
             append_commit(gh_commit)
           end

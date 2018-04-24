@@ -43,7 +43,7 @@ module Shipit
     end
 
     def action
-      object.definition.try!(:action)
+      object.definition&.action
     end
 
     def include_action?
@@ -51,7 +51,7 @@ module Shipit
     end
 
     def description
-      object.definition.try!(:action)
+      object.definition&.action
     end
 
     def include_description?

@@ -78,21 +78,6 @@ Rails/InverseOf:
     - 'app/models/shipit/stack.rb'
     - 'app/models/shipit/task.rb'
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertTry.
-Rails/SafeNavigation:
-  Exclude:
-    - 'app/helpers/shipit/github_url_helper.rb'
-    - 'app/jobs/shipit/github_sync_job.rb'
-    - 'app/models/shipit/commit.rb'
-    - 'app/models/shipit/deploy.rb'
-    - 'app/models/shipit/deploy_spec/file_system.rb'
-    - 'app/models/shipit/hook.rb'
-    - 'app/models/shipit/pull_request.rb'
-    - 'app/models/shipit/stack.rb'
-    - 'app/serializers/shipit/task_serializer.rb'
-
 # Offense count: 22
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: strict, flexible
@@ -133,14 +118,6 @@ Style/NumericPredicate:
     - 'app/models/shipit/duration.rb'
     - 'app/models/shipit/stack.rb'
     - 'lib/shipit/command.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil.
-Style/SafeNavigation:
-  Exclude:
-    - 'lib/shipit/command.rb'
-    - 'test/helpers/hooks_helper.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.

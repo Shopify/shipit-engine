@@ -42,7 +42,7 @@ module Shipit
     end
 
     def lock_author=(user)
-      super(user.try!(:logged_in?) ? user : nil)
+      super(user&.logged_in? ? user : nil)
     end
 
     def self.repo(full_name)
@@ -92,7 +92,7 @@ module Shipit
 
     def trigger_task(definition_id, user, env: nil, force: false)
       definition = find_task_definition(definition_id)
-      env = env.try!(:to_h) || {}
+      env = env&.to_h || {}
 
       definition.variables_with_defaults.each do |variable|
         env[variable.name] ||= variable.default
@@ -118,7 +118,7 @@ module Shipit
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
-        env: filter_deploy_envs(env.try!(:to_h) || {}),
+        env: filter_deploy_envs(env&.to_h || {}),
         allow_concurrency: force,
         ignored_safeties: force || !until_commit.deployable?,
       )
@@ -185,7 +185,7 @@ module Shipit
 
     def update_deployed_revision(sha)
       last_deploy = deploys_and_rollbacks.last
-      return if last_deploy.try!(:active?)
+      return if last_deploy&.active?
 
       actual_deployed_commit = commits.reachable.by_sha(sha)
       return unless actual_deployed_commit
@@ -204,7 +204,7 @@ module Shipit
     end
 
     def head
-      commits.reachable.first.try!(:sha)
+      commits.reachable.first&.sha
     end
 
     def merge_status(backlog_leniency_factor: 2.0)
@@ -264,7 +264,7 @@ module Shipit
     end
 
     def last_deployed_commit
-      last_successful_deploy.try!(:until_commit) || NoDeployedCommit
+      last_successful_deploy&.until_commit || NoDeployedCommit
     end
 
     def deployable?
@@ -276,11 +276,11 @@ module Shipit
     end
 
     def repo_name=(name)
-      super(name.try!(:downcase))
+      super(name&.downcase)
     end
 
     def repo_owner=(name)
-      super(name.try!(:downcase))
+      super(name&.downcase)
     end
 
     def repo_http_url

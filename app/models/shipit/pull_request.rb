@@ -27,11 +27,11 @@ module Shipit
       end
 
       def ignored_statuses
-        deploy_spec.try!(:pull_request_ignored_statuses) || []
+        deploy_spec&.pull_request_ignored_statuses || []
       end
 
       def required_statuses
-        deploy_spec.try!(:pull_request_required_statuses) || []
+        deploy_spec&.pull_request_required_statuses || []
       end
     end
 
@@ -196,7 +196,7 @@ module Shipit
     end
 
     def need_revalidation?
-      timeout = stack.cached_deploy_spec.try!(:revalidate_pull_requests_after)
+      timeout = stack.cached_deploy_spec&.revalidate_pull_requests_after
       return false unless timeout
       (revalidated_at + timeout).past?
     end

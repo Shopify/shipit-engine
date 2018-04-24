@@ -71,8 +71,8 @@ module Shipit
         committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
         committed_at: commit.commit.committer.date,
         authored_at: commit.commit.author.date,
-        additions: commit.stats.try!(:additions),
-        deletions: commit.stats.try!(:deletions),
+        additions: commit.stats&.additions,
+        deletions: commit.stats&.deletions,
       )
     end
 
@@ -179,8 +179,8 @@ module Shipit
 
     def fetch_stats!
       update!(
-        additions: github_commit.stats.try!(:additions),
-        deletions: github_commit.stats.try!(:deletions),
+        additions: github_commit.stats&.additions,
+        deletions: github_commit.stats&.deletions,
       )
     end
 
@@ -210,7 +210,7 @@ module Shipit
     end
 
     def deploy_requested_at
-      if pull_request.try!(:merged?)
+      if pull_request&.merged?
         pull_request.merge_requested_at
       else
         created_at

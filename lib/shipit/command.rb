@@ -143,7 +143,7 @@ module Shipit
     end
 
     def yield_control
-      @control_block.call if @control_block
+      @control_block&.call
     end
 
     def read_stream(io)
