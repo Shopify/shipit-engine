@@ -3,13 +3,13 @@ module Shipit
     DOMAIN = 'github.com'.freeze
     AuthenticationFailed = Class.new(StandardError)
 
-    attr_reader :oauth_teams, :domain, :bot_id
+    attr_reader :oauth_teams, :domain, :bot_login
 
     def initialize(config)
       @config = (config || {}).with_indifferent_access
       @domain = @config[:domain] || DOMAIN
       @webhook_secret = @config[:webhook_secret].presence
-      @bot_id = @config[:bot_id]
+      @bot_login = @config[:bot_login]
 
       oauth = (@config[:oauth] || {}).with_indifferent_access
       @oauth_id = oauth[:id]

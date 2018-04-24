@@ -26,6 +26,8 @@ require 'redis-objects'
 require 'redis-namespace'
 
 require 'octokit'
+require 'shipit/octokit_bot_users_patch'
+
 require 'faraday-http-cache'
 
 require 'shipit/version'
@@ -84,8 +86,8 @@ module Shipit
   end
 
   def user
-    if github.bot_id # TODO: figure a better way to retreive this
-      User.find_or_create_by_github_id!(github.bot_id)
+    if github.bot_login
+      User.find_or_create_by_login!(github.bot_login)
     else
       AnonymousUser.new
     end

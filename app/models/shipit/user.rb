@@ -16,12 +16,6 @@ module Shipit
       end
     end
 
-    def self.find_or_create_by_github_id!(github_id)
-      find_or_create_by!(github_id: github_id) do |user|
-        user.github_user = Shipit.github.api.user(github_id)
-      end
-    end
-
     def self.find_or_create_from_github(github_user)
       find_from_github(github_user) || create_from_github!(github_user)
     end
