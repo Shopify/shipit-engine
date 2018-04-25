@@ -1,44 +1,18 @@
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
-if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.2.2')
-  raise Thor::Error, "You need at least Ruby 2.2.2 to install shipit"
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.3')
+  raise Thor::Error, "You need at least Ruby 2.3 to install shipit"
 end
-if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('5.0.0')
-  raise Thor::Error, "You need at least Rails 5.0.0 to install shipit"
+if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('5.1')
+  raise Thor::Error, "You need Rails 5.1 to install shipit"
 end
 
 route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
-gem 'thin'
-gem 'shipit-engine', '>= 0.21'
-gem 'dotenv-rails'
+gem 'shipit-engine', github: 'Shopify/shipit-engine'
 gem 'redis-rails'
-
-gem_group :development do
-  gem 'therubyracer'
-end
-
-say("These configs are for development, you will have to generate them again for production.",
-    Thor::Shell::Color::GREEN, true)
-
-say("Shipit requires a GitHub application to authenticate users. "\
-  "If you haven't created an application on GitHub yet, you can do so at https://github.com/settings/applications/new",
-  Thor::Shell::Color::GREEN, true)
-github_id = ask("What is the application client ID?")
-github_secret = ask("What is the application client secret?")
-
-say("Shipit needs API access to GitHub.")
-say("Create an API key at https://github.com/settings/tokens/new that has these permissions: "\
-    "admin:repo_hook, admin:org_hook, repo", Thor::Shell::Color::GREEN, true)
-github_token = ask("What is the github key?")
-
-create_file '.env', <<-CODE
-GITHUB_OAUTH_ID=#{github_id}
-GITHUB_OAUTH_SECRET=#{github_secret}
-GITHUB_API_TOKEN=#{github_token}
-PORT=3000
-CODE
+gem 'mini_racer'
 
 create_file 'Procfile', <<-CODE
 web: bundle exec rails s -p $PORT
@@ -76,43 +50,61 @@ create_file 'config/sidekiq.yml', <<-CODE
   - default
   - deploys
   - hooks
+  - low
 CODE
 
-create_file 'config/secrets.yml', <<-CODE, force: true
-development:
-  secret_key_base: #{SecureRandom.hex(64)}
-  host: 'http://localhost:3000'
-  github_oauth: # Head to https://github.com/settings/applications/new to generate oauth credentials
-    id: <%= ENV['GITHUB_OAUTH_ID'] %>
-    secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
-    # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
-  github_api:
-    access_token: <%= ENV['GITHUB_API_TOKEN'] %>
-  redis_url: redis://localhost
+%w(config/secrets.yml config/secrets.example.yml).each do |path|
+  create_file path, <<~CODE, force: true
+    development:
+      secret_key_base: #{SecureRandom.hex(64)}
+      host: 'http://localhost:3000'
+      redis_url: redis://localhost
+      github:
+        domain: # defaults to github.com
+        bot_login:
+        app_id:
+        installation_id:
+        webhook_secret:
+        private_key:
+        oauth:
+          id:
+          secret:
+          # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
 
-test:
-  secret_key_base: #{SecureRandom.hex(64)}
-  host: 'http://localhost:4000'
-  github_oauth:
-    id: 1d
-    secret: s3cr3t
-  github_api:
-    access_token: t0k3n
-  redis_url: redis://localhost
+    test:
+      secret_key_base: #{SecureRandom.hex(64)}
+      host: 'http://localhost:4000'
+      redis_url: redis://localhost
+      github:
+        domain: # defaults to github.com
+        bot_login:
+        app_id:
+        installation_id:
+        webhook_secret:
+        private_key:
+        oauth:
+          id: <%= ENV['GITHUB_OAUTH_ID'] %>
+          secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
+          # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
 
-production:
-  secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
-  host: <%= ENV['SHIPIT_HOST'] %>
-  github_oauth:
-    id: <%= ENV['GITHUB_OAUTH_ID'] %>
-    secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
-    # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
-  github_api:
-    access_token: <%= ENV['GITHUB_API_TOKEN'] %>
-  redis_url: <%= ENV['REDIS_URL'] %>
-  env:
-    # SSH_AUTH_SOCK: /foo/bar # You can set environment variable that will be present during deploys.
-CODE
+    production:
+      secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
+      host: <%= ENV['SHIPIT_HOST'] %>
+      redis_url: <%= ENV['REDIS_URL'] %>
+      github:
+        domain: # defaults to github.com
+        app_id: <%= ENV['GITHUB_APP_ID'] %>
+        installation_id: <%= ENV['GITHUB_APP_ID'] %>
+        webhook_secret:
+        private_key:
+        oauth:
+          id: <%= ENV['GITHUB_OAUTH_ID'] %>
+          secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
+          # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
+      env:
+        # SSH_AUTH_SOCK: /foo/bar # You can set environment variable that will be present during deploys.
+  CODE
+end
 
 initializer 'sidekiq.rb', <<-CODE
 Rails.application.config.active_job.queue_adapter = :sidekiq
@@ -144,7 +136,24 @@ after_bundle do
   run 'bundle exec rake railties:install:migrations db:create db:migrate'
 
   git :init
-  run "echo '.env' >> .gitignore"
+  run "echo 'config/secrets.yml' >> .gitignore"
   git add: '.'
   git commit: "-a -m 'Initial commit'"
+
+  if yes?("Are you installing Shipit on a GitHub organization? (y/n)")
+    org_name = ask("What is the organization name?")
+    say(
+      "Shipit requires a GitHub App to authenticate users and access the API. " +
+      "If you haven't created one yet, you can do so at https://github.com/organizations/#{org_name}/settings/apps/new",
+      Thor::Shell::Color::GREEN, true
+    )
+  else
+    say(
+      "Shipit requires a GitHub App to authenticate users and access the API. " +
+      "If you haven't created one yet, you can do so at https://github.com/settings/apps/new",
+      Thor::Shell::Color::GREEN, true
+    )
+  end
+
+  say("Read https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md for the details on how to create the App and update config/secrets.yml", Thor::Shell::Color::GREEN, true)
 end

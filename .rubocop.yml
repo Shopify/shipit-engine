@@ -12,6 +12,7 @@ AllCops:
     - db/migrate/*
     - test/dummy/**/*
     - lib/shipit-engine.rb
+    - template.rb
 
 inherit_from:
   .rubocop_todo.yml

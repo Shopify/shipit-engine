@@ -20,7 +20,6 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 **I. INSTALLATION & SETUP**
 
 * [Installation](#installation)
-* [Configuring shipit.yml and secrets.yml](#configuring-ymls)
 * [Updating an existing installation](#updating-shipit)
 
 **II. USING SHIPIT**
@@ -43,27 +42,17 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 <h3 id="installation">Installation</h3>
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.3 or superior.*
-
-Shipit provides you with a Rails template. To bootstrap your Shipit installation:
-
-1. If you don't have Rails installed, run this command: `gem install rails -v 5.1`
-2. Run this command:  `rails _5.1_ new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer -m https://raw.githubusercontent.com/Shopify/shipit-engine/v0.21.0/template.rb`
-3. Enter your **Client ID**, **Client Secret**, and **GitHub API access token** when prompted. These can be found on your application's GitHub page.
-4. To setup the database, run this command: `rake db:setup`
-
-<h3 id="configuring-ymls">Configuring <code>shipit.yml</code> and <code>secrets.yml</code></h3>
-
-Shipit should just work right out of the box &mdash; you probably won't need to alter its configuration files before getting it up and running. But if you want to customize Shipit for your own deployment environment, you'll need to edit the `shipit.yml` and `secrets.yml` files:
-
-* The settings in the `shipit.yml` file are related to the different things you can do within Shipit, such as handling deploys, performing custom tasks, and enforcing deployment checklists. If you want to edit these settings, [start here](#configuring-shipit).
-* The settings in the `secrets.yml` file are related to the ways that Shipit connects with GitHub. If you want to edit these settings, [start here](#configuring-secrets).
+To create a new Shipit installation you can follow the [setup guide](docs/setup.md).
 
 <h3 id="updating-shipit">Updating an existing installation</h3>
 
 1. If you locked the gem to a specific version in your Gemfile, update it there.
 2. Update the `shipit-engine` gem with `bundle update shipit-engine`.
 3. Install new migrations with `rake shipit:install:migrations db:migrate`.
+
+<h3 id="special-update">Specific updates requiring more steps</h3>
+
+If you are upgrading from `0.21` or older, you will have to update the configuration. Please follow [the dedicated upgrade guide](docs/updates/0.22.md)
 
 * * *
 
@@ -570,96 +559,6 @@ See also `commands_inactivity_timeout` in `secrets.yml` for a global timeout set
 
 
 ***
-<h2 id="configuring-secrets">Configuring <code>secrets.yml</code></h2>
-
-The settings in the `secrets.yml` file relate to the ways that GitHub connects with Shipit:
-
-**`secret_key_base`** is used to verify the integrity of signed cookies.
-
-For example:
-
-```yml
-production:
-  secret_key_base: s3cr3t # This needs to be a very long, fully random
-```
-<br>
-
-**`github_oauth`** contains the settings required to authenticate users through GitHub.
-
-The value for `id` is your application's  *Client ID*, and the value for `secret` is your application's *Client Secret* &mdash; both of these should appear on your application's GitHub page.
-
-Note: When setting up your application in Github, set the *Authorization callback URL* to `<yourdomain>/github/auth/github/callback`.
-
-The `teams` key is optional, and required only if you want to restrict access to a set of GitHub teams.
-
-If it's missing, the Shipit installation will be public unless you setup another authentication method.
-
-After you change the list of teams, you have to invoke `bin/rake teams:fetch` in production so that a webhook is setup to keep the list of members up to date.
-
-For example:
-
-```yml
-production:
-  github_oauth:
-    id: (your application's Client ID)
-    secret: (your application's Client Secret)
-    teams:
-      - Shipit/team
-      - Shipit/another_team
-```
-<br>
-
-**`github_api`** communicates with the GitHub API about the stacks and setup Hooks. It should reflect the guidelines at  https://github.com/octokit/octokit.rb.
-
-If you specify an `access_token`, you don't need a `login` and `password`. The opposite is also true:  if you specify a `login` and `password`, then you don't need an `access_token`.
-
-For example:
-
-```yml
-production:
-  github_api:
-    access_token: 10da65c687f6degaf5475ce12a980d5vd8c44d2a
-```
-<br>
-
-**`host`**  is the host that hosts Shipit. It's used to generate URLs, and it's the host that GitHub will try to talk to.
-
-For example:
-```yml
-production:
-  host: 'http://localhost:3000'
-```
-<br>
-
-**`redis_url`** is the URL of the redis instance that Shipit uses.
-
-For example:
-
-```yml
-production:
-  redis_url: "redis://127.0.0.1:6379/7"
-```
-
-<br>
-
-If you use GitHub Enterprise, you must also specify the `github_domain`.
-
-For example:
-```yml
-production:
-  github_domain: "github.example.com"
-
-```
-
-<br>
-
-**`commands_inactivity_timeout`** is the duration after which Shipit will terminate a command if no ouput was received. Default is `300` (5 minutes).
-
-For example:
-```yml
-production:
-  commands_inactivity_timeout: 900 # 15 minutes
-```
 
 <h2 id="script-parameters">Script parameters</h2>
 
