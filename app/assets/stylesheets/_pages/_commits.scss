@@ -281,13 +281,22 @@
 }
 
 .status--error,
-[data-deploy-status='error'],
+[data-deploy-status='error'] {
+  border-color: #333;
+
+  .status__icon {
+    background-image: asset-data-url("error.svg");
+  }
+}
+
 .status--timedout,
 [data-deploy-status='timedout'] {
   border-color: #333;
 
   .status__icon {
-    background-image: asset-data-url("error.svg");
+    background-image: asset-data-url("timedout.svg");
+    background-position: top 35% left 50%;
+    background-size: 55%;
   }
 }
 
