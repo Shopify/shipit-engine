@@ -43,7 +43,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 
 <h3 id="installation">Installation</h3>
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.1 or superior.*
+*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.3 or superior.*
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
