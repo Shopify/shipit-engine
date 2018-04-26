@@ -18,8 +18,8 @@ anonymous:
 
 shipit:
   name: Shipit
-  email: shipit@example.com
-  login: shipit
+  github_id: 38352116
+  login: "shipit[bot]"
 
 legacy:
   name:  Legacy Walrussian
