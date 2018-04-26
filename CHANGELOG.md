@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.22.0
+
 * Converted Shipit to use the new GitHub Apps API, older installations will have to redo their setup.
 
 # 0.21.0
