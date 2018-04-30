@@ -406,7 +406,7 @@ ci:
 
 <h3 id="merge-queue">Merge Queue</h3>
 
-The merge queue allow to register pull requests for them to be merged by Shipit once the stack is clear (no lock, no failing CI, no backlog). It can be enabled on a per stack basis via the settings page.
+The merge queue allows developers to register pull requests which will be merged by Shipit once the stack is clear (no lock, no failing CI, no backlog). It can be enabled on a per stack basis via the settings page.
 
 It can be customized via several `shipit.yml` properties:
 
