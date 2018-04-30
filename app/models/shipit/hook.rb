@@ -80,7 +80,7 @@ module Shipit
     end
 
     def purge_old_deliveries!(keep: DELIVERIES_LOG_SIZE)
-      delivery_ids = deliveries.sent.order(id: :desc).offset(keep).pluck(:id)
+      delivery_ids = deliveries.sent.order(id: :desc).offset(keep).limit(50).pluck(:id)
       deliveries.where(id: delivery_ids).delete_all
     end
 

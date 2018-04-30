@@ -1,5 +1,7 @@
 # Unreleased
 
+* Limit delete batches to 50 while purging deliveries to avoid excessive contention.
+
 # 0.22.0
 
 * Converted Shipit to use the new GitHub Apps API, older installations will have to redo their setup.
