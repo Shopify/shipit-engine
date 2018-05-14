@@ -26,8 +26,6 @@ require 'redis-objects'
 require 'redis-namespace'
 
 require 'octokit'
-require 'shipit/octokit_bot_users_patch'
-
 require 'faraday-http-cache'
 
 require 'shipit/version'
