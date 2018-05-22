@@ -15,6 +15,9 @@ module Shipit
       @oauth_id = oauth[:id]
       @oauth_secret = oauth[:secret]
       @oauth_teams = Array.wrap(oauth[:teams] || oauth[:teams])
+      Octokit.configure do |c|
+        c.api_endpoint = url("/api/v3/")
+      end if enterprise?
     end
 
     def login
