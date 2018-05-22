@@ -10,7 +10,7 @@ end
 route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
-gem 'shipit-engine', github: 'Shopify/shipit-engine'
+gem 'shipit-engine'
 gem 'redis-rails'
 gem 'mini_racer'
 
