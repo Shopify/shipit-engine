@@ -22,7 +22,7 @@ module Shipit
     end
 
     def api
-      @client = new_client if !defined?(@client) || @client.access_token != token
+      @client = new_client(access_token: token) if !defined?(@client) || @client.access_token != token
       @client
     end
 
@@ -40,7 +40,7 @@ module Shipit
       return unless private_key && app_id && installation_id
 
       Rails.cache.fetch('github:integration:token', expires_in: 50.minutes, race_condition_ttl: 10.minutes) do
-        token = Octokit::Client.new(bearer_token: authentication_payload).create_app_installation_access_token(
+        token = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
           installation_id,
           accept: 'application/vnd.github.machine-man-preview+json',
         ).token
@@ -84,6 +84,12 @@ module Shipit
       domain != DOMAIN
     end
 
+    def new_client(options = {})
+      client = Octokit::Client.new(options.reverse_merge(api_endpoint: api_endpoint))
+      client.middleware = Shipit.new_faraday_stack
+      client
+    end
+
     private
 
     attr_reader :webhook_secret, :oauth_id, :oauth_secret
@@ -98,15 +104,6 @@ module Shipit
 
     def private_key
       @private_key ||= @config.fetch(:private_key)
-    end
-
-    def new_client
-      client = Octokit::Client.new(
-        access_token: token,
-        api_endpoint: api_endpoint,
-      )
-      client.middleware = Shipit.new_faraday_stack
-      client
     end
 
     def authentication_payload
