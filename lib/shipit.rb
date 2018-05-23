@@ -79,7 +79,7 @@ module Shipit
 
   def legacy_github_api
     if secrets&.github_api.present?
-      @legacy_github_api ||= Octokit::Client.new(access_token: secrets.github_api['access_token'])
+      @legacy_github_api ||= github.new_client(access_token: secrets.github_api['access_token'])
     end
   end
 
