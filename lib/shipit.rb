@@ -119,6 +119,10 @@ module Shipit
     secrets.host.presence
   end
 
+  def default_merge_method
+    secrets.default_merge_method || 'merge'
+  end
+
   def enforce_publish_config
     secrets.enforce_publish_config.presence
   end

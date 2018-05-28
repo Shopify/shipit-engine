@@ -31,7 +31,6 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 **III. REFERENCE**
 
 * [Format and content of shipit.yml](#configuring-shipit)
-* [Format and content of secrets.yml](#configuring-secrets)
 * [Script parameters](#script-parameters)
 * [Configuring providers](#configuring-providers)
 * [Free samples](/examples/shipit.yml)
@@ -434,6 +433,14 @@ For example:
 merge:
   ignore:
     - codeclimate
+```
+
+**<code>merge.method</code>** the [merge method](https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button) to use for this stack. If it's not set the default merge method will be used. Can be either `merge`, `squash` or `rebase`.
+
+For example:
+```yml
+merge:
+  method: squash
 ```
 
 **<code>merge.max_divergence.commits</code>** the maximum number of commits a pull request can be behind its merge base, after which pull requests are rejected from the merge queue.

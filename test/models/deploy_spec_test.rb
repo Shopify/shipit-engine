@@ -295,6 +295,7 @@ module Shipit
           'require' => [],
           'ignore' => [],
           'revalidate_after' => nil,
+          'method' => nil,
           'max_divergence' => {
             'commits' => nil,
             'age' => nil,
@@ -440,6 +441,29 @@ module Shipit
         },
       )
       assert_equal %w(ci/circleci soc/compliance), @spec.required_statuses
+    end
+
+    test "pull_request_merge_method defaults to `nil`" do
+      @spec.expects(:load_config).returns({})
+      assert_nil @spec.pull_request_merge_method
+    end
+
+    test "pull_request_merge_method returns `merge.method`" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'method' => 'squash',
+        },
+      )
+      assert_equal 'squash', @spec.pull_request_merge_method
+    end
+
+    test "pull_request_merge_method returns `nil` if `merge.method` is invalid" do
+      @spec.expects(:load_config).returns(
+        'merge' => {
+          'method' => 'squashing',
+        },
+      )
+      assert_nil @spec.pull_request_merge_method
     end
 
     test "pull_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do

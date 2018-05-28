@@ -34,6 +34,7 @@ module Shipit
             'require' => pull_request_required_statuses,
             'ignore' => pull_request_ignored_statuses,
             'revalidate_after' => revalidate_pull_requests_after&.to_i,
+            'method' => pull_request_merge_method,
             'max_divergence' => {
               'commits' => max_divergence_commits&.to_i,
               'age' => max_divergence_age&.to_i,

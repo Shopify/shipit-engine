@@ -104,7 +104,7 @@ production:
 
 **`host`** Should specify the domain of your shipit instance, e.g. `shipit.example.com`.
 
-**`redis_url`** Should point to a working Redis database. 
+**`redis_url`** Should point to a working Redis database.
 
 **`github.app_id`** The GitHub App ID, it can be found under General > About
 
@@ -143,4 +143,12 @@ For example:
 ```yml
 production:
   commands_inactivity_timeout: 900 # 15 minutes
+```
+
+**`default_merge_method`** is the merge method used by the merge queue unless specified otherwise in the stack's `shipit.yml`. Can be either `merge`, `rebase`, or `squash`. If not set it will default to `merge`.
+
+For example:
+```yml
+production:
+  default_merge_method: squash
 ```

@@ -1,5 +1,6 @@
 # Unreleased
 
+* Allow to configure the merge method used by the merge queue.
 * Fix compatibility with GitHub Enterprise installations.
 
 # 0.22.1

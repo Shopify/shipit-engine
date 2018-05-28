@@ -163,7 +163,7 @@ module Shipit
         merge_message,
         sha: head.sha,
         commit_message: 'Merged by Shipit',
-        merge_method: 'merge',
+        merge_method: stack.merge_method,
       )
       begin
         if Shipit.github.api.pull_requests(stack.github_repo_name, base: branch).empty?

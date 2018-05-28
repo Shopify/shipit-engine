@@ -275,6 +275,10 @@ module Shipit
       merge_queue_enabled? && !locked? && merge_status == 'success'
     end
 
+    def merge_method
+      cached_deploy_spec&.pull_request_merge_method || Shipit.default_merge_method
+    end
+
     def repo_name=(name)
       super(name&.downcase)
     end

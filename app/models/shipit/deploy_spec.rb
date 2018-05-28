@@ -146,6 +146,11 @@ module Shipit
       Array.wrap(config('ci', 'blocking'))
     end
 
+    def pull_request_merge_method
+      method = config('merge', 'method')
+      method if %w(merge rebase squash).include?(method)
+    end
+
     def pull_request_required_statuses
       if config('merge', 'require') || config('merge', 'ignore')
         Array.wrap(config('merge', 'require'))
