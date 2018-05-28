@@ -212,6 +212,10 @@ module Shipit
       false
     end
 
+    def title
+      definition.render_title(env)
+    end
+
     def author
       user || AnonymousUser.new
     end

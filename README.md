@@ -503,6 +503,19 @@ tasks:
         default: 0
 ```
 
+You can also make these variables appear in the task title:
+
+```yml
+tasks:
+  failover:
+    action: "Failover a pod"
+    title: "Failover Pod %{POD_ID}"
+    steps:
+      - script/failover $POD_ID
+    variables:
+      - name: POD_ID
+```
+
 <h3 id="review-process">Review process</h3>
 
 You can display review elements, such as monitoring data or a pre-deployment checklist, on the deployment page in Shipit:

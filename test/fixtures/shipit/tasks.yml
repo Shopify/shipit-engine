@@ -134,3 +134,30 @@ soc_deploy:
   created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+
+shipit_rendered_failover:
+  id: 10
+  user: walrus
+  since_commit_id: 2 # second
+  until_commit_id: 2 # second
+  type: Shipit::Task
+  stack: shipit
+  status: success
+  definition: >
+    {
+      "id": "failover",
+      "action": "Failover a pod",
+      "title": "Failover pod %{POD_ID}",
+      "description": "Restart app and job servers",
+      "variables": [
+        {"name": "POD_ID", "title": "Id of the pod to failover"}
+      ],
+      "steps": [
+        "cap $ENVIRONMENT pod:failover"
+      ]
+    }
+  env:
+    POD_ID: "12"
+  created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
