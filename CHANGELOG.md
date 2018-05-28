@@ -1,5 +1,10 @@
 # Unreleased
 
+* Fix compatibility with GitHub Enterprise installations.
+
+# 0.22.1
+
+* Update omniauth Fix GitHub authentication for enterprise installations.
 * Limit delete batches to 50 while purging deliveries to avoid excessive contention.
 
 # 0.22.0
