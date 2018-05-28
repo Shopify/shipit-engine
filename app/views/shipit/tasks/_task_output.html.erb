@@ -8,7 +8,7 @@
   <div class="sidebar-plugins"></div>
 </div>
 
-<div class="deploy-main" data-task="<%= {repo: @stack.github_repo_name, description: task_description(task)}.to_json %>">
+<div class="deploy-main" data-task="<%= {repo: @stack.github_repo_name, description: task.title}.to_json %>">
   <span class="deploy-tasks"></span>
   <div class="deploy-banner" data-status="<%= task.status %>">
     <div class="deploy-banner-status"></div>

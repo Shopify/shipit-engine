@@ -26,6 +26,15 @@ module Shipit
       @variables = task_variables(config['variables'] || [])
       @checklist = config['checklist'] || []
       @allow_concurrency = config['allow_concurrency'] || false
+      @title = config['title']
+    end
+
+    def render_title(env)
+      if @title
+        @title % env.symbolize_keys
+      else
+        action
+      end
     end
 
     def allow_concurrency?
@@ -36,6 +45,7 @@ module Shipit
       {
         id: id,
         action: action,
+        title: @title,
         description: description,
         steps: steps,
         variables: variables.map(&:to_h),

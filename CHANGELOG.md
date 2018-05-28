@@ -1,5 +1,6 @@
 # Unreleased
 
+* Add `title` property to tasks to control the task will be displayed in the timeline.
 * Allow to configure the merge method used by the merge queue.
 * Fix compatibility with GitHub Enterprise installations.
 

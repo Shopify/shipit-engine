@@ -79,6 +79,10 @@ module Shipit
       rollback
     end
 
+    def title
+      I18n.t("#{self.class.name.demodulize.underscore.pluralize}.description", sha: until_commit.short_sha)
+    end
+
     def rollback?
       false
     end

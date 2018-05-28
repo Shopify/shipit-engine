@@ -6,6 +6,7 @@ module Shipit
       @definition = TaskDefinition.new(
         'restart',
         'action' => 'Restart application',
+        'title' => 'Restart application %{FOO}',
         'description' => 'Restart app and job servers',
         'steps' => ['touch tmp/restart'],
         'allow_concurrency' => true,
@@ -36,6 +37,7 @@ module Shipit
       as_json = {
         id: 'restart',
         action: 'Restart application',
+        title: "Restart application %{FOO}",
         description: 'Restart app and job servers',
         steps: ['touch tmp/restart'],
         checklist: [],

@@ -171,3 +171,6 @@ Style/PercentLiteralDelimiters:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false

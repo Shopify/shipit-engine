@@ -13,6 +13,7 @@ module Shipit
       type
       status
       action
+      title
       description
       started_at
       ended_at
