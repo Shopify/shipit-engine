@@ -1,6 +1,6 @@
 module Shipit
   class MergeStatusController < ShipitController
-    skip_before_action :force_github_authentication, only: %i(check show)
+    skip_authentication only: %i(check show)
 
     etag { cache_seed }
     layout 'merge_status'
