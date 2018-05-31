@@ -1,0 +1,21 @@
+<div class="branch-action-item js-details-container" <% if queue_enabled? %>data-queue-enabled<% end %> data-merge-status="<%= stack_status %>">
+  <%= render 'merge_queue_button' if queue_enabled? %>
+  <div class="branch-action-item-icon completeness-indicator">
+    <%= render 'anchor', color: '#cea61b' %>
+  </div>
+  <h4 class="status-heading text-pending">
+    <% if pull_request.waiting? %>
+      Will be merged shortly after the backlog is shipped!
+    <% else %>
+      Please hold off merging!
+      <% if queue_enabled? %>
+        Add it to the merge queue instead.
+      <% end %>
+    <% end %>
+  </h4>
+  <span class="status-meta">
+    <%= link_to @stack.to_param, stack_url(@stack), target: '_blank', rel: 'noopener' %>
+    is <strong>backlogged</strong>
+  </span>
+  <%= render 'commit_count_warning' if too_many_commits?(params[:commits].to_i) %>
+</div>

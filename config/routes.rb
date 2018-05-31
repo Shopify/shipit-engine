@@ -38,6 +38,11 @@ Shipit::Engine.routes.draw do
     get '/' => 'ccmenu_url#fetch'
   end
 
+  # Browser extension
+  get '/merge_status', action: :show, controller: :merge_status, as: :merge_status
+  put '/merge_status/*stack_id/pull/:number', action: :enqueue, controller: :merge_status, id: stack_id_format, as: :enqueue_pull_request
+  delete '/merge_status/*stack_id/pull/:number', action: :dequeue, controller: :merge_status, id: stack_id_format, as: :dequeue_pull_request
+
   # Humans
   resources :stacks, only: %i(new create index)
 

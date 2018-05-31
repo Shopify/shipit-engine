@@ -1,0 +1,16 @@
+<% classes = 'branch-action-btn float-right js-immediate-updates js-handle-pull-merging-errors' %>
+<% if pull_request.try!(&:waiting?) %>
+  <%= form_tag dequeue_pull_request_path(stack, pull_request_number), method: 'delete', class: classes, data: {remote: true} do %>
+    <%= hidden_field_tag 'referrer', params[:referrer] %>
+    <button type="submit" data-disable-with="Removing from merge queue…" class="btn">
+      Remove from merge queue
+    </button>
+  <% end %>
+<% else %>
+  <%= form_tag enqueue_pull_request_path(stack, pull_request_number), method: 'put', class: classes, data: {remote: true} do %>
+    <%= hidden_field_tag 'referrer', params[:referrer] %>
+    <button type="submit" data-disable-with="Adding to merge queue…" class="btn btn-primary">
+      Add to merge queue
+    </button>
+  <% end %>
+<% end %>
