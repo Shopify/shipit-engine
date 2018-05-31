@@ -58,6 +58,7 @@ Style/Next:
 
 Metrics/LineLength:
   Exclude:
+    - config/routes.rb
     - test/**/*
     - lib/tasks/teams.rake
   Max: 120
