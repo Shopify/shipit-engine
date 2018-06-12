@@ -14,7 +14,6 @@ module Shipit
       @commands = stub(:commands)
       Commands.expects(:for).with(@deploy).returns(@commands)
 
-      @commands.expects(:fetched?).once.returns(false)
       @commands.expects(:fetch).once
       @commands.expects(:clone).once
       @commands.expects(:checkout).with(@deploy.until_commit).once

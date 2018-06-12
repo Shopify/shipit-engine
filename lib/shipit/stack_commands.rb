@@ -16,15 +16,6 @@ module Shipit
       end
     end
 
-    def fetched?(commit)
-      git_dir = File.join(@stack.git_path, '.git')
-      if Dir.exist?(git_dir)
-        git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
-      else
-        Command.new('test', '-d', git_dir, env: env, chdir: @stack.deploys_path)
-      end
-    end
-
     def fetch_deployed_revision
       with_temporary_working_directory(commit: @stack.commits.last) do |dir|
         spec = DeploySpec::FileSystem.new(dir, @stack.environment)

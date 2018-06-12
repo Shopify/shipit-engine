@@ -1,5 +1,6 @@
 # Unreleased
 
+* Always fetch from the remote before a task to ensure any newly pushed tag is present.
 * Release the browser extension endpoint.
 * Add `title` property to tasks to control the task will be displayed in the timeline.
 * Allow to configure the merge method used by the merge queue.
