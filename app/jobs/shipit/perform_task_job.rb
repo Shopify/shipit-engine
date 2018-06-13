@@ -65,7 +65,7 @@ module Shipit
       @task.acquire_git_cache_lock do
         capture! @commands.fetch
       end
-      capture! @commands.clone
+      capture_all! @commands.clone
       capture! @commands.checkout(@task.until_commit)
     end
 

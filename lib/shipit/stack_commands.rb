@@ -42,7 +42,7 @@ module Shipit
       end
 
       Dir.mktmpdir do |dir|
-        git('clone', @stack.git_path, @stack.repo_name, chdir: dir).run!
+        git('clone', @stack.git_path, @stack.repo_name, '--origin', 'cache', chdir: dir).run!
         git_dir = File.join(dir, @stack.repo_name)
         git('checkout', commit.sha, chdir: git_dir).run! if commit
         yield Pathname.new(git_dir)

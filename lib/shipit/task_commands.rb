@@ -47,7 +47,18 @@ module Shipit
     end
 
     def clone
-      git('clone', '--local', @stack.git_path, @task.working_directory, chdir: @stack.deploys_path)
+      [
+        git(
+          'clone',
+          '--local',
+          '--origin',
+          'cache',
+          @stack.git_path,
+          @task.working_directory,
+          chdir: @stack.deploys_path,
+        ),
+        git('remote', 'add', 'origin', @stack.repo_git_url, chdir: @task.working_directory),
+      ]
     end
 
     def stack_commands
