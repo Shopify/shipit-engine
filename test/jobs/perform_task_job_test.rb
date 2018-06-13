@@ -15,7 +15,7 @@ module Shipit
       Commands.expects(:for).with(@deploy).returns(@commands)
 
       @commands.expects(:fetch).once
-      @commands.expects(:clone).once
+      @commands.expects(:clone).returns([]).once
       @commands.expects(:checkout).with(@deploy.until_commit).once
       @commands.expects(:install_dependencies).returns([]).once
       @commands.expects(:perform).returns([]).once
