@@ -1,5 +1,7 @@
 # Unreleased
 
+* The default gem release method is now compatible with continuous delivery.
+* The default gem release method now assume Shipit can push tags back to the origin repository.
 * Set the proper origin remote on working directory repositories.
 
 # 0.23.0

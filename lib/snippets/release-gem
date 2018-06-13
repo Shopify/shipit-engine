@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'net/https'
+require 'uri'
+
+module RubygemsAPI
+  extend self
+
+  def published?(name, version)
+    uri = URI.parse("https://rubygems.org/api/v2/rubygems/#{name}/versions/#{version}.json")
+    Net::HTTP.get_response(uri).is_a?(Net::HTTPSuccess)
+  end
+end
+
+spec_path, *release_command = ARGV
+release_command = %w(bundle exec rake release) if release_command.empty?
+
+spec = Gem::Specification.load(spec_path)
+if RubygemsAPI.published?(spec.name, spec.version)
+  puts "#{spec.name} version #{spec.version} is already published."
+  exit 0
+else
+  exec(*release_command)
+end

@@ -261,7 +261,7 @@ module Shipit
     test '#publish_gem first check if version tag have been created, and then invoke bundler release task' do
       @spec.stubs(:gemspec).returns('/tmp/shipit.gemspec')
       refute @spec.capistrano?
-      assert_equal ['assert-gem-version-tag /tmp/shipit.gemspec', 'bundle exec rake release'], @spec.deploy_steps
+      assert_equal ['release-gem /tmp/shipit.gemspec'], @spec.deploy_steps
     end
 
     test '#setup_dot_py gives the path of the repo setup.py if present' do
