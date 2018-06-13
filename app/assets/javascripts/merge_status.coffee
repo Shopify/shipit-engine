@@ -43,10 +43,10 @@ class MergeStatusPoller
         @onPageChange()
 
   isMergeQueueEnabled: =>
-    document.querySelector('.merge-status-container .js-details-container').hasAttribute('data-queue-enabled')
+    document.querySelector('.merge-status-container .js-details-container')?.hasAttribute('data-queue-enabled')
 
   mergeStatus: =>
-    document.querySelector('.merge-status-container .js-details-container').getAttribute('data-merge-status') || 'unknown'
+    document.querySelector('.merge-status-container .js-details-container')?.getAttribute('data-merge-status') || 'unknown'
 
 class AjaxAction
   constructor: (@poller) ->
