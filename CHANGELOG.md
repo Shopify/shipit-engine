@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.23.1
+
+* Fix NoMethodError in CacheDeploySpecJob.
+
 # 0.23.0
 
 * Always fetch from the remote before a task to ensure any newly pushed tag is present.
