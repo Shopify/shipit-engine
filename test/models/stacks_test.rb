@@ -80,7 +80,7 @@ module Shipit
     end
 
     test "repo_git_url" do
-      assert_equal "git@github.com:#{@stack.repo_owner}/#{@stack.repo_name}.git", @stack.repo_git_url
+      assert_equal "https://github.com/#{@stack.repo_owner}/#{@stack.repo_name}.git", @stack.repo_git_url
     end
 
     test "base_path" do
