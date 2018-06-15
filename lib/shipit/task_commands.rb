@@ -42,8 +42,12 @@ module Shipit
       ).merge(deploy_spec.machine_env).merge(@task.env)
     end
 
-    def checkout(commit)
-      git('checkout', commit.sha, chdir: @task.working_directory)
+    def checkout(commit, temporary_branch = nil)
+      if temporary_branch
+        git('checkout', '-b', temporary_branch, commit.sha, chdir: @task.working_directory)
+      else
+        git('checkout', commit.sha, chdir: @task.working_directory)
+      end
     end
 
     def clone
