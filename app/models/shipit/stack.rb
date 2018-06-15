@@ -292,7 +292,7 @@ module Shipit
     end
 
     def repo_git_url
-      "git@#{Shipit.github.domain}:#{repo_owner}/#{repo_name}.git"
+      "https://#{Shipit.github.domain}/#{repo_owner}/#{repo_name}.git"
     end
 
     def base_path

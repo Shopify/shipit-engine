@@ -15,10 +15,15 @@ module Shipit
         Gem::Version.new($1)
       end
     end
+
     delegate :git_version, to: :class
 
     def env
-      @env ||= Shipit.env
+      @env ||= Shipit.env.merge(
+        'GITHUB_DOMAIN' => Shipit.github.domain,
+        'GITHUB_TOKEN' => Shipit.github.token,
+        'GIT_ASKPASS' => Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s,
+      )
     end
 
     def git(*args)
