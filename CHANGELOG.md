@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.24.0
+
 * Checkout a temporary branch before performing tasks.
 * Use HTTPS protocol for git operations.
 * The default gem release method is now compatible with continuous delivery.
