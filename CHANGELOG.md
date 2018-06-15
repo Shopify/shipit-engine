@@ -1,6 +1,5 @@
 # Unreleased
 
-* Checkout a temporary branch before performing tasks.
 * Use HTTPS protocol for git operations.
 * The default gem release method is now compatible with continuous delivery.
 * The default gem release method now assume Shipit can push tags back to the origin repository.

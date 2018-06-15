@@ -66,7 +66,7 @@ module Shipit
         capture! @commands.fetch
       end
       capture_all! @commands.clone
-      capture! @commands.checkout(@task.until_commit, "shipit-#{@task.id}")
+      capture! @commands.checkout(@task.until_commit)
     end
 
     def capture_all!(commands)

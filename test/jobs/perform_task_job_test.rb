@@ -16,7 +16,7 @@ module Shipit
 
       @commands.expects(:fetch).once
       @commands.expects(:clone).returns([]).once
-      @commands.expects(:checkout).with(@deploy.until_commit, "shipit-#{@deploy.id}").once
+      @commands.expects(:checkout).with(@deploy.until_commit).once
       @commands.expects(:install_dependencies).returns([]).once
       @commands.expects(:perform).returns([]).once
 
