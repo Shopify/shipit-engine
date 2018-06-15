@@ -3,12 +3,12 @@
 GITHUB_USER="${GITHUB_USER:-git}"
 GITHUB_DOMAIN="${GITHUB_DOMAIN:-github.com}"
 
-if [[ "${1}" == "Username for 'https://${GITHUB_DOMAIN}': " ]]; then
+if [ "${1}" = "Username for 'https://${GITHUB_DOMAIN}': " ]; then
   echo "${GITHUB_USER}"
   exit 0
 fi
 
-if [[ "${1}" == "Password for 'https://${GITHUB_USER}@${GITHUB_DOMAIN}': " ]]; then
+if [ "${1}" = "Password for 'https://${GITHUB_USER}@${GITHUB_DOMAIN}': " ]; then
   echo "${GITHUB_TOKEN}"
   exit 0
 fi
