@@ -197,6 +197,17 @@ module Shipit
       assert_equal '1', @commands.env['IGNORED_SAFETIES']
     end
 
+    test "GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL are exposed" do
+      assert_equal 'shipit@shipit.com', @commands.env['GIT_COMMITTER_EMAIL']
+      assert_equal 'Shipit', @commands.env['GIT_COMMITTER_NAME']
+
+      walrus = shipit_users(:walrus)
+      @deploy.update!(user: walrus)
+
+      assert_equal walrus.email, @commands.env['GIT_COMMITTER_EMAIL']
+      assert_equal walrus.name, @commands.env['GIT_COMMITTER_NAME']
+    end
+
     test "#clear_working_directory rm -rf the working directory" do
       FileUtils.expects(:rm_rf).with(@deploy.working_directory)
       @commands.clear_working_directory

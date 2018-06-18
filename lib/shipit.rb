@@ -169,6 +169,14 @@ module Shipit
     secrets.commands_inactivity_timeout || 5.minutes.to_i
   end
 
+  def committer_name
+    secrets.committer_name.presence || app_name
+  end
+
+  def committer_email
+    secrets.committer_email.presence || "#{app_name.underscore.dasherize}@#{host}"
+  end
+
   protected
 
   def revision_file

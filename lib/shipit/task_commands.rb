@@ -39,6 +39,8 @@ module Shipit
         'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
         'TASK_ID' => @task.id.to_s,
         'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
+        'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
+        'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
       ).merge(deploy_spec.machine_env).merge(@task.env)
     end
 
