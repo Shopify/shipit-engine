@@ -12,6 +12,37 @@ module RubygemsAPI
   end
 end
 
+module Git
+  extend self
+
+  def tag_and_push(version)
+    if tag_and_push?(version)
+      yield
+    else
+      tag(version) && yield && push_tags
+    end
+  end
+
+  def tag_exists?(version)
+    system('git', 'rev-parse', '--verify', "v#{version}^{commit}", out: File::NULL, err: File::NULL)
+  end
+
+  def tag(version)
+    puts "Running: git tag -m 'Version #{version}' v#{version}"
+    system('git', 'tag', '-m', "Version #{version}", "v#{version}")
+  end
+
+  def delete_tag(version)
+    puts "Running: git tag -d v#{version}"
+    system('git', 'tag', '-d', "v#{version}")
+  end
+
+  def push_tags
+    puts "Running: git push --tags"
+    system('git', 'push', '--tag')
+  end
+end
+
 spec_path, *release_command = ARGV
 release_command = %w(bundle exec rake release) if release_command.empty?
 
@@ -20,5 +51,7 @@ if RubygemsAPI.published?(spec.name, spec.version)
   puts "#{spec.name} version #{spec.version} is already published."
   exit 0
 else
-  exec(*release_command)
+  Git.tag_and_push(spec.version) do
+    system(*release_command)
+  end
 end
