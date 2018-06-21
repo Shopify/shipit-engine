@@ -66,7 +66,6 @@ module Shipit
       [
         oauth_id,
         oauth_secret,
-        scope: 'email,repo_deployment',
         client_options: options,
       ]
     end
