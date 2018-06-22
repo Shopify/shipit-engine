@@ -21,7 +21,7 @@ Shipit provides you with a Rails template. To bootstrap your Shipit installation
 
 Shipit needs a GitHub App to authenticate users, receive Webhooks and access the API.
 
-You can create a new one for your organization at [https://github.com/organizations/<your-org>/settings/apps/new](https://github.com/organizations/<your-org>/settings/apps/new)
+You can create a new one for your organization at `https://github.com/organizations/<your-org>/settings/apps/new`, or [https://github.com/settings/apps/new](https://github.com/settings/apps/new) for a regular user.
 
   - Homepage URL: The URL where Shipit will be deployed, e.g. `https://example.com`.
   - User authorization callback URL: It must be set to `<homepage>/github/auth/github/callback`, e.g. `https://example.com/github/auth/github/callback`.
