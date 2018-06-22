@@ -59,6 +59,10 @@ module Shipit
 
   self.timeout_exit_codes = [].freeze
 
+  def authentication_disabled?
+    ENV['SHIPIT_DISABLE_AUTH'].present?
+  end
+
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end

@@ -31,7 +31,7 @@ module Shipit
     end
 
     def authorized?
-      false
+      Shipit.authentication_disabled?
     end
 
     def stacks_contributed_to

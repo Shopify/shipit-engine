@@ -16,7 +16,7 @@ module Shipit
     private
 
     def force_github_authentication
-      if current_user.logged_in?
+      if Shipit.authentication_disabled? || current_user.logged_in?
         unless current_user.authorized?
           team_handles = Shipit.github_teams.map(&:handle)
           team_list = team_handles.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
