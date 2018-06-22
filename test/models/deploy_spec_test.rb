@@ -350,6 +350,21 @@ module Shipit
       assert_equal ['foo'], definition.steps
     end
 
+    test "#task_definitions does not add kubernetes-restart if restart task is already defined" do
+      @spec.stubs(:load_config).returns(
+        'tasks' => {'restart' => {'steps' => %w(foo)}},
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      tasks = @spec.task_definitions
+      assert_equal 1, tasks.size
+
+      restart_task = tasks.first
+      assert_equal ["foo"], restart_task.steps
+    end
+
     test "#task_definitions returns kubernetes commands as well as comands from the config" do
       @spec.stubs(:load_config).returns(
         'tasks' => {'another_task' => {'steps' => %w(foo)}},
