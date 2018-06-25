@@ -17,7 +17,7 @@ module Shipit
               'description' => "Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility",
               'steps' => [kubernetes_restart_cmd],
             },
-          }
+          }.merge!(super)
         else
           super
         end
