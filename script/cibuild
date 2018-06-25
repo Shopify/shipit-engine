@@ -22,8 +22,7 @@ case $SUITE in
     ;;
   sqlite3)
     echo "Testing SQLite3"
-    bundle exec rake db:create db:schema:load test
-    # TODO: Figure out why seed is failing with SQLite
+    run_test_suite
     ;;
   rubocop)
     bundle exec rubocop
