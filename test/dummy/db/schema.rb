@@ -208,7 +208,7 @@ ActiveRecord::Schema.define(version: 20180417130436) do
     t.integer "additions", limit: 4, default: 0
     t.integer "deletions", limit: 4, default: 0
     t.text "definition", limit: 65535
-    t.binary "gzip_output"
+    t.binary "gzip_output", limit: 16777215
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false
