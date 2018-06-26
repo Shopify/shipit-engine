@@ -31,3 +31,4 @@ test/dummy/data/*
 test/dummy/.sass-cache
 
 .byebug_history
+*.sw*

@@ -350,9 +350,59 @@ module Shipit
       assert_equal ['foo'], definition.steps
     end
 
-    test "#task_definitions returns kubernetes commands as well as comands from the config" do
+    test "#task_definitions will always have definitions from shipit.yml take precedence over other modules" do
+      # Create a subclass of `FileSystem` which we can include another module in without
+      # affecting any other tests
+      DuplicateCustomizedDeploySpec = Class.new(Shipit::DeploySpec::FileSystem)
+
+      # Create the module we want to include in our new class
+      # For this test case, we want to have the module create a task with the same
+      # ID as defined from config
+      module TestTaskDiscovery
+        def discover_task_definitions
+          {
+            'config_task' => {'steps' => %w(bar)},
+          }.merge!(super)
+        end
+      end
+
+      # Include the module in our new test class
+      DuplicateCustomizedDeploySpec.include TestTaskDiscovery
+
+      # Setup the spec as we would normally, but use the customized version
+      @spec = DuplicateCustomizedDeploySpec.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns(
-        'tasks' => {'another_task' => {'steps' => %w(foo)}},
+        'tasks' => {'config_task' => {'steps' => %w(foo)}},
+      )
+      tasks = @spec.task_definitions
+
+      # Assert we get only the task from the config, not from the module
+      assert_equal %w(config_task), tasks.map(&:id)
+      assert_equal ["foo"], tasks.first.steps
+    end
+
+    test "#task_definitions returns comands from the config and other modules" do
+      # Create a subclass of `FileSystem` which we can include another module in without
+      # affecting any other tests
+      CustomizedDeploySpec = Class.new(Shipit::DeploySpec::FileSystem)
+
+      # Create the module we want to include in our new class
+      # This module demonstrates how to have new tasks to be appended to the task list
+      module TestTaskDiscovery
+        def discover_task_definitions
+          {
+            'module_task' => {'steps' => %w(bar)},
+          }.merge(super)
+        end
+      end
+
+      # Include the module in our new test class
+      CustomizedDeploySpec.include TestTaskDiscovery
+
+      # Setup the spec as we would normally, but use the customized version
+      @spec = CustomizedDeploySpec.new(@app_dir, 'env')
+      @spec.stubs(:load_config).returns(
+        'tasks' => {'config_task' => {'steps' => %w(foo)}},
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
@@ -360,7 +410,16 @@ module Shipit
         },
       )
       tasks = @spec.task_definitions
-      assert_equal 2, tasks.size
+
+      # Assert we get tasks from all three sources: config, shipit-engine defined modules, and
+      # "third party" modules
+      assert_equal %w(config_task module_task restart), tasks.map(&:id).sort
+
+      module_task = tasks.find { |t| t.id == "config_task" }
+      assert_equal ["foo"], module_task.steps
+
+      config_task = tasks.find { |t| t.id == "module_task" }
+      assert_equal ["bar"], config_task.steps
 
       restart_task = tasks.find { |t| t.id == "restart" }
       assert_equal ["kubernetes-restart foo bar --max-watch-seconds 1200"], restart_task.steps
