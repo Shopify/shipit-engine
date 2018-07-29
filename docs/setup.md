@@ -51,7 +51,7 @@ Once it's created, make sure it's installed on your organization via the `Instal
 
 ## Updating the config/secrets.yml
 
-The `config/secrets/yml` file will hold your secrets, by default it is ignored by git, so it's up to you to decide how secrets are deployed in production, as Rails doesn't enforce any method.
+The `config/secrets.yml` file will hold your secrets, by default it is ignored by git, so it's up to you to decide how secrets are deployed in production, as Rails doesn't enforce any method.
 
 It should look like this:
 
