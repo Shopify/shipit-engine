@@ -33,8 +33,9 @@ You can create a new one for your organization at `https://github.com/organizati
     - Commit statuses: Read-only
     - Deployments: Read & write
     - Pull requests: Read & write
-    - Repository contents: Read & write
     - Organization members: Read-only
+    - Repository contents: Read & write (to allow merging)
+    - Issues: Read & write (to allow closing related issues on merge)
   - Events:
     - Status
     - Pull request
