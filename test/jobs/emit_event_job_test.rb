@@ -8,7 +8,7 @@ module Shipit
     end
 
     test "#perform schedule deliveries" do
-      assert_difference -> { Delivery.scheduled.count }, 2 do
+      assert_enqueued_jobs(2, only: DeliverHookJob) do
         @job.perform(event: :deploy, stack_id: @stack.id, payload: {foo: 42}.to_json)
       end
     end

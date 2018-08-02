@@ -246,7 +246,9 @@ module Shipit
 
       unless already_deployed
         payload = {commit: self, stack: stack, status: new_status.state}
-        Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
+        if previous_status != new_status
+          Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status))
+        end
       end
 
       if previous_status.simple_state != new_status.simple_state
