@@ -10,6 +10,31 @@ module Shipit
       @commit = shipit_commits(:first)
     end
 
+    test '.create_from_github handle unknown users' do
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'George Abitbol',
+                email: '',
+                date: Time.now,
+              },
+              committer: {
+                name: 'George Abitbol',
+                email: '',
+                date: Time.now,
+              },
+              message: "commit to trigger staging build",
+            },
+          ),
+        )
+      end
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?
@@ -181,7 +206,7 @@ module Shipit
         message: "more fish!",
       )
       @stack.reload
-      assert_equal 2, @stack.undeployed_commits_count
+      assert_equal 3, @stack.undeployed_commits_count
     end
 
     test "fetch_stats! pulls additions and deletions from github" do

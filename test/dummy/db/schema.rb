@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180417130436) do
+ActiveRecord::Schema.define(version: 20180802172632) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(version: 20180417130436) do
 
   create_table "commits", force: :cascade do |t|
     t.integer "stack_id", limit: 4, null: false
-    t.integer "author_id", limit: 4, null: false
-    t.integer "committer_id", limit: 4, null: false
+    t.integer "author_id", limit: 4
+    t.integer "committer_id", limit: 4
     t.string "sha", limit: 40, null: false
     t.text "message", limit: 65535, null: false
     t.datetime "created_at"

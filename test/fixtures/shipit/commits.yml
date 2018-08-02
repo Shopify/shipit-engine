@@ -117,6 +117,19 @@ cyclimse_merged:
   updated_at: <%= 8.days.ago.to_s(:db) %>
   pull_request_id: 99
 
+anonymous:
+  id: 10
+  sha: 216100bc78431fd73cac00592cd016d0d508458e
+  message: "whoami"
+  stack: shipit
+  author:
+  committer:
+  authored_at: <%= 10.days.ago.to_s(:db) %>
+  committed_at: <%= 9.days.ago.to_s(:db) %>
+  additions: 42
+  deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+
 soc_first:
   id: 101
   sha: 5e9278037b872fd9a6690523e411ecb3aa181355
