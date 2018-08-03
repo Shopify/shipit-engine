@@ -40,7 +40,6 @@ module Shipit
       @stack.deploys_and_rollbacks.destroy_all
 
       initial_queue = [
-        ["whoami", false],
         ["fix all the things", false],
         ["yoloshipit!", false],
         ["fix it!", false],

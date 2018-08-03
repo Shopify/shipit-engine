@@ -21,14 +21,6 @@ module Shipit
     belongs_to :author, class_name: 'User', inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', inverse_of: :commits
 
-    def author
-      super || AnonymousUser.new
-    end
-
-    def committer
-      super || AnonymousUser.new
-    end
-
     scope :reachable, -> { where(detached: false) }
 
     delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
@@ -72,16 +64,11 @@ module Shipit
     end
 
     def self.from_github(commit)
-      author = User.find_or_create_from_github(commit.author.presence || commit.commit.author.presence)
-      author ||= Anonymous.new
-      committer = User.find_or_create_from_github(commit.committer.presence || commit.commit.committer.presence)
-      committer ||= Anonymous.new
-
       new(
         sha: commit.sha,
         message: commit.commit.message,
-        author:  author,
-        committer: committer,
+        author: User.find_or_create_from_github(commit.author || commit.commit.author),
+        committer: User.find_or_create_from_github(commit.committer || commit.commit.committer),
         committed_at: commit.commit.committer.date,
         authored_at: commit.commit.author.date,
         additions: commit.stats&.additions,

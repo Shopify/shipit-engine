@@ -8,8 +8,6 @@ module Shipit
     has_many :commits, foreign_key: :committer_id, inverse_of: :committer
     has_many :tasks
 
-    validates :name, presence: true
-
     attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
 
     def self.find_or_create_by_login!(login)
@@ -19,7 +17,7 @@ module Shipit
     end
 
     def self.find_or_create_from_github(github_user)
-      find_from_github(github_user) || create_from_github(github_user)
+      find_from_github(github_user) || create_from_github!(github_user)
     end
 
     def self.find_from_github(github_user)
@@ -27,8 +25,8 @@ module Shipit
       find_by(github_id: github_user.id)
     end
 
-    def self.create_from_github(github_user)
-      create(github_user: github_user)
+    def self.create_from_github!(github_user)
+      create!(github_user: github_user)
     end
 
     def self.refresh_shard(shard_index, shards_count)

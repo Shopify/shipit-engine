@@ -63,9 +63,4 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
-  private
-
-  def resource(data)
-    Sawyer::Resource.new(Sawyer::Agent.new('http://example.com'), data)
-  end
 end

@@ -36,7 +36,6 @@ module Shipit
 
       expected = [
         ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false],
-        ["whoami", false],
         ['fix all the things', false],
       ]
       assert_equal expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?] }
@@ -47,7 +46,6 @@ module Shipit
 
       expected = [
         ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false],
-        ["whoami", true],
         ['fix all the things', true],
         ['yoloshipit!', true],
       ]

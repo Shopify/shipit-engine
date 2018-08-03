@@ -5,7 +5,7 @@ module Shipit
   class CacheDeploySpecJobTest < ActiveSupport::TestCase
     setup do
       @stack = shipit_stacks(:shipit)
-      @last_commit = @stack.commits.last
+      @last_commit = shipit_commits(:fifth)
       @job = CacheDeploySpecJob.new
     end
 
