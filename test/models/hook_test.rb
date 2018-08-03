@@ -29,23 +29,10 @@ module Shipit
       assert_equal ["Events is not a strict subset of #{Hook::EVENTS.inspect}"], @hook.errors.full_messages
     end
 
-    test ".emit enqueues an EmitEventJob with the proper payload" do
-      assert_enqueued_with(job: EmitEventJob) do
-        Hook.emit(:deploy, @stack, foo: 42)
-      end
-    end
-
     test ".deliver schedules a delivery for each matching hook" do
-      assert_difference -> { Delivery.count }, 2 do
+      assert_enqueued_jobs(2, only: DeliverHookJob) do
         Hook.deliver(:deploy, @stack, 'foo' => 42)
       end
-
-      delivery = Delivery.last
-
-      assert_equal @hook.delivery_url, delivery.url
-      assert_equal 'application/x-www-form-urlencoded', delivery.content_type
-      assert_equal 'foo=42', delivery.payload
-      assert_equal 'scheduled', delivery.status
     end
 
     test ".scoped? returns true if the hook has a stack_id" do
@@ -54,20 +41,6 @@ module Shipit
 
       @hook.stack_id = 42
       assert @hook.scoped?
-    end
-
-    test "#purge_old_deliveries!" do
-      Hook.deliver(:deploy, @stack, 'foo' => 42)
-      @hook.deliveries.update_all(status: 'sent')
-
-      previous_ids = @hook.deliveries.sent.order(id: :desc).pluck(:id)
-
-      assert_difference -> { @hook.deliveries.sent.count }, -1 do
-        @hook.purge_old_deliveries!(keep: 1)
-      end
-
-      after_ids = @hook.deliveries.sent.order(id: :desc).pluck(:id)
-      assert_equal previous_ids[0..-2], after_ids
     end
   end
 end

@@ -1,5 +1,38 @@
 module Shipit
   class Hook < ActiveRecord::Base
+    class DeliverySpec
+      def initialize(event:, url:, content_type:, payload:)
+        @event = event
+        @url = url
+        @content_type = content_type
+        @payload = payload
+      end
+
+      def send!
+        http.post(url, payload)
+      end
+
+      private
+
+      attr_reader :event, :url, :content_type, :payload
+
+      def http
+        Faraday::Connection.new do |connection|
+          connection.headers = headers
+          connection.adapter Faraday.default_adapter
+        end
+      end
+
+      def headers
+        {
+          'User-Agent' => 'Shipit Webhook',
+          'Content-Type' => content_type,
+          'X-Shipit-Event' => event,
+          'Accept' => '*/*',
+        }
+      end
+    end
+
     default_scope { order :id }
 
     DELIVERIES_LOG_SIZE = 500
@@ -71,12 +104,12 @@ module Shipit
     end
 
     def deliver!(event, payload)
-      deliveries.create!(
-        event: event,
+      DeliverHookJob.perform_later(
+        event: event.to_s,
         url: delivery_url,
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
-      ).schedule!
+      )
     end
 
     def purge_old_deliveries!(keep: DELIVERIES_LOG_SIZE)
