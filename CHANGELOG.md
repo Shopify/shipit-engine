@@ -1,5 +1,6 @@
 # Unreleased
 
+* Set `ROLLBACK=1` for rollback commands.
 * Allow to disable authentication entirely with `SHIPIT_DISABLE_AUTH=1` for easier development.
 * Don't pass OAuth scope to GitHub for the authentication process.
 * Use HTTPS protocol for git operations.

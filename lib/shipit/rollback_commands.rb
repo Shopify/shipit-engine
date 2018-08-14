@@ -3,5 +3,11 @@ module Shipit
     def steps
       deploy_spec.rollback_steps!
     end
+
+    def env
+      super.merge(
+        'ROLLBACK' => '1',
+      )
+    end
   end
 end
