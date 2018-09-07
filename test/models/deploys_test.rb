@@ -466,6 +466,58 @@ module Shipit
       assert_predicate @deploy, :alive?
     end
 
+    test "triggering a deploy sets the release status as pending" do
+      @commit = shipit_commits(:fifth)
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_equal 'unknown', @commit.last_release_status.state
+        @deploy = @stack.trigger_deploy(@commit, AnonymousUser.new)
+        assert_equal 'pending', @commit.last_release_status.state
+      end
+    end
+
+    test "failing a deploy sets the release status as error" do
+      @deploy = shipit_deploys(:shipit_running)
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_not_equal 'error', @deploy.last_release_status.state
+        @deploy.report_failure!(StandardError.new)
+        assert_equal 'error', @deploy.last_release_status.state
+      end
+    end
+
+    test "succeeding a deploy sets the release status as success if the status delay is 0s" do
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.stack.expects(:release_status_delay).returns(Duration.parse(0))
+
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_not_equal 'success', @deploy.last_release_status.state
+        @deploy.complete!
+        assert_equal 'success', @deploy.last_release_status.state
+      end
+    end
+
+    test "succeeding a deploy sets the release status as pending if the status delay is longer than 0s" do
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.stack.expects(:release_status_delay).returns(Duration.parse(1))
+
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_not_equal 'success', @deploy.last_release_status.state
+        assert_enqueued_with(job: AppendDelayedReleaseStatusJob) do
+          @deploy.complete!
+        end
+        assert_equal 'pending', @deploy.last_release_status.state
+      end
+    end
+
+    test "triggering a rollback sets the release status as failure" do
+      @deploy = shipit_deploys(:shipit_complete)
+
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_not_equal 'failure', @deploy.last_release_status.state
+        @deploy.trigger_rollback
+        assert_equal 'failure', @deploy.reload.last_release_status.state
+      end
+    end
+
     private
 
     def expect_event(deploy)

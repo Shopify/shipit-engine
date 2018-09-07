@@ -6,3 +6,21 @@
   height: 15px;
   width: 12px;
 }
+
+.icon--validate {
+  display: inline-block;
+  background-color: #000;
+  mask: asset-data-url("success-small.svg") no-repeat 50% 50%;
+//  background: asset-data-url("lock.svg") center center no-repeat;
+  height: 15px;
+  width: 12px;
+}
+
+.icon--reject {
+  display: inline-block;
+  background-color: #000;
+  mask: asset-data-url("error-small.svg") no-repeat 50% 50%;
+//  background: asset-data-url("lock.svg") center center no-repeat;
+  height: 15px;
+  width: 12px;
+}

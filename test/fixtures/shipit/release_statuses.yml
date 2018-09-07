@@ -1,0 +1,16 @@
+to_be_created:
+  stack: shipit
+  commit_id: 4
+  user: walrus
+  state: pending
+  description: Deploy started
+  target_url: https://example.com/deploys/42
+
+created:
+  stack: shipit
+  commit_id: 1
+  user: walrus
+  state: pending
+  description: Deploy started
+  target_url: https://example.com/deploys/24
+  github_id: 234234234

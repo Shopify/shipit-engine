@@ -67,6 +67,20 @@ module Shipit
       config('deploy', 'max_commits') { 8 }
     end
 
+    def release_status?
+      !!release_status_context
+    end
+
+    def release_status_context
+      config('status', 'context')
+    end
+
+    def release_status_delay
+      if delay = config('status', 'delay') { config('deploy', 'interval') }
+        Duration.parse(delay)
+      end
+    end
+
     def pause_between_deploys
       Duration.parse(config('deploy', 'interval') { 0 })
     end
@@ -131,7 +145,7 @@ module Shipit
     end
 
     def hidden_statuses
-      Array.wrap(config('ci', 'hide'))
+      Array.wrap(config('ci', 'hide')) + [release_status_context].compact
     end
 
     def required_statuses
@@ -161,7 +175,7 @@ module Shipit
 
     def pull_request_ignored_statuses
       if config('merge', 'require') || config('merge', 'ignore')
-        Array.wrap(config('merge', 'ignore'))
+        Array.wrap(config('merge', 'ignore')) + [release_status_context].compact
       else
         soft_failing_statuses | hidden_statuses
       end

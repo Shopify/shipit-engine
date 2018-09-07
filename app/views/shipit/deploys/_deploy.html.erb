@@ -1,6 +1,6 @@
 <%- read_only ||= false -%>
 
-<li class="task deploy" id="task-<%= deploy.id %>" data-status="<%= deploy.status %>">
+<li class="task deploy" id="task-<%= deploy.id %>" data-status="<%= deploy.status %>" data-release-status="<%= deploy.last_release_status.state %>">
   <% cache deploy do %>
     <% cache deploy.author do %>
       <%= render 'shipit/shared/author', author: deploy.author %>
@@ -16,6 +16,11 @@
         </a>
       </span>
       <p class="commit-meta">
+        <% if @stack.release_status? %>
+          <%= link_to '#', data: {tooltip: deploy.last_release_status.description.presence} do %>
+            <i class="deploy-status__icon"></i>
+          <% end %>
+        <% end %>
         <%= deploy.rollback? ? 'rolled back' : 'deployed' %>
         <span class="sha"><%= link_to_github_deploy(deploy) %></span>
         <span class="code-additions">+<%= deploy.additions %></span>
@@ -34,10 +39,21 @@
         <% end %>
       </p>
     </div>
+
+    <% if @stack.release_status? %>
+      <div class="release-validation" >
+        <%= link_to stack_deploy_release_statuses_path(@stack, deploy), class: 'action-set-release-status action-reject-release', data: {tooltip: t('release.reject'), status: 'failure'} do %>
+          <i class="icon icon--reject"></i>
+        <% end %>
+        <%= link_to stack_deploy_release_statuses_path(@stack, deploy), class: 'action-set-release-status action-validate-release', data: {tooltip: t('release.validate'), status: 'success'} do %>
+          <i class="icon icon--validate"></i>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 
   <% unless read_only %>
-    <div class="commit-actions">
+    <div class="deploy-actions">
       <% if deploy.rollbackable? %>
         <% if deploy.stack.active_task? %>
           <%= link_to 'Deploy in progress...', '#', class: 'btn disabled deploy-action' %>

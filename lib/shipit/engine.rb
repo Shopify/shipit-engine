@@ -22,7 +22,7 @@ module Shipit
         path =~ %r{\Aplugins/[\-\w]+\.(js|css)\Z}
       end
       app.config.assets.precompile << proc do |path|
-        path.start_with?('emoji/') && path.end_with?('.png')
+        path.end_with?('.svg') || (path.start_with?('emoji/') && path.end_with?('.png'))
       end
 
       ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found

@@ -75,6 +75,10 @@ module Shipit
               "Eat some chips"
             ]
           },
+          "status": {
+            "context": "shipit/pre-production",
+            "delay": 60
+          },
           "deploy": {
             "max_commits": 3,
             "override": [

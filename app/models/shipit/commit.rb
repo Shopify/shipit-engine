@@ -8,6 +8,7 @@ module Shipit
     has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
     has_many :commit_deployments, dependent: :destroy
+    has_many :release_statuses, dependent: :destroy
     belongs_to :pull_request, inverse_of: :merge_commit, optional: true
 
     deferred_touch stack: :updated_at
@@ -115,6 +116,23 @@ module Shipit
       add_status do
         statuses.replicate_from_github!(stack_id, github_status)
       end
+    end
+
+    def last_release_status
+      @last_release_status ||= release_statuses.last || Status::Unknown.new(self)
+    end
+
+    def create_release_status!(state, user: nil, target_url: nil, description: nil)
+      return unless stack.release_status?
+
+      @last_release_status = nil
+      release_statuses.create!(
+        stack: stack,
+        user: user,
+        state: state,
+        target_url: target_url,
+        description: description,
+      )
     end
 
     def checks

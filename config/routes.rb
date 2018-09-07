@@ -88,6 +88,8 @@ Shipit::Engine.routes.draw do
         get :rollback
         get :revert
       end
+
+      resources :release_statuses, only: %i(create)
     end
 
     resources :pull_requests, only: %i(index destroy create)

@@ -20,6 +20,10 @@ shipit:
       "deploy": {"override": null, "interval": 60, "max_commits": 3, "variables": [{"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0}]},
       "rollback": {"override": ["echo 'Rollback!'"]},
       "fetch": ["echo '42'"],
+      "status": {
+        "context": "shipit/production",
+        "delay": 60
+      },
       "tasks": {
         "restart": {
           "action": "Restart application",
