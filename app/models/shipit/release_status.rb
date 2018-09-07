@@ -1,5 +1,6 @@
 module Shipit
   class ReleaseStatus < ActiveRecord::Base
+    MAX_DESCRIPTION_LENGTH = 140
     include DeferredTouch
 
     belongs_to :stack
@@ -29,7 +30,7 @@ module Shipit
         state,
         context: stack.release_status_context,
         target_url: target_url,
-        description: description,
+        description: description&.truncate(MAX_DESCRIPTION_LENGTH),
       )
     end
 
