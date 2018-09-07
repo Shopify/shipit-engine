@@ -18,14 +18,14 @@ module Shipit
     def create_status_on_github!
       return true if github_id?
 
-      update!(github_id: create_status_on_github.ip)
+      update!(github_id: create_status_on_github.id)
     end
 
     private
 
     def create_status_on_github
       Shipit.github.api.create_status(
-        stack.github_reponame,
+        stack.github_repo_name,
         commit.sha,
         state,
         context: stack.release_status_context,

@@ -1,0 +1,7 @@
+to_be_created:
+  stack: shipit
+  commit_id: 4
+  user: walrus
+  state: success
+  description: All went well
+  target_url: https://example.com/deploys/42
