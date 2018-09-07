@@ -34,6 +34,15 @@ module Shipit
 
     private
 
+    def update_release_status
+      return unless stack.release_status?
+
+      case status
+      when 'pending'
+        deploy.append_release_status('failure', "A rollback #{stack.to_param} was triggered")
+      end
+    end
+
     def lock_reverted_commits
       stack.lock_reverted_commits!
     end

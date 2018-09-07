@@ -136,10 +136,6 @@
   color: $grey;
   margin: 0;
 
-  @include media(desktop) {
-    @include truncate;
-  }
-
   .warning {
     color: $orange;
   }

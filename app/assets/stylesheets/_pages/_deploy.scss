@@ -218,3 +218,45 @@
 .ignored-safeties {
   color: $orange;
 }
+
+.deploy-actions {
+  flex-shrink: 0;
+
+  @include media(desktop) {
+    margin-left: 1rem;
+    min-width: 12rem;
+
+    .btn {
+      float: right;
+    }
+  }
+}
+
+.release-validation {
+  display: inline-block;
+  .icon {
+    background-color: #ddd;
+  }
+
+  &:hover .icon {
+    background-color: darken(#ddd, 20%);
+  }
+}
+
+.deploy .commit-lock {
+  .icon {
+    background-color: $bright-red;
+  }
+
+  &:hover .icon {
+    background-color: darken($bright-red, 20%);
+  }
+
+  .action-lock-commit {
+    display: none;
+  }
+
+  .action-unlock-commit {
+    display: inline-block;
+  }
+}

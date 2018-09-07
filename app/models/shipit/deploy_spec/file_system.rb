@@ -57,6 +57,10 @@ module Shipit
             'checks' => review_checks,
           },
           'plugins' => plugins,
+          'status' => {
+            'context' => release_status_context,
+            'delay' => release_status_delay,
+          },
           'dependencies' => {'override' => dependencies_steps},
           'deploy' => {
             'override' => deploy_steps,

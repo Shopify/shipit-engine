@@ -9,6 +9,7 @@ module Shipit
       after_transition to: :success, do: :schedule_merges
       after_transition to: :success, do: :update_undeployed_commits_count
       after_transition to: :aborted, do: :trigger_revert_if_required
+      after_transition any => any, do: :update_release_status
       after_transition any => any, do: :update_commit_deployments
       after_transition any => any, do: :update_last_deploy_time
     end
@@ -33,6 +34,7 @@ module Shipit
 
     before_create :denormalize_commit_stats
     after_create :create_commit_deployments
+    after_create :update_release_status
     after_commit :broadcast_update
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
@@ -143,11 +145,52 @@ module Shipit
       confirmations.abs >= CONFIRMATIONS_REQUIRED
     end
 
+    delegate :last_release_status, to: :until_commit
+    def append_release_status(state, description, user: self.user)
+      status = until_commit.create_release_status!(
+        state,
+        user: user.presence,
+        target_url: permalink,
+        description: description,
+      )
+      status
+    end
+
+    def permalink
+      Shipit::Engine.routes.url_helpers.stack_deploy_url(stack, self)
+    end
+
     private
 
     def create_commit_deployments
       commits.each do |commit|
         commit_deployments.create!(commit: commit)
+      end
+    end
+
+    def update_release_status
+      return unless stack.release_status?
+
+      case status
+      when 'pending'
+        append_release_status('pending', "A deploy was triggered on #{stack.to_param}")
+      when 'failed', 'error', 'timedout'
+        append_release_status('error', "The deploy on #{stack.to_param} did not succeed (#{status})")
+      when 'aborted', 'aborting'
+        append_release_status('failure', "The deploy on #{stack.to_param} was canceled")
+      when 'success'
+        delay = stack.release_status_delay
+        if delay.zero?
+          append_release_status('success', "The deploy on #{stack.to_param} succeeded")
+        elsif delay.positive?
+          append_release_status('pending', "The deploy on #{stack.to_param} succeeded")
+          AppendDelayedReleaseStatusJob.set(wait: delay).perform_later(
+            self,
+            cursor: until_commit.release_statuses.last,
+            status: 'success',
+            description: "No issue were signaled after #{delay}",
+          )
+        end
       end
     end
 

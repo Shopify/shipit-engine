@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180802172632) do
+ActiveRecord::Schema.define(version: 20180906083930) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -156,6 +156,21 @@ ActiveRecord::Schema.define(version: 20180802172632) do
     t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
     t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
     t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
+  end
+
+  create_table "release_statuses", force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "commit_id", null: false
+    t.integer "user_id"
+    t.string "state", limit: 10, null: false
+    t.string "description", limit: 1024
+    t.string "target_url", limit: 1024
+    t.bigint "github_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commit_id", "github_id"], name: "index_deploy_statuses_on_commit_id_and_github_id"
+    t.index ["stack_id", "commit_id"], name: "index_deploy_statuses_on_stack_id_and_commit_id"
+    t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
   end
 
   create_table "stacks", force: :cascade do |t|
