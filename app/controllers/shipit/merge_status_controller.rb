@@ -17,6 +17,8 @@ module Shipit
       else
         render html: ''
       end
+    rescue ArgumentError
+      render html: ''
     end
 
     def enqueue
