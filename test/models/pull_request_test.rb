@@ -183,6 +183,15 @@ module Shipit
       refute_predicate @pr, :rejected?
     end
 
+    test "#reject_unless_mergeable! reject the PR if it has a missing CI status" do
+      @pr.head.statuses.where(context: 'ci/circle').delete_all
+
+      assert_predicate @pr, :all_status_checks_passed?
+      refute_predicate @pr, :any_status_checks_failed?
+      assert_equal false, @pr.reject_unless_mergeable!
+      refute_predicate @pr, :rejected?
+    end
+
     test "#reject_unless_mergeable! rejects the PR if it is stale" do
       @pr.stubs(:stale?).returns(true)
       assert_equal true, @pr.reject_unless_mergeable!
