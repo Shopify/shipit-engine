@@ -289,6 +289,10 @@ module Shipit
       self.class.name.demodulize.underscore.to_sym
     end
 
+    def permalink
+      Shipit::Engine.routes.url_helpers.stack_task_url(stack, self)
+    end
+
     private
 
     def prevent_concurrency

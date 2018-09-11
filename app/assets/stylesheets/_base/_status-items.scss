@@ -136,3 +136,31 @@
     background-image: asset-data-url('failure-small.svg');
   }
 }
+
+// DEPLOY STATUS ICON
+// -----------------------------------------------------------------------------
+
+.deploy-status__icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: transparent no-repeat center center;
+  vertical-align: -2px;
+
+  .deploy[data-release-status=success] & {
+    background-image: asset-data-url('success-small.svg');
+  }
+
+  .deploy[data-release-status=pending] &,
+  .deploy[data-release-status=unknown] & {
+    background-image: asset-data-url('pending-small.svg');
+  }
+
+  .deploy[data-release-status=error] & {
+    background-image: asset-data-url('error-small.svg');
+  }
+
+  .deploy[data-release-status=failure] & {
+    background-image: asset-data-url('failure-small.svg');
+  }
+}

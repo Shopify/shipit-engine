@@ -35,7 +35,7 @@ module Shipit
         'SHIPIT_USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
         'EMAIL' => @task.author.email,
         'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
-        'SHIPIT_LINK' => permalink,
+        'SHIPIT_LINK' => @task.permalink,
         'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
         'TASK_ID' => @task.id.to_s,
         'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
@@ -79,10 +79,6 @@ module Shipit
       else
         @task.working_directory
       end
-    end
-
-    def permalink
-      Shipit::Engine.routes.url_helpers.stack_task_url(@stack, @task)
     end
   end
 end

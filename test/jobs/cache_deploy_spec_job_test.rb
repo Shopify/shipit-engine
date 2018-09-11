@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tmpdir'
 
 module Shipit
   class CacheDeploySpecJobTest < ActiveSupport::TestCase

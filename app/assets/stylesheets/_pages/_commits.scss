@@ -136,10 +136,6 @@
   color: $grey;
   margin: 0;
 
-  @include media(desktop) {
-    @include truncate;
-  }
-
   .warning {
     color: $orange;
   }
@@ -166,7 +162,7 @@
 
   @include media(desktop) {
     margin-left: 1rem;
-    min-width: 10rem;
+    min-width: 12rem;
 
     .btn {
       float: right;

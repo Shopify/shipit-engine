@@ -1,4 +1,6 @@
-$(document).on 'click', '.commit-lock a', (event) ->
+$document = $(document)
+
+$document.on 'click', '.commit-lock a', (event) ->
   event.preventDefault()
   $commit = $(event.target).closest('.commit')
   $link = $(event.target).closest('a')
@@ -7,6 +9,18 @@ $(document).on 'click', '.commit-lock a', (event) ->
   $commit.toggleClass('locked')
 
   $.ajax($link.attr('href'), method: 'PATCH', data: {commit: {locked: !locked}})
+
+$document.on 'click', '.action-set-release-status', (event) ->
+  event.preventDefault()
+  $link = $(event.target).closest('a')
+  $deploy = $link.closest('.deploy')
+  newStatus = $link.data('status')
+
+  return if $deploy.attr('data-release-status') == newStatus
+
+  $.ajax($link.attr('href'), method: 'POST', data: {status: newStatus}).success((last_status) ->
+    $deploy.attr('data-release-status', last_status.state)
+  )
 
 jQuery ($) ->
   displayIgnoreCiMessage = ->
