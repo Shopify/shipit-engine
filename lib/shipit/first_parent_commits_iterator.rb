@@ -8,7 +8,7 @@ module Shipit
           next
         end
 
-        if last_ancestor.parents.first.sha == commit.sha
+        if last_ancestor.parents.empty? || last_ancestor.parents.first.sha == commit.sha
           yield last_ancestor = commit
         end
       end
