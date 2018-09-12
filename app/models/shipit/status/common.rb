@@ -21,6 +21,10 @@ module Shipit
         state == 'failure'.freeze
       end
 
+      def missing?
+        false
+      end
+
       def group?
         false
       end

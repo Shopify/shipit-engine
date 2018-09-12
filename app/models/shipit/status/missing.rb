@@ -18,6 +18,10 @@ module Shipit
         'pending'.freeze
       end
 
+      def missing?
+        true
+      end
+
       def description
         I18n.t('missing_status.description', context: context)
       end

@@ -29,7 +29,7 @@ module Shipit
         @statuses = visible_statuses.sort_by!(&:context)
       end
 
-      delegate :pending?, :success?, :error?, :failure?, :unknown?, :state, :simple_state, to: :significant_status
+      delegate :pending?, :success?, :error?, :failure?, :unknown?, :missing?, :state, :simple_state, to: :significant_status
       delegate :each, :size, :map, to: :statuses
       delegate :required_statuses, to: :commit
 

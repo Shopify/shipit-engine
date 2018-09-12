@@ -24,6 +24,10 @@ module Shipit
         'unknown'.freeze
       end
 
+      def missing?
+        true
+      end
+
       def target_url
         nil
       end

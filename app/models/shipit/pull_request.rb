@@ -188,7 +188,7 @@ module Shipit
 
     def any_status_checks_failed?
       status = StatusChecker.new(head, head.statuses, stack.cached_deploy_spec)
-      status.failure? || status.error? || status.unknown?
+      status.failure? || status.error? || status.missing?
     end
 
     def waiting?
