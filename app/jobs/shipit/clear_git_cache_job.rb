@@ -1,6 +1,6 @@
 module Shipit
   class ClearGitCacheJob < BackgroundJob
-    queue_as :default
+    queue_as :deploys
 
     def perform(stack)
       stack.clear_git_cache!

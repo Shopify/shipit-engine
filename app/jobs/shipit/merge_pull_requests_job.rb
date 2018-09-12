@@ -3,6 +3,8 @@ module Shipit
     include BackgroundJob::Unique
     on_duplicate :drop
 
+    queue_as :default
+
     def perform(stack)
       pull_requests = stack.pull_requests.to_be_merged.to_a
       pull_requests.each do |pull_request|

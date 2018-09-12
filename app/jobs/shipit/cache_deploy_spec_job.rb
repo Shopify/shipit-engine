@@ -2,6 +2,8 @@ module Shipit
   class CacheDeploySpecJob < BackgroundJob
     include BackgroundJob::Unique
 
+    queue_as :deploys
+
     def perform(stack)
       return if stack.inaccessible?
 
