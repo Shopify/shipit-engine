@@ -354,7 +354,7 @@ module Shipit
 
     test "the git cache lock prevent concurrent access to the git cache" do
       @stack.acquire_git_cache_lock do
-        assert_raises Redis::Lock::LockTimeout do
+        assert_raises Flock::TimeoutError do
           @stack.acquire_git_cache_lock(timeout: 0.1) {}
         end
       end

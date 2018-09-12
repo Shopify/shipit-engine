@@ -30,6 +30,7 @@ require 'faraday-http-cache'
 
 require 'shipit/version'
 
+require 'shipit/flock'
 require 'shipit/github_app'
 require 'shipit/paginator'
 require 'shipit/null_serializer'
