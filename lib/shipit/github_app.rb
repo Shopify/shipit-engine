@@ -22,8 +22,11 @@ module Shipit
     end
 
     def api
-      @client = new_client(access_token: token) if !defined?(@client) || @client.access_token != token
-      @client
+      client = Thread.current[:github_client]
+      if !client || client.access_token != token
+        client = Thread.current[:github_client] = new_client(access_token: token)
+      end
+      client
     end
 
     def verify_webhook_signature(signature, message)
