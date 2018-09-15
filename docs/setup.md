@@ -6,7 +6,7 @@ At this point Shipit is mostly a Rails engine, so setting it up in production re
 
 Deploying and hosting a Rails application is not trivial, and this document assumes you know how to do it.
 
-In the future we'd like to provide it fully packaged inside a Docker container, but it haven't been done yet.
+In the future we'd like to provide it fully packaged inside a Docker container, but it hasn't been done yet.
 
 ## Creating the Rails app
 
