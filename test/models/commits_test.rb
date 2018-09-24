@@ -35,6 +35,34 @@ module Shipit
       end
     end
 
+    test '.create_from_github handle PRs merged by another Shipit stacks' do
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              message: "commit to trigger staging build\n\nMerge-Requested-By: walrus\n",
+            },
+          ),
+        )
+      end
+
+      commit = Commit.last
+      assert_equal shipit_users(:walrus), commit.author
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?

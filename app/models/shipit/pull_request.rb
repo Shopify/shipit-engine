@@ -2,6 +2,8 @@ module Shipit
   class PullRequest < ApplicationRecord
     include DeferredTouch
 
+    MERGE_REQUEST_FIELD = 'Merge-Requested-By'.freeze
+
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
     REJECTION_REASONS = %w(ci_failing merge_conflict requires_rebase).freeze
@@ -245,7 +247,7 @@ module Shipit
 
     def merge_message
       return title unless merge_requested_by
-      "#{title}\n\nMerge-Requested-By: #{merge_requested_by.login}\n"
+      "#{title}\n\n#{MERGE_REQUEST_FIELD}: #{merge_requested_by.login}\n"
     end
 
     def stale?

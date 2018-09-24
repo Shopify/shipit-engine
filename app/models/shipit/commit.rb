@@ -73,9 +73,9 @@ module Shipit
     end
 
     def self.from_github(commit)
-      author = User.find_or_create_from_github(commit.author.presence || commit.commit.author.presence)
+      author = User.find_or_create_author_from_github_commit(commit)
       author ||= Anonymous.new
-      committer = User.find_or_create_from_github(commit.committer.presence || commit.commit.committer.presence)
+      committer = User.find_or_create_committer_from_github_commit(commit)
       committer ||= Anonymous.new
 
       new(

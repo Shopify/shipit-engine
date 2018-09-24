@@ -18,6 +18,17 @@ module Shipit
       end
     end
 
+    def self.find_or_create_committer_from_github_commit(github_commit)
+      find_or_create_from_github(github_commit.committer.presence || github_commit.commit.committer.presence)
+    end
+
+    def self.find_or_create_author_from_github_commit(github_commit)
+      if github_commit.commit.message =~ /^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/
+        return find_or_create_by_login!($1)
+      end
+      find_or_create_from_github(github_commit.author.presence || github_commit.commit.author.presence)
+    end
+
     def self.find_or_create_from_github(github_user)
       find_from_github(github_user) || create_from_github(github_user)
     end
