@@ -19,8 +19,12 @@ module Shipit
         end
       end
 
+      def discover_machine_env
+        super.merge('BUNDLE_PATH' => bundle_path.to_s)
+      end
+
       def bundle_install
-        bundle = %(bundle check --path=#{bundle_path} || bundle install #{frozen_flag} --path=#{bundle_path} --retry=2)
+        bundle = %(bundle install #{frozen_flag} --jobs 4 --path #{bundle_path} --retry 2)
         bundle += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
         [remove_ruby_version_from_gemfile, bundle]
       end

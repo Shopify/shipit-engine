@@ -63,11 +63,11 @@ module Shipit
     test '#bundle_install return a sane default bundle install command' do
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       command = %(
-        bundle check --path=#{DeploySpec.bundle_path} ||
         bundle install
         --frozen
-        --path=#{DeploySpec.bundle_path}
-        --retry=2
+        --jobs 4
+        --path #{DeploySpec.bundle_path}
+        --retry 2
         --without=default:production:development:test:staging:benchmark:debug
       ).gsub(/\s+/, ' ').strip
       assert_equal command, @spec.bundle_install.last
@@ -307,7 +307,11 @@ module Shipit
           'require' => [],
           'blocking' => [],
         },
-        'machine' => {'environment' => {}, 'directory' => nil, 'cleanup' => true},
+        'machine' => {
+          'environment' => {'BUNDLE_PATH' => @spec.bundle_path.to_s},
+          'directory' => nil,
+          'cleanup' => true,
+        },
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
         'status' => {
           'context' => nil,
