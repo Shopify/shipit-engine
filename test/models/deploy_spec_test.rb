@@ -77,11 +77,11 @@ module Shipit
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
       command = %(
-        bundle check --path=#{DeploySpec.bundle_path} ||
         bundle install
         --frozen
-        --path=#{DeploySpec.bundle_path}
-        --retry=2
+        --jobs 4
+        --path #{DeploySpec.bundle_path}
+        --retry 2
         --without=some:custom:groups
       ).gsub(/\s+/, ' ').strip
       assert_equal command, @spec.bundle_install.last

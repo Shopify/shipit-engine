@@ -1,8 +1,19 @@
 # Unreleased
 
+# 0.25.0
+
+* Stop storing outgoing webhooks in the database for efficiency reasons.
+* Various thread safety fixes.
+* Use a file lock rather than a redis lock for git locking.
+* Handle orphan commits (no parents at all).
+* Add a feature to push commit statuses on deploy success (experimental).
+* Reject commits with missing statuses from the merge queue.
 * Set `ROLLBACK=1` for rollback commands.
 * Allow to disable authentication entirely with `SHIPIT_DISABLE_AUTH=1` for easier development.
 * Don't pass OAuth scope to GitHub for the authentication process.
+
+# 0.24.0
+
 * Use HTTPS protocol for git operations.
 * The default gem release method is now compatible with continuous delivery.
 * The default gem release method now assume Shipit can push tags back to the origin repository.
