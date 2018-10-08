@@ -14,10 +14,8 @@ module Shipit
       commands = StackCommands.new(stack)
       commands.with_temporary_working_directory(commit: commit) do |directory|
         deploy_spec = DeploySpec::FileSystem.new(directory, stack.environment)
-        Bundler.with_clean_env do
-          capture_all(build_commands(deploy_spec.dependencies_steps, chdir: directory))
-          capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
-        end
+        capture_all(build_commands(deploy_spec.dependencies_steps, chdir: directory))
+        capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
       end
       self
     rescue Command::Error

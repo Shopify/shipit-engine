@@ -12,6 +12,8 @@ module Shipit
     Denied = Class.new(Error)
     TimedOut = Class.new(Error)
 
+    BASE_ENV = Bundler.clean_env.merge((ENV.keys - Bundler.clean_env.keys).map { |k| [k, nil] }.to_h)
+
     class Failed < Error
       attr_reader :exit_code
 
@@ -75,14 +77,6 @@ module Shipit
       output.join
     end
 
-    def with_full_path
-      old_path = ENV['PATH']
-      ENV['PATH'] = "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}"
-      yield
-    ensure
-      ENV['PATH'] = old_path
-    end
-
     def interpolated_arguments
       interpolate_environment_variables(@args)
     end
@@ -90,20 +84,22 @@ module Shipit
     def start(&block)
       return if @started
       @control_block = block
-      child_in = @out = @pid = nil
+      @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
-      with_full_path do
-        begin
-          @out, child_in, @pid = PTY.spawn(@env.stringify_keys, *interpolated_arguments, chdir: @chdir)
-          child_in.close
-        rescue Errno::ENOENT
-          raise NotFound, "#{Shellwords.split(interpolated_arguments.first).first}: command not found"
-        rescue Errno::EACCES
-          raise Denied, "#{Shellwords.split(interpolated_arguments.first).first}: Permission denied"
-        end
+      begin
+        @out, child_in, @pid = PTY.spawn(clean_env, *interpolated_arguments, chdir: @chdir)
+        child_in.close
+      rescue Errno::ENOENT
+        raise NotFound, "#{Shellwords.split(interpolated_arguments.first).first}: command not found"
+      rescue Errno::EACCES
+        raise Denied, "#{Shellwords.split(interpolated_arguments.first).first}: Permission denied"
       end
       @started = true
       self
+    end
+
+    def clean_env
+      BASE_ENV.merge('PATH' => "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}").merge(@env.stringify_keys)
     end
 
     def stream(&block)

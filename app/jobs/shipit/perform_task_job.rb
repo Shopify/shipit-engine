@@ -55,10 +55,8 @@ module Shipit
     end
 
     def perform_task
-      Bundler.with_clean_env do
-        capture_all! @commands.install_dependencies
-        capture_all! @commands.perform
-      end
+      capture_all! @commands.install_dependencies
+      capture_all! @commands.perform
     end
 
     def checkout_repository
