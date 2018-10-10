@@ -222,6 +222,29 @@ module Shipit
       assert_equal 'success', @commit.statuses.first.state
     end
 
+    test "refresh_check_runs! pull state from github" do
+      check_run = mock(
+        id: 34_234_234_234_432,
+        name: 'Test suite',
+        conclusion: 'neutral',
+        details_url: 'https://example.com/details',
+        html_url: 'https://example.com/run',
+        output: mock(
+          title: 'Tests build ran successfully',
+        ),
+      )
+      response = mock(
+        check_runs: [check_run],
+      )
+      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, @commit.sha).returns(response)
+
+      assert_difference -> { @commit.check_runs.count }, 1 do
+        @commit.refresh_check_runs!
+      end
+
+      assert_equal 'success', @commit.check_runs.first.state
+    end
+
     test "#creating a commit update the undeployed_commits_count" do
       walrus = shipit_users(:walrus)
       assert_equal 1, @stack.undeployed_commits_count
@@ -321,14 +344,18 @@ module Shipit
     test "#status returns an unknown if the commit has no statuses" do
       commit = shipit_commits(:second)
       commit.statuses = []
+      commit.check_runs = []
       assert_predicate commit.status, :unknown?
     end
 
     test "#status rejects the statuses that are specified in the deploy spec's `ci.hide`" do
       commit = shipit_commits(:second)
       assert_predicate commit.status, :group?
-      assert_equal 2, commit.status.size
-      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => 'metrics/coveralls'}))
+      assert_equal 3, commit.status.size
+      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => [
+        'Travis CI',
+        'metrics/coveralls',
+      ]}))
       commit.reload
       refute_predicate commit.status, :group?
     end

@@ -4,11 +4,11 @@ module Shipit
   class StatusGroupTest < ActiveSupport::TestCase
     setup do
       @commit = shipit_commits(:second)
-      @group = Status::Group.new(@commit, @commit.statuses)
+      @group = Status::Group.new(@commit, @commit.statuses_and_check_runs)
     end
 
     test "#description is a summary of the statuses" do
-      assert_equal '1 / 2 checks OK', @group.description
+      assert_equal '2 / 3 checks OK', @group.description
     end
 
     test "#group? returns true" do
@@ -20,7 +20,7 @@ module Shipit
     end
 
     test "#state is significant's status state" do
-      assert_equal %w(success failure), @group.statuses.map(&:state)
+      assert_equal %w(success success failure), @group.statuses.map(&:state)
       assert_equal 'failure', @group.state
     end
 

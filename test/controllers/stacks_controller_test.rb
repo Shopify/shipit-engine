@@ -51,6 +51,14 @@ module Shipit
       assert_response :ok
     end
 
+    test "#show with a single CheckRun is successful" do
+      @stack = shipit_stacks(:check_runs)
+      assert_not_equal 0, CheckRun.where(stack_id: @stack.id).count
+
+      get :show, params: {id: @stack.to_param}
+      assert_response :ok
+    end
+
     test "#show handles locked stacks without a lock_author" do
       @stack.update!(lock_reason: "I am a lock with no author")
       get :show, params: {id: @stack.to_param}

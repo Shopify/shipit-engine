@@ -9,7 +9,7 @@ module Shipit
     belongs_to :stack, required: true
     belongs_to :commit, required: true
 
-    deferred_touch stack: :updated_at, commit: :updated_at
+    deferred_touch commit: :updated_at
 
     validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
 

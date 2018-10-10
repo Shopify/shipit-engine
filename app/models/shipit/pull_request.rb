@@ -185,11 +185,11 @@ module Shipit
 
     def all_status_checks_passed?
       return false unless head
-      StatusChecker.new(head, head.statuses, stack.cached_deploy_spec).success?
+      StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).success?
     end
 
     def any_status_checks_failed?
-      status = StatusChecker.new(head, head.statuses, stack.cached_deploy_spec)
+      status = StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec)
       status.failure? || status.error? || status.missing?
     end
 

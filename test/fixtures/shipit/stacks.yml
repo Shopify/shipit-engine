@@ -162,3 +162,11 @@ soc:
       }
     }
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+check_runs:
+  repo_owner: shopify
+  repo_name: check_runs
+  environment: production
+  branch: master
+  tasks_count: 0
+  undeployed_commits_count: 1
