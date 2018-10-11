@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.25.1
+
 * Improve GitHub API client management. Won't re-auth constantly if cache is disabled, and will keep the connection pool on re-auth.
 
 # 0.25.0
