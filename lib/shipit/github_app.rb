@@ -1,11 +1,35 @@
 module Shipit
   class GitHubApp
+    include Mutex_m
+
+    class Token
+      class << self
+        def from_github(github_response)
+          new(github_response.token, github_response.expires_at)
+        end
+      end
+
+      def to_s
+        @token
+      end
+
+      def initialize(token, expires_at)
+        @token = token
+        @expires_at = expires_at
+      end
+
+      def blank?
+        @expires_at.past?
+      end
+    end
+
     DOMAIN = 'github.com'.freeze
     AuthenticationFailed = Class.new(StandardError)
 
     attr_reader :oauth_teams, :domain, :bot_login
 
     def initialize(config)
+      super()
       @config = (config || {}).with_indifferent_access
       @domain = @config[:domain] || DOMAIN
       @webhook_secret = @config[:webhook_secret].presence
@@ -22,9 +46,9 @@ module Shipit
     end
 
     def api
-      client = Thread.current[:github_client]
-      if !client || client.access_token != token
-        client = Thread.current[:github_client] = new_client(access_token: token)
+      client = (Thread.current[:github_client] ||= new_client(access_token: token))
+      if client.access_token != token
+        client.access_token = token
       end
       client
     end
@@ -42,11 +66,17 @@ module Shipit
       return 't0kEn' if Rails.env.test? # TODO: figure out something cleaner
       return unless private_key && app_id && installation_id
 
-      Rails.cache.fetch('github:integration:token', expires_in: 50.minutes, race_condition_ttl: 10.minutes) do
-        token = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
+      @token = @token.presence || synchronize { @token.presence || fetch_new_token }
+      @token.to_s
+    end
+
+    def fetch_new_token
+      Rails.cache.fetch('github:integration:access-token', expires_in: 50.minutes, race_condition_ttl: 10.minutes) do
+        response = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
           installation_id,
           accept: 'application/vnd.github.machine-man-preview+json',
-        ).token
+        )
+        token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
         token
       end
