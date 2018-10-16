@@ -33,5 +33,20 @@ module Shipit
       assert_response :ok
       assert_predicate response.body, :blank?
     end
+
+    test "GET show prefers stacks with merge_queue_enabled" do
+      existing = shipit_stacks(:shipit)
+      Shipit::Stack.create(
+        repo_owner: existing.repo_owner,
+        repo_name: existing.repo_name,
+        environment: 'foo',
+        branch: existing.branch,
+        merge_queue_enabled: true,
+      )
+      existing.update!(merge_queue_enabled: false)
+      get :show, params: {referrer: 'https://github.com/Shopify/shipit-engine/pull/42', branch: 'master'}
+      assert_response :ok
+      assert_includes response.body, 'shipit-engine/foo'
+    end
   end
 end
