@@ -9,7 +9,7 @@
       <span class="commit-title"><%= render_commit_message_with_link commit %></span>
       <p class="commit-meta">
         <span class="sha"><%= render_commit_id_link(commit) %></span>
-        <% if commit.additions? && commit.deletions? %>
+        <% if commit.additions.present? && commit.deletions.present? %>
           <span class="code-additions">+<%= commit.additions %></span>
           <span class="code-deletions">-<%= commit.deletions %></span>
         <% end %>
