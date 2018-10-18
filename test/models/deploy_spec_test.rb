@@ -214,6 +214,46 @@ module Shipit
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.rollback_steps
     end
 
+    test "#discover_task_definitions include a kubernetes restart command if `kubernetes` is present" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+      )
+      tasks = {
+        'restart' => {
+          'action' => 'Restart application',
+          'description' => 'Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility',
+          'steps' => ['kubernetes-restart foo bar --max-watch-seconds 900'],
+        },
+      }
+      assert_equal tasks, @spec.discover_task_definitions
+    end
+
+    test "#discover_task_definitions include the user defined restart command even if `kubernetes` is present" do
+      tasks = {
+        'restart' => {
+          'action' => 'Restart application',
+          'description' => 'Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility',
+          'steps' => ['kubernetes-restart something custom'],
+        },
+        'some-other-tasj' => {
+          'action' => 'Do something else',
+          'description' => 'Eat some chips!',
+          'steps' => ['echo chips'],
+        },
+      }
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo',
+          'context' => 'bar',
+        },
+        'tasks' => tasks,
+      )
+      assert_equal tasks, @spec.discover_task_definitions
+    end
+
     test '#machine_env returns an environment hash' do
       @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
       assert_equal({'GLOBAL' => '1'}, @spec.machine_env)

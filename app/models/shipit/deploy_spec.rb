@@ -235,7 +235,7 @@ module Shipit
     end
 
     def discover_task_definitions
-      {}
+      config('tasks') || {}
     end
 
     def discover_dependencies_steps
