@@ -53,8 +53,9 @@ module Shipit
         git(
           'clone',
           '--local',
-          '--origin',
-          'cache',
+          '--origin', 'cache',
+          '--single-branch', '--branch', @stack.branch,
+          '--depth', '20',
           @stack.git_path,
           @task.working_directory,
           chdir: @stack.deploys_path,

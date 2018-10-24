@@ -61,7 +61,13 @@ module Shipit
     test "#clone clones the repository cache into the working directory" do
       commands = @commands.clone
       assert_equal 2, commands.size
-      clone_args = ['git', 'clone', '--local', '--origin', 'cache', @stack.git_path, @deploy.working_directory]
+      clone_args = [
+        'git', 'clone', '--local',
+        '--origin', 'cache',
+        '--single-branch', '--branch', 'master',
+        '--depth', '20',
+        @stack.git_path, @deploy.working_directory,
+      ]
       assert_equal clone_args, commands.first.args
       assert_equal ['git', 'remote', 'add', 'origin', @stack.repo_git_url], commands.second.args
     end

@@ -44,14 +44,21 @@ module Shipit
     def with_temporary_working_directory(commit: nil)
       commit ||= @stack.last_deployed_commit.presence || @stack.commits.last
 
-      @stack.acquire_git_cache_lock do
-        if !commit || !fetched?(commit).tap(&:run).success?
+      if !commit || !fetched?(commit).tap(&:run).success?
+        @stack.acquire_git_cache_lock do
           fetch.run!
         end
       end
 
       Dir.mktmpdir do |dir|
-        git('clone', @stack.git_path, @stack.repo_name, '--origin', 'cache', chdir: dir).run!
+        git(
+          'clone', @stack.git_path, @stack.repo_name,
+          '--origin', 'cache',
+          '--single-branch', '--branch', @stack.branch,
+          '--depth', '20',
+          chdir: dir
+        ).run!
+
         git_dir = File.join(dir, @stack.repo_name)
         git('checkout', commit.sha, chdir: git_dir).run! if commit
         yield Pathname.new(git_dir)
