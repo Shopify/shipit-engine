@@ -53,11 +53,10 @@ module Shipit
         git(
           'clone',
           '--local',
-          '--origin',
-          'cache',
+          '--origin', 'cache',
           @stack.git_path,
           @task.working_directory,
-          chdir: @stack.deploys_path,
+          chdir: @stack.deploys_path
         ),
         git('remote', 'add', 'origin', @stack.repo_git_url, chdir: @task.working_directory),
       ]
