@@ -2,6 +2,15 @@ require 'test_helper'
 
 module Shipit
   class PerformTaskJobTest < ActiveSupport::TestCase
+    class FakeSuccessfulCommand
+      def run
+      end
+
+      def success?
+        true
+      end
+    end
+
     setup do
       @job = PerformTaskJob.new
       @deploy = shipit_deploys(:shipit_pending)
@@ -14,7 +23,7 @@ module Shipit
       @commands = stub(:commands)
       Commands.expects(:for).with(@deploy).returns(@commands)
 
-      @commands.expects(:fetched?).once.returns(true)
+      @commands.expects(:fetched?).once.returns(FakeSuccessfulCommand.new)
       @commands.expects(:clone).returns([]).once
       @commands.expects(:checkout).with(@deploy.until_commit).once
       @commands.expects(:install_dependencies).returns([]).once
