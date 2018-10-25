@@ -1,6 +1,7 @@
 module Shipit
   class CacheDeploySpecJob < BackgroundJob
     include BackgroundJob::Unique
+    on_duplicate :drop
 
     queue_as :deploys
 
