@@ -55,6 +55,15 @@ module Shipit
       assert_response :ok
     end
 
+    test ":check_suite with the target branch queues a RefreshCheckRunsJob" do
+      request.headers['X-Github-Event'] = 'check_suite'
+
+      assert_enqueued_with(job: RefreshCheckRunsJob) do
+        post :create, body: payload(:check_suite_master), as: :json
+        assert_response :ok
+      end
+    end
+
     test "returns head :ok if request is ping" do
       @request.headers['X-Github-Event'] = 'ping'
 

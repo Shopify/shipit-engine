@@ -7,6 +7,7 @@ module Shipit
     belongs_to :stack
     has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
+    has_many :check_runs, dependent: :destroy
     has_many :commit_deployments, dependent: :destroy
     has_many :release_statuses, dependent: :destroy
     belongs_to :pull_request, inverse_of: :merge_commit, optional: true
@@ -17,7 +18,8 @@ module Shipit
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
-    after_commit :schedule_refresh_statuses!, :schedule_fetch_stats!, :schedule_continuous_delivery, on: :create
+    after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
+                 :schedule_continuous_delivery, on: :create
 
     belongs_to :author, class_name: 'User', inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', inverse_of: :commits
@@ -101,8 +103,16 @@ module Shipit
       record
     end
 
+    def statuses_and_check_runs
+      statuses + check_runs
+    end
+
     def schedule_refresh_statuses!
       RefreshStatusesJob.perform_later(commit_id: id)
+    end
+
+    def schedule_refresh_check_runs!
+      RefreshCheckRunsJob.perform_later(commit_id: id)
     end
 
     def refresh_statuses!
@@ -116,6 +126,19 @@ module Shipit
       add_status do
         statuses.replicate_from_github!(stack_id, github_status)
       end
+    end
+
+    def refresh_check_runs!
+      response = stack.handle_github_redirections do
+        Shipit.github.api.check_runs(github_repo_name, sha)
+      end
+      response.check_runs.each do |check_run|
+        create_or_update_check_run_from_github!(check_run)
+      end
+    end
+
+    def create_or_update_check_run_from_github!(github_check_run)
+      check_runs.create_or_update_from_github!(stack_id, github_check_run)
     end
 
     def last_release_status
@@ -216,7 +239,7 @@ module Shipit
     end
 
     def status
-      @status ||= Status::Group.compact(self, statuses)
+      @status ||= Status::Group.compact(self, statuses_and_check_runs)
     end
 
     def deployed?

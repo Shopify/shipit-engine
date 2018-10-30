@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906083930) do
+ActiveRecord::Schema.define(version: 20181010150947) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -20,6 +20,22 @@ ActiveRecord::Schema.define(version: 20180906083930) do
     t.string "name", limit: 255, default: ""
     t.integer "stack_id", limit: 4
     t.index ["creator_id"], name: "index_api_clients_on_creator_id"
+  end
+
+  create_table "check_runs", force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "commit_id", null: false
+    t.bigint "github_id", null: false
+    t.string "name", null: false
+    t.string "conclusion", limit: 20
+    t.string "title", limit: 1024
+    t.string "details_url"
+    t.string "html_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commit_id"], name: "index_check_runs_on_commit_id"
+    t.index ["github_id", "commit_id"], name: "index_check_runs_on_github_id_and_commit_id", unique: true
+    t.index ["stack_id"], name: "index_check_runs_on_stack_id"
   end
 
   create_table "commit_deployment_statuses", force: :cascade do |t|

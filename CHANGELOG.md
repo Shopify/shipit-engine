@@ -1,5 +1,6 @@
 # Unreleased
 
+* Record GitHub CheckRuns and display them like statuses.
 * Optimize git operations to reduce lock contention.
 * Fix kubernetes discovery module to not override user defined tasks.
 

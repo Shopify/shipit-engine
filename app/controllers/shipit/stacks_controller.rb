@@ -17,7 +17,7 @@ module Shipit
       return if flash.empty? && !stale?(last_modified: @stack.updated_at)
 
       @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
-      @commits = @stack.undeployed_commits { |scope| scope.preload(:author, :statuses) }
+      @commits = @stack.undeployed_commits { |scope| scope.preload(:author, :statuses, :check_runs) }
     end
 
     def lookup
