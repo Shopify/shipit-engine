@@ -611,5 +611,29 @@ module Shipit
       @stack.deploy_url = "ssh://abc"
       assert_predicate @stack, :valid?
     end
+
+    test "#ci_enabled? is true if there are any commits with a status" do
+      Shipit::CheckRun.where(stack_id: @stack.id).delete_all
+      Rails.cache.clear
+
+      assert_predicate Shipit::Status.where(stack_id: @stack.id), :any?
+      assert @stack.ci_enabled?
+    end
+
+    test "#ci_enabled? is true if there are any check runs" do
+      Shipit::Status.where(stack_id: @stack.id).delete_all
+      Rails.cache.clear
+
+      assert_predicate Shipit::CheckRun.where(stack_id: @stack.id), :any?
+      assert_predicate @stack, :ci_enabled?
+    end
+
+    test "#ci_enabled? is false if there are no check_runs or statuses" do
+      Shipit::Status.where(stack_id: @stack.id).delete_all
+      Shipit::CheckRun.where(stack_id: @stack.id).delete_all
+
+      Rails.cache.clear
+      refute_predicate @stack, :ci_enabled?
+    end
   end
 end
