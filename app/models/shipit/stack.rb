@@ -426,7 +426,7 @@ module Shipit
 
     def ci_enabled?
       Rails.cache.fetch(ci_enabled_cache_key) do
-        commits.joins(:statuses).any?
+        commits.joins(:statuses).any? || commits.joins(:check_runs).any?
       end
     end
 
