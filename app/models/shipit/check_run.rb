@@ -11,6 +11,8 @@ module Shipit
 
     validates :conclusion, inclusion: {in: CONCLUSIONS, allow_nil: true}
 
+    after_create :enable_ci_on_stack
+
     class << self
       def create_or_update_by!(selector:, attributes: {})
         create!(selector.merge(attributes))
@@ -66,6 +68,12 @@ module Shipit
 
     def to_partial_path
       'shipit/statuses/status'
+    end
+
+    private
+
+    def enable_ci_on_stack
+      commit.stack.enable_ci!
     end
   end
 end
