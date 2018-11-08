@@ -152,3 +152,10 @@ For example:
 production:
   default_merge_method: squash
 ```
+
+## Running Cron
+
+Shipit requires some periodic tasks to be executed to function properly. If you're running on Heroku, you can use the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) add on to run Shipit cron jobs, though it will only run at a maximum frequency of once every 10 minutes.
+
+ - Run `bin/rake cron:minutely` as close to every minute as possible
+ - Run `bin/rake cron:hourly` as close to every hour as possible
