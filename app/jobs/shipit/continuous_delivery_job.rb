@@ -2,6 +2,7 @@ module Shipit
   class ContinuousDeliveryJob < BackgroundJob
     include BackgroundJob::Unique
 
+    self.lock_timeout = 3 # seconds
     queue_as :default
 
     def perform(stack)
