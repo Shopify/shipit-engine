@@ -141,7 +141,7 @@ module Shipit
     end
 
     def continuous_delivery_delayed!
-      touch(:continuous_delivery_delayed_since, :updated_at) unless continuous_delivery_delayed?
+      touch(:continuous_delivery_delayed_since) unless continuous_delivery_delayed?
     end
 
     def trigger_continuous_delivery

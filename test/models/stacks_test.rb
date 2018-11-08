@@ -541,6 +541,16 @@ module Shipit
       assert_equal({'SAFETY_DISABLED' => '0'}, deploy.env)
     end
 
+    test "#continuous_delivery_delayed! bumps updated_at" do
+      old_updated_at = @stack.updated_at - 3.minutes
+      @stack.update_column(updated_at: old_updated_at)
+      @stack.reload
+
+      @stack.continuous_delivery_delayed!
+
+      assert @stack.updated_at > old_updated_at
+    end
+
     test "#next_commit_to_deploy returns the last deployable commit" do
       @stack.tasks.where.not(until_commit_id: shipit_commits(:second).id).destroy_all
       assert_equal shipit_commits(:second), @stack.last_deployed_commit
