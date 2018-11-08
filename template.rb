@@ -107,8 +107,6 @@ CODE
 end
 
 initializer 'sidekiq.rb', <<-CODE
-Rails.application.config.active_job.queue_adapter = :sidekiq
-
 Sidekiq.configure_server do |config|
   config.redis = { url: Shipit.redis_url.to_s }
 end
@@ -118,6 +116,10 @@ Sidekiq.configure_client do |config|
 end
 CODE
 
+inject_into_file 'config/application.rb', after: "load_defaults 5.1\n" do
+  "\n    config.active_job.queue_adapter = :sidekiq\n"
+end
+
 if yes?("Are you hosting Shipit on Heroku? (y/n)")
   inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
 
@@ -125,7 +127,6 @@ if yes?("Are you hosting Shipit on Heroku? (y/n)")
   gsub_file 'Gemfile', "gem 'sqlite3'", ''
   gem_group :production do
     gem 'pg'
-    gem 'rails_12factor'
   end
   gem_group :development, :test do
     gem 'sqlite3'

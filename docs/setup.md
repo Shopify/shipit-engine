@@ -31,6 +31,7 @@ You can create a new one for your organization at `https://github.com/organizati
   - Permissions:
     - Repository metadata: Read-only
     - Commit statuses: Read-only
+    - Checks: Read & write
     - Deployments: Read & write
     - Pull requests: Read & write
     - Organization members: Read-only
@@ -41,10 +42,8 @@ You can create a new one for your organization at `https://github.com/organizati
     - Pull request
     - Push
     - Membership
-
-In the end it should look like this:
-
-![](images/new-app.png)
+    - Check suite
+    - Check run
 
 ## Installing the GitHub App on your organization
 
@@ -153,3 +152,10 @@ For example:
 production:
   default_merge_method: squash
 ```
+
+## Running Cron
+
+Shipit requires some periodic tasks to be executed to function properly. If you're running on Heroku, you can use the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) add on to run Shipit cron jobs, though it will only run at a maximum frequency of once every 10 minutes.
+
+ - Run `bin/rake cron:minutely` as close to every minute as possible
+ - Run `bin/rake cron:hourly` as close to every hour as possible
