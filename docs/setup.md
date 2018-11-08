@@ -31,6 +31,7 @@ You can create a new one for your organization at `https://github.com/organizati
   - Permissions:
     - Repository metadata: Read-only
     - Commit statuses: Read-only
+    - Checks: Read & write
     - Deployments: Read & write
     - Pull requests: Read & write
     - Organization members: Read-only
@@ -41,10 +42,8 @@ You can create a new one for your organization at `https://github.com/organizati
     - Pull request
     - Push
     - Membership
-
-In the end it should look like this:
-
-![](images/new-app.png)
+    - Check suite
+    - Check run
 
 ## Installing the GitHub App on your organization
 
