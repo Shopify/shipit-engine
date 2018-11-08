@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix a Postgres compatibility issue (#838).
+
 # 0.26.0
 
 * Record GitHub CheckRuns and display them like statuses.
