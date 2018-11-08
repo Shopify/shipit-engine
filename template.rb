@@ -127,7 +127,6 @@ if yes?("Are you hosting Shipit on Heroku? (y/n)")
   gsub_file 'Gemfile', "gem 'sqlite3'", ''
   gem_group :production do
     gem 'pg'
-    gem 'rails_12factor'
   end
   gem_group :development, :test do
     gem 'sqlite3'
