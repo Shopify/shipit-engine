@@ -508,13 +508,26 @@ module Shipit
       end
     end
 
-    test "triggering a rollback sets the release status as failure" do
-      @deploy = shipit_deploys(:shipit_complete)
+    test "triggering a rollback via abort! sets the release status as failure" do
+      @deploy = shipit_deploys(:shipit_running)
+
+      assert_difference -> { ReleaseStatus.count }, +2 do
+        assert_not_equal 'failure', @deploy.last_release_status.state
+        @deploy.abort!(rollback_once_aborted: true, aborted_by: shipit_users(:walrus))
+        assert_equal 'error', @deploy.reload.last_release_status.state
+        @deploy.trigger_revert
+        assert_equal 'failure', @deploy.reload.last_release_status.state
+      end
+    end
+
+    test "manually triggered rollbacks sets the release status as failure on the previously deployed revision" do
+      last_deployed_commit = @deploy.stack.last_deployed_commit
+      @deploy = shipit_deploys(:shipit)
 
       assert_difference -> { ReleaseStatus.count }, +1 do
-        assert_not_equal 'failure', @deploy.last_release_status.state
+        assert_not_equal 'failure', last_deployed_commit.release_statuses.last.state
         @deploy.trigger_rollback
-        assert_equal 'failure', @deploy.reload.last_release_status.state
+        assert_equal 'failure', last_deployed_commit.release_statuses.last.state
       end
     end
 
