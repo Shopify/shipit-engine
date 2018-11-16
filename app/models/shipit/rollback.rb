@@ -39,7 +39,16 @@ module Shipit
 
       case status
       when 'pending'
-        deploy.append_release_status('failure', "A rollback #{stack.to_param} was triggered")
+        if deploy.rollback_once_aborted?
+          deploy.append_release_status('failure', "A rollback of #{stack.to_param} was triggered")
+        else
+          since_commit.create_release_status!(
+            'failure',
+            user: user.presence,
+            target_url: permalink,
+            description: "A rollback of #{stack.to_param} was triggered",
+          )
+        end
       end
     end
 
