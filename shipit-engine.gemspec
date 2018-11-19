@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'autoprefixer-rails', '~> 6.4.1'
   s.add_dependency 'coffee-rails', '~> 4.2'
   s.add_dependency 'explicit-parameters', '~> 0.3.0'
-  s.add_dependency 'faraday', '~> 0.9.1'
+  s.add_dependency 'faraday', '~> 0.12.2'
   s.add_dependency 'faraday-http-cache', '~> 1.2.2'
   s.add_dependency 'gemoji', '~> 2.1'
   s.add_dependency 'jquery-rails', '~> 4.1.0'
