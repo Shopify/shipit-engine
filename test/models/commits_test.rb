@@ -277,7 +277,7 @@ module Shipit
     end
 
     test ".by_sha! can match sha prefixes" do
-      assert_equal @commit, Commit.by_sha!(@commit.sha[0..7])
+      assert_equal @commit, shipit_stacks(:shipit).commits.by_sha!(@commit.sha[0..7])
     end
 
     test ".by_sha! raises on ambigous sha prefixes" do

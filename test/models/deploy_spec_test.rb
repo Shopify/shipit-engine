@@ -355,7 +355,7 @@ module Shipit
         'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
         'status' => {
           'context' => nil,
-          'delay' => nil,
+          'delay' => 0,
         },
         'dependencies' => {'override' => []},
         'plugins' => {},

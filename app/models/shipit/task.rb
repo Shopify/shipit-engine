@@ -6,8 +6,8 @@ module Shipit
 
     PRESENCE_CHECK_TIMEOUT = 15
     ACTIVE_STATUSES = %w(pending running aborting).freeze
-    COMPLETED_STATUSES = %w(success error failed flapping aborted).freeze
-    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout).freeze
+    COMPLETED_STATUSES = %w(success flapping faulty validating).freeze
+    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze
 
     attr_accessor :pid
 
@@ -43,8 +43,8 @@ module Shipit
         pluck(:started_at, :ended_at).select { |s, e| s && e }.map { |s, e| e - s }
       end
 
-      def last_successful
-        success.last
+      def last_completed
+        completed.last
       end
 
       def current
@@ -82,7 +82,15 @@ module Shipit
       end
 
       event :complete do
-        transition %i(running flapping) => :success
+        transition %i(running flapping validating faulty) => :success
+      end
+
+      event :enter_validation do
+        transition %i(running flapping) => :validating
+      end
+
+      event :mark_faulty do
+        transition %i(validating success) => :faulty
       end
 
       event :error do
@@ -107,6 +115,8 @@ module Shipit
 
       state :pending
       state :running
+      state :validating
+      state :faulty
       state :failed
       state :success
       state :error
@@ -118,6 +128,10 @@ module Shipit
 
     def active?
       status.in?(ACTIVE_STATUSES)
+    end
+
+    def report_complete!
+      complete!
     end
 
     def report_failure!(error)

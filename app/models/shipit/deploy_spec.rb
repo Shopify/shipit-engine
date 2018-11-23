@@ -76,7 +76,7 @@ module Shipit
     end
 
     def release_status_delay
-      if delay = config('status', 'delay') { config('deploy', 'interval') }
+      if delay = config('status', 'delay') { config('deploy', 'interval') { 0 } }
         Duration.parse(delay)
       end
     end

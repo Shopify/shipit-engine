@@ -35,6 +35,7 @@ module Shipit
     end
 
     test "#perform enqueues a FetchDeployedRevisionJob" do
+      @deploy.stack.expects(:release_status?).at_least_once.returns(false)
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
       @job.stubs(:capture!)
@@ -45,10 +46,39 @@ module Shipit
     end
 
     test "marks deploy as successful" do
+      @deploy.stack.expects(:release_status?).at_least_once.returns(false)
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
       @job.stubs(:capture!)
 
+      assert_equal 'pending', @deploy.status
+      @job.perform(@deploy)
+      assert_equal 'success', @deploy.reload.status
+    end
+
+    test "marks deploy as validating when the stack has a positive release status delay" do
+      @deploy = shipit_tasks(:canaries_running)
+      @deploy.update_column(:status, 'pending')
+
+      Dir.stubs(:chdir).yields
+      DeployCommands.any_instance.expects(:perform).returns([])
+      @job.stubs(:capture!)
+
+      assert_equal 'pending', @deploy.status
+      @job.perform(@deploy)
+      assert_equal 'validating', @deploy.reload.status
+    end
+
+    test "marks deploy as successful when the stack has no release status delay" do
+      @deploy = shipit_tasks(:canaries_running)
+      @deploy.update_column(:status, 'pending')
+      @deploy.stack.expects(:release_status_delay).at_least_once.returns(Duration.parse(0))
+
+      Dir.stubs(:chdir).yields
+      DeployCommands.any_instance.expects(:perform).returns([])
+      @job.stubs(:capture!)
+
+      assert_equal 'pending', @deploy.status
       @job.perform(@deploy)
       assert_equal 'success', @deploy.reload.status
     end

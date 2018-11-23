@@ -161,3 +161,51 @@ shipit_rendered_failover:
   created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+
+canaries_success:
+  id: 101
+  stack: shipit_canaries
+  user: walrus
+  since_commit_id: 301
+  until_commit_id: 302
+  type: Shipit::Deploy
+  status: success
+  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+
+canaries_faulty:
+  id: 102
+  stack: shipit_canaries
+  user: walrus
+  since_commit_id: 302
+  until_commit_id: 303
+  type: Shipit::Deploy
+  status: faulty
+  created_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+
+canaries_validating:
+  id: 103
+  stack: shipit_canaries
+  user: walrus
+  since_commit_id: 303
+  until_commit_id: 304
+  type: Shipit::Deploy
+  status: validating
+  created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
+
+canaries_running:
+  id: 104
+  stack: shipit_canaries
+  user: walrus
+  since_commit_id: 304
+  until_commit_id: 305
+  type: Shipit::Deploy
+  status: running
+  created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 10).minutes.ago.to_s(:db) %>

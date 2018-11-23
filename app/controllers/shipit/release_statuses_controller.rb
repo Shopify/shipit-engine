@@ -6,17 +6,9 @@ module Shipit
     def create
       case params[:status]
       when 'success'
-        @deploy.append_release_status(
-          'success',
-          "@#{current_user.login} signaled this release as healthy.",
-          user: current_user,
-        )
+        @deploy.report_healthy!(user: current_user)
       when 'failure'
-        @deploy.append_release_status(
-          'failure',
-          "@#{current_user.login} signaled this release as faulty.",
-          user: current_user,
-        )
+        @deploy.report_faulty!(user: current_user)
       else
         render status: :unprocessable_entity, json: {message: "Invalid `status` parameter"}
       end

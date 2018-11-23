@@ -66,13 +66,14 @@ module Shipit
     end
 
     # Rolls the stack back to the **previous** deploy
-    def trigger_revert
+    def trigger_revert(force: false)
       rollback = Rollback.create!(
         user_id: user_id,
         stack_id: stack_id,
         parent_id: id,
         since_commit: until_commit,
         until_commit: since_commit,
+        allow_concurrency: force,
       )
       rollback.enqueue
       lock_reason = "A rollback for #{until_commit.sha} has been triggered. " \
@@ -160,6 +161,36 @@ module Shipit
       Shipit::Engine.routes.url_helpers.stack_deploy_url(stack, self)
     end
 
+    def report_complete!
+      if stack.release_status? && stack.release_status_delay.positive?
+        enter_validation!
+      else
+        super
+      end
+    end
+
+    def report_healthy!(user: self.user, description: "@#{user.login} signaled this release as healthy.")
+      transaction do
+        complete! if can_complete?
+        append_release_status(
+          'success',
+          description,
+          user: user,
+        )
+      end
+    end
+
+    def report_faulty!(user: self.user, description: "@#{user.login} signaled this release as faulty.")
+      transaction do
+        mark_faulty! if can_mark_faulty?
+        append_release_status(
+          'failure',
+          description,
+          user: user,
+        )
+      end
+    end
+
     private
 
     def create_commit_deployments
@@ -178,18 +209,14 @@ module Shipit
         append_release_status('error', "The deploy on #{stack.environment} did not succeed (#{status})")
       when 'aborted', 'aborting'
         append_release_status('failure', "The deploy on #{stack.environment} was canceled")
-      when 'success'
-        delay = stack.release_status_delay
-        if delay.zero?
-          append_release_status('success', "The deploy on #{stack.environment} succeeded")
-        elsif delay.positive?
+      when 'validating'
+        if stack.release_status_delay.positive?
           append_release_status('pending', "The deploy on #{stack.environment} succeeded")
-          AppendDelayedReleaseStatusJob.set(wait: delay).perform_later(
-            self,
-            cursor: until_commit.release_statuses.last,
-            status: 'success',
-            description: "No issue were signaled after #{delay}",
-          )
+          MarkDeployHealthyJob.set(wait: stack.release_status_delay).perform_later(self)
+        end
+      when 'success'
+        if stack.release_status_delay.zero?
+          append_release_status('success', "The deploy on #{stack.environment} succeeded")
         end
       end
     end
@@ -206,7 +233,7 @@ module Shipit
 
     def default_since_commit_id
       return unless stack
-      @default_since_commit_id ||= last_successful_deploy&.until_commit_id
+      @default_since_commit_id ||= stack.last_completed_deploy&.until_commit_id
     end
 
     def denormalize_commit_stats
@@ -221,10 +248,6 @@ module Shipit
     def schedule_continuous_delivery
       return unless stack.continuous_deployment?
       ContinuousDeliveryJob.perform_later(stack)
-    end
-
-    def last_successful_deploy
-      stack.deploys.where(status: "success").last
     end
 
     def update_undeployed_commits_count
