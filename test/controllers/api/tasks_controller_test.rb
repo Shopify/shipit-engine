@@ -24,12 +24,15 @@ module Shipit
         assert_json 'id', task.id
       end
 
-      test "#latest returns the latest task ran" do
-        task = @stack.last_active_task
+      test "#deploys returns the deploys and revisions for a given stack" do
+        tasks = @stack.deploys_and_rollbacks.order(id: :desc)
 
-        get :latest, params: {stack_id: @stack.to_param}
+        get :deploys, params: {stack_id: @stack.to_param}
         assert_response :ok
-        assert_json 'id', task.id
+
+        (0..(tasks.length - 1)).each do |i|
+          assert_json "#{i}.id", tasks[i].id
+        end
       end
 
       test "#trigger returns 404 with unknown task" do

@@ -12,8 +12,8 @@ module Shipit
         render_resource stack.tasks.find(params[:id])
       end
 
-      def latest
-        render_resource stack.last_active_task
+      def deploys
+        render_resources stack.deploys_and_rollbacks
       end
 
       params do
