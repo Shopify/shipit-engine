@@ -24,6 +24,14 @@ module Shipit
         assert_json 'id', task.id
       end
 
+      test "#latest returns the latest task ran" do
+        task = @stack.last_active_task
+
+        get :latest, params: {stack_id: @stack.to_param}
+        assert_response :ok
+        assert_json 'id', task.id
+      end
+
       test "#trigger returns 404 with unknown task" do
         post :trigger, params: {stack_id: @stack.to_param, task_name: 'shave_the_yak'}
         assert_response :not_found
