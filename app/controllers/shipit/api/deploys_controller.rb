@@ -3,6 +3,10 @@ module Shipit
     class DeploysController < BaseController
       require_permission :deploy, :stack
 
+      def deploys
+        render_resources stack.deploys_and_rollbacks
+      end
+
       params do
         requires :sha, String, length: {in: 6..40}
         accepts :force, Boolean, default: false
