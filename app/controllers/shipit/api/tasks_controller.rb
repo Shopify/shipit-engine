@@ -12,10 +12,6 @@ module Shipit
         render_resource stack.tasks.find(params[:id])
       end
 
-      def deploys
-        render_resources stack.deploys_and_rollbacks
-      end
-
       params do
         accepts :env, Hash, default: {}
       end

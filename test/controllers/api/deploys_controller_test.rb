@@ -10,6 +10,17 @@ module Shipit
         @commit = shipit_commits(:fifth)
       end
 
+      test "#deploys returns the deploys and revisions for a given stack" do
+        tasks = @stack.deploys_and_rollbacks.order(id: :desc)
+
+        get :index, params: {stack_id: @stack.to_param}
+        assert_response :ok
+
+        (0...tasks.length).each do |i|
+          assert_json "#{i}.id", tasks[i].id
+        end
+      end
+
       test "#create triggers a new deploy for the stack" do
         assert_difference -> { @stack.deploys.count }, 1 do
           post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}

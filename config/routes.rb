@@ -22,12 +22,9 @@ Shipit::Engine.routes.draw do
       get '/ccmenu' => 'ccmenu#show', as: :ccmenu
       resource :lock, only: %i(create update destroy)
       resources :tasks, only: %i(index show) do
-        collection do
-          get 'deploys' => 'tasks#deploys', as: :deploys
-        end
         resource :output, only: :show
       end
-      resources :deploys, only: %i(create)
+      resources :deploys, only: %i(index create)
       resources :commits, only: %i(index)
       resources :pull_requests, only: %i(index show update destroy)
       post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
