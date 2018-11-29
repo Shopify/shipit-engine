@@ -36,6 +36,11 @@ module Shipit
 
     test "GET show prefers stacks with merge_queue_enabled" do
       existing = shipit_stacks(:shipit)
+      Shipit::Stack.where(
+        repo_owner: existing.repo_owner,
+        repo_name: existing.repo_name,
+      ).update_all(merge_queue_enabled: false)
+
       Shipit::Stack.create(
         repo_owner: existing.repo_owner,
         repo_name: existing.repo_name,
@@ -43,7 +48,7 @@ module Shipit
         branch: existing.branch,
         merge_queue_enabled: true,
       )
-      existing.update!(merge_queue_enabled: false)
+
       get :show, params: {referrer: 'https://github.com/Shopify/shipit-engine/pull/42', branch: 'master'}
       assert_response :ok
       assert_includes response.body, 'shipit-engine/foo'

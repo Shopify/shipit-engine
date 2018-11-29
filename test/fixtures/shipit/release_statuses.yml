@@ -1,14 +1,14 @@
 to_be_created:
-  stack: shipit
-  commit_id: 4
+  stack: shipit_canaries
+  commit_id: 304
   user: walrus
   state: pending
   description: Deploy started
   target_url: https://example.com/deploys/42
 
 created:
-  stack: shipit
-  commit_id: 1
+  stack: shipit_canaries
+  commit_id: 301
   user: walrus
   state: pending
   description: Deploy started

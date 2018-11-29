@@ -256,6 +256,24 @@
   }
 }
 
+.status--validating,
+[data-deploy-status='validating'] {
+  border-color: $green;
+
+  .status__icon {
+    background-image: asset-data-url("validating.svg");
+  }
+}
+
+.status--faulty,
+[data-deploy-status='faulty'] {
+  border-color: $yellow;
+
+  .status__icon {
+    background-image: asset-data-url("faulty.svg");
+  }
+}
+
 .status--success,
 [data-deploy-status='success'] {
   border-color: $green;
