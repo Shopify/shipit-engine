@@ -3,7 +3,7 @@ module Shipit
     class DeploysController < BaseController
       require_permission :deploy, :stack
 
-      def deploys
+      def index
         render_resources stack.deploys_and_rollbacks
       end
 
