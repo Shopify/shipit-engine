@@ -70,13 +70,16 @@ module Shipit
         check_tags = 'assert-lerna-fixed-version-tag'
         # `yarn publish` requires user input, so always use npm.
         version = lerna_version
-        publish =
-          "node_modules/.bin/lerna publish " \
-          "--yes " \
-          "--skip-git " \
-          "--repo-version #{version} " \
-          "--force-publish=* " \
-          "--npm-tag #{dist_tag(version)}"
+        publish = %W(
+          node_modules/.bin/lerna publish
+          --yes
+          --skip-git
+          --repo-version #{version}
+          --force-publish=*
+          --npm-tag #{dist_tag(version)}
+          --npm-client=npm
+          --skip-npm=false
+        ).join(" ")
 
         [check_tags, publish]
       end

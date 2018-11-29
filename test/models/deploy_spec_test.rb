@@ -789,7 +789,7 @@ module Shipit
       @spec.stubs(:lerna?).returns(true)
       @spec.stubs(:lerna_version).returns('1.0.0')
       assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
-      assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest', @spec.deploy_steps[1]
+      assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest --npm-client=npm --skip-npm=false', @spec.deploy_steps[1]
     end
 
     test '#enforce_publish_config? is false when Shipit.enforce_publish_config is nil' do
