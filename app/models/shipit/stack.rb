@@ -175,6 +175,8 @@ module Shipit
 
     def deployed_too_recently?
       if task = last_active_task
+        return true if task.validating?
+
         task.ended_at? && (task.ended_at + pause_between_deploys).future?
       end
     end

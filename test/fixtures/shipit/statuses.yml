@@ -125,3 +125,12 @@ soc_third:
   created_at: <%= 7.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
+
+canaries_fifth_success:
+  stack: shipit_canaries
+  commit_id: 305
+  description: All good
+  context: ci/travis
+  created_at: <%= 7.days.ago.to_s(:db) %>
+  state: success
+  target_url: "http://www.example.com"
