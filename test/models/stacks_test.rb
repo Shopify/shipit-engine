@@ -524,6 +524,30 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery bails out if the previous deploy is still validating" do
+      @stack = shipit_stacks(:shipit_canaries)
+      shipit_tasks(:canaries_running).delete
+
+      assert_predicate @stack, :deployable?
+      assert_predicate @stack, :deployed_too_recently?
+      assert_predicate @stack.last_active_task, :validating?
+
+      assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+
+      @stack.last_active_task.complete!
+      refute_predicate @stack, :deployed_too_recently?
+
+      assert_enqueued_with(job: Shipit::PerformTaskJob) do
+        assert_difference -> { Deploy.count }, +1 do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
     test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
       @stack.tasks.delete_all
       assert_predicate @stack, :deployable?
