@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%= stylesheet_link_tag *(params[:stylesheets] || []).select { |url| url.start_with?('https://assets-cdn.github.com/') } %>
+    <%= stylesheet_link_tag *(params[:stylesheets] || []).select { |url| url.start_with?('https://assets-cdn.github.com/', 'https://github.githubassets.com/') } %>
     <%= stylesheet_link_tag 'merge_status' %>
   </head>
   <body>
