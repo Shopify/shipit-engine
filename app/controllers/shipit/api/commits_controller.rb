@@ -4,7 +4,12 @@ module Shipit
       require_permission :read, :stack
 
       def index
-        render_resources stack.commits.reachable.includes(:statuses)
+        commits = stack.commits.reachable.includes(:statuses)
+        if params[:undeployed]
+          commits = commits.newer_than(stack.last_deployed_commit)
+        end
+
+        render_resources commits
       end
     end
   end
