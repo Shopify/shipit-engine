@@ -15,6 +15,16 @@ module Shipit
         assert_response :ok
         assert_json '0.sha', commit.sha
       end
+
+      test "#undeployed returns a list of undeployed commits" do
+        commits = @stack.undeployed_commits.map(&:sha)
+
+        get :undeployed, params: {stack_id: @stack.to_param}
+        assert_response :ok
+        JSON.parse(response.body).each do |commit|
+          assert commits.include?(commit.fetch("sha"))
+        end
+      end
     end
   end
 end
