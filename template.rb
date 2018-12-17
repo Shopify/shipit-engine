@@ -12,7 +12,6 @@ route %(mount Shipit::Engine, at: '/')
 gem 'sidekiq'
 gem 'shipit-engine'
 gem 'redis-rails'
-gem 'mini_racer'
 
 create_file 'Procfile', <<-CODE
 web: bundle exec rails s -p $PORT
@@ -85,7 +84,7 @@ CODE
         oauth:
           id: <%= ENV['GITHUB_OAUTH_ID'] %>
           secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
-          # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
+          # teams: MyOrg/developers # Enable this setting to restrict access to only the member of a team
 
     production:
       secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
@@ -100,7 +99,7 @@ CODE
         oauth:
           id: <%= ENV['GITHUB_OAUTH_ID'] %>
           secret: <%= ENV['GITHUB_OAUTH_SECRET'] %>
-          # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
+          # teams: MyOrg/developers # Enable this setting to restrict access to only the member of a team
       env:
         # SSH_AUTH_SOCK: /foo/bar # You can set environment variable that will be present during deploys.
   CODE
@@ -120,7 +119,7 @@ inject_into_file 'config/application.rb', after: "load_defaults 5.1\n" do
   "\n    config.active_job.queue_adapter = :sidekiq\n"
 end
 
-if yes?("Are you hosting Shipit on Heroku? (y/n)")
+if ENV['CI'] || yes?("Are you hosting Shipit on Heroku? (y/n)")
   inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
 
   gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
@@ -141,8 +140,8 @@ after_bundle do
   git add: '.'
   git commit: "-a -m 'Initial commit'"
 
-  if yes?("Are you installing Shipit on a GitHub organization? (y/n)")
-    org_name = ask("What is the organization name?")
+  if ENV['CI'] || yes?("Are you installing Shipit on a GitHub organization? (y/n)")
+    org_name = ENV.fetch('GITHUB_ORGANIZATION') { ask("What is the organization name?") }
     say(
       "Shipit requires a GitHub App to authenticate users and access the API. " +
       "If you haven't created one yet, you can do so at https://github.com/organizations/#{org_name}/settings/apps/new",
