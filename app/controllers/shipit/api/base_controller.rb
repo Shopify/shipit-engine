@@ -1,6 +1,8 @@
 module Shipit
   module Api
     class BaseController < ActionController::Base
+      skip_before_action :verify_authenticity_token
+
       include Shipit::Engine.routes.url_helpers
       include Rendering
       include Cacheable
