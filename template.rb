@@ -3,8 +3,8 @@
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.3')
   raise Thor::Error, "You need at least Ruby 2.3 to install shipit"
 end
-if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('5.1')
-  raise Thor::Error, "You need Rails 5.1 to install shipit"
+if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('5.2')
+  raise Thor::Error, "You need Rails 5.2 to install shipit"
 end
 
 route %(mount Shipit::Engine, at: '/')

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181010150947) do
+ActiveRecord::Schema.define(version: 2018_10_10_150947) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
