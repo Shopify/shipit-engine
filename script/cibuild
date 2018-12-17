@@ -28,5 +28,18 @@ case $SUITE in
   rubocop)
     bundle exec rubocop
     ;;
+  setup)
+    unset BUNDLE_GEMFILE
+    export GITHUB_ORGANIZATION=acme
+    export TEMPLATE="${PWD}/template.rb"
+
+    cd /tmp
+
+    git config --global user.email "anonymous@example.com"
+    git config --global user.name "Anonymous"
+
+    gem install rails -v 5.1
+    rails _5.1_ new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer -m "${TEMPLATE}"
+    ;;
 esac
 
