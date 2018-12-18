@@ -1,6 +1,5 @@
 module Shipit
   class WebhooksController < ActionController::Base
-    skip_before_action :verify_authenticity_token
     before_action :check_if_ping, :verify_signature
 
     respond_to :json
