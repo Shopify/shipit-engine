@@ -533,14 +533,18 @@ module Shipit
       end
     end
 
-    test "manually triggered rollbacks sets the release status as failure on the previously deployed revision" do
-      @deploy = shipit_deploys(:canaries_faulty)
-      last_deployed_commit = @deploy.stack.last_deployed_commit
+    test "manually triggered rollbacks sets the release status as failure" do
+      @deploy = shipit_deploys(:canaries_validating)
 
       assert_difference -> { ReleaseStatus.count }, +1 do
-        assert_not_equal 'failure', last_deployed_commit.release_statuses.last&.state
+        assert_equal 'validating', @deploy.status
+        assert_equal 'pending', @deploy.last_release_status.state
+
         @deploy.trigger_rollback(force: true)
-        assert_equal 'failure', last_deployed_commit.release_statuses.last.state
+        @deploy.reload
+
+        assert_equal 'faulty', @deploy.status
+        assert_equal 'failure', @deploy.last_release_status.state
       end
     end
 
