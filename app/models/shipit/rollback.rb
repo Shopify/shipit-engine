@@ -36,20 +36,9 @@ module Shipit
 
     def update_release_status
       return unless stack.release_status?
+      return unless status == 'pending'
 
-      case status
-      when 'pending'
-        if deploy.rollback_once_aborted?
-          deploy.report_faulty!(description: "A rollback of #{stack.to_param} was triggered")
-        else
-          since_commit.create_release_status!(
-            'failure',
-            user: user.presence,
-            target_url: permalink,
-            description: "A rollback of #{stack.to_param} was triggered",
-          )
-        end
-      end
+      deploy.report_faulty!(description: "A rollback of #{stack.to_param} was triggered")
     end
 
     def lock_reverted_commits
