@@ -225,10 +225,10 @@ module Shipit
         @pr.reject!('merge_conflict')
       end
       params = job.arguments.first
-      assert_equal 'merge', params['event']
-      assert_json 'status', 'rejected', document: params['payload']
-      assert_json 'pull_request.rejection_reason', 'merge_conflict', document: params['payload']
-      assert_json 'pull_request.number', @pr.number, document: params['payload']
+      assert_equal 'merge', params[:event]
+      assert_json 'status', 'rejected', document: params[:payload]
+      assert_json 'pull_request.rejection_reason', 'merge_conflict', document: params[:payload]
+      assert_json 'pull_request.number', @pr.number, document: params[:payload]
     end
 
     test "#merge! doesnt delete the branch if there are open PRs against it" do

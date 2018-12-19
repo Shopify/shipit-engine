@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.27.0
+
+* Upgrade to Rails 5.2
 * Fix a Postgres compatibility issue (#838).
 
 # 0.26.0
