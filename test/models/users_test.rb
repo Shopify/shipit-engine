@@ -142,6 +142,30 @@ module Shipit
       assert_predicate @user, :authorized?
     end
 
+    test "self.find_or_create_author_from_github_commit handles missing users on github" do
+      Shipit.github.api.expects(:user).raises(Octokit::NotFound)
+      user = shipit_users(:bob)
+      github_commit = resource(
+        sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+        commit: {
+          author: {
+            id: user.github_id,
+            name: user.name,
+            email: user.email,
+            date: Time.now.utc,
+          },
+          committer: {
+            name: user.name,
+            email: user.email,
+            date: Time.now.utc,
+          },
+          message: "commit to trigger staging build\n\nMerge-Requested-By: missinguser\n",
+        },
+      )
+      found_user = Shipit::User.find_or_create_author_from_github_commit(github_commit)
+      assert_equal user, found_user
+    end
+
     private
 
     def fetch_user
