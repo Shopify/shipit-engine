@@ -209,3 +209,30 @@ canaries_running:
   created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
+
+shipit_with_title_parsing_issue:
+  id: 105
+  user: walrus
+  since_commit_id: 2 # second
+  until_commit_id: 2 # second
+  type: Shipit::Task
+  stack: shipit
+  status: success
+  definition: >
+    {
+      "id": "bad-title",
+      "action": "Task with bad title",
+      "title": "Using the %{WRONG_VARIABLE_NAME}",
+      "description": "This task uses the wrong variable name",
+      "variables": [
+        {"name": "VARIABLE_NAME", "title": "Any old variable"}
+      ],
+      "steps": [
+        "does not matter"
+      ]
+    }
+  env:
+    POD_ID: "12"
+  created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
