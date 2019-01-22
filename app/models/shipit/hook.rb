@@ -75,6 +75,13 @@ module Shipit
           stack_id: stack&.id,
           payload: coerce_payload(payload),
         )
+        deliver_internal_hooks(event, stack, payload)
+      end
+
+      def deliver_internal_hooks(event, stack, payload)
+        Shipit.internal_hook_receivers.each do |receiver|
+          receiver.deliver(event, stack, payload)
+        end
       end
 
       def deliver(event, stack_id, payload)

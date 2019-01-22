@@ -58,6 +58,7 @@ module Shipit
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
+  attr_writer :internal_hook_receivers
 
   self.timeout_exit_codes = [].freeze
 
@@ -181,6 +182,10 @@ module Shipit
 
   def committer_email
     secrets.committer_email.presence || "#{app_name.underscore.dasherize}@#{host}"
+  end
+
+  def internal_hook_receivers
+    @internal_hook_receivers || []
   end
 
   protected
