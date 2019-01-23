@@ -55,7 +55,7 @@ module Shipit
         FakeReceiver = Module.new
         FakeReceiver.expects(:deliver).with(:deploy, @stack, 'foo' => 42)
 
-        Shipit.internal_hook_receivers = [FakeReceiver]
+        Shipit.internal_hook_receivers << FakeReceiver
         Hook.emit(:deploy, @stack, 'foo' => 42)
       ensure
         Shipit.internal_hook_receivers = original_receivers
