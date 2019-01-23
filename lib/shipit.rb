@@ -185,7 +185,7 @@ module Shipit
   end
 
   def internal_hook_receivers
-    @internal_hook_receivers || []
+    @internal_hook_receivers ||= []
   end
 
   protected
