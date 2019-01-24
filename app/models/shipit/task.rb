@@ -57,7 +57,7 @@ module Shipit
         task.started_at ||= Time.now.utc
       end
 
-      before_transition any => %i(success failed error timedout validating) do |task|
+      before_transition running: any do |task|
         task.ended_at ||= Time.now.utc
       end
 
