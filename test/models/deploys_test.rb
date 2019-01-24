@@ -93,6 +93,16 @@ module Shipit
       assert_equal [4, 3, 2], deploy.commits.pluck(:id)
     end
 
+    test "transitioning to an active status does not set ended_at" do
+      deploy = shipit_deploys(:shipit_pending)
+      deploy.status = 'pending'
+
+      deploy.run!
+      deploy.reload
+
+      assert_nil deploy.ended_at
+    end
+
     test "transitioning to success causes an event to be broadcasted" do
       deploy = shipit_deploys(:shipit_pending)
 
