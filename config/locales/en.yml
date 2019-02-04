@@ -60,6 +60,10 @@ en:
     create:
       error:
         deploy_in_progress: Rollbacks can't be triggered if a deploy is in progress
+  emergency_mode:
+    enable: Enable emergency mode
+    enable_description: Enable all UI controls and remove safeties to allow advanced troubleshooting measures
+    disable: Exit emergency mode
 
   errors:
     messages:
