@@ -10,9 +10,9 @@
 
       <div class="commit-list-actions">
         <% if params[:force] %>
-          <%= link_to 'Exit emergency mode', stack_path(@stack) %>
+          <%= link_to t('emergency_mode.disable'), stack_path(@stack) %>
         <% else %>
-          <%= link_to 'Enable emergency mode', stack_path(@stack, force: 1) %>
+          <%= link_to t('emergency_mode.enable'), stack_path(@stack, force: 1), title: t('emergency_mode.enable_description') %>
         <% end %>
       </div>
     </header>
