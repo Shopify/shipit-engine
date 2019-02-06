@@ -35,6 +35,8 @@ module Shipit
       else
         action
       end
+    rescue KeyError
+      "This task (title: #{@title}) cannot be shown due to an incorrect variable name. Check your shipit.yml file"
     end
 
     def allow_concurrency?
