@@ -112,6 +112,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`, `merge.max_divergence`)
 * [Custom Tasks](#custom-tasks) (`tasks`)
+* [Custom links](#custom-links) (`links`) 
 * [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
@@ -514,6 +515,20 @@ tasks:
       - script/failover $POD_ID
     variables:
       - name: POD_ID
+```
+
+<h3 id="custom-links">Custom Links</h3>
+
+You can add custom links to the header of a stacks overview page in Shipit. To create a new custom link, specify its parameters in the links section of the shipit.yml file. The link title is a humanized version of the key. For example:
+
+**<code>links.monitoring_dashboard</code>** creates a link in the header of of the page titled "Monitoring dashboard"
+
+You can specify multiple custom links:
+
+```yml
+links:
+  monitoring_dashboard: https://example.com/monitoring.html
+  other_link: https://example.com/something_else.html
 ```
 
 <h3 id="review-process">Review process</h3>
