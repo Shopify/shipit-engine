@@ -40,9 +40,10 @@ class @Stream
 
   success: (response) =>
     @retries = 0
-    @broadcastOutput(response.output, response)
-    @broadcastStatus(response.status, response)
-    @start(response.url || false)
+    task = response.tail_task
+    @broadcastOutput(task.output, response)
+    @broadcastStatus(task.status, response)
+    @start(task.url || false)
 
   broadcastStatus: (status, args...) ->
     if status != @status
