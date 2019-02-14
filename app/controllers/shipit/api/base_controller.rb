@@ -1,7 +1,7 @@
 module Shipit
   module Api
     class BaseController < ActionController::Base
-      skip_before_action :verify_authenticity_token
+      skip_before_action :verify_authenticity_token, raise: false
 
       include Shipit::Engine.routes.url_helpers
       include Rendering
