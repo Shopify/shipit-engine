@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.27.0)
+    shipit-engine (0.27.1)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       attr_encrypted (~> 3.1.0)
@@ -122,9 +122,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.2.2)
       faraday (~> 0.8)
-    ffi (1.9.25)
+    ffi (1.10.0)
     gemoji (2.1.0)
-    globalid (0.4.1)
+    globalid (0.4.2)
       activesupport (>= 4.2.0)
     hashie (3.6.0)
     i18n (0.9.5)
@@ -147,7 +147,7 @@ GEM
       mimemagic (~> 0.3.2)
     metaclass (0.0.4)
     method_source (0.8.2)
-    mimemagic (0.3.2)
+    mimemagic (0.3.3)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
@@ -158,7 +158,7 @@ GEM
     multipart-post (2.0.0)
     mysql2 (0.4.6)
     nio4r (2.3.1)
-    nokogiri (1.9.1)
+    nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)
     oauth2 (1.4.1)
       faraday (>= 0.8, < 0.16.0)
@@ -232,9 +232,9 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     redis-objects (1.2.1)
       redis (>= 3.0.2)
-    responders (2.4.0)
-      actionpack (>= 4.2.0, < 5.3)
-      railties (>= 4.2.0, < 5.3)
+    responders (2.4.1)
+      actionpack (>= 4.2.0, < 6.0)
+      railties (>= 4.2.0, < 6.0)
     rubocop (0.52.1)
       parallel (~> 1.10)
       parser (>= 2.4.0.2, < 3.0)
@@ -244,7 +244,7 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.9.0)
     safe_yaml (1.0.4)
-    sass (3.7.2)
+    sass (3.7.3)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -317,4 +317,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.17.1
+   1.17.3

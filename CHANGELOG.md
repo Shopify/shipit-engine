@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.27.1
+
+* Fix issue with CSRF protection being enabled on webhook and api controllers.
+
 # 0.27.0
 
 * Upgrade to Rails 5.2
