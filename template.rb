@@ -115,7 +115,7 @@ Sidekiq.configure_client do |config|
 end
 CODE
 
-inject_into_file 'config/application.rb', after: "load_defaults 5.1\n" do
+inject_into_file 'config/application.rb', after: "load_defaults 5.2\n" do
   "\n    config.active_job.queue_adapter = :sidekiq\n"
 end
 
