@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix handling of commits with an empty message (#872).
+
 # 0.27.1
 
 * Fix issue with CSRF protection being enabled on webhook and api controllers.

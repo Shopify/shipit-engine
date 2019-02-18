@@ -198,7 +198,7 @@ module Shipit
     end
 
     def message_header
-      message.lines.first.strip
+      message.lines.first.to_s.strip
     end
 
     # TODO: remove in a few versions when it is assumed the commits table was backfilled
