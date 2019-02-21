@@ -25,7 +25,7 @@ Shipit::Engine.routes.draw do
         resource :output, only: :show
       end
       resources :deploys, only: %i(index create) do
-        post 'create_status'
+        resources :release_statuses, only: %i(create)
       end
       resources :commits, only: %i(index)
       resources :pull_requests, only: %i(index show update destroy)
