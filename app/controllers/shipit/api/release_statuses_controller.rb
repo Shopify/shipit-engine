@@ -5,6 +5,7 @@ module Shipit
 
       params do
         requires :status, String
+        validates :status, inclusion: {in: %w(success failure)}
       end
       def create
         deploy = stack.deploys_and_rollbacks.find(params[:deploy_id])
@@ -13,8 +14,6 @@ module Shipit
           deploy.report_healthy!(user: current_user)
         when 'failure'
           deploy.report_faulty!(user: current_user)
-        else
-          param_error!(:status, 'Invalid status')
         end
         render_resource deploy, status: :created
       end

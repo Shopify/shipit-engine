@@ -12,7 +12,7 @@ module Shipit
       test "#create renders a 422 if status is not found" do
         post :create, params: {stack_id: @stack.to_param, deploy_id: @deploy.id}
         assert_response :unprocessable_entity
-        assert_json 'errors', 'status' => ['is required']
+        assert_json 'errors', 'status' => ['is required', 'is not included in the list']
       end
 
       test "#create renders a 422 if status is invalid" do
@@ -25,7 +25,7 @@ module Shipit
         end
 
         assert_response :unprocessable_entity
-        assert_json 'errors', 'status' => ['Invalid status']
+        assert_json 'errors', 'status' => ['is not included in the list']
       end
 
       test "#create allow users to append release statuses and mark the deploy as success" do
