@@ -330,16 +330,20 @@ module Shipit
     end
 
     test "locking the stack triggers a webhook" do
-      expect_hook(:lock, @stack, locked: true, stack: @stack) do
+      expect_hook(:lock, @stack, locked: true, lock_duration: nil, stack: @stack) do
         @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
       end
     end
 
     test "unlocking the stack triggers a webhook" do
+      Timecop.freeze
+      time = Time.current
       @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
-      expect_hook(:lock, @stack, locked: false, stack: @stack) do
+      Timecop.travel(time + 5.minutes)
+      expect_hook(:lock, @stack, locked: false, lock_duration: {from: time, until: Time.current}, stack: @stack) do
         @stack.update(lock_reason: nil)
       end
+      Timecop.return
     end
 
     test "unlocking the stack triggers a MergePullRequests job" do
