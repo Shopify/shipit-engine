@@ -18,7 +18,6 @@ end
 group :test do
   gem 'spy'
   gem 'mocha'
-  gem 'timecop'
   gem 'simplecov', require: false
 end
 
