@@ -330,7 +330,7 @@ module Shipit
     end
 
     test "locking the stack triggers a webhook" do
-      expect_hook(:lock, @stack, locked: true, lock_duration: nil, stack: @stack) do
+      expect_hook(:lock, @stack, locked: true, lock_details: nil, stack: @stack) do
         @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
       end
     end
@@ -340,7 +340,7 @@ module Shipit
         time = Time.current
         @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
         travel 1.day
-        expect_hook(:lock, @stack, locked: false, lock_duration: {from: time, until: Time.current}, stack: @stack) do
+        expect_hook(:lock, @stack, locked: false, lock_details: {from: time, until: Time.current}, stack: @stack) do
           @stack.update(lock_reason: nil)
         end
       end
