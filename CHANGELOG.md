@@ -1,5 +1,6 @@
 # Unreleased
 
+* Include stack environment in page title.
 * Fix handling of commits with an empty message (#872).
 
 # 0.27.1

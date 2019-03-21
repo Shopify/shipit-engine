@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>" data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 <head>
-  <title><%= [Shipit.app_name, @stack.try!(:repo_name)].compact.join(' - ') %></title>
+  <% if @stack %>
+    <title><%= Shipit.app_name %> - <%= @stack.repo_name %>/<%= @stack.environment %></title>
+  <% else %>
+  <title><%= Shipit.app_name %></title>
+  <% end %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= favicon_link_tag %>
   <%= stylesheet_link_tag :shipit, media: 'all' %>
