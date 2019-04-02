@@ -1,5 +1,6 @@
 # Unreleased
 
+* Fix default ordering of check runs causing retries to display an incorrect status.
 * Include stack environment in page title.
 * Fix handling of commits with an empty message (#872).
 
