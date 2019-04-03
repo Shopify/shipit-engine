@@ -140,7 +140,7 @@ module Shipit
       assert_redirected_to stack_deploy_path(@task.stack, @task)
     end
 
-    test ":lookup returns stack deploy url if the task is an instance of a subclass of Deploy" do
+    test ":lookup returns stack deploy url if the task is an instance of Rollback" do
       @task = shipit_tasks(:shipit_rollback)
 
       get :lookup, params: {id: @task.id}
