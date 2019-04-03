@@ -2,7 +2,7 @@ module Shipit
   class TasksController < ShipitController
     include Pagination
 
-    before_action :stack
+    before_action :stack, except: [:lookup]
 
     self.default_page_size = 20
 
@@ -50,7 +50,19 @@ module Shipit
       render json: TailTaskSerializer.new(task, context: params)
     end
 
+    def lookup
+      @task = Task.find(params[:id])
+
+      redirect_to url_for_task
+    end
+
     private
+
+    def url_for_task
+      base_task = @task.is_a?(Deploy) ? @task.becomes(Deploy) : @task
+
+      url_for([base_task.stack, base_task])
+    end
 
     def task
       @task ||= stack.tasks.find(params[:id])
