@@ -22,7 +22,7 @@ module Shipit
     end
 
     def enqueue
-      PullRequest.request_merge!(stack, params[:number], current_user)
+      PullRequest.request_merge!(stack, params[:number], current_user, params[:rollbackable])
       render stack_status, layout: !request.xhr?
     end
 

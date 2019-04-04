@@ -17,6 +17,15 @@
         <em class="warning">Need revalidation.</em>
       <% end %>
     </p>
+    <p class="pr-meta">
+      <% if pull_request.rollbackable %>
+        <span class='rollbackable-yes'> Safe to rollback </span>
+      <% elsif pull_request.rollbackble == false %>
+        <span class='rollbackable-no'> Unsafe to rollback </span>
+      <% else %>
+        <!-- Do not display anything if rollbackable is nil -->
+      <% end %>
+    </p>
   </div>
   <% if pull_request.revalidating? %>
     <div class="commit-actions">

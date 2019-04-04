@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_10_150947) do
+ActiveRecord::Schema.define(version: 2019_04_04_184348) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_150947) do
     t.string "pull_request_title", limit: 1024
     t.integer "pull_request_id"
     t.boolean "locked", default: false, null: false
+    t.boolean "rollbackable"
     t.index ["author_id"], name: "index_commits_on_author_id"
     t.index ["committer_id"], name: "index_commits_on_committer_id"
     t.index ["created_at"], name: "index_commits_on_created_at"
@@ -165,6 +166,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_150947) do
     t.datetime "merged_at"
     t.string "base_ref", limit: 1024
     t.integer "base_commit_id"
+    t.boolean "rollbackable"
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
     t.index ["merge_status"], name: "index_pull_requests_on_merge_status"
@@ -184,9 +186,9 @@ ActiveRecord::Schema.define(version: 2018_10_10_150947) do
     t.bigint "github_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commit_id", "github_id"], name: "index_deploy_statuses_on_commit_id_and_github_id"
-    t.index ["stack_id", "commit_id"], name: "index_deploy_statuses_on_stack_id_and_commit_id"
-    t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
+    t.index ["commit_id", "github_id"], name: "index_release_statuses_on_commit_id_and_github_id"
+    t.index ["stack_id", "commit_id"], name: "index_release_statuses_on_stack_id_and_commit_id"
+    t.index ["user_id"], name: "index_release_statuses_on_user_id"
   end
 
   create_table "stacks", force: :cascade do |t|
@@ -239,7 +241,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_150947) do
     t.integer "additions", limit: 4, default: 0
     t.integer "deletions", limit: 4, default: 0
     t.text "definition", limit: 65535
-    t.binary "gzip_output"
+    t.binary "gzip_output", limit: 16777215
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false

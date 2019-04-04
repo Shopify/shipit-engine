@@ -30,7 +30,7 @@ class MergeStatusPoller
 
   previousLastModified = null
   refreshPage: =>
-    @fetchPage window.location.toString(), (html, response) =>
+    @fetchPage @reloadUrl(), (html, response) =>
       @updateDocument(html, response)
       setTimeout(@refreshPage, POLL_INTERVAL)
 
@@ -41,6 +41,13 @@ class MergeStatusPoller
       if html && container = document.querySelector('[data-layout-content]')
         container.innerHTML = html
         @onPageChange()
+
+  reloadUrl: =>
+    rollback_checkbox = document.querySelector('input[name="rollbackable"]:checked')
+    if rollback_checkbox == null
+      return window.location.toString()
+    else
+      return window.location.toString() + "&rollbackable=" + rollback_checkbox.value
 
   isMergeQueueEnabled: =>
     document.querySelector('.merge-status-container .js-details-container')?.hasAttribute('data-queue-enabled')
