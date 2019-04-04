@@ -169,6 +169,18 @@ module Shipit
 
     delegate :pending?, :success?, :error?, :failure?, :blocking?, :state, to: :status
 
+    def active?
+      return false unless stack.active_task?
+
+      active_task = stack.active_task
+
+      if active_task.since_commit == active_task.until_commit
+        id == active_task.since_commit.id
+      else
+        id > active_task.since_commit.id && id <= active_task.until_commit.id
+      end
+    end
+
     def deployable?
       !locked? && (stack.ignore_ci? || (success? && !blocked?))
     end

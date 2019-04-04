@@ -35,12 +35,22 @@ module Shipit
     end
 
     def deploy_discouraged?
-      stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
+      maximum_commits_per_deploy_reached?
+    end
+
+    def deploy_scheduled?
+      stack.continuous_deployment && !maximum_commits_per_deploy_reached? && !active?
     end
 
     def blocked?
       return @blocked if defined?(@blocked)
       @blocked = super
+    end
+
+    private
+
+    def maximum_commits_per_deploy_reached?
+      stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
     end
   end
 end

@@ -62,6 +62,7 @@ shipit_canaries:
   merge_queue_enabled: true
   tasks_count: 3
   undeployed_commits_count: 1
+  continuous_deployment: true
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
@@ -235,6 +236,7 @@ shipit_undeployed:
   merge_queue_enabled: true
   tasks_count: 2
   undeployed_commits_count: 3
+  continuous_deployment: true
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
