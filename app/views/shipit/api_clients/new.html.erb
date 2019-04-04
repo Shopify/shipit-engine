@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <p>New Api Client</p>
+    </header>
+  </section>
+
+  <%= form_for @api_client, url: api_clients_path(@api_client) do |f| %>
+    <section>
+      <%= label_tag "App Name" %>
+      <%= f.text_field :name, placeholder: 'e.g. spy', required: true %>
+    </section>
+
+    <section>
+      <%= label_tag "Permissions" %>
+      <ul class="deploy-checklist">
+        <% Shipit::ApiClient::PERMISSIONS.each do |permission| %>
+          <li class="deploy-checklist__item">
+            <%= check_box_tag 'api_client[permissions][]', permission, false,
+              class: 'deploy-checklist__item__checkbox', id: "checkbox_" + permission %>
+            <label class="deploy-checklist__item__label" for="checkbox_<%= permission %>">
+              <%= permission %>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="submit-section">
+      <%= f.submit "Create", :class => ['btn', 'primary'] %>
+    </section>
+  <% end %>
+</div>
