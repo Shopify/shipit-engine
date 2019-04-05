@@ -5,8 +5,8 @@ shipit:
   branch: master
   ignore_ci: false
   merge_queue_enabled: true
-  tasks_count: 3
-  undeployed_commits_count: 1
+  tasks_count: 8
+  undeployed_commits_count: 2
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
