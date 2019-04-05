@@ -673,5 +673,36 @@ module Shipit
       Rails.cache.clear
       refute_predicate @stack, :ci_enabled?
     end
+
+    test "#undeployed_commits returns list of commits newer than last deployed commit" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      last_deployed_commit = @stack.last_deployed_commit
+      commits = @stack.undeployed_commits
+
+      assert_equal @stack.undeployed_commits_count, commits.size
+
+      commits.each { |c| assert c.id > last_deployed_commit.id }
+    end
+
+    test "#undeployed_commits returns list of commits newer than last deployed commit excluding active ones" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      active_task = @stack.active_task
+      last_deployed_commit = @stack.last_deployed_commit
+      commits = @stack.undeployed_commits(exclude_active: true)
+
+      commits.each do |c|
+        assert c.id > last_deployed_commit.id
+        refute c.id.between?(active_task.since_commit.id, active_task.until_commit.id)
+      end
+    end
+
+    test "#active_commits returns list of commits related to the stack active task" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      active_task = @stack.active_task
+
+      @stack.active_commits.each do |c|
+        assert c.id.between?(active_task.since_commit.id, active_task.until_commit.id)
+      end
+    end
   end
 end

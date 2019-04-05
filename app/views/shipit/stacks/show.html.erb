@@ -17,7 +17,16 @@
       </div>
     </header>
     <ul class="commit-list">
-      <%= render partial: 'shipit/commits/commit', collection: @commits %>
+      <%= render partial: 'shipit/commits/commit', collection: @undeployed_commits %>
+    </ul>
+  </section>
+
+  <section>
+    <header class="section-header">
+      <h2>Currently Deploying Commits</h2>
+    </header>
+    <ul class="commit-list">
+      <%= render partial: 'shipit/commits/commit', collection: @active_commits %>
     </ul>
   </section>
 

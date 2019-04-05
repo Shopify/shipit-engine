@@ -246,3 +246,55 @@ canaries_fifth:
   additions: 1
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+undeployed_1:
+  id: 401
+  sha: 4d9278037b872fd9a6690523e411ecb3aa181355
+  message: "lets go"
+  stack: shipit_undeployed
+  author: walrus
+  committer: walrus
+  authored_at: <%= 10.days.ago.to_s(:db) %>
+  committed_at: <%= 9.days.ago.to_s(:db) %>
+  additions: 42
+  deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+
+undeployed_2:
+  id: 402
+  sha: 4890fd8b5f2be05d1fedb763a3605ee461c39074
+  message: "sheep it!"
+  stack: shipit_undeployed
+  author: walrus
+  committer: walrus
+  authored_at: <%= 8.days.ago.to_s(:db) %>
+  committed_at: <%= 7.days.ago.to_s(:db) %>
+  additions: 1
+  deletions: 1
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+
+undeployed_3:
+  id: 403
+  sha: 467578b362bf2b4df5903e1c7960929361c39074
+  message: "fix it!"
+  stack: shipit_undeployed
+  author: walrus
+  committer: walrus
+  authored_at: <%= 6.days.ago.to_s(:db) %>
+  committed_at: <%= 5.days.ago.to_s(:db) %>
+  additions: 12
+  deletions: 64
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+
+undeployed_4:
+  id: 404
+  sha: 447578b362bf2b4df5903e1c7960929361c3435a
+  message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"
+  stack: shipit_undeployed
+  author: walrus
+  committer: walrus
+  authored_at: <%= 4.days.ago.to_s(:db) %>
+  committed_at: <%= 3.days.ago.to_s(:db) %>
+  additions: 420
+  deletions: 342
+  updated_at: <%= 8.days.ago.to_s(:db) %>
