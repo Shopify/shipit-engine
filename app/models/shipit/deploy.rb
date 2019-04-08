@@ -39,6 +39,16 @@ module Shipit
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
+    def self.newer_than(commit)
+      return all unless commit
+      where('id > ?', commit.try(:id) || commit)
+    end
+
+    def self.until(commit)
+      return all unless commit
+      where('id <= ?', commit.try(:id) || commit)
+    end
+
     def build_rollback(user = nil, env: nil, force: false)
       Rollback.new(
         user_id: user&.id,
@@ -98,6 +108,14 @@ module Shipit
 
     def rollbackable?
       success? && supports_rollback? && !currently_deployed?
+    end
+
+    def safe_to_rollback?
+      !commits.any?{|commit| commit.rollbackable == false}
+    end
+
+    def safe_to_rollback_to?
+      !stack.deploys.newer_than(id).until(stack.last_completed_deploy.id).any? { |deploy| !deploy.safe_to_rollback? }
     end
 
     def currently_deployed?

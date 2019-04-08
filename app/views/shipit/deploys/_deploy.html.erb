@@ -38,6 +38,14 @@
           in <%= deploy.duration %>
         <% end %>
       </p>
+      <p class="commit-meta">
+        <% if deploy.safe_to_rollback? %>
+          <span class='rollbackable-yes'> Safe to rollback </span>
+        <% else %>
+          <span class='rollbackable-no'> Unsafe to rollback </span>
+        <% end %>
+      </p>
+
     </div>
 
     <% if @stack.release_status? %>

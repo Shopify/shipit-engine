@@ -354,6 +354,11 @@
   color: #555;
 }
 
+.commit-summary__rollbackable {
+  padding: 0px 30px;
+  font-weight: bold;
+}
+
 .commit-summary__sha {
   font-size: 0.875rem;
   color: $grey;

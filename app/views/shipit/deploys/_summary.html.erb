@@ -5,6 +5,15 @@
         <%= github_avatar commit.author, size: 24 %>
       </div>
       <span class="commit-summary__title"><%= render_commit_message_with_link commit %></span>
+      <span class="commit-summary__rollbackable">
+        <% if commit.rollbackable%>
+          <span class='rollbackable-yes'> Safe to rollback </span>
+        <% elsif commit.rollbackable == false %>
+          <span class='rollbackable-no'> Unsafe to rollback </span>
+        <% else %>
+          <!-- Do not display anything if rollbackable is nil -->
+        <% end %>
+      </span>
       <a href="<%= github_commit_url commit %>" class="commit-summary__sha number">
         <i class="ico-<%= commit.state %>-small"></i> <%= commit.short_sha %>
       </a>

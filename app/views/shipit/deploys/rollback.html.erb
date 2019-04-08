@@ -1,13 +1,14 @@
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
 
 <div class="wrapper">
-  <section class="warning">
-    <h2>Are you sure it's safe to rollback?</h2>
-    <ul>
-      <li>Does the code you want to rollback contain migrations?</li>
-      <li>If so, is the old code compatible with the new schema?</li>
-    </ul>
-  </section>
+  <% unless @deploy.safe_to_rollback_to? %>
+    <section class="warning">
+      <h2>You are about to rollback a commit marked as unsafe to rollback</h2>
+      <ul>
+        <li>Please review the unsafe commits below</li>
+      </ul>
+    </section>
+  <% end %>
 
   <section>
     <header class="section-header">
