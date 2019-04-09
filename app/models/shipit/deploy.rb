@@ -111,11 +111,11 @@ module Shipit
     end
 
     def safe_to_rollback?
-      !commits.any?{|commit| commit.rollbackable == false}
+      !commits.any?(&:unsafe_to_rollback)
     end
 
     def safe_to_rollback_to?
-      !stack.deploys.newer_than(id).until(stack.last_completed_deploy.id).any? { |deploy| !deploy.safe_to_rollback? }
+      stack.deploys.newer_than(id).until(stack.last_completed_deploy.id).all?(&:safe_to_rollback?)
     end
 
     def currently_deployed?

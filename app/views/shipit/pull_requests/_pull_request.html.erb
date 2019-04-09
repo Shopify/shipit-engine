@@ -18,10 +18,10 @@
       <% end %>
     </p>
     <p class="pr-meta">
-      <% if pull_request.rollbackable %>
-        <span class='rollbackable-yes'> Safe to rollback </span>
-      <% elsif pull_request.rollbackable == false %>
+      <% if pull_request.unsafe_to_rollback %>
         <span class='rollbackable-no'> Unsafe to rollback </span>
+      <% elsif pull_request.unsafe_to_rollback == false %>
+        <span class='rollbackable-yes'> Safe to rollback </span>
       <% else %>
         <!-- Do not display anything if rollbackable is null -->
       <% end %>

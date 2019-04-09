@@ -6,10 +6,10 @@
       </div>
       <span class="commit-summary__title"><%= render_commit_message_with_link commit %></span>
       <span class="commit-summary__rollbackable">
-        <% if commit.rollbackable%>
-          <span class='rollbackable-yes'> Safe to rollback </span>
-        <% elsif commit.rollbackable == false %>
+        <% if commit.unsafe_to_rollback %>
           <span class='rollbackable-no'> Unsafe to rollback </span>
+        <% elsif commit.unsafe_to_rollback == false %>
+          <span class='rollbackable-yes'> Safe to rollback </span>
         <% else %>
           <!-- Do not display anything if rollbackable is nil -->
         <% end %>

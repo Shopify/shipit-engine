@@ -43,11 +43,8 @@ class MergeStatusPoller
         @onPageChange()
 
   reloadUrl: =>
-    rollback_checkbox = document.querySelector('input[name="rollbackable"]:checked')
-    if rollback_checkbox == null
-      return window.location.toString()
-    else
-      return window.location.toString() + "&rollbackable=" + rollback_checkbox.value
+    mergeForm =  document.querySelector('form#merge-form')
+    window.location.toString() + '&' + new URLSearchParams(new FormData(mergeForm)).toString()
 
   isMergeQueueEnabled: =>
     document.querySelector('.merge-status-container .js-details-container')?.hasAttribute('data-queue-enabled')

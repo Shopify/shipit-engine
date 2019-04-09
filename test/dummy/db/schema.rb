@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_184348) do
     t.string "pull_request_title", limit: 1024
     t.integer "pull_request_id"
     t.boolean "locked", default: false, null: false
-    t.boolean "rollbackable"
+    t.boolean "unsafe_to_rollback"
     t.index ["author_id"], name: "index_commits_on_author_id"
     t.index ["committer_id"], name: "index_commits_on_committer_id"
     t.index ["created_at"], name: "index_commits_on_created_at"
@@ -166,7 +166,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_184348) do
     t.datetime "merged_at"
     t.string "base_ref", limit: 1024
     t.integer "base_commit_id"
-    t.boolean "rollbackable"
+    t.boolean "unsafe_to_rollback"
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
     t.index ["merge_status"], name: "index_pull_requests_on_merge_status"

@@ -2,25 +2,21 @@
 <% if pull_request.try!(&:waiting?) %>
   <%= form_tag dequeue_pull_request_path(stack, pull_request_number), method: 'delete', class: classes, data: {remote: true} do %>
     <%= hidden_field_tag 'referrer', params[:referrer] %>
-    <button type="submit" data-disable-with="Removing from merge queue…" class="btn">
-      Remove from merge queue
-    </button>
+    <span class='branch-action-btn float-right'>
+      <button type="submit" data-disable-with="Removing from merge queue…" class="btn">
+        Remove from merge queue
+      </button>
+    </span>
   <% end %>
 <% else %>
-  <%= form_tag enqueue_pull_request_path(stack, pull_request_number), method: 'put', class: classes, data: {remote: true} do %>
+  <%= form_tag enqueue_pull_request_path(stack, pull_request_number), method: 'put', class: classes, data: {remote: true}, id: 'merge-form' do %>
     <%= hidden_field_tag 'referrer', params[:referrer] %>
 
     <div class='rollbackability'>
-      <%= label_tag :rollbackable do %>
-        Is this change <%= link_to('safe to rollback?', 'https://development.shopify.io/guides/shipping/safe_to_merge#Signs_your_PR_is_safe_to_rollback', target: :_blank) %>
+      <%= label_tag :unsafe_to_rollback do %>
+        This change is <%= link_to('unsafe to rollback', 'https://development.shopify.io/guides/shipping/safe_to_merge#Signs_your_PR_is_safe_to_rollback', target: :_blank) %>
       <% end %>
-      <% if params[:rollbackable] == 'false' %>
-        <%= radio_button_tag :rollbackable, true %> Yes
-        <%= radio_button_tag :rollbackable, false, checked: true %> No
-      <% else %>
-        <%= radio_button_tag :rollbackable, true, checked: true %> Yes
-        <%= radio_button_tag :rollbackable, false %> No
-      <% end %>
+      <%= check_box_tag :unsafe_to_rollback, true, params[:unsafe_to_rollback] == 'true' %>
     </div>
 
     <span class='branch-action-btn float-right'>

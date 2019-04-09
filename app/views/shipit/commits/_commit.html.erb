@@ -18,10 +18,10 @@
         <%= timeago_tag(commit.committed_at, force: true) %>
       </p>
       <p class="commit-meta">
-        <% if commit.rollbackable%>
-          <span class='rollbackable-yes'> Safe to rollback </span>
-        <% elsif commit.rollbackable == false %>
+        <% if commit.unsafe_to_rollback%>
           <span class='rollbackable-no'> Unsafe to rollback </span>
+        <% elsif commit.unsafe_to_rollback == false %>
+          <span class='rollbackable-yes'> Safe to rollback </span>
         <% else %>
           <!-- Do not display anything if rollbackable is nil -->
         <% end %>

@@ -257,7 +257,7 @@ module Shipit
         self.pull_request_number = pull_request.number
         self.pull_request_title = pull_request.title
         self.author = pull_request.merge_requested_by if pull_request.merge_requested_by
-        self.rollbackable = pull_request.rollbackable
+        self.unsafe_to_rollback = pull_request.unsafe_to_rollback
       end
 
       self.pull_request_number = message_parser.pull_request_number unless self[:pull_request_number]

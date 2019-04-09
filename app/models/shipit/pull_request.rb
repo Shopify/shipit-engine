@@ -119,13 +119,13 @@ module Shipit
       end
     end
 
-    def self.request_merge!(stack, number, user, rollbackable)
+    def self.request_merge!(stack, number, user, unsafe_to_rollback)
       now = Time.now.utc
       pull_request = begin
         create_with(
           merge_requested_at: now,
           merge_requested_by: user.presence,
-          rollbackable: rollbackable
+          unsafe_to_rollback: unsafe_to_rollback,
         ).find_or_create_by!(
           stack: stack,
           number: number,
