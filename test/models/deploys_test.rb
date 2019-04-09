@@ -558,6 +558,37 @@ module Shipit
       end
     end
 
+    test '#safe_to_rollback? returns false if any commits are unsafe to rollback' do
+      @deploy.commits.first.update(unsafe_to_rollback: true)
+      refute @deploy.safe_to_rollback?
+    end
+
+    test '#safe_to_rollback? returns true if no commits are unsafe to rollback' do
+      refute @deploy.commits.any?(&:unsafe_to_rollback)
+      assert @deploy.safe_to_rollback?
+    end
+
+    test '#safe_to_rollback_to? returns true if all deploys between this and the active deploy are safe' do
+      deploys = @deploy.stack.deploys.newer_than(@deploy.id).until(@deploy.stack.last_completed_deploy.id)
+
+      assert deploys.all?(&:safe_to_rollback?)
+      assert @deploy.safe_to_rollback_to?
+    end
+
+    test '#safe_to_rollback_to? returns true if this deploy is unsafe, but later deploys are all safe' do
+      @deploy.commits.last.update(unsafe_to_rollback: true)
+      deploys = @deploy.stack.deploys.newer_than(@deploy.id).until(@deploy.stack.last_completed_deploy.id)
+
+      assert deploys.all?(&:safe_to_rollback?)
+      assert @deploy.safe_to_rollback_to?
+    end
+
+    test '#safe_to_rollback_to? returns false if a later deploy is unsafe to rollback' do
+      @deploy.stack.last_completed_deploy.commits.last.update(unsafe_to_rollback: true)
+
+      refute @deploy.safe_to_rollback_to?
+    end
+
     private
 
     def expect_event(deploy)

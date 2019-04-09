@@ -11,14 +11,14 @@ module Shipit
     test ".request_merge! creates a record and schedule a refresh" do
       pull_request = nil
       assert_enqueued_with(job: RefreshPullRequestJob) do
-        pull_request = PullRequest.request_merge!(@stack, 64, @user)
+        pull_request = PullRequest.request_merge!(@stack, 64, @user, nil)
       end
       assert_predicate pull_request, :persisted?
     end
 
     test ".request_merge! only track pull requests once" do
       assert_difference -> { PullRequest.count }, +1 do
-        5.times { PullRequest.request_merge!(@stack, 999, @user) }
+        5.times { PullRequest.request_merge!(@stack, 999, @user, nil) }
       end
     end
 
@@ -26,7 +26,7 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.cancel!
       assert_predicate @pr, :canceled?
-      PullRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user, nil)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
       assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
@@ -36,7 +36,7 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.reject!('merge_conflict')
       assert_predicate @pr, :rejected?
-      PullRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user, nil)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
       assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
@@ -47,7 +47,7 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.revalidate!
       assert_predicate @pr, :revalidating?
-      PullRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user, nil)
       assert_predicate @pr.reload, :pending?
       assert_equal original_merge_requested_at, @pr.merge_requested_at
     end

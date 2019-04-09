@@ -13,7 +13,7 @@ module Shipit
       end
 
       def update
-        pull_request = PullRequest.request_merge!(stack, params[:id], current_user)
+        pull_request = PullRequest.request_merge!(stack, params[:id], current_user, params[:unsafe_to_rollback])
         if pull_request.waiting?
           head :accepted
         elsif pull_request.merged?

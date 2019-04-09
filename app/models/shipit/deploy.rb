@@ -111,7 +111,7 @@ module Shipit
     end
 
     def safe_to_rollback?
-      !commits.any?(&:unsafe_to_rollback)
+      commits.none?(&:unsafe_to_rollback)
     end
 
     def safe_to_rollback_to?

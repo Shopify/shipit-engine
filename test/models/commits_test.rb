@@ -611,6 +611,23 @@ module Shipit
       assert_nil commit.pull_request
     end
 
+    test "merge commits are unsafe to deploy if matching Pull Request is unsafe to rollback" do
+      pull_request = shipit_pull_requests(:shipit_pending)
+      pull_request.update(unsafe_to_rollback: true)
+      commit = @stack.commits.create!(
+        author: shipit_users(:shipit),
+        authored_at: Time.now,
+        committer: shipit_users(:shipit),
+        committed_at: Time.now,
+        sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
+        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+      )
+
+      assert_predicate commit, :pull_request?
+      assert_equal 62, commit.pull_request_number
+      assert commit.unsafe_to_rollback
+    end
+
     test "the merge requester if known overrides the commit author" do
       commit = @stack.commits.create!(
         author: shipit_users(:shipit),

@@ -133,7 +133,7 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-      pull_request.update!(merge_requested_by: user.presence, rollbackable: rollbackable)
+      pull_request.update!(merge_requested_by: user.presence, unsafe_to_rollback: unsafe_to_rollback)
       pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
       pull_request.schedule_refresh!
       pull_request
