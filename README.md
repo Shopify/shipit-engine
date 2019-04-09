@@ -35,6 +35,11 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 * [Configuring providers](#configuring-providers)
 * [Free samples](/examples/shipit.yml)
 
+**IV. CONTRIBUTING**
+
+* [Instructions](#contributing-instructions)
+* [Local development](#contributing-local-dev)
+
 * * *
 
 <h2 id="installation-and-setup">I. INSTALLATION & SETUP</h2>
@@ -112,7 +117,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [CI](#ci) (`ci.require`, `ci.hide`, `ci.allow_failures`)
 * [Merge Queue](#merge-queue) (`merge.revalidate_after`, `merge.require`, `merge.ignore`, `merge.max_divergence`)
 * [Custom Tasks](#custom-tasks) (`tasks`)
-* [Custom links](#custom-links) (`links`) 
+* [Custom links](#custom-links) (`links`)
 * [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
@@ -628,3 +633,27 @@ For Kubernetes, you have to provision Shipit environment with the following tool
 
 * `kubectl`
 * `kubernetes-deploy` [gem](https://github.com/Shopify/kubernetes-deploy)
+
+<h2 id="contributing">IV. CONTRIBUTING</h2>
+
+<h3 id="contributing-instructions">Instructions</h3>
+
+1. Fork it ( https://github.com/shopify/shipit-engine/fork )
+1. Create your feature branch (git checkout -b my-new-feature)
+1. Commit your changes (git commit -am 'Add some feature')
+1. Push to the branch (git push origin my-new-feature)
+1. Create a new Pull Request
+
+<h3 id="contributing-local-dev">Local development</h3>
+
+This repository has a [test/dummy](/test/dummy) app in it which can be used for local development without having to setup a new rails application.
+
+Run `./bin/bootstrap` in order to bootstrap the dummy application. The bootstrap script is going to:
+
+- Copy `config/secrets.development.example.yml` to `config/secrets.development.yml`;
+- Make sure all dependencies are installed;
+- Create and seed database (recreate database if already available);
+
+Run `./test/dummy/bin/rails server` to run the rails dummy application.
+
+Set the environment variable `SHIPIT_DISABLE_AUTH=1` in order to disable authentication.
