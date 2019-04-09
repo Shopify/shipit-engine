@@ -65,6 +65,10 @@ Shipit::Engine.routes.draw do
     post :clear_git_cache, controller: :stacks
   end
 
+  scope '/task/:id', controller: :tasks do
+    get '/', action: :lookup
+  end
+
   scope '/*stack_id', stack_id: stack_id_format, as: :stack do
     get '/commit/:sha/checks' => 'commit_checks#show', as: :commit_checks
     get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: {format: :json}

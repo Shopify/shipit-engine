@@ -123,5 +123,29 @@ module Shipit
       assert_response :success
       assert_json_keys %w(status output rollback_url)
     end
+
+    test ":lookup returns stack task url if the task is an instance of Task" do
+      @task = shipit_tasks(:shipit_restart)
+
+      get :lookup, params: {id: @task.id}
+
+      assert_redirected_to stack_task_path(@task.stack, @task)
+    end
+
+    test ":lookup returns stack deploy url if the task is an instance of Deploy" do
+      @task = shipit_tasks(:shipit)
+
+      get :lookup, params: {id: @task.id}
+
+      assert_redirected_to stack_deploy_path(@task.stack, @task)
+    end
+
+    test ":lookup returns stack deploy url if the task is an instance of Rollback" do
+      @task = shipit_tasks(:shipit_rollback)
+
+      get :lookup, params: {id: @task.id}
+
+      assert_redirected_to stack_deploy_path(@task.stack, @task)
+    end
   end
 end
