@@ -5,8 +5,8 @@ shipit:
   branch: master
   ignore_ci: false
   merge_queue_enabled: true
-  tasks_count: 3
-  undeployed_commits_count: 1
+  tasks_count: 8
+  undeployed_commits_count: 2
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
@@ -62,6 +62,7 @@ shipit_canaries:
   merge_queue_enabled: true
   tasks_count: 3
   undeployed_commits_count: 1
+  continuous_deployment: true
   cached_deploy_spec: >
     {
       "machine": {"environment": {}},
@@ -225,3 +226,97 @@ check_runs:
   branch: master
   tasks_count: 0
   undeployed_commits_count: 1
+
+shipit_undeployed:
+  repo_owner: "shopify"
+  repo_name: "shipit-engine"
+  environment: "undeployed"
+  branch: master
+  ignore_ci: false
+  merge_queue_enabled: true
+  tasks_count: 2
+  undeployed_commits_count: 3
+  continuous_deployment: true
+  cached_deploy_spec: >
+    {
+      "machine": {"environment": {}},
+      "review": {
+        "checklist": ["foo", "bar", "baz"],
+        "monitoring": [
+          {"image": "https://example.com/monitor.png", "width": 200, "height": 300}
+        ]
+      },
+      "dependencies": {"override": []},
+      "deploy": {"override": null, "interval": 60, "max_commits": 3, "variables": [{"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0}]},
+      "rollback": {"override": ["echo 'Rollback!'"]},
+      "fetch": ["echo '42'"],
+      "tasks": {
+        "restart": {
+          "action": "Restart application",
+          "description": "Restart app and job servers",
+          "variables": [
+            {"name": "FOO", "title": "Set to 0 to foo", "default": 1},
+            {"name": "BAR", "title": "Set to 1 to bar", "default": 0},
+            {"name": "WALRUS", "title": "Walrus without a default value"}
+          ],
+          "steps": [
+            "cap $ENVIRONMENT deploy:restart"
+          ]
+        },
+        "flush_cache": {
+          "action": "Flush cache",
+          "description": "Flush the application cache",
+          "steps": [
+            "cap $ENVIRONMENT cache:flush"
+          ],
+          "allow_concurrency": true
+        }
+      },
+      "merge": {
+        "revalidate_after": 900
+      },
+      "ci": {
+        "hide": ["ci/hidden"],
+        "allow_failures": ["ci/ok_to_fail"]
+      }
+    }
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+
+shipit_single:
+  repo_owner: "shopify"
+  repo_name: "shipit-engine"
+  environment: "single"
+  branch: master
+  ignore_ci: false
+  merge_queue_enabled: true
+  tasks_count: 2
+  undeployed_commits_count: 1
+  cached_deploy_spec: >
+    {
+      "machine": {"environment": {}},
+      "review": {
+        "checklist": ["foo", "bar", "baz"],
+        "monitoring": [
+          {"image": "https://example.com/monitor.png", "width": 200, "height": 300}
+        ]
+      },
+      "dependencies": {"override": []},
+      "deploy": {"override": null},
+      "rollback": {"override": ["echo 'Rollback!'"]},
+      "fetch": ["echo '42'"],
+      "tasks": {
+        "restart": {
+          "action": "Restart application",
+          "description": "Restart app and job servers",
+          "steps": [
+            "cap $ENVIRONMENT deploy:restart"
+          ]
+        }
+      },
+      "ci": {
+        "blocking": ["soc/compliance"]
+      }
+    }
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>

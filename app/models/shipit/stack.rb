@@ -251,8 +251,27 @@ module Shipit
       end
     end
 
-    def undeployed_commits
+    def active_commits
+      return [] unless active_task?
+
+      scope = commits.reachable
+                     .since(active_task.since_commit)
+                     .until(active_task.until_commit)
+
+      yield scope if block_given?
+
+      scope.select(&:active?)
+           .map.with_index { |c, i| UndeployedCommit.new(c, i) }
+           .reverse
+    end
+
+    def undeployed_commits(exclude_active: false)
       scope = commits.reachable.newer_than(last_deployed_commit).order(id: :asc)
+
+      if exclude_active && active_task?
+        scope = scope.newer_than(active_task.until_commit)
+      end
+
       yield scope if block_given?
       scope.map.with_index { |c, i| UndeployedCommit.new(c, i) }.reverse
     end

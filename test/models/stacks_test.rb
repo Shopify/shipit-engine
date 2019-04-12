@@ -673,5 +673,47 @@ module Shipit
       Rails.cache.clear
       refute_predicate @stack, :ci_enabled?
     end
+
+    test "#undeployed_commits returns list of commits newer than last deployed commit" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      last_deployed_commit = @stack.last_deployed_commit
+      commits = @stack.undeployed_commits
+
+      assert_equal @stack.undeployed_commits_count, commits.size
+
+      commits.each { |c| assert c.id > last_deployed_commit.id }
+    end
+
+    test "#undeployed_commits returns list of commits newer than last deployed commit excluding active ones" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      active_task = @stack.active_task
+      last_deployed_commit = @stack.last_deployed_commit
+      commits = @stack.undeployed_commits(exclude_active: true)
+
+      commits.each do |c|
+        assert c.id > last_deployed_commit.id
+        refute c.id.between?(active_task.since_commit.id, active_task.until_commit.id)
+      end
+    end
+
+    test "#active_commits returns list of commits newer than active task since commit and older or equal to active task until commit" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      active_task = @stack.active_task
+
+      @stack.active_commits.each do |c|
+        assert c.id > active_task.since_commit.id
+        assert c.id <= active_task.until_commit.id
+      end
+    end
+
+    test "#active_commits returns list with a single commit when active task since and until commits are the same" do
+      @stack = shipit_stacks(:shipit_single)
+      active_task = @stack.active_task
+      commits = @stack.active_commits
+
+      assert_equal active_task.since_commit.id, active_task.until_commit.id
+      assert_equal 1, commits.size
+      assert_equal active_task.since_commit.id, commits[0].id
+    end
   end
 end

@@ -17,6 +17,11 @@
       <p class="commit-meta">
         <%= timeago_tag(commit.committed_at, force: true) %>
       </p>
+      <% if commit.deploy_scheduled? %>
+        <p class="commit-meta">
+	  <span class="scheduled">expected to be deployed next</span>
+        </p>
+      <% end %>
     </div>
     <div class="commit-lock" >
       <%= link_to stack_commit_path(commit.stack, commit), class: 'action-lock-commit', data: {tooltip: t('commit.lock')} do %>
