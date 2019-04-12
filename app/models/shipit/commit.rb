@@ -47,6 +47,11 @@ module Shipit
       where('id < ?', commit.try(:id) || commit)
     end
 
+    def self.since(commit)
+      return all unless commit
+      where('id >= ?', commit.try(:id) || commit)
+    end
+
     def self.until(commit)
       return all unless commit
       where('id <= ?', commit.try(:id) || commit)

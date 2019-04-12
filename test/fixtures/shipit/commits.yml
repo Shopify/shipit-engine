@@ -298,3 +298,16 @@ undeployed_4:
   additions: 420
   deletions: 342
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+single:
+  id: 501
+  sha: 547578b362bf2b4df5903e1c7960929361c3435a
+  message: "first commit"
+  stack: shipit_single
+  author: walrus
+  committer: walrus
+  authored_at: <%= 4.days.ago.to_s(:db) %>
+  committed_at: <%= 3.days.ago.to_s(:db) %>
+  additions: 420
+  deletions: 342
+  updated_at: <%= 8.days.ago.to_s(:db) %>

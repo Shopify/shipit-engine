@@ -264,3 +264,17 @@ shipit_undeployed_2:
   created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+
+shipit_single:
+  id: 301
+  user: walrus
+  since_commit_id: 501
+  until_commit_id: 501
+  type: Shipit::Deploy
+  stack: shipit_single
+  status: running
+  additions: 12
+  deletions: 64
+  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>

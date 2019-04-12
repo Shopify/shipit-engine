@@ -696,13 +696,24 @@ module Shipit
       end
     end
 
-    test "#active_commits returns list of commits related to the stack active task" do
+    test "#active_commits returns list of commits newer than active task since commit and older or equal to active task until commit" do
       @stack = shipit_stacks(:shipit_undeployed)
       active_task = @stack.active_task
 
       @stack.active_commits.each do |c|
-        assert c.id.between?(active_task.since_commit.id, active_task.until_commit.id)
+        assert c.id > active_task.since_commit.id
+        assert c.id <= active_task.until_commit.id
       end
+    end
+
+    test "#active_commits returns list with a single commit when active task since and until commits are the same" do
+      @stack = shipit_stacks(:shipit_single)
+      active_task = @stack.active_task
+      commits = @stack.active_commits
+
+      assert_equal active_task.since_commit.id, active_task.until_commit.id
+      assert_equal 1, commits.size
+      assert_equal active_task.since_commit.id, commits[0].id
     end
   end
 end
