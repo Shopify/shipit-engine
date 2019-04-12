@@ -261,7 +261,7 @@ module Shipit
       yield scope if block_given?
 
       scope.select(&:active?)
-           .map.with_index { |c, i| UndeployedCommit.new(c, i) }
+           .map.with_index { |c, i| UndeployedCommit.new(c, index: i, next_commit_to_deploy: next_commit_to_deploy) }
            .reverse
     end
 
@@ -273,7 +273,10 @@ module Shipit
       end
 
       yield scope if block_given?
-      scope.map.with_index { |c, i| UndeployedCommit.new(c, i) }.reverse
+
+      scope.map
+           .with_index { |c, i| UndeployedCommit.new(c, index: i, next_commit_to_deploy: next_commit_to_deploy) }
+           .reverse
     end
 
     def last_completed_deploy

@@ -2,9 +2,10 @@ module Shipit
   class UndeployedCommit < DelegateClass(Commit)
     attr_reader :index
 
-    def initialize(commit, index)
+    def initialize(commit, index:, next_commit_to_deploy: nil)
       super(commit)
       @index = index
+      @next_commit_to_deploy = next_commit_to_deploy
     end
 
     def deploy_state(bypass_safeties = false)
@@ -35,22 +36,20 @@ module Shipit
     end
 
     def deploy_discouraged?
-      maximum_commits_per_deploy_reached?
+      stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
     end
 
-    def deploy_scheduled?
-      stack.continuous_deployment && !maximum_commits_per_deploy_reached? && !active?
+    def expected_to_be_deployed?
+      return false if @next_commit_to_deploy.nil?
+      return false unless stack.continuous_deployment
+      return false if active?
+
+      id <= @next_commit_to_deploy.id
     end
 
     def blocked?
       return @blocked if defined?(@blocked)
       @blocked = super
-    end
-
-    private
-
-    def maximum_commits_per_deploy_reached?
-      stack.maximum_commits_per_deploy && index >= stack.maximum_commits_per_deploy
     end
   end
 end

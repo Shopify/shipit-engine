@@ -232,10 +232,10 @@ shipit_undeployed:
   repo_name: "shipit-engine"
   environment: "undeployed"
   branch: master
-  ignore_ci: false
+  ignore_ci: true
   merge_queue_enabled: true
   tasks_count: 2
-  undeployed_commits_count: 3
+  undeployed_commits_count: 4
   continuous_deployment: true
   cached_deploy_spec: >
     {
