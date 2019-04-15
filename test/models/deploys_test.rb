@@ -525,7 +525,7 @@ module Shipit
       @deploy = shipit_deploys(:canaries_running)
       @deploy.ping
 
-      assert_difference -> { ReleaseStatus.count }, +3 do
+      assert_difference -> { ReleaseStatus.count }, +2 do
         assert_equal 'running', @deploy.status
         assert_not_equal 'failure', @deploy.last_release_status.state
 
@@ -545,16 +545,24 @@ module Shipit
 
     test "manually triggered rollbacks sets the release status as failure" do
       @deploy = shipit_deploys(:canaries_validating)
+      @middle_deploy = shipit_deploys(:canaries_faulty)
+      @rollback_to_deploy = shipit_deploys(:canaries_success)
 
-      assert_difference -> { ReleaseStatus.count }, +1 do
+      assert_difference -> { ReleaseStatus.count }, +2 do
         assert_equal 'validating', @deploy.status
         assert_equal 'pending', @deploy.last_release_status.state
 
-        @deploy.trigger_rollback(force: true)
+        @rollback_to_deploy.trigger_rollback(force: true)
+        @rollback_to_deploy.reload
         @deploy.reload
 
         assert_equal 'faulty', @deploy.status
         assert_equal 'failure', @deploy.last_release_status.state
+
+        assert_equal 'faulty', @middle_deploy.status
+        assert_equal 'failure', @middle_deploy.last_release_status.state
+
+        assert_equal 'success', @rollback_to_deploy.status
       end
     end
 
