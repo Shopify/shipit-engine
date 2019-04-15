@@ -27,11 +27,11 @@ module Shipit
 
     def update
       @api_client = ApiClient.find(params[:id])
-      if @api_client.update(update_params)
-        options = {flash: {success: 'Successfully updated'}}
+      options = if @api_client.update(update_params)
+        {flash: {success: 'Successfully updated'}}
       else
-        options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
-      end
+        {flash: {warning: @stack.errors.full_messages.to_sentence}}
+                end
 
       redirect_to(params[:return_to].presence || api_client_path(@api_client), options)
     end
@@ -39,11 +39,11 @@ module Shipit
     private
 
     def create_params
-      params.require(:api_client).permit(:name, :permissions => [])
+      params.require(:api_client).permit(:name, permissions: [])
     end
 
     def update_params
-      params.require(:api_client).permit(:permissions => [])
+      params.require(:api_client).permit(permissions: [])
     end
   end
 end
