@@ -4,7 +4,7 @@ module Shipit
   class UndeployedCommitsTest < ActiveSupport::TestCase
     setup do
       @real_commit = shipit_commits(:cyclimse_first)
-      @commit = UndeployedCommit.new(@real_commit, 0)
+      @commit = UndeployedCommit.new(@real_commit, index: 0)
       @stack = @commit.stack
     end
 
@@ -34,49 +34,69 @@ module Shipit
     end
 
     test "#deploy_discouraged? returns true if the commit index is equal or bigger then the maximum commits per deploy" do
-      @commit = UndeployedCommit.new(@real_commit, 2)
+      @commit = UndeployedCommit.new(@real_commit, index: 2)
       assert_equal 2, @stack.maximum_commits_per_deploy
       assert_predicate @commit, :deploy_discouraged?
     end
 
-    test "#deploy_scheduled? returns true if the stack has continuous deployment enabled, commit index is lower then the maximum commits per deploy and commit is not part of active task" do
-      commit = UndeployedCommit.new(shipit_commits(:undeployed_4), 1)
+    test "#expected_to_be_deployed? returns true if the stack has continuous deployment enabled, next commit to deploy id is greater or equals to the commit id and commit is not active" do
+      commit = shipit_commits(:undeployed_4)
+      next_commit_to_deploy = commit.stack.next_commit_to_deploy
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_commit_to_deploy: next_commit_to_deploy)
 
-      assert_predicate commit.stack, :continuous_deployment
-      assert_equal 1, commit.index
-      assert_equal 3, commit.stack.maximum_commits_per_deploy
-      refute_predicate commit, :active?
+      refute_predicate next_commit_to_deploy, :nil?
+      assert_predicate undeployed_commit.stack, :continuous_deployment
+      assert next_commit_to_deploy.id >= undeployed_commit.id
+      refute_predicate undeployed_commit, :active?
 
-      assert_predicate commit, :deploy_scheduled?
+      assert_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
-    test "#deploy_scheduled? returns false if the stack has continuous deployment enabled and commit index is equal or bigger then the maximum commits per deploy" do
-      commit = UndeployedCommit.new(shipit_commits(:undeployed_4), 3)
+    test "#expected_to_be_deployed? returns false if the stack has continuous deployment disabled" do
+      commit = shipit_commits(:cyclimse_first)
+      next_commit_to_deploy = commit.stack.next_commit_to_deploy
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_commit_to_deploy: next_commit_to_deploy)
 
-      assert_predicate commit.stack, :continuous_deployment
-      assert_equal 3, commit.index
-      assert_equal 3, commit.stack.maximum_commits_per_deploy
+      refute_predicate next_commit_to_deploy, :nil?
+      refute_predicate undeployed_commit.stack, :continuous_deployment
+      assert next_commit_to_deploy.id >= undeployed_commit.id
+      refute_predicate undeployed_commit, :active?
 
-      refute_predicate commit, :deploy_scheduled?
+      refute_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
-    test "#deploy_scheduled? returns false if the stack has continuous deployment disabled" do
-      commit = UndeployedCommit.new(shipit_commits(:cyclimse_first), 1)
+    test "#expected_to_be_deployed? returns false if the commit is part of the active task" do
+      commit = shipit_commits(:undeployed_3)
+      next_commit_to_deploy = commit.stack.next_commit_to_deploy
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_commit_to_deploy: next_commit_to_deploy)
 
-      refute_predicate commit.stack, :continuous_deployment
+      refute_predicate next_commit_to_deploy, :nil?
+      assert_predicate undeployed_commit.stack, :continuous_deployment
+      assert next_commit_to_deploy.id >= undeployed_commit.id
+      assert_predicate undeployed_commit, :active?
 
-      refute_predicate commit, :deploy_scheduled?
+      refute_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
-    test "#deploy_scheduled? returns false if the commit is part of the active task" do
-      commit = UndeployedCommit.new(shipit_commits(:undeployed_3), 1)
+    test "#expected_to_be_deployed? returns false if there is no commit to deploy" do
+      commit = shipit_commits(:undeployed_3)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_commit_to_deploy: nil)
 
-      assert_predicate commit.stack, :continuous_deployment
-      assert_equal 1, commit.index
-      assert_equal 3, commit.stack.maximum_commits_per_deploy
-      assert_predicate commit, :active?
+      refute_predicate undeployed_commit, :expected_to_be_deployed?
+    end
 
-      refute_predicate commit, :deploy_scheduled?
+    test "#expected_to_be_deployed? returns false if the commit has an id greater than next commit to deploy" do
+      commit = shipit_commits(:undeployed_5)
+      next_commit_to_deploy = commit.stack.next_commit_to_deploy
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_commit_to_deploy: next_commit_to_deploy)
+
+      puts "next = #{next_commit_to_deploy.inspect}"
+      refute_predicate next_commit_to_deploy, :nil?
+      assert_predicate undeployed_commit.stack, :continuous_deployment
+      assert undeployed_commit.id > next_commit_to_deploy.id
+      refute_predicate undeployed_commit, :active?
+
+      refute_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
     test "#deploy_state returns `allowed` by default" do
@@ -113,7 +133,7 @@ module Shipit
       blocking_commit.statuses.delete_all
       assert_predicate blocking_commit, :blocking?
 
-      commit = UndeployedCommit.new(shipit_commits(:soc_third), 0)
+      commit = UndeployedCommit.new(shipit_commits(:soc_third), index: 0)
       assert_equal 'blocked', commit.deploy_state
     end
 

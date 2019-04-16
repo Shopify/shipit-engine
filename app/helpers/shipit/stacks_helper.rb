@@ -3,7 +3,7 @@ module Shipit
     COMMIT_TITLE_LENGTH = 79
 
     def redeploy_button(deployed_commit)
-      commit = UndeployedCommit.new(deployed_commit, 0)
+      commit = UndeployedCommit.new(deployed_commit, index: 0)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
       classes = %W(btn btn--primary deploy-action #{commit.state})
 

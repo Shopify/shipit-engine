@@ -17,7 +17,7 @@
       <p class="commit-meta">
         <%= timeago_tag(commit.committed_at, force: true) %>
       </p>
-      <% if commit.deploy_scheduled? %>
+      <% if commit.expected_to_be_deployed? %>
         <p class="commit-meta">
 	  <span class="scheduled">expected to be deployed next</span>
         </p>
