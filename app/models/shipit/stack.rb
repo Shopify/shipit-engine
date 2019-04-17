@@ -124,10 +124,11 @@ module Shipit
       )
     end
 
-    def trigger_deploy(*args)
-      deploy = build_deploy(*args)
+    def trigger_deploy(*args, **kwargs)
+      run_now = kwargs.delete(:run_now)
+      deploy = build_deploy(*args, **kwargs)
       deploy.save!
-      deploy.enqueue
+      run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
       deploy
     end
@@ -399,6 +400,15 @@ module Shipit
 
     def to_param
       [repo_owner, repo_name, environment].join('/')
+    end
+
+    def self.run_deploy_in_foreground(stack:, revision:)
+      stack = Shipit::Stack.from_param!(stack)
+      until_commit = stack.commits.where(sha: revision).limit(1).first
+      env = stack.cached_deploy_spec.default_deploy_env
+      current_user = Shipit::CommandLineUser.new
+
+      stack.trigger_deploy(until_commit, current_user, env: env, force: true, run_now: true)
     end
 
     def self.from_param!(param)

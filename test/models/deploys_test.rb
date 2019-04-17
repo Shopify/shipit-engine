@@ -23,6 +23,16 @@ module Shipit
       assert_raise(RuntimeError) { Deploy.new.enqueue }
     end
 
+    test "run_now! when not persisted" do
+      assert_raise(RuntimeError) { Deploy.new.run_now! }
+    end
+
+    test "run_now! runs in foreground" do
+      PerformTaskJob.any_instance.expects(:perform).once
+
+      @deploy.run_now!
+    end
+
     test "working_directory" do
       assert_equal File.join(@deploy.stack.deploys_path, @deploy.id.to_s), @deploy.working_directory
     end

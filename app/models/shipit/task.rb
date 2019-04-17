@@ -176,6 +176,11 @@ module Shipit
       PerformTaskJob.perform_later(self)
     end
 
+    def run_now!
+      raise "only persisted jobs can be run" unless persisted?
+      PerformTaskJob.perform_now(self)
+    end
+
     def write(text)
       chunks.create!(text: text)
     end
