@@ -2,10 +2,10 @@ module Shipit
   class UndeployedCommit < DelegateClass(Commit)
     attr_reader :index
 
-    def initialize(commit, index:, next_commit_to_deploy: nil)
+    def initialize(commit, index:, next_expected_commit_to_deploy: nil)
       super(commit)
       @index = index
-      @next_commit_to_deploy = next_commit_to_deploy
+      @next_expected_commit_to_deploy = next_expected_commit_to_deploy
     end
 
     def deploy_state(bypass_safeties = false)
@@ -40,11 +40,11 @@ module Shipit
     end
 
     def expected_to_be_deployed?
-      return false if @next_commit_to_deploy.nil?
+      return false if @next_expected_commit_to_deploy.nil?
       return false unless stack.continuous_deployment
       return false if active?
 
-      id <= @next_commit_to_deploy.id
+      id <= @next_expected_commit_to_deploy.id
     end
 
     def blocked?

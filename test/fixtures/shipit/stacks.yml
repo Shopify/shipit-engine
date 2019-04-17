@@ -235,7 +235,7 @@ shipit_undeployed:
   ignore_ci: true
   merge_queue_enabled: true
   tasks_count: 2
-  undeployed_commits_count: 4
+  undeployed_commits_count: 6
   continuous_deployment: true
   cached_deploy_spec: >
     {

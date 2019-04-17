@@ -261,8 +261,17 @@ module Shipit
       yield scope if block_given?
 
       scope.select(&:active?)
-           .map.with_index { |c, i| UndeployedCommit.new(c, index: i, next_commit_to_deploy: next_commit_to_deploy) }
+           .map.with_index { |c, i| UndeployedCommit.new(c, index: i) }
            .reverse
+    end
+
+    def next_expected_commit_to_deploy
+      commits_to_deploy = commits.order(id: :asc).reachable.preload(:statuses)
+      commits_to_deploy = commits_to_deploy.newer_than(
+        active_task? ? active_task.until_commit : last_deployed_commit,
+      )
+      commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
+      commits_to_deploy.to_a.reverse.find(&:deployable?)
     end
 
     def undeployed_commits(exclude_active: false)
@@ -274,9 +283,10 @@ module Shipit
 
       yield scope if block_given?
 
-      scope.map
-           .with_index { |c, i| UndeployedCommit.new(c, index: i, next_commit_to_deploy: next_commit_to_deploy) }
-           .reverse
+      scope = scope.map.with_index do |c, i|
+        UndeployedCommit.new(c, index: i, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      end
+      scope.reverse
     end
 
     def last_completed_deploy

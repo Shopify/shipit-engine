@@ -497,6 +497,7 @@ module Shipit
       deploy = @stack.trigger_deploy(shipit_commits(:first), AnonymousUser.new)
       deploy.run!
       deploy.complete!
+      @stack.reload
 
       assert_predicate @stack, :deployable?
       assert_predicate @stack, :deployed_too_recently?
