@@ -1,5 +1,5 @@
 <li class="commit <%= 'locked' if commit.locked? %>" id="commit-<%= commit.id %>">
-  <% cache commit do %>
+  <% cache [commit, commit.expected_to_be_deployed?] do %>
     <% cache commit.author do %>
       <%= render 'shipit/shared/author', author: commit.author %>
     <% end %>
