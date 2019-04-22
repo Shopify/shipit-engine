@@ -732,6 +732,7 @@ module Shipit
 
     test 'lerna monorepos have a checklist' do
       @spec.stubs(:lerna?).returns(true).at_least_once
+      @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => '1.0.0')
       assert_match(/lerna publish --skip-npm/, @spec.review_checklist[0])
     end
 
@@ -744,8 +745,16 @@ module Shipit
       file = Pathname.new('/tmp/fake_lerna.json')
       file.write('{"version": "1.0.0-beta.1"}')
 
-      @spec.expects(:lerna_json).returns(file)
+      @spec.expects(:lerna_json).at_least_once.returns(file)
       assert_equal '1.0.0-beta.1', @spec.lerna_version
+    end
+
+    test '#lerna_lerna returns the lerna version specified' do
+      file = Pathname.new('/tmp/fake_lerna.json')
+      file.write('{"version": "1.0.0-beta.1", "lerna": "3.13.3"}')
+
+      @spec.expects(:lerna_json).at_least_once.returns(file)
+      assert_equal Gem::Version.new('3.13.3'), @spec.lerna_lerna
     end
 
     test '#package_version returns the version number' do
@@ -780,16 +789,23 @@ module Shipit
 
     test '#publish_lerna_packages checks if independent version tags exist, and then invokes lerna deploy script' do
       @spec.stubs(:lerna?).returns(true)
-      @spec.stubs(:lerna_version).returns('independent')
+      @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => 'independent')
       assert_equal 'assert-lerna-independent-version-tags', @spec.deploy_steps[0]
       assert_equal 'publish-lerna-independent-packages', @spec.deploy_steps[1]
     end
 
     test '#publish_lerna_packages checks if fixed version tag exists, and then invokes lerna deploy script' do
       @spec.stubs(:lerna?).returns(true)
-      @spec.stubs(:lerna_version).returns('1.0.0')
+      @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => '1.0.0')
       assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest --npm-client=npm --skip-npm=false', @spec.deploy_steps[1]
+    end
+
+    test '#publish_lerna_packages checks if a newer version of lerna is used, and will then use the new publish syntax' do
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_config).returns('lerna' => '3.0.0', 'version' => '1.0.0')
+      assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
+      assert_equal 'node_modules/.bin/lerna publish from-git --yes', @spec.deploy_steps[1]
     end
 
     test '#enforce_publish_config? is false when Shipit.enforce_publish_config is nil' do
@@ -829,7 +845,8 @@ module Shipit
     end
 
     test '#valid_publish_config? is true when shipit does not enforce a publishConfig' do
-      @spec.stubs(:lerna_version).returns('1.0.0')
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => '1.0.0')
       assert @spec.valid_publish_config?
     end
 
@@ -946,7 +963,7 @@ module Shipit
 
     test '#publish_lerna_packages guesses npm tag' do
       @spec.stubs(:lerna?).returns(true)
-      @spec.stubs(:lerna_version).returns('1.0.0-alpha.1')
+      @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => '1.0.0-alpha.1')
       assert_match(/--npm-tag next/, @spec.deploy_steps.last)
     end
 
