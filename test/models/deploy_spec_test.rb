@@ -323,7 +323,11 @@ module Shipit
       file = Pathname.new('/tmp/fake_setup.py')
       file.write('foo')
       @spec.stubs(:setup_dot_py).returns(file)
-      steps = ['assert-egg-version-tag /tmp/fake_setup.py', 'python setup.py register sdist upload']
+      steps = [
+        'assert-egg-version-tag /tmp/fake_setup.py',
+        'python setup.py register sdist',
+        'twine upload dist/*',
+      ]
       assert_equal steps, @spec.deploy_steps
     end
 
