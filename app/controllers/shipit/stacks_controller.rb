@@ -17,10 +17,28 @@ module Shipit
       return if flash.empty? && !stale?(last_modified: @stack.updated_at)
 
       @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
-      @undeployed_commits = @stack.undeployed_commits(exclude_active: true) do |scope|
+
+      commits = @stack.undeployed_commits do |scope|
         scope.preload(:author, :statuses, :check_runs)
       end
-      @active_commits = @stack.active_commits { |scope| scope.preload(:author, :statuses, :check_runs) }
+
+      next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits: commits)
+
+      @active_commits = []
+      @undeployed_commits = []
+
+      commits.each do |commit|
+        (commit.active? ? @active_commits : @undeployed_commits) << commit
+      end
+
+      @active_commits = map_to_undeployed_commit(
+        @active_commits,
+        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
+      )
+      @undeployed_commits = map_to_undeployed_commit(
+        @undeployed_commits,
+        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
+      )
     end
 
     def lookup
@@ -75,6 +93,13 @@ module Shipit
     end
 
     private
+
+    def map_to_undeployed_commit(commits, next_expected_commit_to_deploy:)
+      commits.map.with_index do |c, i|
+        index = commits.size - i - 1
+        UndeployedCommit.new(c, index: index, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      end
+    end
 
     def load_stack
       @stack = Stack.from_param!(params[:id])

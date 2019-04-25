@@ -251,42 +251,24 @@ module Shipit
       end
     end
 
-    def active_commits
-      return [] unless active_task?
+    def next_expected_commit_to_deploy(commits: nil)
+      commits ||= undeployed_commits do |scope|
+        scope.preload(:statuses, :check_runs)
+      end
 
-      scope = commits.reachable
-                     .since(active_task.since_commit)
-                     .until(active_task.until_commit)
-
-      yield scope if block_given?
-
-      scope.select(&:active?)
-           .map.with_index { |c, i| UndeployedCommit.new(c, index: i) }
-           .reverse
+      commits_to_deploy = commits.reject(&:active?)
+      if maximum_commits_per_deploy
+        commits_to_deploy = commits_to_deploy.reverse.slice(0, maximum_commits_per_deploy).reverse
+      end
+      commits_to_deploy.find(&:deployable?)
     end
 
-    def next_expected_commit_to_deploy
-      commits_to_deploy = commits.order(id: :asc).reachable.preload(:statuses)
-      commits_to_deploy = commits_to_deploy.newer_than(
-        active_task? ? active_task.until_commit : last_deployed_commit,
-      )
-      commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
-      commits_to_deploy.to_a.reverse.find(&:deployable?)
-    end
-
-    def undeployed_commits(exclude_active: false)
+    def undeployed_commits
       scope = commits.reachable.newer_than(last_deployed_commit).order(id: :asc)
 
-      if exclude_active && active_task?
-        scope = scope.newer_than(active_task.until_commit)
-      end
+      scope = yield scope if block_given?
 
-      yield scope if block_given?
-
-      scope = scope.map.with_index do |c, i|
-        UndeployedCommit.new(c, index: i, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
-      end
-      scope.reverse
+      scope.to_a.reverse
     end
 
     def last_completed_deploy
