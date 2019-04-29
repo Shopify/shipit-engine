@@ -29,7 +29,11 @@ module Shipit
       end
 
       def publish_egg
-        ["assert-egg-version-tag #{setup_dot_py}", 'python setup.py register sdist upload']
+        [
+          "assert-egg-version-tag #{setup_dot_py}",
+          'python setup.py register sdist',
+          'twine upload dist/*',
+        ]
       end
     end
   end
