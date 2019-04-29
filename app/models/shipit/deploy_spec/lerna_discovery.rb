@@ -3,6 +3,8 @@ require 'json'
 module Shipit
   class DeploySpec
     module LernaDiscovery
+      LATEST_MAJOR_VERSION = Gem::Version.new('3.0.0')
+
       def discover_dependencies_steps
         discover_lerna_json || super
       end
@@ -21,15 +23,21 @@ module Shipit
 
       def discover_lerna_checklist
         if lerna?
+          command = if lerna_lerna >= LATEST_MAJOR_VERSION
+            'lerna version'
+          else
+            %(
+              lerna publish --skip-npm
+              && git add -A
+              && git push --follow-tags
+            )
+          end
+
           [%(
             <strong>Don't forget version and tag before publishing!</strong>
             You can do this with:<br/>
-            <pre>
-            lerna publish --skip-npm
-            && git add -A
-            && git push --follow-tags
-            </pre>
-          )]
+            <pre>#{command}</pre>
+           )]
         end
       end
 
@@ -41,9 +49,16 @@ module Shipit
         file('lerna.json')
       end
 
+      def lerna_config
+        @_lerna_config ||= JSON.parse(lerna_json.read)
+      end
+
+      def lerna_lerna
+        Gem::Version.new(lerna_config['lerna'])
+      end
+
       def lerna_version
-        lerna_config = lerna_json.read
-        JSON.parse(lerna_config)['version']
+        lerna_config['version']
       end
 
       def discover_lerna_packages
@@ -68,18 +83,26 @@ module Shipit
 
       def publish_fixed_version_packages
         check_tags = 'assert-lerna-fixed-version-tag'
-        # `yarn publish` requires user input, so always use npm.
-        version = lerna_version
-        publish = %W(
-          node_modules/.bin/lerna publish
-          --yes
-          --skip-git
-          --repo-version #{version}
-          --force-publish=*
-          --npm-tag #{dist_tag(version)}
-          --npm-client=npm
-          --skip-npm=false
-        ).join(" ")
+        publish = if lerna_lerna >= LATEST_MAJOR_VERSION
+          %w(
+            node_modules/.bin/lerna publish
+            from-git
+            --yes
+          ).join(" ")
+        else
+          # `yarn publish` requires user input, so always use npm.
+          version = lerna_version
+          %W(
+            node_modules/.bin/lerna publish
+            --yes
+            --skip-git
+            --repo-version #{version}
+            --force-publish=*
+            --npm-tag #{dist_tag(version)}
+            --npm-client=npm
+            --skip-npm=false
+          ).join(" ")
+        end
 
         [check_tags, publish]
       end
