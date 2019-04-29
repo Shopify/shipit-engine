@@ -75,7 +75,13 @@ module Shipit
   end
 
   def redis(namespace = nil)
-    @redis ||= Redis.new(url: redis_url.to_s.presence, logger: Rails.logger)
+    @redis ||= Redis.new(
+      url: redis_url.to_s.presence,
+      logger: Rails.logger,
+      reconnect_attempts: 3,
+      reconnect_delay: 0.5,
+      reconnect_delay_max: 1,
+    )
     return @redis unless namespace
     Redis::Namespace.new(namespace, redis: @redis)
   end
