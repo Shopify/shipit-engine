@@ -685,36 +685,40 @@ module Shipit
       commits.each { |c| assert c.id > last_deployed_commit.id }
     end
 
-    test "#undeployed_commits returns list of commits newer than last deployed commit excluding active ones" do
-      @stack = shipit_stacks(:shipit_undeployed)
-      active_task = @stack.active_task
-      last_deployed_commit = @stack.last_deployed_commit
-      commits = @stack.undeployed_commits(exclude_active: true)
+    test "#next_expected_commit_to_deploy returns nil if there is no deployable commit" do
+      commits = @stack.undeployed_commits
 
-      commits.each do |c|
-        assert c.id > last_deployed_commit.id
-        refute c.id.between?(active_task.since_commit.id, active_task.until_commit.id)
-      end
+      assert !commits.empty?
+      commits.each { |c| refute_predicate c, :deployable? }
+
+      assert_nil @stack.next_expected_commit_to_deploy(commits: commits)
     end
 
-    test "#active_commits returns list of commits newer than active task since commit and older or equal to active task until commit" do
+    test "#next_expected_commit_to_deploy returns nil if all deployable commits are active" do
       @stack = shipit_stacks(:shipit_undeployed)
-      active_task = @stack.active_task
+      commits = @stack.undeployed_commits.select(&:active?)
 
-      @stack.active_commits.each do |c|
-        assert c.id > active_task.since_commit.id
-        assert c.id <= active_task.until_commit.id
-      end
+      assert !commits.empty?
+      commits.each { |c| assert_predicate c, :active? }
+
+      assert_nil @stack.next_expected_commit_to_deploy(commits: commits)
     end
 
-    test "#active_commits returns list with a single commit when active task since and until commits are the same" do
-      @stack = shipit_stacks(:shipit_single)
-      active_task = @stack.active_task
-      commits = @stack.active_commits
+    test "#next_expected_commit_to_deploy returns nil if there are no commits" do
+      assert_nil @stack.next_expected_commit_to_deploy(commits: [])
+    end
 
-      assert_equal active_task.since_commit.id, active_task.until_commit.id
-      assert_equal 1, commits.size
-      assert_equal active_task.since_commit.id, commits[0].id
+    test "#next_expected_commit_to_deploy returns the most recent non-active deployable commit limited by maximum commits per deploy" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      commits = @stack.undeployed_commits
+
+      assert !commits.empty?
+
+      most_recent_limited = @stack.next_expected_commit_to_deploy(commits: commits)
+      most_recent = commits.find { |c| !c.active? && c.deployable? }
+
+      assert most_recent.id > most_recent_limited.id
+      assert_equal @stack.maximum_commits_per_deploy, commits.find_index(most_recent_limited) + 1
     end
   end
 end
