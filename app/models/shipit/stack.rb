@@ -182,6 +182,12 @@ module Shipit
     end
 
     def async_refresh_deployed_revision
+      async_refresh_deployed_revision!
+    rescue => error
+      logger.warn "Failed to dispatch FetchDeployedRevisionJob: [#{error.class.name}] #{error.message}"
+    end
+
+    def async_refresh_deployed_revision!
       FetchDeployedRevisionJob.perform_later(self)
     end
 

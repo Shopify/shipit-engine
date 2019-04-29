@@ -716,5 +716,14 @@ module Shipit
       assert_equal 1, commits.size
       assert_equal active_task.since_commit.id, commits[0].id
     end
+
+    test "#async_refresh_deployed_revision suppresses and logs raised exception" do
+      error_message = "Error message"
+
+      Rails.logger.expects(:warn).with("Failed to dispatch FetchDeployedRevisionJob: [StandardError] #{error_message}")
+      @stack.expects(:async_refresh_deployed_revision!).raises(StandardError.new(error_message))
+
+      @stack.async_refresh_deployed_revision
+    end
   end
 end
