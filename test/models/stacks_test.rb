@@ -720,5 +720,14 @@ module Shipit
       assert most_recent.id > most_recent_limited.id
       assert_equal @stack.maximum_commits_per_deploy, commits.find_index(most_recent_limited) + 1
     end
+
+    test "#async_refresh_deployed_revision suppresses and logs raised exception" do
+      error_message = "Error message"
+
+      Rails.logger.expects(:warn).with("Failed to dispatch FetchDeployedRevisionJob: [StandardError] #{error_message}")
+      @stack.expects(:async_refresh_deployed_revision!).raises(StandardError.new(error_message))
+
+      @stack.async_refresh_deployed_revision
+    end
   end
 end
