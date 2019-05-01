@@ -1,7 +1,5 @@
 module Shipit
   module StacksHelper
-    COMMIT_TITLE_LENGTH = 79
-
     def redeploy_button(deployed_commit)
       commit = UndeployedCommit.new(deployed_commit, index: 0)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
@@ -46,7 +44,7 @@ module Shipit
     end
 
     def render_commit_message(pull_request_or_commit)
-      message = pull_request_or_commit.title.to_s.truncate(COMMIT_TITLE_LENGTH)
+      message = pull_request_or_commit.title.to_s
       content_tag(:span, emojify(message), class: 'event-message')
     end
 

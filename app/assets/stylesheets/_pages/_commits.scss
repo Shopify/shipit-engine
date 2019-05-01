@@ -77,6 +77,8 @@
     margin-bottom: 1rem;
     order: -1;
   }
+
+  @include truncate;
 }
 
 .commit-title {
