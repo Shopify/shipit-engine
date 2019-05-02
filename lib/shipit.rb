@@ -48,6 +48,7 @@ require 'shipit/rollback_commands'
 require 'shipit/environment_variables'
 require 'shipit/stat'
 require 'shipit/strip_cache_control'
+require 'shipit/cast_value'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
