@@ -444,6 +444,46 @@ module Shipit
       assert_predicate commit, :deployable?
     end
 
+    test "#lock sets the lock author and sets the locked flag" do
+      user = shipit_users(:shipit)
+
+      @commit.lock(user)
+
+      assert_predicate(@commit, :locked?)
+      assert_equal(user, @commit.lock_author)
+    end
+
+    test "#lock does not set the lock author if the user is anonymous" do
+      user = Shipit::AnonymousUser.new
+
+      @commit.lock(user)
+
+      assert_predicate(@commit, :locked?)
+      assert_nil(@commit.lock_author_id)
+    end
+
+    test "#lock_author defaults to AnonymousUser" do
+      assert_nil(@commit.lock_author_id)
+      assert_kind_of(Shipit::AnonymousUser, @commit.lock_author)
+
+      user = shipit_users(:shipit)
+      @commit.lock(user)
+
+      assert_kind_of(Shipit::User, @commit.lock_author)
+    end
+
+    test "#unlock clears the lock author and resets the locked flag" do
+      user = shipit_users(:shipit)
+      @commit.lock(user)
+      assert_predicate(@commit, :locked?)
+      assert_equal(user, @commit.lock_author)
+
+      @commit.unlock
+
+      refute_predicate(@commit, :locked?)
+      assert_nil(@commit.lock_author_id)
+    end
+
     expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
       'unknown' => %w(pending success failure error),
       'pending' => %w(success failure error),
