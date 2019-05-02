@@ -296,7 +296,7 @@ module Shipit
     def lock(user)
       update!(
         locked: true,
-        lock_author: user.logged_in? ? user : nil,
+        lock_author_id: user.id,
       )
     end
 
