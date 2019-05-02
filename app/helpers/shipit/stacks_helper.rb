@@ -78,5 +78,13 @@ module Shipit
     def render_raw_commit_id_link(commit)
       link_to(commit.short_sha, github_commit_url(commit), target: '_blank', class: 'number')
     end
+
+    def unlock_commit_tooltip(commit)
+      if commit.lock_author.present?
+        t('commit.unlock_with_author', author: commit.lock_author.name)
+      else
+        t('commit.unlock')
+      end
+    end
   end
 end
