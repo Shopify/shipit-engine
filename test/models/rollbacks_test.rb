@@ -35,23 +35,24 @@ module Shipit
       )
 
       expected = [
-        ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false],
-        ["whoami", false],
-        ['fix all the things', false],
+        ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false, nil],
+        ["whoami", false, nil],
+        ['fix all the things', false, nil],
       ]
-      assert_equal expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?] }
+      assert_equal(expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?, c.lock_author_id] })
 
       rollback = deploy.trigger_revert
       rollback.run!
       rollback.complete!
 
+      user_id = reverted_commit.author.id
       expected = [
-        ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false],
-        ["whoami", true],
-        ['fix all the things', true],
-        ['yoloshipit!', true],
+        ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false, nil],
+        ["whoami", true, user_id],
+        ['fix all the things', true, user_id],
+        ['yoloshipit!', true, user_id],
       ]
-      assert_equal expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?] }
+      assert_equal(expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?, c.lock_author_id] })
     end
   end
 end

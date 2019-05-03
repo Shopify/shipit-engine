@@ -240,21 +240,23 @@ module Shipit
     end
 
     def lock_reverted_commits!
-      commits_to_lock = []
-
       backlog = undeployed_commits.to_a
+      affected_rows = 0
+
       until backlog.empty?
         backlog = backlog.drop_while { |c| !c.revert? }
-        if revert = backlog.shift
-          commits_to_lock += backlog.reverse.drop_while { |c| !revert.revert_of?(c) }
-        end
+        revert = backlog.shift
+        next if revert.nil?
+
+        commits_to_lock = backlog.reverse.drop_while { |c| !revert.revert_of?(c) }
+        next if commits_to_lock.empty?
+
+        affected_rows += commits
+                         .where(id: commits_to_lock.map(&:id).uniq)
+                         .lock_all(revert.author)
       end
 
-      unless commits_to_lock.empty?
-        if commits.where(id: commits_to_lock.map(&:id).uniq).update_all(locked: true) > 1
-          touch
-        end
-      end
+      touch if affected_rows > 1
     end
 
     def next_expected_commit_to_deploy(commits: nil)
