@@ -300,6 +300,13 @@ module Shipit
       )
     end
 
+    def self.lock_all(user)
+      update_all(
+        locked: true,
+        lock_author_id: user.id,
+      )
+    end
+
     def unlock
       update!(locked: false, lock_author: nil)
     end

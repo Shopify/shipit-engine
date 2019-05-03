@@ -462,6 +462,26 @@ module Shipit
       assert_nil(@commit.lock_author_id)
     end
 
+    test ".lock_all sets the lock author and sets the locked flag" do
+      user = shipit_users(:shipit)
+
+      Commit.where(id: [@commit.id]).lock_all(user)
+
+      @commit.reload
+      assert_predicate(@commit, :locked?)
+      assert_equal(user, @commit.lock_author)
+    end
+
+    test ".lock_all does not set the lock author if the user is anonymous" do
+      user = Shipit::AnonymousUser.new
+
+      Commit.where(id: [@commit.id]).lock_all(user)
+
+      @commit.reload
+      assert_predicate(@commit, :locked?)
+      assert_nil(@commit.lock_author_id)
+    end
+
     test "#lock_author defaults to AnonymousUser" do
       assert_nil(@commit.lock_author_id)
       assert_kind_of(Shipit::AnonymousUser, @commit.lock_author)
