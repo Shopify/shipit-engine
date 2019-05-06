@@ -2,7 +2,7 @@ module Shipit
   module Api
     class StacksController < BaseController
       require_permission :read, :stack, only: %i(index show)
-      require_permission :write, :stack, only: %i(create)
+      require_permission :write, :stack, only: %i(create destroy)
 
       def index
         render_resources stacks
@@ -23,6 +23,11 @@ module Shipit
 
       def show
         render_resource stack
+      end
+
+      def destroy
+        stack.schedule_for_destroy!
+        render_resources stacks
       end
 
       private
