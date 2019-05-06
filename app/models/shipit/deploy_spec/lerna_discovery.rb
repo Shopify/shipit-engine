@@ -3,7 +3,7 @@ require 'json'
 module Shipit
   class DeploySpec
     module LernaDiscovery
-      LATEST_MAJOR_VERSION = Gem::Version.new('3.0.0')
+      V3 = Gem::Version.new('3.0.0')
 
       def discover_dependencies_steps
         discover_lerna_json || super
@@ -23,7 +23,7 @@ module Shipit
 
       def discover_lerna_checklist
         if lerna?
-          command = if lerna_lerna >= LATEST_MAJOR_VERSION
+          command = if lerna_semversion >= V3
             'lerna version'
           else
             %(
@@ -45,6 +45,10 @@ module Shipit
         lerna_json.exist?
       end
 
+      def lerna_legacy?
+        lerna_semversion < V3
+      end
+
       def lerna_json
         file('lerna.json')
       end
@@ -53,7 +57,7 @@ module Shipit
         @_lerna_config ||= JSON.parse(lerna_json.read)
       end
 
-      def lerna_lerna
+      def lerna_semversion
         Gem::Version.new(lerna_config['lerna'])
       end
 
@@ -75,15 +79,25 @@ module Shipit
       end
 
       def publish_independent_packages
-        [
-          'assert-lerna-independent-version-tags',
-          'publish-lerna-independent-packages',
-        ]
+        if lerna_legacy?
+          [
+            'assert-lerna-independent-version-tags',
+            'publish-lerna-independent-packages',
+          ]
+        else
+          [
+            %W(
+              node_modules/.bin/lerna publish
+              from-git
+              --yes
+            ).join(" ")  
+          ]
+        end
       end
 
       def publish_fixed_version_packages
         check_tags = 'assert-lerna-fixed-version-tag'
-        publish = if lerna_lerna >= LATEST_MAJOR_VERSION
+        publish = if lerna_semversion >= LATEST_MAJOR_VERSION
           %w(
             node_modules/.bin/lerna publish
             from-git
