@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'securerandom'
 
 module Shipit
   class StacksTest < ActiveSupport::TestCase
@@ -728,6 +729,106 @@ module Shipit
       @stack.expects(:async_refresh_deployed_revision!).raises(StandardError.new(error_message))
 
       @stack.async_refresh_deployed_revision
+    end
+
+    test "#lock_reverted_commits! locks all commits between the original and reverted commits" do
+      reverted_commit = @stack.undeployed_commits.first
+      revert_author = shipit_users(:bob)
+      generate_revert_commit(stack: @stack, reverted_commit: reverted_commit, author: revert_author)
+      @stack.reload
+
+      assert_equal(
+        [
+          ['Revert "whoami"', false, nil],
+          ["whoami", false, nil],
+          ["fix all the things", false, nil],
+        ],
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+
+      @stack.lock_reverted_commits!
+      @stack.reload
+
+      assert_equal(
+        [
+          ['Revert "whoami"', false, nil],
+          ["whoami", true, revert_author.id],
+          ["fix all the things", false, nil],
+        ],
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+    end
+
+    test "#lock_reverted_commits! is a no-op if the reverted commit has already shipped" do
+      reverted_commit = shipit_commits(:first)
+      revert_author = shipit_users(:bob)
+      generate_revert_commit(stack: @stack, reverted_commit: reverted_commit, author: revert_author)
+      @stack.reload
+
+      initial_state = [
+        ['Revert "lets go"', false, nil],
+        ["whoami", false, nil],
+        ["fix all the things", false, nil],
+      ]
+
+      assert_equal(
+        initial_state,
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+
+      @stack.lock_reverted_commits!
+      @stack.reload
+
+      assert_equal(
+        initial_state,
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+    end
+
+    test "#lock_reverted_commits! handles multiple reverts" do
+      first_reverted_commit = @stack.undeployed_commits.last
+      second_reverted_commit = @stack.undeployed_commits.first
+      first_revert_author = shipit_users(:bob)
+      second_revert_author = shipit_users(:walrus)
+      generate_revert_commit(stack: @stack, reverted_commit: first_reverted_commit, author: first_revert_author)
+      generate_revert_commit(stack: @stack, reverted_commit: second_reverted_commit, author: second_revert_author)
+      @stack.reload
+
+      assert_equal(
+        [
+          ['Revert "whoami"', false, nil],
+          ['Revert "fix all the things"', false, nil],
+          ["whoami", false, nil],
+          ["fix all the things", false, nil],
+        ],
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+
+      @stack.lock_reverted_commits!
+      @stack.reload
+
+      assert_equal(
+        [
+          ['Revert "whoami"', false, nil],
+          ['Revert "fix all the things"', true, second_revert_author.id],
+          ["whoami", true, first_revert_author.id],
+          ["fix all the things", true, first_revert_author.id],
+        ],
+        @stack.undeployed_commits.map { |c| [c.message, c.locked, c.lock_author_id] },
+      )
+    end
+
+    private
+
+    def generate_revert_commit(stack:, reverted_commit:, author: reverted_commit.author)
+      stack.commits.create(
+        sha: SecureRandom.hex(20),
+        message: "Revert \"#{reverted_commit.message_header}\"",
+        author: author,
+        committer: author,
+        authored_at: Time.zone.now,
+        committed_at: Time.zone.now,
+      )
     end
   end
 end

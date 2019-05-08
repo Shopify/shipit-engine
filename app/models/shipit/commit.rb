@@ -23,12 +23,17 @@ module Shipit
 
     belongs_to :author, class_name: 'User', inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', inverse_of: :commits
+    belongs_to :lock_author, class_name: :User, optional: true, inverse_of: false
 
     def author
       super || AnonymousUser.new
     end
 
     def committer
+      super || AnonymousUser.new
+    end
+
+    def lock_author
       super || AnonymousUser.new
     end
 
@@ -286,6 +291,24 @@ module Shipit
       else
         created_at
       end
+    end
+
+    def lock(user)
+      update!(
+        locked: true,
+        lock_author_id: user.id,
+      )
+    end
+
+    def self.lock_all(user)
+      update_all(
+        locked: true,
+        lock_author_id: user.id,
+      )
+    end
+
+    def unlock
+      update!(locked: false, lock_author: nil)
     end
 
     private

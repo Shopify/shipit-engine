@@ -19,7 +19,7 @@ module Shipit
       @tasks = @stack.tasks.order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
 
       commits = @stack.undeployed_commits do |scope|
-        scope.preload(:author, :statuses, :check_runs)
+        scope.preload(:author, :statuses, :check_runs, :lock_author)
       end
 
       next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits: commits)

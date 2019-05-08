@@ -27,7 +27,7 @@
       <%= link_to stack_commit_path(commit.stack, commit), class: 'action-lock-commit', data: {tooltip: t('commit.lock')} do %>
         <i class="icon icon--lock"></i>
       <% end %>
-      <%= link_to stack_commit_path(commit.stack, commit), class: 'action-unlock-commit', data: {tooltip: t('commit.unlock'), confirm: t('commit.confirm_unlock')} do %>
+      <%= link_to stack_commit_path(commit.stack, commit), class: 'action-unlock-commit', data: {tooltip: unlock_commit_tooltip(commit), confirm: t('commit.confirm_unlock')} do %>
         <i class="icon icon--lock"></i>
       <% end %>
     </div>
