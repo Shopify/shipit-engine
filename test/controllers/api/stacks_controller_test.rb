@@ -112,10 +112,7 @@ module Shipit
         assert_enqueued_with(job: DestroyStackJob) do
           delete :destroy, params: {id: @stack.to_param}
         end
-        assert_response :ok
-        assert_json do |stacks|
-          assert_equal Stack.count, stacks.size
-        end
+        assert_response :accepted
       end
 
       test "#destroy fails with insufficient permissions" do

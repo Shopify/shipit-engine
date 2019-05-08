@@ -27,7 +27,7 @@ module Shipit
 
       def destroy
         stack.schedule_for_destroy!
-        render_resources stacks
+        head :accepted
       end
 
       private
