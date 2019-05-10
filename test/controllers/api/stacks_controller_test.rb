@@ -107,6 +107,25 @@ module Shipit
         assert_response :ok
         assert_json 'last_deployed_at', @stack.last_deployed_at
       end
+
+      test "#destroy schedules stack deletion job" do
+        assert_enqueued_with(job: DestroyStackJob) do
+          delete :destroy, params: {id: @stack.to_param}
+        end
+        assert_response :accepted
+      end
+
+      test "#destroy fails with insufficient permissions" do
+        @client.permissions.delete('write:stack')
+        @client.save!
+
+        assert_no_difference 'Stack.count' do
+          delete :destroy, params: {id: @stack.to_param}
+        end
+
+        assert_response :forbidden
+        assert_json 'message', 'This operation requires the `write:stack` permission'
+      end
     end
   end
 end

@@ -16,6 +16,7 @@ Shipit::Engine.routes.draw do
     resources :stacks, only: %i(index create)
     scope '/stacks/*id', id: stack_id_format, as: :stack do
       get '/' => 'stacks#show'
+      delete '/' => 'stacks#destroy'
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
