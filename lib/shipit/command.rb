@@ -30,6 +30,7 @@ module Shipit
       @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
       @env = env
       @chdir = chdir.to_s
+      @timed_out = false
     end
 
     def with_timeout(new_timeout)
@@ -129,6 +130,10 @@ module Shipit
     end
 
     def timed_out?
+      @timed_out
+    end
+
+    def output_timed_out?
       @last_output_at ||= Time.now.to_i
       (@last_output_at + timeout) < Time.now.to_i
     end
@@ -149,7 +154,10 @@ module Shipit
           yield io.read_nonblock(MAX_READ)
           touch_last_output_at
         rescue IO::WaitReadable
-          raise TimedOut if timed_out?
+          if output_timed_out?
+            @timed_out = true
+            raise TimedOut
+          end
           IO.select([io], nil, nil, 1)
           retry
         end
@@ -243,6 +251,10 @@ module Shipit
         "is running"
       elsif success?
         "terminated successfully"
+      elsif timed_out? && signaled?
+        "timed out and terminated with #{Signal.signame(@status.termsig)} signal"
+      elsif timed_out?
+        "timed out and terminated with exit status #{exitstatus}"
       elsif signaled?
         "terminated with #{Signal.signame(@status.termsig)} signal"
       else

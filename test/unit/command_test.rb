@@ -87,18 +87,7 @@ module Shipit
 
     test 'handles externally signalled commands correctly' do
       command = Command.new('sleep 10', chdir: '.')
-      t = Thread.new do
-        signalled = false
-        20.times do
-          if command.running?
-            Process.kill('KILL', command.pid)
-            signalled = true
-            break
-          end
-          sleep 0.1
-        end
-        signalled
-      end
+      t = command_signaller_thread(command)
       command.run
       assert t.join, "subprocess wasn't signalled"
       assert_predicate command, :signaled?
@@ -113,7 +102,24 @@ module Shipit
       assert_predicate command, :signaled?
       refute_predicate command, :running?
       assert_nil command.code
-      assert_equal 'terminated with INT signal', command.termination_status
+      assert_equal 'timed out and terminated with INT signal', command.termination_status
+    end
+
+    private
+
+    def command_signaller_thread(command, signal: 'KILL')
+      Thread.new do
+        signalled = false
+        20.times do
+          if command.running?
+            Process.kill(signal, command.pid)
+            signalled = true
+            break
+          end
+          sleep 0.1
+        end
+        signalled
+      end
     end
   end
 end
