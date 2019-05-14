@@ -83,15 +83,16 @@ module Shipit
 
       def publish_fixed_version_packages
         check_tags = 'assert-lerna-fixed-version-tag'
+        version = lerna_version
         publish = if lerna_lerna >= LATEST_MAJOR_VERSION
-          %w(
+          %W(
             node_modules/.bin/lerna publish
             from-git
             --yes
+            --dist-tag #{dist_tag(version)}
           ).join(" ")
         else
           # `yarn publish` requires user input, so always use npm.
-          version = lerna_version
           %W(
             node_modules/.bin/lerna publish
             --yes

@@ -805,11 +805,18 @@ module Shipit
       assert_equal 'node_modules/.bin/lerna publish --yes --skip-git --repo-version 1.0.0 --force-publish=* --npm-tag latest --npm-client=npm --skip-npm=false', @spec.deploy_steps[1]
     end
 
-    test '#publish_lerna_packages checks if a newer version of lerna is used, and will then use the new publish syntax' do
+    test '#publish_lerna_packages checks if a newer version of lerna is used, and will then use the new publish syntax, correctly setting the `latest` dist tag' do
       @spec.stubs(:lerna?).returns(true)
       @spec.stubs(:lerna_config).returns('lerna' => '3.0.0', 'version' => '1.0.0')
       assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
-      assert_equal 'node_modules/.bin/lerna publish from-git --yes', @spec.deploy_steps[1]
+      assert_equal 'node_modules/.bin/lerna publish from-git --yes --dist-tag latest', @spec.deploy_steps[1]
+    end
+
+    test '#publish_lerna_packages checks if a newer version of lerna is used, and will then use the new publish syntax, correctly setting the `next` dist tag' do
+      @spec.stubs(:lerna?).returns(true)
+      @spec.stubs(:lerna_config).returns('lerna' => '3.0.0', 'version' => 'v1.3.1-alpha.2')
+      assert_equal 'assert-lerna-fixed-version-tag', @spec.deploy_steps[0]
+      assert_equal 'node_modules/.bin/lerna publish from-git --yes --dist-tag next', @spec.deploy_steps[1]
     end
 
     test '#enforce_publish_config? is false when Shipit.enforce_publish_config is nil' do
