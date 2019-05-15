@@ -23,13 +23,14 @@ module Shipit
       end
     end
 
-    attr_reader :out, :code, :chdir, :env, :args, :pid, :timeout
+    attr_reader :out, :chdir, :env, :args, :pid, :timeout
 
     def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
       @args, options = parse_arguments(args)
       @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
       @env = env
       @chdir = chdir.to_s
+      @timed_out = false
     end
 
     def with_timeout(new_timeout)
@@ -58,7 +59,7 @@ module Shipit
     end
 
     def exit_message
-      "#{self} exited with status #{@code}"
+      "#{self} #{termination_status}"
     end
 
     def run
@@ -107,16 +108,15 @@ module Shipit
       begin
         read_stream(@out, &block)
       rescue TimedOut => error
-        @code = 'timeout'
         yield red("No output received in the last #{timeout} seconds.") + "\n"
         terminate!(&block)
         raise error
       rescue Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
       end
 
-      _, status = Process.waitpid2(@pid)
-      @code = status.exitstatus
       self
+    ensure
+      reap_child!
     end
 
     def red(text)
@@ -130,6 +130,10 @@ module Shipit
     end
 
     def timed_out?
+      @timed_out
+    end
+
+    def output_timed_out?
       @last_output_at ||= Time.now.to_i
       (@last_output_at + timeout) < Time.now.to_i
     end
@@ -150,7 +154,10 @@ module Shipit
           yield io.read_nonblock(MAX_READ)
           touch_last_output_at
         rescue IO::WaitReadable
-          raise TimedOut if timed_out?
+          if output_timed_out?
+            @timed_out = true
+            raise TimedOut
+          end
           IO.select([io], nil, nil, 1)
           retry
         end
@@ -183,18 +190,18 @@ module Shipit
       rescue TimedOut
       rescue Errno::EIO # EIO is somewhat expected on Linux: http://stackoverflow.com/a/10306782
         # If we try to read the stream right after sending a signal, we often get an Errno::EIO.
-        if status = Process.wait(@pid, Process::WNOHANG)
-          return status
-        else
-          # If we let the child a little bit of time, it solves it.
-          retry_count -= 1
-          if retry_count > 0
-            sleep 0.05
-            retry
-          end
+        if reap_child!(block: false)
+          return true
+        end
+        # If we let the child a little bit of time, it solves it.
+        retry_count -= 1
+        if retry_count > 0
+          sleep 0.05
+          retry
         end
       end
-      Process.wait(@pid, Process::WNOHANG)
+      reap_child!(block: false)
+      true
     end
 
     def kill(sig)
@@ -214,6 +221,45 @@ module Shipit
         end
       end
       return args, options
+    end
+
+    def running?
+      !!pid && !@status
+    end
+
+    def code
+      @status&.exitstatus
+    end
+
+    def signaled?
+      @status.signaled?
+    end
+
+    def reap_child!(block: true)
+      return @status if @status
+      return unless running? # Command was never started e.g. permission denied, not found etc
+      if block
+        _, @status = Process.waitpid2(@pid)
+      elsif res = Process.waitpid2(@pid, Process::WNOHANG)
+        @status = res[1]
+      end
+      @status
+    end
+
+    def termination_status
+      if running?
+        "is running"
+      elsif success?
+        "terminated successfully"
+      elsif timed_out? && signaled?
+        "timed out and terminated with #{Signal.signame(@status.termsig)} signal"
+      elsif timed_out?
+        "timed out and terminated with exit status #{exitstatus}"
+      elsif signaled?
+        "terminated with #{Signal.signame(@status.termsig)} signal"
+      else
+        "terminated with exit status #{code}"
+      end
     end
   end
 end

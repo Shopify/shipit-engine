@@ -66,5 +66,60 @@ module Shipit
       end
       assert_equal '/etc/passwd: Permission denied', error.message
     end
+
+    test 'sets code and message correctly on success' do
+      command = Command.new('true', chdir: '.')
+      assert_nil command.code
+      command.run
+      refute_predicate command, :running?
+      assert_predicate command.code, :zero?
+      assert_equal 'terminated successfully', command.termination_status
+    end
+
+    test 'sets code and message correctly on error' do
+      command = Command.new('false', chdir: '.')
+      assert_nil command.code
+      command.run
+      refute_predicate command, :running?
+      assert_predicate command.code, :nonzero?
+      assert_equal 'terminated with exit status 1', command.termination_status
+    end
+
+    test 'handles externally signalled commands correctly' do
+      command = Command.new('sleep 10', chdir: '.')
+      t = command_signaller_thread(command)
+      command.run
+      assert t.join, "subprocess wasn't signalled"
+      assert_predicate command, :signaled?
+      refute_predicate command, :running?
+      assert_nil command.code
+      assert_equal 'terminated with KILL signal', command.termination_status
+    end
+
+    test 'reports timedout command correctly' do
+      command = Command.new('sleep 10', chdir: '.', default_timeout: 0.5)
+      assert_raises(Command::TimedOut) { command.run }
+      assert_predicate command, :signaled?
+      refute_predicate command, :running?
+      assert_nil command.code
+      assert_equal 'timed out and terminated with INT signal', command.termination_status
+    end
+
+    private
+
+    def command_signaller_thread(command, signal: 'KILL')
+      Thread.new do
+        signalled = false
+        20.times do
+          if command.running?
+            Process.kill(signal, command.pid)
+            signalled = true
+            break
+          end
+          sleep 0.1
+        end
+        signalled
+      end
+    end
   end
 end
