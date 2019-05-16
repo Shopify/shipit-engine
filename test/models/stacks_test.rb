@@ -133,6 +133,15 @@ module Shipit
       assert_instance_of Deploy, deploy
     end
 
+    test "#trigger_deploy doesn't enqueues a deploy job when run_now is provided" do
+      @stack.deploys.destroy_all
+      Deploy.any_instance.expects(:run_now!).once
+
+      last_commit = shipit_commits(:third)
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new, run_now: true)
+      assert_instance_of Deploy, deploy
+    end
+
     test "#trigger_deploy marks the deploy as `ignored_safeties` if the commit wasn't deployable" do
       last_commit = shipit_commits(:fifth)
       refute_predicate last_commit, :deployable?
@@ -261,6 +270,16 @@ module Shipit
     test "#active_task? is true if a rollback is ongoing" do
       shipit_deploys(:shipit_complete).trigger_rollback(AnonymousUser.new)
       assert @stack.active_task?
+    end
+
+    test ".run_deploy_in_foreground triggers a deploy" do
+      stack = Stack.create!(repo_owner: 'foo', repo_name: 'bar', environment: 'production')
+      commit = shipit_commits(:first)
+      stack.commits << commit
+
+      Stack.any_instance.expects(:trigger_deploy).with(anything, anything, env: {}, force: true, run_now: true)
+
+      Stack.run_deploy_in_foreground(stack: stack.to_param, revision: commit.sha)
     end
 
     test "#active_task? is memoized" do
