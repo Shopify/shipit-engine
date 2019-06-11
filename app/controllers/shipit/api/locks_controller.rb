@@ -6,6 +6,8 @@ module Shipit
       params do
         requires :reason, String, presence: true
         accepts :lock_level, String
+
+        validates :lock_level, inclusion: { in: Shipit::Stack::LOCK_LEVELS }
       end
       def create
         if stack.locked?
@@ -19,6 +21,8 @@ module Shipit
       params do
         requires :reason, String, presence: true
         accepts :lock_level, String
+
+        validates :lock_level, inclusion: { in: Shipit::Stack::LOCK_LEVELS }
       end
       def update
         stack.lock(params.reason, current_user, lock_level: params.lock_level)
