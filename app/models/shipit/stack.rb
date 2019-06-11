@@ -398,7 +398,7 @@ module Shipit
 
     def lock(reason, user, lock_level: 'enforced')
       lock_level ||= 'enforced'
-      params = { lock_reason: reason, lock_author: user, lock_level: lock_level }
+      params = {lock_reason: reason, lock_author: user, lock_level: lock_level}
       update!(params)
     end
 

@@ -18,7 +18,7 @@ module Shipit
       end
 
       test "#create sets a lock message if lock_level is advisory" do
-        post :create, params: { stack_id: @stack.to_param, reason: 'Just for fun!', lock_level: 'advisory' }
+        post :create, params: {stack_id: @stack.to_param, reason: 'Just for fun!', lock_level: 'advisory'}
         assert_response :ok
         assert_json 'is_locked', false
         assert_json 'lock_reason', 'Just for fun!'
@@ -50,7 +50,7 @@ module Shipit
       end
 
       test "#update sets a lock with a lock_level if passed as a param" do
-        put :update, params: { stack_id: @stack.to_param, reason: 'Just for fun!', lock_level: 'advisory' }
+        put :update, params: {stack_id: @stack.to_param, reason: 'Just for fun!', lock_level: 'advisory'}
         assert_response :ok
         assert_json 'is_locked', false
         assert_json 'lock_reason', 'Just for fun!'
