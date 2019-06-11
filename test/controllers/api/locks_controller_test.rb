@@ -32,6 +32,12 @@ module Shipit
         assert_response :conflict
       end
 
+      test "#create fails if the lock_level is not included in the enum" do
+        post :create, params: {stack_id: @stack.to_param, reason: 'Just for fun!', lock_level: 'invalid'}
+        assert_response :unprocessable_entity
+        assert_json 'errors', 'lock_level' => ["is not included in the list"]
+      end
+
       test "#update sets a lock" do
         put :update, params: {stack_id: @stack.to_param, reason: 'Just for fun!'}
         assert_response :ok
