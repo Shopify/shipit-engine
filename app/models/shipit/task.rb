@@ -47,6 +47,10 @@ module Shipit
         completed.last
       end
 
+      def previous_successful(deploy_id)
+        success.where("id < #{deploy_id}").last
+      end
+
       def current
         active.exclusive.last
       end

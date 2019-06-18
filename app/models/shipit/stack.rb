@@ -284,12 +284,20 @@ module Shipit
       deploys_and_rollbacks.last_completed
     end
 
+    def previous_successful_deploy(deploy_id)
+      deploys_and_rollbacks.previous_successful(deploy_id)
+    end
+
     def last_active_task
       tasks.exclusive.last
     end
 
     def last_deployed_commit
       last_completed_deploy&.until_commit || NoDeployedCommit
+    end
+
+    def previous_successful_deploy_commit(deploy_id)
+      previous_successful_deploy(deploy_id)&.until_commit || NoDeployedCommit
     end
 
     def deployable?
