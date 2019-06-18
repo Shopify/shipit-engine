@@ -55,5 +55,11 @@ module Shipit
       text = deploy.commit_range.map(&:short_sha).join('...')
       link_to(text, url, class: 'number')
     end
+
+    def link_to_github_range(stack, since_commit, until_commit)
+      url = github_commit_range_url(stack, since_commit, until_commit)
+      text = [since_commit, until_commit].map(&:short_sha).join('...')
+      link_to(text, url, class: 'number')
+    end
   end
 end

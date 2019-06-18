@@ -331,7 +331,7 @@ module Shipit
       assert_equal shipit_commits(:second), @stack.last_deployed_commit
     end
 
-    def create_test_stack(stack_id)
+    def create_test_stack
       Shipit::Stack.create(
         repo_owner: "shopify-test",
         repo_name: "shipit-engine-test",
@@ -340,13 +340,11 @@ module Shipit
         merge_queue_enabled: true,
         created_at: "2019-01-01 00:00:00",
         updated_at: "2019-01-02 10:10:10",
-        id: stack_id,
       )
     end
 
-    def create_test_commit(id:, stack_id:, user_id:)
+    def create_test_commit(stack_id:, user_id:)
       Shipit::Commit.new(
-        id: id,
         stack_id: stack_id,
         author_id: user_id,
         sha: SecureRandom.hex(20),
@@ -359,9 +357,8 @@ module Shipit
       )
     end
 
-    def create_test_status(id:, commit_id:, stack_id:, state: "success")
+    def create_test_status(commit_id:, stack_id:, state: "success")
       Shipit::Status.new(
-        id: id,
         description: "Description for commit #{commit_id}",
         stack_id: stack_id,
         commit_id: commit_id,
@@ -369,9 +366,8 @@ module Shipit
       )
     end
 
-    def create_test_deploy(deploy_id:, stack_id:, user_id:, since_commit_id:, until_commit_id: since_commit_id)
+    def create_test_deploy(stack_id:, user_id:, since_commit_id:, until_commit_id: since_commit_id)
       Shipit::Deploy.new(
-        id: deploy_id,
         stack_id: stack_id,
         user_id: user_id,
         since_commit_id: since_commit_id,
@@ -381,21 +377,40 @@ module Shipit
       )
     end
 
+    # For test purposes, we want to fail fast if a series of records are given sequential ids.
+    # Check that the next item in the series is 1 greater than the last.
+    def assert_generated_record_ids_are_sequential(record_id_series)
+      record_id_series[0..-2].each_with_index do |id_element, index|
+        assert_equal id_element + 1, record_id_series[index + 1]
+      end
+    end
+
+    def generate_commits(amount:, stack_id:, user_id:, validate:)
+      commit_ids = []
+      amount.times do
+        commit = create_test_commit(stack_id: stack_id, user_id: user_id)
+        commit.save
+        commit.reload
+        commit_ids << commit.id
+      end
+
+      if validate then assert_generated_record_ids_are_sequential(commit_ids) end
+      commit_ids
+    end
+
     test "#trigger_revert rolls the stack back to before this deploy" do
-      stack_id = 1969
       user_id = @user.id
-      test_stack = create_test_stack(stack_id)
+      test_stack = create_test_stack
       test_stack.save
-      starting_commit_id = Shipit::Commit.last.id + 1
+      test_stack.reload
+      stack_id = test_stack.id
 
       # Create valid commit history for the stack. We need several commits to deploy and roll back through.
-      commit_ids = (starting_commit_id..starting_commit_id + 3).to_a
-      commit_ids.each { |commit_id| create_test_commit(id: commit_id, stack_id: stack_id, user_id: user_id).save }
-      commit_ids.each_with_index { |commit_id, index| create_test_status(id: index + 1, commit_id: commit_id, stack_id: stack_id, state: "success").save }
+      commit_ids = generate_commits(amount: 4, stack_id: stack_id, user_id: user_id, validate: true)
+      commit_ids.each { |commit_id| create_test_status(commit_id: commit_id, stack_id: stack_id, state: "success").save }
 
       # Three deploys of commits 1-2, 2-3 and 3-4 respectively. Reverting last should result in Deploy 3 (commit 3) being latest.
-      starting_task_id = Shipit::Task.last.id + 1
-      (starting_task_id..starting_task_id + 2).each_with_index { |task_id, index| create_test_deploy(deploy_id: task_id, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[index], until_commit_id: commit_ids[index + 1]).save }
+      3.times { |index| create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[index], until_commit_id: commit_ids[index + 1]).save }
 
       # Get the reference with Rails-mutated field values.
       commit3 = Shipit::Commit.second_to_last
@@ -420,15 +435,15 @@ module Shipit
     end
 
     test "#trigger_revert skips unsuccessful deploys when reverting" do
-      stack_id = 1969
       user_id = @user.id
-      test_stack = create_test_stack(stack_id)
+      test_stack = create_test_stack
       test_stack.save
-      starting_commit_id = Shipit::Commit.last.id + 1
+      test_stack.reload
+      stack_id = test_stack.id
 
-      commit_ids = (starting_commit_id..starting_commit_id + 3).to_a
-      commit_ids.each { |commit_id| create_test_commit(id: commit_id, stack_id: stack_id, user_id: user_id).save }
-      commit_ids.each_with_index { |commit_id, index| create_test_status(id: index + 1, commit_id: commit_id, stack_id: stack_id, state: "success").save }
+      # Create valid commit history for the stack. We need several commits to deploy and roll back through.
+      commit_ids = generate_commits(amount: 4, stack_id: stack_id, user_id: user_id, validate: true)
+      commit_ids.each { |commit_id| create_test_status(commit_id: commit_id, stack_id: stack_id, state: "success").save }
 
       # We want the following order of Deploys:
       # 1. Success (commits 1-2)
@@ -437,11 +452,10 @@ module Shipit
       # 4. Running (commits 3-4)
       # 5. Reversion of the running deploy to the last successful deploy. (-> commits 1-2, i.e. the successful deploy.)
 
-      starting_task_id = Shipit::Task.last.id + 1
-      deploy1 = create_test_deploy(deploy_id: starting_task_id, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[0], until_commit_id: commit_ids[1])
+      deploy1 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[0], until_commit_id: commit_ids[1])
       deploy1.save
 
-      deploy2 = create_test_deploy(deploy_id: starting_task_id + 1, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[1], until_commit_id: commit_ids[2])
+      deploy2 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[1], until_commit_id: commit_ids[2])
       deploy2.status = "faulty"
       deploy2.save
 
@@ -451,13 +465,14 @@ module Shipit
 
       assert_equal commit_ids[1], test_stack.last_deployed_commit.id
 
-      deploy3 = create_test_deploy(deploy_id: starting_task_id + 3, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[2], until_commit_id: commit_ids[3])
+      deploy3 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[2], until_commit_id: commit_ids[3])
       deploy3.status = "running"
       deploy3.rollback_once_aborted = false
       deploy3.save
 
       running_deploy = deploy3.reload
       running_deploy.abort!(aborted_by: @user)
+      running_deploy.reload
 
       assert_equal "error", running_deploy.status
 
