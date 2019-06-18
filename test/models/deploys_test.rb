@@ -331,12 +331,148 @@ module Shipit
       assert_equal shipit_commits(:second), @stack.last_deployed_commit
     end
 
+    def create_test_stack(stack_id)
+      Shipit::Stack.create(
+        repo_owner: "shopify-test",
+        repo_name: "shipit-engine-test",
+        environment: 'production',
+        branch: "master",
+        merge_queue_enabled: true,
+        created_at: "2019-01-01 00:00:00",
+        updated_at: "2019-01-02 10:10:10",
+        id: stack_id,
+      )
+    end
+
+    def create_test_commit(id:, stack_id:, user_id:)
+      Shipit::Commit.new(
+        id: id,
+        stack_id: stack_id,
+        author_id: user_id,
+        sha: SecureRandom.hex(20),
+        additions: 2,
+        deletions: 0,
+        committer_id: user_id,
+        message: "Some commit message.",
+        authored_at: "2019-01-02 10:11:10",
+        committed_at: "2019-01-02 10:11:10",
+      )
+    end
+
+    def create_test_status(id:, commit_id:, stack_id:, state: "success")
+      Shipit::Status.new(
+        id: id,
+        description: "Description for commit #{commit_id}",
+        stack_id: stack_id,
+        commit_id: commit_id,
+        state: state,
+      )
+    end
+
+    def create_test_deploy(deploy_id:, stack_id:, user_id:, since_commit_id:, until_commit_id: since_commit_id)
+      Shipit::Deploy.new(
+        id: deploy_id,
+        stack_id: stack_id,
+        user_id: user_id,
+        since_commit_id: since_commit_id,
+        until_commit_id: until_commit_id,
+        status: "success",
+        type: "Shipit::Deploy",
+      )
+    end
+
     test "#trigger_revert rolls the stack back to before this deploy" do
-      assert_equal shipit_commits(:fourth), @stack.last_deployed_commit
-      rollback = @deploy.trigger_revert
+      stack_id = 1969
+      user_id = @user.id
+      test_stack = create_test_stack(stack_id)
+      test_stack.save
+      starting_commit_id = Shipit::Commit.last.id + 1
+
+      # Create valid commit history for the stack. We need several commits to deploy and roll back through.
+      commit_ids = (starting_commit_id..starting_commit_id + 3).to_a
+      commit_ids.each { |commit_id| create_test_commit(id: commit_id, stack_id: stack_id, user_id: user_id).save }
+      commit_ids.each_with_index { |commit_id, index| create_test_status(id: index + 1, commit_id: commit_id, stack_id: stack_id, state: "success").save }
+
+      # Three deploys of commits 1-2, 2-3 and 3-4 respectively. Reverting last should result in Deploy 3 (commit 3) being latest.
+      starting_task_id = Shipit::Task.last.id + 1
+      (starting_task_id..starting_task_id + 2).each_with_index { |task_id, index| create_test_deploy(deploy_id: task_id, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[index], until_commit_id: commit_ids[index + 1]).save }
+
+      # Get the reference with Rails-mutated field values.
+      commit3 = Shipit::Commit.second_to_last
+      commit4 = Shipit::Commit.last
+      deploy3 = Shipit::Deploy.last
+
+      assert_equal commit4, test_stack.last_deployed_commit
+
+      deploy_to_revert = test_stack.deploys.last
+
+      assert_equal deploy3, deploy_to_revert
+
+      rollback = deploy_to_revert.trigger_revert
       rollback.run!
       rollback.complete!
-      assert_equal shipit_commits(:first), @stack.last_deployed_commit
+
+      last_deploy = test_stack.last_completed_deploy
+
+      assert_equal commit3, test_stack.last_deployed_commit
+      assert_equal commit3, last_deploy.until_commit
+      assert_equal "Shipit::Rollback", last_deploy.type
+    end
+
+    test "#trigger_revert skips unsuccessful deploys when reverting" do
+      stack_id = 1969
+      user_id = @user.id
+      test_stack = create_test_stack(stack_id)
+      test_stack.save
+      starting_commit_id = Shipit::Commit.last.id + 1
+
+      commit_ids = (starting_commit_id..starting_commit_id + 3).to_a
+      commit_ids.each { |commit_id| create_test_commit(id: commit_id, stack_id: stack_id, user_id: user_id).save }
+      commit_ids.each_with_index { |commit_id, index| create_test_status(id: index + 1, commit_id: commit_id, stack_id: stack_id, state: "success").save }
+
+      # We want the following order of Deploys:
+      # 1. Success (commits 1-2)
+      # 2. Faulty (commits 2-3)
+      # 3. Rollback to Success (-> commits 1-2)
+      # 4. Running (commits 3-4)
+      # 5. Reversion of the running deploy to the last successful deploy. (-> commits 1-2, i.e. the successful deploy.)
+
+      starting_task_id = Shipit::Task.last.id + 1
+      deploy1 = create_test_deploy(deploy_id: starting_task_id, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[0], until_commit_id: commit_ids[1])
+      deploy1.save
+
+      deploy2 = create_test_deploy(deploy_id: starting_task_id + 1, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[1], until_commit_id: commit_ids[2])
+      deploy2.status = "faulty"
+      deploy2.save
+
+      rollback = test_stack.deploys.second_to_last.trigger_rollback(@user)
+      rollback.run!
+      rollback.complete!
+
+      assert_equal commit_ids[1], test_stack.last_deployed_commit.id
+
+      deploy3 = create_test_deploy(deploy_id: starting_task_id + 3, stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[2], until_commit_id: commit_ids[3])
+      deploy3.status = "running"
+      deploy3.rollback_once_aborted = false
+      deploy3.save
+
+      running_deploy = deploy3.reload
+      running_deploy.abort!(aborted_by: @user)
+
+      assert_equal "error", running_deploy.status
+
+      final_rollback = running_deploy.trigger_revert
+      final_rollback.run!
+      final_rollback.complete!
+
+      last_deploy = test_stack.last_completed_deploy
+
+      # The rollback deploy should be from the last commit until the second commit.
+      assert_equal "success", last_deploy.status
+      assert_equal "Shipit::Rollback", last_deploy.type
+      assert_equal commit_ids[-1], last_deploy.since_commit_id
+      assert_equal commit_ids[1], last_deploy.until_commit_id
+      assert_equal commit_ids[1], test_stack.last_deployed_commit.id
     end
 
     test "#trigger_rollback creates a new Rollback" do
