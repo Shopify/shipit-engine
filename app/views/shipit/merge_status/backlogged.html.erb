@@ -17,5 +17,4 @@
     <%= link_to @stack.to_param, stack_url(@stack), target: '_blank', rel: 'noopener' %>
     is <strong>backlogged</strong>
   </span>
-  <%= render 'commit_count_warning' if too_many_commits?(params[:commits].to_i) %>
 </div>
