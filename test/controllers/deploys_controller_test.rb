@@ -7,11 +7,12 @@ module Shipit
       @stack = shipit_stacks(:shipit)
       @deploy = shipit_deploys(:shipit)
       @commit = shipit_commits(:second)
-      session[:user_id] = shipit_users(:walrus).id
+      @user = shipit_users(:walrus)
+      session[:user_id] = @user.id
     end
 
     test ":show is success" do
-      get :show, params: {stack_id: @stack.to_param, id: @deploy.id}
+      get :show, params: {stack_id: @stack.to_param, id: @stack.deploys.last.id}
       assert_response :success
     end
 
@@ -98,6 +99,29 @@ module Shipit
         assert_equal 'Lando Walrussian is already deploying!', elements.first.text
       end
       assert_select '#new_rollback #force', 1
+    end
+
+    test ":rollback button shows deploy and commit ids" do
+      previous_deploy = @stack.deploys.second_to_last
+      previous_deploy.status = "success"
+      previous_deploy.type = "Shipit::Deploy"
+      previous_deploy.since_commit_id = 1
+      previous_deploy.until_commit_id = 2
+      previous_deploy.save
+
+      latest_deploy = @stack.deploys.last
+      latest_deploy.status = "running"
+      latest_deploy.type = "Shipit::Deploy"
+      latest_deploy.since_commit_id = 3
+      latest_deploy.until_commit_id = 4
+      latest_deploy.save
+
+      rollback_commit = @stack.commits.where(id: 2).first
+
+      get :show, params: {stack_id: @stack, id: latest_deploy.id, format: 'html'}
+
+      expected_result = "to <span class=\"short-sha\">#{rollback_commit.short_sha}</span>"
+      assert_select 'span', {class: "deploy-status", html: expected_result}, "deploy-status element was not found, or did not match the expected result of '#{expected_result}'"
     end
 
     test ":revert redirect to the proper rollback page" do

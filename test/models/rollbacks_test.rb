@@ -19,10 +19,14 @@ module Shipit
       refute @rollback.supports_rollback?
     end
 
-    test "when a rollback succeed reverted commits are locked" do
-      @stack.tasks.where.not(id: shipit_tasks(:shipit_complete).id).delete_all
+    test "when a rollback succeeds reverted commits are locked" do
+      @stack.tasks.where.not(id: shipit_tasks(:shipit_complete, :shipit).map(&:id)).delete_all
 
+      # Adjust the from/to commits of the two deploys to be in sequence (Any-3, 3-4)
+      to_revert_to = @stack.deploys.success.second_to_last
       deploy = @stack.deploys.success.last
+      to_revert_to.until_commit = deploy.since_commit
+      to_revert_to.save
       reverted_commit = deploy.until_commit
 
       @stack.commits.create!(
@@ -52,6 +56,7 @@ module Shipit
         ['fix all the things', true, user_id],
         ['yoloshipit!', true, user_id],
       ]
+
       assert_equal(expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?, c.lock_author_id] })
     end
   end
