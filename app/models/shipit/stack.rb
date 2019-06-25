@@ -285,7 +285,7 @@ module Shipit
     end
 
     def previous_successful_deploy(deploy_id)
-      deploys_and_rollbacks.previous_successful(deploy_id)
+      deploys_and_rollbacks.success.where("id < ?", deploy_id).last
     end
 
     def last_active_task
