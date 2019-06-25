@@ -31,10 +31,9 @@
 
       <% if task.supports_rollback? %>
         <%= link_to abort_stack_task_path(@stack, task, rollback: true), class: "btn btn--delete action-button", data: { action: "abort", rollback: true, status: task.status } do %>
-          <span class="caption--ready">Abort and Rollback</span>
-          <span class="caption--pending">Aborting with Rollback...</span>
+          <span class="caption--ready">Abort and Rollback to <span class="short-sha-no-bg"><%= short_commit_sha(task) %></span></span>
+          <span class="caption--pending">Aborting with Rollback... to <span class="short-sha-no-bg"><%= short_commit_sha(task) %></span></span>
         <% end %>
-        <span class="deploy-status">to <span class="short-sha"><%= short_commit_sha(task) %></span></span>
       <% end %>
     </div>
   </div>
