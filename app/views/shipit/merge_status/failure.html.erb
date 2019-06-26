@@ -17,4 +17,5 @@
     <%= link_to @stack.to_param, stack_url(@stack), target: '_blank', rel: 'noopener' %>
     <strong>master branch is failing!</strong>
   </span>
+  <%= render 'commit_count_warning' if display_commit_count_warning?(params[:commits].to_i) %>
 </div>

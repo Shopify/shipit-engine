@@ -19,4 +19,6 @@
   <span class="status-meta">
     <%= link_to @stack.to_param, stack_url(@stack), target: '_blank', rel: 'noopener' %> is clear.
   </span>
+
+  <%= render 'commit_count_warning' if display_commit_count_warning?(params[:commits].to_i) %>
 </div>
