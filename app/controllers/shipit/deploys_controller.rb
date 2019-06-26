@@ -42,8 +42,8 @@ module Shipit
     end
 
     def short_commit_sha(task)
-      if previous_successful_deploy(task)
-        @short_commit_sha ||= @previous_successful_deploy.until_commit&.short_sha
+      if previous_successful_deploy_commit(task)
+        @short_commit_sha ||= @previous_successful_deploy_commit&.short_sha
       end
     end
 
@@ -65,8 +65,8 @@ module Shipit
       @deploy_params ||= params.require(:deploy).permit(:until_commit_id, env: @stack.deploy_variables.map(&:name))
     end
 
-    def previous_successful_deploy(task)
-      @previous_successful_deploy ||= task&.previous_successful
+    def previous_successful_deploy_commit(task)
+      @previous_successful_deploy_commit ||= @stack.previous_successful_deploy_commit(task&.id)
     end
   end
 end

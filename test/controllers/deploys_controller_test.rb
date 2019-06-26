@@ -120,8 +120,11 @@ module Shipit
 
       get :show, params: {stack_id: @stack, id: latest_deploy.id, format: 'html'}
 
-      expected_result = "to <span class=\"short-sha\">#{rollback_commit.short_sha}</span>"
-      assert_select 'span', {class: "deploy-status", html: expected_result}, "deploy-status element was not found, or did not match the expected result of '#{expected_result}'"
+      expected_result = "Abort and Rollback to <span class=\"short-sha-no-bg\">#{rollback_commit.short_sha}</span>"
+      expected_rolling_back_element = "Aborting with Rollback... to <span class=\"short-sha-no-bg\">f890fd8b5f</span>"
+
+      assert_select 'span.caption--ready', {html: expected_result}, "rollback button element was not found, or did not match the expected result of '#{expected_result}'"
+      assert_select 'span.caption--pending', {html: expected_rolling_back_element}, "ready rollback button element was not found, or did not match the expected result of '#{expected_rolling_back_element}'"
     end
 
     test ":revert redirect to the proper rollback page" do

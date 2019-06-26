@@ -47,10 +47,6 @@ module Shipit
         completed.last
       end
 
-      def previous_successful(id)
-        success.where('id < ?', id).last
-      end
-
       def current
         active.exclusive.last
       end
@@ -233,10 +229,6 @@ module Shipit
 
     def supports_rollback?
       false
-    end
-
-    def previous_successful
-      self.class.previous_successful(id)
     end
 
     def title

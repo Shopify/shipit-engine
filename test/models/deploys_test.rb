@@ -538,6 +538,57 @@ module Shipit
       assert_equal commit_ids[1], test_stack.last_deployed_commit.id
     end
 
+    test "#trigger_revert skips deploys from other stacks" do
+      # The revert functionality should only consider Shipit::Deploy and Shipit::Rollback's from the same stack when selecting a target to roll back to for the user.
+      # But deploys and commits from other stacks can have ids between the current and the previous of this stack, so we want a test to ensure that the deploy
+      # from the correct stack is selected.
+      user_id = @user.id
+      test_stack = create_test_stack
+      test_stack.save
+      other_stack = create_test_stack
+      other_stack.repo_name += "_other"
+      other_stack.save
+      other_stack.reload
+      stack_id = test_stack.id
+
+      # Create valid commit history for the stack. We need several commits to deploy and roll back through.
+      commit_ids = generate_commits(amount: 4, stack_id: stack_id, user_id: user_id, validate: true)
+      commit_ids.each { |commit_id| create_test_status(commit_id: commit_id, stack_id: stack_id, state: "success").save }
+
+      # We want the following order of Deploys:
+      # 1. Success (commits 1-2)
+      # 2. Success, but belongs to a different stack (commits 2-3)
+      # 3. Running (commits 3-4)
+      # 4. Reversion of the running deploy to the last successful deploy of the same stack. (-> commits 1-2, i.e. the successful deploy.)
+      # If the revert functionality doesn't restrict to the correct stack, then commit 3 will be latest deployed when the reversion is done.
+
+      deploy1 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[0], until_commit_id: commit_ids[1])
+      deploy1.save
+
+      deploy2 = create_test_deploy(stack_id: other_stack.id, user_id: user_id, since_commit_id: commit_ids[1], until_commit_id: commit_ids[2])
+      deploy2.save
+
+      deploy3 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[2], until_commit_id: commit_ids[3])
+      deploy3.status = "running"
+      deploy3.rollback_once_aborted = false
+      deploy3.save
+
+      running_deploy = deploy3.reload
+      running_deploy.abort!(aborted_by: @user)
+      running_deploy.reload
+
+      rollback = running_deploy.trigger_revert
+      rollback.run!
+      rollback.complete!
+
+      last_deploy = test_stack.last_completed_deploy
+      assert_equal "success", last_deploy.status
+      assert_equal "Shipit::Rollback", last_deploy.type
+      assert_equal commit_ids[-1], last_deploy.since_commit_id
+      assert_equal commit_ids[1], last_deploy.until_commit_id
+      assert_equal commit_ids[1], test_stack.last_deployed_commit.id
+    end
+
     test "#trigger_rollback creates a new Rollback" do
       assert_difference -> { Rollback.count }, 1 do
         @deploy.trigger_rollback(@user)
