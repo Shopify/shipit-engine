@@ -96,6 +96,12 @@ module Shipit
       assert_equal 'terminated with KILL signal', command.termination_status
     end
 
+    test 'logs command output' do
+      command = Command.new('echo "Hello world"', chdir: '.')
+      Rails.logger.expects(:info).with("Hello world").once
+      command.run
+    end
+
     test 'reports timedout command correctly' do
       command = Command.new('sleep 10', chdir: '.', default_timeout: 0.5)
       assert_raises(Command::TimedOut) { command.run }

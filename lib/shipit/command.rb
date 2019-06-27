@@ -65,6 +65,7 @@ module Shipit
     def run
       output = []
       stream do |out|
+        log_output(out)
         output << out
       end
       output.join
@@ -73,6 +74,7 @@ module Shipit
     def run!
       output = []
       stream! do |out|
+        log_output(out)
         output << out
       end
       output.join
@@ -260,6 +262,15 @@ module Shipit
       else
         "terminated with exit status #{code}"
       end
+    end
+
+    private
+
+    log_output(output)
+      output = output.chomp
+      return if output.empty?
+
+      Rails.logger.info(output)
     end
   end
 end
