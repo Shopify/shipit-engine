@@ -13,6 +13,10 @@ module Shipit
         ''
       end
 
+      def short_sha
+        ''
+      end
+
       def blank?
         true
       end

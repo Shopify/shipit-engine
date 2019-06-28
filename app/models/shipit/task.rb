@@ -312,6 +312,16 @@ module Shipit
       Shipit::Engine.routes.url_helpers.stack_task_url(stack, self)
     end
 
+    def commit_to_rollback_to
+      previous_deployed_commit = stack.previous_successful_deploy_commit(id)
+
+      if previous_deployed_commit == Shipit::Stack::NoDeployedCommit
+        since_commit
+      else
+        previous_deployed_commit
+      end
+    end
+
     private
 
     def prevent_concurrency
