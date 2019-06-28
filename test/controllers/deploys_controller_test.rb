@@ -121,7 +121,29 @@ module Shipit
       get :show, params: {stack_id: @stack, id: latest_deploy.id, format: 'html'}
 
       expected_result = "Abort and Rollback to <span class=\"short-sha-no-bg\">#{rollback_commit.short_sha}</span>"
-      expected_rolling_back_element = "Aborting with Rollback... to <span class=\"short-sha-no-bg\">f890fd8b5f</span>"
+      expected_rolling_back_element = "Aborting with Rollback... to <span class=\"short-sha-no-bg\">#{rollback_commit.short_sha}</span>"
+
+      assert_select 'span.caption--ready', {html: expected_result}, "rollback button element was not found, or did not match the expected result of '#{expected_result}'"
+      assert_select 'span.caption--pending', {html: expected_rolling_back_element}, "ready rollback button element was not found, or did not match the expected result of '#{expected_rolling_back_element}'"
+    end
+
+    test ":rollback (regression) works correctly when a previous deploy is not found" do
+      rollback_commit_id = 3
+      latest_deploy = @stack.deploys.last
+      latest_deploy.status = "running"
+      latest_deploy.type = "Shipit::Deploy"
+      latest_deploy.since_commit_id = rollback_commit_id
+      latest_deploy.until_commit_id = 4
+      latest_deploy.save
+
+      @stack.deploys.where.not(id: latest_deploy.id).delete_all
+
+      rollback_commit = @stack.commits.where(id: rollback_commit_id).take
+
+      get :show, params: {stack_id: @stack, id: latest_deploy.id, format: 'html'}
+
+      expected_result = "Abort and Rollback to <span class=\"short-sha-no-bg\">#{rollback_commit.short_sha}</span>"
+      expected_rolling_back_element = "Aborting with Rollback... to <span class=\"short-sha-no-bg\">#{rollback_commit.short_sha}</span>"
 
       assert_select 'span.caption--ready', {html: expected_result}, "rollback button element was not found, or did not match the expected result of '#{expected_result}'"
       assert_select 'span.caption--pending', {html: expected_rolling_back_element}, "ready rollback button element was not found, or did not match the expected result of '#{expected_rolling_back_element}'"

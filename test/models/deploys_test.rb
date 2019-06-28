@@ -589,6 +589,33 @@ module Shipit
       assert_equal commit_ids[1], test_stack.last_deployed_commit.id
     end
 
+    test "#trigger_revert no prior deploy to roll back to" do
+      user_id = @user.id
+      test_stack = create_test_stack
+      test_stack.save
+      test_stack.reload
+      stack_id = test_stack.id
+
+      commit_ids = generate_commits(amount: 2, stack_id: stack_id, user_id: user_id, validate: true)
+      commit_ids.each { |commit_id| create_test_status(commit_id: commit_id, stack_id: stack_id, state: "success").save }
+      deploy1 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[0], until_commit_id: commit_ids[1])
+      deploy1.save
+
+      rollback = deploy1.trigger_revert
+      rollback.run!
+      rollback.complete!
+
+      assert_equal deploy1.until_commit_id, rollback.since_commit_id
+      assert_equal deploy1.since_commit_id, rollback.until_commit_id
+
+      last_deploy = test_stack.last_completed_deploy
+      assert_equal "success", last_deploy.status
+      assert_equal "Shipit::Rollback", last_deploy.type
+      assert_equal deploy1.until_commit_id, last_deploy.since_commit_id
+      assert_equal deploy1.since_commit_id, last_deploy.until_commit_id
+      assert_equal deploy1.since_commit_id, test_stack.last_deployed_commit.id
+    end
+
     test "#trigger_rollback creates a new Rollback" do
       assert_difference -> { Rollback.count }, 1 do
         @deploy.trigger_rollback(@user)
