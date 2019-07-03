@@ -66,7 +66,7 @@ module Shipit
     end
 
     def previous_successful_deploy_commit(task)
-      @previous_successful_deploy_commit ||= @stack.previous_successful_deploy_commit(task&.id)
+      @previous_successful_deploy_commit ||= task.commit_to_rollback_to
     end
   end
 end
