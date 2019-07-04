@@ -5,7 +5,7 @@ module Shipit
     DEPLOY_PREFIX = 'shipit-deploy'.freeze
 
     def perform(stack)
-      stack_sha = stack.deploys.where(status: "success").last.until_commit.sha
+      stack_sha = stack.last_successful_deploy_commit&.sha
       return unless stack_sha
 
       environment = stack.environment
