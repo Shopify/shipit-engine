@@ -47,6 +47,10 @@ module Shipit
         completed.last
       end
 
+      def last_successful
+        success.last
+      end
+
       def current
         active.exclusive.last
       end

@@ -288,6 +288,10 @@ module Shipit
       deploys_and_rollbacks.last_completed
     end
 
+    def last_successful_deploy_commit
+      deploys_and_rollbacks.last_successful&.until_commit
+    end
+
     def previous_successful_deploy(deploy_id)
       deploys_and_rollbacks.success.where("id < ?", deploy_id).last
     end
@@ -456,6 +460,10 @@ module Shipit
       after_commit ||= last_deployed_commit
       undeployed_commits = commits.reachable.newer_than(after_commit).count
       update(undeployed_commits_count: undeployed_commits)
+    end
+
+    def update_latest_deployed_ref
+      UpdateGithubLastDeployedRefJob.perform_later(self)
     end
 
     def broadcast_update

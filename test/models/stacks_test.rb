@@ -573,6 +573,39 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery enqueues deployment ref update job" do
+      @stack = shipit_stacks(:shipit_canaries)
+      shipit_tasks(:canaries_running).delete
+
+      assert_no_enqueued_jobs(only: Shipit::UpdateGithubLastDeployedRefJob) do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+
+      assert_enqueued_with(job: Shipit::UpdateGithubLastDeployedRefJob, args: [@stack]) do
+        @stack.last_active_task.complete!
+      end
+    end
+
+    test "#trigger_continuous_delivery executes ref update job with correct sha" do
+      @stack = shipit_stacks(:shipit_canaries)
+      shipit_tasks(:canaries_running).delete
+
+      assert_no_enqueued_jobs(only: Shipit::UpdateGithubLastDeployedRefJob) do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+
+      desired_last_commit_sha = @stack.last_active_task.until_commit.sha
+      Shipit.github.api.expects(:update_ref).with(anything, anything, desired_last_commit_sha).returns("test")
+
+      perform_enqueued_jobs(only: Shipit::UpdateGithubLastDeployedRefJob) do
+        @stack.last_active_task.complete!
+      end
+    end
+
     test "#trigger_continuous_delivery trigger a deploy if all conditions are met" do
       @stack.tasks.delete_all
       assert_predicate @stack, :deployable?
