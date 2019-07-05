@@ -8,7 +8,6 @@ module Shipit
       after_transition to: :success, do: :schedule_continuous_delivery
       after_transition to: :success, do: :schedule_merges
       after_transition to: :success, do: :update_undeployed_commits_count
-      after_transition to: :success, do: :update_latest_deployed_ref
       after_transition to: :aborted, do: :trigger_revert_if_required
       after_transition any => any, do: :update_release_status
       after_transition any => any, do: :update_commit_deployments
@@ -37,6 +36,7 @@ module Shipit
     after_create :create_commit_deployments
     after_create :update_release_status
     after_commit :broadcast_update
+    after_commit :update_latest_deployed_ref, on: :update
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
@@ -283,7 +283,8 @@ module Shipit
     end
 
     def update_latest_deployed_ref
-      stack.update_latest_deployed_ref
+      return unless previous_changes.include?(:status)
+      stack.update_latest_deployed_ref if previous_changes[:status].last == 'success'
     end
   end
 end
