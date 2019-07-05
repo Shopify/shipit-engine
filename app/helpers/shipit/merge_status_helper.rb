@@ -1,7 +1,7 @@
 module Shipit
   module MergeStatusHelper
-    def too_many_commits?(commits)
-      commits > 4
+    def display_commit_count_warning?(commits)
+      commits > 4 && @stack.merge_queue_enabled?
     end
   end
 end
