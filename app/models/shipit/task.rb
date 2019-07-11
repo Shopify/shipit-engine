@@ -186,6 +186,7 @@ module Shipit
     end
 
     def write(text)
+      log_output(text)
       chunks.create!(text: text)
     end
 
@@ -332,6 +333,16 @@ module Shipit
 
     def abort_key
       "#{status_key}:aborting"
+    end
+
+    def log_output(text)
+      output_line_buffer.buffer(text) do |line|
+        Shipit.task_logger.info("[#{stack.repo_name}##{id}] #{line}")
+      end
+    end
+
+    def output_line_buffer
+      @output_line_buffer ||= LineBuffer.new
     end
   end
 end
