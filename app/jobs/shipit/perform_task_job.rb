@@ -18,6 +18,7 @@ module Shipit
       @task.run!
       checkout_repository
       perform_task
+      @task.write("\nCompleted successfully\n")
       @task.report_complete!
     rescue Command::TimedOut => error
       @task.write("\n#{error.message}\n")

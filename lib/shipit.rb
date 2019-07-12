@@ -49,6 +49,7 @@ require 'shipit/environment_variables'
 require 'shipit/stat'
 require 'shipit/strip_cache_control'
 require 'shipit/cast_value'
+require 'shipit/line_buffer'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
@@ -59,7 +60,7 @@ module Shipit
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
-  attr_writer :internal_hook_receivers
+  attr_writer :internal_hook_receivers, :task_logger
 
   self.timeout_exit_codes = [].freeze
 
@@ -193,6 +194,10 @@ module Shipit
 
   def internal_hook_receivers
     @internal_hook_receivers ||= []
+  end
+
+  def task_logger
+    @task_logger ||= Logger.new(nil)
   end
 
   protected
