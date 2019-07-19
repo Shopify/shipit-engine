@@ -9,6 +9,8 @@ module Shipit
   Stack.send(:define_method, :sync_github) {}
   Commit.send(:define_method, :fetch_stats!) {}
   Commit.send(:define_method, :refresh_statuses!) {}
+  Commit.send(:define_method, :refresh_check_runs!) {}
+  ReleaseStatus.send(:define_method, :create_status_on_github!) {}
 
   users = 3.times.map do
     User.create!(
