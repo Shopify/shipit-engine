@@ -58,6 +58,7 @@ module Shipit
     end
 
     test "find_or_create_from_github accepts minimal users without name nor email" do
+      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(200 OK), body: [].to_json, content_type: "application/json")
       user = User.find_or_create_from_github(@minimal_github_user)
       assert_equal @minimal_github_user.login, user.login
     end
