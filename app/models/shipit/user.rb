@@ -131,18 +131,18 @@ module Shipit
     end
 
     def org_email?(email_address)
-      email_address.present? && email_address.split("@").last&.include?(org_domain)
+      return false if email_address.blank?
+
+      org_domains = Shipit.preferred_org_emails
+      return true if org_domains.blank?
+
+      org_domains.any? { |domain| email_address.end_with?("@#{domain}") }
     end
 
-    def filter_org_emails(emails)
-      emails
-        .select { |email| org_email?(email.email) }
-        .map(&:email)
-    end
-
-    # Domain to filter email addresses by. Override in integration application.
-    def org_domain
-      ""
+    def filter_org_emails(github_email_records)
+      org_email_records = github_email_records.select { |email_record| org_email?(email_record.email) }
+      email_record = org_email_records.find(-> { org_email_records.first }, &:primary)
+      email_record&.email
     end
   end
 end
