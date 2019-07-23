@@ -1,6 +1,6 @@
 module Shipit
   class FetchDeployedRevisionJob < BackgroundJob
-    queue_as :default
+    queue_as :deploys
 
     def perform(stack)
       return if stack.active_task?
