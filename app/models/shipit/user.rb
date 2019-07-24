@@ -97,16 +97,10 @@ module Shipit
         github_user = github_user.rels[:self].get.data
       end
 
-      github_email = if org_email?(github_user.email)
-        github_user.email
-      else
-        filter_org_emails(github_api.emails)
-      end
-
       assign_attributes(
         github_id: github_user.id,
         name: github_user.name || github_user.login, # Name is not mandatory on GitHub
-        email: github_email,
+        email: appropriate_email_for(github_user),
         login: github_user.login,
         avatar_url: github_user.avatar_url,
         api_url: github_user.url,
@@ -130,19 +124,26 @@ module Shipit
       false
     end
 
-    def org_email?(email_address)
-      return false if email_address.blank?
-
+    def email_valid_and_preferred?(email_address)
       org_domains = Shipit.preferred_org_emails
       return true if org_domains.blank?
+      return false if email_address.blank?
 
       org_domains.any? { |domain| email_address.end_with?("@#{domain}") }
     end
 
-    def filter_org_emails(github_email_records)
-      org_email_records = github_email_records.select { |email_record| org_email?(email_record.email) }
-      email_record = org_email_records.find(-> { org_email_records.first }, &:primary)
-      email_record&.email
+    def appropriate_email_for(github_user)
+      return github_user.email if email_valid_and_preferred?(github_user.email)
+
+      begin
+        github_api.emails
+                  .sort_by { |e| e.primary ? 0 : 1 }
+                  .map(&:email)
+                  .find { |e| email_valid_and_preferred?(e) }
+      rescue Octokit::NotFound
+        # If the user hasn't agreed to the necessary permission, we can't access their private emails.
+        nil
+      end
     end
   end
 end
