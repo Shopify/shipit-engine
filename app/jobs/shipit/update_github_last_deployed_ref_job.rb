@@ -2,6 +2,7 @@ module Shipit
   class UpdateGithubLastDeployedRefJob < BackgroundJob
     queue_as :default
 
+    BRANCH_REF_PREFIX = 'refs/heads'.freeze
     DEPLOY_PREFIX = 'shipit-deploy'.freeze
 
     def perform(stack)
@@ -20,7 +21,7 @@ module Shipit
     private
 
     def create_full_ref(stack_environment)
-      [DEPLOY_PREFIX, stack_environment].join("/")
+      [BRANCH_REF_PREFIX, DEPLOY_PREFIX, stack_environment].join("/")
     end
 
     def create_ref(client:, repo_name:, ref:, sha:)

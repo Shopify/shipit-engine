@@ -8,22 +8,23 @@ module Shipit
       @deploy = @stack.deploys.last
       @commit = @deploy.until_commit
       @api_client = Shipit.github.api
-      @expected_ref_prefix = "shipit-deploy/#{@stack.environment}"
       @expected_name = @stack.github_repo_name
       @expected_sha = @commit.sha
 
-      expected_ref = ["refs", @expected_ref_prefix].join('/')
-      ref_url = "http://api.github.test.com/shopify/shipit-engine/git/#{expected_ref}"
+      expected_ref_suffix = "shipit-deploy/#{@stack.environment}"
+      @expected_ref = ["refs/heads", expected_ref_suffix].join('/')
+
+      ref_url = "http://api.github.test.com/shopify/shipit-engine/git/#{@expected_ref}"
       commit_url = "https://api.github.test.com/repos/shopify/shipit-engine/git/commits/#{@commit.sha}"
       response_inner_obj = OpenStruct.new(sha: @commit.sha, type: "commit", url: commit_url)
-      @response = OpenStruct.new(ref: expected_ref, node_id: "blah", url: ref_url, object: response_inner_obj)
+      @response = OpenStruct.new(ref: @expected_ref, node_id: "blah", url: ref_url, object: response_inner_obj)
     end
 
     test "#perform will create a ref when one is not present" do
       Octokit::UnprocessableEntity.any_instance.stubs(:build_error_message).returns("Reference does not exist")
 
-      @api_client.expects(:update_ref).with(@expected_name, @expected_ref_prefix, @expected_sha).raises(Octokit::UnprocessableEntity)
-      @api_client.expects(:create_ref).with(@expected_name, @expected_ref_prefix, @expected_sha).returns(@response)
+      @api_client.expects(:update_ref).with(@expected_name, @expected_ref, @expected_sha).raises(Octokit::UnprocessableEntity)
+      @api_client.expects(:create_ref).with(@expected_name, @expected_ref, @expected_sha).returns(@response)
 
       result = @job.perform(@stack)
 
@@ -38,7 +39,7 @@ module Shipit
       @commit.sha = new_sha
       @commit.save
 
-      @api_client.expects(:update_ref).with(@expected_name, @expected_ref_prefix, new_sha).returns(@response)
+      @api_client.expects(:update_ref).with(@expected_name, @expected_ref, new_sha).returns(@response)
 
       result = @job.perform(@stack)
 
@@ -48,8 +49,8 @@ module Shipit
     test '#perform will raise an exception for non ref existence errors' do
       Octokit::UnprocessableEntity.any_instance.stubs(:build_error_message).returns("Some other error.")
 
-      @api_client.expects(:update_ref).with(@expected_name, @expected_ref_prefix, @expected_sha).raises(Octokit::UnprocessableEntity)
-      @api_client.expects(:create_ref).with(@expected_name, @expected_ref_prefix, @expected_sha).never
+      @api_client.expects(:update_ref).with(@expected_name, @expected_ref, @expected_sha).raises(Octokit::UnprocessableEntity)
+      @api_client.expects(:create_ref).with(@expected_name, @expected_ref, @expected_sha).never
 
       assert_raises Octokit::UnprocessableEntity do
         @job.perform(@stack)
@@ -72,7 +73,7 @@ module Shipit
       new_deploy.status = "faulty"
       new_deploy.save
 
-      @api_client.expects(:update_ref).with(@expected_name, @expected_ref_prefix, new_sha).returns(@response)
+      @api_client.expects(:update_ref).with(@expected_name, @expected_ref, new_sha).returns(@response)
       result = @job.perform(@stack)
 
       assert_equal @response, result
@@ -81,7 +82,7 @@ module Shipit
       new_deploy.status = "success"
       new_deploy.save
 
-      @api_client.expects(:update_ref).with(@expected_name, @expected_ref_prefix, new_commit.sha).returns(@response)
+      @api_client.expects(:update_ref).with(@expected_name, @expected_ref, new_commit.sha).returns(@response)
       @job.perform(@stack)
     end
   end
