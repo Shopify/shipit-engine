@@ -12,7 +12,7 @@ module Shipit
       @expected_sha = @commit.sha
 
       expected_ref_suffix = "shipit-deploy/#{@stack.environment}"
-      @expected_ref = ["refs/heads", expected_ref_suffix].join('/')
+      @expected_ref = ["heads", expected_ref_suffix].join('/')
 
       ref_url = "http://api.github.test.com/shopify/shipit-engine/git/#{@expected_ref}"
       commit_url = "https://api.github.test.com/repos/shopify/shipit-engine/git/commits/#{@commit.sha}"
