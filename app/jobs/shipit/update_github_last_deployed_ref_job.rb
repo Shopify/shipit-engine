@@ -2,7 +2,8 @@ module Shipit
   class UpdateGithubLastDeployedRefJob < BackgroundJob
     queue_as :default
 
-    BRANCH_REF_PREFIX = 'refs/heads'.freeze
+    # We do not prefix 'refs/' because Octokit methods will do this automatically.
+    BRANCH_REF_PREFIX = 'heads'.freeze
     DEPLOY_PREFIX = 'shipit-deploy'.freeze
 
     def perform(stack)
