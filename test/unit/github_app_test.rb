@@ -16,25 +16,27 @@ module Shipit
     test "#api_status" do
       stub_request(:get, "https://www.githubstatus.com/api/v2/components.json").to_return(
         status: 200,
-        body: %Q{{
-          "page":{},
-          "components":[
-            {
-              "id":"brv1bkgrwx7q",
-              "name":"API Requests",
-              "status":"operational",
-              "created_at":"2017-01-31T20:01:46.621Z",
-              "updated_at":"2019-07-23T18:41:18.197Z",
-              "position":2,
-              "description":"Requests for GitHub APIs",
-              "showcase":false,
-              "group_id":null,
-              "page_id":"kctbh9vrtdwd",
-              "group":false,
-              "only_show_if_degraded":false
-            }
-          ]
-        }}
+        body: %(
+          {
+            "page":{},
+            "components":[
+              {
+                "id":"brv1bkgrwx7q",
+                "name":"API Requests",
+                "status":"operational",
+                "created_at":"2017-01-31T20:01:46.621Z",
+                "updated_at":"2019-07-23T18:41:18.197Z",
+                "position":2,
+                "description":"Requests for GitHub APIs",
+                "showcase":false,
+                "group_id":null,
+                "page_id":"kctbh9vrtdwd",
+                "group":false,
+                "only_show_if_degraded":false
+              }
+            ]
+          }
+        ),
       )
       assert_equal "operational", app.api_status[:status]
     end
