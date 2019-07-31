@@ -3,8 +3,7 @@ ENV["RAILS_ENV"] ||= "test"
 require 'simplecov'
 SimpleCov.start 'rails'
 
-require 'fakeweb'
-FakeWeb.allow_net_connect = false
+require 'webmock/minitest'
 
 require File.expand_path('../../test/dummy/config/environment.rb', __FILE__)
 ActiveRecord::Migrator.migrations_paths = [

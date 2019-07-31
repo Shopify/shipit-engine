@@ -8,7 +8,7 @@ module Shipit
     end
 
     test "#perform delivers a delivery" do
-      FakeWeb.register_uri(:post, @delivery.url, body: 'OK')
+      stub_request(:post, @delivery.url).to_return( body: 'OK')
       @job.perform(@delivery)
       assert_equal 'sent', @delivery.reload.status
     end

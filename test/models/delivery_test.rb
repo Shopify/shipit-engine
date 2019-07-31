@@ -24,7 +24,7 @@ module Shipit
 
     test "#send! post the payload and update the status to `sent`" do
       headers = {'content-type' => 'text/plain', 'content-length' => '2'}
-      FakeWeb.register_uri(:post, @delivery.url, headers.merge(body: 'OK'))
+      stub_request(:post, @delivery.url).to_return(headers: headers, body: 'OK')
 
       assert_equal 'scheduled', @delivery.status
       @delivery.send!

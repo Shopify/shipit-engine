@@ -1,8 +1,11 @@
 require 'faker'
-require 'fakeweb'
+require 'webmock'
+include WebMock::API
+WebMock.enable!
+WebMock.allow_net_connect!
 
 # Sometimes on Travis the background job runs immediately so provide a response to fake hooks
-FakeWeb.register_uri(:post, %r{https://example\.com/}, status: %w(200 OK))
+stub_request(:post, %r{https://example\.com/}).to_return(status: %w(200 OK))
 
 # Cheap hack to allow rake db:seed to work
 module Shipit
