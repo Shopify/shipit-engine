@@ -25,6 +25,7 @@ module Shipit
 
     DOMAIN = 'github.com'.freeze
     AuthenticationFailed = Class.new(StandardError)
+    API_STATUS_ID = 'brv1bkgrwx7q'.freeze
 
     attr_reader :oauth_teams, :domain, :bot_login
 
@@ -51,6 +52,13 @@ module Shipit
         client.access_token = token
       end
       client
+    end
+
+    def api_status
+      conn = Faraday.new(url: 'https://www.githubstatus.com')
+      response = conn.get('/api/v2/components.json')
+      parsed = JSON.parse(response.body, symbolize_names: true)
+      parsed[:components].find{|c| c[:id] == API_STATUS_ID }
     end
 
     def verify_webhook_signature(signature, message)
