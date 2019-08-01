@@ -33,7 +33,7 @@
 
   <div id="layout-content">
     <% github_status = Shipit::GithubStatus.status
-       unless github_status.nil? || github_status[:status] == 'good' %>
+       unless github_status.nil? || github_status[:status] == 'operational' %>
       <div class="banner github-status banner--orange hidden">
         <div class="banner__inner wrapper">
           <div class="banner__content">

@@ -11,7 +11,7 @@ end
 
 group :development, :test do
   gem 'faker'
-  gem 'fakeweb'
+  gem 'webmock'
   gem 'rubocop', '~> 0.52.0'
 end
 
