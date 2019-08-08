@@ -1,4 +1,4 @@
-# Unreleased
+# 0.28.0
 
 * Fix default ordering of check runs causing retries to display an incorrect status.
 * Include stack environment in page title.
