@@ -14,6 +14,7 @@ module Shipit
         url: 'https://api.github.com/user/george',
       )
       @org_domain = "shopify.com"
+      @emails_url = "https://api.github.com/user/emails"
       @minimal_github_user = stub(
         id: 43,
         name: nil,
@@ -87,7 +88,12 @@ module Shipit
     test "find_or_create_from_github selects org email for user" do
       Shipit.preferred_org_emails = [@org_domain]
       expected_email = "myuser@#{@org_domain}"
-      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(200 OK), body: [{email: expected_email}].to_json, content_type: "application/json")
+
+      stub_request(:get, @emails_url).to_return(
+        status: %w(200 OK),
+        body: [{email: expected_email}].to_json,
+        headers: {"Content-Type" => "application/json"},
+      )
 
       user = User.find_or_create_from_github(@github_user)
       assert_equal expected_email, user.email
@@ -110,7 +116,11 @@ module Shipit
         },
       ]
 
-      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(200 OK), body: result_email_records.to_json, content_type: "application/json")
+      stub_request(:get, @emails_url).to_return(
+        status: %w(200 OK),
+        body: result_email_records.to_json,
+        headers: {"Content-Type" => "application/json"},
+      )
 
       user = User.find_or_create_from_github(@github_user)
       assert_equal expected_email, user.email
@@ -128,14 +138,18 @@ module Shipit
         },
       ]
 
-      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(200 OK), body: result_email_records.to_json, content_type: "application/json")
+      stub_request(:get, @emails_url).to_return(
+        status: %w(200 OK),
+        body: result_email_records.to_json,
+        headers: {"Content-Type" => "application/json"},
+      )
 
       user = User.find_or_create_from_github(@github_user)
       assert_nil user.email
     end
 
     test "find_or_create_from_github handles user permissions errors" do
-      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(404 Not Found), content_type: "application/json")
+      stub_request(:get, @emails_url).to_return(status: %w(404 Not Found))
       user = User.find_or_create_from_github(@minimal_github_user)
       assert_nil user.email
     end

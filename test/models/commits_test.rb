@@ -9,7 +9,11 @@ module Shipit
       @stack.reload
       @commit = shipit_commits(:first)
 
-      FakeWeb.register_uri(:get, "https://api.github.com/user/emails", status: %w(200 OK), body: {}.to_json, content_type: 'application/json')
+      stub_request(:get, "https://api.github.com/user/emails").to_return(
+        status: %w(200 OK),
+        body: {}.to_json,
+        headers: {"Content-Type" => "application/json"},
+      )
     end
 
     test '.create_from_github handle unknown users' do
