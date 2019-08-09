@@ -8,6 +8,12 @@ module Shipit
       @pr.message = "Merge pull request #31 from Shopify/improve-polling\n\nSeveral improvements to polling"
       @stack.reload
       @commit = shipit_commits(:first)
+
+      stub_request(:get, "https://api.github.com/user/emails").to_return(
+        status: %w(200 OK),
+        body: {}.to_json,
+        headers: {"Content-Type" => "application/json"},
+      )
     end
 
     test '.create_from_github handle unknown users' do

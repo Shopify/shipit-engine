@@ -60,7 +60,7 @@ module Shipit
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
-  attr_writer :internal_hook_receivers, :task_logger
+  attr_writer :internal_hook_receivers, :task_logger, :preferred_org_emails
 
   self.timeout_exit_codes = [].freeze
 
@@ -194,6 +194,10 @@ module Shipit
 
   def internal_hook_receivers
     @internal_hook_receivers ||= []
+  end
+
+  def preferred_org_emails
+    @preferred_org_emails ||= []
   end
 
   def task_logger
