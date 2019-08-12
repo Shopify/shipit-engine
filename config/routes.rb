@@ -61,6 +61,7 @@ Shipit::Engine.routes.draw do
     patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
     get :settings, controller: :stacks
+    get :statistics, controller: :stacks
     post :refresh, controller: :stacks
     get :refresh, controller: :stacks # For easier design, sorry :/
     post :clear_git_cache, controller: :stacks
@@ -73,6 +74,8 @@ Shipit::Engine.routes.draw do
   scope '/*stack_id', stack_id: stack_id_format, as: :stack do
     get '/commit/:sha/checks' => 'commit_checks#show', as: :commit_checks
     get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: {format: :json}
+
+    get '/stats' => 'stats#show', as: :stats
 
     resources :rollbacks, only: %i(create)
     resources :commits, only: %i(update)

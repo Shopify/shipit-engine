@@ -161,3 +161,71 @@
 .pagination {
   text-align: center;
 }
+
+.box {
+  border-radius: 5px;
+  width: 32%;
+  float: left;
+  padding: 5px;
+}
+
+.box__header {
+  padding: 15px 25px;
+  position: relative;
+}
+
+.box__header-title {
+  color: #333;
+  font-size: 18px;
+}
+
+.box__body {
+  padding: 0 25px;
+}
+
+.row {
+  @include clearfix;
+}
+
+/* STATS */
+
+.stats {
+  color: #333;
+  position: relative;
+  padding-bottom: 25px;
+}
+
+.stats__amount {
+  font-size: 54px;
+  line-height: 1.2;
+}
+
+.stats__caption {
+  font-size: 18px;
+
+}
+
+.stats__change {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  text-align: right;
+  color: #B1B7C8;
+}
+
+.stats__value {
+  font-size: 18px;
+}
+
+.stats__period {
+  font-size: 14px;
+}
+
+.stats__value--positive {
+  color: #AEDC6F;
+}
+
+.stats__value--negative {
+  color: #FB5055;
+}
+

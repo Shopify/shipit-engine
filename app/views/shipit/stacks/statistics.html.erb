@@ -1,0 +1,82 @@
+<%= render partial: 'shipit/stacks/header', locals: {stack: @stack} %>
+<%= render partial: 'shipit/stacks/banners', locals: {stack: @stack} %>
+
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Statistics &ndash; Past 7 Days</h2>
+    </header>
+
+    <div class="row">
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= @deploy_stats.count %></div>
+            <div class="stats__caption">Deploys</div>
+            <div class="stats__change">
+              <div class="stats__value stats__value--<%=positive_negative_class(@diffs[:count])%>"><%= number_to_percentage(@diffs[:count], precision: 1) %></div>
+              <div class="stats__period">this week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= number_to_percentage(@deploy_stats.success_rate, precision: 1) %></div>
+            <div class="stats__caption">Deploys success rate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= Shipit::Duration.new @deploy_stats.average_duration %></div>
+            <div class="stats__caption">Average deploy time</div>
+            <div class="stats__change">
+              <div class="stats__value stats__value--<%=positive_negative_class(@diffs[:average_duration])%>"><%= number_to_percentage(@diffs[:average_duration], precision: 1) %></div>
+              <div class="stats__period">this week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= Shipit::Duration.new @deploy_stats.min_duration %></div>
+            <div class="stats__caption">Min deploy time</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= Shipit::Duration.new @deploy_stats.median_duration %></div>
+            <div class="stats__caption">Median deploy time</div>
+            <div class="stats__change">
+              <div class="stats__value stats__value--<%=positive_negative_class(@diffs[:median_duration])%>"><%= number_to_percentage(@diffs[:median_duration], precision: 1) %></div>
+              <div class="stats__period">this week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box__body">
+          <div class="stats">
+            <div class="stats__amount"><%= Shipit::Duration.new @deploy_stats.max_duration %></div>
+            <div class="stats__caption">Max deploy time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div>

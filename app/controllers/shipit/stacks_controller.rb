@@ -1,6 +1,6 @@
 module Shipit
   class StacksController < ShipitController
-    before_action :load_stack, only: %i(update destroy settings clear_git_cache refresh)
+    before_action :load_stack, only: %i(update destroy settings statistics clear_git_cache refresh)
 
     def new
       @stack = Stack.new
@@ -60,6 +60,12 @@ module Shipit
     end
 
     def settings
+    end
+
+    def statistics
+      previous_deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.previous_seven_days)
+      @deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.last_seven_days)
+      @diffs = @deploy_stats.compare(previous_deploy_stats)
     end
 
     def refresh
