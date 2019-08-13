@@ -160,7 +160,7 @@ GEM
     multipart-post (2.1.1)
     mysql2 (0.4.6)
     nio4r (2.4.0)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     oauth2 (1.4.1)
       faraday (>= 0.8, < 0.16.0)
