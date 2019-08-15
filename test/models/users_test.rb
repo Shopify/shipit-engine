@@ -148,8 +148,16 @@ module Shipit
       assert_nil user.email
     end
 
-    test "find_or_create_from_github handles user permissions errors" do
-      stub_request(:get, @emails_url).to_return(status: %w(404 Not Found))
+    test "find_or_create_from_github handles user 404" do
+      Shipit.preferred_org_emails = [@org_domain]
+      Octokit::Client.any_instance.expects(:emails).raises(Octokit::NotFound)
+      user = User.find_or_create_from_github(@minimal_github_user)
+      assert_nil user.email
+    end
+
+    test "find_or_create_from_github handles user 403" do
+      Shipit.preferred_org_emails = [@org_domain]
+      Octokit::Client.any_instance.expects(:emails).raises(Octokit::Forbidden)
       user = User.find_or_create_from_github(@minimal_github_user)
       assert_nil user.email
     end
