@@ -140,7 +140,7 @@ module Shipit
                   .sort_by { |e| e.primary ? 0 : 1 }
                   .map(&:email)
                   .find { |e| email_valid_and_preferred?(e) }
-      rescue Octokit::NotFound
+      rescue Octokit::NotFound, Octokit::Forbidden
         # If the user hasn't agreed to the necessary permission, we can't access their private emails.
         nil
       end
