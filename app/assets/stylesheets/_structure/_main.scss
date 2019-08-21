@@ -142,8 +142,9 @@ pre {
 .less-important {
     color: $grey;
     margin-bottom: 0em;
-    margin-top: 1em;
+    margin-top: 5em;
     p {
+        margin-top: 1.5rem;
         margin-bottom: 0.5em;
     }
 }

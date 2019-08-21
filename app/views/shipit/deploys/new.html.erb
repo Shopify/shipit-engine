@@ -9,18 +9,6 @@
     <%= render 'shipit/deploys/summary', commits: @deploy.commits %>
   </section>
 
-  <% unless @deploy.commits_since.empty?  %>
-    <section class="less-important">
-
-      <p>The following commits are <strong>not</strong> included in this deploy.
-      Please ensure that none of these commits are needed for what
-      <strong>is</strong> being deployed (for example, if they contain the revert
-      of a broken change).</p>
-
-      <%= render 'shipit/deploys/summary', commits: @deploy.commits_since %>
-    </section>
-  <% end %>
-
   <%= render_monitoring @stack %>
 
   <%= render_checks @commit %>
@@ -35,6 +23,23 @@
     <section class="submit-section">
       <%= f.hidden_field :until_commit_id %>
       <%= f.submit class: 'btn btn--primary btn--large trigger-deploy' %>
+    </section>
+  <% end %>
+
+  <% unless @deploy.commits_since.empty?  %>
+    <section class="less-important">
+      <header class="section-header">
+        <h2>Commits not included in this deploy</h2>
+      </header>
+
+      <div>
+        <p>The following commits are <strong>not</strong> included in this deploy.
+        Please ensure that none of these commits are needed for what
+        <strong>is</strong> being deployed (for example, if they contain the revert
+        of a broken change).</p>
+
+        <%= render 'shipit/deploys/summary', commits: @deploy.commits_since %>
+      </div>
     </section>
   <% end %>
 </div>
