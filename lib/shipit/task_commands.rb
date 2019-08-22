@@ -52,7 +52,7 @@ module Shipit
       [
         git(
           'clone',
-          '--local',
+          '--recursive', '--local',
           '--origin', 'cache',
           @stack.git_path,
           @task.working_directory,
