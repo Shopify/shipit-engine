@@ -2,7 +2,7 @@ module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique
 
-    MAX_FETCHED_COMMITS = 10
+    MAX_FETCHED_COMMITS = 25
     queue_as :default
 
     self.timeout = 60
