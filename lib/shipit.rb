@@ -47,7 +47,7 @@ require 'shipit/deploy_commands'
 require 'shipit/rollback_commands'
 require 'shipit/environment_variables'
 require 'shipit/stat'
-require 'shipit/strip_cache_control'
+require 'shipit/github_http_cache_middleware'
 require 'shipit/cast_value'
 require 'shipit/line_buffer'
 
@@ -103,22 +103,6 @@ module Shipit
       User.find_or_create_by_login!(github.bot_login)
     else
       AnonymousUser.new
-    end
-  end
-
-  def new_faraday_stack
-    Faraday::RackBuilder.new do |builder|
-      builder.use(
-        Faraday::HttpCache,
-        shared_cache: false,
-        store: Rails.cache,
-        logger: Rails.logger,
-        serializer: NullSerializer,
-      )
-      builder.use StripCacheControl
-      builder.use Octokit::Response::RaiseError
-      builder.adapter Faraday.default_adapter
-      yield builder if block_given?
     end
   end
 

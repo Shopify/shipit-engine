@@ -1,3 +1,7 @@
+# Unreleased
+
+* Fix a bug in GitHub API caching causing the cache to grow indefinitely (#935).
+
 # 0.28.0
 
 * Fix default ordering of check runs causing retries to display an incorrect status.

@@ -126,13 +126,28 @@ module Shipit
 
     def new_client(options = {})
       client = Octokit::Client.new(options.reverse_merge(api_endpoint: api_endpoint))
-      client.middleware = Shipit.new_faraday_stack
+      client.middleware = faraday_stack
       client
     end
 
     private
 
     attr_reader :webhook_secret, :oauth_id, :oauth_secret
+
+    def faraday_stack
+      @faraday_stack ||= Faraday::RackBuilder.new do |builder|
+        builder.use(
+          Faraday::HttpCache,
+          shared_cache: false,
+          store: Rails.cache,
+          logger: Rails.logger,
+          serializer: NullSerializer,
+        )
+        builder.use GitHubHTTPCacheMiddleware
+        builder.use Octokit::Response::RaiseError
+        builder.adapter Faraday.default_adapter
+      end
+    end
 
     def app_id
       @app_id ||= @config.fetch(:app_id)
