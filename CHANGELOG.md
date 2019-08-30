@@ -1,6 +1,12 @@
 # Unreleased
 
+# 0.28.1
+
 * Fix a bug in GitHub API caching causing the cache to grow indefinitely (#935).
+* Iterate over 25 rather than 10 commits to try to reconcile force pushed branches (#937).
+* Better handle users with only private emails if the permission is available (#922).
+* Fix GitHub API status fetching (#928).
+* Fix last deployed branch name containing an extra `refs/` (#927).
 
 # 0.28.0
 
