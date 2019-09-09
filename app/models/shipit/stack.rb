@@ -354,8 +354,8 @@ module Shipit
 
     def clear_git_cache!
       tmp_path = "#{git_path}-#{SecureRandom.hex}"
+      return unless File.exist?(git_path)
       acquire_git_cache_lock do
-        return unless File.exist?(git_path)
         File.rename(git_path, tmp_path)
       end
       FileUtils.rm_rf(tmp_path)
