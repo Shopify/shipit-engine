@@ -63,7 +63,9 @@ module Shipit
     def checkout_repository
       unless @commands.fetched?(@task.until_commit).tap(&:run).success?
         @task.acquire_git_cache_lock do
-          capture! @commands.fetch
+          unless @commands.fetched?(@task.until_commit).tap(&:run).success?
+            capture! @commands.fetch
+          end
         end
       end
       capture_all! @commands.clone

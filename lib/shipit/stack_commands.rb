@@ -46,7 +46,9 @@ module Shipit
 
       if !commit || !fetched?(commit).tap(&:run).success?
         @stack.acquire_git_cache_lock do
-          fetch.run!
+          unless fetched?(commit).tap(&:run).success?
+            fetch.run!
+          end
         end
       end
 
