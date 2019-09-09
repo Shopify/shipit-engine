@@ -6,7 +6,7 @@ module Shipit
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
-    REJECTION_REASONS = %w(ci_failing merge_conflict requires_rebase).freeze
+    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase).freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
@@ -149,6 +149,7 @@ module Shipit
 
     def reject_unless_mergeable!
       return reject!('merge_conflict') if merge_conflict?
+      return reject!('ci_missing') if any_status_checks_missing?
       return reject!('ci_failing') if any_status_checks_failed?
       return reject!('requires_rebase') if stale?
       false
@@ -190,7 +191,11 @@ module Shipit
 
     def any_status_checks_failed?
       status = StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec)
-      status.failure? || status.error? || status.missing?
+      status.failure? || status.error?
+    end
+
+    def any_status_checks_missing?
+      StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).missing?
     end
 
     def waiting?
