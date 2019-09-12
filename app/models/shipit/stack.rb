@@ -66,7 +66,7 @@ module Shipit
     after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
 
-    validates :repo_name, uniqueness: {scope: %i(repo_owner environment),
+    validates :repo_name, uniqueness: {scope: %i(repo_owner environment), case_sensitive: false,
                                        message: 'cannot be used more than once with this environment'}
     validates :repo_owner, :repo_name, :environment, presence: true, ascii_only: true
     validates :repo_owner, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_OWNER_MAX_SIZE}
