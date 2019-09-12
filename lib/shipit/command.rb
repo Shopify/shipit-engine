@@ -149,18 +149,16 @@ module Shipit
     def read_stream(io)
       touch_last_output_at
       loop do
-        begin
           yield_control
           yield io.read_nonblock(MAX_READ)
           touch_last_output_at
-        rescue IO::WaitReadable
+      rescue IO::WaitReadable
           if output_timed_out?
             @timed_out = true
             raise TimedOut
           end
           IO.select([io], nil, nil, 1)
           retry
-        end
       end
     rescue EOFError
     end

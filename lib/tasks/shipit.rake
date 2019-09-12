@@ -1,7 +1,6 @@
 namespace :shipit do
   desc "Deploy from a running instance. "
   task deploy: :environment do
-    begin
       stack = ENV['stack']
       revision = ENV['revision']
 
@@ -18,10 +17,9 @@ namespace :shipit do
       end
 
       Shipit::Stack.run_deploy_in_foreground(stack: stack, revision: revision)
-    rescue ArgumentError
+  rescue ArgumentError
       p "Use this command as follows:"
       p "bundle exec rake shipit:deploy stack='shopify/shipit/production' revision='$SHA'"
       raise
-    end
   end
 end

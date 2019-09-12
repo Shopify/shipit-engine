@@ -31,7 +31,7 @@ module Shipit
 
       def remove_ruby_version_from_gemfile
         # Heroku apps often specify a ruby version.
-        if /darwin/ =~ RUBY_PLATFORM
+        if /darwin/i.match?(RUBY_PLATFORM)
           # OSX is nitpicky about the -i.
           %q(/usr/bin/sed -i '' '/^ruby\s/d' Gemfile)
         else
