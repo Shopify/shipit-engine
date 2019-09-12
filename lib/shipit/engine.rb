@@ -37,6 +37,10 @@ module Shipit
           provider(:github, *Shipit.github.oauth_config)
         end
       end
+
+      app.config.after_initialize do
+        ActionController::Base.include(Shipit::ActiveModelSerializersPatch)
+      end
     end
   end
 end

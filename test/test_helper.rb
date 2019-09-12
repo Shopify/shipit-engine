@@ -11,7 +11,7 @@ ActiveRecord::Migrator.migrations_paths = [
   File.expand_path('../../db/migrate', __FILE__),
 ]
 require 'rails/test_help'
-require 'mocha/mini_test'
+require 'mocha/minitest'
 require 'spy/integration'
 
 # Load fixtures from the engine

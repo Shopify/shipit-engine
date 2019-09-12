@@ -19,7 +19,7 @@ module Shipit
     test "deploys can be observed as raw text" do
       get :show, params: {stack_id: @stack, id: @deploy.id, format: 'txt'}
       assert_response :success
-      assert_equal("text/plain", @response.content_type)
+      assert_equal("text/plain", @response.media_type)
     end
 
     test ":new is success" do

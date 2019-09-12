@@ -1,5 +1,7 @@
 # Unreleased
 
+* Upgraded to Rails 6.0.
+
 # 0.28.1
 
 * Fix a bug in GitHub API caching causing the cache to grow indefinitely (#935).

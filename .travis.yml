@@ -15,20 +15,7 @@ env:
     - SUITE=rubocop
     - SUITE=setup
 rvm:
-  - 2.3.8
-  - 2.4.5
   - 2.5.3
-
-matrix:
-  fast_finish: true
-  exclude:
-    - rvm: 2.4.5
-    - rvm: 2.5.3
-  include:
-    - rvm: 2.4.5
-      env: SUITE=sqlite3
-    - rvm: 2.5.3
-      env: SUITE=sqlite3
 
 notifications:
   email: false

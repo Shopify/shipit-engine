@@ -13,7 +13,7 @@ module Shipit
 
         get :show, params: {stack_id: @stack.to_param, task_id: task.id}
         assert_response :ok
-        assert_equal 'text/plain', response.content_type
+        assert_equal 'text/plain', response.media_type
         assert_equal task.chunk_output, response.body
       end
     end

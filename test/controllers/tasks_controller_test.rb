@@ -59,7 +59,7 @@ module Shipit
     test "triggered tasks can be observed as raw text" do
       get :show, params: {stack_id: @stack, id: @task.id}, format: 'txt'
       assert_response :success
-      assert_equal("text/plain", @response.content_type)
+      assert_equal("text/plain", @response.media_type)
     end
 
     test ":abort call abort! on the deploy" do

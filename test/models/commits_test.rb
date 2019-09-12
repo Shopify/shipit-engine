@@ -143,7 +143,7 @@ module Shipit
 
     test "updating broadcasts an update event" do
       expect_event(@stack)
-      @commit.update_attributes(message: "toto")
+      @commit.update(message: "toto")
     end
 
     test "updating state to success triggers new deploy when stack has continuous deployment" do
