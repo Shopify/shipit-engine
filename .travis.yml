@@ -1,12 +1,11 @@
-dist: precise # https://github.com/travis-ci/travis-ci/issues/8331
-addons:
-  apt:
-    packages:
-      - sqlite3 # https://github.com/rails/rails/issues/24288#issuecomment-206011385
 language: ruby
 sudo: false
 script: 'script/cibuild'
 cache: bundler
+
+before_install:
+  - gem install bundler -v 1.17.3
+
 env:
   matrix:
     - SUITE=mysql
@@ -14,11 +13,25 @@ env:
     - SUITE=sqlite3
     - SUITE=rubocop
     - SUITE=setup
+
 rvm:
   - 2.5.3
+  - 2.6.3
+
+matrix:
+  fast_finish: true
+  exclude:
+    - rvm: 2.6.3
+  include:
+    - rvm: 2.6.3
+      env: SUITE=sqlite3
 
 notifications:
   email: false
+
 services:
   - redis
+  - mysql
+  - postgresql
+
 bundler_args: --without deploy production debug --jobs 3 --retry 3

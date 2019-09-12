@@ -112,8 +112,8 @@ module Shipit
         message:      Faker::Company.catch_phrase,
         authored_at:  Time.now,
         committed_at: Time.now,
-        additions: Faker::Number.number(3),
-        deletions: Faker::Number.number(3),
+        additions: Faker::Number.number(digits: 3),
+        deletions: Faker::Number.number(digits: 3),
       )
 
       if (i % 4) != 0
@@ -144,19 +144,19 @@ module Shipit
     end
 
     stack.pull_requests.create!(
-      number: Faker::Number.number(3),
+      number: Faker::Number.number(digits: 3),
       title: Faker::Company.catch_phrase,
       merge_status: 'pending',
       merge_requested_at: 5.minute.ago,
       merge_requested_by: users.sample,
-      github_id: Faker::Number.number(8),
+      github_id: Faker::Number.number(digits: 8),
       api_url: 'https://api.github.com/repos/shopify/shipit-engine/pulls/62',
       state: 'open',
-      branch: "feature-#{Faker::Number.number(3)}",
+      branch: "feature-#{Faker::Number.number(digits: 3)}",
       head_id: nil,
       mergeable: true,
-      additions: Faker::Number.number(3),
-      deletions: Faker::Number.number(3),
+      additions: Faker::Number.number(digits: 3),
+      deletions: Faker::Number.number(digits: 3),
     )
   end
 
@@ -173,8 +173,8 @@ module Shipit
         since_commit_id: commits.first.id,
         until_commit_id: commits.last.id,
         status:          "success",
-        additions: Faker::Number.number(3),
-        deletions: Faker::Number.number(3),
+        additions: Faker::Number.number(digits: 3),
+        deletions: Faker::Number.number(digits: 3),
         started_at: Random.rand(15.minutes.to_i).seconds.ago,
         ended_at: Time.now.utc,
         user: users.sample,
