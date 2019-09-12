@@ -25,8 +25,12 @@ module Shipit
     end
 
     test "#interpolate_environment_variables fallback to ENV" do
-      command = Command.new('cap $USER deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
-      assert_equal [%(cap #{ENV['USER']} deploy)], command.interpolated_arguments
+      previous = ENV['SHIPIT_TEST']
+      ENV['SHIPIT_TEST'] = 'quux'
+      command = Command.new('cap $SHIPIT_TEST deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
+      assert_equal [%(cap quux deploy)], command.interpolated_arguments
+    ensure
+      ENV['SHIPIT_TEST'] = previous
     end
 
     test "#timeout is 5 minutes by default" do
