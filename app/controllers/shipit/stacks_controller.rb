@@ -9,7 +9,7 @@ module Shipit
     def index
       @user_stacks = current_user.stacks_contributed_to
 
-      @stacks = Stack.order('(undeployed_commits_count > 0) desc', tasks_count: :desc).to_a
+      @stacks = Stack.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc).to_a
     end
 
     def show
