@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'gemoji', '~> 2.1'
   s.add_dependency 'jquery-rails', '~> 4.1.0'
   s.add_dependency 'lodash-rails', '~> 4.6.1'
-  s.add_dependency 'octokit', '~> 4.12.0'
+  s.add_dependency 'octokit', '~> 4.14'
   s.add_dependency 'omniauth-github', '~> 1.3.0'
   s.add_dependency 'pubsubstub', '~> 0.2.0'
   s.add_dependency 'rails', '~> 6.0.0'
