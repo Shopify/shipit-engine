@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.29.0
+
 * Upgraded to Rails 6.0.
 
 # 0.28.1
