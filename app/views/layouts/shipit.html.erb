@@ -12,6 +12,8 @@
   <%= javascript_include_tag :shipit %>
   <%= yield :update_subscription %>
   <%= csrf_meta_tags %>
+
+  <%= render 'layouts/head' %>
 </head>
 <body>
   <% flash.each do |name, msg| %>
