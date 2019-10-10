@@ -125,7 +125,7 @@ module Shipit
     end
 
     def new_client(options = {})
-      options.reverse_merge(api_endpoint: api_endpoint) if api_endpoint
+      options.reverse_merge!(api_endpoint: api_endpoint) if api_endpoint
       client = Octokit::Client.new(options)
       client.middleware = faraday_stack
       client
