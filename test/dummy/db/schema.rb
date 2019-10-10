@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_020249) do
+ActiveRecord::Schema.define(version: 2019_06_11_152822) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -185,9 +185,9 @@ ActiveRecord::Schema.define(version: 2019_05_02_020249) do
     t.bigint "github_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commit_id", "github_id"], name: "index_deploy_statuses_on_commit_id_and_github_id"
-    t.index ["stack_id", "commit_id"], name: "index_deploy_statuses_on_stack_id_and_commit_id"
-    t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
+    t.index ["commit_id", "github_id"], name: "index_release_statuses_on_commit_id_and_github_id"
+    t.index ["stack_id", "commit_id"], name: "index_release_statuses_on_stack_id_and_commit_id"
+    t.index ["user_id"], name: "index_release_statuses_on_user_id"
   end
 
   create_table "stacks", force: :cascade do |t|
@@ -211,6 +211,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_020249) do
     t.datetime "locked_since"
     t.boolean "merge_queue_enabled", default: false, null: false
     t.datetime "last_deployed_at"
+    t.string "lock_level"
     t.index ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
   end
 
@@ -240,7 +241,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_020249) do
     t.integer "additions", limit: 4, default: 0
     t.integer "deletions", limit: 4, default: 0
     t.text "definition", limit: 65535
-    t.binary "gzip_output"
+    t.binary "gzip_output", limit: 16777215
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false

@@ -27,6 +27,11 @@ module Shipit
     ENVIRONMENT_MAX_SIZE = 50
     REQUIRED_HOOKS = %i(push status).freeze
 
+    LOCK_LEVEL_ENFORCED = "enforced".freeze
+    LOCK_LEVEL_ADVISORY = "advisory".freeze
+    LOCK_LEVELS = [LOCK_LEVEL_ENFORCED, LOCK_LEVEL_ADVISORY].freeze
+    enum lock_level: LOCK_LEVELS.zip(LOCK_LEVELS).to_h
+
     has_many :commits, dependent: :destroy
     has_many :pull_requests, dependent: :destroy
     has_many :tasks, dependent: :destroy
@@ -402,16 +407,21 @@ module Shipit
     end
 
     def locked?
+      lock_reason.present? && lock_level != LOCK_LEVEL_ADVISORY
+    end
+
+    def soft_locked?
       lock_reason.present?
     end
 
-    def lock(reason, user)
-      params = {lock_reason: reason, lock_author: user}
+    def lock(reason, user, lock_level: LOCK_LEVEL_ENFORCED)
+      lock_level ||= LOCK_LEVEL_ENFORCED
+      params = {lock_reason: reason, lock_author: user, lock_level: lock_level}
       update!(params)
     end
 
     def unlock
-      update!(lock_reason: nil, lock_author: nil, locked_since: nil)
+      update!(lock_reason: nil, lock_author: nil, locked_since: nil, lock_level: nil)
     end
 
     def to_param

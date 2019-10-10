@@ -5,7 +5,7 @@ module Shipit
     has_one :lock_author
     attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url, :deploy_url, :pull_requests_url,
                :deploy_spec, :undeployed_commits_count, :is_locked, :lock_reason, :continuous_deployment, :created_at,
-               :updated_at, :locked_since, :last_deployed_at, :branch, :merge_queue_enabled
+               :updated_at, :locked_since, :last_deployed_at, :branch, :merge_queue_enabled, :lock_level
 
     def url
       api_stack_url(object)
@@ -28,15 +28,15 @@ module Shipit
     end
 
     def include_lock_reason?
-      object.locked?
+      object.soft_locked?
     end
 
     def include_lock_author?
-      object.locked?
+      object.soft_locked?
     end
 
     def include_locked_since?
-      object.locked?
+      object.soft_locked?
     end
 
     def deploy_spec

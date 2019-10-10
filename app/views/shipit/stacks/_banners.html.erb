@@ -47,6 +47,22 @@
       </div>
     </div>
   </div>
+<% elsif stack.soft_locked? %>
+  <div class="banner banner--orange">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">
+          <%= stack.lock_author.name %> posted the following warning message
+          <% unless stack.locked_since.nil? %>
+            <%= timeago_tag(stack.locked_since, force: true) %>
+          <% end %>
+        </h2>
+        <p class="banner__text">
+          <%= auto_link emojify(stack.lock_reason) %>
+        </p>
+      </div>
+    </div>
+  </div>
 <% end %>
 
 <% if stack.continuous_delivery_delayed? %>
