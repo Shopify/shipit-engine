@@ -522,6 +522,8 @@ tasks:
       - name: POD_ID
 ```
 
+New tasks will become available once the stack has updated and refreshed. You can press the `Refresh statuses & commits` button to manually trigger this refresh.
+
 <h3 id="custom-links">Custom Links</h3>
 
 You can add custom links to the header of a stacks overview page in Shipit. To create a new custom link, specify its parameters in the links section of the shipit.yml file. The link title is a humanized version of the key. For example:
