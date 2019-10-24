@@ -52,7 +52,8 @@ module Shipit
     end
 
     test "#new_client retruns an Octokit::Client configure to use the github installation" do
-      assert_equal 'https://github.example.com', @enterprise.new_client.web_endpoint
+      assert_equal 'https://github.example.com/', @enterprise.new_client.web_endpoint
+      assert_equal 'https://github.example.com/api/v3/', @enterprise.new_client.api_endpoint
     end
 
     test "#oauth_config.last[:client_options] is nil if domain is not overriden" do
