@@ -120,12 +120,21 @@ module Shipit
       url('/api/v3/') if enterprise?
     end
 
+    def web_endpoint
+      url if enterprise?
+    end
+
     def enterprise?
       domain != DOMAIN
     end
 
     def new_client(options = {})
-      options.reverse_merge(api_endpoint: api_endpoint) if api_endpoint
+      if enterprise?
+        options = options.reverse_merge(
+          api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint,
+        )
+      end
       client = Octokit::Client.new(options)
       client.middleware = faraday_stack
       client
