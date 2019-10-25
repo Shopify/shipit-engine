@@ -9,6 +9,8 @@ module Shipit
         end
       end
 
+      attr_reader :expires_at
+
       def to_s
         @token
       end
@@ -86,6 +88,7 @@ module Shipit
         )
         token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
+        Rails.logger.info("Created GitHub access token ending #{token.to_s[-5..-1]}, expires at #{token.expires_at}")
         token
       end
     end
