@@ -22,7 +22,7 @@ module Shipit
     private
 
     def create_full_ref(stack_environment)
-      [BRANCH_REF_PREFIX, DEPLOY_PREFIX, stack_environment].join("/")
+      [BRANCH_REF_PREFIX, self::DEPLOY_PREFIX, stack_environment].join("/")
     end
 
     def create_ref(client:, repo_name:, ref:, sha:)
@@ -38,6 +38,10 @@ module Shipit
       else
         raise
       end
+    end
+
+    def select_target_commit(stack)
+      stack.last_successful_deploy_commit&.sha
     end
   end
 end

@@ -132,8 +132,12 @@ module Shipit
       run_now = kwargs.delete(:run_now)
       deploy = build_deploy(*args, **kwargs)
       deploy.save!
+
       run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
+
+      UpdateGithubCurrentlyDeployingRefJob.perform_later(self)
+      UpdateGithubPendingDeployRefJob.perform_later(self)
       deploy
     end
 
