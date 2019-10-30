@@ -9,8 +9,6 @@ module Shipit
         end
       end
 
-      GITHUB_TOKEN_REFRESH_WINDOW = 10.minutes
-
       attr_reader :expires_at, :refresh_at
 
       def to_s
@@ -20,6 +18,8 @@ module Shipit
       def initialize(token, expires_at)
         @token = token
         @expires_at = expires_at
+
+        # This needs to be lower than the token's lifetime, but higher than the cache expiry setting.
         @refresh_at = expires_at - GITHUB_TOKEN_REFRESH_WINDOW
       end
 
@@ -31,6 +31,10 @@ module Shipit
     DOMAIN = 'github.com'.freeze
     AuthenticationFailed = Class.new(StandardError)
     API_STATUS_ID = 'brv1bkgrwx7q'.freeze
+
+    GITHUB_EXPECTED_TOKEN_LIFETIME = 60.minutes
+    GITHUB_TOKEN_RAILS_CACHE_LIFETIME = 50.minutes
+    GITHUB_TOKEN_REFRESH_WINDOW = GITHUB_EXPECTED_TOKEN_LIFETIME - GITHUB_TOKEN_RAILS_CACHE_LIFETIME - 2.minutes
 
     attr_reader :oauth_teams, :domain, :bot_login
 
@@ -84,7 +88,13 @@ module Shipit
     end
 
     def fetch_new_token
-      Rails.cache.fetch('github:integration:access-token', expires_in: 50.minutes, race_condition_ttl: 10.minutes) do
+      # Rails can add 5 minutes to the cache entry expiration time when any TTL is provided,
+      # so our TTL setting can be lower, and TTL + expires_in should be lower than the GitHub token expiration.
+      Rails.cache.fetch(
+        'github:integration:access-token',
+        expires_in: GITHUB_TOKEN_RAILS_CACHE_LIFETIME,
+        race_condition_ttl: 4.minutes,
+      ) do
         response = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
           installation_id,
           accept: 'application/vnd.github.machine-man-preview+json',
@@ -92,7 +102,7 @@ module Shipit
         token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
         Rails.logger.info("Created GitHub access token ending #{token.to_s[-5..-1]}, expires at #{token.expires_at}"\
-          " and will be refreshed at #{token.refreshes_at}")
+          " and will be refreshed at #{token.refresh_at}")
         token
       end
     end
