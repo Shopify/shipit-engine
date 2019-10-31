@@ -136,8 +136,7 @@ module Shipit
       run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
 
-      UpdateGithubCurrentlyDeployingRefJob.perform_later(self)
-      UpdateGithubPendingDeployRefJob.perform_later(self)
+      update_marker_refs
       deploy
     end
 
@@ -469,6 +468,11 @@ module Shipit
 
     def update_latest_deployed_ref
       UpdateGithubLastDeployedRefJob.perform_later(self)
+    end
+
+    def update_marker_refs
+      UpdateGithubCurrentlyDeployingRefJob.perform_later(self)
+      UpdateGithubPendingDeployRefJob.perform_later(self)
     end
 
     def broadcast_update

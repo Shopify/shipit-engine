@@ -36,7 +36,7 @@ module Shipit
     after_create :create_commit_deployments
     after_create :update_release_status
     after_commit :broadcast_update
-    after_commit :update_latest_deployed_ref, on: :update
+    after_commit :update_deploy_marker_refs, on: :update
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
@@ -282,9 +282,13 @@ module Shipit
       stack.update(last_deployed_at: ended_at)
     end
 
-    def update_latest_deployed_ref
+    def update_deploy_marker_refs
       return unless previous_changes.include?(:status)
-      stack.update_latest_deployed_ref if previous_changes[:status].last == 'success'
+
+      if previous_changes[:status].last == 'success'
+        stack.update_latest_deployed_ref
+        stack.update_deploy_marker_refs
+      end
     end
   end
 end
