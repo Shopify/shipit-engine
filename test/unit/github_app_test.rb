@@ -154,6 +154,47 @@ module Shipit
       end
     end
 
+    test "#github token is missing refresh_at field" do
+      # $debugging = true
+      Rails.env = 'not_test'
+      config = {
+        app_id: "test_id",
+        installation_id: "test_installation_id",
+        private_key: "test_private_key",
+      }
+      initial_cached_token = Shipit::GitHubApp::Token.new("some_initial_github_token", Time.now.utc - 1.minute)
+      initial_cached_token.instance_variable_set(:@refresh_at, nil)
+
+      second_token = OpenStruct.new(
+        token: "some_new_github_token",
+        expires_at: initial_cached_token.expires_at + 60.minutes,
+      )
+      auth_payload = "test_auth_payload"
+
+      GitHubApp.any_instance.expects(:authentication_payload).returns(auth_payload)
+      valid_app = app(config)
+
+      freeze_time do
+        valid_app.instance_variable_set(:@token, initial_cached_token)
+        Rails.cache.write(@token_cache_key, initial_cached_token, expires_in: 1.minute)
+
+        Octokit::Client
+          .any_instance
+          .expects(:create_app_installation_access_token).with(config[:installation_id], anything)
+          .returns(second_token)
+
+        first_token = valid_app.token
+
+        first_cached_token = Rails.cache.fetch(@token_cache_key)
+        assert_equal first_token, first_cached_token.to_s
+
+        travel_to first_cached_token.expires_at + 5.minutes
+        new_token = valid_app.token
+
+        assert_equal second_token.token, new_token
+      end
+    end
+
     private
 
     def app(extra_config = {})
