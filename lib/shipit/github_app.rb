@@ -24,6 +24,9 @@ module Shipit
       end
 
       def blank?
+        # Old tokens missing @refresh_at may be used upon deploy, so we should auto-correct for now.
+        # TODO: Remove this assignment at a later date.
+        @refresh_at ||= @expires_at - GITHUB_TOKEN_REFRESH_WINDOW
         @refresh_at.past?
       end
     end
@@ -102,7 +105,7 @@ module Shipit
         token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
         Rails.logger.info("Created GitHub access token ending #{token.to_s[-5..-1]}, expires at #{token.expires_at}"\
-          " and will be refreshed at #{token.refresh_at}")
+          " and will be refreshed at #{token&.refresh_at}")
         token
       end
     end
