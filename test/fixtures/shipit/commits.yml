@@ -10,6 +10,7 @@ first:
   additions: 42
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 second:
   id: 2
@@ -23,6 +24,7 @@ second:
   additions: 1
   deletions: 1
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 third:
   id: 3
@@ -36,6 +38,7 @@ third:
   additions: 12
   deletions: 64
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 fourth:
   id: 4
@@ -49,6 +52,7 @@ fourth:
   additions: 420
   deletions: 342
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 fifth:
   id: 5
@@ -62,6 +66,7 @@ fifth:
   additions: 1
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 cyclimse_first:
   id: 6
@@ -194,6 +199,7 @@ canaries_first:
   additions: 42
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 canaries_second:
   id: 302
@@ -207,6 +213,7 @@ canaries_second:
   additions: 1
   deletions: 1
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 canaries_third:
   id: 303
@@ -220,6 +227,7 @@ canaries_third:
   additions: 12
   deletions: 64
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 canaries_fourth:
   id: 304
@@ -233,6 +241,7 @@ canaries_fourth:
   additions: 420
   deletions: 342
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 canaries_fifth:
   id: 305
@@ -246,6 +255,7 @@ canaries_fifth:
   additions: 1
   deletions: 24
   updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>
 
 undeployed_1:
   id: 401

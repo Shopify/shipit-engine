@@ -773,6 +773,16 @@ module Shipit
       assert_equal commit.deploy_requested_at, commit.created_at
     end
 
+    test "#recently_pushed?" do
+      freeze_time do
+        commit = Commit.new(message: "abcd", created_at: Time.now.utc)
+        assert_predicate commit, :recently_pushed?
+
+        commit = Commit.new(message: "abcd", created_at: 10.minutes.ago)
+        refute_predicate commit, :recently_pushed?
+      end
+    end
+
     private
 
     def expect_event(stack)
