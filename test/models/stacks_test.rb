@@ -870,6 +870,21 @@ module Shipit
       )
     end
 
+    test "#trigger_continuous_delivery sets delay if commit was pushed recently" do
+      freeze_time do
+        @stack.tasks.delete_all
+
+        commit = @stack.next_commit_to_deploy
+        commit.touch(:created_at)
+
+        assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
+          assert_no_difference -> { Deploy.count } do
+            @stack.trigger_continuous_delivery
+          end
+        end
+      end
+    end
+
     private
 
     def generate_revert_commit(stack:, reverted_commit:, author: reverted_commit.author)

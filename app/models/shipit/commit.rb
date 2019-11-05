@@ -2,6 +2,8 @@ module Shipit
   class Commit < ActiveRecord::Base
     include DeferredTouch
 
+    RECENT_COMMIT_THRESHOLD = 10.seconds
+
     AmbiguousRevision = Class.new(StandardError)
 
     belongs_to :stack
@@ -242,7 +244,9 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless deployable? && stack.continuous_deployment? && stack.deployable?
-      ContinuousDeliveryJob.perform_later(stack)
+      # This buffer is to allow for statuses and checks to be refreshed before evaluating if the commit is deployable
+      # - e.g. if the commit was fast-forwarded with already passing CI.
+      ContinuousDeliveryJob.set(wait: RECENT_COMMIT_THRESHOLD).perform_later(stack)
     end
 
     def github_commit
@@ -309,6 +313,10 @@ module Shipit
 
     def unlock
       update!(locked: false, lock_author: nil)
+    end
+
+    def recently_pushed?
+      created_at > RECENT_COMMIT_THRESHOLD.ago
     end
 
     private
