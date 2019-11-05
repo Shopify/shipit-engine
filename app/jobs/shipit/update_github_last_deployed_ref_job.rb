@@ -22,7 +22,7 @@ module Shipit
     private
 
     def create_full_ref(stack_environment)
-      [BRANCH_REF_PREFIX, self::DEPLOY_PREFIX, stack_environment].join("/")
+      [BRANCH_REF_PREFIX, self.class::DEPLOY_PREFIX, stack_environment].join("/")
     end
 
     def create_ref(client:, repo_name:, ref:, sha:)

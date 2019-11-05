@@ -287,7 +287,7 @@ module Shipit
 
       if previous_changes[:status].last == 'success'
         stack.update_latest_deployed_ref
-        stack.update_deploy_marker_refs
+        stack.update_marker_refs
       end
     end
   end
