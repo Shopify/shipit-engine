@@ -7,12 +7,12 @@ module Shipit
     private
 
     def select_target_commit(stack)
-      commits = @stack.undeployed_commits do |scope|
+      commits = stack.undeployed_commits do |scope|
         scope.preload(:author, :statuses, :check_runs, :lock_author)
       end
 
       # TODO: Need to sort?
-      @active_commits = commits.select { |commit| commit.active? }.last
+      @active_commits = commits.select(&:active?).last
     end
   end
 end
