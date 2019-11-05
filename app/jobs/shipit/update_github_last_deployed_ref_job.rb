@@ -19,6 +19,7 @@ module Shipit
       update_or_create_ref(client: client, repo_name: full_repo_name, ref: stack_ref, new_sha: stack_sha)
     end
 
+    # TODO: Make a common parent base class rather than inherit from this one.
     private
 
     def create_full_ref(stack_environment)
