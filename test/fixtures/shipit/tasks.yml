@@ -10,7 +10,7 @@ shipit:
   deletions: 1
   created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
 
 shipit2:
   id: 2
@@ -278,3 +278,59 @@ shipit_single:
   created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+
+shipit_stats:
+  id: 401
+  user: walrus
+  since_commit_id: 601
+  until_commit_id: 601
+  type: Shipit::Deploy
+  stack: shipit_stats
+  status: success
+  additions: 12
+  deletions: 64
+  created_at: <%= 60.minutes.ago.to_s(:db) %>
+  started_at: <%= 60.minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+
+shipit_stats_2:
+  id: 402
+  user: walrus
+  since_commit_id: 602
+  until_commit_id: 603
+  type: Shipit::Deploy
+  stack: shipit_stats
+  status: failed
+  additions: 12
+  deletions: 64
+  created_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 11).minutes.ago.to_s(:db) %>
+
+shipit_stats_3:
+  id: 403
+  user: walrus
+  since_commit_id: 604
+  until_commit_id: 605
+  type: Shipit::Deploy
+  stack: shipit_stats
+  status: success
+  additions: 12
+  deletions: 64
+  created_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 12).minutes.ago.to_s(:db) %>
+  ended_at: <%= (60 - 15).minutes.ago.to_s(:db) %>
+
+shipit_stats_4:
+  id: 404
+  user: walrus
+  since_commit_id: 606
+  until_commit_id: 608
+  type: Shipit::Deploy
+  stack: shipit_stats
+  status: success
+  additions: 12
+  deletions: 64
+  created_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
+  started_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
+  ended_at: <%= (30 - 17).minutes.ago.to_s(:db) %>

@@ -320,3 +320,41 @@ shipit_single:
     }
   updated_at: <%= 8.days.ago.to_s(:db) %>
   last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+
+shipit_stats:
+  repo_owner: "shopify"
+  repo_name: "shipit-engine"
+  environment: "stats"
+  branch: master
+  ignore_ci: false
+  merge_queue_enabled: true
+  tasks_count: 4
+  undeployed_commits_count: 1
+  cached_deploy_spec: >
+    {
+      "machine": {"environment": {}},
+      "review": {
+        "checklist": ["foo", "bar", "baz"],
+        "monitoring": [
+          {"image": "https://example.com/monitor.png", "width": 200, "height": 300}
+        ]
+      },
+      "dependencies": {"override": []},
+      "deploy": {"override": null},
+      "rollback": {"override": ["echo 'Rollback!'"]},
+      "fetch": ["echo '42'"],
+      "tasks": {
+        "restart": {
+          "action": "Restart application",
+          "description": "Restart app and job servers",
+          "steps": [
+            "cap $ENVIRONMENT deploy:restart"
+          ]
+        }
+      },
+      "ci": {
+        "blocking": ["soc/compliance"]
+      }
+    }
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>

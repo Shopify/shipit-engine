@@ -19,6 +19,9 @@
     <li class="nav__list__item">
       <%= link_to 'Timeline', index_stack_tasks_path(stack) %>
     </li>
+    <li class="nav__list__item">
+      <%= link_to 'Stats', stack_statistics_path(stack) %>
+    </li>
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
         <%= link_to "Merge Queue (#{stack.pull_requests.queued.count})", stack_pull_requests_path(stack) %>

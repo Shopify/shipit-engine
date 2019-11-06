@@ -110,6 +110,11 @@ module Shipit
       assert_response :success
     end
 
+    test "#statistics is success" do
+      get :statistics, params: {id: @stack.to_param}
+      assert_response :success
+    end
+
     test "#update allows to lock the stack" do
       refute @stack.locked?
 

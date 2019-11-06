@@ -86,5 +86,9 @@ module Shipit
         t('commit.unlock')
       end
     end
+
+    def positive_negative_class(value)
+      value.to_f >= 0 ? 'positive' : 'negative'
+    end
   end
 end

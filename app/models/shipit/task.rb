@@ -29,8 +29,11 @@ module Shipit
     scope :success, -> { where(status: 'success') }
     scope :completed, -> { where(status: COMPLETED_STATUSES) }
     scope :active, -> { where(status: ACTIVE_STATUSES) }
+    scope :not_active, -> { where(status: COMPLETED_STATUSES + UNSUCCESSFUL_STATUSES) }
     scope :exclusive, -> { where(allow_concurrency: false) }
     scope :unsuccessful, -> { where(status: UNSUCCESSFUL_STATUSES) }
+    scope :last_seven_days, -> { where("created_at > ?", 7.days.ago) }
+    scope :previous_seven_days, -> { where(created_at: 14.days.ago..7.days.ago) }
 
     scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
