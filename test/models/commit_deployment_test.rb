@@ -28,6 +28,13 @@ module Shipit
         required_contexts: [],
         description: "Via Shipit",
         environment: @stack.environment,
+        payload: {
+          shipit: {
+            task_id: 4,
+            from_sha: 'f890fd8b5f2be05d1fedb763a3605ee461c39074',
+            to_sha: '467578b362bf2b4df5903e1c7960929361c3435a',
+          },
+        },
       ).returns(deployment_response)
 
       @deployment.create_on_github!
