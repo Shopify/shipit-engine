@@ -53,6 +53,13 @@ module Shipit
         required_contexts: [],
         description: "Via Shipit",
         environment: stack.environment,
+        payload: {
+          shipit: {
+            task_id: task.id,
+            from_sha: task.since_commit.sha,
+            to_sha: task.until_commit.sha,
+          },
+        },
       )
     end
   end
