@@ -1,0 +1,36 @@
+
+<div class="wrapper">
+  <section>
+    <%= link_to "Create new api client", new_api_client_path, class: 'btn'%>
+  </section>
+</div>
+<div class="wrapper">
+  <section>
+    <ul class="task-list">
+    <% @api_clients.each do |api_client|%>
+      <li>
+        <p>
+          <%= link_to api_client.name, api_client_path(api_client) %>
+          created by <%= api_client.creator.name %> on <%= api_client.created_at%>
+        </p>
+       </li>
+    <% end %>
+    </ul>
+  </section>
+</div>
+
+<div class="wrapper">
+  <section class="pagination">
+    <% if params[:since].present? %>
+      <%= link_to 'Start', @links[:first], class: 'header__btn btn' %>
+    <% else %>
+      <%= link_to 'Start', '', class: 'header__btn btn btn--disabled disabled' %>
+    <% end %>
+
+    <% if url = @links[:next] %>
+      <%= link_to 'Older', url, class: 'header__btn btn' %>
+    <% else %>
+      <%= link_to 'Older', '', class: 'header__btn btn btn--disabled disabled' %>
+    <% end %>
+  </section>
+</div>

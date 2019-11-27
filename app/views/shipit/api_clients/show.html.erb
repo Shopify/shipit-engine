@@ -1,0 +1,35 @@
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Api client: <b><%= @api_client.name %></b></h2>
+    </header>
+
+    <p>Created by <%= @api_client.creator.name %> on <%= @api_client.created_at %></p>
+  </section>
+
+  <section>
+    <h3>Authentication token:</h3>
+    <code style="background-color: yellow">
+      <b><%= @api_client.authentication_token %></b>
+    </code>
+  </section>
+
+  <section>
+    <%= form_for @api_client, url: api_client_path(@api_client) do |f| %>
+      <h3> Permissions </h3>
+      <ul class="deploy-checklist">
+        <% Shipit::ApiClient::PERMISSIONS.each do |permission| %>
+          <li class="deploy-checklist__item">
+            <%= check_box_tag 'api_client[permissions][]', permission, @api_client.permissions.include?(permission),
+              class: 'deploy-checklist__item__checkbox', id: "checkbox_" + permission %>
+            <label class="deploy-checklist__item__label" for="checkbox_<%= permission %>">
+              <%= permission %>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+      <%= f.submit "Update", :class => ['btn', 'primary'] %>
+      <% end %>
+  </section>
+
+</div>
