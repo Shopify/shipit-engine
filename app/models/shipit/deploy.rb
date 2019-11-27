@@ -221,6 +221,9 @@ module Shipit
       commits.each do |commit|
         commit_deployments.create!(commit: commit)
       end
+
+      # Immediately update to publish the status to the commit deployments
+      update_commit_deployments
     end
 
     def update_release_status
