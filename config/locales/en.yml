@@ -72,12 +72,14 @@ en:
       ascii: "contains non-ASCII characters"
   deployment_description:
     deploy:
-      pending: "%{author} triggered the deploy of %{stack} to %{sha}"
+      in_progress: "%{author} triggered the deploy of %{stack} to %{sha}"
+      pending: "%{author} created the deploy of %{stack} to %{sha}"
       success: "%{author} deployed %{stack} to %{sha}"
       failure: "Deploy of %{stack} to %{sha} by %{author} failed"
       error: "Deploy of %{stack} to %{sha} by %{author} failed"
     rollback:
-      pending: "%{author} triggered the rollback of %{stack} to %{sha}"
+      in_progress: "%{author} triggered the deploy of %{stack} to %{sha}"
+      pending: "%{author} created the rollback of %{stack} to %{sha}"
       success: "%{author} rolled back %{stack} to %{sha}"
       failure: "Rollback of %{stack} to %{sha} by %{author} failed"
       error: "Rollback of %{stack} to %{sha} by %{author} failed"

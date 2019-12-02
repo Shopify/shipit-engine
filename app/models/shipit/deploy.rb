@@ -16,7 +16,7 @@ module Shipit
 
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
-        'pending' => 'pending',
+        'pending' => 'in_progress',
         'failed' => 'failure',
         'success' => 'success',
         'error' => 'error',
