@@ -16,7 +16,7 @@ module Shipit
 
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
-        'pending' => 'pending',
+        'pending' => 'in_progress',
         'failed' => 'failure',
         'success' => 'success',
         'error' => 'error',
@@ -221,6 +221,9 @@ module Shipit
       commits.each do |commit|
         commit_deployments.create!(commit: commit)
       end
+
+      # Immediately update to publish the status to the commit deployments
+      update_commit_deployments
     end
 
     def update_release_status

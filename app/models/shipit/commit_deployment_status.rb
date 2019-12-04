@@ -45,6 +45,7 @@ module Shipit
       client.create_deployment_status(
         commit_deployment.api_url,
         status,
+        accept: 'application/vnd.github.flash-preview+json',
         target_url: url_helpers.stack_deploy_url(stack, task),
         description: description,
       )

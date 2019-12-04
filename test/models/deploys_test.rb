@@ -300,7 +300,7 @@ module Shipit
       end
     end
 
-    test "creating a deploy creates one CommitDeployment per commit" do
+    test "creating a deploy creates one CommitDeployment and status per commit" do
       shipit = shipit_stacks(:shipit)
       deploy = shipit.deploys.build(
         since_commit: shipit.commits.first,
@@ -308,7 +308,9 @@ module Shipit
       )
 
       assert_difference -> { CommitDeployment.count }, deploy.commits.size do
-        deploy.save!
+        assert_difference -> { CommitDeploymentStatus.count }, deploy.commits.size do
+          deploy.save!
+        end
       end
     end
 
