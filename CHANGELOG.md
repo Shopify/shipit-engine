@@ -1,6 +1,7 @@
 # Unreleased
 
 * Allow applications to register extra handlers for Github webhooks. (#961)
+* Display the configured application name in UI
 
 # 0.29.0
 

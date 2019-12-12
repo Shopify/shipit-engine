@@ -55,6 +55,7 @@ CODE
 %w(config/secrets.yml config/secrets.example.yml).each do |path|
   create_file path, <<~CODE, force: true
     development:
+      app_name: My Shipit
       secret_key_base: #{SecureRandom.hex(64)}
       host: 'http://localhost:3000'
       redis_url: redis://localhost
@@ -71,6 +72,7 @@ CODE
           # team: MyOrg/developers # Enable this setting to restrict access to only the member of a team
 
     test:
+      app_name: My Shipit
       secret_key_base: #{SecureRandom.hex(64)}
       host: 'http://localhost:4000'
       redis_url: redis://localhost
@@ -87,6 +89,7 @@ CODE
           # teams: MyOrg/developers # Enable this setting to restrict access to only the member of a team
 
     production:
+      app_name: My Shipit
       secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
       host: <%= ENV['SHIPIT_HOST'] %>
       redis_url: <%= ENV['REDIS_URL'] %>

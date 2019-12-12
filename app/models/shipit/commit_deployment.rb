@@ -51,7 +51,7 @@ module Shipit
         pull_request_head,
         auto_merge: false,
         required_contexts: [],
-        description: "Via Shipit",
+        description: "Via #{Shipit.app_name}",
         environment: stack.environment,
         payload: {
           shipit: {

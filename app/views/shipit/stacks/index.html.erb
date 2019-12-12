@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <h1>Shipit</h1>
+  <h1><%= Shipit.app_name %></h1>
 <% end %>
 <% content_for :primary_navigation do %>
   <%= link_to 'Add a stack', new_stack_path, class: 'btn secondary' %>
