@@ -142,7 +142,24 @@ module Shipit
       end
     end
 
+    test "other events trigger custom handlers" do
+      received_webhooks = []
+      Shipit::WebhooksController.register_handler do |type, params|
+        received_webhooks << [type, params]
+      end
+
+      @request.headers['X-Github-Event'] = 'pull_request'
+      post :create, body: pull_request_params.to_json, as: :json
+      assert_response :ok
+
+      assert_equal [['pull_request', pull_request_params.stringify_keys]], received_webhooks
+    end
+
     private
+
+    def pull_request_params
+      {action: 'opened', number: 2, pull_request: 'foobar'}
+    end
 
     def membership_params
       {action: 'added', team: team_params, organization: {login: 'shopify'}, member: {login: 'walrus'}}
