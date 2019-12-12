@@ -54,11 +54,11 @@
     <% end %>
 
     <header class="header">
-      <%= link_to "Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}", class: 'powered-by' %>
+      <%= link_to "Powered by Shipit v#{Shipit::VERSION}", "https://github.com/Shopify/shipit-engine/tree/v#{Shipit::VERSION}", class: 'powered-by' %>
       <div class="wrapper">
         <div class="header__inner">
           <a href="/" class="logo">
-            <span class="visually-hidden">Shipit</span>
+            <span class="visually-hidden"><%= Shipit.app_name %></span>
           </a>
           <div class="header__page-title">
             <%= yield :page_title %>
