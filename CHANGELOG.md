@@ -1,5 +1,7 @@
 # Unreleased
 
+* Allow applications to register extra handlers for Github webhooks. (#961)
+
 # 0.29.0
 
 * Upgraded to Rails 6.0.

@@ -35,7 +35,11 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 * [Configuring providers](#configuring-providers)
 * [Free samples](/examples/shipit.yml)
 
-**IV. CONTRIBUTING**
+**IV. INTERGRATING**
+
+* [Registering webhooks](#integrating-webhooks)
+
+**V. CONTRIBUTING**
 
 * [Instructions](#contributing-instructions)
 * [Local development](#contributing-local-dev)
@@ -634,7 +638,24 @@ For Kubernetes, you have to provision Shipit environment with the following tool
 * `kubectl`
 * `kubernetes-deploy` [gem](https://github.com/Shopify/kubernetes-deploy)
 
-<h2 id="contributing">IV. CONTRIBUTING</h2>
+<h2 id="integrating">IV. INTERGRATING</h2>
+
+<h3 id="integrating-webhooks">Registering webhooks</h3>
+
+Shipit handles several webhook types by default, listed in `Shipit::WebhooksController::HANDLERS`, in order to implement default behaviours. Extra handler blocks can be registered via `Shipit::WebhooksController.register_handler`, eg:
+
+```ruby
+Shipit::WebhooksController.register_handler do |type, params|
+  case type
+  when 'pull_request'
+    Rails.logger.info "Received PR #{params['action']} webhook for PR #{params[['number']}"
+  end
+end
+```
+
+Multiple handler blocks can be registered. If any raise errors, execution will be halted and the request will be reported failed to github.
+
+<h2 id="contributing">V. CONTRIBUTING</h2>
 
 <h3 id="contributing-instructions">Instructions</h3>
 

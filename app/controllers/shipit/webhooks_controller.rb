@@ -132,9 +132,25 @@ module Shipit
       'check_suite' => CheckSuiteHandler,
     }.freeze
 
+    class << self
+      attr_accessor :extra_handlers
+    end
+
+    self.extra_handlers = []
+
+    def self.register_handler(&block)
+      extra_handlers << block
+    end
+
     def create
+      params = JSON.parse(request.raw_post)
+
       if handler = HANDLERS[event]
-        handler.new(JSON.parse(request.raw_post)).process
+        handler.new(params).process
+      end
+
+      self.class.extra_handlers.each do |extra_handler|
+        extra_handler.call(event, params)
       end
 
       head :ok
