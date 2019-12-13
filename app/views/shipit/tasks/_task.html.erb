@@ -24,7 +24,7 @@
         <% if read_only %>
           <span class="utc-timecode">on <%= task.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
         <% else %>
-          <%= timeago_tag(task.created_at, force: true) %>
+          <%= timeago_tag(task.created_at, force: false, date_only: false, limit: 12.hours.ago, format: '%Y-%m-%d %H:%M %Z') %>
         <% end %>
       </p>
     </div>
