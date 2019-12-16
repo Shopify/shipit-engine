@@ -2,6 +2,7 @@
   <h1><%= Shipit.app_name %></h1>
 <% end %>
 <% content_for :primary_navigation do %>
+  <%= link_to 'Repositories', repositories_path, class: 'btn secondary' %>
   <%= link_to 'Add a stack', new_stack_path, class: 'btn secondary' %>
 <% end %>
 
@@ -18,14 +19,7 @@
     </ul>
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
-        <li class="search-item <%= stack.archived? ? 'archived' : '' %> <%= stack.undeployed_commits? ? 'undeployed' : '' %> <%= @user_stacks.include?(stack.id) ? 'contributor' : 'not-matching' %>" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>" data-stack-id="<%= stack.id %>">
-          <%= link_to stack_path(stack), class: 'commits-path' do %>
-            <span class="col"><%= stack.repo_name %></span>
-            <small class="col"><%= stack.environment.capitalize %></small>
-            <small class="col"><%= stack.branch %></small>
-            <small class="col"><%= stack.deploy_url %></small>
-          <% end %>
-        </li>
+        <%= render stack %>
       <% end %>
     </ul>
 

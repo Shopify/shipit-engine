@@ -27,12 +27,32 @@ module Shipit
       super(o&.downcase)
     end
 
+    def github_repo_name
+      [owner, name].join('/')
+    end
+
     def http_url
       Shipit.github.url("#{owner}/#{name}")
     end
 
     def git_url
       "https://#{Shipit.github.domain}/#{owner}/#{name}.git"
+    end
+
+    def schedule_for_destroy!
+      DestroyRepositoryJob.perform_later(self)
+    end
+
+    def to_param
+      github_repo_name
+    end
+
+    def self.from_param!(param)
+      repo_owner, repo_name = param.split('/')
+      where(
+        owner: repo_owner.downcase,
+        name: repo_name.downcase,
+      ).first!
     end
   end
 end

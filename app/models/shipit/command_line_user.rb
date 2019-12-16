@@ -34,6 +34,10 @@ module Shipit
       Shipit.authentication_disabled?
     end
 
+    def repositories_contributed_to
+      []
+    end
+
     def stacks_contributed_to
       []
     end

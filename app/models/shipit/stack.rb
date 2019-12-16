@@ -354,7 +354,7 @@ module Shipit
     end
 
     def github_repo_name
-      [repo_owner, repo_name].join('/')
+      repository.github_repo_name
     end
 
     def github_commits
