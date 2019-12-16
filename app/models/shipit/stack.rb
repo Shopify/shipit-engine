@@ -22,8 +22,6 @@ module Shipit
       end
     end
 
-    REPO_OWNER_MAX_SIZE = 39
-    REPO_NAME_MAX_SIZE = 100
     ENVIRONMENT_MAX_SIZE = 50
     REQUIRED_HOOKS = %i(push status).freeze
 
@@ -40,6 +38,12 @@ module Shipit
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
     belongs_to :lock_author, class_name: :User, optional: true
+    belongs_to :repository
+    validates_associated :repository
+
+    def repository
+      super || build_repository
+    end
 
     def lock_author(*)
       super || AnonymousUser.new
@@ -51,7 +55,7 @@ module Shipit
 
     def self.repo(full_name)
       repo_owner, repo_name = full_name.downcase.split('/')
-      where(repo_owner: repo_owner, repo_name: repo_name)
+      Repository.find_by(owner: repo_owner, name: repo_name).stacks
     end
 
     before_validation :update_defaults
@@ -66,11 +70,8 @@ module Shipit
     after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
 
-    validates :repo_name, uniqueness: {scope: %i(repo_owner environment), case_sensitive: false,
-                                       message: 'cannot be used more than once with this environment'}
-    validates :repo_owner, :repo_name, :environment, presence: true, ascii_only: true
-    validates :repo_owner, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_OWNER_MAX_SIZE}
-    validates :repo_name, format: {with: /\A[a-z0-9_\-\.]+\z/}, length: {maximum: REPO_NAME_MAX_SIZE}
+    validates :repository, uniqueness: {scope: %i(environment), case_sensitive: false,
+                                        message: 'cannot be used more than once with this environment'}
     validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
     validates :deploy_url, format: {with: URI.regexp(%w(http https ssh))}, allow_blank: true
 
@@ -321,21 +322,12 @@ module Shipit
       cached_deploy_spec&.pull_request_merge_method || Shipit.default_merge_method
     end
 
-    def repo_name=(name)
-      super(name&.downcase)
-    end
-
-    def repo_owner=(name)
-      super(name&.downcase)
-    end
-
-    def repo_http_url
-      Shipit.github.url("#{repo_owner}/#{repo_name}")
-    end
-
-    def repo_git_url
-      "https://#{Shipit.github.domain}/#{repo_owner}/#{repo_name}.git"
-    end
+    delegate :name=, to: :repository, prefix: :repo
+    delegate :name, to: :repository, prefix: :repo
+    delegate :owner=, to: :repository, prefix: :repo
+    delegate :owner, to: :repository, prefix: :repo
+    delegate :http_url, to: :repository, prefix: :repo
+    delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
       Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
@@ -390,7 +382,7 @@ module Shipit
       if resource.try(:message) == 'Moved Permanently'
         resource = Shipit.github.api.get(resource.url)
       end
-      update!(repo_owner: resource.owner.login, repo_name: resource.name)
+      repository.update!(owner: resource.owner.login, name: resource.name)
     end
 
     def active_task?
@@ -430,11 +422,14 @@ module Shipit
 
     def self.from_param!(param)
       repo_owner, repo_name, environment = param.split('/')
-      where(
-        repo_owner: repo_owner.downcase,
-        repo_name: repo_name.downcase,
-        environment: environment,
-      ).first!
+      includes(:repository)
+        .where(
+          repositories: {
+            owner: repo_owner.downcase,
+            name: repo_name.downcase,
+          },
+          environment: environment,
+        ).first!
     end
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,

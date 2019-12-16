@@ -1,6 +1,5 @@
 shipit:
-  repo_owner: "shopify"
-  repo_name: "shipit-engine"
+  repository: shipit
   environment: "production"
   branch: master
   ignore_ci: false
@@ -54,8 +53,7 @@ shipit:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 shipit_canaries:
-  repo_owner: "shopify"
-  repo_name: "shipit-engine"
+  repository: shipit
   environment: "canaries"
   branch: master
   ignore_ci: false
@@ -114,8 +112,7 @@ shipit_canaries:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 cyclimse:
-  repo_owner: george
-  repo_name: cyclimse
+  repository: cyclimse
   environment: production
   branch: master
   ignore_ci: false
@@ -148,8 +145,7 @@ cyclimse:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 undeployed_stack:
-  repo_owner: "shopify"
-  repo_name: "foo-bar"
+  repository: foo-bar
   environment: "production"
   branch: master
   ignore_ci: true
@@ -185,8 +181,7 @@ undeployed_stack:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 soc:
-  repo_owner: "shopify"
-  repo_name: "soc"
+  repository: soc
   environment: "production"
   branch: master
   tasks_count: 0
@@ -220,16 +215,14 @@ soc:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 check_runs:
-  repo_owner: shopify
-  repo_name: check_runs
+  repository: check_runs
   environment: production
   branch: master
   tasks_count: 0
   undeployed_commits_count: 1
 
 shipit_undeployed:
-  repo_owner: "shopify"
-  repo_name: "shipit-engine"
+  repository: shipit
   environment: "undeployed"
   branch: master
   ignore_ci: true
@@ -284,8 +277,7 @@ shipit_undeployed:
   updated_at: <%= 8.days.ago.to_s(:db) %>
 
 shipit_single:
-  repo_owner: "shopify"
-  repo_name: "shipit-engine"
+  repository: shipit
   environment: "single"
   branch: master
   ignore_ci: false
@@ -322,8 +314,7 @@ shipit_single:
   last_deployed_at: <%= 8.days.ago.to_s(:db) %>
 
 shipit_stats:
-  repo_owner: "shopify"
-  repo_name: "shipit-engine"
+  repository: shipit
   environment: "stats"
   branch: master
   ignore_ci: false

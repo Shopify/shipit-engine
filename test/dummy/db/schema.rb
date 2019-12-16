@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_020249) do
+ActiveRecord::Schema.define(version: 2019_12_16_163010) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -190,9 +190,15 @@ ActiveRecord::Schema.define(version: 2019_05_02_020249) do
     t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
   end
 
+  create_table "repositories", force: :cascade do |t|
+    t.string "owner", limit: 100, null: false
+    t.string "name", limit: 39, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner", "name"], name: "repository_unicity", unique: true
+  end
+
   create_table "stacks", force: :cascade do |t|
-    t.string "repo_name", limit: 100, null: false
-    t.string "repo_owner", limit: 39, null: false
     t.string "environment", limit: 50, default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -211,7 +217,9 @@ ActiveRecord::Schema.define(version: 2019_05_02_020249) do
     t.datetime "locked_since"
     t.boolean "merge_queue_enabled", default: false, null: false
     t.datetime "last_deployed_at"
-    t.index ["repo_owner", "repo_name", "environment"], name: "stack_unicity", unique: true
+    t.integer "repository_id", null: false
+    t.index ["repository_id", "environment"], name: "stack_unicity", unique: true
+    t.index ["repository_id"], name: "index_stacks_on_repository_id"
   end
 
   create_table "statuses", force: :cascade do |t|

@@ -25,7 +25,7 @@ module Shipit
           post :create, params: {repo_owner: 'some', repo_name: 'owner/path'}
         end
         assert_response :unprocessable_entity
-        assert_json 'errors', 'repo_name' => ['is invalid']
+        assert_json 'errors', 'repository' => ['is invalid']
       end
 
       test "#create creates a stack and renders it back" do
@@ -38,19 +38,25 @@ module Shipit
       end
 
       test "#create fails to create stack if it already exists" do
-        Stack.create!(
-          repo_name: 'rails',
-          repo_owner: 'rails',
+        repository = shipit_repositories(:rails)
+        existing_stack = Stack.create!(
+          repository: repository,
           environment: 'staging',
           branch: 'staging',
         )
 
         assert_no_difference -> { Stack.count } do
-          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
+          post :create,
+               params: {
+                 repo_name: existing_stack.repo_name,
+                 repo_owner: existing_stack.repo_owner,
+                 environment: existing_stack.environment,
+                 branch: existing_stack.branch,
+               }
         end
 
         assert_response :unprocessable_entity
-        assert_json 'errors', 'repo_name' => ['cannot be used more than once with this environment']
+        assert_json 'errors', 'repository' => ['cannot be used more than once with this environment']
       end
 
       test "#index returns a list of stacks" do

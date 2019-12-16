@@ -9,43 +9,6 @@ module Shipit
       GithubHook.any_instance.stubs(:teardown!)
     end
 
-    test "repo_owner, repo_name and environment uniqueness is enforced" do
-      clone = Stack.new(@stack.attributes.except('id'))
-      refute clone.save
-      assert_equal ["cannot be used more than once with this environment"], clone.errors[:repo_name]
-    end
-
-    test "repo_owner, repo_name, and environment can only be ASCII" do
-      @stack.update(repo_owner: 'héllò', repo_name: 'wørld', environment: 'pródüctïòn')
-      refute_predicate @stack, :valid?
-    end
-
-    test "repo_owner and repo_name are case insensitive" do
-      assert_no_difference -> { Stack.count } do
-        error = assert_raises ActiveRecord::RecordInvalid do
-          Stack.create!(
-            repo_owner: @stack.repo_owner.upcase,
-            repo_name: @stack.repo_name.upcase,
-            environment: @stack.environment,
-          )
-        end
-        assert_equal 'Validation failed: Repo name cannot be used more than once with this environment', error.message
-      end
-
-      new_stack = Stack.create!(repo_owner: 'FOO', repo_name: 'BAR')
-      assert_equal new_stack, Stack.find_by(repo_owner: 'foo', repo_name: 'bar')
-    end
-
-    test "repo_owner is automatically downcased" do
-      @stack.repo_owner = 'George'
-      assert_equal 'george', @stack.repo_owner
-    end
-
-    test "repo_name is automatically downcased" do
-      @stack.repo_name = 'Cyclim.se'
-      assert_equal 'cyclim.se', @stack.repo_name
-    end
-
     test "branch defaults to master" do
       @stack.branch = ""
       assert @stack.save
@@ -62,18 +25,6 @@ module Shipit
       @stack.environment = 'foo:bar'
       assert @stack.save
       assert_equal 'foo:bar', @stack.environment
-    end
-
-    test "repo_owner cannot contain a `/`" do
-      assert @stack.valid?
-      @stack.repo_owner = 'foo/bar'
-      refute @stack.valid?
-    end
-
-    test "repo_name cannot contain a `/`" do
-      assert @stack.valid?
-      @stack.repo_name = 'foo/bar'
-      refute @stack.valid?
     end
 
     test "repo_http_url" do
@@ -225,7 +176,7 @@ module Shipit
 
     test "#create queues a GithubSyncJob" do
       assert_enqueued_with(job: GithubSyncJob) do
-        Stack.create!(repo_name: 'rails', repo_owner: 'rails')
+        Stack.create!(repository: shipit_repositories(:rails))
       end
     end
 
@@ -273,7 +224,10 @@ module Shipit
     end
 
     test ".run_deploy_in_foreground triggers a deploy" do
-      stack = Stack.create!(repo_owner: 'foo', repo_name: 'bar', environment: 'production')
+      stack = Stack.create!(
+        repository: Repository.new(owner: "foo", name: "bar"),
+        environment: 'production',
+      )
       commit = shipit_commits(:first)
       stack.commits << commit
 

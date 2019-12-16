@@ -43,7 +43,7 @@ module Shipit
       end
 
       test "stacks with no deploys render correctly" do
-        stack = Stack.create!(repo_owner: 'foo', repo_name: 'bar')
+        stack = Stack.create!(repository: Repository.new(owner: "foo", name: "bar"))
         get :show, params: {stack_id: stack.to_param}
         assert_payload 'lastBuildStatus', 'Success'
       end

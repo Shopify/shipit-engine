@@ -37,13 +37,11 @@ module Shipit
     test "GET show prefers stacks with merge_queue_enabled" do
       existing = shipit_stacks(:shipit)
       Shipit::Stack.where(
-        repo_owner: existing.repo_owner,
-        repo_name: existing.repo_name,
+        repository: existing.repository,
       ).update_all(merge_queue_enabled: false)
 
       Shipit::Stack.create(
-        repo_owner: existing.repo_owner,
-        repo_name: existing.repo_name,
+        repository: existing.repository,
         environment: 'foo',
         branch: existing.branch,
         merge_queue_enabled: true,
