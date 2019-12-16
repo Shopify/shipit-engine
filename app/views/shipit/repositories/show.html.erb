@@ -1,0 +1,24 @@
+<% subscribe events_path(channels: ["repository.#{@repository.id}"]), '#layout-content' %>
+
+<%= render partial: 'shipit/repositories/header', locals: {repository: @repository} %>
+
+
+<div class="wrapper">
+  <section>
+    <% cache @repository do %>
+      <section>
+        <header class="section-header">
+          <h2>Stacks</h2>
+        </header>
+        <ul class="repository-table-header">
+          <li class="col">Name</li>
+          <li class="col">Environment</li>
+          <li class="col">Branch</li>
+          <li class="col">Deploy URL</li>
+        </ul>
+        <ul class="repository-lst">
+          <%= render @stacks %>
+        </ul>
+      </section>
+    <% end %>
+</div>

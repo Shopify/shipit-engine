@@ -1,0 +1,8 @@
+<li class="search-item <%= stack.undeployed_commits? ? 'undeployed' : '' %> <%= contributor_class(current_user.stacks_contributed_to, stack.id) %>" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>" data-stack-id="<%= stack.id %>">
+  <%= link_to stack_path(stack), class: 'commits-path' do %>
+    <span class="col"><%= stack.repo_name %></span>
+    <small class="col"><%= stack.environment.capitalize %></small>
+    <small class="col"><%= stack.branch %></small>
+    <small class="col"><%= stack.deploy_url %></small>
+  <% end %>
+</li>

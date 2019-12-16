@@ -1,0 +1,15 @@
+<%= render partial: 'shipit/repositories/header', locals: { repository: @repository } %>
+
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Settings (Repository <%= @repository.github_repo_name %>)</h2>
+    </header>
+
+    <div class="setting-section">
+      <h5>Delete this repository</h5>
+      <p>This action will delete the repository and its stacks from Ship it permanently. Be careful.</p>
+      <%= button_to "Delete…", repository_path(@repository), class: 'btn btn--delete', data: {confirm: 'Are you sure?'}, method: :delete %>
+    </div>
+  </section>
+</div>

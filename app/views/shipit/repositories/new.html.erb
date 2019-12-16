@@ -1,0 +1,23 @@
+<% content_for :page_title do %>
+  <h1>Create a repository</h1>
+<% end %>
+
+<div class="wrapper">
+  <section>
+    <div class="setting-section">
+      <%= form_for @repository do |f| %>
+        <div class="field-wrapper">
+          <%= label_tag "Repo" %>
+          <br>
+          <%= Shipit.github.url %>
+          /
+          <%= f.text_field :owner, placeholder: 'e.g. Shopify', required: true, class: "repo" %>
+          /
+          <%= f.text_field :name, required: true, pattern: "^[a-zA-Z0-9\-_\.]+$", class: "repo" %>
+        </div>
+
+        <div class="field-wrapper"><%= f.submit class: 'btn' %></div>
+      <% end %>
+    </div>
+  </section>
+</div>

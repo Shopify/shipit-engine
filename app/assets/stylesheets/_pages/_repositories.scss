@@ -1,0 +1,130 @@
+.repository-search {
+  -webkit-appearance: none;
+  width: 100%;
+  @extend h1;
+  border: none;
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 200;
+  background: asset-data-url('search.svg') no-repeat center right;
+  &::-webkit-input-placeholder {
+    color: #B5C0CA;
+  }
+  &:focus {
+    outline: none;
+    background-image: asset-data-url('search-active.svg');
+  }
+}
+
+.repository-table-header {
+  @include clearfix;
+  margin: 0; padding: 1.25rem 0 1rem;
+  .col {
+    width: 25%;
+    float: left;
+  }
+  li {
+    list-style-type: none;
+    font-size: .875em;
+    color: #BAC5D1;
+  }
+}
+
+.repository-lst {
+  list-style-type: none;
+  margin: 0; padding: 0; margin-bottom: 1.5rem;
+    .col {
+      width: 25%;
+      float: left;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-right: .5rem;
+      box-sizing: border-box;
+    }
+    .undeployed {
+      background-image: asset-data-url('ship.png');
+      background-repeat: no-repeat;
+      background-size: 22px 22px;
+      background-position: 0px center;
+      padding-left: 30px;
+      margin-left: -30px;
+    }
+}
+
+.repository-lst:empty:before {
+  content: "No environment to deploy to, Shipit Squirrel is displeased";
+}
+
+.repository-lst li {
+  &:nth-child(even) a {
+    background-color: lighten(#EDF1F3, 3.5%);
+  }
+
+  &.selected a {
+    background-color: $blue;
+    outline: none;
+    span { color: #fff; }
+    small { color: rgba(#fff, .8); }
+  }
+
+  a {
+  padding: .35rem;
+  margin-left: -0.35rem; margin-right: -0.35rem;
+  @include clearfix;
+  border-radius: 4px;
+  display: block;
+    &:hover, &:focus {
+      background-color: $blue;
+      outline: none;
+      span { color: #fff; }
+      small { color: rgba(#fff, .8); }
+    }
+  }
+}
+
+.repository-search input {
+  margin-left: 4%;
+  width: 92%;
+  padding: 6px;
+  font-size: larger;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  outline: 0;
+  border: 1px #a0a0a0 solid;
+}
+
+.repository-search-header {
+  display: none;
+}
+
+.show-all-repositories {
+  display: none;
+}
+
+.filtering-enabled {
+  .show-all-repositories {
+    display: inline-block;
+  }
+
+  .repository-search-header {
+    display: block;
+  }
+  .search-item.not-matching {
+    display: none;
+  }
+}
+
+.new_repository {
+  input.repo {
+    width: 200px;
+    display: inline;
+
+    &:focus {
+      padding-right: 30px !important;
+    }
+  }
+  input:focus {
+    border-color: $blue;
+  }
+}
