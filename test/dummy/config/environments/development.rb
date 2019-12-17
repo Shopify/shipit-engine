@@ -39,8 +39,11 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
   if Rails.application.config_for(:database)['adapter'] == 'sqlite3'
-    Shipit::DeferredTouch.enabled = false
+    config.to_prepare do
+      Shipit::DeferredTouch.enabled = false
+    end
   end
+
   config.active_job.queue_adapter = :async
 
   Pubsubstub.use_persistent_connections = false
