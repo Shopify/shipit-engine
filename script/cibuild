@@ -48,6 +48,7 @@ case $SUITE in
       --skip-active-storage \
       --skip-action-mailbox \
       --skip-action-text \
+      --skip-webpack-install \
       --skip-active-storage
     ;;
 esac
