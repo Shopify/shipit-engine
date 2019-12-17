@@ -39,7 +39,14 @@ case $SUITE in
     git config --global user.name "Anonymous"
 
     gem install rails -v 6.0
-    rails _6.0_ new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer  --skip-active-storage -m "${TEMPLATE}"
+    rails _6.0_ new shipit -m "${TEMPLATE}" \
+      --skip-action-cable \
+      --skip-turbolinks \
+      --skip-action-mailer \
+      --skip-active-storage \
+      --skip-webpack-install \
+      --skip-action-mailbox \
+      --skip-action-text
     ;;
 esac
 
