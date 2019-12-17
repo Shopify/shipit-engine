@@ -18,7 +18,10 @@ module Shipit
         accepts :merge_queue_enabled, Boolean
       end
       def create
-        render_resource Stack.create(params)
+        stack = Stack.new(create_params)
+        stack.repository = repository
+        stack.save
+        render_resource stack
       end
 
       def show
@@ -32,8 +35,24 @@ module Shipit
 
       private
 
+      def create_params
+        params.reject { |key, _| %i(repo_owner repo_name).include?(key) }
+      end
+
       def stack
         @stack ||= stacks.from_param!(params[:id])
+      end
+
+      def repository
+        @repository ||= Repository.find_or_create_by(owner: repo_owner, name: repo_name)
+      end
+
+      def repo_owner
+        params[:repo_owner]
+      end
+
+      def repo_name
+        params[:repo_name]
       end
     end
   end

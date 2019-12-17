@@ -1,0 +1,23 @@
+shipit:
+  owner: shopify
+  name: shipit-engine
+
+cyclimse:
+  owner: george
+  name: cyclimse
+
+foo-bar:
+  owner: shopify
+  name: foo-bar
+
+soc:
+  owner: "shopify"
+  name: "soc"
+
+check_runs:
+  owner: shopify
+  name: check_runs
+
+rails:
+  owner: rails
+  name: rails

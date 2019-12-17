@@ -48,6 +48,7 @@ module Shipit
 
     def create
       @stack = Stack.new(create_params)
+      @stack.repository = repository
       unless @stack.save
         flash[:warning] = @stack.errors.full_messages.to_sentence
       end
@@ -112,7 +113,7 @@ module Shipit
     end
 
     def create_params
-      params.require(:stack).permit(:repo_name, :repo_owner, :environment, :branch, :deploy_url, :ignore_ci)
+      params.require(:stack).permit(:environment, :branch, :deploy_url, :ignore_ci)
     end
 
     def update_params
@@ -123,6 +124,22 @@ module Shipit
         :ignore_ci,
         :merge_queue_enabled,
       )
+    end
+
+    def repository
+      @repository ||= Repository.find_or_create_by(owner: repo_owner, name: repo_name)
+    end
+
+    def repo_owner
+      repository_params[:repo_owner]
+    end
+
+    def repo_name
+      repository_params[:repo_name]
+    end
+
+    def repository_params
+      params.require(:stack).permit(:repo_owner, :repo_name)
     end
   end
 end

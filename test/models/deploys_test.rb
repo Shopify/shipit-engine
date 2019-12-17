@@ -340,10 +340,9 @@ module Shipit
       assert_equal shipit_commits(:second), @stack.last_deployed_commit
     end
 
-    def create_test_stack
+    def create_test_stack(repository: Shipit::Repository.find_or_create_by!(owner: "shopify-test", name: "shipit-engine-test"))
       Shipit::Stack.create(
-        repo_owner: "shopify-test",
-        repo_name: "shipit-engine-test",
+        repository: repository,
         environment: 'production',
         branch: "master",
         merge_queue_enabled: true,
@@ -554,8 +553,7 @@ module Shipit
       user_id = @user.id
       test_stack = create_test_stack
       test_stack.save
-      other_stack = create_test_stack
-      other_stack.repo_name += "_other"
+      other_stack = create_test_stack(repository: Shipit::Repository.create!(owner: "_", name: "_some-other-repository"))
       other_stack.save
       other_stack.reload
       stack_id = test_stack.id

@@ -60,9 +60,11 @@ module Shipit
       @stack ||= if params[:stack_id]
         Stack.from_param!(params[:stack_id])
       else
-        scope = Stack.order(merge_queue_enabled: :desc, id: :asc).where(
-          repo_owner: referrer_parser.repo_owner,
-          repo_name: referrer_parser.repo_name,
+        scope = Stack.order(merge_queue_enabled: :desc, id: :asc).includes(:repository).where(
+          repositories: {
+            owner: referrer_parser.repo_owner,
+            name: referrer_parser.repo_name,
+          },
         )
         scope = if params[:branch]
           scope.where(branch: params[:branch])
