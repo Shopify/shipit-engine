@@ -4,7 +4,7 @@ script: 'script/cibuild'
 cache: bundler
 
 before_install:
-  - gem install bundler -v 1.17.3
+  - gem install bundler -v 2.1.0
 
 env:
   matrix:
@@ -15,15 +15,15 @@ env:
     - SUITE=setup
 
 rvm:
-  - 2.5.3
-  - 2.6.3
+  - 2.5.7
+  - 2.6.5
 
 matrix:
   fast_finish: true
   exclude:
-    - rvm: 2.6.3
+    - rvm: 2.6.5
   include:
-    - rvm: 2.6.3
+    - rvm: 2.6.5
       env: SUITE=sqlite3
 
 notifications:
