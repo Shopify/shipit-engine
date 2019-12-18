@@ -7,6 +7,17 @@
     </header>
 
     <div class="setting-section">
+      <%= form_for @repository do |f| %>
+        <div class="field-wrapper">
+          <%= f.check_box :provision_pr_stacks %>
+          <%= f.label :provision_pr_stacks, "Dynamically provision stacks for Pull Requests?" %>
+        </div>
+
+        <%= f.submit class: "btn", value: "Save" %>
+      <% end %>
+    </div>
+
+    <div class="setting-section">
       <h5>Delete this repository</h5>
       <p>This action will delete the repository and its stacks from Ship it permanently. Be careful.</p>
       <%= button_to "Delete…", repository_path(@repository), class: 'btn btn--delete', data: {confirm: 'Are you sure?'}, method: :delete %>

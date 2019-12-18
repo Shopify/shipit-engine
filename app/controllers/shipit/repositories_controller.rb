@@ -1,6 +1,6 @@
 module Shipit
   class RepositoriesController < ShipitController
-    before_action :load_repository, only: %i(destroy settings new_stack)
+    before_action :load_repository, only: %i(destroy settings update new_stack)
 
     def index
       @user_repositories = current_user.repositories_contributed_to
@@ -34,6 +34,15 @@ module Shipit
       redirect_to repositories_url
     end
 
+    def update
+      options = {}
+      unless @repository.update(update_params)
+        options = {flash: {warning: @repository.errors.full_messages.to_sentence}}
+      end
+
+      redirect_to(params[:return_to].presence || repository_settings_path(@repository), options)
+    end
+
     def settings
     end
 
@@ -46,6 +55,12 @@ module Shipit
 
     def create_params
       params.require(:repository).permit(:owner, :name)
+    end
+
+    def update_params
+      params.require(:repository).permit(
+        :provision_pr_stacks,
+      )
     end
 
     def load_repository
