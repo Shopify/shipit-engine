@@ -7,6 +7,17 @@ module Shipit
       GithubHook.any_instance.stubs(:verify_signature).returns(true)
     end
 
+    test "create github repository which is not yet present in the datastore" do
+      request.headers['X-Github-Event'] = 'push'
+      unknown_repo_payload = JSON.parse(payload(:push_master))
+      unknown_repo_payload["repository"]["full_name"] = "owner/unknown-repository"
+      unknown_repo_payload = unknown_repo_payload.to_json
+
+      assert_nothing_raised do
+        post :create, body: unknown_repo_payload, as: :json
+      end
+    end
+
     test ":push with the target branch queues a GithubSyncJob" do
       request.headers['X-Github-Event'] = 'push'
 
