@@ -28,7 +28,7 @@ module Shipit
       private
 
       def stacks
-        @stacks ||= Repository.from_github_repo_name(repository_name).stacks
+        @stacks ||= Repository.from_github_repo_name(repository_name)&.stacks || Stack.none
       end
 
       def repository_name
