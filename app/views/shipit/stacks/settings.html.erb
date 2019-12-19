@@ -61,6 +61,7 @@
         <%- end -%>
       <% end %>
     </div>
+
     <div class="setting-section">
       <h5>Resynchronize this stack</h5>
       <table>
@@ -78,6 +79,24 @@
         <input id="ccmenu-url" class="hidden" type="text" disabled />
       </div>
       <%= button_to "Fetch URL", "", class: 'btn', data: {remote: ccmenu_url_url(stack_id: @stack.to_param)} %>
+    </div>
+
+    <div class="setting-section">
+      <% if @stack.archived? %>
+        <h5>Restore Stack</h5>
+        <p>This action will de-archive the Stack, restoring it in the stack list and unlocking it.</p>
+        <%= form_for @stack do |f| %>
+          <%= f.hidden_field :archived, value: false %>
+          <%= f.submit class: "btn", value: "Restore" %>
+        <% end %>
+      <% else %>
+        <h5>Archive Stack</h5>
+        <p>This action will archive the Stack, hiding it from the stack list and locking it. It can still be found if you know the URL and de-archived.</p>
+        <%= form_for @stack do |f| %>
+          <%= f.hidden_field :archived, value: true %>
+          <%= f.submit class: "btn", value: "Archive" %>
+        <% end %>
+      <% end %>
     </div>
 
     <div class="setting-section">
