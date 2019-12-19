@@ -1,6 +1,6 @@
 class RemoveRepositoryInformationFromStacks < ActiveRecord::Migration[6.0]
   def up
-    change_column :stacks, :repository_id, :integer, null: false
+    change_column_null :stacks, :repository_id, false
     change_table(:stacks) do |t|
       t.remove_index ["repo_owner", "repo_name", "environment"]
       t.remove :repo_owner
