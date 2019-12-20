@@ -53,11 +53,6 @@ module Shipit
       super(user&.logged_in? ? user : nil)
     end
 
-    def self.repo(full_name)
-      repo_owner, repo_name = full_name.downcase.split('/')
-      Repository.find_by(owner: repo_owner, name: repo_name).stacks
-    end
-
     before_validation :update_defaults
     before_destroy :clear_local_files
     before_save :set_locked_since
