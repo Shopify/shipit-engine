@@ -1,13 +1,32 @@
+require 'shipit/webhooks/handlers'
+
 module Shipit
   module Webhooks
-    class << self
-      attr_accessor :extra_handlers
+    def self.default_handlers
+      {
+        'push' => [Handlers::PushHandler],
+        'status' => [Handlers::StatusHandler],
+        'membership' => [Handlers::MembershipHandler],
+        'check_suite' => [Handlers::CheckSuiteHandler],
+      }
     end
 
-    self.extra_handlers = []
+    def self.handlers
+      @handlers ||= reset_handler_registry
+    end
 
-    def self.register_handler(&block)
-      self.extra_handlers << block
+    def self.reset_handler_registry
+      @handlers = default_handlers
+    end
+
+    def self.register_handler(event, callable = nil, &block)
+      handlers[event] ||= []
+      handlers[event] << callable if callable
+      handlers[event] << block if block_given?
+    end
+
+    def self.for_event(event)
+      handlers[event]
     end
   end
 end

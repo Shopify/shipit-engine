@@ -154,16 +154,28 @@ module Shipit
     end
 
     test "other events trigger custom handlers" do
-      received_webhooks = []
-      Shipit::WebhooksController.register_handler do |type, params|
-        received_webhooks << [type, params]
-      end
+      event = 'pull_request'
+      mock_handler = mock
+      mock_handler.expects(:call).with(pull_request_params.stringify_keys).once
+      Shipit::Webhooks.register_handler(event, mock_handler)
 
-      @request.headers['X-Github-Event'] = 'pull_request'
+      @request.headers['X-Github-Event'] = event
       post :create, body: pull_request_params.to_json, as: :json
       assert_response :ok
+    end
 
-      assert_equal [['pull_request', pull_request_params.stringify_keys]], received_webhooks
+    test 'custom handlers do not replace default shipit handlers' do
+      event = 'membership'
+      mock_handler = mock
+      mock_handler.expects(:call).once
+      Shipit::Webhooks::Handlers::MembershipHandler.expects(:call).once
+      Shipit::Webhooks.register_handler(event, mock_handler)
+
+      @request.headers['X-Github-Event'] = event
+      post :create, body: membership_params.to_json, as: :json
+      assert_response :ok
+
+      Shipit::Webhooks.reset_handler_registry
     end
 
     private

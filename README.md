@@ -642,14 +642,26 @@ For Kubernetes, you have to provision Shipit environment with the following tool
 
 <h3 id="integrating-webhooks">Registering webhooks</h3>
 
-Shipit handles several webhook types by default, listed in `Shipit::WebhooksController::HANDLERS`, in order to implement default behaviours. Extra handler blocks can be registered via `Shipit::WebhooksController.register_handler`, eg:
+Shipit handles several webhook types by default, listed in `Shipit::Wehbooks::DEFAULT_HANDLERS`, in order to implement default behaviours. Extra handler blocks can be registered via `Shipit::Webhooks.register_handler`. Valid handlers need only implement the `call` method - meaning any object which implements `call` - blocks, procs, or lambdas are valid. The webhooks controller will pass a `params` argument to the handler. Some examples:
+
+
+<h4>Registering a Plain old Ruby Object as a handler</h4>
 
 ```ruby
-Shipit::WebhooksController.register_handler do |type, params|
-  case type
-  when 'pull_request'
-    Rails.logger.info "Received PR #{params['action']} webhook for PR #{params[['number']}"
+class PullRequestHandler
+  def call(params)
+    # do something with pull request webhook events
   end
+end
+
+Shipit::Webhooks.register_handler('pull_request', PullRequestHandler)
+```
+
+<h4>Registering a Block as a handler</h4>
+
+```ruby
+Shipit::Webhooks.register_handler('pull_requet') do |params|
+  # do something with pull request webhook events
 end
 ```
 

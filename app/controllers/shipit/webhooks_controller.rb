@@ -5,23 +5,9 @@ module Shipit
 
     respond_to :json
 
-    HANDLERS = {
-      'push' => PushHandler,
-      'status' => StatusHandler,
-      'membership' => MembershipHandler,
-      'check_suite' => CheckSuiteHandler,
-    }.freeze
-
     def create
       params = JSON.parse(request.raw_post)
-
-      if handler = HANDLERS[event]
-        handler.new(params).process
-      end
-
-      Shipit::Webhooks.extra_handlers.each do |extra_handler|
-        extra_handler.call(event, params)
-      end
+      Shipit::Webhooks.for_event(event).each { |handler| handler.call(params) }
 
       head :ok
     end
