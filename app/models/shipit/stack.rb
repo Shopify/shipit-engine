@@ -43,6 +43,9 @@ module Shipit
 
     scope :not_archived, -> { where(archived_since: nil) }
 
+    include DeferredTouch
+    deferred_touch repository: :updated_at
+
     def repository
       super || build_repository
     end
