@@ -50,6 +50,7 @@ require 'shipit/stat'
 require 'shipit/github_http_cache_middleware'
 require 'shipit/cast_value'
 require 'shipit/line_buffer'
+require 'shipit/webhooks'
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 SafeYAML::OPTIONS[:deserialize_symbols] = false
