@@ -8,10 +8,28 @@
 
     <div class="setting-section">
       <%= form_for @repository do |f| %>
-        <div class="field-wrapper">
-          <%= f.check_box :provision_pr_stacks %>
-          <%= f.label :provision_pr_stacks, "Dynamically provision stacks for Pull Requests?" %>
-        </div>
+        <fieldset class="form-group">
+          <div class="field-wrapper">
+            <%= f.check_box :provision_pr_stacks %>
+            <%= f.label :provision_pr_stacks, "Dynamically provision stacks for Pull Requests?" %>
+          </div>
+
+          <div class="field-wrapper">
+            <%= f.label :provisioning_behavior, "Provisioning behavior", aria: { describedby: 'provisioningBehaviorHelp' } %>
+            <%= f.select :provisioning_behavior, Shipit::Repository.provisioning_behaviors.map { |key, value| [ key.titleize, key] } %>
+            <p>
+              <small class="form-text text-muted" id="provisioningBehaviorHelp">
+                When "Allow All", the provisioning label has no affect on dynamic stack provisioning - ALL Pull Requests dynamically provision stacks.<br />
+                When "Allow With Label", dynamic provisioning occurs ONLY for Pull Requests whose labels include the 'Provisioning Label'.<br />
+                When "Prevent With Label", dynmic provisioning will occur for every Pull Request EXCEPT those whose labels include the 'Provisioning Label'.<br />
+              </small>
+            </p>
+          </div>
+          <div class="field-wrapper">
+            <%= f.label :provisioning_label_name, "Provisioning label" %>
+            <%= f.text_field :provisioning_label_name %>
+          </div>
+        </fieldset>
 
         <%= f.submit class: "btn", value: "Save" %>
       <% end %>

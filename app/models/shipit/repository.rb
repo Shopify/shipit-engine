@@ -14,6 +14,15 @@ module Shipit
 
     has_many :stacks, dependent: :destroy
 
+    enum(
+      provisioning_behavior: {
+        allow_all: 0,
+        allow_with_label: 1,
+        prevent_with_label: 2,
+      },
+      _prefix: :provisioning_behavior,
+    )
+
     def self.from_github_repo_name(github_repo_name)
       repo_owner, repo_name = github_repo_name.downcase.split('/')
       find_by(owner: repo_owner, name: repo_name)
