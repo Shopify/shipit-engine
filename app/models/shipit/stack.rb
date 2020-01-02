@@ -37,6 +37,7 @@ module Shipit
     has_many :github_hooks, dependent: :destroy, class_name: 'Shipit::GithubHook::Repo'
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
+    has_many :extra_variables, dependent: :destroy
     belongs_to :lock_author, class_name: :User, optional: true
     belongs_to :repository
     validates_associated :repository

@@ -198,6 +198,12 @@ module Shipit
       end
     end
 
+    test "#destroy also destroy extra variables" do
+      assert_difference -> { ExtraVariable.count }, -shipit_stacks(:shipit).extra_variables.count do
+        shipit_stacks(:shipit).destroy
+      end
+    end
+
     test "#destroy delete all local files (git mirror and deploy clones)" do
       FileUtils.expects(:rm_rf).with(Rails.root.join('data', 'stacks', 'shopify', 'shipit-engine', 'production').to_s)
       shipit_stacks(:shipit).destroy

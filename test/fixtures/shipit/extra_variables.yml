@@ -1,0 +1,4 @@
+target:
+  key: TARGET
+  value: foo
+  stack: shipit

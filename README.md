@@ -625,6 +625,8 @@ These variables are accessible only during deploys and rollback:
 * `REVISION`: the git SHA of the revision that must be deployed in production
 * `SHA`: alias for REVISION
 
+On top of that, any other extra variable defined in the stack configuration page will also be made available during your deploy and rollback script execution.
+
 <h2 id="configuring-providers">Configuring providers</h2>
 
 ### Heroku
