@@ -2,3 +2,8 @@ target:
   key: TARGET
   value: foo
   stack: shipit
+
+extra:
+  key: EXTRA
+  value: bar
+  stack: shipit

@@ -29,21 +29,23 @@ module Shipit
 
     def env
       normalized_name = ActiveSupport::Inflector.transliterate(@task.author.name)
-      super.merge(
-        'ENVIRONMENT' => @stack.environment,
-        'BRANCH' => @stack.branch,
-        'SHIPIT_USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
-        'EMAIL' => @task.author.email,
-        'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
-        'SHIPIT_LINK' => @task.permalink,
-        'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
-        'TASK_ID' => @task.id.to_s,
-        'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
-        'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
-        'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
-        'GITHUB_REPO_OWNER' => @stack.repository.owner,
-        'GITHUB_REPO_NAME' => @stack.repository.name,
-      ).merge(deploy_spec.machine_env).merge(@task.env)
+      merge_variables(
+        super.merge(
+          'ENVIRONMENT' => @stack.environment,
+          'BRANCH' => @stack.branch,
+          'SHIPIT_USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
+          'EMAIL' => @task.author.email,
+          'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
+          'SHIPIT_LINK' => @task.permalink,
+          'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
+          'TASK_ID' => @task.id.to_s,
+          'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
+          'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
+          'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
+          'GITHUB_REPO_OWNER' => @stack.repository.owner,
+          'GITHUB_REPO_NAME' => @stack.repository.name,
+        ),
+      )
     end
 
     def checkout(commit)
@@ -80,6 +82,16 @@ module Shipit
       else
         @task.working_directory
       end
+    end
+
+    def stack_extra_variables
+      @stack.extra_variables.inject({}) do |hash, ev|
+        hash.merge!(ev.key => ev.value)
+      end
+    end
+
+    def merge_variables(env)
+      env.merge(deploy_spec.machine_env).merge(@task.env).merge(stack_extra_variables)
     end
   end
 end

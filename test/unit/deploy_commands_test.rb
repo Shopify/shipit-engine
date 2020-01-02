@@ -172,6 +172,15 @@ module Shipit
       assert_equal '1', @commands.env['GLOBAL']
     end
 
+    test "#perform merges stack extra variables in ENVIRONMENT" do
+      commands = @commands.perform
+      assert_equal 1, commands.length
+      command = commands.first
+      @stack.extra_variables.each do |ev|
+        assert_equal ev.value, command.env[ev.key]
+      end
+    end
+
     test "#install_dependencies calls bundle install" do
       commands = @commands.install_dependencies
       assert_equal 1, commands.length
