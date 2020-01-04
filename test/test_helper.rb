@@ -13,6 +13,7 @@ ActiveRecord::Migrator.migrations_paths = [
 require 'rails/test_help'
 require 'mocha/minitest'
 require 'spy/integration'
+require 'faker'
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
@@ -65,5 +66,22 @@ class ActiveSupport::TestCase
 
   def resource(data)
     Sawyer::Resource.new(Sawyer::Agent.new('http://example.com'), data)
+  end
+
+  # assert if two list of objets are similar based on the keys you want to compare
+  def assert_object_keys(expected, actual, *attr)
+    expected_hash = expected.map do |item|
+       attributes = item.attributes.symbolize_keys
+       attributes = attributes.extract!(*attr) unless attr.nil?
+       attributes
+    end
+
+    actual_hash = actual.map do |item|
+      attributes = item.attributes.symbolize_keys
+      attributes = attributes.extract!(*attr) unless attr.nil?
+      attributes
+    end
+
+    assert_equal expected_hash, actual_hash
   end
 end

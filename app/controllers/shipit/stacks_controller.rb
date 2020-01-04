@@ -107,6 +107,12 @@ module Shipit
         end
       end
 
+      updated_extra_variables = extra_variables.map { |ev| ExtraVariable.new(key: ev[:key], value: ev[:value]) }
+
+      unless @stack.extra_variables.replace(updated_extra_variables)
+        options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
+      end
+
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
     end
 
@@ -141,6 +147,16 @@ module Shipit
         :ignore_ci,
         :merge_queue_enabled,
       )
+    end
+
+    def extra_variables_params
+      params.require(:stack).permit(
+        extra_variables: [:key, :value]
+      )
+    end
+
+    def extra_variables
+      extra_variables_params[:extra_variables] || []
     end
 
     def repository

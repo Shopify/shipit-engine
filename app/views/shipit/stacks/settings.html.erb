@@ -37,6 +37,8 @@
           <%= f.label :ignore_ci, "Don't require CI to deploy" %>
         </div>
 
+        <%= render 'extra_variables_form'%>
+
         <%= f.submit class: "btn", value: "Save" %>
       <% end %>
     </div>

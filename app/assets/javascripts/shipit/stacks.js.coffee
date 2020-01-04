@@ -22,6 +22,49 @@ $document.on 'click', '.action-set-release-status', (event) ->
     $deploy.attr('data-release-status', last_status.state)
   )
 
+$document.on 'click', '#add-new-variable', (event) ->
+  event.preventDefault()
+  formFields = $(event.target).closest('form').find('.field-list')[0]
+  template = document.querySelector("template[id='stack-variable-form-input']")
+
+  formFields.appendChild(document.importNode(template.content, true))
+
+$document.on 'change', '#stack_extra_variables__key', (event) ->
+  validateExtraVariables()
+
+$document.on 'click', '#remove-variable', (event) ->
+  event.preventDefault()
+  formField = $(event.target).closest('div')[0]
+  formField.parentNode.removeChild(formField)
+  validateExtraVariables()
+
+validateExtraVariables = () ->
+  $keysInputs = document.querySelectorAll('input#stack_extra_variables__key')
+
+  allKeys = []
+  $keysInputs.forEach (item) ->
+    allKeys.push(item.value)
+
+  $keysInputs.forEach (item) ->
+    $submit = $(item).closest('form').find("input[type='submit']")
+    if (allOcurrences(allKeys, item.value).length > 1)
+      $submit.addClass('btn--disabled')
+      $submit.prop('disabled', true)
+      $(item).addClass('field-invalid')
+    else
+      $submit.removeClass('btn--disabled')
+      $submit.prop('disabled', false)
+      $(item).removeClass('field-invalid')
+
+allOcurrences = (items, element) ->
+    indexes = []
+    idx = items.indexOf(element)
+    while (idx != -1)
+      indexes.push(idx)
+      idx = items.indexOf(element, idx + 1)
+
+    indexes
+
 jQuery ($) ->
   displayIgnoreCiMessage = ->
     ignoreCiMessage = $(".ignoring-ci")
