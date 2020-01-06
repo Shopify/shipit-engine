@@ -16,8 +16,8 @@ module Shipit
     belongs_to :user, optional: true
     belongs_to :aborted_by, class_name: 'User', optional: true
     belongs_to :stack, counter_cache: true
-    belongs_to :until_commit, class_name: 'Commit'
-    belongs_to :since_commit, class_name: 'Commit'
+    belongs_to :until_commit, class_name: 'Commit', required: false
+    belongs_to :since_commit, class_name: 'Commit', required: false
 
     deferred_touch stack: :updated_at
 

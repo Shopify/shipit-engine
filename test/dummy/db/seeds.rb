@@ -198,8 +198,6 @@ module Shipit
     write_output(rollback)
 
     task = stack.tasks.create!(
-      since_commit_id: stack.last_deployed_commit.id,
-      until_commit_id: stack.last_deployed_commit.id,
       status: "success",
       user: users.sample,
       definition: TaskDefinition.new('restart',

@@ -14,6 +14,8 @@ module Shipit
       after_transition any => any, do: :update_last_deploy_time
     end
 
+    belongs_to :until_commit, class_name: 'Commit', required: true, inverse_of: :deploys
+    belongs_to :since_commit, class_name: 'Commit', required: true, inverse_of: :deploys
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
         'pending' => 'in_progress',

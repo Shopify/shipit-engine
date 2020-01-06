@@ -29,8 +29,6 @@ shipit2:
 shipit_restart:
   id: 3
   user: walrus
-  since_commit_id: 2 # second
-  until_commit_id: 2 # second
   type: Shipit::Task
   stack: shipit
   status: success

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_163010) do
+ActiveRecord::Schema.define(version: 2020_01_02_175621) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -195,6 +195,9 @@ ActiveRecord::Schema.define(version: 2019_12_16_163010) do
     t.string "name", limit: 39, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "provision_pr_stacks", default: false
+    t.integer "provisioning_behavior", default: 0
+    t.string "provisioning_label_name"
     t.index ["owner", "name"], name: "repository_unicity", unique: true
   end
 
@@ -218,6 +221,8 @@ ActiveRecord::Schema.define(version: 2019_12_16_163010) do
     t.boolean "merge_queue_enabled", default: false, null: false
     t.datetime "last_deployed_at"
     t.integer "repository_id", null: false
+    t.datetime "archived_since"
+    t.index ["archived_since"], name: "index_stacks_on_archived_since"
     t.index ["repository_id", "environment"], name: "stack_unicity", unique: true
     t.index ["repository_id"], name: "index_stacks_on_repository_id"
   end
@@ -236,8 +241,8 @@ ActiveRecord::Schema.define(version: 2019_12_16_163010) do
 
   create_table "tasks", force: :cascade do |t|
     t.integer "stack_id", limit: 4, null: false
-    t.integer "since_commit_id", limit: 4, null: false
-    t.integer "until_commit_id", limit: 4, null: false
+    t.integer "since_commit_id", limit: 4
+    t.integer "until_commit_id", limit: 4
     t.string "status", limit: 10, default: "pending", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
