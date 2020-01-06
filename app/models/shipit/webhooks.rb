@@ -1,5 +1,3 @@
-require 'shipit/webhooks/handlers'
-
 module Shipit
   module Webhooks
     class << self

@@ -1,4 +1,3 @@
-require 'shipit/webhooks/handlers/handler'
 module Shipit
   module Webhooks
     module Handlers
