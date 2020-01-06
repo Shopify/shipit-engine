@@ -4,6 +4,8 @@ module Shipit
       extend ActiveSupport::Concern
       DEFAULT_TIMEOUT = 10
 
+      ConcurrentJobError = Class.new(StandardError)
+
       included do
         around_perform { |job, block| job.acquire_lock(&block) }
         cattr_accessor :lock_timeout
@@ -19,7 +21,7 @@ module Shipit
         )
         mutex.lock(&block)
       rescue Redis::Lock::LockTimeout
-        raise unless self.class.drop_duplicate_jobs?
+        raise ConcurrentJobError unless self.class.drop_duplicate_jobs?
       end
 
       def lock_key(*args)
