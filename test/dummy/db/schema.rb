@@ -191,8 +191,8 @@ ActiveRecord::Schema.define(version: 2020_01_02_175621) do
   end
 
   create_table "repositories", force: :cascade do |t|
-    t.string "owner", limit: 100, null: false
-    t.string "name", limit: 39, null: false
+    t.string "owner", limit: 39, null: false
+    t.string "name", limit: 100, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "provision_pr_stacks", default: false

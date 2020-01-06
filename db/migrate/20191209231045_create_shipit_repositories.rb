@@ -1,8 +1,8 @@
 class CreateShipitRepositories < ActiveRecord::Migration[6.0]
   def change
     create_table :repositories do |t|
-      t.string :owner, limit: 100, null: false
-      t.string :name, limit: 39, null: false
+      t.string :owner, limit: 39, null: false
+      t.string :name, limit: 100, null: false
 
       t.timestamps
     end
