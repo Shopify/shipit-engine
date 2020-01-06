@@ -11,10 +11,10 @@ module Shipit
       end
 
       def handlers
-        @handlers ||= reset_handler_registry
+        @handlers ||= reset_handlers!
       end
 
-      def reset_handler_registry
+      def reset_handlers!
         @handlers = default_handlers
       end
 

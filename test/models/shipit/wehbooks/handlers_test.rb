@@ -11,7 +11,7 @@ module Shipit
         assert_includes Shipit::Webhooks.for_event(event), mock_handler
         assert_includes Shipit::Webhooks.for_event(event), Shipit::Webhooks::Handlers::PushHandler
 
-        Shipit::Webhooks.reset_handler_registry
+        Shipit::Webhooks.reset_handlers!
       end
 
       test "unknown events have no handlers" do
