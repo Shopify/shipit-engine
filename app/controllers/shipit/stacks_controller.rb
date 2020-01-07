@@ -54,9 +54,13 @@ module Shipit
     def create
       @stack = Stack.new(create_params)
       @stack.repository = repository
+
       unless @stack.save
         flash[:warning] = @stack.errors.full_messages.to_sentence
       end
+
+      create_extra_variables
+
       respond_with(@stack)
     end
 
@@ -107,11 +111,7 @@ module Shipit
         end
       end
 
-      updated_extra_variables = extra_variables.map { |ev| ExtraVariable.new(key: ev[:key], value: ev[:value]) }
-
-      unless @stack.extra_variables.replace(updated_extra_variables)
-        options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
-      end
+      create_extra_variables
 
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
     end
@@ -151,7 +151,7 @@ module Shipit
 
     def extra_variables_params
       params.require(:stack).permit(
-        extra_variables: [:key, :value]
+        extra_variables: %i(key value),
       )
     end
 
@@ -173,6 +173,12 @@ module Shipit
 
     def repository_params
       params.require(:stack).permit(:repo_owner, :repo_name)
+    end
+
+    def create_extra_variables
+      updated_extra_variables = extra_variables.map { |ev| ExtraVariable.new(key: ev[:key], value: ev[:value]) }
+
+      @stack.extra_variables.replace(updated_extra_variables)
     end
   end
 end

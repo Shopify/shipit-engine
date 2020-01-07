@@ -32,6 +32,9 @@
           <%= f.check_box :ignore_ci %>
           <%= f.label :ignore_ci, "Allow deploys regardless of CI status" %>
         </div>
+
+        <%= render 'extra_variables_form' %>
+
         <div class="field-wrapper"><%= f.submit class: 'btn' %></div>
       <% end %>
     </div>

@@ -98,6 +98,29 @@ module Shipit
       assert_response :success
     end
 
+    test "#create adds stack extra variables" do
+      extra_vars = [
+        ExtraVariable.new(key: Faker::Alphanumeric.alpha(number: 10).upcase, value: Faker::Alphanumeric.alpha(number: 10).upcase),
+        ExtraVariable.new(key: Faker::Alphanumeric.alpha(number: 10).upcase, value: Faker::Alphanumeric.alpha(number: 10).upcase),
+        ExtraVariable.new(key: Faker::Alphanumeric.alpha(number: 10).upcase, value: Faker::Alphanumeric.alpha(number: 10).upcase),
+      ]
+      extra_vars_params = extra_vars.map { |element| element.attributes.extract!("key", "value") }
+
+      assert_difference "ExtraVariable.count", 3 do
+        post :create, params: {
+          stack: {
+            repo_name: 'rails',
+            repo_owner: 'rails',
+            environment: 'staging',
+            branch: 'staging',
+            extra_variables: extra_vars_params,
+          },
+        }
+      end
+
+      assert_redirected_to stack_path(Stack.last)
+    end
+
     test "#destroy enqueues a DestroyStackJob" do
       assert_enqueued_with(job: DestroyStackJob, args: [@stack]) do
         delete :destroy, params: {id: @stack.to_param}
@@ -174,7 +197,7 @@ module Shipit
       ]
       extra_vars_params = extra_vars.map { |element| element.attributes.extract!("key", "value") }
 
-      patch :update, params: { id: @stack.to_param, stack: { extra_variables: extra_vars_params } }
+      patch :update, params: {id: @stack.to_param, stack: {extra_variables: extra_vars_params}}
 
       @stack.reload
 
