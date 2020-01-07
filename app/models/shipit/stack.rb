@@ -41,6 +41,8 @@ module Shipit
     belongs_to :repository
     validates_associated :repository
 
+    scope :not_archived, -> { where(archived_since: nil) }
+
     def repository
       super || build_repository
     end
@@ -65,8 +67,10 @@ module Shipit
     after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
 
-    validates :repository, uniqueness: {scope: %i(environment), case_sensitive: false,
-                                        message: 'cannot be used more than once with this environment'}
+    validates :repository, uniqueness: {
+      scope: %i(environment), case_sensitive: false,
+      message: 'cannot be used more than once with this environment. Check archived stacks.'
+    }
     validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
     validates :deploy_url, format: {with: URI.regexp(%w(http https ssh))}, allow_blank: true
 
@@ -400,6 +404,18 @@ module Shipit
 
     def unlock
       update!(lock_reason: nil, lock_author: nil, locked_since: nil)
+    end
+
+    def archived?
+      archived_since.present?
+    end
+
+    def archive!(user)
+      update!(archived_since: Time.now, lock_reason: "Archived", lock_author: user)
+    end
+
+    def unarchive!
+      update!(archived_since: nil, lock_reason: nil, lock_author: nil, locked_since: nil)
     end
 
     def to_param

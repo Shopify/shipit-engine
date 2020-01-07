@@ -9,7 +9,12 @@ module Shipit
     def index
       @user_stacks = current_user.stacks_contributed_to
 
-      @stacks = Stack.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc).to_a
+      @stacks = Stack.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc)
+
+      @show_archived = params[:show_archived]
+      @stacks = @stacks.not_archived unless @show_archived
+
+      @stacks = @stacks.to_a
     end
 
     def show
@@ -88,6 +93,14 @@ module Shipit
         @stack.lock(reason, current_user)
       elsif @stack.locked?
         @stack.unlock
+      end
+
+      if params[:stack][:archived].present?
+        if params[:stack][:archived] == "true"
+          @stack.archive!(current_user)
+        elsif @stack.archived?
+          @stack.unarchive!
+        end
       end
 
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)

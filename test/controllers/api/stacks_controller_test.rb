@@ -56,7 +56,9 @@ module Shipit
         end
 
         assert_response :unprocessable_entity
-        assert_json 'errors', 'repository' => ['cannot be used more than once with this environment']
+        assert_json 'errors', 'repository' => [
+          'cannot be used more than once with this environment. Check archived stacks.',
+        ]
       end
 
       test "#index returns a list of stacks" do

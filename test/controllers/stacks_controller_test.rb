@@ -134,6 +134,30 @@ module Shipit
       assert_instance_of AnonymousUser, @stack.lock_author
     end
 
+    test "#update allows to archive the stack" do
+      refute @stack.archived?
+      refute @stack.locked?
+
+      patch :update, params: {id: @stack.to_param, stack: {archived: "true"}}
+      @stack.reload
+      assert @stack.archived?
+      assert @stack.locked?
+      assert_equal shipit_users(:walrus), @stack.lock_author
+      assert_equal "Archived", @stack.lock_reason
+    end
+
+    test "#update allows to dearchive the stack" do
+      @stack.archive!(shipit_users(:walrus))
+      assert @stack.locked?
+      assert @stack.archived?
+
+      patch :update, params: {id: @stack.to_param, stack: {archived: "false"}}
+      @stack.reload
+      refute @stack.archived?
+      refute @stack.locked?
+      assert_instance_of AnonymousUser, @stack.lock_author
+    end
+
     test "#refresh queues a RefreshStatusesJob and a GithubSyncJob" do
       request.env['HTTP_REFERER'] = stack_settings_path(@stack)
 
