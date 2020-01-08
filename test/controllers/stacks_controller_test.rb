@@ -115,6 +115,12 @@ module Shipit
       assert_response :success
     end
 
+    test "#statistics redirects to #show if no deploys are present" do
+      @stack.deploys.destroy_all
+      get :statistics, params: {id: @stack.to_param}
+      assert_redirected_to stack_path(@stack)
+    end
+
     test "#update allows to lock the stack" do
       refute @stack.locked?
 
