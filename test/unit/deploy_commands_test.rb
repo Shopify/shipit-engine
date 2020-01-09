@@ -212,6 +212,11 @@ module Shipit
       assert_equal walrus.name, @commands.env['GIT_COMMITTER_NAME']
     end
 
+    test "GitHub repo details are exposed" do
+      assert_equal 'shopify', @commands.env['GITHUB_REPO_OWNER']
+      assert_equal 'shipit-engine', @commands.env['GITHUB_REPO_NAME']
+    end
+
     test "#clear_working_directory rm -rf the working directory" do
       FileUtils.expects(:rm_rf).with(@deploy.working_directory)
       @commands.clear_working_directory

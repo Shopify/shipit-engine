@@ -1,5 +1,7 @@
 module Shipit
   class DeployStats
+    delegate :empty?, to: :@deploys
+
     def initialize(deploys)
       @deploys = deploys
       @durations = @deploys.map { |d| d.duration.value }.compact
@@ -10,7 +12,7 @@ module Shipit
     end
 
     def average_duration
-      return if @durations.empty?
+      return if empty?
       @durations.sum / @durations.length.to_f
     end
 
@@ -28,7 +30,7 @@ module Shipit
     end
 
     def success_rate
-      return if @deploys.empty?
+      return if empty?
       (@deploys.count(&:success?) / @deploys.length.to_f) * 100
     end
 

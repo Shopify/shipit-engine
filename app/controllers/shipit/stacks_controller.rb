@@ -71,6 +71,10 @@ module Shipit
     def statistics
       previous_deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.previous_seven_days)
       @deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.last_seven_days)
+      if @deploy_stats.empty?
+        flash[:warning] = 'Statistics not available without previous deploys'
+        return redirect_to stack_path(@stack)
+      end
       @diffs = @deploy_stats.compare(previous_deploy_stats)
     end
 

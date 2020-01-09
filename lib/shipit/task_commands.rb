@@ -41,6 +41,8 @@ module Shipit
         'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
         'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
         'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
+        'GITHUB_REPO_OWNER' => @stack.repository.owner,
+        'GITHUB_REPO_NAME' => @stack.repository.name,
       ).merge(deploy_spec.machine_env).merge(@task.env)
     end
 
