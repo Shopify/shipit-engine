@@ -28,16 +28,16 @@ module Shipit
     end
 
     def env
-      normalized_name = ActiveSupport::Inflector.transliterate(@task.author.name)
       super.merge(
         'ENVIRONMENT' => @stack.environment,
         'BRANCH' => @stack.branch,
-        'SHIPIT_USER' => "#{@task.author.login} (#{normalized_name}) via Shipit",
+        'SHIPIT_USER' => "#{@task.author.login} (#{normalized_author_name}) via Shipit",
         'EMAIL' => @task.author.email,
         'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
         'SHIPIT_LINK' => @task.permalink,
         'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
         'TASK_ID' => @task.id.to_s,
+        'DEPLOY_URL' => @stack.deploy_url,
         'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
         'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
         'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
@@ -70,6 +70,12 @@ module Shipit
 
     def clear_working_directory
       FileUtils.rm_rf(@task.working_directory) if deploy_spec.clear_working_directory?
+    end
+
+    private
+
+    def normalized_author_name
+      ActiveSupport::Inflector.transliterate(@task.author.name)
     end
 
     protected
