@@ -300,17 +300,15 @@ module Shipit
       end
     end
 
-    test "creating a deploy creates one CommitDeployment and status per commit" do
+    test 'create enqueues CreateDeploymentsForTaskJob' do
       shipit = shipit_stacks(:shipit)
       deploy = shipit.deploys.build(
         since_commit: shipit.commits.first,
         until_commit: shipit.commits.last,
       )
 
-      assert_difference -> { CommitDeployment.count }, deploy.commits.size do
-        assert_difference -> { CommitDeploymentStatus.count }, deploy.commits.size do
-          deploy.save!
-        end
+      assert_enqueued_with(job: CreateDeploymentsForTaskJob, args: [deploy]) do
+        deploy.save!
       end
     end
 

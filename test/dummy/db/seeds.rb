@@ -14,6 +14,8 @@ module Shipit
   Commit.send(:define_method, :refresh_statuses!) {}
   Commit.send(:define_method, :refresh_check_runs!) {}
   ReleaseStatus.send(:define_method, :create_status_on_github!) {}
+  CommitDeployment.send(:define_method, :schedule_create_on_github) {}
+  CommitDeploymentStatus.send(:define_method, :schedule_create_on_github) {}
 
   users = 3.times.map do
     User.create!(

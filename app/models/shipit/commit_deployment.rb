@@ -1,6 +1,5 @@
 module Shipit
   class CommitDeployment < ActiveRecord::Base
-    belongs_to :commit
     belongs_to :task
     has_many :statuses, dependent: :destroy, class_name: 'CommitDeploymentStatus'
 
@@ -9,8 +8,6 @@ module Shipit
     delegate :stack, :author, to: :task
 
     def create_on_github!
-      return unless commit.pull_request?
-
       create_deployment_on_github!
       statuses.order(id: :asc).each(&:create_on_github!)
     rescue Octokit::NotFound, Octokit::Forbidden
@@ -34,11 +31,6 @@ module Shipit
       update!(github_id: response.id, api_url: response.url)
     end
 
-    def pull_request_head
-      pull_request = Shipit.github.api.pull_request(stack.github_repo_name, commit.pull_request_number)
-      pull_request.head.sha
-    end
-
     def schedule_create_on_github
       CreateOnGithubJob.perform_later(self)
     end
@@ -48,7 +40,7 @@ module Shipit
     def create_deployment_on_github(client)
       client.create_deployment(
         stack.github_repo_name,
-        pull_request_head,
+        sha,
         auto_merge: false,
         required_contexts: [],
         description: "Via #{Shipit.app_name}",
