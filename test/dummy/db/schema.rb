@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_02_175621) do
+ActiveRecord::Schema.define(version: 2020_01_09_132519) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2020_01_02_175621) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sha", limit: 40
     t.index ["commit_id", "task_id"], name: "index_commit_deployments_on_commit_id_and_task_id", unique: true
     t.index ["task_id"], name: "index_commit_deployments_on_task_id"
   end

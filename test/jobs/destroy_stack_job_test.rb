@@ -14,5 +14,14 @@ module Shipit
         @job.perform(@stack)
       end
     end
+
+    test "perform destroys the CommitDeployments of the received stack" do
+      stack = shipit_stacks(:shipit)
+      Shipit.legacy_github_api.stubs(:remove_hook)
+
+      assert_changes -> { CommitDeployment.count }, 'CommitDeployments not deleted' do
+        @job.perform(stack)
+      end
+    end
   end
 end

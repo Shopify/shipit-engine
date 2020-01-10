@@ -18,7 +18,8 @@ module Shipit
     belongs_to :since_commit, class_name: 'Commit', required: true, inverse_of: :deploys
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
-        'pending' => 'in_progress',
+        'pending' => 'pending',
+        'running' => 'in_progress',
         'failed' => 'failure',
         'success' => 'success',
         'error' => 'error',
@@ -30,6 +31,8 @@ module Shipit
           each do |deployment|
             deployment.statuses.create!(status: github_status)
           end
+        else
+          Rails.logger.warn("No GitHub status for task status #{task_status}")
         end
       end
     end
@@ -217,15 +220,14 @@ module Shipit
       end
     end
 
+    def update_commit_deployments
+      commit_deployments.append_status(status)
+    end
+
     private
 
     def create_commit_deployments
-      commits.each do |commit|
-        commit_deployments.create!(commit: commit)
-      end
-
-      # Immediately update to publish the status to the commit deployments
-      update_commit_deployments
+      CreateDeploymentsForTaskJob.perform_later(self)
     end
 
     def update_release_status
@@ -248,10 +250,6 @@ module Shipit
           append_release_status('success', "The deploy on #{stack.environment} succeeded")
         end
       end
-    end
-
-    def update_commit_deployments
-      commit_deployments.append_status(status)
     end
 
     def trigger_revert_if_required
