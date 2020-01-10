@@ -6,7 +6,6 @@ module Shipit
       @status = shipit_commit_deployment_statuses(:shipit2_deploy_third_in_progress)
       @deployment = @status.commit_deployment
       @task = @deployment.task
-      @commit = @deployment.commit
       @author = @deployment.author
     end
 
@@ -17,7 +16,7 @@ module Shipit
         'in_progress',
         accept: "application/vnd.github.flash-preview+json",
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
-        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@commit.sha}",
+        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.sha}",
       ).returns(response)
 
       @status.create_on_github!

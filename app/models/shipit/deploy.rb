@@ -217,15 +217,14 @@ module Shipit
       end
     end
 
+    def update_commit_deployments
+      commit_deployments.append_status(status)
+    end
+
     private
 
     def create_commit_deployments
-      commits.each do |commit|
-        commit_deployments.create!(commit: commit)
-      end
-
-      # Immediately update to publish the status to the commit deployments
-      update_commit_deployments
+      CreateDeploymentsForTaskJob.perform_later(self)
     end
 
     def update_release_status
@@ -248,10 +247,6 @@ module Shipit
           append_release_status('success', "The deploy on #{stack.environment} succeeded")
         end
       end
-    end
-
-    def update_commit_deployments
-      commit_deployments.append_status(status)
     end
 
     def trigger_revert_if_required

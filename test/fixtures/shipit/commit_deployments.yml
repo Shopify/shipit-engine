@@ -1,37 +1,37 @@
 shipit_deploy_second:
-  commit_id: 2 # second
+  sha: f890fd8b5f2be05d1fedb763a3605ee461c39074 # second
   task_id: 1 # shipit
   api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/1
   github_id: 1
 
 shipit2_deploy_third:
-  commit_id: 3 # third
+  sha: 367578b362bf2b4df5903e1c7960929361c39074 # third
   task_id: 2 # shipit2
   api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/2
   github_id: 2
 
 shipit_pending_third:
-  commit_id: 3 # third
+  sha: 367578b362bf2b4df5903e1c7960929361c39074 # third
   task_id: 4 # shipit_pending
   api_url: https://api.github.com/repos/shopify/shipit-engine/deployments/3
   github_id: 3
 
 shipit_pending_fourth:
-  commit_id: 4 # fourth
+  sha: 467578b362bf2b4df5903e1c7960929361c3435a # fourth
   task_id: 4 # shipit_pending
 
 shipit_running_fourth:
-  commit_id: 4 # fourth
+  sha: 467578b362bf2b4df5903e1c7960929361c3435a # fourth
   task_id: 5 # shipit_running
 
 shipit_complete_fourth:
-  commit_id: 4 # fourth
+  sha: 467578b362bf2b4df5903e1c7960929361c3435a # fourth
   task_id: 6 # shipit_complete
 
 shipit_aborted_fourth:
-  commit_id: 4 # fourth
+  sha: 467578b362bf2b4df5903e1c7960929361c3435a # fourth
   task_id: 7 # shipit_aborted
 
 shipit_rollback_fourth:
-  commit_id: 4 # fourth
+  sha: 467578b362bf2b4df5903e1c7960929361c3435a # fourth
   task_id: 8 # shipit_rollback
