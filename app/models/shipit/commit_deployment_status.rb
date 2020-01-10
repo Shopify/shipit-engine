@@ -36,7 +36,7 @@ module Shipit
     end
 
     def schedule_create_on_github
-      CreateOnGithubJob.perform_later(commit_deployment)
+      CreateOnGithubJob.perform_later(self)
     end
 
     private
