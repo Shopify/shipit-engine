@@ -2,6 +2,7 @@ shipit:
   repository: shipit
   environment: "production"
   branch: master
+  deploy_url: https://shipit.shopify.com
   ignore_ci: false
   merge_queue_enabled: true
   tasks_count: 8

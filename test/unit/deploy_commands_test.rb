@@ -217,6 +217,10 @@ module Shipit
       assert_equal 'shipit-engine', @commands.env['GITHUB_REPO_NAME']
     end
 
+    test "Stack DEPLOY_URL is exposed" do
+      assert_equal "https://shipit.shopify.com", @commands.env['DEPLOY_URL']
+    end
+
     test "#clear_working_directory rm -rf the working directory" do
       FileUtils.expects(:rm_rf).with(@deploy.working_directory)
       @commands.clear_working_directory
