@@ -29,6 +29,7 @@ module Shipit
       def append_status(task_status)
         if github_status = GITHUB_STATUSES[task_status]
           each do |deployment|
+            Rails.logger.info("Creating #{github_status} deploy status for deployment #{deployment.id}")
             deployment.statuses.create!(status: github_status)
           end
         else
