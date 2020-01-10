@@ -18,7 +18,8 @@ module Shipit
     belongs_to :since_commit, class_name: 'Commit', required: true, inverse_of: :deploys
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
-        'pending' => 'in_progress',
+        'pending' => 'pending',
+        'running' => 'in_progress',
         'failed' => 'failure',
         'success' => 'success',
         'error' => 'error',
@@ -30,6 +31,8 @@ module Shipit
           each do |deployment|
             deployment.statuses.create!(status: github_status)
           end
+        else
+          Rails.logger.warn("No GitHub status for task status #{task_status}")
         end
       end
     end
