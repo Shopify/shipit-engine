@@ -55,6 +55,30 @@ module Shipit
       assert_equal shipit_deploys(:shipit_complete).until_commit_id, deploy.since_commit_id
     end
 
+    test "#trigger_deploy emits a hook" do
+      original_receivers = Shipit.internal_hook_receivers
+
+      FakeReceiver = Module.new do
+        mattr_accessor :hooks
+        self.hooks = []
+
+        def self.deliver(event, stack, payload)
+          hooks << [event, stack, payload]
+        end
+      end
+      Shipit.internal_hook_receivers = [FakeReceiver]
+
+      last_commit = shipit_commits(:third)
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
+      assert_includes FakeReceiver.hooks, [
+        :deploy,
+        @stack,
+        {deploy: deploy, status: "pending", stack: @stack},
+      ]
+    ensure
+      Shipit.internal_hook_receivers = original_receivers
+    end
+
     test "#trigger_deploy deploy until the commit passed in argument" do
       last_commit = shipit_commits(:third)
       deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)

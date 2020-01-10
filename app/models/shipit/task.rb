@@ -39,7 +39,8 @@ module Shipit
 
     after_save :record_status_change
     after_create :prevent_concurrency, unless: :allow_concurrency?
-    after_commit :emit_hooks
+    after_commit :emit_hooks, on: :create
+    after_commit :emit_hooks_if_status_changed, on: :update
 
     class << self
       def durations
@@ -306,9 +307,13 @@ module Shipit
       end
     end
 
-    def emit_hooks
+    def emit_hooks_if_status_changed
       return unless @status_changed
       @status_changed = nil
+      emit_hooks
+    end
+
+    def emit_hooks
       Hook.emit(hook_event, stack, hook_event => self, status: status, stack: stack)
     end
 
