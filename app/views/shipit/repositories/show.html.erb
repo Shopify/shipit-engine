@@ -4,7 +4,7 @@
 
 <div class="wrapper">
   <section>
-    <% cache @repository do %>
+    <% cache [@repository, params[:show_archived]] do %>
       <section>
         <header class="section-header">
           <h2>Stacks</h2>
