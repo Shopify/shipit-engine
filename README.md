@@ -690,3 +690,5 @@ Run `./bin/bootstrap` in order to bootstrap the dummy application. The bootstrap
 Run `./test/dummy/bin/rails server` to run the rails dummy application.
 
 Set the environment variable `SHIPIT_DISABLE_AUTH=1` in order to disable authentication.
+
+If you need to test caching behaviour in the dummy application, use `bin/rails dev:cache`.
