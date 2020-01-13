@@ -248,7 +248,7 @@ module Shipit
         target_url: 'http://example.com',
         created_at: 1.day.ago,
       )
-      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha).returns([status])
+      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns([status])
       assert_difference '@commit.statuses.count', 1 do
         @commit.refresh_statuses!
       end
