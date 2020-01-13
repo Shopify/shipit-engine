@@ -116,7 +116,7 @@ module Shipit
         )
       end
 
-      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, head_sha).returns([stub(
+      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, head_sha, per_page: 100).returns([stub(
         state: 'success',
         description: nil,
         context: 'default',
