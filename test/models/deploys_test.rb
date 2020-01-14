@@ -858,6 +858,17 @@ module Shipit
       end
     end
 
+    test "succeeding a deploy creates CommitDeploymentStatuses" do
+      @deploy = shipit_deploys(:shipit_running)
+      refute_empty @deploy.commit_deployments
+
+      assert_difference -> { CommitDeploymentStatus.count }, @deploy.commit_deployments.size do
+        @deploy.report_complete!
+      end
+
+      assert_equal 'success', CommitDeploymentStatus.last.status
+    end
+
     private
 
     def expect_event(deploy)

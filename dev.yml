@@ -6,7 +6,6 @@ type: rails
 
 up:
   - homebrew:
-    - openssl
     - sqlite
   - ruby:
       version: 2.5.6
