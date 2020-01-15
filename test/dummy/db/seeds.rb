@@ -25,13 +25,14 @@ module Shipit
     )
   end
 
-  stacks = 3.times.map do
+  stacks = 3.times.map do |num|
     Stack.create!(
       repository: Repository.find_or_create_by(
         name:  Faker::Internet.domain_name.parameterize,
         owner: Faker::Company.name.parameterize
       ),
       deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/",
+      auto_provisioned: num % 2 == 0,
       cached_deploy_spec: DeploySpec.load(%(
         {
           "ci": {

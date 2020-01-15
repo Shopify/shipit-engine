@@ -58,6 +58,15 @@
       padding-left: 30px;
       margin-left: -30px;
     }
+    .auto-provisioned {
+      // From FontAwesome, license @ https://fontawesome.com/license/free
+      background-image: asset-data-url('magic-solid.svg');
+      background-repeat: no-repeat;
+      background-size: 22px 22px;
+      background-position: 0px center;
+      padding-left: 30px;
+      margin-left: -30px;
+    }
 }
 
 .repository-lst:empty:before {
