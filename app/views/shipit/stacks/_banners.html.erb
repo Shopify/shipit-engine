@@ -44,6 +44,12 @@
         <p class="banner__text">
           <%= auto_link emojify(stack.lock_reason) %>
         </p>
+
+        <% if stack.lock_reason_code %>
+          <p class="banner__text">
+            Code: <%= stack.lock_reason_code %>
+          </p>
+        <% end %>
       </div>
     </div>
   </div>

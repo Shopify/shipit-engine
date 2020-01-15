@@ -664,12 +664,23 @@ module Shipit
       assert_equal user, @stack.lock_author
     end
 
-    test "#unlock deletes reason and user" do
+    test "#lock can set a reason code" do
+      reason = "Here comes the walrus"
       user = shipit_users(:walrus)
-      @stack.lock("Here comes the walrus", user)
+      code = "STUFF"
+      @stack.lock(reason, user, code: code)
+      assert @stack.locked?
+      assert_equal code, @stack.lock_reason_code
+      assert_equal [@stack], Shipit::Stack.locked_because(code).all
+    end
+
+    test "#unlock deletes reason, user & reason code" do
+      user = shipit_users(:walrus)
+      @stack.lock("Here comes the walrus", user, code: "STUFF")
       @stack.unlock
       refute @stack.locked?
       assert_nil @stack.lock_reason
+      assert_nil @stack.lock_reason_code
       assert_not_equal user, @stack.lock_author
     end
 

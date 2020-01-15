@@ -42,6 +42,7 @@ module Shipit
     validates_associated :repository
 
     scope :not_archived, -> { where(archived_since: nil) }
+    scope :locked_because, ->(reason_code) { where(lock_reason_code: reason_code) }
 
     def repository
       super || build_repository
@@ -397,13 +398,13 @@ module Shipit
       lock_reason.present?
     end
 
-    def lock(reason, user)
-      params = {lock_reason: reason, lock_author: user}
+    def lock(reason, user, code: nil)
+      params = {lock_reason: reason, lock_reason_code: code, lock_author: user}
       update!(params)
     end
 
     def unlock
-      update!(lock_reason: nil, lock_author: nil, locked_since: nil)
+      update!(lock_reason: nil, lock_reason_code: nil, lock_author: nil, locked_since: nil)
     end
 
     def archived?
@@ -411,11 +412,11 @@ module Shipit
     end
 
     def archive!(user)
-      update!(archived_since: Time.now, lock_reason: "Archived", lock_author: user)
+      update!(archived_since: Time.now, lock_reason: "Archived", lock_reason_code: "ARCHIVED", lock_author: user)
     end
 
     def unarchive!
-      update!(archived_since: nil, lock_reason: nil, lock_author: nil, locked_since: nil)
+      update!(archived_since: nil, lock_reason: nil, lock_reason_code: nil, lock_author: nil, locked_since: nil)
     end
 
     def to_param
