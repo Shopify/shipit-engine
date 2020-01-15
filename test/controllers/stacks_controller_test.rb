@@ -150,6 +150,7 @@ module Shipit
       assert @stack.locked?
       assert_equal shipit_users(:walrus), @stack.lock_author
       assert_equal "Archived", @stack.lock_reason
+      assert_equal "ARCHIVED", @stack.lock_reason_code
     end
 
     test "#update allows to dearchive the stack" do
@@ -161,6 +162,9 @@ module Shipit
       @stack.reload
       refute @stack.archived?
       refute @stack.locked?
+      assert_nil @stack.locked_since
+      assert_nil @stack.lock_reason
+      assert_nil @stack.lock_reason_code
       assert_instance_of AnonymousUser, @stack.lock_author
     end
 
