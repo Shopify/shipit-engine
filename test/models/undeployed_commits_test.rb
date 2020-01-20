@@ -52,6 +52,19 @@ module Shipit
       assert_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
+    test "#expected_to_be_deployed? returns true if the active task has no commit range" do
+      commit = shipit_commits(:task_no_commits)
+      next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+
+      refute_predicate next_expected_commit_to_deploy, :nil?
+      assert_predicate undeployed_commit.stack, :continuous_deployment
+      assert next_expected_commit_to_deploy.id >= undeployed_commit.id
+      refute_predicate undeployed_commit, :active?
+
+      assert_predicate undeployed_commit, :expected_to_be_deployed?
+    end
+
     test "#expected_to_be_deployed? returns false if the stack has continuous deployment disabled" do
       commit = shipit_commits(:cyclimse_first)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
