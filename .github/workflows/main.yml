@@ -1,0 +1,165 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: Lint Ruby
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby 2.5
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.5.x
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+    - name: rubocop
+      run: |
+        sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
+        gem install bundler:1.17.3
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+        bundle exec rubocop
+
+  postgres:
+    name: Tests with Postgres
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby_version:
+          - 2.5.x
+          - 2.6.x
+
+    services:
+      db:
+        image: postgres:11
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis
+        ports:
+        - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby ${{ matrix.ruby_version }}
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-${{ matrix.ruby_version }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.ruby_version }}-gems-
+    - name: Run tests
+      env:
+        PGHOST: 127.0.0.1
+        PGUSER: postgres
+        RAILS_ENV: test
+      run: |
+        sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
+        gem install bundler:1.17.3
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+        cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
+        bundle exec rake db:create db:schema:load test
+        bundle exec rake db:seed
+
+  mysql:
+    name: Tests with MySQL
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby_version:
+          - 2.5.x
+          - 2.6.x
+
+    services:
+      db:
+        image: mysql:5.7
+        ports:
+          - 3306
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+      redis:
+        image: redis
+        ports:
+        - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby ${{ matrix.ruby_version }}
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-${{ matrix.ruby_version }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.ruby_version }}-gems-
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: 'mysql2://root@127.0.0.1:${{ job.services.db.ports[3306] }}'
+      run: |
+        sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
+        gem install bundler:1.17.3
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+        cp test/dummy/config/database.mysql.yml test/dummy/config/database.yml
+        bundle exec rake db:create db:schema:load test
+        bundle exec rake db:seed
+
+  sqlite:
+    name: Tests with SQLite3
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby_version:
+          - 2.5.x
+          - 2.6.x
+
+    services:
+      redis:
+        image: redis
+        ports:
+        - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby ${{ matrix.ruby_version }}
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-${{ matrix.ruby_version }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.ruby_version }}-gems-
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+      run: |
+        sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
+        gem install bundler:1.17.3
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+        bundle exec rake db:create db:schema:load test
+        bundle exec rake db:seed

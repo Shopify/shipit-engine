@@ -181,13 +181,7 @@ module Shipit
     def active?
       return false unless stack.active_task?
 
-      active_task = stack.active_task
-
-      if active_task.since_commit == active_task.until_commit
-        id == active_task.since_commit.id
-      else
-        id > active_task.since_commit.id && id <= active_task.until_commit.id
-      end
+      stack.active_task.includes_commit?(self)
     end
 
     def deployable?

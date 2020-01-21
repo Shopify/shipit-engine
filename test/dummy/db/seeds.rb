@@ -200,7 +200,19 @@ module Shipit
     )
     write_output(rollback)
 
-    task = stack.tasks.create!(
+    provision_task = stack.tasks.create!(
+      status: "pending",
+      user: users.sample,
+      definition: TaskDefinition.new('provision',
+        'action' => 'Provision some resources',
+        'description' => 'Provisions servers for the application to be deployed to',
+        'steps' => ['./provision.sh'],
+      ),
+      started_at: Random.rand(15.minutes.to_i).seconds.ago,
+    )
+    write_output(provision_task)
+
+    restart_task = stack.tasks.create!(
       status: "success",
       user: users.sample,
       definition: TaskDefinition.new('restart',
@@ -211,6 +223,6 @@ module Shipit
       started_at: Random.rand(15.minutes.to_i).seconds.ago,
       ended_at: Time.now.utc,
     )
-    write_output(rollback)
+    write_output(restart_task)
   end
 end

@@ -335,6 +335,20 @@ module Shipit
       end
     end
 
+    def commit_range?
+      since_commit && until_commit
+    end
+
+    def includes_commit?(commit)
+      return false unless commit_range?
+
+      if since_commit == until_commit
+        commit.id == since_commit.id
+      else
+        commit.id > since_commit.id && commit.id <= until_commit.id
+      end
+    end
+
     private
 
     def prevent_concurrency
