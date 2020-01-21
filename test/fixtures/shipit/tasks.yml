@@ -332,3 +332,12 @@ shipit_stats_4:
   created_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
   started_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
   ended_at: <%= (30 - 17).minutes.ago.to_s(:db) %>
+
+shipit_nocommit_task:
+  id: 501
+  user: walrus
+  type: Shipit::Task
+  stack: shipit_task_no_commits
+  status: pending
+  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
