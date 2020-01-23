@@ -96,6 +96,14 @@ module Shipit
       assert_equal shipit_users(:walrus), commit.author
     end
 
+    test "#message= truncates the message" do
+      skip unless Shipit::Commit.columns_hash['message'].limit
+      limit = Shipit::Commit.columns_hash['message'].limit
+
+      @commit.update!(message: 'a' * limit * 2)
+      assert_equal limit, @commit.message.size
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?
