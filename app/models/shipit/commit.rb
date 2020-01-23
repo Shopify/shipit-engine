@@ -104,6 +104,14 @@ module Shipit
       )
     end
 
+    def message=(message)
+      limit = self.class.columns_hash['message'].limit
+      if limit && message && message.size > limit
+        message = message.slice(0, limit)
+      end
+      super(message)
+    end
+
     def reload(*)
       @status = nil
       super
