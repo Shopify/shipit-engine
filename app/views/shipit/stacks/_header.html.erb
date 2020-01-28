@@ -5,26 +5,26 @@
 
 
 <% content_for :primary_navigation do %>
-  <%= link_to 'Refresh statuses & commits', stack_refresh_path(stack), method: 'post', class: "header__btn btn" %>
+  <%= link_to t('stack.nav.refresh'), stack_refresh_path(stack), method: 'post', class: "header__btn btn" %>
 <% end %>
 
 <% content_for :secondary_navigation do %>
   <ul class="nav__list nav__list--primary">
     <li class="nav__list__item">
-      <%= link_to "Commits & Deploys", stack_path(stack) %>
+      <%= link_to t('stack.nav.commits'), stack_path(stack) %>
     </li>
     <li class="nav__list__item">
-      <%= link_to 'Settings', stack_settings_path(stack) %>
+      <%= link_to t('stack.nav.settings'), stack_settings_path(stack) %>
     </li>
     <li class="nav__list__item">
-      <%= link_to 'Timeline', index_stack_tasks_path(stack) %>
+      <%= link_to t('stack.nav.timeline'), index_stack_tasks_path(stack) %>
     </li>
     <li class="nav__list__item">
-      <%= link_to 'Stats', stack_statistics_path(stack) %>
+      <%= link_to t('stack.nav.statistics'), stack_statistics_path(stack) %>
     </li>
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
-        <%= link_to "Merge Queue (#{stack.pull_requests.queued.count})", stack_pull_requests_path(stack) %>
+        <%= link_to t('stack.nav.merge_queue', count: stack.pull_requests.queued.count), stack_pull_requests_path(stack) %>
       </li>
     <% end %>
 
@@ -52,11 +52,11 @@
       <% end %>
     <% end %>
     <li class="nav__list__item">
-      <%= link_to 'View on GitHub', github_repo_url(stack.repo_owner, stack.repo_name) %>
+      <%= link_to t('stack.nav.view_on_github'), github_repo_url(stack.repo_owner, stack.repo_name) %>
     </li>
     <% if stack.deploy_url.present? %>
       <li class="nav__list__item">
-        <%= sanitize link_to 'View website', stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
+        <%= sanitize link_to t('stack.nav.deploy_link'), stack.deploy_url, :target => '_blank', :class => 'deploy-url' %>
       </li>
     <% end %>
   </ul>
