@@ -92,11 +92,13 @@ module Shipit
         options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
       end
 
-      reason = params[:stack][:lock_reason]
-      if reason.present?
-        @stack.lock(reason, current_user)
-      elsif @stack.locked?
-        @stack.unlock
+      if params[:stack].has_key?(:lock_reason)
+        reason = params[:stack][:lock_reason]
+        if reason.present?
+          @stack.lock(reason, current_user)
+        elsif @stack.locked?
+          @stack.unlock
+        end
       end
 
       if params[:stack][:archived].present?
