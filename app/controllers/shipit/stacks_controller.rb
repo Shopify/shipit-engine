@@ -92,20 +92,8 @@ module Shipit
         options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
       end
 
-      reason = params[:stack][:lock_reason]
-      if reason.present?
-        @stack.lock(reason, current_user)
-      elsif @stack.locked?
-        @stack.unlock
-      end
-
-      if params[:stack][:archived].present?
-        if params[:stack][:archived] == "true"
-          @stack.archive!(current_user)
-        elsif @stack.archived?
-          @stack.unarchive!
-        end
-      end
+      update_lock
+      update_archived
 
       redirect_to(params[:return_to].presence || stack_settings_path(@stack), options)
     end
@@ -117,6 +105,27 @@ module Shipit
     end
 
     private
+
+    def update_lock
+      if params[:stack].key?(:lock_reason)
+        reason = params[:stack][:lock_reason]
+        if reason.present?
+          @stack.lock(reason, current_user)
+        elsif @stack.locked?
+          @stack.unlock
+        end
+      end
+    end
+
+    def update_archived
+      if params[:stack][:archived].present?
+        if params[:stack][:archived] == "true"
+          @stack.archive!(current_user)
+        elsif @stack.archived?
+          @stack.unarchive!
+        end
+      end
+    end
 
     def map_to_undeployed_commit(commits, next_expected_commit_to_deploy:)
       commits.map.with_index do |c, i|
