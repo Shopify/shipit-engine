@@ -6,6 +6,8 @@ module Shipit
 
     delegate :stack, :task, :author, to: :commit_deployment
 
+    DESCRIPTION_MAX_LENGTH = 140
+
     def create_on_github!
       return if github_id?
       response = begin
@@ -25,7 +27,7 @@ module Shipit
     def description
       I18n.t(
         "deployment_description.#{task_type}.#{status}",
-        sha: task.until_commit.sha,
+        sha: task.until_commit.short_sha,
         author: task.author.login,
         stack: stack.to_param,
       )
@@ -47,8 +49,12 @@ module Shipit
         status,
         accept: 'application/vnd.github.flash-preview+json',
         target_url: url_helpers.stack_deploy_url(stack, task),
-        description: description,
+        description: trim_description(description),
       )
+    end
+
+    def trim_description(description)
+      description&.squish&.truncate(DESCRIPTION_MAX_LENGTH, separator: ' ')
     end
 
     def url_helpers
