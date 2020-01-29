@@ -32,7 +32,8 @@ module Shipit
           reload.each do |deployment|
             Rails.logger.info(
               "Creating #{github_status} deploy status for deployment #{deployment.id}. "\
-              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}",
+              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
             )
             deployment.statuses.create!(status: github_status)
           end
@@ -40,7 +41,8 @@ module Shipit
           each do |deployment|
             Rails.logger.warn(
               "No GitHub status for task status #{task_status}. "\
-              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}",
+              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
             )
           end
         end
