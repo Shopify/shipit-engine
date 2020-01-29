@@ -30,11 +30,21 @@ module Shipit
         if github_status = GITHUB_STATUSES[task_status]
           # Deployments and statuses are created async, we reload the association to ensure we update all instances
           reload.each do |deployment|
-            Rails.logger.info("Creating #{github_status} deploy status for deployment #{deployment.id}")
+            Rails.logger.info(
+              "Creating #{github_status} deploy status for deployment #{deployment.id}. "\
+              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
+            )
             deployment.statuses.create!(status: github_status)
           end
         else
-          Rails.logger.warn("No GitHub status for task status #{task_status}")
+          each do |deployment|
+            Rails.logger.warn(
+              "No GitHub status for task status #{task_status}. "\
+              "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
+            )
+          end
         end
       end
     end
