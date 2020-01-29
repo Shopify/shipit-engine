@@ -198,12 +198,14 @@ module Shipit
         committed_at: Time.now,
       )
 
-      @stack.deploys.create!(
+      deploy = @stack.deploys.build(
         user_id: walrus.id,
         since_commit: @stack.commits.first,
         until_commit: new_commit,
         status: 'success',
       )
+      deploy.stubs(:pull_request_head_for_commit).returns(nil)
+      deploy.save!
 
       assert_no_difference "Deploy.count" do
         @commit.statuses.create!(stack_id: @stack.id, state: 'success')
