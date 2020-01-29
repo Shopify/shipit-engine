@@ -16,8 +16,19 @@ module Shipit
         'in_progress',
         accept: "application/vnd.github.flash-preview+json",
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
-        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.sha}",
+        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@task.until_commit.short_sha}",
       ).returns(response)
+
+      @status.create_on_github!
+      assert_equal response.id, @status.github_id
+      assert_equal response.url, @status.api_url
+    end
+
+    test 'creation on Github with long description' do
+      response = stub(id: 44, url: 'https://example.com')
+      @author.github_api.expects(:create_deployment_status).with do |_, _, body|
+        assert_operator body[:description].length, :<=, 140
+      end.returns(response)
 
       @status.create_on_github!
       assert_equal response.id, @status.github_id
