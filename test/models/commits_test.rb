@@ -96,6 +96,14 @@ module Shipit
       assert_equal shipit_users(:walrus), commit.author
     end
 
+    test "#message= truncates the message" do
+      skip unless Shipit::Commit.columns_hash['message'].limit
+      limit = Shipit::Commit.columns_hash['message'].limit
+
+      @commit.update!(message: 'a' * limit * 2)
+      assert_equal limit, @commit.message.size
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?
@@ -190,12 +198,14 @@ module Shipit
         committed_at: Time.now,
       )
 
-      @stack.deploys.create!(
+      deploy = @stack.deploys.build(
         user_id: walrus.id,
         since_commit: @stack.commits.first,
         until_commit: new_commit,
         status: 'success',
       )
+      deploy.stubs(:pull_request_head_for_commit).returns(nil)
+      deploy.save!
 
       assert_no_difference "Deploy.count" do
         @commit.statuses.create!(stack_id: @stack.id, state: 'success')

@@ -51,5 +51,24 @@ module Shipit
       assert_response :ok
       assert_includes response.body, 'shipit-engine/foo'
     end
+
+    test "GET show prefers locked stacks above all else" do
+      existing = shipit_stacks(:shipit)
+      Shipit::Stack.where(
+        repository: existing.repository,
+      ).update_all(lock_reason: 'testing', merge_queue_enabled: false, locked_since: Time.now.utc)
+
+      # Shipit would otherwise prefer this, because it has the merge queue enabled
+      Shipit::Stack.create(
+        repository: existing.repository,
+        environment: 'foo',
+        branch: existing.branch,
+        merge_queue_enabled: true,
+      )
+
+      get :show, params: {referrer: 'https://github.com/Shopify/shipit-engine/pull/42', branch: 'master'}
+      assert_response :ok
+      assert_includes response.body, 'locked'
+    end
   end
 end
