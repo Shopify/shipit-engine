@@ -21,6 +21,7 @@ module Shipit
         'pending' => 'pending',
         'running' => 'in_progress',
         'failed' => 'failure',
+        'timedout' => 'failure',
         'success' => 'success',
         'error' => 'error',
         'aborted' => 'error',
