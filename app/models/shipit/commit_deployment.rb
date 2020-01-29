@@ -36,6 +36,10 @@ module Shipit
       CreateOnGithubJob.perform_later(self)
     end
 
+    def short_sha
+      sha[0..9]
+    end
+
     private
 
     def create_deployment_on_github(client)

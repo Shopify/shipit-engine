@@ -16,12 +16,26 @@ module Shipit
         'in_progress',
         accept: "application/vnd.github.flash-preview+json",
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
-        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.sha}",
+        description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.short_sha}",
       ).returns(response)
 
       @status.create_on_github!
       assert_equal response.id, @status.github_id
       assert_equal response.url, @status.api_url
+    end
+
+    test 'description is truncated to character limit' do
+      limit = CommitDeploymentStatus::DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB
+      deployment = shipit_commit_deployments(:shipit_deploy_second)
+
+      status = deployment.statuses.create!(status: 'success')
+      status.stubs(:description).returns('desc' * limit)
+      create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
+      status.author.github_api.expects(:create_deployment_status).with do |*_args, **kwargs|
+        kwargs[:description].size <= limit
+      end.returns(create_status_response)
+
+      status.create_on_github!
     end
   end
 end

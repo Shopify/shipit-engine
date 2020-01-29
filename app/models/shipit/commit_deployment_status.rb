@@ -1,5 +1,7 @@
 module Shipit
   class CommitDeploymentStatus < ActiveRecord::Base
+    DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB = 140
+
     belongs_to :commit_deployment
 
     after_commit :schedule_create_on_github, on: :create
@@ -25,7 +27,7 @@ module Shipit
     def description
       I18n.t(
         "deployment_description.#{task_type}.#{status}",
-        sha: task.until_commit.sha,
+        sha: task.until_commit.short_sha,
         author: task.author.login,
         stack: stack.to_param,
       )
@@ -47,7 +49,7 @@ module Shipit
         status,
         accept: 'application/vnd.github.flash-preview+json',
         target_url: url_helpers.stack_deploy_url(stack, task),
-        description: description,
+        description: description.truncate(DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB),
       )
     end
 
