@@ -60,12 +60,14 @@ module Shipit
       @stack ||= if params[:stack_id]
         Stack.from_param!(params[:stack_id])
       else
-        scope = Stack.order(merge_queue_enabled: :desc, id: :asc).includes(:repository).where(
-          repositories: {
-            owner: referrer_parser.repo_owner,
-            name: referrer_parser.repo_name,
-          },
-        )
+        # Null ordering is inconsistent across DBMS's, this case statement is ugly but supported universally
+        scope = Stack.order(Arel.sql('CASE WHEN locked_since IS NULL THEN 1 ELSE 0 END, locked_since'))
+                     .order(merge_queue_enabled: :desc, id: :asc).includes(:repository).where(
+                       repositories: {
+                         owner: referrer_parser.repo_owner,
+                         name: referrer_parser.repo_name,
+                       },
+                     )
         scope = if params[:branch]
           scope.where(branch: params[:branch])
         else
