@@ -21,7 +21,9 @@ module Shipit
         'pending' => 'pending',
         'running' => 'in_progress',
         'failed' => 'failure',
+        'timedout' => 'failure',
         'success' => 'success',
+        'faulty' => 'error',
         'error' => 'error',
         'aborted' => 'error',
       }.freeze
@@ -33,7 +35,8 @@ module Shipit
             Rails.logger.info(
               "Creating #{github_status} deploy status for deployment #{deployment.id}. "\
               "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
-              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}, "\
+              "API Url: #{deployment.api_url}.",
             )
             deployment.statuses.create!(status: github_status)
           end
@@ -42,7 +45,8 @@ module Shipit
             Rails.logger.warn(
               "No GitHub status for task status #{task_status}. "\
               "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
-              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}",
+              "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}, "\
+              "API Url: #{deployment.api_url}.",
             )
           end
         end
