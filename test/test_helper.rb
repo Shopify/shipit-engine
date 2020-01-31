@@ -1,7 +1,9 @@
 ENV["RAILS_ENV"] ||= "test"
 
 require 'simplecov'
-SimpleCov.start 'rails'
+SimpleCov.start 'rails' do
+  enable_coverage :branch
+end
 
 require 'webmock/minitest'
 
