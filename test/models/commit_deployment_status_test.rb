@@ -17,6 +17,7 @@ module Shipit
         accept: "application/vnd.github.flash-preview+json",
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
         description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.short_sha}",
+        environment_url: "https://shipit.shopify.com",
       ).returns(response)
 
       @status.create_on_github!
@@ -33,6 +34,20 @@ module Shipit
       create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
       status.author.github_api.expects(:create_deployment_status).with do |*_args, **kwargs|
         kwargs[:description].size <= limit
+      end.returns(create_status_response)
+
+      status.create_on_github!
+    end
+
+    test 'includes deployment url when the deployment succeeds' do
+      deployment = shipit_commit_deployments(:shipit_deploy_second)
+
+      status = deployment.statuses.create!(status: 'success')
+      stack = status.stack
+      stack.deploy_url = "stack-deploy-url"
+      create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
+      status.author.github_api.expects(:create_deployment_status).with do |*_args, **kwargs|
+        kwargs[:environment_url] == 'stack-deploy-url'
       end.returns(create_status_response)
 
       status.create_on_github!
