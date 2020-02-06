@@ -1,6 +1,11 @@
 # Unreleased
 
-* Allow applications to register extra handlers for Github webhooks. (#961)
+* Add a statistics page for stacks (#931).
+* Permit archival of stacks (#969).
+* Expose $DEPLOY_URL when running tasks (#981).
+* Handle oversized commit messages (#996).
+* Add the deployment_url in GitHub deployment records (#1010).
+* Allow applications to register extra handlers for GitHub webhooks (#961).
 * Display the configured application name in UI
 
 # 0.29.0
