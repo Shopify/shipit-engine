@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.30.0
+
 * Add a statistics page for stacks (#931).
 * Permit archival of stacks (#969).
 * Expose $DEPLOY_URL when running tasks (#981).
