@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_132519) do
+ActiveRecord::Schema.define(version: 2020_02_11_145825) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -100,6 +100,16 @@ ActiveRecord::Schema.define(version: 2020_01_09_132519) do
     t.datetime "updated_at", null: false
     t.index ["hook_id", "event", "status"], name: "index_deliveries_on_hook_id_and_event_and_status"
     t.index ["hook_id", "status"], name: "index_deliveries_on_hook_id_and_status"
+  end
+
+  create_table "environment_variables", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "value"
+    t.string "environmentable_type"
+    t.integer "environmentable_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["environmentable_type", "environmentable_id"], name: "idx_shipit_envvars_on_type_and_id"
   end
 
   create_table "github_hooks", force: :cascade do |t|

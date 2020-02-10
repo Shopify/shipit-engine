@@ -28,22 +28,20 @@ module Shipit
     end
 
     def env
-      super.merge(
-        'ENVIRONMENT' => @stack.environment,
-        'BRANCH' => @stack.branch,
-        'SHIPIT_USER' => "#{@task.author.login} (#{normalized_author_name}) via Shipit",
-        'EMAIL' => @task.author.email,
-        'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
-        'SHIPIT_LINK' => @task.permalink,
-        'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
-        'TASK_ID' => @task.id.to_s,
-        'DEPLOY_URL' => @stack.deploy_url,
-        'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
-        'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
-        'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
-        'GITHUB_REPO_OWNER' => @stack.repository.owner,
-        'GITHUB_REPO_NAME' => @stack.repository.name,
-      ).merge(deploy_spec.machine_env).merge(@task.env)
+      super
+        .merge(@stack.env)
+        .merge(
+          'SHIPIT_USER' => "#{@task.author.login} (#{normalized_author_name}) via Shipit",
+          'EMAIL' => @task.author.email,
+          'BUNDLE_PATH' => Rails.root.join('data', 'bundler').to_s,
+          'SHIPIT_LINK' => @task.permalink,
+          'TASK_ID' => @task.id.to_s,
+          'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
+          'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
+          'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
+        )
+        .merge(deploy_spec.machine_env)
+        .merge(@task.env)
     end
 
     def checkout(commit)

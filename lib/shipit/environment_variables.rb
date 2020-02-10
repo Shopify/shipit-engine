@@ -14,6 +14,15 @@ module Shipit
       sanitize_env_vars(variable_definitions)
     end
 
+    def interpolate(argument)
+      return argument unless @env
+
+      argument.gsub(/(\$\w+)/) do |variable|
+        variable.sub!('$', '')
+        Shellwords.escape(@env.fetch(variable) { ENV[variable] })
+      end
+    end
+
     private
 
     def initialize(env)
