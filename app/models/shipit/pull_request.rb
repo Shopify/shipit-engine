@@ -138,6 +138,17 @@ module Shipit
       pull_request
     end
 
+    def self.assign_to_stack!(stack, number)
+      pull_request = PullRequest.find_or_create_by!(
+        stack: stack,
+        number: number,
+        merge_requested_at: nil,
+        merge_requested_by: nil,
+      )
+      pull_request.schedule_refresh!
+      pull_request
+    end
+
     def reject!(reason)
       unless REJECTION_REASONS.include?(reason)
         raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"

@@ -8,6 +8,20 @@ module Shipit
       @user = shipit_users(:walrus)
     end
 
+    test ".assign_to_stack! creates a record and schedule a refresh" do
+      pull_request = nil
+      assert_enqueued_with(job: RefreshPullRequestJob) do
+        pull_request = PullRequest.assign_to_stack!(@stack, 100)
+      end
+      assert_predicate pull_request, :persisted?
+    end
+
+    test ".assign_to_stack! only track pull requests once" do
+      assert_difference -> { PullRequest.count }, +1 do
+        5.times { PullRequest.assign_to_stack!(@stack, 100) }
+      end
+    end
+
     test ".request_merge! creates a record and schedule a refresh" do
       pull_request = nil
       assert_enqueued_with(job: RefreshPullRequestJob) do
