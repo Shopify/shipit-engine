@@ -122,6 +122,13 @@ shipit_pending_expired:
   additions: 23
   deletions: 43
 
+shipit_assigned:
+  stack: shipit
+  number: 69
+  merge_status: pending
+  merge_requested_by: nil
+  merge_requested_at: nil
+
 cyclimse_pending_merged:
   id: 99
   stack: cyclimse

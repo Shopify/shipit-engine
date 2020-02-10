@@ -22,6 +22,15 @@ module Shipit
       end
     end
 
+    test ".merge_request? true when merge owner is defined" do
+      assert_equal true, @pr.merge_request?
+    end
+
+    test ".merge_request? false when merge owner is defined" do
+      @non_merge_request = shipit_pull_requests(:shipit_assigned)
+      assert_equal false, @non_merge_request.merge_request?
+    end
+
     test ".request_merge! creates a record and schedule a refresh" do
       pull_request = nil
       assert_enqueued_with(job: RefreshPullRequestJob) do

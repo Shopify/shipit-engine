@@ -104,6 +104,10 @@ module Shipit
       end
     end
 
+    def merge_request?
+      !(merge_requested_by.nil? || merge_requested_at.nil?)
+    end
+
     def self.schedule_merges
       Shipit::Stack.where(merge_queue_enabled: true).find_each(&:schedule_merges)
     end
