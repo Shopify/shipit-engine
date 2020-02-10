@@ -47,6 +47,10 @@ module Shipit
       super || build_repository
     end
 
+    def assigned_pull_request
+      pull_requests.where(merge_requested_by: nil).last || nil
+    end
+
     def lock_author(*)
       super || AnonymousUser.new
     end

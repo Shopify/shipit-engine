@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_132519) do
+ActiveRecord::Schema.define(version: 2020_02_10_200435) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 2020_01_09_132519) do
     t.integer "deletions", default: 0, null: false
     t.string "merge_status", limit: 30, null: false
     t.string "rejection_reason"
-    t.datetime "merge_requested_at", null: false
+    t.datetime "merge_requested_at"
     t.integer "merge_requested_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
