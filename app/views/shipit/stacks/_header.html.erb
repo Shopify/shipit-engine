@@ -47,11 +47,18 @@
 
   <ul class="nav__list nav__list--secondary">
     <% if stack.links.present? %>
-      <% stack.links.each do |name, url| %>
-        <li class="nav__list__item">
-          <%= link_to name.humanize, url, :target => '_blank', :class => "#{name.dasherize}-url" %>
-        </li>
-      <% end %>
+      <li class="nav__list__item nav__list__item--has-children">
+
+        <%=  t('stack.nav.links') %>
+
+        <ul class="nav__sub__list">
+          <% stack.links.each do |name, url| %>
+            <li class="nav__list__sub__item">
+              <%= link_to name.humanize, url, :target => '_blank', :class => "#{name.dasherize}-url" %>
+            </li>
+          <% end %>
+        </ul>
+      </li>
     <% end %>
     <li class="nav__list__item">
       <%= link_to t('stack.nav.view_on_github'), github_repo_url(stack.repo_owner, stack.repo_name) %>
