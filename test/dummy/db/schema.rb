@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_132519) do
+ActiveRecord::Schema.define(version: 2020_02_13_190400) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 2020_01_09_132519) do
     t.integer "deletions", default: 0, null: false
     t.string "merge_status", limit: 30, null: false
     t.string "rejection_reason"
-    t.datetime "merge_requested_at", null: false
+    t.datetime "merge_requested_at"
     t.integer "merge_requested_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -167,6 +167,8 @@ ActiveRecord::Schema.define(version: 2020_01_09_132519) do
     t.datetime "merged_at"
     t.string "base_ref", limit: 1024
     t.integer "base_commit_id"
+    t.integer "user_id"
+    t.boolean "review_request", default: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
     t.index ["merge_status"], name: "index_pull_requests_on_merge_status"
@@ -174,6 +176,7 @@ ActiveRecord::Schema.define(version: 2020_01_09_132519) do
     t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
     t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
     t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
+    t.index ["user_id"], name: "index_pull_requests_on_user_id"
   end
 
   create_table "release_statuses", force: :cascade do |t|

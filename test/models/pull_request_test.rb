@@ -8,6 +8,20 @@ module Shipit
       @user = shipit_users(:walrus)
     end
 
+    test ".assign_to_stack! associates the pull request with a stack and schedules a pull request refresh" do
+      pull_request = nil
+      assert_enqueued_with(job: RefreshPullRequestJob) do
+        pull_request = PullRequest.assign_to_stack!(@stack, 100)
+      end
+      assert_predicate pull_request, :persisted?
+    end
+
+    test ".assign_to_stack! is idempotent" do
+      assert_difference -> { PullRequest.count }, +1 do
+        5.times { PullRequest.assign_to_stack!(@stack, 100) }
+      end
+    end
+
     test ".request_merge! creates a record and schedule a refresh" do
       pull_request = nil
       assert_enqueued_with(job: RefreshPullRequestJob) do
@@ -66,6 +80,7 @@ module Shipit
 
     test "refresh! pulls state from GitHub" do
       pull_request = shipit_pull_requests(:shipit_fetching)
+      user = shipit_users(:bob)
 
       head_sha = '64b3833d39def7ec65b57b42f496eb27ab4980b6'
       base_sha = 'ba7ab50e02286f7d6c60c1ef75258133dd9ea763'
@@ -86,6 +101,11 @@ module Shipit
           base: stub(
             ref:  'default-branch',
             sha: base_sha,
+          ),
+          user: stub(
+            id: 1234,
+            login: 'bob',
+            site_admin: false,
           ),
         ),
       )
@@ -129,6 +149,7 @@ module Shipit
       assert_predicate pull_request, :mergeable?
       assert_predicate pull_request, :pending?
       assert_equal 'super-branch', pull_request.branch
+      assert_equal user, pull_request.user
 
       assert_not_nil pull_request.head
       assert_predicate pull_request.head, :detached?
