@@ -29,6 +29,7 @@ en:
       statistics: Stats
       merge_queue: "Merge Queue (%{count})"
       view_on_github: View on GitHub
+      links: More
       deploy_link: View website
   commit:
     lock: This commit is safe to deploy. Click to mark it as unsafe.

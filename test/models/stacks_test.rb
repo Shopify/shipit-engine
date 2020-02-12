@@ -884,6 +884,41 @@ module Shipit
       end
     end
 
+    test "#links performs template substitutions" do
+      @stack.repo_name = "expected-repository-name"
+      @stack.environment = "expected-environment"
+      @stack.cached_deploy_spec = create_deploy_spec(
+        "links" => {
+          "logs" => "http://logs.$GITHUB_REPO_NAME.$ENVIRONMENT.domain.com",
+          "monitoring" => "https://graphs.$GITHUB_REPO_NAME.$ENVIRONMENT.domain.com",
+        },
+      )
+
+      assert_equal(
+        {
+          "logs" => "http://logs.expected-repository-name.expected-environment.domain.com",
+          "monitoring" => "https://graphs.expected-repository-name.expected-environment.domain.com",
+        },
+        @stack.links,
+      )
+    end
+
+    test "#env includes the stack's environment" do
+      expected_environment = {
+        'ENVIRONMENT' => @stack.environment,
+        'LAST_DEPLOYED_SHA' => @stack.last_deployed_commit.sha,
+        'GITHUB_REPO_OWNER' => @stack.repository.owner,
+        'GITHUB_REPO_NAME' => @stack.repository.name,
+        'DEPLOY_URL' => @stack.deploy_url,
+        'BRANCH' => @stack.branch,
+      }
+
+      assert_equal(
+        @stack.env,
+        expected_environment,
+      )
+    end
+
     private
 
     def generate_revert_commit(stack:, reverted_commit:, author: reverted_commit.author)
@@ -895,6 +930,10 @@ module Shipit
         authored_at: Time.zone.now,
         committed_at: Time.zone.now,
       )
+    end
+
+    def create_deploy_spec(spec)
+      Shipit::DeploySpec.new(spec.stringify_keys)
     end
   end
 end

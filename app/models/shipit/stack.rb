@@ -48,6 +48,17 @@ module Shipit
     include DeferredTouch
     deferred_touch repository: :updated_at
 
+    def env
+      {
+        'ENVIRONMENT' => environment,
+        'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
+        'GITHUB_REPO_OWNER' => repository.owner,
+        'GITHUB_REPO_NAME' => repository.name,
+        'DEPLOY_URL' => deploy_url,
+        'BRANCH' => branch,
+      }
+    end
+
     def repository
       super || build_repository
     end
@@ -82,7 +93,7 @@ module Shipit
     validates :lock_reason, length: {maximum: 4096}
 
     serialize :cached_deploy_spec, DeploySpec
-    delegate :find_task_definition, :supports_rollback?, :links, :release_status?, :release_status_delay,
+    delegate :find_task_definition, :supports_rollback?, :release_status?, :release_status_delay,
              :release_status_context, :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
 
     def self.refresh_deployed_revisions
@@ -531,6 +542,13 @@ module Shipit
 
     def sync_github
       GithubSyncJob.perform_later(stack_id: id)
+    end
+
+    def links
+      links_spec = cached_deploy_spec&.links || {}
+      context = EnvironmentVariables.with(env)
+
+      links_spec.transform_values { |url| context.interpolate(url) }
     end
 
     private
