@@ -48,10 +48,7 @@ module Shipit
     def interpolate_environment_variables(argument)
       return argument.map { |a| interpolate_environment_variables(a) } if argument.is_a?(Array)
 
-      argument.gsub(/(\$\w+)/) do |variable|
-        variable.sub!('$', '')
-        Shellwords.escape(@env.fetch(variable) { ENV[variable] })
-      end
+      EnvironmentVariables.with(env).interpolate(argument)
     end
 
     def success?
