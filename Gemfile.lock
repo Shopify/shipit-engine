@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.30.0)
+    shipit-engine (0.31.0)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       attr_encrypted (~> 3.1.0)
@@ -174,7 +174,7 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
-    oauth2 (1.4.3)
+    oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
       jwt (>= 1.0, < 3.0)
       multi_json (~> 1.3)

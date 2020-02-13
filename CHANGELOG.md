@@ -1,5 +1,10 @@
 # Unreleased
 
+# 0.31.0
+
+* Update omniauth-github to stop using a deprecated authentication method.
+* Interpolate variables in the `links` section of the shipit.yml (#1018).
+
 # 0.30.0
 
 * Add a statistics page for stacks (#931).
