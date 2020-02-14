@@ -42,15 +42,16 @@ module Shipit
     belongs_to :base_commit, class_name: 'Shipit::Commit', optional: true
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
+    belongs_to :user, optional: true
 
     deferred_touch stack: :updated_at
 
     validates :number, presence: true, uniqueness: {scope: :stack_id}
-
-    scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
-    scope :pending, -> { where(merge_status: 'pending') }
+    scope :merge_requests, -> { where(review_request: [false, nil]) }
+    scope :waiting, -> { merge_requests.where(merge_status: WAITING_STATUSES) }
+    scope :pending, -> { merge_requests.where(merge_status: 'pending') }
+    scope :queued, -> { merge_requests.where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
-    scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
 
     after_save :record_merge_status_change
     after_commit :emit_hooks
@@ -134,6 +135,16 @@ module Shipit
       end
       pull_request.update!(merge_requested_by: user.presence)
       pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
+      pull_request.schedule_refresh!
+      pull_request
+    end
+
+    def self.assign_to_stack!(stack, number)
+      pull_request = PullRequest.find_or_create_by!(
+        stack: stack,
+        number: number,
+        review_request: true,
+      )
       pull_request.schedule_refresh!
       pull_request
     end
@@ -236,6 +247,8 @@ module Shipit
     end
 
     def github_pull_request=(github_pull_request)
+      user = User.find_by(login: github_pull_request.user.login) || Shipit::AnonymousUser.new
+
       self.github_id = github_pull_request.id
       self.api_url = github_pull_request.url
       self.title = github_pull_request.title
@@ -248,6 +261,7 @@ module Shipit
       self.merged_at = github_pull_request.merged_at
       self.base_ref = github_pull_request.base.ref
       self.base_commit = find_or_create_commit_from_github_by_sha!(github_pull_request.base.sha, detached: true)
+      self.user = user
     end
 
     def merge_message

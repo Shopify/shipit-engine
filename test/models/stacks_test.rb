@@ -260,6 +260,23 @@ module Shipit
       Stack.run_deploy_in_foreground(stack: stack.to_param, revision: commit.sha)
     end
 
+    test ".review_request is nil by default" do
+      assert_nil @stack.review_request
+    end
+
+    test ".review_request returns nil when all pull requests are merge requests" do
+      @stack = shipit_stacks(:shipit)
+
+      assert_nil @stack.review_request
+    end
+
+    test ".review_request returns latest non merge request" do
+      @stack = shipit_stacks(:shipit)
+      @pull_request = PullRequest.create!(stack: @stack, number: "1", review_request: true)
+
+      assert @stack.review_request, @pull_request
+    end
+
     test "#active_task? is memoized" do
       assert_queries(1) do
         10.times { @stack.active_task? }
