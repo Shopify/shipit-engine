@@ -1,19 +1,37 @@
-require 'test_helper'
+# frozen_string_literal: true
+
+require "test_helper"
 
 module Shipit
   class RefreshPullRequestJobTest < ActiveSupport::TestCase
-    setup do
-      @job = RefreshPullRequestJob.new
+    test "perform refreshes the pull request" do
+      pull_request = shipit_pull_requests(:shipit_pending)
+      pull_request.expects(:refresh!).once
+
+      job.perform(pull_request)
     end
 
-    test "#perform call #refresh! pull_request and schedule a merge when a merge request" do
+    test "En-queues a merge pull request job for the PR's stack" do
       pull_request = shipit_pull_requests(:shipit_pending)
+      pull_request.stubs(:refresh!)
 
-      PullRequest.any_instance.expects(:refresh!)
-
-      assert_enqueued_with(job: MergePullRequestsJob) do
-        @job.perform(pull_request)
+      assert_enqueued_with(job: MergePullRequestsJob, args: [pull_request.stack]) do
+        job.perform(pull_request)
       end
+    end
+
+    test "Raises if the pull_request's stack hasn't yet synced commits with Github" do
+      pull_request = shipit_pull_requests(:shipit_pending)
+      pull_request.stubs(:refresh!)
+      pull_request.stack.commits.clear
+
+      assert_raises(Stack::NotYetSynced) do
+        job.perform(pull_request)
+      end
+    end
+
+    def job
+      RefreshPullRequestJob.new
     end
   end
 end
