@@ -56,7 +56,7 @@ module Shipit
             from_sha: task.since_commit.sha,
             to_sha: task.until_commit.sha,
           },
-        },
+        }.to_json,
       )
     end
   end
