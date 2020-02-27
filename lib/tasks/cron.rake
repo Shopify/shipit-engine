@@ -5,6 +5,7 @@ namespace :cron do
     Shipit::Stack.schedule_continuous_delivery
     Shipit::GithubStatus.refresh_status
     Shipit::PullRequest.schedule_merges
+    Shipit::ReapDeadDeploymentsJob.perform_later
   end
 
   task hourly: %i(rollup refresh_users)

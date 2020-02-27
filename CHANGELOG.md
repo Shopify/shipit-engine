@@ -1,5 +1,9 @@
 # Unreleased
 
+* Added a new job `ReapDeadDeploymentsJob` to support cleanup of jobs that are stuck in running, but report as dead.
+  * This job runs every minute via the cron rake task.
+  * When running this job for the first time, it may transition old zombie tasks, causing any side-effects to fire, like notifications.
+
 # 0.31.0
 
 * Update omniauth-github to stop using a deprecated authentication method.
