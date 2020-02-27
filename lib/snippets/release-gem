@@ -51,7 +51,8 @@ if RubygemsAPI.published?(spec.name, spec.version)
   puts "#{spec.name} version #{spec.version} is already published."
   exit 0
 else
-  Git.tag_and_push(spec.version) do
+  is_successful = Git.tag_and_push(spec.version) do
     system(*release_command)
   end
+  is_successful ? exit(0) : exit(1)
 end
