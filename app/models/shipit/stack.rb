@@ -135,6 +135,7 @@ module Shipit
         since_commit: since_commit,
         env: filter_deploy_envs(env&.to_h || {}),
         allow_concurrency: force,
+        emergency_mode: force,
         ignored_safeties: force || !until_commit.deployable?,
       )
     end

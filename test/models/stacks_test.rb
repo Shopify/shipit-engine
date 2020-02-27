@@ -133,6 +133,22 @@ module Shipit
       refute_predicate deploy, :ignored_safeties?
     end
 
+    test "#trigger_deploy marks the deploy as `emergency_mode` if the commit wasn't deployable" do
+      last_commit = shipit_commits(:fifth)
+      refute_predicate last_commit, :deployable?
+
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new, force: true)
+      assert_predicate deploy, :emergency_mode?
+    end
+
+    test "#trigger_deploy marks the deploy as `emergency_mode` even if the commit was deployable" do
+      last_commit = shipit_commits(:third)
+      assert_predicate last_commit, :deployable?
+
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new, force: true)
+      assert_predicate deploy, :emergency_mode?
+    end
+
     test "#update_deployed_revision bail out if there is an active deploy" do
       @stack.deploys_and_rollbacks.last.update_columns(status: 'running')
       assert_no_difference 'Deploy.count' do

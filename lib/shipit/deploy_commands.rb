@@ -9,6 +9,7 @@ module Shipit
       super.merge(
         'SHA' => commit.sha,
         'REVISION' => commit.sha,
+        'EMERGENCY_MODE' => @task.emergency_mode? ? '1' : '0',
         'DIFF_LINK' => diff_url,
       )
     end

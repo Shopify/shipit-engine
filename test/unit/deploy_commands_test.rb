@@ -201,6 +201,12 @@ module Shipit
       assert_equal '1', @commands.env['IGNORED_SAFETIES']
     end
 
+    test "EMERGENCY_MODE is exposed" do
+      assert_equal '0', @commands.env['EMERGENCY_MODE']
+      @deploy.emergency_mode = true
+      assert_equal '1', @commands.env['EMERGENCY_MODE']
+    end
+
     test "GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL are exposed" do
       assert_equal 'shipit@shipit.com', @commands.env['GIT_COMMITTER_EMAIL']
       assert_equal 'Shipit', @commands.env['GIT_COMMITTER_NAME']
