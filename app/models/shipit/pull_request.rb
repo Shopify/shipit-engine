@@ -54,7 +54,9 @@ module Shipit
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
 
     after_save :record_merge_status_change
-    after_commit :emit_hooks
+    after_create_commit :emit_create_hooks
+    after_update_commit :emit_update_hooks
+    after_destroy_commit :emit_destroy_hooks
 
     state_machine :merge_status, initial: :fetching do
       state :fetching
@@ -295,10 +297,31 @@ module Shipit
       @merge_status_changed ||= saved_change_to_attribute?(:merge_status)
     end
 
-    def emit_hooks
+    def emit_destroy_hooks
+      emit_hooks(:destroyed)
+    end
+
+    def emit_create_hooks
+      emit_hooks(:created)
+    end
+
+    def emit_update_hooks
+      emit_hooks(:updated)
+    end
+
+    def emit_hooks(reason)
+      emit_merge_status_event
+      emit_pull_request_event(reason)
+    end
+
+    def emit_merge_status_event
       return unless @merge_status_changed
       @merge_status_changed = nil
       Hook.emit('merge', stack, pull_request: self, status: merge_status, stack: stack)
+    end
+
+    def emit_pull_request_event(reason)
+      Hook.emit('pull_request', stack, pull_request: self, action: reason, stack: stack)
     end
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)

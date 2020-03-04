@@ -258,6 +258,16 @@ module Shipit
       assert_json 'pull_request.number', @pr.number, document: params[:payload]
     end
 
+    test "changes to pull request emit hooks" do
+      job = assert_enqueued_with(job: EmitEventJob) do
+        @pr.update!(title: "Brand new title")
+      end
+      params = job.arguments.first
+      assert_equal 'pull_request', params[:event]
+      assert_json 'action', 'updated', document: params[:payload]
+      assert_json 'pull_request.title', 'Brand new title', document: params[:payload]
+    end
+
     test "#merge! doesnt delete the branch if there are open PRs against it" do
       Shipit.github.api.expects(:merge_pull_request).once.returns(true)
       Shipit.github.api.expects(:pull_requests).once.with(@stack.github_repo_name, base: @pr.branch).returns([1])
