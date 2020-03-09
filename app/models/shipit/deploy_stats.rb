@@ -4,7 +4,7 @@ module Shipit
 
     def initialize(deploys)
       @deploys = deploys
-      @durations = @deploys.map { |d| d.duration.value }.compact
+      @durations = @deploys.map { |d| d.duration&.value }.compact
     end
 
     def count
