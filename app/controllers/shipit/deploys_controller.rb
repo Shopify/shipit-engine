@@ -10,7 +10,7 @@ module Shipit
     def new
       @commit = @stack.commits.by_sha!(params[:sha])
       @commit.checks.schedule if @stack.checks?
-      @deploy = @stack.build_deploy(@commit, current_user)
+      @deploy = @stack.build_deploy(@commit, current_user, force: params[:force].present?)
     end
 
     def show
@@ -25,7 +25,7 @@ module Shipit
         @until_commit,
         current_user,
         env: deploy_params[:env],
-        force: params[:force].present?,
+        force: params[:force].present? || deploy_params[:ignored_safeties].present?,
       )
       respond_with(@deploy.stack, @deploy)
     rescue Task::ConcurrentTaskRunning
@@ -62,7 +62,11 @@ module Shipit
     end
 
     def deploy_params
-      @deploy_params ||= params.require(:deploy).permit(:until_commit_id, env: @stack.deploy_variables.map(&:name))
+      @deploy_params ||= params.require(:deploy).permit(
+        :until_commit_id,
+        :ignored_safeties,
+        env: @stack.deploy_variables.map(&:name),
+      )
     end
 
     def previous_successful_deploy_commit(task)

@@ -2,7 +2,7 @@ module Shipit
   module StacksHelper
     def redeploy_button(deployed_commit)
       commit = UndeployedCommit.new(deployed_commit, index: 0)
-      url = new_stack_deploy_path(commit.stack, sha: commit.sha)
+      url = new_stack_deploy_path(commit.stack, sha: commit.sha, force: bypass_safeties?)
       classes = %W(btn btn--primary deploy-action #{commit.state})
 
       unless commit.stack.deployable?
@@ -17,7 +17,7 @@ module Shipit
     end
 
     def deploy_button(commit)
-      url = new_stack_deploy_path(commit.stack, sha: commit.sha)
+      url = new_stack_deploy_path(commit.stack, sha: commit.sha, force: bypass_safeties?)
       classes = %W(btn btn--primary deploy-action #{commit.state})
       deploy_state = commit.deploy_state(bypass_safeties?)
       data = {}
