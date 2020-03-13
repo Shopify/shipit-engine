@@ -50,6 +50,9 @@ spec = Gem::Specification.load(spec_path)
 if RubygemsAPI.published?(spec.name, spec.version)
   puts "#{spec.name} version #{spec.version} is already published."
   exit 0
+elsif !spec.metadata['allowed_push_host']
+  puts "Can't release the gem: spec.metadata['allowed_push_host'] must be defined."
+  exit 1
 else
   is_successful = Git.tag_and_push(spec.version) do
     system(*release_command)
