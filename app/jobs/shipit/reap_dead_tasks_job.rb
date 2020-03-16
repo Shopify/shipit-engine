@@ -1,5 +1,5 @@
 module Shipit
-  class ReapDeadDeploymentsJob < BackgroundJob
+  class ReapDeadTasksJob < BackgroundJob
     include BackgroundJob::Unique
 
     ZOMBIE_STATES = %w(running aborting).freeze

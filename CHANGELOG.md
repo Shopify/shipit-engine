@@ -1,7 +1,7 @@
 # Unreleased
 
 * Prevent gem released unless the `allowed_push_host` metadata is set in the gemspec (#1037).
-* Added a new job `ReapDeadDeploymentsJob` to support cleanup of jobs that are stuck in running, but report as dead.
+* Added a new job `ReapDeadTasksJob` to support cleanup of jobs that are stuck in running, but report as dead.
   * This job runs every minute via the cron rake task.
   * When running this job for the first time, it may transition old zombie tasks, causing any side-effects to fire, like notifications.
 
