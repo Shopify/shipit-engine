@@ -34,5 +34,15 @@ module Shipit
       @rollback.reload
       assert_predicate @rollback, :running?
     end
+
+    test 'reaps zombie aborting tasks' do
+      deploy = shipit_deploys(:shipit2)
+      deploy.status = 'aborting'
+      deploy.save!
+
+      ReapDeadDeploymentsJob.perform_now
+
+      assert_predicate deploy.reload, :error?
+    end
   end
 end
