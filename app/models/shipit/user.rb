@@ -142,7 +142,7 @@ module Shipit
                   .find { |e| email_valid_and_preferred?(e) }
       rescue Octokit::NotFound, Octokit::Forbidden, Octokit::Unauthorized
         # If the user hasn't agreed to the necessary permission, we can't access their private emails.
-        Rails.logger.warn("Failed to retrieve emails for user '#{name}'")
+        Rails.logger.warn("Failed to retrieve emails for user '#{github_user.name || github_user.login}'")
         nil
       end
     end
