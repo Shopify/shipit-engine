@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Shipit
-  class ReapDeadDeploymentsJobTest < ActiveSupport::TestCase
+  class ReapDeadTasksJobTest < ActiveSupport::TestCase
     setup do
       Task.where(status: Task::ACTIVE_STATUSES).update_all(status: 'success')
 
@@ -23,7 +23,7 @@ module Shipit
 
       Shipit::Deploy.any_instance.expects(:alive?).returns(false)
       Shipit::Rollback.any_instance.expects(:alive?).returns(true)
-      ReapDeadDeploymentsJob.perform_now
+      ReapDeadTasksJob.perform_now
 
       @zombie_deploy.reload
       assert_predicate @zombie_deploy, :error?
@@ -33,6 +33,16 @@ module Shipit
 
       @rollback.reload
       assert_predicate @rollback, :running?
+    end
+
+    test 'reaps zombie aborting tasks' do
+      deploy = shipit_deploys(:shipit2)
+      deploy.status = 'aborting'
+      deploy.save!
+
+      ReapDeadTasksJob.perform_now
+
+      assert_predicate deploy.reload, :error?
     end
   end
 end

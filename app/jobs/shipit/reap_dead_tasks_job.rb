@@ -1,11 +1,13 @@
 module Shipit
-  class ReapDeadDeploymentsJob < BackgroundJob
+  class ReapDeadTasksJob < BackgroundJob
     include BackgroundJob::Unique
+
+    ZOMBIE_STATES = %w(running aborting).freeze
 
     queue_as :default
 
     def perform
-      zombie_tasks = Task.where(status: 'running').reject(&:alive?)
+      zombie_tasks = Task.where(status: ZOMBIE_STATES).reject(&:alive?)
 
       Rails.logger.info("Reaping #{zombie_tasks.size} running tasks.")
       zombie_tasks.each do |task|
