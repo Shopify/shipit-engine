@@ -162,6 +162,13 @@ module Shipit
       assert_nil user.email
     end
 
+    test "find_or_create_from_github handles user 401" do
+      Shipit.preferred_org_emails = [@org_domain]
+      Octokit::Client.any_instance.expects(:emails).raises(Octokit::Unauthorized)
+      user = User.find_or_create_from_github(@minimal_github_user)
+      assert_nil user.email
+    end
+
     test "#identifiers_for_ping returns a hash with the user's github_id, name, email and github_login" do
       user = shipit_users(:bob)
       expected_ouput = {github_id: user.github_id, name: user.name, email: user.email, github_login: user.login}
