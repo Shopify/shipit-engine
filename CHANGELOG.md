@@ -4,6 +4,7 @@
 * Added a new job `ReapDeadTasksJob` to support cleanup of jobs that are stuck in running, but report as dead.
   * This job runs every minute via the cron rake task.
   * When running this job for the first time, it may transition old zombie tasks, causing any side-effects to fire, like notifications.
+* Limit the size of task output logs to 16 MB (#1041)
 
 # 0.31.0
 

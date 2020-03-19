@@ -8,6 +8,9 @@ module Shipit
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success flapping faulty validating).freeze
     UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze
+    OUTPUT_SIZE_LIMIT = 16.megabytes # A MySQL mediumblob
+    HUMAN_READABLE_OUTPUT_LIMIT = ActionController::Base.helpers.number_to_human_size(OUTPUT_SIZE_LIMIT)
+    OUTPUT_TRUNCATED_MESSAGE = "Output exceeded the limit of #{HUMAN_READABLE_OUTPUT_LIMIT} and was truncated\n".freeze
 
     attr_accessor :pid
 
@@ -198,7 +201,15 @@ module Shipit
       if rolled_up?
         output
       else
-        chunks.pluck(:text).join
+        blob = chunks.pluck(:text).join
+
+        if blob.size > OUTPUT_SIZE_LIMIT
+          Rails.logger.warn("Task #{id} output exceeds limit of #{HUMAN_READABLE_OUTPUT_LIMIT}, and will be truncated.")
+          blob = blob.last(OUTPUT_SIZE_LIMIT - OUTPUT_TRUNCATED_MESSAGE.size)
+          blob = OUTPUT_TRUNCATED_MESSAGE + blob
+        end
+
+        blob
       end
     end
 
