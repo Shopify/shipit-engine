@@ -30,5 +30,21 @@ module Shipit
 
       task.write("hello\nworld")
     end
+
+    test "#chunk_output truncates output exceeding the storage limit" do
+      task = shipit_tasks(:shipit)
+      task.chunks.delete_all
+      # Dont persist the chunk to the DB, as it may exceed the MySQL max packet size on CI
+      task.chunks.build(text: 'a' * (Task::OUTPUT_SIZE_LIMIT * 1.1))
+
+      output = task.chunk_output
+
+      assert output.size <= Task::OUTPUT_SIZE_LIMIT, "Output was not truncated to the limit"
+      # We don't use assert_includes because it will print the whole message
+      assert(
+        output.include?(Task::OUTPUT_TRUNCATED_MESSAGE),
+        "'#{Task::OUTPUT_TRUNCATED_MESSAGE.chomp}' was not present in the output",
+      )
+    end
   end
 end
