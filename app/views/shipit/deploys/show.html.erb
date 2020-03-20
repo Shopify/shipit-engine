@@ -1,8 +1,8 @@
 <% content_for :task_title do %>
   <% if @deploy.rollback? %>
-    rolling back to
+    <%= @deploy.active? ? "rolling back to" : "rolled back to" %>
   <% else %>
-    deploying
+    <%= @deploy.active? ? "deploying" : "deployed" %>
   <% end %>
   <span class="short-sha"><%= link_to_github_deploy(@deploy) %></span>
   <%= timeago_tag(@deploy.created_at, force: true) %>
