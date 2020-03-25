@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module StacksHelper
     def redeploy_button(deployed_commit)

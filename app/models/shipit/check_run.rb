@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CheckRun < ApplicationRecord
     CONCLUSIONS = %w(success failure neutral cancelled timed_out action_required stale).freeze

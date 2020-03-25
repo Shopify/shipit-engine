@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module Pagination
     extend ActiveSupport::Concern

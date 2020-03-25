@@ -1,3 +1,4 @@
+# typed: true
 require 'English'
 require 'timeout'
 require 'pathname'

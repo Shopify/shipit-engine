@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class GithubHook < ActiveRecord::Base
     # TODO: app-migration, delete class

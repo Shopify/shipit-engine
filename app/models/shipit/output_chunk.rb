@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class OutputChunk < ActiveRecord::Base
     belongs_to :task

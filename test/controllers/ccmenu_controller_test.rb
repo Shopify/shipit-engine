@@ -1,3 +1,4 @@
+# typed: false
 require 'uri'
 require 'test_helper'
 

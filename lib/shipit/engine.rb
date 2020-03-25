@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Engine < ::Rails::Engine
     isolate_namespace Shipit

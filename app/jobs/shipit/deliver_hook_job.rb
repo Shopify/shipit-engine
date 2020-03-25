@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class DeliverHookJob < BackgroundJob
     queue_as :hooks

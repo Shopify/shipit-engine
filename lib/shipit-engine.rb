@@ -1,1 +1,2 @@
+# typed: strong
 require 'shipit'

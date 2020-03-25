@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class UnlimitedApiClient
     def stack_id?

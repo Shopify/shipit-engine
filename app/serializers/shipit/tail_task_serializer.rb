@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class TailTaskSerializer < ActiveModel::Serializer
     include ChunksHelper

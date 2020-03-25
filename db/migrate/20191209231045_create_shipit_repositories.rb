@@ -1,3 +1,4 @@
+# typed: true
 class CreateShipitRepositories < ActiveRecord::Migration[6.0]
   def change
     create_table :repositories do |t|

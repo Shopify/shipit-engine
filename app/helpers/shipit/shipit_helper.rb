@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module ShipitHelper
     def subscribe(url, *selectors)

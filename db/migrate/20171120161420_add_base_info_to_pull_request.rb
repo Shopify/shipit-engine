@@ -1,3 +1,4 @@
+# typed: true
 class AddBaseInfoToPullRequest < ActiveRecord::Migration[5.1]
   def change
     add_column :pull_requests, :base_ref, :string, limit: 1024

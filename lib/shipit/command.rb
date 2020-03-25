@@ -1,3 +1,4 @@
+# typed: false
 require 'pty'
 require 'shellwords'
 require 'fileutils'

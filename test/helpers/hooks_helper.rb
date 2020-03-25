@@ -1,3 +1,4 @@
+# typed: false
 module HooksHelper
   def expect_hook(event, stack = nil, payload = nil)
     spy_on_hook

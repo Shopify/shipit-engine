@@ -1,3 +1,4 @@
+# typed: ignore
 module Shipit
   module Api
     class BaseController < ActionController::Base

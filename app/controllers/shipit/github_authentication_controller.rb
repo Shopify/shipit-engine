@@ -1,3 +1,4 @@
+# typed: ignore
 module Shipit
   class GithubAuthenticationController < ActionController::Base
     include Shipit::Engine.routes.url_helpers

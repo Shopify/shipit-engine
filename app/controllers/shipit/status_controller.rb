@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class StatusController < ActionController::Base
     def version

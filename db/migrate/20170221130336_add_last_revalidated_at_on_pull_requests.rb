@@ -1,3 +1,4 @@
+# typed: false
 class AddLastRevalidatedAtOnPullRequests < ActiveRecord::Migration[5.0]
   def up
     add_column :pull_requests, :revalidated_at, :datetime

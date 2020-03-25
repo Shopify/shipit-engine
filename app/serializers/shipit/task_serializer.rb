@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class TaskSerializer < ActiveModel::Serializer
     include ConditionalAttributes

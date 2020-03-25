@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class DeployCommands < TaskCommands
     def steps

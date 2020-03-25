@@ -1,3 +1,4 @@
+# typed: true
 class AllowCommitWithoutAuthor < ActiveRecord::Migration[5.1]
   def change
     change_column_null(:commits, :author_id, true)

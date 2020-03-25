@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CacheDeploySpecJob < BackgroundJob
     include BackgroundJob::Unique

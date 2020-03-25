@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ContinuousDeliveryJob < BackgroundJob
     include BackgroundJob::Unique

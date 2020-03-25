@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class User < ActiveRecord::Base
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module DeploysHelper
     def render_checklist(checklist)

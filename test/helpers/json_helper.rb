@@ -1,3 +1,4 @@
+# typed: false
 module JSONHelper
   UNDEFINED = Object.new.freeze
   private_constant :UNDEFINED

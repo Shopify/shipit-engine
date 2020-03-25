@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class StackSerializer < ActiveModel::Serializer
     include ConditionalAttributes

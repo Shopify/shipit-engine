@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   module CastValue
     def to_boolean(value)

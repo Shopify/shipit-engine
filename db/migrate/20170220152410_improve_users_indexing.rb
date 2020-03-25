@@ -1,3 +1,4 @@
+# typed: false
 class ImproveUsersIndexing < ActiveRecord::Migration[5.0]
   def change
     add_index :users, :updated_at

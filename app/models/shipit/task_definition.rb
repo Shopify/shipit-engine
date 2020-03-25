@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class TaskDefinition
     NotFound = Class.new(StandardError)

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class MergeStatusController < ShipitController
     skip_authentication only: %i(check show)

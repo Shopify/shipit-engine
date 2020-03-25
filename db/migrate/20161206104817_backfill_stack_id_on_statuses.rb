@@ -1,3 +1,4 @@
+# typed: true
 class BackfillStackIdOnStatuses < ActiveRecord::Migration[5.0]
   def up
     Shipit::Commit.order(stack_id: :asc).find_in_batches do |commits|

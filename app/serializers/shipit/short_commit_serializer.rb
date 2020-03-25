@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class ShortCommitSerializer < ActiveModel::Serializer
     attributes :sha, :message

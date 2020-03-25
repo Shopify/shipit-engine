@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Status < ActiveRecord::Base
     include Common

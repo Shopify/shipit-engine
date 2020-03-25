@@ -1,3 +1,4 @@
+# typed: false
 class AddStartedAtAndEndedAtOnTasks < ActiveRecord::Migration[4.2]
   def up
     add_column :tasks, :started_at, :datetime, null: true

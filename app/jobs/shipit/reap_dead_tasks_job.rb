@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ReapDeadTasksJob < BackgroundJob
     include BackgroundJob::Unique

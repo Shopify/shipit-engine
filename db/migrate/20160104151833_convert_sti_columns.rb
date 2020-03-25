@@ -1,3 +1,4 @@
+# typed: true
 class ConvertStiColumns < ActiveRecord::Migration[4.2]
   def up
     Shipit::Task.where(type: 'Task').update_all(type: 'Shipit::Task')

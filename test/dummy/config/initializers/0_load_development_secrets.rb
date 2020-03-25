@@ -1,3 +1,4 @@
+# typed: false
 local_secrets = Shipit::Engine.root.join('config/secrets.development.yml')
 if local_secrets.exist?
   secrets = YAML.load(local_secrets.read).deep_symbolize_keys

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module Webhooks
     module Handlers

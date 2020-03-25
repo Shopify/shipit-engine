@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique

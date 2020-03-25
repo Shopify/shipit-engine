@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class FirstParentCommitsIterator < OctokitIterator
     def each

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class PurgeOldDeliveriesJob < BackgroundJob
     include BackgroundJob::Unique

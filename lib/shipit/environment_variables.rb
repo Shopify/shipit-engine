@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class EnvironmentVariables
     NotPermitted = Class.new(StandardError)

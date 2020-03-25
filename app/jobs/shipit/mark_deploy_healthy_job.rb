@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class MarkDeployHealthyJob < BackgroundJob
     include BackgroundJob::Unique

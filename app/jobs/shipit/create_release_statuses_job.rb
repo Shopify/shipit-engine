@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CreateReleaseStatusesJob < BackgroundJob
     include BackgroundJob::Unique

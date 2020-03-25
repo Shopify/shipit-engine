@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class UpdateEstimatedDeployDurationJob < BackgroundJob
     queue_as :default

@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class PullRequestSerializer < ActiveModel::Serializer
     include GithubUrlHelper

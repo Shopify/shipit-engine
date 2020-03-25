@@ -1,3 +1,4 @@
+# typed: false
 class ImproveTasksIndexing < ActiveRecord::Migration[5.0]
   def change
     # index_active_tasks should superseed this, but for some reason

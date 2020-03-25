@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Team < ActiveRecord::Base
     REQUIRED_HOOKS = %i(membership).freeze

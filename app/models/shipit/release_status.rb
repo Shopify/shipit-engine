@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ReleaseStatus < ActiveRecord::Base
     MAX_DESCRIPTION_LENGTH = 140

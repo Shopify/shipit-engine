@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module ChunksHelper
     def next_chunks_url(task)

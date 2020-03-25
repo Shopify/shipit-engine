@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class BackgroundJob < ActiveJob::Base
     class << self

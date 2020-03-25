@@ -1,3 +1,4 @@
+# typed: false
 class BackfillRepositoryData < ActiveRecord::Migration[6.0]
   def up
     repositories = {}

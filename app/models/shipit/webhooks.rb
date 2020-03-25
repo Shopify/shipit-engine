@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   module Webhooks
     class << self

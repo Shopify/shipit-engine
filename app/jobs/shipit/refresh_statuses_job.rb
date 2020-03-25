@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class RefreshStatusesJob < BackgroundJob
     queue_as :default

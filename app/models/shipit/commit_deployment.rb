@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CommitDeployment < ActiveRecord::Base
     belongs_to :task

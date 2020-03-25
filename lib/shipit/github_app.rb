@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class GitHubApp
     include Mutex_m

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class EmitEventJob < BackgroundJob
     queue_as :hooks

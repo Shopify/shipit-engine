@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CommitsController < ShipitController
     def update

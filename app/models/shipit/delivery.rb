@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Delivery < ActiveRecord::Base
     STATUSES = %w(pending scheduled sent).freeze

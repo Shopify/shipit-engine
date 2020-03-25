@@ -1,3 +1,4 @@
+# typed: false
 class DeleteOrphanStatuses < ActiveRecord::Migration[5.0]
   def up
     ids = Shipit::Status.left_joins(:commit).where(commits: {id: nil}).pluck(:id)

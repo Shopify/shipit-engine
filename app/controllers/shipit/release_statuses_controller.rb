@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ReleaseStatusesController < ShipitController
     before_action :load_stack

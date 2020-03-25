@@ -1,3 +1,4 @@
+# typed: ignore
 require 'faker'
 require 'webmock'
 include WebMock::API

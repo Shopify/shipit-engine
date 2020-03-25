@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class PerformTaskJob < BackgroundJob
     queue_as :deploys

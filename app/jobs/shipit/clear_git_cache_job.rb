@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ClearGitCacheJob < BackgroundJob
     queue_as :deploys

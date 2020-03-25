@@ -1,3 +1,4 @@
+# typed: ignore
 module Shipit
   class UndeployedCommit < DelegateClass(Commit)
     attr_reader :index

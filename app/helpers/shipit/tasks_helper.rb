@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module TasksHelper
     def task_description(task)

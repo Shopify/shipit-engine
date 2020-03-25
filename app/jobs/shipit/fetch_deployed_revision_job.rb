@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class FetchDeployedRevisionJob < BackgroundJob
     queue_as :deploys

@@ -1,3 +1,4 @@
+# typed: true
 class AddRepositoryReferenceToStacks < ActiveRecord::Migration[6.0]
   def up
     change_table(:stacks) do |t|

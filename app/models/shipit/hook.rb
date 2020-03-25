@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Hook < ActiveRecord::Base
     class DeliverySpec

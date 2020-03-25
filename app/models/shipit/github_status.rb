@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   module GithubStatus
     CACHE_KEY = 'github::status'.freeze

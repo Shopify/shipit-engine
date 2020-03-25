@@ -1,3 +1,4 @@
+# typed: false
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.5')

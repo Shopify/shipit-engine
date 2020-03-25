@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class DeploysController < ShipitController
     include ChunksHelper

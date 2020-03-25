@@ -1,3 +1,4 @@
+# typed: false
 require 'active_support/all'
 require 'active_model_serializers'
 require 'state_machines-activerecord'

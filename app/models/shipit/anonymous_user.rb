@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class AnonymousUser
     def present?

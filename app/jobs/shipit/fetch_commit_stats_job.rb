@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class FetchCommitStatsJob < BackgroundJob
     queue_as :default

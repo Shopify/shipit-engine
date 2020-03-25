@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class Duration < ActiveSupport::Duration
     ParseError = Class.new(ArgumentError)

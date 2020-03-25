@@ -1,3 +1,4 @@
+# typed: false
 class AddIndexesOnDeliveries < ActiveRecord::Migration[5.0]
   def up
     change_column :deliveries, :status, :string, limit: 50

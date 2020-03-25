@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class VariableDefinition
     attr_reader :name, :title, :default, :select

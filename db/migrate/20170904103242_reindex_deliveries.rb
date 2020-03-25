@@ -1,3 +1,4 @@
+# typed: true
 class ReindexDeliveries < ActiveRecord::Migration[5.1]
   def change
     add_index :deliveries, [:hook_id, :status]

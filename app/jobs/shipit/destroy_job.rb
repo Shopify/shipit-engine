@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class DestroyJob < BackgroundJob
     queue_as :default

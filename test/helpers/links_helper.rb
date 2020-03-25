@@ -1,3 +1,4 @@
+# typed: false
 module LinksHelper
   LINKS_PATTERN = /\<(.*?)\>; rel="(\w+)"/
 

@@ -1,3 +1,4 @@
+# typed: strong
 module Shipit
   class Membership < ActiveRecord::Base
     belongs_to :team, required: true

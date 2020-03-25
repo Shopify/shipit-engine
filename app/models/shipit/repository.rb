@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class Repository < ApplicationRecord
     OWNER_MAX_SIZE = 39

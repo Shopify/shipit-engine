@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CreateOnGithubJob < BackgroundJob
     include BackgroundJob::Unique

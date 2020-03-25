@@ -1,3 +1,4 @@
+# typed: false
 class ReorderActiveTasksIndex < ActiveRecord::Migration[4.2]
   def change
     remove_index :tasks, name: :index_active_tasks

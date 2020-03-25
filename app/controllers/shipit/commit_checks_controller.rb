@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CommitChecksController < ShipitController
     def show

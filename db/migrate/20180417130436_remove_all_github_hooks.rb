@@ -1,3 +1,4 @@
+# typed: false
 class RemoveAllGithubHooks < ActiveRecord::Migration[5.1]
   def change
     if !Shipit.legacy_github_api && Shipit::GithubHook.any?

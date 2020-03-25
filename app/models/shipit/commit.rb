@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Commit < ActiveRecord::Base
     include DeferredTouch

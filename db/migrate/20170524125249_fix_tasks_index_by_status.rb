@@ -1,3 +1,4 @@
+# typed: false
 class FixTasksIndexByStatus < ActiveRecord::Migration[5.1]
   def up
     remove_index :tasks, name: :index_tasks_by_stack_and_status

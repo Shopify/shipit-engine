@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   module NullSerializer
     extend self

@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class TaskCommands < Commands
     delegate :fetch, :fetched?, to: :stack_commands

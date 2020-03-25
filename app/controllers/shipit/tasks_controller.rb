@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class TasksController < ShipitController
     include Pagination

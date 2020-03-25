@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   module ConditionalAttributes
     extend ActiveSupport::Concern

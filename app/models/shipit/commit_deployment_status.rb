@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class CommitDeploymentStatus < ActiveRecord::Base
     DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB = 140

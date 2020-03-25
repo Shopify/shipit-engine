@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class MergePullRequestsJob < BackgroundJob
     include BackgroundJob::Unique

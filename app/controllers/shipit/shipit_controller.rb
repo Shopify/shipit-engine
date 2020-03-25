@@ -1,3 +1,4 @@
+# typed: ignore
 module Shipit
   class ShipitController < ApplicationController
     layout 'shipit'

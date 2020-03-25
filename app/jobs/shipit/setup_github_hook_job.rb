@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class SetupGithubHookJob < BackgroundJob
     queue_as :default

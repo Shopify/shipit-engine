@@ -1,3 +1,4 @@
+# typed: false
 class CreateShipitCommitDeployments < ActiveRecord::Migration[4.2]
   def change
     create_table :commit_deployments do |t|

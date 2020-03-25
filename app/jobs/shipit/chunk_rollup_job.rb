@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ChunkRollupJob < BackgroundJob
     include BackgroundJob::Unique

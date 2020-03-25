@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class UpdateGithubLastDeployedRefJob < BackgroundJob
     queue_as :default

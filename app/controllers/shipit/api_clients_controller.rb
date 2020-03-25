@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ApiClientsController < ShipitController
     include Pagination

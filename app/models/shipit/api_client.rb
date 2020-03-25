@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class ApiClient < ActiveRecord::Base
     InsufficientPermission = Class.new(StandardError)

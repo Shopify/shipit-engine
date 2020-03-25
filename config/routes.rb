@@ -1,3 +1,4 @@
+# typed: false
 Shipit::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   sha_format = /[\da-f]{6,40}/

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class RollbacksController < ShipitController
     before_action :load_stack

@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class Task < ActiveRecord::Base
     include DeferredTouch

@@ -1,3 +1,4 @@
+# typed: false
 class CreateBaseline < ActiveRecord::Migration[4.2]
   def change
     create_table "api_clients", force: :cascade do |t|

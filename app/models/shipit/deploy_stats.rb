@@ -1,3 +1,4 @@
+# typed: true
 module Shipit
   class DeployStats
     delegate :empty?, to: :@deploys

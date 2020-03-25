@@ -1,3 +1,4 @@
+# typed: false
 module Shipit
   class DeploySerializer < TaskSerializer
     include GithubUrlHelper
