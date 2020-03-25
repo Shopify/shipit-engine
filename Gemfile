@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sqlite3'
+gem 'sorbet-runtime'
 
 group :ci do
   gem 'mysql2'
@@ -13,6 +14,7 @@ group :development, :test do
   gem 'faker'
   gem 'webmock'
   gem 'rubocop', '~> 0.52.0'
+  gem 'sorbet' # Provides the static checker and the `srb` tool
 end
 
 group :test do
