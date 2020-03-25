@@ -67,5 +67,12 @@ module Shipit
     ensure
         Shipit.internal_hook_receivers = original_receivers
     end
+
+    test ".coerce_payload coerces anonymous user correctly" do
+      locked_stack = Stack.first
+      locked_stack.lock("Some Reason", nil)
+      serialized = Hook.coerce_payload(stack: locked_stack)
+      assert_json("stack.lock_author.anonymous", true, document: serialized)
+    end
   end
 end

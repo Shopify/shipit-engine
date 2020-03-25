@@ -4,6 +4,9 @@ module Shipit
       attr_accessor :timeout
     end
 
+    # Write actions can sometimes fail intermittently, particulary for large and/or busy repositories
+    retry_on(Octokit::BadGateway, Octokit::InternalServerError)
+
     def perform(*)
       with_timeout do
         super

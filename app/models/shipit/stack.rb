@@ -62,6 +62,17 @@ module Shipit
       }
     end
 
+    def env
+      {
+        'ENVIRONMENT' => environment,
+        'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
+        'GITHUB_REPO_OWNER' => repository.owner,
+        'GITHUB_REPO_NAME' => repository.name,
+        'DEPLOY_URL' => deploy_url,
+        'BRANCH' => branch,
+      }
+    end
+
     def repository
       super || build_repository
     end

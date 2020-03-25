@@ -41,6 +41,8 @@ jobs:
       db:
         image: postgres:11
         ports: ['5432:5432']
+        env:
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

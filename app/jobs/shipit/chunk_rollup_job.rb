@@ -4,6 +4,9 @@ module Shipit
 
     queue_as :default
 
+    self.timeout = 60
+    self.lock_timeout = 30
+
     def perform(task)
       unless task.finished?
         logger.error("Task ##{task.id} is not finished (current state: #{task.status}). Aborting.")

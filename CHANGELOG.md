@@ -1,5 +1,16 @@
 # Unreleased
 
+* Prevent gem released unless the `allowed_push_host` metadata is set in the gemspec (#1037).
+* Added a new job `ReapDeadTasksJob` to support cleanup of jobs that are stuck in running, but report as dead.
+  * This job runs every minute via the cron rake task.
+  * When running this job for the first time, it may transition old zombie tasks, causing any side-effects to fire, like notifications.
+* Limit the size of task output logs to 16 MB (#1041)
+
+# 0.31.0
+
+* Update omniauth-github to stop using a deprecated authentication method.
+* Interpolate variables in the `links` section of the shipit.yml (#1018).
+
 # 0.30.0
 
 * Add a statistics page for stacks (#931).

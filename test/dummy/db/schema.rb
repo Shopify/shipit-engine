@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_13_190400) do
+ActiveRecord::Schema.define(version: 2020_02_26_211925) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -275,6 +275,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_190400) do
     t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"
     t.index ["stack_id", "allow_concurrency"], name: "index_tasks_on_stack_id_and_allow_concurrency"
     t.index ["stack_id", "status", "type"], name: "index_tasks_by_stack_and_status"
+    t.index ["status"], name: "index_tasks_on_status"
     t.index ["type", "stack_id", "parent_id"], name: "index_tasks_by_stack_and_parent"
     t.index ["until_commit_id"], name: "index_tasks_on_until_commit_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"

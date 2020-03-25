@@ -1,5 +1,5 @@
 <% content_for :task_title do %>
-  executing <%= @task.definition.id %>
+  <%= @task.active? ? "executing" : "executed" %> <%= @task.definition.id %>
   <%= timeago_tag(@task.created_at, force: true) %>
 <% end %>
 

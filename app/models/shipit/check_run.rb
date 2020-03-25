@@ -1,6 +1,6 @@
 module Shipit
   class CheckRun < ApplicationRecord
-    CONCLUSIONS = %w(success failure neutral cancelled timed_out action_required).freeze
+    CONCLUSIONS = %w(success failure neutral cancelled timed_out action_required stale).freeze
     include DeferredTouch
     include Status::Common
 
@@ -45,7 +45,7 @@ module Shipit
         'pending'
       when 'success', 'neutral'
         'success'
-      when 'failure', 'cancelled'
+      when 'failure', 'cancelled', 'stale'
         'failure'
       when 'timed_out'
         'error'
