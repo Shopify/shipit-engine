@@ -125,8 +125,6 @@ inject_into_file 'config/application.rb', after: "load_defaults 6.0\n" do
 end
 
 if ENV['CI'] || yes?("Are you hosting Shipit on Heroku? (y/n)")
-  inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
-
   gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
   gsub_file 'Gemfile', "gem 'sqlite3', '~> 1.4'", ''
   gem_group :production do
