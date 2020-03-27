@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sqlite3'
+gem 'sorbet-rails'
 gem 'sorbet-runtime'
 
 group :ci do

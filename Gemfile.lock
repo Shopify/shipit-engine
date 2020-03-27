@@ -115,6 +115,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    commander (4.5.2)
+      highline (~> 2.0.0)
     concurrent-ruby (1.1.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -142,6 +144,7 @@ GEM
       activesupport (>= 4.2.0)
     hashdiff (1.0.0)
     hashie (4.1.0)
+    highline (2.0.3)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -193,9 +196,15 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
     parallel (1.17.0)
+    parlour (2.1.0)
+      commander (~> 4.5)
+      parser
+      rainbow (~> 3.0)
+      sorbet-runtime (>= 0.5)
     parser (2.6.4.1)
       ast (~> 2.4.0)
     pg (1.1.4)
+    polyfill (1.8.0)
     powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -259,6 +268,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.10.1)
+    safe_type (1.1.1)
     safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -281,6 +291,15 @@ GEM
     simplecov-html (0.11.0)
     sorbet (0.5.5468)
       sorbet-static (= 0.5.5468)
+    sorbet-coerce (0.2.4)
+      polyfill (~> 1.8)
+      safe_type (~> 1.1, >= 1.1.1)
+      sorbet (>= 0.4.4704)
+      sorbet-runtime (>= 0.4.4704)
+    sorbet-rails (0.6.0)
+      parlour (~> 2.0)
+      sorbet (>= 0.5)
+      sorbet-coerce (>= 0.2.3)
     sorbet-runtime (0.5.5468)
     sorbet-static (0.5.5468-universal-darwin-14)
     sprockets (3.7.2)
@@ -336,6 +355,7 @@ DEPENDENCIES
   shipit-engine!
   simplecov
   sorbet
+  sorbet-rails
   sorbet-runtime
   spy
   sqlite3
