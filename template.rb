@@ -97,7 +97,7 @@ CODE
       github:
         domain: # defaults to github.com
         app_id: <%= ENV['GITHUB_APP_ID'] %>
-        installation_id: <%= ENV['GITHUB_APP_ID'] %>
+        installation_id: <%= ENV['GITHUB_INSTALLATION_ID'] %>
         webhook_secret:
         private_key:
         oauth:
