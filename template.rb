@@ -18,6 +18,7 @@ web: bundle exec rails s -p $PORT
 worker: bundle exec sidekiq -C config/sidekiq.yml
 CODE
 
+environment 'Pubsubstub.use_persistent_connections = false'
 environment 'config.cache_store = :redis_store, Shipit.redis_url.to_s, { expires_in: 90.minutes }', env: :production
 environment 'config.active_record.cache_versioning = false', env: :production
 
