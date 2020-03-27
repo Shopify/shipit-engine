@@ -125,17 +125,17 @@ module Shipit
         transition %i(failed error timedout success) => :flapping
       end
 
-      state(:pending) {}
-      state(:running) {}
-      state(:validating) {}
-      state(:faulty) {}
-      state(:failed) {}
-      state(:success) {}
-      state(:error) {}
-      state(:timedout) {}
-      state(:aborting) {}
-      state(:aborted) {}
-      state(:flapping) {}
+      state :pending
+      state :running
+      state :validating
+      state :faulty
+      state :failed
+      state :success
+      state :error
+      state :timedout
+      state :aborting
+      state :aborted
+      state :flapping
     end
 
     def active?
