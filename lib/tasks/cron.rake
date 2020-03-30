@@ -1,3 +1,4 @@
+# typed: false
 namespace :cron do
   desc "Updates deployed revisions"
   task minutely: :environment do

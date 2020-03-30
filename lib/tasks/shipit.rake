@@ -1,3 +1,4 @@
+# typed: ignore
 namespace :shipit do
   desc "Deploy from a running instance. "
   task deploy: :environment do

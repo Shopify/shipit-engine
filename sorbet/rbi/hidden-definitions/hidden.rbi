@@ -2101,10 +2101,6 @@ end
 module ActionController::Head
 end
 
-module ActionController::Helpers
-  def helpers(); end
-end
-
 module ActionController::Helpers::ClassMethods
   def all_helpers_from_path(path); end
 
@@ -6647,7 +6643,6 @@ end
 
 class ActionMailbox::InboundEmail
   include ::ActionMailbox::InboundEmail::GeneratedAttributeMethods
-  include ::ActionMailbox::InboundEmail::GeneratedAssociationMethods
   include ::ActionMailbox::InboundEmail::Routable
   include ::ActionMailbox::InboundEmail::MessageId
   include ::ActionMailbox::InboundEmail::Incineratable
@@ -6660,6 +6655,25 @@ class ActionMailbox::InboundEmail
   def processed?(); end
 
   def source(); end
+
+  def typed_status(); end
+
+  def typed_status=(value); end
+end
+
+class ActionMailbox::InboundEmail::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionMailbox::InboundEmail::GeneratedRelationMethods
+end
+
+class ActionMailbox::InboundEmail::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionMailbox::InboundEmail::GeneratedRelationMethods
+end
+
+class ActionMailbox::InboundEmail::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionMailbox::InboundEmail::GeneratedRelationMethods
 end
 
 module ActionMailbox::InboundEmail::GeneratedAssociationMethods
@@ -6669,30 +6683,43 @@ module ActionMailbox::InboundEmail::GeneratedAssociationMethods
 
   def create_raw_email_attachment!(*args, &block); end
 
-  def raw_email(); end
-
-  def raw_email=(attachable); end
-
-  def raw_email_attachment(); end
-
-  def raw_email_attachment=(value); end
-
-  def raw_email_blob(); end
-
-  def raw_email_blob=(value); end
-
   def reload_raw_email_attachment(); end
 
   def reload_raw_email_blob(); end
 end
 
-module ActionMailbox::InboundEmail::GeneratedAssociationMethods
-end
-
 module ActionMailbox::InboundEmail::GeneratedAttributeMethods
 end
 
 module ActionMailbox::InboundEmail::GeneratedAttributeMethods
+  extend ::Mutex_m
+end
+
+module ActionMailbox::InboundEmail::GeneratedRelationMethods
+  def bounced(*args, &block); end
+
+  def delivered(*args, &block); end
+
+  def failed(*args, &block); end
+
+  def not_bounced(*args, &block); end
+
+  def not_delivered(*args, &block); end
+
+  def not_failed(*args, &block); end
+
+  def not_pending(*args, &block); end
+
+  def not_processing(*args, &block); end
+
+  def pending(*args, &block); end
+
+  def processing(*args, &block); end
+
+  def with_attached_raw_email(*args, &block); end
+end
+
+module ActionMailbox::InboundEmail::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -6739,31 +6766,20 @@ module ActionMailbox::InboundEmail::Routable
   extend ::ActiveSupport::Concern
 end
 
+class ActionMailbox::InboundEmail::Status
+  Bounced = ::T.let(nil, ::T.untyped)
+  Delivered = ::T.let(nil, ::T.untyped)
+  Failed = ::T.let(nil, ::T.untyped)
+  Pending = ::T.let(nil, ::T.untyped)
+  Processing = ::T.let(nil, ::T.untyped)
+end
+
+class ActionMailbox::InboundEmail::Status
+  extend ::T::Helpers
+end
+
 class ActionMailbox::InboundEmail
   extend ::ActionMailbox::InboundEmail::MessageId::ClassMethods
-  def self.bounced(*args); end
-
-  def self.delivered(*args); end
-
-  def self.failed(*args); end
-
-  def self.not_bounced(*args); end
-
-  def self.not_delivered(*args); end
-
-  def self.not_failed(*args); end
-
-  def self.not_pending(*args); end
-
-  def self.not_processing(*args); end
-
-  def self.pending(*args); end
-
-  def self.processing(*args); end
-
-  def self.statuses(); end
-
-  def self.with_attached_raw_email(*args); end
 end
 
 class ActionMailbox::IncinerationJob
@@ -7706,9 +7722,6 @@ module ActionPack
   def self.version(); end
 end
 
-module ActionText
-end
-
 module ActionText::Attachable
   def as_json(*_); end
 
@@ -8129,7 +8142,6 @@ end
 
 class ActionText::RichText
   include ::ActionText::RichText::GeneratedAttributeMethods
-  include ::ActionText::RichText::GeneratedAssociationMethods
   def after_add_for_embeds_attachments(); end
 
   def after_add_for_embeds_attachments=(val); end
@@ -8201,6 +8213,21 @@ class ActionText::RichText
   def validate_associated_records_for_embeds_blobs(*args); end
 end
 
+class ActionText::RichText::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionText::RichText::GeneratedRelationMethods
+end
+
+class ActionText::RichText::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionText::RichText::GeneratedRelationMethods
+end
+
+class ActionText::RichText::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActionText::RichText::GeneratedRelationMethods
+end
+
 module ActionText::RichText::EmbedsAttachmentsAssociationExtension
   def purge(); end
 
@@ -8211,40 +8238,29 @@ module ActionText::RichText::EmbedsAttachmentsAssociationExtension
 end
 
 module ActionText::RichText::GeneratedAssociationMethods
-  def embeds(); end
-
-  def embeds=(attachables); end
-
   def embeds_attachment_ids(); end
 
   def embeds_attachment_ids=(ids); end
-
-  def embeds_attachments(); end
-
-  def embeds_attachments=(value); end
 
   def embeds_blob_ids(); end
 
   def embeds_blob_ids=(ids); end
 
-  def embeds_blobs(); end
-
-  def embeds_blobs=(value); end
-
-  def record(); end
-
-  def record=(value); end
-
   def reload_record(); end
 end
 
-module ActionText::RichText::GeneratedAssociationMethods
-end
-
 module ActionText::RichText::GeneratedAttributeMethods
 end
 
 module ActionText::RichText::GeneratedAttributeMethods
+  extend ::Mutex_m
+end
+
+module ActionText::RichText::GeneratedRelationMethods
+  def with_attached_embeds(*args, &block); end
+end
+
+module ActionText::RichText::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -8296,8 +8312,6 @@ class ActionText::RichText
   def self.before_remove_for_embeds_blobs=(val); end
 
   def self.before_remove_for_embeds_blobs?(); end
-
-  def self.with_attached_embeds(*args); end
 end
 
 module ActionText::Serialization
@@ -12395,6 +12409,281 @@ module ActiveRecord::Associations
   def reload(*_); end
 end
 
+class ActiveRecord::Associations::CollectionProxy
+  def <<(*records); end
+
+  def _select!(*args, &block); end
+
+  def annotate(*args, &block); end
+
+  def annotate!(*args, &block); end
+
+  def annotate_values(*args, &block); end
+
+  def annotate_values=(arg); end
+
+  def append(*records); end
+
+  def arel(*args, &block); end
+
+  def clear(); end
+
+  def concat(*records); end
+
+  def construct_join_dependency(*args, &block); end
+
+  def create_with(*args, &block); end
+
+  def create_with!(*args, &block); end
+
+  def create_with_value(*args, &block); end
+
+  def create_with_value=(arg); end
+
+  def delete(*records); end
+
+  def delete_all(dependent=T.unsafe(nil)); end
+
+  def destroy(*records); end
+
+  def distinct(*args, &block); end
+
+  def distinct!(*args, &block); end
+
+  def distinct_value(*args, &block); end
+
+  def distinct_value=(arg); end
+
+  def eager_load(*args, &block); end
+
+  def eager_load!(*args, &block); end
+
+  def eager_load_values(*args, &block); end
+
+  def eager_load_values=(arg); end
+
+  def except(*args, &block); end
+
+  def extending(*args, &block); end
+
+  def extending!(*args, &block); end
+
+  def extending_values(*args, &block); end
+
+  def extending_values=(arg); end
+
+  def extensions(*args, &block); end
+
+  def extract_associated(*args, &block); end
+
+  def from(*args, &block); end
+
+  def from!(*args, &block); end
+
+  def from_clause(*args, &block); end
+
+  def from_clause=(arg); end
+
+  def group(*args, &block); end
+
+  def group!(*args, &block); end
+
+  def group_values(*args, &block); end
+
+  def group_values=(arg); end
+
+  def having(*args, &block); end
+
+  def having!(*args, &block); end
+
+  def having_clause(*args, &block); end
+
+  def having_clause=(arg); end
+
+  def include?(record); end
+
+  def includes(*args, &block); end
+
+  def includes!(*args, &block); end
+
+  def includes_values(*args, &block); end
+
+  def includes_values=(arg); end
+
+  def initialize(klass, association); end
+
+  def joins(*args, &block); end
+
+  def joins!(*args, &block); end
+
+  def joins_values(*args, &block); end
+
+  def joins_values=(arg); end
+
+  def left_joins(*args, &block); end
+
+  def left_outer_joins(*args, &block); end
+
+  def left_outer_joins!(*args, &block); end
+
+  def left_outer_joins_values(*args, &block); end
+
+  def left_outer_joins_values=(arg); end
+
+  def limit(*args, &block); end
+
+  def limit!(*args, &block); end
+
+  def limit_value(*args, &block); end
+
+  def limit_value=(arg); end
+
+  def load_target(); end
+
+  def lock(*args, &block); end
+
+  def lock!(*args, &block); end
+
+  def lock_value(*args, &block); end
+
+  def lock_value=(arg); end
+
+  def merge(*args, &block); end
+
+  def merge!(*args, &block); end
+
+  def none(*args, &block); end
+
+  def none!(*args, &block); end
+
+  def offset(*args, &block); end
+
+  def offset!(*args, &block); end
+
+  def offset_value(*args, &block); end
+
+  def offset_value=(arg); end
+
+  def only(*args, &block); end
+
+  def optimizer_hints(*args, &block); end
+
+  def optimizer_hints!(*args, &block); end
+
+  def optimizer_hints_values(*args, &block); end
+
+  def optimizer_hints_values=(arg); end
+
+  def or(*args, &block); end
+
+  def or!(*args, &block); end
+
+  def order(*args, &block); end
+
+  def order!(*args, &block); end
+
+  def order_values(*args, &block); end
+
+  def order_values=(arg); end
+
+  def preload(*args, &block); end
+
+  def preload!(*args, &block); end
+
+  def preload_values(*args, &block); end
+
+  def preload_values=(arg); end
+
+  def prepend(*args); end
+
+  def proxy_association(); end
+
+  def push(*records); end
+
+  def readonly(*args, &block); end
+
+  def readonly!(*args, &block); end
+
+  def readonly_value(*args, &block); end
+
+  def readonly_value=(arg); end
+
+  def references(*args, &block); end
+
+  def references!(*args, &block); end
+
+  def references_values(*args, &block); end
+
+  def references_values=(arg); end
+
+  def reorder(*args, &block); end
+
+  def reorder!(*args, &block); end
+
+  def reordering_value(*args, &block); end
+
+  def reordering_value=(arg); end
+
+  def replace(other_array); end
+
+  def reselect(*args, &block); end
+
+  def reselect!(*args, &block); end
+
+  def reset_scope(); end
+
+  def reverse_order(*args, &block); end
+
+  def reverse_order!(*args, &block); end
+
+  def reverse_order_value(*args, &block); end
+
+  def reverse_order_value=(arg); end
+
+  def rewhere(*args, &block); end
+
+  def scope(); end
+
+  def scoping(*args, &block); end
+
+  def select_values(*args, &block); end
+
+  def select_values=(arg); end
+
+  def skip_preloading!(*args, &block); end
+
+  def skip_query_cache!(*args, &block); end
+
+  def skip_query_cache_value(*args, &block); end
+
+  def skip_query_cache_value=(arg); end
+
+  def spawn(*args, &block); end
+
+  def target(); end
+
+  def unscope(*args, &block); end
+
+  def unscope!(*args, &block); end
+
+  def unscope_values(*args, &block); end
+
+  def unscope_values=(arg); end
+
+  def values(*args, &block); end
+
+  def where(*args, &block); end
+
+  def where!(*args, &block); end
+
+  def where_clause(*args, &block); end
+
+  def where_clause=(arg); end
+end
+
+class ActiveRecord::Associations::CollectionProxy
+end
+
 module ActiveRecord::Associations
   extend ::ActiveSupport::Autoload
   extend ::ActiveSupport::Concern
@@ -12836,10 +13125,10 @@ class ActiveRecord::Base
   extend ::ActiveRecord::DynamicMatchers
   extend ::ActiveRecord::Explain
   extend ::ActiveRecord::Enum
-  extend ::ActiveRecord::Delegation::DelegateCache
   extend ::ActiveRecord::Aggregations::ClassMethods
   extend ::ActiveModel::Callbacks
   extend ::ActiveModel::Validations::HelperMethods
+  extend ::SorbetRails::CustomFinderMethods
   def self.__callbacks(); end
 
   def self.__callbacks=(val); end
@@ -13056,6 +13345,8 @@ class ActiveRecord::Base
 
   def self.index_nested_attribute_errors=(obj); end
 
+  def self.inherited(child); end
+
   def self.internal_metadata_table_name(); end
 
   def self.internal_metadata_table_name=(val); end
@@ -13180,24 +13471,6 @@ module ActiveRecord::Batches
 
   def in_batches(of: T.unsafe(nil), start: T.unsafe(nil), finish: T.unsafe(nil), load: T.unsafe(nil), error_on_ignore: T.unsafe(nil)); end
   ORDER_IGNORE_MESSAGE = ::T.let(nil, ::T.untyped)
-end
-
-class ActiveRecord::Batches::BatchEnumerator
-  include ::Enumerable
-  def delete_all(*args, &block); end
-
-  def destroy_all(*args, &block); end
-
-  def each(&blk); end
-
-  def each_record(); end
-
-  def initialize(relation:, of: T.unsafe(nil), start: T.unsafe(nil), finish: T.unsafe(nil)); end
-
-  def update_all(*args, &block); end
-end
-
-class ActiveRecord::Batches::BatchEnumerator
 end
 
 module ActiveRecord::Batches
@@ -15078,40 +15351,11 @@ module ActiveRecord::Delegation
   def |(*args, &block); end
 end
 
-module ActiveRecord::Delegation::ClassMethods
-  def create(klass, *args); end
-end
-
-module ActiveRecord::Delegation::ClassMethods
-end
-
 module ActiveRecord::Delegation::ClassSpecificRelation
-end
-
-module ActiveRecord::Delegation::ClassSpecificRelation::ClassMethods
-  def name(); end
-end
-
-module ActiveRecord::Delegation::ClassSpecificRelation::ClassMethods
 end
 
 module ActiveRecord::Delegation::ClassSpecificRelation
   extend ::ActiveSupport::Concern
-end
-
-module ActiveRecord::Delegation::DelegateCache
-  def generate_relation_method(method); end
-
-  def include_relation_methods(delegate); end
-
-  def inherited(child_class); end
-
-  def initialize_relation_delegate_cache(); end
-
-  def relation_delegate_class(klass); end
-end
-
-module ActiveRecord::Delegation::DelegateCache
 end
 
 module ActiveRecord::Delegation
@@ -15179,9 +15423,31 @@ class ActiveRecord::EagerLoadPolymorphicError
 end
 
 module ActiveRecord::Enum
-  def enum(definitions); end
+  include ::Kernel
+  def _define_enum(*args, &blk); end
+
+  def _define_typed_enum(*args, &blk); end
+
+  def enum(*args, &blk); end
+
+  def extract_enum_values(*args, &blk); end
+
+  def gen_typed_enum_values(*args, &blk); end
 
   def inherited(base); end
+
+  def old_enum(definitions); end
+
+  def typed_enum(*args, &blk); end
+
+  def typed_enum_reflections(*args, &blk); end
+  SR_ENUM_KEYWORDS = ::T.let(nil, ::T.untyped)
+end
+
+class ActiveRecord::Enum::ConflictTypedEnumNameError
+end
+
+class ActiveRecord::Enum::ConflictTypedEnumNameError
 end
 
 class ActiveRecord::Enum::EnumType
@@ -15195,7 +15461,16 @@ end
 class ActiveRecord::Enum::EnumType
 end
 
+class ActiveRecord::Enum::MultipleEnumsDefinedError
+end
+
+class ActiveRecord::Enum::MultipleEnumsDefinedError
+end
+
 module ActiveRecord::Enum
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
   def self.extended(base); end
 end
 
@@ -15598,8 +15873,22 @@ module ActiveRecord::Integration
 end
 
 class ActiveRecord::InternalMetadata
-  include ::ActiveRecord::InternalMetadata::GeneratedAttributeMethods
   include ::ActiveRecord::InternalMetadata::GeneratedAssociationMethods
+end
+
+class ActiveRecord::InternalMetadata::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::InternalMetadata::GeneratedRelationMethods
+end
+
+class ActiveRecord::InternalMetadata::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::InternalMetadata::GeneratedRelationMethods
+end
+
+class ActiveRecord::InternalMetadata::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::InternalMetadata::GeneratedRelationMethods
 end
 
 module ActiveRecord::InternalMetadata::GeneratedAssociationMethods
@@ -15609,12 +15898,6 @@ module ActiveRecord::InternalMetadata::GeneratedAssociationMethods
 end
 
 module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
-  def created_at(); end
-
-  def created_at=(value); end
-
-  def created_at?(*args); end
-
   def created_at_before_last_save(*args); end
 
   def created_at_before_type_cast(*args); end
@@ -15636,12 +15919,6 @@ module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
   def created_at_was(*args); end
 
   def created_at_will_change!(*args); end
-
-  def key(); end
-
-  def key=(value); end
-
-  def key?(*args); end
 
   def key_before_last_save(*args); end
 
@@ -15689,12 +15966,6 @@ module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
 
   def saved_change_to_value?(*args); end
 
-  def updated_at(); end
-
-  def updated_at=(value); end
-
-  def updated_at?(*args); end
-
   def updated_at_before_last_save(*args); end
 
   def updated_at_before_type_cast(*args); end
@@ -15716,12 +15987,6 @@ module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
   def updated_at_was(*args); end
 
   def updated_at_will_change!(*args); end
-
-  def value(); end
-
-  def value=(value); end
-
-  def value?(*args); end
 
   def value_before_last_save(*args); end
 
@@ -15755,6 +16020,13 @@ module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
 end
 
 module ActiveRecord::InternalMetadata::GeneratedAttributeMethods
+  extend ::Mutex_m
+end
+
+module ActiveRecord::InternalMetadata::GeneratedRelationMethods
+end
+
+module ActiveRecord::InternalMetadata::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -16835,16 +17107,6 @@ module ActiveRecord::QueryMethods
   VALID_UNSCOPING_VALUES = ::T.let(nil, ::T.untyped)
 end
 
-class ActiveRecord::QueryMethods::WhereChain
-  include ::ActiveModel::ForbiddenAttributesProtection
-  def initialize(scope); end
-
-  def not(opts, *rest); end
-end
-
-class ActiveRecord::QueryMethods::WhereChain
-end
-
 module ActiveRecord::QueryMethods
   extend ::ActiveSupport::Concern
 end
@@ -17212,6 +17474,7 @@ class ActiveRecord::Relation
   include ::ActiveRecord::SpawnMethods
   include ::ActiveRecord::Calculations
   include ::ActiveRecord::FinderMethods
+  include ::SorbetRails::CustomFinderMethods
   def ==(other); end
 
   def _deprecated_scope_source(); end
@@ -17253,12 +17516,6 @@ class ActiveRecord::Relation
   def encode_with(coder); end
 
   def explain(); end
-
-  def find_or_create_by(attributes, &block); end
-
-  def find_or_create_by!(attributes, &block); end
-
-  def find_or_initialize_by(attributes, &block); end
 
   def first_or_create(attributes=T.unsafe(nil), &block); end
 
@@ -17310,8 +17567,6 @@ class ActiveRecord::Relation
 
   def table(); end
 
-  def to_a(); end
-
   def to_ary(); end
 
   def to_sql(); end
@@ -17332,112 +17587,6 @@ class ActiveRecord::Relation
   MULTI_VALUE_METHODS = ::T.let(nil, ::T.untyped)
   SINGLE_VALUE_METHODS = ::T.let(nil, ::T.untyped)
   VALUE_METHODS = ::T.let(nil, ::T.untyped)
-end
-
-class ActiveRecord::Relation::FromClause
-  def empty?(); end
-
-  def initialize(value, name); end
-
-  def merge(other); end
-
-  def name(); end
-
-  def value(); end
-end
-
-class ActiveRecord::Relation::FromClause
-  def self.empty(); end
-end
-
-class ActiveRecord::Relation::HashMerger
-  def initialize(relation, hash); end
-
-  def merge(); end
-
-  def other(); end
-
-  def relation(); end
-end
-
-class ActiveRecord::Relation::HashMerger
-end
-
-class ActiveRecord::Relation::Merger
-  def initialize(relation, other); end
-
-  def merge(); end
-
-  def normal_values(); end
-
-  def other(); end
-
-  def relation(); end
-
-  def values(); end
-  NORMAL_VALUES = ::T.let(nil, ::T.untyped)
-end
-
-class ActiveRecord::Relation::Merger
-end
-
-class ActiveRecord::Relation::QueryAttribute
-  def infinite?(); end
-
-  def type_cast(value); end
-
-  def unboundable?(); end
-end
-
-class ActiveRecord::Relation::QueryAttribute
-end
-
-class ActiveRecord::Relation::WhereClause
-  def +(other); end
-
-  def -(other); end
-
-  def ==(other); end
-
-  def any?(*args, &block); end
-
-  def ast(); end
-
-  def empty?(*args, &block); end
-
-  def except(*columns); end
-
-  def initialize(predicates); end
-
-  def invert(as=T.unsafe(nil)); end
-
-  def merge(other); end
-
-  def or(other); end
-
-  def predicates(); end
-
-  def referenced_columns(); end
-
-  def to_h(table_name=T.unsafe(nil)); end
-  ARRAY_WITH_EMPTY_STRING = ::T.let(nil, ::T.untyped)
-end
-
-class ActiveRecord::Relation::WhereClause
-  def self.empty(); end
-end
-
-class ActiveRecord::Relation::WhereClauseFactory
-  def build(opts, other); end
-
-  def initialize(klass, predicate_builder); end
-end
-
-class ActiveRecord::Relation::WhereClauseFactory
-end
-
-class ActiveRecord::Relation
-  extend ::ActiveRecord::Delegation::ClassMethods
 end
 
 class ActiveRecord::Result
@@ -17536,11 +17685,25 @@ class ActiveRecord::SchemaDumper
 end
 
 class ActiveRecord::SchemaMigration
-  include ::ActiveRecord::SchemaMigration::GeneratedAttributeMethods
   include ::ActiveRecord::SchemaMigration::GeneratedAssociationMethods
   def version(); end
 end
 
+class ActiveRecord::SchemaMigration::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::SchemaMigration::GeneratedRelationMethods
+end
+
+class ActiveRecord::SchemaMigration::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::SchemaMigration::GeneratedRelationMethods
+end
+
+class ActiveRecord::SchemaMigration::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveRecord::SchemaMigration::GeneratedRelationMethods
+end
+
 module ActiveRecord::SchemaMigration::GeneratedAssociationMethods
 end
 
@@ -17548,9 +17711,13 @@ module ActiveRecord::SchemaMigration::GeneratedAssociationMethods
 end
 
 module ActiveRecord::SchemaMigration::GeneratedAttributeMethods
+  extend ::Mutex_m
 end
 
-module ActiveRecord::SchemaMigration::GeneratedAttributeMethods
+module ActiveRecord::SchemaMigration::GeneratedRelationMethods
+end
+
+module ActiveRecord::SchemaMigration::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -18318,6 +18485,20 @@ module ActiveRecord
   def self.version(); end
 end
 
+class ActiveRecordOverrides
+  include ::Singleton
+  def enum_calls(); end
+
+  def get_enum_call(klass, enum_sym); end
+
+  def store_enum_call(klass, kwargs); end
+end
+
+class ActiveRecordOverrides
+  extend ::Singleton::SingletonClassMethods
+  def self.instance(); end
+end
+
 module ActiveStorage
   def analyzers(); end
 
@@ -18530,7 +18711,6 @@ end
 
 class ActiveStorage::Attachment
   include ::ActiveStorage::Attachment::GeneratedAttributeMethods
-  include ::ActiveStorage::Attachment::GeneratedAssociationMethods
   def autosave_associated_records_for_blob(*args); end
 
   def autosave_associated_records_for_record(*args); end
@@ -18540,33 +18720,44 @@ class ActiveStorage::Attachment
   def purge_later(); end
 end
 
+class ActiveStorage::Attachment::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Attachment::GeneratedRelationMethods
+end
+
+class ActiveStorage::Attachment::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Attachment::GeneratedRelationMethods
+end
+
+class ActiveStorage::Attachment::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Attachment::GeneratedRelationMethods
+end
+
 module ActiveStorage::Attachment::GeneratedAssociationMethods
-  def blob(); end
-
-  def blob=(value); end
-
   def build_blob(*args, &block); end
 
   def create_blob(*args, &block); end
 
   def create_blob!(*args, &block); end
 
-  def record(); end
-
-  def record=(value); end
-
   def reload_blob(); end
 
   def reload_record(); end
 end
 
-module ActiveStorage::Attachment::GeneratedAssociationMethods
-end
-
 module ActiveStorage::Attachment::GeneratedAttributeMethods
 end
 
 module ActiveStorage::Attachment::GeneratedAttributeMethods
+  extend ::Mutex_m
+end
+
+module ActiveStorage::Attachment::GeneratedRelationMethods
+end
+
+module ActiveStorage::Attachment::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -18585,7 +18776,6 @@ end
 
 class ActiveStorage::Blob
   include ::ActiveStorage::Blob::GeneratedAttributeMethods
-  include ::ActiveStorage::Blob::GeneratedAssociationMethods
   include ::ActiveStorage::Blob::Analyzable
   include ::ActiveStorage::Blob::Identifiable
   include ::ActionText::Attachable
@@ -18666,6 +18856,21 @@ class ActiveStorage::Blob
   def video?(); end
 end
 
+class ActiveStorage::Blob::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Blob::GeneratedRelationMethods
+end
+
+class ActiveStorage::Blob::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Blob::GeneratedRelationMethods
+end
+
+class ActiveStorage::Blob::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::ActiveStorage::Blob::GeneratedRelationMethods
+end
+
 module ActiveStorage::Blob::Analyzable
   def analyze(); end
 
@@ -18682,40 +18887,31 @@ module ActiveStorage::Blob::GeneratedAssociationMethods
 
   def attachment_ids=(ids); end
 
-  def attachments(); end
-
-  def attachments=(value); end
-
   def build_preview_image_attachment(*args, &block); end
 
   def create_preview_image_attachment(*args, &block); end
 
   def create_preview_image_attachment!(*args, &block); end
 
-  def preview_image(); end
-
-  def preview_image=(attachable); end
-
-  def preview_image_attachment(); end
-
-  def preview_image_attachment=(value); end
-
-  def preview_image_blob(); end
-
-  def preview_image_blob=(value); end
-
   def reload_preview_image_attachment(); end
 
   def reload_preview_image_blob(); end
 end
 
-module ActiveStorage::Blob::GeneratedAssociationMethods
-end
-
 module ActiveStorage::Blob::GeneratedAttributeMethods
 end
 
 module ActiveStorage::Blob::GeneratedAttributeMethods
+  extend ::Mutex_m
+end
+
+module ActiveStorage::Blob::GeneratedRelationMethods
+  def unattached(*args, &block); end
+
+  def with_attached_preview_image(*args, &block); end
+end
+
+module ActiveStorage::Blob::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -18789,10 +18985,6 @@ class ActiveStorage::Blob
   def self.service=(val); end
 
   def self.service?(); end
-
-  def self.unattached(*args); end
-
-  def self.with_attached_preview_image(*args); end
 end
 
 class ActiveStorage::BlobsController
@@ -25060,6 +25252,26 @@ class Binding
   def clone(); end
 
   def irb(); end
+end
+
+class BooleanString
+end
+
+class BooleanString
+  def self.===(other); end
+end
+
+module BooleanStringImpl
+  def _is_a_boolean_string?(); end
+
+  def instance_of?(type); end
+
+  def is_a?(type); end
+
+  def kind_of?(type); end
+end
+
+module BooleanStringImpl
 end
 
 Bundler::Deprecate = Gem::Deprecate
@@ -35306,6 +35518,7 @@ end
 
 class FalseClass
   include ::JSON::Ext::Generator::GeneratorMethods::FalseClass
+  include ::SafeType::BooleanMixin
 end
 
 module Faraday
@@ -36782,6 +36995,36 @@ end
 
 class Gem::Specification
   extend ::Enumerable
+end
+
+module GeneratedUrlHelpers
+  include ::ActionDispatch::Routing::UrlFor
+  include ::ActionDispatch::Routing::PolymorphicRoutes
+  def _routes(); end
+
+  def default_url_options=(obj); end
+
+  def rails_info_path(*args); end
+
+  def rails_info_properties_path(*args); end
+
+  def rails_info_properties_url(*args); end
+
+  def rails_info_routes_path(*args); end
+
+  def rails_info_routes_url(*args); end
+
+  def rails_info_url(*args); end
+
+  def rails_mailers_path(*args); end
+
+  def rails_mailers_url(*args); end
+end
+
+module GeneratedUrlHelpers
+  def self._routes(); end
+
+  def self.default_url_options=(obj); end
 end
 
 module GetText
@@ -39010,6 +39253,17 @@ module IRB
   def self.version(); end
 end
 
+module ITypeAssert
+  def get_type(); end
+end
+
+module ITypeAssert
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
 module IceNine
   VERSION = ::T.let(nil, ::T.untyped)
 end
@@ -39183,6 +39437,26 @@ end
 
 class Integer
   def self.sqrt(_); end
+end
+
+class IntegerString
+end
+
+class IntegerString
+  def self.===(other); end
+end
+
+module IntegerStringImpl
+  def _is_a_integer_string?(); end
+
+  def instance_of?(type); end
+
+  def is_a?(type); end
+
+  def kind_of?(type); end
+end
+
+module IntegerStringImpl
 end
 
 class JSON::Ext::Generator::State
@@ -39608,6 +39882,8 @@ module Kernel
   def pretty_inspect(); end
 
   def remote_byebug(host=T.unsafe(nil), port=T.unsafe(nil)); end
+
+  def then(); end
 
   def yield_self(); end
 end
@@ -43785,6 +44061,7 @@ class Minitest::Test
   include ::Mocha::API
   include ::Mocha::ParameterMatchers
   include ::Mocha::Hooks
+  include ::WebMock::API
   include ::Spy::MiniTestAdapter
   include ::Spy::API
   def assert_request_not_requested(*args); end
@@ -47833,7 +48110,6 @@ class Object
   include ::Mocha::ObjectMethods
   include ::PP::ObjectMixin
   include ::ActiveSupport::Dependencies::Loadable
-  include ::WebMock::API
   include ::ActiveSupport::ToJsonWithActiveSupportEncoder
   include ::ActiveSupport::Dependencies::ZeitwerkIntegration::RequireDependency
   def __is_a__(_); end
@@ -50799,6 +51075,452 @@ module Parallel
   def self.worker_number=(worker_num); end
 end
 
+module Parlour
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::ConflictResolver
+  def resolve_conflicts(*args, &blk); end
+end
+
+class Parlour::ConflictResolver
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module Parlour::Debugging
+end
+
+module Parlour::Debugging::Tree
+  INDENT_SPACES = ::T.let(nil, ::T.untyped)
+end
+
+module Parlour::Debugging::Tree
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.begin(*args, &blk); end
+
+  def self.end(*args, &blk); end
+
+  def self.here(*args, &blk); end
+
+  def self.line_prefix(); end
+
+  def self.text_prefix(); end
+end
+
+module Parlour::Debugging
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.debug_mode=(*args, &blk); end
+
+  def self.debug_mode?(*args, &blk); end
+
+  def self.debug_puts(*args, &blk); end
+
+  def self.name_for_debug_caller(*args, &blk); end
+end
+
+class Parlour::DetachedRbiGenerator
+  def detached!(*args, &blk); end
+end
+
+class Parlour::DetachedRbiGenerator
+end
+
+class Parlour::ParseError
+  def buffer(*args, &blk); end
+
+  def initialize(buffer, range); end
+
+  def range(*args, &blk); end
+end
+
+class Parlour::ParseError
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::Plugin
+  def generate(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def strictness(*args, &blk); end
+
+  def strictness=(strictness); end
+end
+
+class Parlour::Plugin
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.inherited(*args, &blk); end
+
+  def self.registered_plugins(*args, &blk); end
+
+  def self.run_plugins(*args, &blk); end
+end
+
+class Parlour::RbiGenerator
+  def current_plugin(*args, &blk); end
+
+  def current_plugin=(current_plugin); end
+
+  def initialize(*args, &blk); end
+
+  def options(*args, &blk); end
+
+  def rbi(*args, &blk); end
+
+  def root(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Arbitrary
+  def ==(*args, &blk); end
+
+  def code(*args, &blk); end
+
+  def code=(code); end
+end
+
+class Parlour::RbiGenerator::Arbitrary
+end
+
+class Parlour::RbiGenerator::Attribute
+  def class_attribute(*args, &blk); end
+
+  def kind(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Attribute
+end
+
+class Parlour::RbiGenerator::ClassNamespace
+  def abstract(*args, &blk); end
+
+  def superclass(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::ClassNamespace
+end
+
+class Parlour::RbiGenerator::Constant
+  def ==(*args, &blk); end
+
+  def value(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Constant
+end
+
+class Parlour::RbiGenerator::EnumClassNamespace
+  def enums(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::EnumClassNamespace
+end
+
+class Parlour::RbiGenerator::Extend
+  def ==(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Extend
+end
+
+class Parlour::RbiGenerator::Include
+  def ==(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Include
+end
+
+class Parlour::RbiGenerator::Method
+  def ==(*args, &blk); end
+
+  def abstract(*args, &blk); end
+
+  def class_method(*args, &blk); end
+
+  def final(*args, &blk); end
+
+  def implementation(*args, &blk); end
+
+  def overridable(*args, &blk); end
+
+  def override(*args, &blk); end
+
+  def parameters(*args, &blk); end
+
+  def return_type(*args, &blk); end
+
+  def type_parameters(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Method
+end
+
+class Parlour::RbiGenerator::ModuleNamespace
+  def interface(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::ModuleNamespace
+end
+
+class Parlour::RbiGenerator::Namespace
+  def add_comment_to_next_child(*args, &blk); end
+
+  def children(*args, &blk); end
+
+  def constants(*args, &blk); end
+
+  def create_arbitrary(code:, &block); end
+
+  def create_attr(*args, &blk); end
+
+  def create_attr_accessor(*args, &blk); end
+
+  def create_attr_reader(*args, &blk); end
+
+  def create_attr_writer(*args, &blk); end
+
+  def create_attribute(*args, &blk); end
+
+  def create_class(*args, &blk); end
+
+  def create_constant(*args, &blk); end
+
+  def create_enum_class(*args, &blk); end
+
+  def create_extend(*args, &blk); end
+
+  def create_extends(*args, &blk); end
+
+  def create_include(*args, &blk); end
+
+  def create_includes(*args, &blk); end
+
+  def create_method(*args, &blk); end
+
+  def create_module(*args, &blk); end
+
+  def create_type_alias(*args, &blk); end
+
+  def extends(*args, &blk); end
+
+  def final(*args, &blk); end
+
+  def includes(*args, &blk); end
+
+  def path(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Namespace
+end
+
+class Parlour::RbiGenerator::Options
+  def break_params(*args, &blk); end
+
+  def indented(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def sort_namespaces(*args, &blk); end
+
+  def tab_size(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Options
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbiGenerator::Parameter
+  def ==(*args, &blk); end
+
+  def default(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def kind(*args, &blk); end
+
+  def name(*args, &blk); end
+
+  def name_without_kind(*args, &blk); end
+
+  def to_def_param(*args, &blk); end
+
+  def to_sig_param(*args, &blk); end
+
+  def type(*args, &blk); end
+  PREFIXES = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::RbiGenerator::Parameter
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbiGenerator::RbiObject
+  def add_comment(*args, &blk); end
+
+  def add_comments(*args, &blk); end
+
+  def comments(*args, &blk); end
+
+  def describe(*args, &blk); end
+
+  def generate_rbi(*args, &blk); end
+
+  def generated_by(*args, &blk); end
+
+  def generator(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def merge_into_self(*args, &blk); end
+
+  def mergeable?(*args, &blk); end
+
+  def name(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::RbiObject
+  extend ::T::Helpers
+  extend ::T::Sig
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbiGenerator
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module Parlour::TypeLoader
+end
+
+module Parlour::TypeLoader
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.load_file(*args, &blk); end
+
+  def self.load_project(*args, &blk); end
+
+  def self.load_source(*args, &blk); end
+end
+
+class Parlour::TypeParser
+  def ast(*args, &blk); end
+
+  def ast=(ast); end
+
+  def body_has_modifier?(*args, &blk); end
+
+  def body_includes_and_extends(*args, &blk); end
+
+  def constant_names(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def node_to_s(*args, &blk); end
+
+  def parse_all(*args, &blk); end
+
+  def parse_err(*args, &blk); end
+
+  def parse_path_to_object(*args, &blk); end
+
+  def parse_sig_into_methods(*args, &blk); end
+
+  def parse_sig_into_sig(*args, &blk); end
+
+  def sig_node?(*args, &blk); end
+
+  def unknown_node_errors(*args, &blk); end
+
+  def zip_by(*args, &blk); end
+end
+
+class Parlour::TypeParser::IntermediateSig
+  def abstract(); end
+
+  def abstract=(val); end
+
+  def final(); end
+
+  def final=(val); end
+
+  def initialize(hash=T.unsafe(nil)); end
+
+  def overridable(); end
+
+  def overridable=(val); end
+
+  def override(); end
+
+  def override=(val); end
+
+  def params(); end
+
+  def params=(val); end
+
+  def return_type(); end
+
+  def return_type=(val); end
+
+  def type_parameters(); end
+
+  def type_parameters=(val); end
+end
+
+class Parlour::TypeParser::IntermediateSig
+  def self.inherited(s); end
+end
+
+class Parlour::TypeParser::NodePath
+  def child(*args, &blk); end
+
+  def indices(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def parent(*args, &blk); end
+
+  def sibling(*args, &blk); end
+
+  def traverse(*args, &blk); end
+end
+
+class Parlour::TypeParser::NodePath
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::TypeParser
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.from_source(*args, &blk); end
+end
+
+module Parlour
+end
+
 ParseError = Racc::ParseError
 
 module Parser
@@ -51334,6 +52056,8 @@ end
 
 class Parser::Context
 end
+
+Parser::CurrentRuby = Parser::Ruby25
 
 module Parser::Deprecation
   def warn_of_deprecation(); end
@@ -52629,6 +53353,880 @@ end
 class Parser::Ruby24
 end
 
+class Parser::Ruby25
+  def _reduce_10(val, _values, result); end
+
+  def _reduce_100(val, _values, result); end
+
+  def _reduce_101(val, _values, result); end
+
+  def _reduce_102(val, _values, result); end
+
+  def _reduce_103(val, _values, result); end
+
+  def _reduce_104(val, _values, result); end
+
+  def _reduce_105(val, _values, result); end
+
+  def _reduce_106(val, _values, result); end
+
+  def _reduce_107(val, _values, result); end
+
+  def _reduce_108(val, _values, result); end
+
+  def _reduce_109(val, _values, result); end
+
+  def _reduce_11(val, _values, result); end
+
+  def _reduce_110(val, _values, result); end
+
+  def _reduce_111(val, _values, result); end
+
+  def _reduce_113(val, _values, result); end
+
+  def _reduce_114(val, _values, result); end
+
+  def _reduce_115(val, _values, result); end
+
+  def _reduce_12(val, _values, result); end
+
+  def _reduce_121(val, _values, result); end
+
+  def _reduce_125(val, _values, result); end
+
+  def _reduce_126(val, _values, result); end
+
+  def _reduce_127(val, _values, result); end
+
+  def _reduce_13(val, _values, result); end
+
+  def _reduce_14(val, _values, result); end
+
+  def _reduce_15(val, _values, result); end
+
+  def _reduce_17(val, _values, result); end
+
+  def _reduce_18(val, _values, result); end
+
+  def _reduce_19(val, _values, result); end
+
+  def _reduce_199(val, _values, result); end
+
+  def _reduce_2(val, _values, result); end
+
+  def _reduce_20(val, _values, result); end
+
+  def _reduce_200(val, _values, result); end
+
+  def _reduce_201(val, _values, result); end
+
+  def _reduce_202(val, _values, result); end
+
+  def _reduce_203(val, _values, result); end
+
+  def _reduce_204(val, _values, result); end
+
+  def _reduce_205(val, _values, result); end
+
+  def _reduce_206(val, _values, result); end
+
+  def _reduce_207(val, _values, result); end
+
+  def _reduce_208(val, _values, result); end
+
+  def _reduce_209(val, _values, result); end
+
+  def _reduce_21(val, _values, result); end
+
+  def _reduce_210(val, _values, result); end
+
+  def _reduce_211(val, _values, result); end
+
+  def _reduce_212(val, _values, result); end
+
+  def _reduce_213(val, _values, result); end
+
+  def _reduce_214(val, _values, result); end
+
+  def _reduce_215(val, _values, result); end
+
+  def _reduce_216(val, _values, result); end
+
+  def _reduce_217(val, _values, result); end
+
+  def _reduce_218(val, _values, result); end
+
+  def _reduce_219(val, _values, result); end
+
+  def _reduce_22(val, _values, result); end
+
+  def _reduce_220(val, _values, result); end
+
+  def _reduce_221(val, _values, result); end
+
+  def _reduce_222(val, _values, result); end
+
+  def _reduce_224(val, _values, result); end
+
+  def _reduce_225(val, _values, result); end
+
+  def _reduce_226(val, _values, result); end
+
+  def _reduce_227(val, _values, result); end
+
+  def _reduce_228(val, _values, result); end
+
+  def _reduce_229(val, _values, result); end
+
+  def _reduce_23(val, _values, result); end
+
+  def _reduce_230(val, _values, result); end
+
+  def _reduce_231(val, _values, result); end
+
+  def _reduce_232(val, _values, result); end
+
+  def _reduce_233(val, _values, result); end
+
+  def _reduce_234(val, _values, result); end
+
+  def _reduce_235(val, _values, result); end
+
+  def _reduce_236(val, _values, result); end
+
+  def _reduce_24(val, _values, result); end
+
+  def _reduce_242(val, _values, result); end
+
+  def _reduce_243(val, _values, result); end
+
+  def _reduce_247(val, _values, result); end
+
+  def _reduce_248(val, _values, result); end
+
+  def _reduce_25(val, _values, result); end
+
+  def _reduce_250(val, _values, result); end
+
+  def _reduce_251(val, _values, result); end
+
+  def _reduce_252(val, _values, result); end
+
+  def _reduce_254(val, _values, result); end
+
+  def _reduce_257(val, _values, result); end
+
+  def _reduce_258(val, _values, result); end
+
+  def _reduce_259(val, _values, result); end
+
+  def _reduce_26(val, _values, result); end
+
+  def _reduce_260(val, _values, result); end
+
+  def _reduce_261(val, _values, result); end
+
+  def _reduce_262(val, _values, result); end
+
+  def _reduce_263(val, _values, result); end
+
+  def _reduce_264(val, _values, result); end
+
+  def _reduce_265(val, _values, result); end
+
+  def _reduce_266(val, _values, result); end
+
+  def _reduce_267(val, _values, result); end
+
+  def _reduce_268(val, _values, result); end
+
+  def _reduce_269(val, _values, result); end
+
+  def _reduce_27(val, _values, result); end
+
+  def _reduce_270(val, _values, result); end
+
+  def _reduce_271(val, _values, result); end
+
+  def _reduce_272(val, _values, result); end
+
+  def _reduce_273(val, _values, result); end
+
+  def _reduce_275(val, _values, result); end
+
+  def _reduce_276(val, _values, result); end
+
+  def _reduce_277(val, _values, result); end
+
+  def _reduce_28(val, _values, result); end
+
+  def _reduce_288(val, _values, result); end
+
+  def _reduce_289(val, _values, result); end
+
+  def _reduce_29(val, _values, result); end
+
+  def _reduce_290(val, _values, result); end
+
+  def _reduce_291(val, _values, result); end
+
+  def _reduce_292(val, _values, result); end
+
+  def _reduce_293(val, _values, result); end
+
+  def _reduce_294(val, _values, result); end
+
+  def _reduce_295(val, _values, result); end
+
+  def _reduce_296(val, _values, result); end
+
+  def _reduce_297(val, _values, result); end
+
+  def _reduce_298(val, _values, result); end
+
+  def _reduce_299(val, _values, result); end
+
+  def _reduce_3(val, _values, result); end
+
+  def _reduce_300(val, _values, result); end
+
+  def _reduce_301(val, _values, result); end
+
+  def _reduce_302(val, _values, result); end
+
+  def _reduce_303(val, _values, result); end
+
+  def _reduce_304(val, _values, result); end
+
+  def _reduce_305(val, _values, result); end
+
+  def _reduce_306(val, _values, result); end
+
+  def _reduce_307(val, _values, result); end
+
+  def _reduce_309(val, _values, result); end
+
+  def _reduce_31(val, _values, result); end
+
+  def _reduce_310(val, _values, result); end
+
+  def _reduce_311(val, _values, result); end
+
+  def _reduce_312(val, _values, result); end
+
+  def _reduce_313(val, _values, result); end
+
+  def _reduce_314(val, _values, result); end
+
+  def _reduce_315(val, _values, result); end
+
+  def _reduce_316(val, _values, result); end
+
+  def _reduce_317(val, _values, result); end
+
+  def _reduce_318(val, _values, result); end
+
+  def _reduce_319(val, _values, result); end
+
+  def _reduce_32(val, _values, result); end
+
+  def _reduce_320(val, _values, result); end
+
+  def _reduce_321(val, _values, result); end
+
+  def _reduce_322(val, _values, result); end
+
+  def _reduce_323(val, _values, result); end
+
+  def _reduce_324(val, _values, result); end
+
+  def _reduce_325(val, _values, result); end
+
+  def _reduce_326(val, _values, result); end
+
+  def _reduce_327(val, _values, result); end
+
+  def _reduce_328(val, _values, result); end
+
+  def _reduce_329(val, _values, result); end
+
+  def _reduce_33(val, _values, result); end
+
+  def _reduce_330(val, _values, result); end
+
+  def _reduce_331(val, _values, result); end
+
+  def _reduce_332(val, _values, result); end
+
+  def _reduce_334(val, _values, result); end
+
+  def _reduce_337(val, _values, result); end
+
+  def _reduce_341(val, _values, result); end
+
+  def _reduce_343(val, _values, result); end
+
+  def _reduce_346(val, _values, result); end
+
+  def _reduce_347(val, _values, result); end
+
+  def _reduce_348(val, _values, result); end
+
+  def _reduce_349(val, _values, result); end
+
+  def _reduce_35(val, _values, result); end
+
+  def _reduce_351(val, _values, result); end
+
+  def _reduce_352(val, _values, result); end
+
+  def _reduce_353(val, _values, result); end
+
+  def _reduce_354(val, _values, result); end
+
+  def _reduce_355(val, _values, result); end
+
+  def _reduce_356(val, _values, result); end
+
+  def _reduce_357(val, _values, result); end
+
+  def _reduce_358(val, _values, result); end
+
+  def _reduce_359(val, _values, result); end
+
+  def _reduce_36(val, _values, result); end
+
+  def _reduce_360(val, _values, result); end
+
+  def _reduce_361(val, _values, result); end
+
+  def _reduce_362(val, _values, result); end
+
+  def _reduce_363(val, _values, result); end
+
+  def _reduce_364(val, _values, result); end
+
+  def _reduce_365(val, _values, result); end
+
+  def _reduce_366(val, _values, result); end
+
+  def _reduce_367(val, _values, result); end
+
+  def _reduce_368(val, _values, result); end
+
+  def _reduce_369(val, _values, result); end
+
+  def _reduce_37(val, _values, result); end
+
+  def _reduce_371(val, _values, result); end
+
+  def _reduce_372(val, _values, result); end
+
+  def _reduce_373(val, _values, result); end
+
+  def _reduce_374(val, _values, result); end
+
+  def _reduce_375(val, _values, result); end
+
+  def _reduce_376(val, _values, result); end
+
+  def _reduce_377(val, _values, result); end
+
+  def _reduce_378(val, _values, result); end
+
+  def _reduce_38(val, _values, result); end
+
+  def _reduce_380(val, _values, result); end
+
+  def _reduce_381(val, _values, result); end
+
+  def _reduce_382(val, _values, result); end
+
+  def _reduce_383(val, _values, result); end
+
+  def _reduce_384(val, _values, result); end
+
+  def _reduce_385(val, _values, result); end
+
+  def _reduce_386(val, _values, result); end
+
+  def _reduce_387(val, _values, result); end
+
+  def _reduce_388(val, _values, result); end
+
+  def _reduce_389(val, _values, result); end
+
+  def _reduce_39(val, _values, result); end
+
+  def _reduce_391(val, _values, result); end
+
+  def _reduce_392(val, _values, result); end
+
+  def _reduce_393(val, _values, result); end
+
+  def _reduce_394(val, _values, result); end
+
+  def _reduce_395(val, _values, result); end
+
+  def _reduce_396(val, _values, result); end
+
+  def _reduce_397(val, _values, result); end
+
+  def _reduce_398(val, _values, result); end
+
+  def _reduce_399(val, _values, result); end
+
+  def _reduce_4(val, _values, result); end
+
+  def _reduce_40(val, _values, result); end
+
+  def _reduce_400(val, _values, result); end
+
+  def _reduce_401(val, _values, result); end
+
+  def _reduce_402(val, _values, result); end
+
+  def _reduce_403(val, _values, result); end
+
+  def _reduce_404(val, _values, result); end
+
+  def _reduce_405(val, _values, result); end
+
+  def _reduce_406(val, _values, result); end
+
+  def _reduce_407(val, _values, result); end
+
+  def _reduce_408(val, _values, result); end
+
+  def _reduce_409(val, _values, result); end
+
+  def _reduce_41(val, _values, result); end
+
+  def _reduce_410(val, _values, result); end
+
+  def _reduce_411(val, _values, result); end
+
+  def _reduce_412(val, _values, result); end
+
+  def _reduce_413(val, _values, result); end
+
+  def _reduce_414(val, _values, result); end
+
+  def _reduce_415(val, _values, result); end
+
+  def _reduce_416(val, _values, result); end
+
+  def _reduce_417(val, _values, result); end
+
+  def _reduce_418(val, _values, result); end
+
+  def _reduce_419(val, _values, result); end
+
+  def _reduce_42(val, _values, result); end
+
+  def _reduce_420(val, _values, result); end
+
+  def _reduce_421(val, _values, result); end
+
+  def _reduce_422(val, _values, result); end
+
+  def _reduce_423(val, _values, result); end
+
+  def _reduce_424(val, _values, result); end
+
+  def _reduce_425(val, _values, result); end
+
+  def _reduce_427(val, _values, result); end
+
+  def _reduce_428(val, _values, result); end
+
+  def _reduce_429(val, _values, result); end
+
+  def _reduce_432(val, _values, result); end
+
+  def _reduce_434(val, _values, result); end
+
+  def _reduce_439(val, _values, result); end
+
+  def _reduce_44(val, _values, result); end
+
+  def _reduce_440(val, _values, result); end
+
+  def _reduce_441(val, _values, result); end
+
+  def _reduce_442(val, _values, result); end
+
+  def _reduce_443(val, _values, result); end
+
+  def _reduce_444(val, _values, result); end
+
+  def _reduce_445(val, _values, result); end
+
+  def _reduce_446(val, _values, result); end
+
+  def _reduce_447(val, _values, result); end
+
+  def _reduce_448(val, _values, result); end
+
+  def _reduce_449(val, _values, result); end
+
+  def _reduce_450(val, _values, result); end
+
+  def _reduce_451(val, _values, result); end
+
+  def _reduce_452(val, _values, result); end
+
+  def _reduce_453(val, _values, result); end
+
+  def _reduce_454(val, _values, result); end
+
+  def _reduce_455(val, _values, result); end
+
+  def _reduce_456(val, _values, result); end
+
+  def _reduce_457(val, _values, result); end
+
+  def _reduce_458(val, _values, result); end
+
+  def _reduce_459(val, _values, result); end
+
+  def _reduce_460(val, _values, result); end
+
+  def _reduce_461(val, _values, result); end
+
+  def _reduce_462(val, _values, result); end
+
+  def _reduce_463(val, _values, result); end
+
+  def _reduce_464(val, _values, result); end
+
+  def _reduce_465(val, _values, result); end
+
+  def _reduce_466(val, _values, result); end
+
+  def _reduce_467(val, _values, result); end
+
+  def _reduce_468(val, _values, result); end
+
+  def _reduce_469(val, _values, result); end
+
+  def _reduce_47(val, _values, result); end
+
+  def _reduce_470(val, _values, result); end
+
+  def _reduce_471(val, _values, result); end
+
+  def _reduce_472(val, _values, result); end
+
+  def _reduce_473(val, _values, result); end
+
+  def _reduce_475(val, _values, result); end
+
+  def _reduce_476(val, _values, result); end
+
+  def _reduce_477(val, _values, result); end
+
+  def _reduce_478(val, _values, result); end
+
+  def _reduce_479(val, _values, result); end
+
+  def _reduce_48(val, _values, result); end
+
+  def _reduce_480(val, _values, result); end
+
+  def _reduce_481(val, _values, result); end
+
+  def _reduce_482(val, _values, result); end
+
+  def _reduce_483(val, _values, result); end
+
+  def _reduce_484(val, _values, result); end
+
+  def _reduce_485(val, _values, result); end
+
+  def _reduce_486(val, _values, result); end
+
+  def _reduce_487(val, _values, result); end
+
+  def _reduce_488(val, _values, result); end
+
+  def _reduce_489(val, _values, result); end
+
+  def _reduce_49(val, _values, result); end
+
+  def _reduce_490(val, _values, result); end
+
+  def _reduce_491(val, _values, result); end
+
+  def _reduce_492(val, _values, result); end
+
+  def _reduce_493(val, _values, result); end
+
+  def _reduce_494(val, _values, result); end
+
+  def _reduce_495(val, _values, result); end
+
+  def _reduce_496(val, _values, result); end
+
+  def _reduce_497(val, _values, result); end
+
+  def _reduce_498(val, _values, result); end
+
+  def _reduce_499(val, _values, result); end
+
+  def _reduce_5(val, _values, result); end
+
+  def _reduce_50(val, _values, result); end
+
+  def _reduce_500(val, _values, result); end
+
+  def _reduce_501(val, _values, result); end
+
+  def _reduce_502(val, _values, result); end
+
+  def _reduce_503(val, _values, result); end
+
+  def _reduce_504(val, _values, result); end
+
+  def _reduce_505(val, _values, result); end
+
+  def _reduce_506(val, _values, result); end
+
+  def _reduce_507(val, _values, result); end
+
+  def _reduce_508(val, _values, result); end
+
+  def _reduce_509(val, _values, result); end
+
+  def _reduce_510(val, _values, result); end
+
+  def _reduce_511(val, _values, result); end
+
+  def _reduce_512(val, _values, result); end
+
+  def _reduce_513(val, _values, result); end
+
+  def _reduce_514(val, _values, result); end
+
+  def _reduce_515(val, _values, result); end
+
+  def _reduce_516(val, _values, result); end
+
+  def _reduce_517(val, _values, result); end
+
+  def _reduce_518(val, _values, result); end
+
+  def _reduce_519(val, _values, result); end
+
+  def _reduce_520(val, _values, result); end
+
+  def _reduce_521(val, _values, result); end
+
+  def _reduce_522(val, _values, result); end
+
+  def _reduce_523(val, _values, result); end
+
+  def _reduce_524(val, _values, result); end
+
+  def _reduce_525(val, _values, result); end
+
+  def _reduce_526(val, _values, result); end
+
+  def _reduce_527(val, _values, result); end
+
+  def _reduce_528(val, _values, result); end
+
+  def _reduce_529(val, _values, result); end
+
+  def _reduce_53(val, _values, result); end
+
+  def _reduce_530(val, _values, result); end
+
+  def _reduce_531(val, _values, result); end
+
+  def _reduce_533(val, _values, result); end
+
+  def _reduce_534(val, _values, result); end
+
+  def _reduce_535(val, _values, result); end
+
+  def _reduce_536(val, _values, result); end
+
+  def _reduce_537(val, _values, result); end
+
+  def _reduce_538(val, _values, result); end
+
+  def _reduce_539(val, _values, result); end
+
+  def _reduce_54(val, _values, result); end
+
+  def _reduce_540(val, _values, result); end
+
+  def _reduce_541(val, _values, result); end
+
+  def _reduce_542(val, _values, result); end
+
+  def _reduce_543(val, _values, result); end
+
+  def _reduce_544(val, _values, result); end
+
+  def _reduce_545(val, _values, result); end
+
+  def _reduce_546(val, _values, result); end
+
+  def _reduce_547(val, _values, result); end
+
+  def _reduce_550(val, _values, result); end
+
+  def _reduce_551(val, _values, result); end
+
+  def _reduce_552(val, _values, result); end
+
+  def _reduce_553(val, _values, result); end
+
+  def _reduce_554(val, _values, result); end
+
+  def _reduce_555(val, _values, result); end
+
+  def _reduce_556(val, _values, result); end
+
+  def _reduce_557(val, _values, result); end
+
+  def _reduce_560(val, _values, result); end
+
+  def _reduce_561(val, _values, result); end
+
+  def _reduce_564(val, _values, result); end
+
+  def _reduce_565(val, _values, result); end
+
+  def _reduce_566(val, _values, result); end
+
+  def _reduce_568(val, _values, result); end
+
+  def _reduce_569(val, _values, result); end
+
+  def _reduce_571(val, _values, result); end
+
+  def _reduce_572(val, _values, result); end
+
+  def _reduce_573(val, _values, result); end
+
+  def _reduce_574(val, _values, result); end
+
+  def _reduce_575(val, _values, result); end
+
+  def _reduce_576(val, _values, result); end
+
+  def _reduce_58(val, _values, result); end
+
+  def _reduce_589(val, _values, result); end
+
+  def _reduce_59(val, _values, result); end
+
+  def _reduce_590(val, _values, result); end
+
+  def _reduce_595(val, _values, result); end
+
+  def _reduce_596(val, _values, result); end
+
+  def _reduce_6(val, _values, result); end
+
+  def _reduce_60(val, _values, result); end
+
+  def _reduce_600(val, _values, result); end
+
+  def _reduce_604(val, _values, result); end
+
+  def _reduce_62(val, _values, result); end
+
+  def _reduce_63(val, _values, result); end
+
+  def _reduce_64(val, _values, result); end
+
+  def _reduce_65(val, _values, result); end
+
+  def _reduce_66(val, _values, result); end
+
+  def _reduce_67(val, _values, result); end
+
+  def _reduce_68(val, _values, result); end
+
+  def _reduce_69(val, _values, result); end
+
+  def _reduce_70(val, _values, result); end
+
+  def _reduce_71(val, _values, result); end
+
+  def _reduce_72(val, _values, result); end
+
+  def _reduce_73(val, _values, result); end
+
+  def _reduce_74(val, _values, result); end
+
+  def _reduce_75(val, _values, result); end
+
+  def _reduce_76(val, _values, result); end
+
+  def _reduce_78(val, _values, result); end
+
+  def _reduce_79(val, _values, result); end
+
+  def _reduce_8(val, _values, result); end
+
+  def _reduce_80(val, _values, result); end
+
+  def _reduce_81(val, _values, result); end
+
+  def _reduce_82(val, _values, result); end
+
+  def _reduce_83(val, _values, result); end
+
+  def _reduce_84(val, _values, result); end
+
+  def _reduce_85(val, _values, result); end
+
+  def _reduce_86(val, _values, result); end
+
+  def _reduce_88(val, _values, result); end
+
+  def _reduce_89(val, _values, result); end
+
+  def _reduce_9(val, _values, result); end
+
+  def _reduce_90(val, _values, result); end
+
+  def _reduce_91(val, _values, result); end
+
+  def _reduce_92(val, _values, result); end
+
+  def _reduce_93(val, _values, result); end
+
+  def _reduce_94(val, _values, result); end
+
+  def _reduce_95(val, _values, result); end
+
+  def _reduce_96(val, _values, result); end
+
+  def _reduce_97(val, _values, result); end
+
+  def _reduce_98(val, _values, result); end
+
+  def _reduce_99(val, _values, result); end
+
+  def _reduce_none(val, _values, result); end
+
+  def default_encoding(); end
+
+  def version(); end
+  Racc_arg = ::T.let(nil, ::T.untyped)
+  Racc_debug_parser = ::T.let(nil, ::T.untyped)
+  Racc_token_to_s_table = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Ruby25
+end
+
 module Parser::Source
 end
 
@@ -53241,6 +54839,729 @@ class Pathname
   def glob(*_); end
 
   def make_symlink(_); end
+end
+
+module Polyfill
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+module Polyfill::InternalUtils
+end
+
+module Polyfill::InternalUtils
+  def self.create_module(); end
+
+  def self.current_ruby_version(); end
+
+  def self.ignore_warnings(); end
+
+  def self.keep_only_these_methods!(mod, whitelist); end
+
+  def self.methods_to_keep(modules, methods, lead_symbol, module_name); end
+
+  def self.modules_to_use(module_name, versions); end
+
+  def self.polyfill_versions_to_use(desired_version=T.unsafe(nil)); end
+
+  def self.to_f(obj); end
+
+  def self.to_hash(obj); end
+
+  def self.to_int(obj); end
+
+  def self.to_str(obj); end
+end
+
+module Polyfill::Module
+end
+
+module Polyfill::Module::M70195045702480
+end
+
+module Polyfill::Module::M70195045702480
+end
+
+module Polyfill::Module::M70195045849000
+end
+
+module Polyfill::Module::M70195045849000
+end
+
+module Polyfill::Module::M70195045880120
+end
+
+module Polyfill::Module::M70195045880120
+end
+
+module Polyfill::Module::M70195045896220
+end
+
+module Polyfill::Module::M70195045896220
+end
+
+module Polyfill::Module::M70195045958460
+end
+
+module Polyfill::Module::M70195045958460
+end
+
+module Polyfill::Module::M70195046217040
+end
+
+module Polyfill::Module::M70195046217040
+end
+
+module Polyfill::Module
+end
+
+module Polyfill::V2_2
+end
+
+module Polyfill::V2_2::Enumerable
+  def max(n=T.unsafe(nil)); end
+
+  def max_by(n=T.unsafe(nil)); end
+
+  def min(n=T.unsafe(nil)); end
+
+  def min_by(n=T.unsafe(nil)); end
+
+  def slice_after(pattern=T.unsafe(nil)); end
+
+  def slice_when(); end
+end
+
+module Polyfill::V2_2::Enumerable
+end
+
+module Polyfill::V2_2::Kernel
+  def itself(); end
+end
+
+module Polyfill::V2_2::Kernel
+end
+
+module Polyfill::V2_2::Math
+end
+
+module Polyfill::V2_2::Math::ClassMethods
+  def log(*args); end
+end
+
+module Polyfill::V2_2::Math::ClassMethods
+end
+
+module Polyfill::V2_2::Math
+end
+
+module Polyfill::V2_2::Prime
+end
+
+module Polyfill::V2_2::Prime::ClassMethods
+  def prime?(*args); end
+end
+
+module Polyfill::V2_2::Prime::ClassMethods
+end
+
+module Polyfill::V2_2::Prime
+end
+
+module Polyfill::V2_2::Vector
+  def +@(); end
+end
+
+module Polyfill::V2_2::Vector
+end
+
+module Polyfill::V2_2
+end
+
+module Polyfill::V2_3
+end
+
+module Polyfill::V2_3::Array
+  def bsearch_index(); end
+
+  def dig(head, *rest); end
+end
+
+module Polyfill::V2_3::Array
+end
+
+module Polyfill::V2_3::Enumerable
+  def chunk_while(); end
+
+  def grep_v(pattern); end
+
+  def slice_before(*args); end
+end
+
+module Polyfill::V2_3::Enumerable
+end
+
+module Polyfill::V2_3::Enumerator
+end
+
+module Polyfill::V2_3::Enumerator::Lazy
+  def grep_v(pattern); end
+end
+
+module Polyfill::V2_3::Enumerator::Lazy
+end
+
+module Polyfill::V2_3::Enumerator
+end
+
+module Polyfill::V2_3::Hash
+  def <(other); end
+
+  def <=(other); end
+
+  def >(other); end
+
+  def >=(other); end
+
+  def dig(head, *rest); end
+
+  def fetch_values(*keys); end
+
+  def to_proc(); end
+end
+
+module Polyfill::V2_3::Hash
+end
+
+module Polyfill::V2_3::Kernel
+  def loop(); end
+end
+
+module Polyfill::V2_3::Kernel
+end
+
+module Polyfill::V2_3::Numeric
+  def negative?(); end
+
+  def positive?(); end
+end
+
+module Polyfill::V2_3::Numeric
+end
+
+module Polyfill::V2_3::Prime
+end
+
+module Polyfill::V2_3::Prime::ClassMethods
+  def prime?(*args); end
+end
+
+module Polyfill::V2_3::Prime::ClassMethods
+end
+
+module Polyfill::V2_3::Prime
+end
+
+module Polyfill::V2_3::String
+  def +@(); end
+
+  def -@(); end
+end
+
+module Polyfill::V2_3::String::ClassMethods
+  def new(*args); end
+end
+
+module Polyfill::V2_3::String::ClassMethods
+end
+
+module Polyfill::V2_3::String
+end
+
+module Polyfill::V2_3::Struct
+  def dig(head, *rest); end
+end
+
+module Polyfill::V2_3::Struct
+end
+
+module Polyfill::V2_3
+end
+
+module Polyfill::V2_4
+end
+
+module Polyfill::V2_4::Array
+  def concat(*others); end
+
+  def sum(init=T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Array
+end
+
+module Polyfill::V2_4::Comparable
+  def clamp(min, max); end
+end
+
+module Polyfill::V2_4::Comparable
+end
+
+module Polyfill::V2_4::Dir
+end
+
+module Polyfill::V2_4::Dir::ClassMethods
+  def empty?(path_name); end
+end
+
+module Polyfill::V2_4::Dir::ClassMethods
+end
+
+module Polyfill::V2_4::Dir
+end
+
+module Polyfill::V2_4::Enumerable
+  def chunk(*_); end
+
+  def sum(init=T.unsafe(nil)); end
+
+  def uniq(); end
+end
+
+module Polyfill::V2_4::Enumerable
+end
+
+module Polyfill::V2_4::Enumerator
+end
+
+module Polyfill::V2_4::Enumerator::Lazy
+  def chunk_while(); end
+
+  def uniq(); end
+end
+
+module Polyfill::V2_4::Enumerator::Lazy
+end
+
+module Polyfill::V2_4::Enumerator
+end
+
+module Polyfill::V2_4::File
+end
+
+module Polyfill::V2_4::File::ClassMethods
+  def empty?(file_name); end
+end
+
+module Polyfill::V2_4::File::ClassMethods
+end
+
+module Polyfill::V2_4::File
+end
+
+module Polyfill::V2_4::Float
+  def ceil(ndigits=T.unsafe(nil)); end
+
+  def floor(ndigits=T.unsafe(nil)); end
+
+  def truncate(ndigits=T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Float
+end
+
+module Polyfill::V2_4::Hash
+  def compact(); end
+
+  def compact!(); end
+
+  def transform_values(); end
+
+  def transform_values!(); end
+end
+
+module Polyfill::V2_4::Hash
+end
+
+module Polyfill::V2_4::IO
+  def each_line(*args); end
+
+  def gets(*args); end
+
+  def lines(*args); end
+
+  def readline(*args); end
+
+  def readlines(*args); end
+end
+
+module Polyfill::V2_4::IO::ClassMethods
+  def foreach(name, *args); end
+
+  def readlines(file_name, *args); end
+end
+
+module Polyfill::V2_4::IO::ClassMethods
+end
+
+module Polyfill::V2_4::IO
+end
+
+module Polyfill::V2_4::IPAddr
+  def ==(*_); end
+end
+
+module Polyfill::V2_4::IPAddr
+end
+
+module Polyfill::V2_4::Integer
+  def ceil(ndigits=T.unsafe(nil)); end
+
+  def digits(base=T.unsafe(nil)); end
+
+  def floor(ndigits=T.unsafe(nil)); end
+
+  def round(ndigits=T.unsafe(nil), half: T.unsafe(nil)); end
+
+  def truncate(ndigits=T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Integer
+end
+
+module Polyfill::V2_4::MatchData
+  def named_captures(); end
+
+  def values_at(*indexes); end
+end
+
+module Polyfill::V2_4::MatchData
+end
+
+module Polyfill::V2_4::Numeric
+  def clone(freeze: T.unsafe(nil)); end
+
+  def dup(); end
+
+  def finite?(); end
+
+  def infinite?(); end
+end
+
+module Polyfill::V2_4::Numeric
+end
+
+module Polyfill::V2_4::Object
+  def clone(freeze: T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Object
+end
+
+module Polyfill::V2_4::Pathname
+  def empty?(); end
+end
+
+module Polyfill::V2_4::Pathname
+end
+
+module Polyfill::V2_4::Regexp
+  def match?(string, position=T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Regexp
+end
+
+module Polyfill::V2_4::String
+  def casecmp?(other); end
+
+  def concat(*others); end
+
+  def each_line(*args); end
+
+  def lines(*args); end
+
+  def match?(pattern, position=T.unsafe(nil)); end
+
+  def prepend(*others); end
+
+  def unpack1(*args); end
+end
+
+module Polyfill::V2_4::String::ClassMethods
+  def new(*args); end
+end
+
+module Polyfill::V2_4::String::ClassMethods
+end
+
+module Polyfill::V2_4::String
+end
+
+module Polyfill::V2_4::StringIO
+  def each_line(*args); end
+
+  def gets(*args); end
+
+  def lines(*args); end
+
+  def readline(*args); end
+
+  def readlines(*args); end
+end
+
+module Polyfill::V2_4::StringIO::ClassMethods
+  def foreach(name, *args); end
+
+  def readlines(file_name, *args); end
+end
+
+module Polyfill::V2_4::StringIO::ClassMethods
+end
+
+module Polyfill::V2_4::StringIO
+end
+
+module Polyfill::V2_4::Symbol
+  def casecmp?(other); end
+
+  def match(*args); end
+
+  def match?(pattern, position=T.unsafe(nil)); end
+end
+
+module Polyfill::V2_4::Symbol
+end
+
+module Polyfill::V2_4
+end
+
+module Polyfill::V2_5
+end
+
+module Polyfill::V2_5::Array
+  def append(*args); end
+
+  def prepend(*args); end
+end
+
+module Polyfill::V2_5::Array
+end
+
+module Polyfill::V2_5::BigDecimal
+  def clone(); end
+
+  def dup(); end
+end
+
+module Polyfill::V2_5::BigDecimal
+end
+
+module Polyfill::V2_5::Dir
+end
+
+module Polyfill::V2_5::Dir::ClassMethods
+  def children(dirname, encoding: T.unsafe(nil)); end
+
+  def each_child(dirname, encoding: T.unsafe(nil)); end
+end
+
+module Polyfill::V2_5::Dir::ClassMethods
+end
+
+module Polyfill::V2_5::Dir
+end
+
+module Polyfill::V2_5::Enumerable
+  def all?(*pattern); end
+
+  def any?(*pattern); end
+
+  def none?(*pattern); end
+
+  def one?(*pattern); end
+end
+
+module Polyfill::V2_5::Enumerable
+end
+
+module Polyfill::V2_5::Hash
+  def slice(*keys); end
+
+  def transform_keys(); end
+end
+
+module Polyfill::V2_5::Hash
+end
+
+module Polyfill::V2_5::Integer
+  def allbits?(mask); end
+
+  def anybits?(mask); end
+
+  def ceil(*_); end
+
+  def floor(*_); end
+
+  def nobits?(mask); end
+
+  def round(*_); end
+
+  def truncate(*_); end
+end
+
+module Polyfill::V2_5::Integer::ClassMethods
+  def sqrt(n); end
+end
+
+module Polyfill::V2_5::Integer::ClassMethods
+end
+
+module Polyfill::V2_5::Integer
+end
+
+module Polyfill::V2_5::Kernel
+  def yield_self(); end
+end
+
+module Polyfill::V2_5::Kernel
+end
+
+module Polyfill::V2_5::Set
+  def ===(other); end
+
+  def to_s(); end
+end
+
+module Polyfill::V2_5::Set
+end
+
+module Polyfill::V2_5::String
+  def casecmp(other_str); end
+
+  def casecmp?(other_str); end
+
+  def delete_prefix(prefix); end
+
+  def delete_prefix!(prefix); end
+
+  def delete_suffix(suffix); end
+
+  def delete_suffix!(suffix); end
+
+  def each_grapheme_cluster(); end
+
+  def grapheme_clusters(); end
+
+  def start_with?(*prefixes); end
+end
+
+module Polyfill::V2_5::String
+end
+
+module Polyfill::V2_5::Struct
+end
+
+module Polyfill::V2_5::Struct::ClassMethods
+  def new(*args, keyword_init: T.unsafe(nil)); end
+end
+
+module Polyfill::V2_5::Struct::ClassMethods
+end
+
+module Polyfill::V2_5::Struct
+end
+
+module Polyfill::V2_5::Time
+end
+
+module Polyfill::V2_5::Time::ClassMethods
+  def at(*args); end
+end
+
+module Polyfill::V2_5::Time::ClassMethods
+end
+
+module Polyfill::V2_5::Time
+end
+
+module Polyfill::V2_5
+end
+
+module Polyfill::V2_6
+end
+
+module Polyfill::V2_6::Array
+  def difference(*arrays); end
+
+  def to_h(); end
+
+  def union(*arrays); end
+end
+
+module Polyfill::V2_6::Array
+end
+
+module Polyfill::V2_6::Enumerable
+  def to_h(); end
+end
+
+module Polyfill::V2_6::Enumerable
+end
+
+module Polyfill::V2_6::Hash
+  def merge(*args); end
+
+  def merge!(*args); end
+
+  def to_h(); end
+
+  def update(*args); end
+end
+
+module Polyfill::V2_6::Hash
+end
+
+module Polyfill::V2_6::Kernel
+  def Complex(*args, exception: T.unsafe(nil)); end
+
+  def Float(arg, exception: T.unsafe(nil)); end
+
+  def Integer(arg, exception: T.unsafe(nil)); end
+
+  def Rational(*args, exception: T.unsafe(nil)); end
+
+  def then(); end
+end
+
+module Polyfill::V2_6::Kernel
+end
+
+module Polyfill::V2_6::OpenStruct
+  def to_h(); end
+end
+
+module Polyfill::V2_6::OpenStruct
+end
+
+module Polyfill::V2_6::String
+  def split(*_); end
+end
+
+module Polyfill::V2_6::String
+end
+
+module Polyfill::V2_6::Struct
+  def to_h(); end
+end
+
+module Polyfill::V2_6::Struct
+end
+
+module Polyfill::V2_6
+end
+
+module Polyfill
+  def self.get(module_name, methods, options=T.unsafe(nil)); end
 end
 
 module Powerpack
@@ -78354,6 +80675,186 @@ module SQLite3
   def self.threadsafe?(); end
 end
 
+module SafeType
+end
+
+class SafeType::Boolean
+  def initialize(type: T.unsafe(nil), **args); end
+end
+
+class SafeType::Boolean
+  def self.default(value=T.unsafe(nil)); end
+end
+
+module SafeType::BooleanMixin
+end
+
+module SafeType::BooleanMixin
+end
+
+class SafeType::CoercionError
+  def desired_type(); end
+
+  def initialize(value, desired_type, key=T.unsafe(nil)); end
+
+  def key(); end
+
+  def value(); end
+end
+
+class SafeType::CoercionError
+end
+
+class SafeType::Converter
+end
+
+class SafeType::Converter
+  def self.to_bool(input); end
+
+  def self.to_date(input); end
+
+  def self.to_date_time(input); end
+
+  def self.to_false(input); end
+
+  def self.to_float(input); end
+
+  def self.to_int(input); end
+
+  def self.to_time(input); end
+
+  def self.to_true(input); end
+
+  def self.to_type(input, type); end
+end
+
+class SafeType::Date
+  def initialize(type: T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil), **args); end
+end
+
+class SafeType::Date
+  def self.default(value=T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+  def self.strict(from: T.unsafe(nil), to: T.unsafe(nil)); end
+end
+
+class SafeType::DateTime
+  def initialize(type: T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil), **args); end
+end
+
+class SafeType::DateTime
+  def self.default(value=T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+  def self.strict(from: T.unsafe(nil), to: T.unsafe(nil)); end
+end
+
+class SafeType::EmptyValueError
+  def desired_type(); end
+
+  def initialize(desired_type, key=T.unsafe(nil)); end
+
+  def key(); end
+end
+
+class SafeType::EmptyValueError
+end
+
+class SafeType::Float
+  def initialize(type: T.unsafe(nil), min: T.unsafe(nil), max: T.unsafe(nil), **args); end
+end
+
+class SafeType::Float
+  def self.default(value=T.unsafe(nil), min: T.unsafe(nil), max: T.unsafe(nil)); end
+
+  def self.strict(min: T.unsafe(nil), max: T.unsafe(nil)); end
+end
+
+class SafeType::Integer
+  def initialize(type: T.unsafe(nil), min: T.unsafe(nil), max: T.unsafe(nil), **args); end
+end
+
+class SafeType::Integer
+  def self.default(value=T.unsafe(nil), min: T.unsafe(nil), max: T.unsafe(nil)); end
+
+  def self.strict(min: T.unsafe(nil), max: T.unsafe(nil)); end
+end
+
+class SafeType::InvalidRuleError
+  def initialize(); end
+end
+
+class SafeType::InvalidRuleError
+end
+
+class SafeType::Rule
+  def after(input); end
+
+  def before(input); end
+
+  def coerce(input, key=T.unsafe(nil)); end
+
+  def initialize(type:, default: T.unsafe(nil), required: T.unsafe(nil), **args); end
+
+  def is_valid?(input); end
+end
+
+class SafeType::Rule
+  def self.coerce(input); end
+
+  def self.default(); end
+
+  def self.strict(); end
+end
+
+class SafeType::String
+  def initialize(type: T.unsafe(nil), min_length: T.unsafe(nil), max_length: T.unsafe(nil), **args); end
+end
+
+class SafeType::String
+  def self.default(value=T.unsafe(nil), min_length: T.unsafe(nil), max_length: T.unsafe(nil)); end
+
+  def self.strict(min_length: T.unsafe(nil), max_length: T.unsafe(nil)); end
+end
+
+class SafeType::Symbol
+  def initialize(type: T.unsafe(nil), min_length: T.unsafe(nil), max_length: T.unsafe(nil), **args); end
+end
+
+class SafeType::Symbol
+  def self.default(value=T.unsafe(nil), min_length: T.unsafe(nil), max_length: T.unsafe(nil)); end
+
+  def self.strict(min_length: T.unsafe(nil), max_length: T.unsafe(nil)); end
+end
+
+class SafeType::Time
+  def initialize(type: T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil), **args); end
+end
+
+class SafeType::Time
+  def self.default(value=T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+  def self.strict(from: T.unsafe(nil), to: T.unsafe(nil)); end
+end
+
+class SafeType::ValidationError
+  def desired_type(); end
+
+  def initialize(value, desired_type, key=T.unsafe(nil)); end
+
+  def key(); end
+
+  def value(); end
+end
+
+class SafeType::ValidationError
+end
+
+module SafeType
+  def self.coerce(input, rule, coerce_key=T.unsafe(nil)); end
+
+  def self.coerce!(input, rule); end
+end
+
 module SafeYAML
   DEFAULT_OPTIONS = ::T.let(nil, ::T.untyped)
   MULTI_ARGUMENT_YAML_LOAD = ::T.let(nil, ::T.untyped)
@@ -82251,6 +84752,9 @@ module Shellwords
 end
 
 class Shipit::Api::BaseController
+  include ::Shipit::Api::Rendering
+  include ::Shipit::Api::Cacheable
+  include ::Shipit::Api::Paginable
   def default_order(); end
 
   def default_order=(val); end
@@ -82262,6 +84766,8 @@ class Shipit::Api::BaseController
   def default_page_size=(val); end
 
   def default_page_size?(); end
+
+  def index(); end
 
   def max_page_size(); end
 
@@ -82288,15 +84794,93 @@ class Shipit::Api::BaseController
   def self.max_page_size=(val); end
 
   def self.max_page_size?(); end
+
+  def self.require_permission(operation, scope, options=T.unsafe(nil)); end
+end
+
+class Shipit::Api::CCMenuController
+end
+
+class Shipit::Api::CommitsController
+end
+
+class Shipit::Api::DeploysController
+end
+
+class Shipit::Api::DeploysController::CreateParameters
+end
+
+class Shipit::Api::DeploysController::CreateParameters
+end
+
+class Shipit::Api::HooksController
+end
+
+class Shipit::Api::HooksController::CreateParameters
+end
+
+class Shipit::Api::HooksController::CreateParameters
+end
+
+class Shipit::Api::HooksController::UpdateParameters
+end
+
+class Shipit::Api::HooksController::UpdateParameters
+end
+
+class Shipit::Api::LocksController
+end
+
+class Shipit::Api::LocksController::CreateParameters
+end
+
+class Shipit::Api::LocksController::CreateParameters
+end
+
+class Shipit::Api::LocksController::UpdateParameters
+end
+
+class Shipit::Api::LocksController::UpdateParameters
+end
+
+class Shipit::Api::OutputsController
 end
 
 module Shipit::Api::Paginable
   extend ::ActiveSupport::Concern
 end
 
+class Shipit::Api::PullRequestsController
+end
+
+class Shipit::Api::ReleaseStatusesController
+end
+
+class Shipit::Api::ReleaseStatusesController::CreateParameters
+end
+
+class Shipit::Api::ReleaseStatusesController::CreateParameters
+end
+
+class Shipit::Api::StacksController
+end
+
+class Shipit::Api::StacksController::CreateParameters
+end
+
+class Shipit::Api::StacksController::CreateParameters
+end
+
+class Shipit::Api::TasksController
+end
+
+class Shipit::Api::TasksController::TriggerParameters
+end
+
+class Shipit::Api::TasksController::TriggerParameters
+end
+
 class Shipit::ApiClient
-  include ::Shipit::ApiClient::GeneratedAttributeMethods
-  include ::Shipit::ApiClient::GeneratedAssociationMethods
   def autosave_associated_records_for_creator(*args); end
 
   def autosave_associated_records_for_stack(*args); end
@@ -82315,23 +84899,9 @@ module Shipit::ApiClient::GeneratedAssociationMethods
 
   def create_stack!(*args, &block); end
 
-  def creator(); end
-
-  def creator=(value); end
-
   def reload_creator(); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::ApiClient::GeneratedAssociationMethods
-end
-
-module Shipit::ApiClient::GeneratedAttributeMethods
 end
 
 module Shipit::ApiClient::GeneratedAttributeMethods
@@ -82407,13 +84977,14 @@ module Shipit::BackgroundJob::Unique
   extend ::ActiveSupport::Concern
 end
 
+class Shipit::CCMenuUrlController
+end
+
 class Shipit::CacheDeploySpecJob
   extend ::Shipit::BackgroundJob::Unique::ClassMethods
 end
 
 class Shipit::CheckRun
-  include ::Shipit::CheckRun::GeneratedAttributeMethods
-  include ::Shipit::CheckRun::GeneratedAssociationMethods
   def autosave_associated_records_for_commit(*args); end
 
   def autosave_associated_records_for_stack(*args); end
@@ -82423,10 +84994,6 @@ module Shipit::CheckRun::GeneratedAssociationMethods
   def build_commit(*args, &block); end
 
   def build_stack(*args, &block); end
-
-  def commit(); end
-
-  def commit=(value); end
 
   def create_commit(*args, &block); end
 
@@ -82439,16 +85006,6 @@ module Shipit::CheckRun::GeneratedAssociationMethods
   def reload_commit(); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::CheckRun::GeneratedAssociationMethods
-end
-
-module Shipit::CheckRun::GeneratedAttributeMethods
 end
 
 module Shipit::CheckRun::GeneratedAttributeMethods
@@ -82469,8 +85026,6 @@ class Shipit::ChunkRollupJob
 end
 
 class Shipit::Commit
-  include ::Shipit::Commit::GeneratedAttributeMethods
-  include ::Shipit::Commit::GeneratedAssociationMethods
   def after_add_for_check_runs(); end
 
   def after_add_for_check_runs=(val); end
@@ -82623,10 +85178,6 @@ class Shipit::Commit
 end
 
 module Shipit::Commit::GeneratedAssociationMethods
-  def author(); end
-
-  def author=(value); end
-
   def build_author(*args, &block); end
 
   def build_committer(*args, &block); end
@@ -82641,21 +85192,9 @@ module Shipit::Commit::GeneratedAssociationMethods
 
   def check_run_ids=(ids); end
 
-  def check_runs(); end
-
-  def check_runs=(value); end
-
   def commit_deployment_ids(); end
 
   def commit_deployment_ids=(ids); end
-
-  def commit_deployments(); end
-
-  def commit_deployments=(value); end
-
-  def committer(); end
-
-  def committer=(value); end
 
   def create_author(*args, &block); end
 
@@ -82681,25 +85220,9 @@ module Shipit::Commit::GeneratedAssociationMethods
 
   def deploy_ids=(ids); end
 
-  def deploys(); end
-
-  def deploys=(value); end
-
-  def lock_author(); end
-
-  def lock_author=(value); end
-
-  def pull_request(); end
-
-  def pull_request=(value); end
-
   def release_status_ids(); end
 
   def release_status_ids=(ids); end
-
-  def release_statuses(); end
-
-  def release_statuses=(value); end
 
   def reload_author(); end
 
@@ -82711,23 +85234,9 @@ module Shipit::Commit::GeneratedAssociationMethods
 
   def reload_stack(); end
 
-  def stack(); end
-
-  def stack=(value); end
-
   def status_ids(); end
 
   def status_ids=(ids); end
-
-  def statuses(); end
-
-  def statuses=(value); end
-end
-
-module Shipit::Commit::GeneratedAssociationMethods
-end
-
-module Shipit::Commit::GeneratedAttributeMethods
 end
 
 module Shipit::Commit::GeneratedAttributeMethods
@@ -82861,8 +85370,9 @@ class Shipit::Commit
   def self.deferred_touches=(val); end
 
   def self.deferred_touches?(); end
+end
 
-  def self.reachable(*args); end
+class Shipit::CommitChecksController
 end
 
 class Shipit::CommitChecksController::TailParameters
@@ -82872,8 +85382,6 @@ class Shipit::CommitChecksController::TailParameters
 end
 
 class Shipit::CommitDeployment
-  include ::Shipit::CommitDeployment::GeneratedAttributeMethods
-  include ::Shipit::CommitDeployment::GeneratedAssociationMethods
   def after_add_for_statuses(); end
 
   def after_add_for_statuses=(val); end
@@ -82917,20 +85425,6 @@ module Shipit::CommitDeployment::GeneratedAssociationMethods
   def status_ids(); end
 
   def status_ids=(ids); end
-
-  def statuses(); end
-
-  def statuses=(value); end
-
-  def task(); end
-
-  def task=(value); end
-end
-
-module Shipit::CommitDeployment::GeneratedAssociationMethods
-end
-
-module Shipit::CommitDeployment::GeneratedAttributeMethods
 end
 
 module Shipit::CommitDeployment::GeneratedAttributeMethods
@@ -82964,29 +85458,17 @@ class Shipit::CommitDeployment
 end
 
 class Shipit::CommitDeploymentStatus
-  include ::Shipit::CommitDeploymentStatus::GeneratedAttributeMethods
-  include ::Shipit::CommitDeploymentStatus::GeneratedAssociationMethods
   def autosave_associated_records_for_commit_deployment(*args); end
 end
 
 module Shipit::CommitDeploymentStatus::GeneratedAssociationMethods
   def build_commit_deployment(*args, &block); end
 
-  def commit_deployment(); end
-
-  def commit_deployment=(value); end
-
   def create_commit_deployment(*args, &block); end
 
   def create_commit_deployment!(*args, &block); end
 
   def reload_commit_deployment(); end
-end
-
-module Shipit::CommitDeploymentStatus::GeneratedAssociationMethods
-end
-
-module Shipit::CommitDeploymentStatus::GeneratedAttributeMethods
 end
 
 module Shipit::CommitDeploymentStatus::GeneratedAttributeMethods
@@ -83009,6 +85491,9 @@ end
 
 class Shipit::CommitSerializer
   extend ::Shipit::ConditionalAttributes::ClassMethods
+end
+
+class Shipit::CommitsController
 end
 
 module Shipit::ConditionalAttributes
@@ -83036,8 +85521,6 @@ class Shipit::DeferredTouchJob
 end
 
 class Shipit::Delivery
-  include ::Shipit::Delivery::GeneratedAttributeMethods
-  include ::Shipit::Delivery::GeneratedAssociationMethods
   def autosave_associated_records_for_hook(*args); end
 end
 
@@ -83048,42 +85531,14 @@ module Shipit::Delivery::GeneratedAssociationMethods
 
   def create_hook!(*args, &block); end
 
-  def hook(); end
-
-  def hook=(value); end
-
   def reload_hook(); end
-end
-
-module Shipit::Delivery::GeneratedAssociationMethods
-end
-
-module Shipit::Delivery::GeneratedAttributeMethods
 end
 
 module Shipit::Delivery::GeneratedAttributeMethods
   extend ::Mutex_m
 end
 
-class Shipit::Delivery
-  def self.not_pending(*args); end
-
-  def self.not_scheduled(*args); end
-
-  def self.not_sent(*args); end
-
-  def self.pending(*args); end
-
-  def self.scheduled(*args); end
-
-  def self.sent(*args); end
-
-  def self.statuses(); end
-end
-
 class Shipit::Deploy
-  include ::Shipit::Deploy::GeneratedAttributeMethods
-  include ::Shipit::Deploy::GeneratedAssociationMethods
   def after_add_for_commit_deployments(); end
 
   def after_add_for_commit_deployments=(val); end
@@ -83113,6 +85568,24 @@ class Shipit::Deploy
   def validate_associated_records_for_commit_deployments(*args); end
 end
 
+class Shipit::Deploy::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+end
+
+class Shipit::Deploy::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+end
+
+class Shipit::Deploy::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+end
+
 module Shipit::Deploy::CommitDeploymentsAssociationExtension
   def append_status(task_status); end
 end
@@ -83129,10 +85602,6 @@ module Shipit::Deploy::GeneratedAssociationMethods
 
   def commit_deployment_ids=(ids); end
 
-  def commit_deployments(); end
-
-  def commit_deployments=(value); end
-
   def create_since_commit(*args, &block); end
 
   def create_since_commit!(*args, &block); end
@@ -83144,23 +85613,16 @@ module Shipit::Deploy::GeneratedAssociationMethods
   def reload_since_commit(); end
 
   def reload_until_commit(); end
-
-  def since_commit(); end
-
-  def since_commit=(value); end
-
-  def until_commit(); end
-
-  def until_commit=(value); end
-end
-
-module Shipit::Deploy::GeneratedAssociationMethods
 end
 
 module Shipit::Deploy::GeneratedAttributeMethods
+  extend ::Mutex_m
 end
 
-module Shipit::Deploy::GeneratedAttributeMethods
+module Shipit::Deploy::GeneratedRelationMethods
+end
+
+module Shipit::Deploy::GeneratedRelationMethods
   extend ::Mutex_m
 end
 
@@ -83198,6 +85660,9 @@ class Shipit::DeploySerializer
   def deletions(); end
 end
 
+class Shipit::DeploysController
+end
+
 class Shipit::Engine
 end
 
@@ -83216,9 +85681,16 @@ end
 class Shipit::GitHubHTTPCacheMiddleware
 end
 
+class Shipit::GithubAuthenticationController
+  def callback(); end
+
+  def logout(); end
+end
+
+class Shipit::GithubAuthenticationController
+end
+
 class Shipit::GithubHook
-  include ::Shipit::GithubHook::GeneratedAttributeMethods
-  include ::Shipit::GithubHook::GeneratedAssociationMethods
   def autosave_associated_records_for_stack(*args); end
 end
 
@@ -83230,43 +85702,14 @@ module Shipit::GithubHook::GeneratedAssociationMethods
   def create_stack!(*args, &block); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::GithubHook::GeneratedAssociationMethods
-end
-
-module Shipit::GithubHook::GeneratedAttributeMethods
 end
 
 module Shipit::GithubHook::GeneratedAttributeMethods
   extend ::Mutex_m
 end
 
-class Shipit::GithubHook::Organization
-  include ::Shipit::GithubHook::Organization::GeneratedAttributeMethods
-  include ::Shipit::GithubHook::Organization::GeneratedAssociationMethods
-end
-
-module Shipit::GithubHook::Organization::GeneratedAssociationMethods
-end
-
-module Shipit::GithubHook::Organization::GeneratedAssociationMethods
-end
-
-module Shipit::GithubHook::Organization::GeneratedAttributeMethods
-end
-
 module Shipit::GithubHook::Organization::GeneratedAttributeMethods
   extend ::Mutex_m
-end
-
-class Shipit::GithubHook::Repo
-  include ::Shipit::GithubHook::Repo::GeneratedAttributeMethods
-  include ::Shipit::GithubHook::Repo::GeneratedAssociationMethods
 end
 
 module Shipit::GithubHook::Repo::GeneratedAssociationMethods
@@ -83277,16 +85720,6 @@ module Shipit::GithubHook::Repo::GeneratedAssociationMethods
   def create_stack!(*args, &block); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::GithubHook::Repo::GeneratedAssociationMethods
-end
-
-module Shipit::GithubHook::Repo::GeneratedAttributeMethods
 end
 
 module Shipit::GithubHook::Repo::GeneratedAttributeMethods
@@ -83298,8 +85731,6 @@ class Shipit::GithubSyncJob
 end
 
 class Shipit::Hook
-  include ::Shipit::Hook::GeneratedAttributeMethods
-  include ::Shipit::Hook::GeneratedAssociationMethods
   def after_add_for_deliveries(); end
 
   def after_add_for_deliveries=(val); end
@@ -83338,25 +85769,11 @@ module Shipit::Hook::GeneratedAssociationMethods
 
   def create_stack!(*args, &block); end
 
-  def deliveries(); end
-
-  def deliveries=(value); end
-
   def delivery_ids(); end
 
   def delivery_ids=(ids); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::Hook::GeneratedAssociationMethods
-end
-
-module Shipit::Hook::GeneratedAttributeMethods
 end
 
 module Shipit::Hook::GeneratedAttributeMethods
@@ -83387,12 +85804,6 @@ class Shipit::Hook
   def self.before_remove_for_deliveries=(val); end
 
   def self.before_remove_for_deliveries?(); end
-
-  def self.for_stack(*args); end
-
-  def self.global(*args); end
-
-  def self.scoped_to(*args); end
 end
 
 class Shipit::HookSerializer
@@ -83422,8 +85833,6 @@ class Shipit::MarkDeployHealthyJob
 end
 
 class Shipit::Membership
-  include ::Shipit::Membership::GeneratedAttributeMethods
-  include ::Shipit::Membership::GeneratedAssociationMethods
   def autosave_associated_records_for_team(*args); end
 
   def autosave_associated_records_for_user(*args); end
@@ -83445,20 +85854,6 @@ module Shipit::Membership::GeneratedAssociationMethods
   def reload_team(); end
 
   def reload_user(); end
-
-  def team(); end
-
-  def team=(value); end
-
-  def user(); end
-
-  def user=(value); end
-end
-
-module Shipit::Membership::GeneratedAssociationMethods
-end
-
-module Shipit::Membership::GeneratedAttributeMethods
 end
 
 module Shipit::Membership::GeneratedAttributeMethods
@@ -83469,9 +85864,10 @@ class Shipit::MergePullRequestsJob
   extend ::Shipit::BackgroundJob::Unique::ClassMethods
 end
 
+class Shipit::MergeStatusController
+end
+
 class Shipit::OutputChunk
-  include ::Shipit::OutputChunk::GeneratedAttributeMethods
-  include ::Shipit::OutputChunk::GeneratedAssociationMethods
   def autosave_associated_records_for_task(*args); end
 end
 
@@ -83483,24 +85879,10 @@ module Shipit::OutputChunk::GeneratedAssociationMethods
   def create_task!(*args, &block); end
 
   def reload_task(); end
-
-  def task(); end
-
-  def task=(value); end
-end
-
-module Shipit::OutputChunk::GeneratedAssociationMethods
-end
-
-module Shipit::OutputChunk::GeneratedAttributeMethods
 end
 
 module Shipit::OutputChunk::GeneratedAttributeMethods
   extend ::Mutex_m
-end
-
-class Shipit::OutputChunk
-  def self.tail(*args); end
 end
 
 module Shipit::Pagination
@@ -83512,8 +85894,6 @@ class Shipit::PerformCommitChecksJob
 end
 
 class Shipit::PullRequest
-  include ::Shipit::PullRequest::GeneratedAttributeMethods
-  include ::Shipit::PullRequest::GeneratedAssociationMethods
   include ::StateMachines::InstanceMethods
   def autosave_associated_records_for_base_commit(*args); end
 
@@ -83527,10 +85907,6 @@ class Shipit::PullRequest
 end
 
 module Shipit::PullRequest::GeneratedAssociationMethods
-  def base_commit(); end
-
-  def base_commit=(value); end
-
   def build_base_commit(*args, &block); end
 
   def build_head(*args, &block); end
@@ -83561,18 +85937,6 @@ module Shipit::PullRequest::GeneratedAssociationMethods
 
   def create_stack!(*args, &block); end
 
-  def head(); end
-
-  def head=(value); end
-
-  def merge_commit(); end
-
-  def merge_commit=(value); end
-
-  def merge_requested_by(); end
-
-  def merge_requested_by=(value); end
-
   def reload_base_commit(); end
 
   def reload_head(); end
@@ -83582,16 +85946,6 @@ module Shipit::PullRequest::GeneratedAssociationMethods
   def reload_merge_requested_by(); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::PullRequest::GeneratedAssociationMethods
-end
-
-module Shipit::PullRequest::GeneratedAttributeMethods
 end
 
 module Shipit::PullRequest::GeneratedAttributeMethods
@@ -83606,14 +85960,6 @@ class Shipit::PullRequest
   def self.deferred_touches=(val); end
 
   def self.deferred_touches?(); end
-
-  def self.pending(*args); end
-
-  def self.queued(*args); end
-
-  def self.to_be_merged(*args); end
-
-  def self.waiting(*args); end
 end
 
 class Shipit::PullRequestSerializer
@@ -83652,6 +85998,9 @@ class Shipit::PullRequestSerializer
   extend ::Shipit::ConditionalAttributes::ClassMethods
 end
 
+class Shipit::PullRequestsController
+end
+
 class Shipit::PurgeOldDeliveriesJob
   extend ::Shipit::BackgroundJob::Unique::ClassMethods
 end
@@ -83661,8 +86010,6 @@ class Shipit::ReapDeadTasksJob
 end
 
 class Shipit::ReleaseStatus
-  include ::Shipit::ReleaseStatus::GeneratedAttributeMethods
-  include ::Shipit::ReleaseStatus::GeneratedAssociationMethods
   def autosave_associated_records_for_commit(*args); end
 
   def autosave_associated_records_for_stack(*args); end
@@ -83676,10 +86023,6 @@ module Shipit::ReleaseStatus::GeneratedAssociationMethods
   def build_stack(*args, &block); end
 
   def build_user(*args, &block); end
-
-  def commit(); end
-
-  def commit=(value); end
 
   def create_commit(*args, &block); end
 
@@ -83698,20 +86041,6 @@ module Shipit::ReleaseStatus::GeneratedAssociationMethods
   def reload_stack(); end
 
   def reload_user(); end
-
-  def stack(); end
-
-  def stack=(value); end
-
-  def user(); end
-
-  def user=(value); end
-end
-
-module Shipit::ReleaseStatus::GeneratedAssociationMethods
-end
-
-module Shipit::ReleaseStatus::GeneratedAttributeMethods
 end
 
 module Shipit::ReleaseStatus::GeneratedAttributeMethods
@@ -83725,13 +86054,12 @@ class Shipit::ReleaseStatus
   def self.deferred_touches=(val); end
 
   def self.deferred_touches?(); end
+end
 
-  def self.to_be_created(*args); end
+class Shipit::ReleaseStatusesController
 end
 
 class Shipit::Repository
-  include ::Shipit::Repository::GeneratedAttributeMethods
-  include ::Shipit::Repository::GeneratedAssociationMethods
   def after_add_for_stacks(); end
 
   def after_add_for_stacks=(val); end
@@ -83765,183 +86093,6 @@ module Shipit::Repository::GeneratedAssociationMethods
   def stack_ids(); end
 
   def stack_ids=(ids); end
-
-  def stacks(); end
-
-  def stacks=(value); end
-end
-
-module Shipit::Repository::GeneratedAssociationMethods
-end
-
-module Shipit::Repository::GeneratedAttributeMethods
-  def created_at(); end
-
-  def created_at=(value); end
-
-  def created_at?(*args); end
-
-  def created_at_before_last_save(*args); end
-
-  def created_at_before_type_cast(*args); end
-
-  def created_at_came_from_user?(*args); end
-
-  def created_at_change(*args); end
-
-  def created_at_change_to_be_saved(*args); end
-
-  def created_at_changed?(*args); end
-
-  def created_at_in_database(*args); end
-
-  def created_at_previous_change(*args); end
-
-  def created_at_previously_changed?(*args); end
-
-  def created_at_was(*args); end
-
-  def created_at_will_change!(*args); end
-
-  def id_before_last_save(*args); end
-
-  def id_came_from_user?(*args); end
-
-  def id_change(*args); end
-
-  def id_change_to_be_saved(*args); end
-
-  def id_changed?(*args); end
-
-  def id_previous_change(*args); end
-
-  def id_previously_changed?(*args); end
-
-  def id_will_change!(*args); end
-
-  def name(); end
-
-  def name=(value); end
-
-  def name?(*args); end
-
-  def name_before_last_save(*args); end
-
-  def name_before_type_cast(*args); end
-
-  def name_came_from_user?(*args); end
-
-  def name_change(*args); end
-
-  def name_change_to_be_saved(*args); end
-
-  def name_changed?(*args); end
-
-  def name_in_database(*args); end
-
-  def name_previous_change(*args); end
-
-  def name_previously_changed?(*args); end
-
-  def name_was(*args); end
-
-  def name_will_change!(*args); end
-
-  def owner(); end
-
-  def owner=(value); end
-
-  def owner?(*args); end
-
-  def owner_before_last_save(*args); end
-
-  def owner_before_type_cast(*args); end
-
-  def owner_came_from_user?(*args); end
-
-  def owner_change(*args); end
-
-  def owner_change_to_be_saved(*args); end
-
-  def owner_changed?(*args); end
-
-  def owner_in_database(*args); end
-
-  def owner_previous_change(*args); end
-
-  def owner_previously_changed?(*args); end
-
-  def owner_was(*args); end
-
-  def owner_will_change!(*args); end
-
-  def restore_created_at!(*args); end
-
-  def restore_id!(*args); end
-
-  def restore_name!(*args); end
-
-  def restore_owner!(*args); end
-
-  def restore_updated_at!(*args); end
-
-  def saved_change_to_created_at(*args); end
-
-  def saved_change_to_created_at?(*args); end
-
-  def saved_change_to_id(*args); end
-
-  def saved_change_to_id?(*args); end
-
-  def saved_change_to_name(*args); end
-
-  def saved_change_to_name?(*args); end
-
-  def saved_change_to_owner(*args); end
-
-  def saved_change_to_owner?(*args); end
-
-  def saved_change_to_updated_at(*args); end
-
-  def saved_change_to_updated_at?(*args); end
-
-  def updated_at(); end
-
-  def updated_at=(value); end
-
-  def updated_at?(*args); end
-
-  def updated_at_before_last_save(*args); end
-
-  def updated_at_before_type_cast(*args); end
-
-  def updated_at_came_from_user?(*args); end
-
-  def updated_at_change(*args); end
-
-  def updated_at_change_to_be_saved(*args); end
-
-  def updated_at_changed?(*args); end
-
-  def updated_at_in_database(*args); end
-
-  def updated_at_previous_change(*args); end
-
-  def updated_at_previously_changed?(*args); end
-
-  def updated_at_was(*args); end
-
-  def updated_at_will_change!(*args); end
-
-  def will_save_change_to_created_at?(*args); end
-
-  def will_save_change_to_id?(*args); end
-
-  def will_save_change_to_name?(*args); end
-
-  def will_save_change_to_owner?(*args); end
-
-  def will_save_change_to_updated_at?(*args); end
 end
 
 module Shipit::Repository::GeneratedAttributeMethods
@@ -83974,9 +86125,25 @@ class Shipit::Repository
   def self.before_remove_for_stacks?(); end
 end
 
-class Shipit::Rollback
-  include ::Shipit::Rollback::GeneratedAttributeMethods
-  include ::Shipit::Rollback::GeneratedAssociationMethods
+class Shipit::Rollback::ActiveRecord_AssociationRelation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+  include ::Shipit::Rollback::GeneratedRelationMethods
+end
+
+class Shipit::Rollback::ActiveRecord_Associations_CollectionProxy
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+  include ::Shipit::Rollback::GeneratedRelationMethods
+end
+
+class Shipit::Rollback::ActiveRecord_Relation
+  include ::ActiveRecord::Delegation::ClassSpecificRelation
+  include ::Shipit::Task::GeneratedRelationMethods
+  include ::Shipit::Deploy::GeneratedRelationMethods
+  include ::Shipit::Rollback::GeneratedRelationMethods
 end
 
 module Shipit::Rollback::GeneratedAssociationMethods
@@ -83986,21 +86153,25 @@ module Shipit::Rollback::GeneratedAssociationMethods
 
   def create_deploy!(*args, &block); end
 
-  def deploy(); end
-
-  def deploy=(value); end
-
   def reload_deploy(); end
-end
-
-module Shipit::Rollback::GeneratedAssociationMethods
-end
-
-module Shipit::Rollback::GeneratedAttributeMethods
 end
 
 module Shipit::Rollback::GeneratedAttributeMethods
   extend ::Mutex_m
+end
+
+module Shipit::Rollback::GeneratedRelationMethods
+end
+
+module Shipit::Rollback::GeneratedRelationMethods
+  extend ::Mutex_m
+end
+
+class Shipit::RollbacksController
+end
+
+class Shipit::ShipitController
+  include ::Shipit::Authentication
 end
 
 class Shipit::ShipitController
@@ -84015,8 +86186,6 @@ class Shipit::SimpleMessageVerifier
 end
 
 class Shipit::Stack
-  include ::Shipit::Stack::GeneratedAttributeMethods
-  include ::Shipit::Stack::GeneratedAssociationMethods
   def after_add_for_api_clients(); end
 
   def after_add_for_api_clients=(val); end
@@ -84279,10 +86448,6 @@ module Shipit::Stack::GeneratedAssociationMethods
 
   def api_client_ids=(ids); end
 
-  def api_clients(); end
-
-  def api_clients=(value); end
-
   def build_lock_author(*args, &block); end
 
   def build_repository(*args, &block); end
@@ -84290,10 +86455,6 @@ module Shipit::Stack::GeneratedAssociationMethods
   def commit_ids(); end
 
   def commit_ids=(ids); end
-
-  def commits(); end
-
-  def commits=(value); end
 
   def create_lock_author(*args, &block); end
 
@@ -84307,818 +86468,33 @@ module Shipit::Stack::GeneratedAssociationMethods
 
   def deploy_ids=(ids); end
 
-  def deploys(); end
-
-  def deploys=(value); end
-
   def deploys_and_rollback_ids(); end
 
   def deploys_and_rollback_ids=(ids); end
-
-  def deploys_and_rollbacks(); end
-
-  def deploys_and_rollbacks=(value); end
 
   def github_hook_ids(); end
 
   def github_hook_ids=(ids); end
 
-  def github_hooks(); end
-
-  def github_hooks=(value); end
-
   def hook_ids(); end
 
   def hook_ids=(ids); end
-
-  def hooks(); end
-
-  def hooks=(value); end
-
-  def lock_author(); end
-
-  def lock_author=(value); end
 
   def pull_request_ids(); end
 
   def pull_request_ids=(ids); end
 
-  def pull_requests(); end
-
-  def pull_requests=(value); end
-
   def reload_lock_author(); end
 
   def reload_repository(); end
-
-  def repository(); end
-
-  def repository=(value); end
 
   def rollback_ids(); end
 
   def rollback_ids=(ids); end
 
-  def rollbacks(); end
-
-  def rollbacks=(value); end
-
   def task_ids(); end
 
   def task_ids=(ids); end
-
-  def tasks(); end
-
-  def tasks=(value); end
-end
-
-module Shipit::Stack::GeneratedAssociationMethods
-end
-
-module Shipit::Stack::GeneratedAttributeMethods
-  def archived_since(); end
-
-  def archived_since=(value); end
-
-  def archived_since?(*args); end
-
-  def archived_since_before_last_save(*args); end
-
-  def archived_since_before_type_cast(*args); end
-
-  def archived_since_came_from_user?(*args); end
-
-  def archived_since_change(*args); end
-
-  def archived_since_change_to_be_saved(*args); end
-
-  def archived_since_changed?(*args); end
-
-  def archived_since_in_database(*args); end
-
-  def archived_since_previous_change(*args); end
-
-  def archived_since_previously_changed?(*args); end
-
-  def archived_since_was(*args); end
-
-  def archived_since_will_change!(*args); end
-
-  def branch(); end
-
-  def branch=(value); end
-
-  def branch?(*args); end
-
-  def branch_before_last_save(*args); end
-
-  def branch_before_type_cast(*args); end
-
-  def branch_came_from_user?(*args); end
-
-  def branch_change(*args); end
-
-  def branch_change_to_be_saved(*args); end
-
-  def branch_changed?(*args); end
-
-  def branch_in_database(*args); end
-
-  def branch_previous_change(*args); end
-
-  def branch_previously_changed?(*args); end
-
-  def branch_was(*args); end
-
-  def branch_will_change!(*args); end
-
-  def cached_deploy_spec(); end
-
-  def cached_deploy_spec=(value); end
-
-  def cached_deploy_spec?(*args); end
-
-  def cached_deploy_spec_before_last_save(*args); end
-
-  def cached_deploy_spec_before_type_cast(*args); end
-
-  def cached_deploy_spec_came_from_user?(*args); end
-
-  def cached_deploy_spec_change(*args); end
-
-  def cached_deploy_spec_change_to_be_saved(*args); end
-
-  def cached_deploy_spec_changed?(*args); end
-
-  def cached_deploy_spec_in_database(*args); end
-
-  def cached_deploy_spec_previous_change(*args); end
-
-  def cached_deploy_spec_previously_changed?(*args); end
-
-  def cached_deploy_spec_was(*args); end
-
-  def cached_deploy_spec_will_change!(*args); end
-
-  def continuous_delivery_delayed_since(); end
-
-  def continuous_delivery_delayed_since=(value); end
-
-  def continuous_delivery_delayed_since?(*args); end
-
-  def continuous_delivery_delayed_since_before_last_save(*args); end
-
-  def continuous_delivery_delayed_since_before_type_cast(*args); end
-
-  def continuous_delivery_delayed_since_came_from_user?(*args); end
-
-  def continuous_delivery_delayed_since_change(*args); end
-
-  def continuous_delivery_delayed_since_change_to_be_saved(*args); end
-
-  def continuous_delivery_delayed_since_changed?(*args); end
-
-  def continuous_delivery_delayed_since_in_database(*args); end
-
-  def continuous_delivery_delayed_since_previous_change(*args); end
-
-  def continuous_delivery_delayed_since_previously_changed?(*args); end
-
-  def continuous_delivery_delayed_since_was(*args); end
-
-  def continuous_delivery_delayed_since_will_change!(*args); end
-
-  def continuous_deployment(); end
-
-  def continuous_deployment=(value); end
-
-  def continuous_deployment?(*args); end
-
-  def continuous_deployment_before_last_save(*args); end
-
-  def continuous_deployment_before_type_cast(*args); end
-
-  def continuous_deployment_came_from_user?(*args); end
-
-  def continuous_deployment_change(*args); end
-
-  def continuous_deployment_change_to_be_saved(*args); end
-
-  def continuous_deployment_changed?(*args); end
-
-  def continuous_deployment_in_database(*args); end
-
-  def continuous_deployment_previous_change(*args); end
-
-  def continuous_deployment_previously_changed?(*args); end
-
-  def continuous_deployment_was(*args); end
-
-  def continuous_deployment_will_change!(*args); end
-
-  def created_at(); end
-
-  def created_at=(value); end
-
-  def created_at?(*args); end
-
-  def created_at_before_last_save(*args); end
-
-  def created_at_before_type_cast(*args); end
-
-  def created_at_came_from_user?(*args); end
-
-  def created_at_change(*args); end
-
-  def created_at_change_to_be_saved(*args); end
-
-  def created_at_changed?(*args); end
-
-  def created_at_in_database(*args); end
-
-  def created_at_previous_change(*args); end
-
-  def created_at_previously_changed?(*args); end
-
-  def created_at_was(*args); end
-
-  def created_at_will_change!(*args); end
-
-  def deploy_url(); end
-
-  def deploy_url=(value); end
-
-  def deploy_url?(*args); end
-
-  def deploy_url_before_last_save(*args); end
-
-  def deploy_url_before_type_cast(*args); end
-
-  def deploy_url_came_from_user?(*args); end
-
-  def deploy_url_change(*args); end
-
-  def deploy_url_change_to_be_saved(*args); end
-
-  def deploy_url_changed?(*args); end
-
-  def deploy_url_in_database(*args); end
-
-  def deploy_url_previous_change(*args); end
-
-  def deploy_url_previously_changed?(*args); end
-
-  def deploy_url_was(*args); end
-
-  def deploy_url_will_change!(*args); end
-
-  def environment(); end
-
-  def environment=(value); end
-
-  def environment?(*args); end
-
-  def environment_before_last_save(*args); end
-
-  def environment_before_type_cast(*args); end
-
-  def environment_came_from_user?(*args); end
-
-  def environment_change(*args); end
-
-  def environment_change_to_be_saved(*args); end
-
-  def environment_changed?(*args); end
-
-  def environment_in_database(*args); end
-
-  def environment_previous_change(*args); end
-
-  def environment_previously_changed?(*args); end
-
-  def environment_was(*args); end
-
-  def environment_will_change!(*args); end
-
-  def estimated_deploy_duration(); end
-
-  def estimated_deploy_duration=(value); end
-
-  def estimated_deploy_duration?(*args); end
-
-  def estimated_deploy_duration_before_last_save(*args); end
-
-  def estimated_deploy_duration_before_type_cast(*args); end
-
-  def estimated_deploy_duration_came_from_user?(*args); end
-
-  def estimated_deploy_duration_change(*args); end
-
-  def estimated_deploy_duration_change_to_be_saved(*args); end
-
-  def estimated_deploy_duration_changed?(*args); end
-
-  def estimated_deploy_duration_in_database(*args); end
-
-  def estimated_deploy_duration_previous_change(*args); end
-
-  def estimated_deploy_duration_previously_changed?(*args); end
-
-  def estimated_deploy_duration_was(*args); end
-
-  def estimated_deploy_duration_will_change!(*args); end
-
-  def id_before_last_save(*args); end
-
-  def id_came_from_user?(*args); end
-
-  def id_change(*args); end
-
-  def id_change_to_be_saved(*args); end
-
-  def id_changed?(*args); end
-
-  def id_previous_change(*args); end
-
-  def id_previously_changed?(*args); end
-
-  def id_will_change!(*args); end
-
-  def ignore_ci(); end
-
-  def ignore_ci=(value); end
-
-  def ignore_ci?(*args); end
-
-  def ignore_ci_before_last_save(*args); end
-
-  def ignore_ci_before_type_cast(*args); end
-
-  def ignore_ci_came_from_user?(*args); end
-
-  def ignore_ci_change(*args); end
-
-  def ignore_ci_change_to_be_saved(*args); end
-
-  def ignore_ci_changed?(*args); end
-
-  def ignore_ci_in_database(*args); end
-
-  def ignore_ci_previous_change(*args); end
-
-  def ignore_ci_previously_changed?(*args); end
-
-  def ignore_ci_was(*args); end
-
-  def ignore_ci_will_change!(*args); end
-
-  def inaccessible_since(); end
-
-  def inaccessible_since=(value); end
-
-  def inaccessible_since?(*args); end
-
-  def inaccessible_since_before_last_save(*args); end
-
-  def inaccessible_since_before_type_cast(*args); end
-
-  def inaccessible_since_came_from_user?(*args); end
-
-  def inaccessible_since_change(*args); end
-
-  def inaccessible_since_change_to_be_saved(*args); end
-
-  def inaccessible_since_changed?(*args); end
-
-  def inaccessible_since_in_database(*args); end
-
-  def inaccessible_since_previous_change(*args); end
-
-  def inaccessible_since_previously_changed?(*args); end
-
-  def inaccessible_since_was(*args); end
-
-  def inaccessible_since_will_change!(*args); end
-
-  def last_deployed_at(); end
-
-  def last_deployed_at=(value); end
-
-  def last_deployed_at?(*args); end
-
-  def last_deployed_at_before_last_save(*args); end
-
-  def last_deployed_at_before_type_cast(*args); end
-
-  def last_deployed_at_came_from_user?(*args); end
-
-  def last_deployed_at_change(*args); end
-
-  def last_deployed_at_change_to_be_saved(*args); end
-
-  def last_deployed_at_changed?(*args); end
-
-  def last_deployed_at_in_database(*args); end
-
-  def last_deployed_at_previous_change(*args); end
-
-  def last_deployed_at_previously_changed?(*args); end
-
-  def last_deployed_at_was(*args); end
-
-  def last_deployed_at_will_change!(*args); end
-
-  def lock_author_id(); end
-
-  def lock_author_id=(value); end
-
-  def lock_author_id?(*args); end
-
-  def lock_author_id_before_last_save(*args); end
-
-  def lock_author_id_before_type_cast(*args); end
-
-  def lock_author_id_came_from_user?(*args); end
-
-  def lock_author_id_change(*args); end
-
-  def lock_author_id_change_to_be_saved(*args); end
-
-  def lock_author_id_changed?(*args); end
-
-  def lock_author_id_in_database(*args); end
-
-  def lock_author_id_previous_change(*args); end
-
-  def lock_author_id_previously_changed?(*args); end
-
-  def lock_author_id_was(*args); end
-
-  def lock_author_id_will_change!(*args); end
-
-  def lock_reason(); end
-
-  def lock_reason=(value); end
-
-  def lock_reason?(*args); end
-
-  def lock_reason_before_last_save(*args); end
-
-  def lock_reason_before_type_cast(*args); end
-
-  def lock_reason_came_from_user?(*args); end
-
-  def lock_reason_change(*args); end
-
-  def lock_reason_change_to_be_saved(*args); end
-
-  def lock_reason_changed?(*args); end
-
-  def lock_reason_in_database(*args); end
-
-  def lock_reason_previous_change(*args); end
-
-  def lock_reason_previously_changed?(*args); end
-
-  def lock_reason_was(*args); end
-
-  def lock_reason_will_change!(*args); end
-
-  def locked_since(); end
-
-  def locked_since=(value); end
-
-  def locked_since?(*args); end
-
-  def locked_since_before_last_save(*args); end
-
-  def locked_since_before_type_cast(*args); end
-
-  def locked_since_came_from_user?(*args); end
-
-  def locked_since_change(*args); end
-
-  def locked_since_change_to_be_saved(*args); end
-
-  def locked_since_changed?(*args); end
-
-  def locked_since_in_database(*args); end
-
-  def locked_since_previous_change(*args); end
-
-  def locked_since_previously_changed?(*args); end
-
-  def locked_since_was(*args); end
-
-  def locked_since_will_change!(*args); end
-
-  def merge_queue_enabled(); end
-
-  def merge_queue_enabled=(value); end
-
-  def merge_queue_enabled?(*args); end
-
-  def merge_queue_enabled_before_last_save(*args); end
-
-  def merge_queue_enabled_before_type_cast(*args); end
-
-  def merge_queue_enabled_came_from_user?(*args); end
-
-  def merge_queue_enabled_change(*args); end
-
-  def merge_queue_enabled_change_to_be_saved(*args); end
-
-  def merge_queue_enabled_changed?(*args); end
-
-  def merge_queue_enabled_in_database(*args); end
-
-  def merge_queue_enabled_previous_change(*args); end
-
-  def merge_queue_enabled_previously_changed?(*args); end
-
-  def merge_queue_enabled_was(*args); end
-
-  def merge_queue_enabled_will_change!(*args); end
-
-  def repository_id(); end
-
-  def repository_id=(value); end
-
-  def repository_id?(*args); end
-
-  def repository_id_before_last_save(*args); end
-
-  def repository_id_before_type_cast(*args); end
-
-  def repository_id_came_from_user?(*args); end
-
-  def repository_id_change(*args); end
-
-  def repository_id_change_to_be_saved(*args); end
-
-  def repository_id_changed?(*args); end
-
-  def repository_id_in_database(*args); end
-
-  def repository_id_previous_change(*args); end
-
-  def repository_id_previously_changed?(*args); end
-
-  def repository_id_was(*args); end
-
-  def repository_id_will_change!(*args); end
-
-  def restore_archived_since!(*args); end
-
-  def restore_branch!(*args); end
-
-  def restore_cached_deploy_spec!(*args); end
-
-  def restore_continuous_delivery_delayed_since!(*args); end
-
-  def restore_continuous_deployment!(*args); end
-
-  def restore_created_at!(*args); end
-
-  def restore_deploy_url!(*args); end
-
-  def restore_environment!(*args); end
-
-  def restore_estimated_deploy_duration!(*args); end
-
-  def restore_id!(*args); end
-
-  def restore_ignore_ci!(*args); end
-
-  def restore_inaccessible_since!(*args); end
-
-  def restore_last_deployed_at!(*args); end
-
-  def restore_lock_author_id!(*args); end
-
-  def restore_lock_reason!(*args); end
-
-  def restore_locked_since!(*args); end
-
-  def restore_merge_queue_enabled!(*args); end
-
-  def restore_repository_id!(*args); end
-
-  def restore_tasks_count!(*args); end
-
-  def restore_undeployed_commits_count!(*args); end
-
-  def restore_updated_at!(*args); end
-
-  def saved_change_to_archived_since(*args); end
-
-  def saved_change_to_archived_since?(*args); end
-
-  def saved_change_to_branch(*args); end
-
-  def saved_change_to_branch?(*args); end
-
-  def saved_change_to_cached_deploy_spec(*args); end
-
-  def saved_change_to_cached_deploy_spec?(*args); end
-
-  def saved_change_to_continuous_delivery_delayed_since(*args); end
-
-  def saved_change_to_continuous_delivery_delayed_since?(*args); end
-
-  def saved_change_to_continuous_deployment(*args); end
-
-  def saved_change_to_continuous_deployment?(*args); end
-
-  def saved_change_to_created_at(*args); end
-
-  def saved_change_to_created_at?(*args); end
-
-  def saved_change_to_deploy_url(*args); end
-
-  def saved_change_to_deploy_url?(*args); end
-
-  def saved_change_to_environment(*args); end
-
-  def saved_change_to_environment?(*args); end
-
-  def saved_change_to_estimated_deploy_duration(*args); end
-
-  def saved_change_to_estimated_deploy_duration?(*args); end
-
-  def saved_change_to_id(*args); end
-
-  def saved_change_to_id?(*args); end
-
-  def saved_change_to_ignore_ci(*args); end
-
-  def saved_change_to_ignore_ci?(*args); end
-
-  def saved_change_to_inaccessible_since(*args); end
-
-  def saved_change_to_inaccessible_since?(*args); end
-
-  def saved_change_to_last_deployed_at(*args); end
-
-  def saved_change_to_last_deployed_at?(*args); end
-
-  def saved_change_to_lock_author_id(*args); end
-
-  def saved_change_to_lock_author_id?(*args); end
-
-  def saved_change_to_lock_reason(*args); end
-
-  def saved_change_to_lock_reason?(*args); end
-
-  def saved_change_to_locked_since(*args); end
-
-  def saved_change_to_locked_since?(*args); end
-
-  def saved_change_to_merge_queue_enabled(*args); end
-
-  def saved_change_to_merge_queue_enabled?(*args); end
-
-  def saved_change_to_repository_id(*args); end
-
-  def saved_change_to_repository_id?(*args); end
-
-  def saved_change_to_tasks_count(*args); end
-
-  def saved_change_to_tasks_count?(*args); end
-
-  def saved_change_to_undeployed_commits_count(*args); end
-
-  def saved_change_to_undeployed_commits_count?(*args); end
-
-  def saved_change_to_updated_at(*args); end
-
-  def saved_change_to_updated_at?(*args); end
-
-  def tasks_count(); end
-
-  def tasks_count=(value); end
-
-  def tasks_count?(*args); end
-
-  def tasks_count_before_last_save(*args); end
-
-  def tasks_count_before_type_cast(*args); end
-
-  def tasks_count_came_from_user?(*args); end
-
-  def tasks_count_change(*args); end
-
-  def tasks_count_change_to_be_saved(*args); end
-
-  def tasks_count_changed?(*args); end
-
-  def tasks_count_in_database(*args); end
-
-  def tasks_count_previous_change(*args); end
-
-  def tasks_count_previously_changed?(*args); end
-
-  def tasks_count_was(*args); end
-
-  def tasks_count_will_change!(*args); end
-
-  def undeployed_commits_count(); end
-
-  def undeployed_commits_count=(value); end
-
-  def undeployed_commits_count?(*args); end
-
-  def undeployed_commits_count_before_last_save(*args); end
-
-  def undeployed_commits_count_before_type_cast(*args); end
-
-  def undeployed_commits_count_came_from_user?(*args); end
-
-  def undeployed_commits_count_change(*args); end
-
-  def undeployed_commits_count_change_to_be_saved(*args); end
-
-  def undeployed_commits_count_changed?(*args); end
-
-  def undeployed_commits_count_in_database(*args); end
-
-  def undeployed_commits_count_previous_change(*args); end
-
-  def undeployed_commits_count_previously_changed?(*args); end
-
-  def undeployed_commits_count_was(*args); end
-
-  def undeployed_commits_count_will_change!(*args); end
-
-  def updated_at(); end
-
-  def updated_at=(value); end
-
-  def updated_at?(*args); end
-
-  def updated_at_before_last_save(*args); end
-
-  def updated_at_before_type_cast(*args); end
-
-  def updated_at_came_from_user?(*args); end
-
-  def updated_at_change(*args); end
-
-  def updated_at_change_to_be_saved(*args); end
-
-  def updated_at_changed?(*args); end
-
-  def updated_at_in_database(*args); end
-
-  def updated_at_previous_change(*args); end
-
-  def updated_at_previously_changed?(*args); end
-
-  def updated_at_was(*args); end
-
-  def updated_at_will_change!(*args); end
-
-  def will_save_change_to_archived_since?(*args); end
-
-  def will_save_change_to_branch?(*args); end
-
-  def will_save_change_to_cached_deploy_spec?(*args); end
-
-  def will_save_change_to_continuous_delivery_delayed_since?(*args); end
-
-  def will_save_change_to_continuous_deployment?(*args); end
-
-  def will_save_change_to_created_at?(*args); end
-
-  def will_save_change_to_deploy_url?(*args); end
-
-  def will_save_change_to_environment?(*args); end
-
-  def will_save_change_to_estimated_deploy_duration?(*args); end
-
-  def will_save_change_to_id?(*args); end
-
-  def will_save_change_to_ignore_ci?(*args); end
-
-  def will_save_change_to_inaccessible_since?(*args); end
-
-  def will_save_change_to_last_deployed_at?(*args); end
-
-  def will_save_change_to_lock_author_id?(*args); end
-
-  def will_save_change_to_lock_reason?(*args); end
-
-  def will_save_change_to_locked_since?(*args); end
-
-  def will_save_change_to_merge_queue_enabled?(*args); end
-
-  def will_save_change_to_repository_id?(*args); end
-
-  def will_save_change_to_tasks_count?(*args); end
-
-  def will_save_change_to_undeployed_commits_count?(*args); end
-
-  def will_save_change_to_updated_at?(*args); end
 end
 
 module Shipit::Stack::GeneratedAttributeMethods
@@ -85341,8 +86717,6 @@ class Shipit::Stack
   def self.before_remove_for_tasks=(val); end
 
   def self.before_remove_for_tasks?(); end
-
-  def self.not_archived(*args); end
 end
 
 class Shipit::StackSerializer
@@ -85383,9 +86757,10 @@ class Shipit::StackSerializer
   extend ::Shipit::ConditionalAttributes::ClassMethods
 end
 
+class Shipit::StacksController
+end
+
 class Shipit::Status
-  include ::Shipit::Status::GeneratedAttributeMethods
-  include ::Shipit::Status::GeneratedAssociationMethods
   def autosave_associated_records_for_commit(*args); end
 
   def autosave_associated_records_for_stack(*args); end
@@ -85395,10 +86770,6 @@ module Shipit::Status::GeneratedAssociationMethods
   def build_commit(*args, &block); end
 
   def build_stack(*args, &block); end
-
-  def commit(); end
-
-  def commit=(value); end
 
   def create_commit(*args, &block); end
 
@@ -85411,16 +86782,6 @@ module Shipit::Status::GeneratedAssociationMethods
   def reload_commit(); end
 
   def reload_stack(); end
-
-  def stack(); end
-
-  def stack=(value); end
-end
-
-module Shipit::Status::GeneratedAssociationMethods
-end
-
-module Shipit::Status::GeneratedAttributeMethods
 end
 
 module Shipit::Status::GeneratedAttributeMethods
@@ -85438,24 +86799,6 @@ class Shipit::Status
   def self.deferred_touches=(val); end
 
   def self.deferred_touches?(); end
-
-  def self.error(*args); end
-
-  def self.failure(*args); end
-
-  def self.not_error(*args); end
-
-  def self.not_failure(*args); end
-
-  def self.not_pending(*args); end
-
-  def self.not_success(*args); end
-
-  def self.pending(*args); end
-
-  def self.states(); end
-
-  def self.success(*args); end
 end
 
 class Shipit::TailTaskSerializer
@@ -85467,8 +86810,6 @@ class Shipit::TailTaskSerializer
 end
 
 class Shipit::Task
-  include ::Shipit::Task::GeneratedAttributeMethods
-  include ::Shipit::Task::GeneratedAssociationMethods
   include ::StateMachines::InstanceMethods
   def after_add_for_chunks(); end
 
@@ -85512,10 +86853,6 @@ class Shipit::Task
 end
 
 module Shipit::Task::GeneratedAssociationMethods
-  def aborted_by(); end
-
-  def aborted_by=(value); end
-
   def build_aborted_by(*args, &block); end
 
   def build_deploy(*args, &block); end
@@ -85531,10 +86868,6 @@ module Shipit::Task::GeneratedAssociationMethods
   def chunk_ids(); end
 
   def chunk_ids=(ids); end
-
-  def chunks(); end
-
-  def chunks=(value); end
 
   def create_aborted_by(*args, &block); end
 
@@ -85560,10 +86893,6 @@ module Shipit::Task::GeneratedAssociationMethods
 
   def create_user!(*args, &block); end
 
-  def deploy(); end
-
-  def deploy=(value); end
-
   def reload_aborted_by(); end
 
   def reload_deploy(); end
@@ -85575,39 +86904,39 @@ module Shipit::Task::GeneratedAssociationMethods
   def reload_until_commit(); end
 
   def reload_user(); end
-
-  def since_commit(); end
-
-  def since_commit=(value); end
-
-  def stack(); end
-
-  def stack=(value); end
-
-  def until_commit(); end
-
-  def until_commit=(value); end
-
-  def user(); end
-
-  def user=(value); end
-end
-
-module Shipit::Task::GeneratedAssociationMethods
-end
-
-module Shipit::Task::GeneratedAttributeMethods
 end
 
 module Shipit::Task::GeneratedAttributeMethods
   extend ::Mutex_m
 end
 
+module Shipit::Task::GeneratedRelationMethods
+  def active(*args, &block); end
+
+  def completed(*args, &block); end
+
+  def due_for_rollup(*args, &block); end
+
+  def exclusive(*args, &block); end
+
+  def last_seven_days(*args, &block); end
+
+  def not_active(*args, &block); end
+
+  def previous_seven_days(*args, &block); end
+
+  def success(*args, &block); end
+
+  def unsuccessful(*args, &block); end
+end
+
+module Shipit::Task::GeneratedRelationMethods
+  extend ::Mutex_m
+end
+
 class Shipit::Task
   extend ::Shipit::DeferredTouch::ClassMethods
   extend ::StateMachines::ClassMethods
-  def self.active(*args); end
-
   def self.after_add_for_chunks(); end
 
   def self.after_add_for_chunks=(val); end
@@ -85632,27 +86961,11 @@ class Shipit::Task
 
   def self.before_remove_for_chunks?(); end
 
-  def self.completed(*args); end
-
   def self.deferred_touches(); end
 
   def self.deferred_touches=(val); end
 
   def self.deferred_touches?(); end
-
-  def self.due_for_rollup(*args); end
-
-  def self.exclusive(*args); end
-
-  def self.last_seven_days(*args); end
-
-  def self.not_active(*args); end
-
-  def self.previous_seven_days(*args); end
-
-  def self.success(*args); end
-
-  def self.unsuccessful(*args); end
 end
 
 class Shipit::TaskSerializer
@@ -85722,8 +87035,6 @@ class Shipit::TasksController
 end
 
 class Shipit::Team
-  include ::Shipit::Team::GeneratedAttributeMethods
-  include ::Shipit::Team::GeneratedAssociationMethods
   def after_add_for_github_hooks(); end
 
   def after_add_for_github_hooks=(val); end
@@ -85814,31 +87125,13 @@ module Shipit::Team::GeneratedAssociationMethods
 
   def github_hook_ids=(ids); end
 
-  def github_hooks(); end
-
-  def github_hooks=(value); end
-
   def member_ids(); end
 
   def member_ids=(ids); end
 
-  def members(); end
-
-  def members=(value); end
-
   def membership_ids(); end
 
   def membership_ids=(ids); end
-
-  def memberships(); end
-
-  def memberships=(value); end
-end
-
-module Shipit::Team::GeneratedAssociationMethods
-end
-
-module Shipit::Team::GeneratedAttributeMethods
 end
 
 module Shipit::Team::GeneratedAttributeMethods
@@ -85919,9 +87212,28 @@ class Shipit::Team
   def self.before_remove_for_memberships?(); end
 end
 
+class Shipit::UndeployedCommit
+  def blocked?(); end
+
+  def deploy_disallowed?(); end
+
+  def deploy_discouraged?(); end
+
+  def deploy_state(bypass_safeties=T.unsafe(nil)); end
+
+  def expected_to_be_deployed?(); end
+
+  def index(); end
+
+  def initialize(commit, index:, next_expected_commit_to_deploy: T.unsafe(nil)); end
+
+  def redeploy_state(bypass_safeties=T.unsafe(nil)); end
+end
+
+class Shipit::UndeployedCommit
+end
+
 class Shipit::User
-  include ::Shipit::User::GeneratedAttributeMethods
-  include ::Shipit::User::GeneratedAssociationMethods
   def after_add_for_authored_commits(); end
 
   def after_add_for_authored_commits=(val); end
@@ -86068,430 +87380,21 @@ module Shipit::User::GeneratedAssociationMethods
 
   def authored_commit_ids=(ids); end
 
-  def authored_commits(); end
-
-  def authored_commits=(value); end
-
   def commit_ids(); end
 
   def commit_ids=(ids); end
-
-  def commits(); end
-
-  def commits=(value); end
 
   def membership_ids(); end
 
   def membership_ids=(ids); end
 
-  def memberships(); end
-
-  def memberships=(value); end
-
   def task_ids(); end
 
   def task_ids=(ids); end
 
-  def tasks(); end
-
-  def tasks=(value); end
-
   def team_ids(); end
 
   def team_ids=(ids); end
-
-  def teams(); end
-
-  def teams=(value); end
-end
-
-module Shipit::User::GeneratedAssociationMethods
-end
-
-module Shipit::User::GeneratedAttributeMethods
-  def api_url(); end
-
-  def api_url=(value); end
-
-  def api_url?(*args); end
-
-  def api_url_before_last_save(*args); end
-
-  def api_url_before_type_cast(*args); end
-
-  def api_url_came_from_user?(*args); end
-
-  def api_url_change(*args); end
-
-  def api_url_change_to_be_saved(*args); end
-
-  def api_url_changed?(*args); end
-
-  def api_url_in_database(*args); end
-
-  def api_url_previous_change(*args); end
-
-  def api_url_previously_changed?(*args); end
-
-  def api_url_was(*args); end
-
-  def api_url_will_change!(*args); end
-
-  def avatar_url(); end
-
-  def avatar_url=(value); end
-
-  def avatar_url?(*args); end
-
-  def avatar_url_before_last_save(*args); end
-
-  def avatar_url_before_type_cast(*args); end
-
-  def avatar_url_came_from_user?(*args); end
-
-  def avatar_url_change(*args); end
-
-  def avatar_url_change_to_be_saved(*args); end
-
-  def avatar_url_changed?(*args); end
-
-  def avatar_url_in_database(*args); end
-
-  def avatar_url_previous_change(*args); end
-
-  def avatar_url_previously_changed?(*args); end
-
-  def avatar_url_was(*args); end
-
-  def avatar_url_will_change!(*args); end
-
-  def created_at(); end
-
-  def created_at=(value); end
-
-  def created_at?(*args); end
-
-  def created_at_before_last_save(*args); end
-
-  def created_at_before_type_cast(*args); end
-
-  def created_at_came_from_user?(*args); end
-
-  def created_at_change(*args); end
-
-  def created_at_change_to_be_saved(*args); end
-
-  def created_at_changed?(*args); end
-
-  def created_at_in_database(*args); end
-
-  def created_at_previous_change(*args); end
-
-  def created_at_previously_changed?(*args); end
-
-  def created_at_was(*args); end
-
-  def created_at_will_change!(*args); end
-
-  def email(); end
-
-  def email=(value); end
-
-  def email?(*args); end
-
-  def email_before_last_save(*args); end
-
-  def email_before_type_cast(*args); end
-
-  def email_came_from_user?(*args); end
-
-  def email_change(*args); end
-
-  def email_change_to_be_saved(*args); end
-
-  def email_changed?(*args); end
-
-  def email_in_database(*args); end
-
-  def email_previous_change(*args); end
-
-  def email_previously_changed?(*args); end
-
-  def email_was(*args); end
-
-  def email_will_change!(*args); end
-
-  def encrypted_github_access_token(); end
-
-  def encrypted_github_access_token=(value); end
-
-  def encrypted_github_access_token?(*args); end
-
-  def encrypted_github_access_token_before_last_save(*args); end
-
-  def encrypted_github_access_token_before_type_cast(*args); end
-
-  def encrypted_github_access_token_came_from_user?(*args); end
-
-  def encrypted_github_access_token_change(*args); end
-
-  def encrypted_github_access_token_change_to_be_saved(*args); end
-
-  def encrypted_github_access_token_changed?(*args); end
-
-  def encrypted_github_access_token_in_database(*args); end
-
-  def encrypted_github_access_token_iv(); end
-
-  def encrypted_github_access_token_iv=(value); end
-
-  def encrypted_github_access_token_iv?(*args); end
-
-  def encrypted_github_access_token_iv_before_last_save(*args); end
-
-  def encrypted_github_access_token_iv_before_type_cast(*args); end
-
-  def encrypted_github_access_token_iv_came_from_user?(*args); end
-
-  def encrypted_github_access_token_iv_change(*args); end
-
-  def encrypted_github_access_token_iv_change_to_be_saved(*args); end
-
-  def encrypted_github_access_token_iv_changed?(*args); end
-
-  def encrypted_github_access_token_iv_in_database(*args); end
-
-  def encrypted_github_access_token_iv_previous_change(*args); end
-
-  def encrypted_github_access_token_iv_previously_changed?(*args); end
-
-  def encrypted_github_access_token_iv_was(*args); end
-
-  def encrypted_github_access_token_iv_will_change!(*args); end
-
-  def encrypted_github_access_token_previous_change(*args); end
-
-  def encrypted_github_access_token_previously_changed?(*args); end
-
-  def encrypted_github_access_token_was(*args); end
-
-  def encrypted_github_access_token_will_change!(*args); end
-
-  def github_id(); end
-
-  def github_id=(value); end
-
-  def github_id?(*args); end
-
-  def github_id_before_last_save(*args); end
-
-  def github_id_before_type_cast(*args); end
-
-  def github_id_came_from_user?(*args); end
-
-  def github_id_change(*args); end
-
-  def github_id_change_to_be_saved(*args); end
-
-  def github_id_changed?(*args); end
-
-  def github_id_in_database(*args); end
-
-  def github_id_previous_change(*args); end
-
-  def github_id_previously_changed?(*args); end
-
-  def github_id_was(*args); end
-
-  def github_id_will_change!(*args); end
-
-  def id_before_last_save(*args); end
-
-  def id_came_from_user?(*args); end
-
-  def id_change(*args); end
-
-  def id_change_to_be_saved(*args); end
-
-  def id_changed?(*args); end
-
-  def id_previous_change(*args); end
-
-  def id_previously_changed?(*args); end
-
-  def id_will_change!(*args); end
-
-  def login(); end
-
-  def login=(value); end
-
-  def login?(*args); end
-
-  def login_before_last_save(*args); end
-
-  def login_before_type_cast(*args); end
-
-  def login_came_from_user?(*args); end
-
-  def login_change(*args); end
-
-  def login_change_to_be_saved(*args); end
-
-  def login_changed?(*args); end
-
-  def login_in_database(*args); end
-
-  def login_previous_change(*args); end
-
-  def login_previously_changed?(*args); end
-
-  def login_was(*args); end
-
-  def login_will_change!(*args); end
-
-  def name(); end
-
-  def name=(value); end
-
-  def name?(*args); end
-
-  def name_before_last_save(*args); end
-
-  def name_before_type_cast(*args); end
-
-  def name_came_from_user?(*args); end
-
-  def name_change(*args); end
-
-  def name_change_to_be_saved(*args); end
-
-  def name_changed?(*args); end
-
-  def name_in_database(*args); end
-
-  def name_previous_change(*args); end
-
-  def name_previously_changed?(*args); end
-
-  def name_was(*args); end
-
-  def name_will_change!(*args); end
-
-  def restore_api_url!(*args); end
-
-  def restore_avatar_url!(*args); end
-
-  def restore_created_at!(*args); end
-
-  def restore_email!(*args); end
-
-  def restore_encrypted_github_access_token!(*args); end
-
-  def restore_encrypted_github_access_token_iv!(*args); end
-
-  def restore_github_id!(*args); end
-
-  def restore_id!(*args); end
-
-  def restore_login!(*args); end
-
-  def restore_name!(*args); end
-
-  def restore_updated_at!(*args); end
-
-  def saved_change_to_api_url(*args); end
-
-  def saved_change_to_api_url?(*args); end
-
-  def saved_change_to_avatar_url(*args); end
-
-  def saved_change_to_avatar_url?(*args); end
-
-  def saved_change_to_created_at(*args); end
-
-  def saved_change_to_created_at?(*args); end
-
-  def saved_change_to_email(*args); end
-
-  def saved_change_to_email?(*args); end
-
-  def saved_change_to_encrypted_github_access_token(*args); end
-
-  def saved_change_to_encrypted_github_access_token?(*args); end
-
-  def saved_change_to_encrypted_github_access_token_iv(*args); end
-
-  def saved_change_to_encrypted_github_access_token_iv?(*args); end
-
-  def saved_change_to_github_id(*args); end
-
-  def saved_change_to_github_id?(*args); end
-
-  def saved_change_to_id(*args); end
-
-  def saved_change_to_id?(*args); end
-
-  def saved_change_to_login(*args); end
-
-  def saved_change_to_login?(*args); end
-
-  def saved_change_to_name(*args); end
-
-  def saved_change_to_name?(*args); end
-
-  def saved_change_to_updated_at(*args); end
-
-  def saved_change_to_updated_at?(*args); end
-
-  def updated_at(); end
-
-  def updated_at=(value); end
-
-  def updated_at?(*args); end
-
-  def updated_at_before_last_save(*args); end
-
-  def updated_at_before_type_cast(*args); end
-
-  def updated_at_came_from_user?(*args); end
-
-  def updated_at_change(*args); end
-
-  def updated_at_change_to_be_saved(*args); end
-
-  def updated_at_changed?(*args); end
-
-  def updated_at_in_database(*args); end
-
-  def updated_at_previous_change(*args); end
-
-  def updated_at_previously_changed?(*args); end
-
-  def updated_at_was(*args); end
-
-  def updated_at_will_change!(*args); end
-
-  def will_save_change_to_api_url?(*args); end
-
-  def will_save_change_to_avatar_url?(*args); end
-
-  def will_save_change_to_created_at?(*args); end
-
-  def will_save_change_to_email?(*args); end
-
-  def will_save_change_to_encrypted_github_access_token?(*args); end
-
-  def will_save_change_to_encrypted_github_access_token_iv?(*args); end
-
-  def will_save_change_to_github_id?(*args); end
-
-  def will_save_change_to_id?(*args); end
-
-  def will_save_change_to_login?(*args); end
-
-  def will_save_change_to_name?(*args); end
-
-  def will_save_change_to_updated_at?(*args); end
 end
 
 module Shipit::User::GeneratedAttributeMethods
@@ -87529,6 +88432,268 @@ module Socket::Constants
   SO_WANTOOBFLAG = ::T.let(nil, ::T.untyped)
   TCP_NOOPT = ::T.let(nil, ::T.untyped)
   TCP_NOPUSH = ::T.let(nil, ::T.untyped)
+end
+
+class SorbetRails::Config
+  def enabled_gem_plugins(*args, &blk); end
+
+  def enabled_gem_plugins=(enabled_gem_plugins); end
+
+  def enabled_model_plugins(*args, &blk); end
+
+  def enabled_model_plugins=(enabled_model_plugins); end
+
+  def enabled_plugins(*args, &blk); end
+
+  def extra_helper_includes(*args, &blk); end
+
+  def extra_helper_includes=(extra_helper_includes); end
+
+  def initialize(&blk); end
+end
+
+class SorbetRails::Config
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module SorbetRails::CustomFinderMethods
+  def find_by_id(id); end
+
+  def find_by_id!(id); end
+
+  def find_n(*ids); end
+
+  def first_n(n); end
+
+  def last_n(n); end
+end
+
+module SorbetRails::CustomFinderMethods
+end
+
+module SorbetRails::CustomParamsMethods
+  include ::Kernel
+end
+
+module SorbetRails::CustomParamsMethods
+  extend ::T::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module SorbetRails::ModelPlugins
+  include ::Kernel
+  def get_plugin_by_name(*args, &blk); end
+
+  def get_plugins(*args, &blk); end
+
+  def register_plugin(*args, &blk); end
+
+  def register_plugin_by_name(arg0, &blk); end
+
+  def set_plugins(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordAssoc
+  def assoc_should_be_untyped?(*args, &blk); end
+
+  def polymorphic_assoc?(*args, &blk); end
+
+  def populate_collection_assoc_getter_setter(*args, &blk); end
+
+  def populate_single_assoc_getter_setter(*args, &blk); end
+
+  def relation_should_be_untyped?(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordAssoc
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordAttribute
+  def active_record_type_to_sorbet_type(*args, &blk); end
+
+  def generate_enum_methods(*args, &blk); end
+
+  def time_zone_aware_column?(*args, &blk); end
+
+  def type_for_column_def(*args, &blk); end
+
+  def value_type_for_attr_writer(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordAttribute
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordEnum
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordEnum
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordFinderMethods
+  def create_finder_method_pair(*args, &blk); end
+
+  def create_finder_methods_for(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordFinderMethods
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordNamedScope
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordNamedScope
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordQuerying
+end
+
+class SorbetRails::ModelPlugins::ActiveRecordQuerying
+end
+
+class SorbetRails::ModelPlugins::ActiveRelationWhereNot
+end
+
+class SorbetRails::ModelPlugins::ActiveRelationWhereNot
+end
+
+class SorbetRails::ModelPlugins::ActiveStorageMethods
+  def create_has_many_methods(*args, &blk); end
+
+  def create_has_one_methods(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::ActiveStorageMethods
+end
+
+class SorbetRails::ModelPlugins::Base
+  include ::SorbetRails::ModelUtils
+  def available_classes(*args, &blk); end
+end
+
+SorbetRails::ModelPlugins::Base::Parameter = Parlour::RbiGenerator::Parameter
+
+class SorbetRails::ModelPlugins::Base
+end
+
+class SorbetRails::ModelPlugins::CustomFinderMethods
+end
+
+class SorbetRails::ModelPlugins::CustomFinderMethods
+end
+
+class SorbetRails::ModelPlugins::EnumerableCollections
+  def create_enumerable_methods_for(*args, &blk); end
+end
+
+class SorbetRails::ModelPlugins::EnumerableCollections
+end
+
+class SorbetRails::ModelPlugins::UnrecognizedPluginName
+end
+
+class SorbetRails::ModelPlugins::UnrecognizedPluginName
+end
+
+module SorbetRails::ModelPlugins
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class SorbetRails::ModelRbiFormatter
+  include ::SorbetRails::ModelUtils
+  def available_classes(*args, &blk); end
+
+  def generate_base_rbi(*args, &blk); end
+
+  def generate_rbi(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def run_plugins(*args, &blk); end
+end
+
+class SorbetRails::ModelRbiFormatter
+  extend ::T::Sig
+  extend ::SorbetRails::ModelPlugins
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module SorbetRails::ModelUtils
+  def add_relation_query_method(*args, &blk); end
+
+  def exists_class_method?(*args, &blk); end
+
+  def exists_instance_method?(*args, &blk); end
+
+  def model_assoc_proxy_class_name(*args, &blk); end
+
+  def model_assoc_relation_class_name(*args, &blk); end
+
+  def model_class(*args, &blk); end
+
+  def model_class_name(*args, &blk); end
+
+  def model_module_name(*args, &blk); end
+
+  def model_relation_class_name(*args, &blk); end
+end
+
+module SorbetRails::ModelUtils
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module SorbetRails::PluckToTStruct
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class SorbetRails::Railtie
+end
+
+class SorbetRails::Railtie
+end
+
+class SorbetRails::TypedEnumConfig
+  def class_name(); end
+
+  def initialize(hash=T.unsafe(nil)); end
+
+  def strict_mode(); end
+end
+
+class SorbetRails::TypedEnumConfig
+  def self.inherited(s); end
+end
+
+module SorbetRails::Utils
+end
+
+module SorbetRails::Utils
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.rails_eager_load_all!(*args, &blk); end
+
+  def self.valid_method_name?(*args, &blk); end
+end
+
+module SorbetRails
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.config(&blk); end
+
+  def self.configure(*args, &blk); end
+
+  def self.register_configured_plugins(&blk); end
 end
 
 class SortedSet
@@ -90095,6 +91260,8 @@ end
 
 class String
   include ::JSON::Ext::Generator::GeneratorMethods::String
+  include ::IntegerStringImpl
+  include ::BooleanStringImpl
   def []=(*_); end
 
   def ascii_only(); end
@@ -90420,6 +91587,11 @@ class SystemExit
   def status(); end
 
   def success?(); end
+end
+
+class TA
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
 end
 
 module TZInfo
@@ -91680,9 +92852,6 @@ module Thor::Shell
   SHELL_DELEGATED_METHODS = ::T.let(nil, ::T.untyped)
 end
 
-module Thor::Shell
-end
-
 Thor::Task = Thor::Command
 
 class Thor::UndefinedCommandError
@@ -92579,6 +93748,61 @@ end
 
 class TrueClass
   include ::JSON::Ext::Generator::GeneratorMethods::TrueClass
+  include ::SafeType::BooleanMixin
+end
+
+module TypeCoerce
+end
+
+class TypeCoerce::CoercionError
+end
+
+class TypeCoerce::CoercionError
+end
+
+module TypeCoerce::Configuration
+end
+
+module TypeCoerce::Configuration
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.raise_coercion_error(*args, &blk); end
+
+  def self.raise_coercion_error=(raise_coercion_error); end
+end
+
+module TypeCoerce::Private
+end
+
+class TypeCoerce::Private::Converter
+  def _build_args(*args, &blk); end
+
+  def _convert(*args, &blk); end
+
+  def _convert_simple(*args, &blk); end
+
+  def _convert_to_a(*args, &blk); end
+
+  def _nil_like?(*args, &blk); end
+  PRIMITIVE_TYPES = ::T.let(nil, ::T.untyped)
+end
+
+class TypeCoerce::Private::Converter
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module TypeCoerce::Private
+end
+
+class TypeCoerce::ShapeError
+end
+
+class TypeCoerce::ShapeError
+end
+
+module TypeCoerce
+  def self.[](type); end
 end
 
 module URI
@@ -92780,46 +94004,9 @@ module Unicode
 end
 
 module UnicodeNormalize
-  ACCENTS = ::T.let(nil, ::T.untyped)
-  CLASS_TABLE = ::T.let(nil, ::T.untyped)
-  COMPOSITION_TABLE = ::T.let(nil, ::T.untyped)
-  DECOMPOSITION_TABLE = ::T.let(nil, ::T.untyped)
-  KOMPATIBLE_TABLE = ::T.let(nil, ::T.untyped)
-  LBASE = ::T.let(nil, ::T.untyped)
-  LCOUNT = ::T.let(nil, ::T.untyped)
-  MAX_HASH_LENGTH = ::T.let(nil, ::T.untyped)
-  NCOUNT = ::T.let(nil, ::T.untyped)
-  NF_HASH_C = ::T.let(nil, ::T.untyped)
-  NF_HASH_D = ::T.let(nil, ::T.untyped)
-  REGEXP_C = ::T.let(nil, ::T.untyped)
-  REGEXP_C_STRING = ::T.let(nil, ::T.untyped)
-  REGEXP_D = ::T.let(nil, ::T.untyped)
-  REGEXP_D_STRING = ::T.let(nil, ::T.untyped)
-  REGEXP_K = ::T.let(nil, ::T.untyped)
-  REGEXP_K_STRING = ::T.let(nil, ::T.untyped)
-  SBASE = ::T.let(nil, ::T.untyped)
-  SCOUNT = ::T.let(nil, ::T.untyped)
-  TBASE = ::T.let(nil, ::T.untyped)
-  TCOUNT = ::T.let(nil, ::T.untyped)
-  UNICODE_ENCODINGS = ::T.let(nil, ::T.untyped)
-  VBASE = ::T.let(nil, ::T.untyped)
-  VCOUNT = ::T.let(nil, ::T.untyped)
 end
 
 module UnicodeNormalize
-  def self.canonical_ordering_one(string); end
-
-  def self.hangul_comp_one(string); end
-
-  def self.hangul_decomp_one(target); end
-
-  def self.nfc_one(string); end
-
-  def self.nfd_one(string); end
-
-  def self.normalize(string, form=T.unsafe(nil)); end
-
-  def self.normalized?(string, form=T.unsafe(nil)); end
 end
 
 class UploadIO
@@ -93646,6 +94833,7 @@ module WebMock::API
 end
 
 module WebMock::API
+  extend ::WebMock::API
   def self.request(method, uri); end
 end
 
@@ -94045,8 +95233,6 @@ class WebMock::RequestStub
 
   def response(); end
 
-  def then(); end
-
   def times(number); end
 
   def to_rack(app, options=T.unsafe(nil)); end
@@ -94134,6 +95320,8 @@ class WebMock::StubRegistry
   def register_request_stub(stub); end
 
   def registered_request?(request_signature); end
+
+  def remove_request_stub(stub); end
 
   def request_stubs(); end
 
@@ -94331,6 +95519,7 @@ class WebMock::VersionChecker
 end
 
 module WebMock
+  extend ::WebMock::API
   def self.after_request(options=T.unsafe(nil), &block); end
 
   def self.allow_net_connect!(options=T.unsafe(nil)); end
