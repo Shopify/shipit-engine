@@ -32,9 +32,9 @@ en:
       links: More
       deploy_link: View website
   commit:
-    lock: Click to mark this commit as UNSAFE to deploy.
-    unlock: Click to mark this commit as SAFE to deploy.
-    unlock_with_author: "%{author} marked this commit as unsafe to deploy. Click to mark it as safe."
+    lock: Click to mark this commit as unsafe to deploy.
+    unlock: Click to mark this commit as safe to deploy.
+    unlock_with_author: "%{author} marked this commit as unsafe to deploy. Click to mark this commit as safe to deploy."
     confirm_unlock: Mark this commit as safe to deploy?
   release:
     validate: Mark the release as healthy
