@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ansi_stream', '~> 0.0.6'
   s.add_dependency 'attr_encrypted', '~> 3.1.0'
   s.add_dependency 'autoprefixer-rails', '~> 6.4.1'
+  s.add_dependency 'browser_sniffer', '~> 1.2.0'
   s.add_dependency 'coffee-rails', '~> 5.0'
   s.add_dependency 'explicit-parameters', '~> 0.4.0'
   s.add_dependency 'faraday', '~> 0.15'

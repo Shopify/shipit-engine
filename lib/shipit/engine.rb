@@ -38,6 +38,8 @@ module Shipit
         end
       end
 
+      app.config.middleware.insert_after(::Rack::Runtime, Shipit::SameSiteCookieMiddleware)
+
       app.config.after_initialize do
         ActionController::Base.include(Shipit::ActiveModelSerializersPatch)
       end

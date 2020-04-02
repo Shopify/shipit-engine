@@ -15,6 +15,7 @@ require 'ansi_stream'
 require 'autoprefixer-rails'
 require 'rails_autolink'
 require 'gemoji'
+require 'browser_sniffer'
 
 require 'omniauth-github'
 
@@ -48,6 +49,7 @@ require 'shipit/rollback_commands'
 require 'shipit/environment_variables'
 require 'shipit/stat'
 require 'shipit/github_http_cache_middleware'
+require 'shipit/same_site_cookie_middleware'
 require 'shipit/cast_value'
 require 'shipit/line_buffer'
 
