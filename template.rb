@@ -11,7 +11,8 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'shipit-engine'
-gem 'redis-rails'
+gsub_file 'Gemfile', "# Use Redis adapter to run Action Cable in production", ''
+gsub_file 'Gemfile', "# gem 'redis'", "gem 'redis'"
 
 create_file 'Procfile', <<-CODE
 web: bundle exec rails s -p $PORT
@@ -19,8 +20,7 @@ worker: bundle exec sidekiq -C config/sidekiq.yml
 CODE
 
 environment 'Pubsubstub.use_persistent_connections = false'
-environment 'config.cache_store = :redis_store, Shipit.redis_url.to_s, { expires_in: 90.minutes }', env: :production
-environment 'config.active_record.cache_versioning = false', env: :production
+environment 'config.cache_store = :redis_cache_store, { url: Shipit.redis_url.to_s, expires_in: 90.minutes }', env: :production
 
 remove_file 'config/database.yml'
 create_file 'config/database.yml', <<-CODE
