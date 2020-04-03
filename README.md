@@ -35,7 +35,7 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 * [Configuring providers](#configuring-providers)
 * [Free samples](/examples/shipit.yml)
 
-**IV. INTERGRATING**
+**IV. INTEGRATING**
 
 * [Registering webhooks](#integrating-webhooks)
 
@@ -640,7 +640,7 @@ For Kubernetes, you have to provision Shipit environment with the following tool
 * `kubectl`
 * `kubernetes-deploy` [gem](https://github.com/Shopify/kubernetes-deploy)
 
-<h2 id="integrating">IV. INTERGRATING</h2>
+<h2 id="integrating">IV. INTEGRATING</h2>
 
 <h3 id="integrating-webhooks">Registering webhooks</h3>
 
