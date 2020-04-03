@@ -3,12 +3,10 @@ require 'test_helper'
 module Shipit
   class SameSiteCookieMiddlewareTest < ActiveSupport::TestCase
     def app
-      app = Rack::Lint.new(lambda { |env|
-        req = Rack::Request.new(env)
-
+      Rack::Lint.new(lambda { |_env|
         response = Rack::Response.new("", 200, "Content-Type" => "text/yaml")
 
-        response.set_cookie("session_test", { value: "session_test", domain: ".test.com", path: "/" })
+        response.set_cookie("session_test", value: "session_test", domain: ".test.com", path: "/")
         response.finish
       })
     end
@@ -29,7 +27,7 @@ module Shipit
     test 'SameSite cookie attributes should be added on SSL' do
       env = env_for_url("https://test.com/")
 
-      status, headers, body = middleware.call(env)
+      _status, headers, _body = middleware.call(env)
 
       assert_includes headers['Set-Cookie'], 'SameSite'
     end
@@ -38,7 +36,7 @@ module Shipit
       env = env_for_url("https://test.com/")
       env.delete('SHIPIT_ENABLE_SAMESITE_NONE')
 
-      status, headers, body = middleware.call(env)
+      _status, headers, _body = middleware.call(env)
 
       assert_not_includes headers['Set-Cookie'], 'SameSite'
     end
@@ -46,7 +44,7 @@ module Shipit
     test 'SameSite cookie attributes should not be added on non SSL requests' do
       env = env_for_url("http://test.com/")
 
-      status, headers, body = middleware.call(env)
+      _status, headers, _body = middleware.call(env)
 
       assert_not_includes headers['Set-Cookie'], 'SameSite'
     end
