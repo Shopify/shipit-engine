@@ -11,14 +11,16 @@ route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
 gem 'shipit-engine'
-gem 'redis-rails'
+gsub_file 'Gemfile', "# Use Redis adapter to run Action Cable in production", ''
+gsub_file 'Gemfile', "# gem 'redis'", "gem 'redis'"
 
 create_file 'Procfile', <<-CODE
 web: bundle exec rails s -p $PORT
 worker: bundle exec sidekiq -C config/sidekiq.yml
 CODE
 
-environment 'config.cache_store = :redis_store, Shipit.redis_url.to_s, { expires_in: 90.minutes }', env: :production
+environment 'Pubsubstub.use_persistent_connections = false'
+environment 'config.cache_store = :redis_cache_store, { url: Shipit.redis_url.to_s, expires_in: 90.minutes }', env: :production
 
 remove_file 'config/database.yml'
 create_file 'config/database.yml', <<-CODE
@@ -96,7 +98,7 @@ CODE
       github:
         domain: # defaults to github.com
         app_id: <%= ENV['GITHUB_APP_ID'] %>
-        installation_id: <%= ENV['GITHUB_APP_ID'] %>
+        installation_id: <%= ENV['GITHUB_INSTALLATION_ID'] %>
         webhook_secret:
         private_key:
         oauth:
@@ -123,8 +125,6 @@ inject_into_file 'config/application.rb', after: "load_defaults 6.0\n" do
 end
 
 if ENV['CI'] || yes?("Are you hosting Shipit on Heroku? (y/n)")
-  inject_into_file "Gemfile", "ruby '#{RUBY_VERSION}'", after: "source 'https://rubygems.org'\n"
-
   gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
   gsub_file 'Gemfile', "gem 'sqlite3', '~> 1.4'", ''
   gem_group :production do
