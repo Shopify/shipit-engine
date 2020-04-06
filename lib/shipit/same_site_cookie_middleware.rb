@@ -8,10 +8,8 @@ module Shipit
 
     def call(env)
       status, headers, body = @app.call(env)
-      user_agent = env['HTTP_USER_AGENT']
 
       if headers && headers['Set-Cookie'] &&
-         BrowserSniffer.new(user_agent).same_site_none_compatible? &&
          env['SHIPIT_ENABLE_SAMESITE_NONE'].present? &&
          Rack::Request.new(env).ssl?
 
