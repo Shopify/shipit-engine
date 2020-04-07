@@ -26,7 +26,7 @@ module Shipit
     end
 
     def fetch_deployed_revision
-      with_temporary_working_directory(commit: @stack.commits.last) do |dir|
+      with_temporary_working_directory(commit: @stack.commits.reachable.last) do |dir|
         spec = DeploySpec::FileSystem.new(dir, @stack.environment)
         outputs = spec.fetch_deployed_revision_steps!.map do |command_line|
           Command.new(command_line, env: env, chdir: dir).run
@@ -42,7 +42,7 @@ module Shipit
     end
 
     def with_temporary_working_directory(commit: nil)
-      commit ||= @stack.last_deployed_commit.presence || @stack.commits.last
+      commit ||= @stack.last_deployed_commit.presence || @stack.commits.reachable.last
 
       if !commit || !fetched?(commit).tap(&:run).success?
         @stack.acquire_git_cache_lock do
