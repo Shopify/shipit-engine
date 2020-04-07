@@ -13,7 +13,6 @@ module Shipit
 
     def env_for_url(url)
       env = Rack::MockRequest.env_for(url)
-      env['SHIPIT_ENABLE_SAMESITE_NONE'] = 'true'
       env
     end
 
@@ -27,15 +26,6 @@ module Shipit
       _status, headers, _body = middleware.call(env)
 
       assert_includes headers['Set-Cookie'], 'SameSite'
-    end
-
-    test 'SameSite cookie attributes should not be added when SHIPIT_ENABLE_SAMESITE_NONE is unset' do
-      env = env_for_url("https://test.com/")
-      env.delete('SHIPIT_ENABLE_SAMESITE_NONE')
-
-      _status, headers, _body = middleware.call(env)
-
-      assert_not_includes headers['Set-Cookie'], 'SameSite'
     end
 
     test 'SameSite cookie attributes should not be added on non SSL requests' do

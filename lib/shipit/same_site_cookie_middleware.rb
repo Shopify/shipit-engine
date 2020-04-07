@@ -10,7 +10,6 @@ module Shipit
       status, headers, body = @app.call(env)
 
       if headers && headers['Set-Cookie'] &&
-         env['SHIPIT_ENABLE_SAMESITE_NONE'].present? &&
          Rack::Request.new(env).ssl?
 
         set_cookies = headers['Set-Cookie']
