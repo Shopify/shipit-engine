@@ -483,7 +483,9 @@ module Shipit
 
       assert_no_enqueued_jobs do
         assert_no_difference -> { Deploy.count } do
-          @stack.trigger_continuous_delivery
+          value = @stack.trigger_continuous_delivery
+
+          assert_nil value
         end
       end
     end
