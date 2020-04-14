@@ -43,17 +43,6 @@ module Shipit
 
     scope :not_archived, -> { where(archived_since: nil) }
 
-    def env
-      {
-        'ENVIRONMENT' => environment,
-        'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
-        'GITHUB_REPO_OWNER' => repository.owner,
-        'GITHUB_REPO_NAME' => repository.name,
-        'DEPLOY_URL' => deploy_url,
-        'BRANCH' => branch,
-      }
-    end
-
     def repository
       super || build_repository
     end
@@ -163,16 +152,8 @@ module Shipit
     def trigger_continuous_delivery
       commit = next_commit_to_deploy
 
-      if !deployable? || deployed_too_recently? || commit.nil? || commit.deployed?
-        continuous_delivery_resumed!
-        return
-      end
-
-      if commit.deploy_failed? || (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
-         commit.recently_pushed?
-        continuous_delivery_delayed!
-        return
-      end
+      return continuous_delivery_resumed! if should_resume_continuous_delivery?(commit)
+      return continuous_delivery_delayed! if should_delay_continuous_delivery?(commit)
 
       begin
         trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
@@ -606,6 +587,20 @@ module Shipit
 
     def ci_enabled_cache_key
       "stacks:#{id}:ci_enabled"
+    end
+
+    def should_delay_continuous_delivery?(commit)
+      commit.deploy_failed? ||
+        (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
+        commit.recently_pushed? ||
+        cached_deploy_spec.config.empty?
+    end
+
+    def should_resume_continuous_delivery?(commit)
+      !deployable? ||
+        deployed_too_recently? ||
+        commit.nil? ||
+        commit.deployed?
     end
   end
 end

@@ -18,6 +18,10 @@ check_runs:
   owner: shopify
   name: check_runs
 
+check_deploy_spec:
+  owner: shopify
+  name: check_deploy_spec
+
 rails:
   owner: rails
   name: rails
