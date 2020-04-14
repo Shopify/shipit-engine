@@ -4,7 +4,7 @@ module Shipit
 
     ConcurrentTaskRunning = Class.new(StandardError)
 
-    PRESENCE_CHECK_TIMEOUT = 15
+    PRESENCE_CHECK_TIMEOUT = 30
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success flapping faulty validating).freeze
     UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze

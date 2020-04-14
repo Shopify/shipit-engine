@@ -5,16 +5,20 @@ module Shipit
     setup do
       Task.where(status: Task::ACTIVE_STATUSES).update_all(status: 'success')
 
+      not_recently = Shipit::ReapDeadTasksJob.recently_created_at - 1.minute
       @deploy = shipit_deploys(:shipit)
       @deploy.status = 'success'
+      @deploy.created_at = not_recently
       @deploy.save!
 
       @rollback = @deploy.build_rollback
       @rollback.status = 'running'
+      @rollback.created_at = not_recently
       @rollback.save!
 
       @zombie_deploy = shipit_deploys(:shipit2)
       @zombie_deploy.status = 'running'
+      @zombie_deploy.created_at = not_recently
       @zombie_deploy.save!
     end
 
@@ -33,6 +37,21 @@ module Shipit
 
       @rollback.reload
       assert_predicate @rollback, :running?
+    end
+
+    test "does reap recently created tasks" do
+      Task.where(status: Task::ACTIVE_STATUSES).update_all(status: 'success')
+      recently = Time.current
+      @deploy = shipit_deploys(:shipit)
+      @deploy.created_at = recently
+      @deploy.status = 'running'
+      @deploy.save!
+      Shipit::Deploy.any_instance.expects(:alive?).never
+
+      ReapDeadTasksJob.perform_now
+
+      @deploy.reload
+      assert_predicate @deploy, :running?
     end
 
     test 'reaps zombie aborting tasks' do
