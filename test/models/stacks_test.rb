@@ -568,6 +568,21 @@ module Shipit
       end
     end
 
+    test "#trigger_continuous_delivery bails out if no DeploySpec has been cached" do
+      @stack = shipit_stacks(:check_deploy_spec)
+      config = @stack.cached_deploy_spec.config
+
+      assert_predicate @stack, :deployable?
+      refute_predicate @stack, :deployed_too_recently?
+      assert_empty(config, "DeploySpec was not empty")
+
+      assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        assert_no_difference -> { Deploy.count } do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
     test "#trigger_continuous_delivery enqueues deployment ref update job" do
       @stack = shipit_stacks(:shipit_canaries)
       shipit_tasks(:canaries_running).delete
