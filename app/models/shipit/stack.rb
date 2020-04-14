@@ -171,8 +171,15 @@ module Shipit
     def trigger_continuous_delivery
       commit = next_commit_to_deploy
 
-      return continuous_delivery_resumed! if should_resume_continuous_delivery?(commit)
-      return continuous_delivery_delayed! if should_delay_continuous_delivery?(commit)
+      if should_resume_continuous_delivery?(commit)
+        continuous_delivery_resumed!
+        return
+      end
+
+      if should_delay_continuous_delivery?(commit)
+        continuous_delivery_delayed!
+        return
+      end
 
       begin
         trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
