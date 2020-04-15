@@ -9,7 +9,7 @@ module Shipit
     self.lock_timeout = 20
 
     def perform(record)
-      record.create_on_github!
+      record.reload.create_on_github!
     end
   end
 end
