@@ -48,6 +48,7 @@ require 'shipit/rollback_commands'
 require 'shipit/environment_variables'
 require 'shipit/stat'
 require 'shipit/github_http_cache_middleware'
+require 'shipit/same_site_cookie_middleware'
 require 'shipit/cast_value'
 require 'shipit/line_buffer'
 
@@ -66,6 +67,10 @@ module Shipit
 
   def authentication_disabled?
     ENV['SHIPIT_DISABLE_AUTH'].present?
+  end
+
+  def enable_samesite_middleware?
+    ENV['SHIPIT_ENABLE_SAMESITE_NONE'].present?
   end
 
   def app_name
