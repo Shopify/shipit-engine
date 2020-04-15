@@ -54,5 +54,9 @@ module Shipit
     def github_api
       Shipit.github.api
     end
+
+    def serializer_class
+      AnonymousUserSerializer
+    end
   end
 end

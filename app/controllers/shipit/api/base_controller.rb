@@ -27,6 +27,10 @@ module Shipit
 
       private
 
+      def namespace_for_serializer
+        nil
+      end
+
       def authenticate_api_client
         @current_api_client = if Shipit.disable_api_authentication
           UnlimitedApiClient.new
