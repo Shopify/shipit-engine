@@ -40,7 +40,7 @@ module Shipit
       end
     end
 
-    def config_empty?
+    def blank?
       config.empty?
     end
 

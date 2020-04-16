@@ -559,7 +559,7 @@ module Shipit
 
       assert_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
-      assert(deploy_spec.config_empty?, "DeploySpec empty? returned false")
+      assert(deploy_spec.blank?, "DeploySpec blank? returned false")
 
       assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
         assert_no_difference -> { Deploy.count } do

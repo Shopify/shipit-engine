@@ -161,7 +161,7 @@ module Shipit
     end
 
     def trigger_continuous_delivery
-      return if cached_deploy_spec.config_empty?
+      return if cached_deploy_spec.blank?
 
       commit = next_commit_to_deploy
 
