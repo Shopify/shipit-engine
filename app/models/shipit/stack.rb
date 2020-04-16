@@ -161,7 +161,7 @@ module Shipit
     end
 
     def trigger_continuous_delivery
-      return if empty_config?
+      return if cached_deploy_spec.config_empty?
 
       commit = next_commit_to_deploy
 
@@ -607,10 +607,6 @@ module Shipit
 
     def ci_enabled_cache_key
       "stacks:#{id}:ci_enabled"
-    end
-
-    def empty_config?
-      cached_deploy_spec.config.empty?
     end
 
     def should_resume_continuous_delivery?(commit)
