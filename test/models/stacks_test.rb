@@ -572,11 +572,11 @@ module Shipit
 
     test "#trigger_continuous_delivery bails out if no DeploySpec has been cached" do
       @stack = shipit_stacks(:check_deploy_spec)
-      config = @stack.cached_deploy_spec.config
+      deploy_spec = @stack.cached_deploy_spec
 
       assert_predicate @stack, :deployable?
       refute_predicate @stack, :deployed_too_recently?
-      assert_empty(config, "DeploySpec was not empty")
+      assert(deploy_spec.blank?, "DeploySpec blank? returned false")
 
       assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
         assert_no_difference -> { Deploy.count } do

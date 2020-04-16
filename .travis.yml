@@ -15,15 +15,12 @@ env:
     - SUITE=setup
 
 rvm:
-  - 2.5.3
-  - 2.6.3
+  - 2.6.6
 
 matrix:
   fast_finish: true
-  exclude:
-    - rvm: 2.6.3
   include:
-    - rvm: 2.6.3
+    - rvm: 2.5.8
       env: SUITE=sqlite3
 
 notifications:
