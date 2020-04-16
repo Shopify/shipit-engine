@@ -161,15 +161,16 @@ module Shipit
     end
 
     def trigger_continuous_delivery
+      return if cached_deploy_spec.blank?
+
       commit = next_commit_to_deploy
 
-      if !deployable? || deployed_too_recently? || commit.nil? || commit.deployed?
+      if should_resume_continuous_delivery?(commit)
         continuous_delivery_resumed!
         return
       end
 
-      if commit.deploy_failed? || (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
-         commit.recently_pushed?
+      if should_delay_continuous_delivery?(commit)
         continuous_delivery_delayed!
         return
       end
@@ -606,6 +607,19 @@ module Shipit
 
     def ci_enabled_cache_key
       "stacks:#{id}:ci_enabled"
+    end
+
+    def should_resume_continuous_delivery?(commit)
+      !deployable? ||
+        deployed_too_recently? ||
+        commit.nil? ||
+        commit.deployed?
+    end
+
+    def should_delay_continuous_delivery?(commit)
+      commit.deploy_failed? ||
+        (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
+        commit.recently_pushed?
     end
   end
 end

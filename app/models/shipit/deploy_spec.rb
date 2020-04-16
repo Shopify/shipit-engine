@@ -40,6 +40,10 @@ module Shipit
       end
     end
 
+    def blank?
+      config.empty?
+    end
+
     def supports_fetch_deployed_revision?
       fetch_deployed_revision_steps.present?
     end

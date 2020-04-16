@@ -483,7 +483,9 @@ module Shipit
 
       assert_no_enqueued_jobs do
         assert_no_difference -> { Deploy.count } do
-          @stack.trigger_continuous_delivery
+          value = @stack.trigger_continuous_delivery
+
+          assert_nil value
         end
       end
     end
@@ -546,6 +548,21 @@ module Shipit
 
       assert_enqueued_with(job: Shipit::PerformTaskJob) do
         assert_difference -> { Deploy.count }, +1 do
+          @stack.trigger_continuous_delivery
+        end
+      end
+    end
+
+    test "#trigger_continuous_delivery bails out if no DeploySpec has been cached" do
+      @stack = shipit_stacks(:check_deploy_spec)
+      deploy_spec = @stack.cached_deploy_spec
+
+      assert_predicate @stack, :deployable?
+      refute_predicate @stack, :deployed_too_recently?
+      assert(deploy_spec.blank?, "DeploySpec blank? returned false")
+
+      assert_no_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        assert_no_difference -> { Deploy.count } do
           @stack.trigger_continuous_delivery
         end
       end

@@ -404,3 +404,16 @@ shipit_task_no_commits:
       }
     }
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+check_deploy_spec:
+  repository: check_deploy_spec
+  environment: production
+  branch: master
+  ignore_ci: true
+  merge_queue_enabled: true
+  tasks_count: 0
+  undeployed_commits_count: 1
+  continuous_deployment: true
+  cached_deploy_spec: "{}"
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_s(:db) %>
