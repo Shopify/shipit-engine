@@ -161,6 +161,8 @@ module Shipit
     end
 
     def trigger_continuous_delivery
+      return if empty_config?
+
       commit = next_commit_to_deploy
 
       if should_resume_continuous_delivery?(commit)
@@ -607,11 +609,8 @@ module Shipit
       "stacks:#{id}:ci_enabled"
     end
 
-    def should_delay_continuous_delivery?(commit)
-      commit.deploy_failed? ||
-        (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
-        commit.recently_pushed? ||
-        cached_deploy_spec.config.empty?
+    def empty_config?
+      cached_deploy_spec.config.empty?
     end
 
     def should_resume_continuous_delivery?(commit)
@@ -619,6 +618,12 @@ module Shipit
         deployed_too_recently? ||
         commit.nil? ||
         commit.deployed?
+    end
+
+    def should_delay_continuous_delivery?(commit)
+      commit.deploy_failed? ||
+        (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
+        commit.recently_pushed?
     end
   end
 end
