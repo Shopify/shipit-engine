@@ -4,7 +4,7 @@ module Shipit
 
     ConcurrentTaskRunning = Class.new(StandardError)
 
-    PRESENCE_CHECK_TIMEOUT = 15
+    PRESENCE_CHECK_TIMEOUT = 30
     ACTIVE_STATUSES = %w(pending running aborting).freeze
     COMPLETED_STATUSES = %w(success flapping faulty validating).freeze
     UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze
@@ -358,6 +358,21 @@ module Shipit
       else
         commit.id > since_commit.id && commit.id <= until_commit.id
       end
+    end
+
+    def self.recently_created_at
+      5.minutes.ago
+    end
+
+    ZOMBIE_STATES = %w(running aborting).freeze
+    private_constant :ZOMBIE_STATES
+    def self.zombies
+      where(status: ZOMBIE_STATES)
+        .where(
+          "created_at <= :recently",
+          recently: recently_created_at,
+        )
+        .reject(&:alive?)
     end
 
     private

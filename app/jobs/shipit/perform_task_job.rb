@@ -15,6 +15,7 @@ module Shipit
     end
 
     def run
+      @task.ping
       @task.run!
       checkout_repository
       perform_task
@@ -62,7 +63,12 @@ module Shipit
 
     def checkout_repository
       unless @commands.fetched?(@task.until_commit).tap(&:run).success?
+        # acquire_git_cache_lock can take upto 15 seconds
+        # to process. Try to make sure that the job isn't
+        # marked dead while we attempt to acquire the lock.
+        @task.ping
         @task.acquire_git_cache_lock do
+          @task.ping
           unless @commands.fetched?(@task.until_commit).tap(&:run).success?
             capture! @commands.fetch
           end
