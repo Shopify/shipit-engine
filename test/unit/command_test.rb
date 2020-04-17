@@ -24,6 +24,20 @@ module Shipit
       assert_equal malicious_string, command.run.chomp
     end
 
+    test '#interpolate_environment_variables handle spaces' do
+      string = 'foo bar'
+      command = Command.new(
+        %{sh -c 'echo $#' -- $FOO $BAR},
+        env: {
+          'FOO' => 'foo    bar',
+          'BAR' => 'foo    bar',
+        },
+        chdir: '.',
+      )
+      assert_equal '2', command.run.chomp
+      assert_equal ["sh -c 'echo $#' -- foo\\ \\ \\ \\ bar foo\\ \\ \\ \\ bar"], command.interpolated_arguments
+    end
+
     test "#interpolate_environment_variables fallback to ENV" do
       previous = ENV['SHIPIT_TEST']
       ENV['SHIPIT_TEST'] = 'quux'
