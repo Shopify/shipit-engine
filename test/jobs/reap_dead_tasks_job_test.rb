@@ -5,7 +5,7 @@ module Shipit
     setup do
       Task.where(status: Task::ACTIVE_STATUSES).update_all(status: 'success')
 
-      not_recently = Shipit::ReapDeadTasksJob.recently_created_at - 1.minute
+      not_recently = Shipit::Task.recently_created_at - 1.minute
       @deploy = shipit_deploys(:shipit)
       @deploy.status = 'success'
       @deploy.created_at = not_recently
