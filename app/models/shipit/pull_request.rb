@@ -43,6 +43,8 @@ module Shipit
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
     belongs_to :user, optional: true
+    has_many :pull_request_assignments
+    has_many :assignees, class_name: :User, through: :pull_request_assignments, source: :user
 
     deferred_touch stack: :updated_at
 
@@ -264,6 +266,11 @@ module Shipit
       self.base_ref = github_pull_request.base.ref
       self.base_commit = find_or_create_commit_from_github_by_sha!(github_pull_request.base.sha, detached: true)
       self.user = user
+      self.assignees = find_and_assign_users(github_pull_request.assignees)
+    end
+
+    def find_and_assign_users(pr_assignees)
+      pr_assignees.map { |assignee| User.find_by(login: assignee.login) }.compact
     end
 
     def merge_message

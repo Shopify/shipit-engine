@@ -107,6 +107,13 @@ module Shipit
             login: 'bob',
             site_admin: false,
           ),
+          assignees: [
+            stub(
+              id: 1234,
+              login: 'bob',
+              site_admin: false,
+            ),
+          ],
         ),
       )
 
@@ -150,6 +157,7 @@ module Shipit
       assert_predicate pull_request, :pending?
       assert_equal 'super-branch', pull_request.branch
       assert_equal user, pull_request.user
+      assert_equal [user], pull_request.assignees
 
       assert_not_nil pull_request.head
       assert_predicate pull_request.head, :detached?

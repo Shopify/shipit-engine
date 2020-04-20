@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_26_211925) do
+ActiveRecord::Schema.define(version: 2020_04_16_194056) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -143,6 +143,13 @@ ActiveRecord::Schema.define(version: 2020_02_26_211925) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["task_id"], name: "index_output_chunks_on_task_id"
+  end
+
+  create_table "pull_request_assignments", force: :cascade do |t|
+    t.integer "pull_request_id"
+    t.integer "user_id"
+    t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
+    t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
   create_table "pull_requests", force: :cascade do |t|
