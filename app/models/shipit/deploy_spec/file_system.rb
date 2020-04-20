@@ -84,8 +84,14 @@ module Shipit
       end
 
       def load_config
-        read_config(file("shipit.#{@env}.yml", root: true)) ||
+        read_config(file("#{app_name}.#{@env}.yml", root: true)) ||
+          read_config(file("#{app_name}.yml", root: true)) ||
+          read_config(file("shipit.#{@env}.yml", root: true)) ||
           read_config(file('shipit.yml', root: true))
+      end
+
+      def app_name
+        @app_name ||= Shipit.app_name.downcase
       end
 
       def read_config(path)
