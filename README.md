@@ -130,6 +130,8 @@ Also, if your repository is deployed different ways depending on the environment
 
 For example for a stack like: `my-org/my-repo/staging`, `shipit.staging.yml` will have priority over `shipit.yml`.
 
+Lastly, if you override the `app_name` configuration in your Shipit deployment, `yourapp.yml` and `yourapp.staging.yml` will work.
+
 * * *
 
 <h3 id="installing-dependencies">Installing dependencies</h3>
