@@ -4,7 +4,7 @@ module Shipit
 
     # We do not prefix 'refs/' because Octokit methods will do this automatically.
     BRANCH_REF_PREFIX = 'heads'.freeze
-    DEPLOY_PREFIX = 'shipit-deploy'.freeze
+    DEPLOY_PREFIX = "#{Shipit.app_name.downcase}-deploy".freeze
 
     def perform(stack)
       stack_sha = stack.last_successful_deploy_commit&.sha
