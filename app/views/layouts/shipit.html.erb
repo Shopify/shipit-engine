@@ -2,7 +2,7 @@
 <html lang="<%= I18n.locale %>" data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 <head>
   <% if @stack %>
-    <title><%= Shipit.app_name %> - <%= @stack.repo_name %>/<%= @stack.environment %></title>
+    <title><%= @stack.repo_name %>/<%= @stack.environment %> - <%= Shipit.app_name %></title>
   <% else %>
   <title><%= Shipit.app_name %></title>
   <% end %>
