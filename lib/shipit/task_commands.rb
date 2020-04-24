@@ -52,6 +52,7 @@ module Shipit
       [
         git(
           'clone',
+          '--quiet',
           '--local',
           '--origin', 'cache',
           @stack.git_path,
