@@ -62,8 +62,8 @@ module Shipit
       commands = @commands.clone
       assert_equal 2, commands.size
       clone_args = [
-        'git', 'clone', '--local',
-        '--origin', 'cache',
+        'git', 'clone', '--quiet',
+        '--local', '--origin', 'cache',
         @stack.git_path, @deploy.working_directory
       ]
       assert_equal clone_args, commands.first.args
