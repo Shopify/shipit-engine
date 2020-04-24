@@ -378,7 +378,7 @@ module Shipit
     private
 
     def prevent_concurrency
-      raise ConcurrentTaskRunning if stack.tasks.active.exclusive.count > 1
+      raise ConcurrentTaskRunning if stack.tasks.reload.active.exclusive.count > 1
     end
 
     def status_key
