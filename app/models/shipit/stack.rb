@@ -143,6 +143,7 @@ module Shipit
       run_now = kwargs.delete(:run_now)
       deploy = build_deploy(*args, **kwargs)
       deploy.save!
+      Rails.logger.info("Created Deploy ##{deploy.id}")
       run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
       deploy
