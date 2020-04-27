@@ -96,6 +96,38 @@ module Shipit
       assert_equal shipit_users(:walrus), commit.author
     end
 
+    test '.create_from_github stores pull_request_head_sha' do
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+            },
+            parents: [
+              {sha: "1864542e3d2f8a41916a2dec0f2b4d3c1bf4899b", url: '', html_url: ''},
+              {sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: ''},
+            ],
+          ),
+        )
+      end
+
+      commit = Commit.last
+      assert_equal '63d7e03e517fd2ae1caeb1b7a9f21767f84d671a', commit.pull_request_head_sha
+    end
+
     test "#message= truncates the message" do
       skip unless Shipit::Commit.columns_hash['message'].limit
       limit = Shipit::Commit.columns_hash['message'].limit
