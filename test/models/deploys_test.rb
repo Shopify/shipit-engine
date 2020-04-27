@@ -509,7 +509,7 @@ module Shipit
       deploy1.save
 
       deploy2 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[1], until_commit_id: commit_ids[2])
-      deploy2.type = "Shipit::Task"
+      deploy2.type = "Shipit::Fake"
       deploy2.save
 
       deploy3 = create_test_deploy(stack_id: stack_id, user_id: user_id, since_commit_id: commit_ids[2], until_commit_id: commit_ids[3])
