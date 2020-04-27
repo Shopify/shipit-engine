@@ -54,8 +54,8 @@ module Shipit
     end
 
     before_create :denormalize_commit_stats
-    after_create :create_commit_deployments
-    after_create :update_release_status
+    after_create_commit :create_commit_deployments
+    after_create_commit :update_release_status
     after_commit :broadcast_update
     after_commit :update_latest_deployed_ref, on: :update
 
