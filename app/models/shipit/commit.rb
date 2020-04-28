@@ -92,7 +92,7 @@ module Shipit
       committer = User.find_or_create_committer_from_github_commit(commit)
       committer ||= Anonymous.new
 
-      new(
+      record = new(
         sha: commit.sha,
         message: commit.commit.message,
         author:  author,
@@ -102,6 +102,12 @@ module Shipit
         additions: commit.stats&.additions,
         deletions: commit.stats&.deletions,
       )
+
+      if record.pull_request?
+        record.pull_request_head_sha = commit.parents.last.sha
+      end
+
+      record
     end
 
     def message=(message)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_26_211925) do
+ActiveRecord::Schema.define(version: 2020_04_27_135152) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_211925) do
     t.integer "pull_request_id"
     t.boolean "locked", default: false, null: false
     t.integer "lock_author_id", limit: 4
+    t.string "pull_request_head_sha", limit: 40
     t.index ["author_id"], name: "index_commits_on_author_id"
     t.index ["committer_id"], name: "index_commits_on_committer_id"
     t.index ["created_at"], name: "index_commits_on_created_at"
