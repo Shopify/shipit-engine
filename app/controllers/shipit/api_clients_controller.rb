@@ -32,7 +32,7 @@ module Shipit
         { flash: { success: 'Successfully updated' } }
       else
         { flash: { warning: @stack.errors.full_messages.to_sentence } }
-                end
+      end
 
       redirect_to(params[:return_to].presence || api_client_path(@api_client), options)
     end
