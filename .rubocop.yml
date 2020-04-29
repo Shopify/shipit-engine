@@ -1,5 +1,3 @@
-Rails:
-  Enabled: true
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
@@ -14,167 +12,33 @@ AllCops:
     - lib/shipit-engine.rb
     - template.rb
 
-inherit_from:
-  .rubocop_todo.yml
-
-Rails/FindEach:
-  Enabled: false
-
-Rails/OutputSafety:
-  Enabled: false
-
-Rails/DynamicFindBy:
-  Enabled: false
-
-Rails/Delegate:
-  Enabled: false
-
-Rails/ApplicationRecord:
-  Enabled: false
-
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Lint/RescueException:
-  Enabled: false
-
-Style/RescueStandardError:
-  Enabled: false
-
-Lint/AssignmentInCondition:
-  Enabled: false
-
-Lint/HandleExceptions:
-  Enabled: false
-
-Lint/EndAlignment:
-  Enabled: false
-
-Style/DoubleNegation:
-  Enabled: false
-
-Style/Next:
-  Enabled: false
-
-Style/EmptyMethod:
-  Enabled: false
+inherit_gem:
+  rubocop-shopify: rubocop.yml
 
 Metrics/LineLength:
   Exclude:
     - config/routes.rb
     - test/**/*
     - lib/tasks/teams.rake
+    - app/models/shipit/commit_deployment.rb
+    - app/models/shipit/commit_deployment_status.rb
+    - app/serializers/shipit/task_serializer.rb
   Max: 120
 
-Metrics/BlockLength:
-  Enabled: false
-
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/ClassLength:
-  Enabled: false
-
-Metrics/ModuleLength:
-  Enabled: false
-
-Metrics/AbcSize:
-  Max: 35
-
-Metrics/CyclomaticComplexity:
-  Max: 10
-
-Metrics/PerceivedComplexity:
-  Max: 10
-
-Style/Documentation:
-  Enabled: false
-
-Style/SingleLineBlockParams:
-  Enabled: false
-
-Style/SignalException:
-  Enabled: false
-
-Style/RaiseArgs:
-  Enabled: false
-
-Style/ModuleFunction:
-  Enabled: false
-
-Style/RedundantReturn:
-  AllowMultipleReturnValues: true
-
-Style/TrailingCommaInArguments:
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInLiteral:
-  EnforcedStyleForMultiline: comma
-
-Style/ClassAndModuleChildren:
-  Enabled: false
+Style/SymbolProc:
+  Exclude:
+    - app/models/shipit/*
 
 Naming/PredicateName:
   Exclude:
     - app/serializers/**/*
 
-Style/StringLiterals:
+Lint/RescueException:
+  Exclude:
+    - app/jobs/shipit/perform_task_job.rb
+
+Lint/SuppressedException:
   Enabled: false
 
-Style/PerlBackrefs:
-  Enabled: false
-
-Style/TrivialAccessors:
-  AllowPredicates: true
-
-Style/GuardClause:
-  Enabled: false
-
-Style/UnneededPercentQ:
-  Enabled: false
-
-Style/Alias:
-  Enabled: false
-
-Layout/ExtraSpacing:
-  AllowForAlignment: false
-
-Layout/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
-Layout/MultilineHashBraceLayout:
-  Enabled: false
-
-Layout/IndentationWidth:
-  Enabled: false # totally broken
-
-Layout/IndentHash:
-  Enabled: false
-
-Layout/IndentArray:
-  Enabled: false # broken
-
-Layout/ElseAlignment:
-  Enabled: false # broken
-
-Style/ParallelAssignment:
-  Enabled: false
-
-Style/IfUnlessModifier:
-  Enabled: false
-
-Performance/Casecmp:
-  Enabled: false # ugly
-
-Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%i': '()'
-    '%I': '()'
-    '%w': '()'
-    '%W': '()'
-
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/FormatStringToken:
+Lint/AssignmentInCondition:
   Enabled: false
