@@ -53,6 +53,7 @@ fourth:
   deletions: 342
   updated_at: <%= 8.days.ago.to_s(:db) %>
   created_at: <%= 1.day.ago.to_s(:db) %>
+  pull_request_head_sha: '6dcb09b5b57875f334f61aebed695e2e4193db5e'
 
 fifth:
   id: 5
