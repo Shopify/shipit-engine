@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class WebhooksController < ActionController::Base
     skip_before_action :verify_authenticity_token, raise: false
@@ -9,7 +10,7 @@ module Shipit
       params = JSON.parse(request.raw_post)
       Shipit::Webhooks.for_event(event).each { |handler| handler.call(params) }
 
-      head :ok
+      head(:ok)
     end
 
     private
@@ -19,7 +20,7 @@ module Shipit
     end
 
     def check_if_ping
-      head :ok if event == 'ping'
+      head(:ok) if event == 'ping'
     end
 
     def event

@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Shipit
   class PullRequest < ApplicationRecord
     include DeferredTouch
 
-    MERGE_REQUEST_FIELD = 'Merge-Requested-By'.freeze
+    MERGE_REQUEST_FIELD = 'Merge-Requested-By'
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
@@ -45,7 +46,7 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
-    validates :number, presence: true, uniqueness: {scope: :stack_id}
+    validates :number, presence: true, uniqueness: { scope: :stack_id }
 
     scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { where(merge_status: 'pending') }
@@ -111,11 +112,11 @@ module Shipit
     def self.extract_number(stack, number_or_url)
       case number_or_url
       when /\A#?(\d+)\z/
-        $1.to_i
+        Regexp.last_match(1).to_i
       when %r{\Ahttps://#{Regexp.escape(Shipit.github.domain)}/([^/]+)/([^/]+)/pull/(\d+)}
-        return unless $1.downcase == stack.repo_owner.downcase
-        return unless $2.downcase == stack.repo_name.downcase
-        $3.to_i
+        return unless Regexp.last_match(1).downcase == stack.repo_owner.downcase
+        return unless Regexp.last_match(2).downcase == stack.repo_name.downcase
+        Regexp.last_match(3).to_i
       end
     end
 
@@ -129,8 +130,8 @@ module Shipit
           stack: stack,
           number: number,
         )
-      rescue ActiveRecord::RecordNotUnique
-        retry
+                     rescue ActiveRecord::RecordNotUnique
+                       retry
       end
       pull_request.update!(merge_requested_by: user.presence)
       pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
@@ -176,10 +177,10 @@ module Shipit
         # branch was already deleted somehow
       end
       complete!
-      return true
+      true
     rescue Octokit::MethodNotAllowed # merge conflict
       reject!('merge_conflict')
-      return false
+      false
     rescue Octokit::Conflict # shas didn't match, PR was updated.
       raise NotReady
     end
@@ -289,7 +290,7 @@ module Shipit
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)
       if commit = stack.commits.by_sha(sha)
-        return commit
+        commit
       else
         github_commit = Shipit.github.api.commit(stack.github_repo_name, sha)
         stack.commits.create_from_github!(github_commit, attributes)

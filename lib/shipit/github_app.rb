@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class GitHubApp
     include Mutex_m
@@ -31,9 +32,9 @@ module Shipit
       end
     end
 
-    DOMAIN = 'github.com'.freeze
+    DOMAIN = 'github.com'
     AuthenticationFailed = Class.new(StandardError)
-    API_STATUS_ID = 'brv1bkgrwx7q'.freeze
+    API_STATUS_ID = 'brv1bkgrwx7q'
 
     GITHUB_EXPECTED_TOKEN_LIFETIME = 60.minutes
     GITHUB_TOKEN_RAILS_CACHE_LIFETIME = 50.minutes
@@ -132,7 +133,7 @@ module Shipit
     end
 
     def url(*path)
-      @url ||= "https://#{domain}".freeze
+      @url ||= "https://#{domain}"
       path.empty? ? @url : File.join(@url, *path.map(&:to_s))
     end
 
@@ -173,9 +174,9 @@ module Shipit
           logger: Rails.logger,
           serializer: NullSerializer,
         )
-        builder.use GitHubHTTPCacheMiddleware
-        builder.use Octokit::Response::RaiseError
-        builder.adapter Faraday.default_adapter
+        builder.use(GitHubHTTPCacheMiddleware)
+        builder.use(Octokit::Response::RaiseError)
+        builder.adapter(Faraday.default_adapter)
       end
     end
 

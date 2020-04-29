@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
@@ -8,7 +9,7 @@ rescue LoadError
 end
 
 APP_RAKEFILE = File.expand_path('../test/dummy/Rakefile', __FILE__)
-load 'rails/tasks/engine.rake'
+load('rails/tasks/engine.rake')
 
 Bundler::GemHelper.install_tasks
 
@@ -22,4 +23,4 @@ Rake::TestTask.new(:test) do |t|
   t.warning = false
 end
 
-task default: :test
+task(default: :test)

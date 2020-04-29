@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class RollbacksController < ShipitController
     before_action :load_stack
@@ -5,9 +6,9 @@ module Shipit
 
     def create
       @rollback = @deploy.trigger_rollback(current_user, env: rollback_params[:env], force: params[:force].present?)
-      redirect_to stack_deploy_path(@stack, @rollback)
+      redirect_to(stack_deploy_path(@stack, @rollback))
     rescue Task::ConcurrentTaskRunning
-      redirect_to rollback_stack_deploy_path(@stack, @deploy)
+      redirect_to(rollback_stack_deploy_path(@stack, @deploy))
     end
 
     private

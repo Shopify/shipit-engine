@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 ENV["RAILS_ENV"] ||= "test"
 
 require 'simplecov'
-SimpleCov.start 'rails' do
+SimpleCov.start('rails') do
   enable_coverage :branch
 end
 
@@ -19,7 +20,7 @@ require 'spy/integration'
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
-  ActiveSupport::TestCase.fixtures :all
+  ActiveSupport::TestCase.fixtures(:all)
 end
 
 Dir[File.expand_path('../helpers/**/*.rb', __FILE__)].each do |helper|

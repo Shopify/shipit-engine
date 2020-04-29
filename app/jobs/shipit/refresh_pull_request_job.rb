@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class RefreshPullRequestJob < BackgroundJob
     queue_as :default

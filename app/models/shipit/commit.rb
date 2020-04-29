@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Commit < ActiveRecord::Base
     include DeferredTouch
@@ -344,7 +345,7 @@ module Shipit
       new_status = status
 
       unless already_deployed
-        payload = {commit: self, stack: stack, status: new_status.state}
+        payload = { commit: self, stack: stack, status: new_status.state }
         if previous_status != new_status
           Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status))
         end

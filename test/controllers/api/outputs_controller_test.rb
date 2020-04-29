@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -11,7 +12,7 @@ module Shipit
       test "#show returns the task output as plain text" do
         task = @stack.tasks.last
 
-        get :show, params: {stack_id: @stack.to_param, task_id: task.id}
+        get :show, params: { stack_id: @stack.to_param, task_id: task.id }
         assert_response :ok
         assert_equal 'text/plain', response.media_type
         assert_equal task.chunk_output, response.body

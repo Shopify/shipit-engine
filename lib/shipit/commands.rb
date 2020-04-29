@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Commands
     class << self
@@ -6,13 +7,13 @@ module Shipit
       end
 
       def git_version
-        @git_version ||= parse_git_version(`git --version`)
+        @git_version ||= parse_git_version(%x(git --version))
       end
 
       def parse_git_version(raw_git_version)
         raw_git_version =~ /(\d+\.\d+\.\d+)/
-        raise 'git command not found' unless $1
-        Gem::Version.new($1)
+        raise 'git command not found' unless Regexp.last_match(1)
+        Gem::Version.new(Regexp.last_match(1))
       end
     end
 

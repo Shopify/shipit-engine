@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -22,7 +23,7 @@ module Shipit
     end
 
     test '#supports_rollback? returns true if steps are defined' do
-      @spec.stubs(:load_config).returns('rollback' => {'override' => ['rm -rf /usr /lib/nvidia-current/xorg/xorg']})
+      @spec.stubs(:load_config).returns('rollback' => { 'override' => ['rm -rf /usr /lib/nvidia-current/xorg/xorg'] })
       assert @spec.supports_rollback?
     end
 
@@ -32,7 +33,7 @@ module Shipit
     end
 
     test '#dependencies_steps returns `dependencies.override` if present' do
-      @spec.stubs(:load_config).returns('dependencies' => {'override' => %w(foo bar baz)})
+      @spec.stubs(:load_config).returns('dependencies' => { 'override' => %w(foo bar baz) })
       assert_equal %w(foo bar baz), @spec.dependencies_steps
     end
 
@@ -43,7 +44,7 @@ module Shipit
     end
 
     test "#dependencies_steps prepend and append pre and post steps" do
-      @spec.stubs(:load_config).returns('dependencies' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.stubs(:load_config).returns('dependencies' => { 'pre' => ['before'], 'post' => ['after'] })
       @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:bundle_install).returns(['bundle install'])
       assert_equal ['before', 'bundle install', 'after'], @spec.dependencies_steps
@@ -75,7 +76,7 @@ module Shipit
 
     test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
       @spec.stubs(:gemfile_lock_exists?).returns(true)
-      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
       command = %(
         bundle install
         --frozen
@@ -88,25 +89,25 @@ module Shipit
     end
 
     test '#bundle_install has --frozen option if Gemfile.lock is present' do
-      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       assert @spec.bundle_install.last.include?('--frozen')
     end
 
     test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
-      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'without' => %w(some custom groups)}})
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
       @spec.stubs(:gemfile_lock_exists?).returns(false)
       refute @spec.bundle_install.last.include?('--frozen')
     end
 
     test '#bundle_install does not have --frozen if overridden in shipit.yml' do
-      @spec.stubs(:load_config).returns('dependencies' => {'bundler' => {'frozen' => false}})
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'frozen' => false } })
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       refute @spec.bundle_install.last.include?('--frozen')
     end
 
     test '#deploy_steps returns `deploy.override` if present' do
-      @spec.stubs(:load_config).returns('deploy' => {'override' => %w(foo bar baz)})
+      @spec.stubs(:load_config).returns('deploy' => { 'override' => %w(foo bar baz) })
       assert_equal %w(foo bar baz), @spec.deploy_steps
     end
 
@@ -161,7 +162,7 @@ module Shipit
     end
 
     test "#deploy_steps prepend and append pre and post steps" do
-      @spec.stubs(:load_config).returns('deploy' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.stubs(:load_config).returns('deploy' => { 'pre' => ['before'], 'post' => ['after'] })
       @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy', 'after'], @spec.deploy_steps
@@ -175,7 +176,7 @@ module Shipit
     end
 
     test '#rollback_steps returns `rollback.override` if present' do
-      @spec.stubs(:load_config).returns('rollback' => {'override' => %w(foo bar baz)})
+      @spec.stubs(:load_config).returns('rollback' => { 'override' => %w(foo bar baz) })
       assert_equal %w(foo bar baz), @spec.rollback_steps
     end
 
@@ -186,7 +187,7 @@ module Shipit
     end
 
     test "#rollback_steps prepend and append pre and post steps" do
-      @spec.stubs(:load_config).returns('rollback' => {'pre' => ['before'], 'post' => ['after']})
+      @spec.stubs(:load_config).returns('rollback' => { 'pre' => ['before'], 'post' => ['after'] })
       @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
       assert_equal ['before', 'bundle exec cap $ENVIRONMENT deploy:rollback', 'after'], @spec.rollback_steps
@@ -255,14 +256,14 @@ module Shipit
     end
 
     test '#machine_env returns an environment hash' do
-      @spec.stubs(:load_config).returns('machine' => {'environment' => {'GLOBAL' => '1'}})
-      assert_equal({'GLOBAL' => '1'}, @spec.machine_env)
+      @spec.stubs(:load_config).returns('machine' => { 'environment' => { 'GLOBAL' => '1' } })
+      assert_equal({ 'GLOBAL' => '1' }, @spec.machine_env)
     end
 
     test '#load_config can grab the env-specific shipit.yml file' do
       config = {}
       config.expects(:exist?).returns(true)
-      config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+      config.expects(:read).returns({ 'dependencies' => { 'override' => %w(foo bar baz) } }.to_yaml)
       spec = DeploySpec::FileSystem.new('.', 'staging')
       spec.expects(:file).with('shipit.staging.yml', root: true).returns(config)
       assert_equal %w(foo bar baz), spec.dependencies_steps
@@ -274,7 +275,7 @@ module Shipit
 
       config = {}
       config.expects(:exist?).returns(true)
-      config.expects(:read).returns({'dependencies' => {'override' => %w(foo bar baz)}}.to_yaml)
+      config.expects(:read).returns({ 'dependencies' => { 'override' => %w(foo bar baz) } }.to_yaml)
 
       spec = DeploySpec::FileSystem.new('.', 'staging')
       spec.expects(:file).with('shipit.staging.yml', root: true).returns(not_config)
@@ -352,16 +353,16 @@ module Shipit
           'blocking' => [],
         },
         'machine' => {
-          'environment' => {'BUNDLE_PATH' => @spec.bundle_path.to_s},
+          'environment' => { 'BUNDLE_PATH' => @spec.bundle_path.to_s },
           'directory' => nil,
           'cleanup' => true,
         },
-        'review' => {'checklist' => [], 'monitoring' => [], 'checks' => []},
+        'review' => { 'checklist' => [], 'monitoring' => [], 'checks' => [] },
         'status' => {
           'context' => nil,
           'delay' => 0,
         },
-        'dependencies' => {'override' => []},
+        'dependencies' => { 'override' => [] },
         'plugins' => {},
         'deploy' => {
           'override' => nil,
@@ -369,7 +370,7 @@ module Shipit
           'max_commits' => 8,
           'interval' => 0,
         },
-        'rollback' => {'override' => nil},
+        'rollback' => { 'override' => nil },
         'fetch' => nil,
         'tasks' => {},
       }
@@ -381,11 +382,11 @@ module Shipit
     end
 
     test "#deploy_variables returns an array of VariableDefinition instances" do
-      @spec.stubs(:load_config).returns('deploy' => {'variables' => [{
+      @spec.stubs(:load_config).returns('deploy' => { 'variables' => [{
         'name' => 'SAFETY_DISABLED',
         'title' => 'Set to 1 to do dangerous things',
         'default' => 0,
-      }]})
+      }] })
 
       assert_equal 1, @spec.deploy_variables.size
       variable_definition = @spec.deploy_variables.first
@@ -393,13 +394,13 @@ module Shipit
     end
 
     test "task definitions don't prepend bundle exec by default" do
-      @spec.expects(:load_config).returns('tasks' => {'restart' => {'steps' => %w(foo)}})
+      @spec.expects(:load_config).returns('tasks' => { 'restart' => { 'steps' => %w(foo) } })
       definition = @spec.find_task_definition('restart')
       assert_equal ['foo'], definition.steps
     end
 
     test "task definitions don't bundle exec before serialization" do
-      @spec.expects(:discover_task_definitions).returns('restart' => {'steps' => %w(foo)})
+      @spec.expects(:discover_task_definitions).returns('restart' => { 'steps' => %w(foo) })
       @spec.expects(:bundler?).returns(true).at_least_once
 
       cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
@@ -418,18 +419,18 @@ module Shipit
       module TestTaskDiscovery
         def discover_task_definitions
           {
-            'config_task' => {'steps' => %w(bar)},
+            'config_task' => { 'steps' => %w(bar) },
           }.merge!(super)
         end
       end
 
       # Include the module in our new test class
-      DuplicateCustomizedDeploySpec.include TestTaskDiscovery
+      DuplicateCustomizedDeploySpec.include(TestTaskDiscovery)
 
       # Setup the spec as we would normally, but use the customized version
       @spec = DuplicateCustomizedDeploySpec.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns(
-        'tasks' => {'config_task' => {'steps' => %w(foo)}},
+        'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
       )
       tasks = @spec.task_definitions
 
@@ -448,18 +449,18 @@ module Shipit
       module TestTaskDiscovery
         def discover_task_definitions
           {
-            'module_task' => {'steps' => %w(bar)},
+            'module_task' => { 'steps' => %w(bar) },
           }.merge(super)
         end
       end
 
       # Include the module in our new test class
-      CustomizedDeploySpec.include TestTaskDiscovery
+      CustomizedDeploySpec.include(TestTaskDiscovery)
 
       # Setup the spec as we would normally, but use the customized version
       @spec = CustomizedDeploySpec.new(@app_dir, 'env')
       @spec.stubs(:load_config).returns(
-        'tasks' => {'config_task' => {'steps' => %w(foo)}},
+        'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
@@ -484,7 +485,7 @@ module Shipit
 
     test "task definitions returns an array of VariableDefinition instances" do
       @spec.expects(:load_config).returns('tasks' =>
-        {'restart' =>
+        { 'restart' =>
           {
             'variables' => [
               {
@@ -499,8 +500,7 @@ module Shipit
               },
             ],
             'steps' => %w(foo),
-          },
-        })
+          } })
 
       assert_equal 2, @spec.task_definitions.first.variables.size
       variable_definition = @spec.task_definitions.first.variables.first
@@ -512,7 +512,7 @@ module Shipit
     end
 
     test "#review_checklist returns an array" do
-      @spec.expects(:load_config).returns('review' => {'checklist' => %w(foo bar)})
+      @spec.expects(:load_config).returns('review' => { 'checklist' => %w(foo bar) })
       assert_equal %w(foo bar), @spec.review_checklist
     end
 
@@ -521,13 +521,13 @@ module Shipit
     end
 
     test "#review_monitoring returns an array of hashes" do
-      @spec.expects(:load_config).returns('review' => {'monitoring' => [
-        {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
-        {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
-      ]})
+      @spec.expects(:load_config).returns('review' => { 'monitoring' => [
+        { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
+        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
+      ] })
       assert_equal [
-        {'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400},
-        {'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400},
+        { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
+        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
       ], @spec.review_monitoring
     end
 
@@ -540,12 +540,12 @@ module Shipit
     end
 
     test "#hidden_statuses is an array even if the value is a string" do
-      @spec.expects(:load_config).returns('ci' => {'hide' => 'ci/circleci'})
+      @spec.expects(:load_config).returns('ci' => { 'hide' => 'ci/circleci' })
       assert_equal %w(ci/circleci), @spec.hidden_statuses
     end
 
     test "#hidden_statuses is an array even if the value is present" do
-      @spec.expects(:load_config).returns('ci' => {'hide' => %w(ci/circleci ci/jenkins)})
+      @spec.expects(:load_config).returns('ci' => { 'hide' => %w(ci/circleci ci/jenkins) })
       assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
     end
 
@@ -677,7 +677,7 @@ module Shipit
 
     test "#file is impacted by `machine.directory`" do
       subdir = '/foo/bar'
-      @spec.stubs(:load_config).returns('machine' => {'directory' => subdir})
+      @spec.stubs(:load_config).returns('machine' => { 'directory' => subdir })
       assert_instance_of Pathname, @spec.file('baz')
       assert_equal File.join(@app_dir, subdir, 'baz'), @spec.file('baz').to_s
     end

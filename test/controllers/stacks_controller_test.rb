@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -47,12 +48,12 @@ module Shipit
     end
 
     test "#show is success" do
-      get :show, params: {id: @stack.to_param}
+      get :show, params: { id: @stack.to_param }
       assert_response :ok
     end
 
     test "#show with faulty and validating deploys is success" do
-      get :show, params: {id: shipit_stacks(:shipit_canaries).to_param}
+      get :show, params: { id: shipit_stacks(:shipit_canaries).to_param }
       assert_response :ok
     end
 
@@ -60,18 +61,18 @@ module Shipit
       @stack = shipit_stacks(:check_runs)
       assert_not_equal 0, CheckRun.where(stack_id: @stack.id).count
 
-      get :show, params: {id: @stack.to_param}
+      get :show, params: { id: @stack.to_param }
       assert_response :ok
     end
 
     test "#show handles locked stacks without a lock_author" do
       @stack.update!(lock_reason: "I am a lock with no author")
-      get :show, params: {id: @stack.to_param}
+      get :show, params: { id: @stack.to_param }
     end
 
     test "#show auto-links URLs in lock reason" do
       @stack.update!(lock_reason: 'http://google.com')
-      get :show, params: {id: @stack.to_param}
+      get :show, params: { id: @stack.to_param }
       assert_response :ok
       assert_select 'a[href="http://google.com"]'
     end
@@ -93,38 +94,38 @@ module Shipit
 
     test "#create when not valid renders new" do
       assert_no_difference "Stack.count" do
-        post :create, params: {stack: {repo_owner: 'some', repo_name: 'owner/path'}}
+        post :create, params: { stack: { repo_owner: 'some', repo_name: 'owner/path' } }
       end
       assert_response :success
     end
 
     test "#destroy enqueues a DestroyStackJob" do
       assert_enqueued_with(job: DestroyStackJob, args: [@stack]) do
-        delete :destroy, params: {id: @stack.to_param}
+        delete :destroy, params: { id: @stack.to_param }
       end
       assert_redirected_to stacks_path
     end
 
     test "#settings is success" do
-      get :settings, params: {id: @stack.to_param}
+      get :settings, params: { id: @stack.to_param }
       assert_response :success
     end
 
     test "#statistics is success" do
-      get :statistics, params: {id: @stack.to_param}
+      get :statistics, params: { id: @stack.to_param }
       assert_response :success
     end
 
     test "#statistics redirects to #show if no deploys are present" do
       @stack.deploys.destroy_all
-      get :statistics, params: {id: @stack.to_param}
+      get :statistics, params: { id: @stack.to_param }
       assert_redirected_to stack_path(@stack)
     end
 
     test "#update allows to lock the stack" do
       refute @stack.locked?
 
-      patch :update, params: {id: @stack.to_param, stack: {lock_reason: 'Went out to eat some chips!'}}
+      patch :update, params: { id: @stack.to_param, stack: { lock_reason: 'Went out to eat some chips!' } }
       @stack.reload
       assert @stack.locked?
       assert_equal shipit_users(:walrus), @stack.lock_author
@@ -134,7 +135,7 @@ module Shipit
       @stack.update!(lock_reason: 'Went out to eat some chips!')
       assert @stack.locked?
 
-      patch :update, params: {id: @stack.to_param, stack: {lock_reason: ''}}
+      patch :update, params: { id: @stack.to_param, stack: { lock_reason: '' } }
       @stack.reload
       refute @stack.locked?
       assert_instance_of AnonymousUser, @stack.lock_author
@@ -144,7 +145,7 @@ module Shipit
       refute @stack.archived?
       refute @stack.locked?
 
-      patch :update, params: {id: @stack.to_param, stack: {archived: "true"}}
+      patch :update, params: { id: @stack.to_param, stack: { archived: "true" } }
       @stack.reload
       assert @stack.archived?
       assert @stack.locked?
@@ -157,7 +158,7 @@ module Shipit
       assert @stack.locked?
       assert @stack.archived?
 
-      patch :update, params: {id: @stack.to_param, stack: {archived: "false"}}
+      patch :update, params: { id: @stack.to_param, stack: { archived: "false" } }
       @stack.reload
       refute @stack.archived?
       refute @stack.locked?
@@ -170,7 +171,7 @@ module Shipit
       assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
         assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do
           assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-            post :refresh, params: {id: @stack.to_param}
+            post :refresh, params: { id: @stack.to_param }
           end
         end
       end
@@ -180,23 +181,23 @@ module Shipit
 
     test "#clear_git_cache queues a ClearGitCacheJob" do
       assert_enqueued_with(job: ClearGitCacheJob, args: [@stack]) do
-        post :clear_git_cache, params: {id: @stack.to_param}
+        post :clear_git_cache, params: { id: @stack.to_param }
       end
       assert_redirected_to stack_settings_path(@stack)
     end
 
     test "#clear_git_cache displays a flash message" do
-      post :clear_git_cache, params: {id: @stack.to_param}
+      post :clear_git_cache, params: { id: @stack.to_param }
       assert_equal 'Git Cache clearing scheduled', flash[:success]
     end
 
     test "#update redirects to return_to parameter" do
-      patch :update, params: {id: @stack.to_param, stack: {ignore_ci: false}, return_to: stack_path(@stack)}
+      patch :update, params: { id: @stack.to_param, stack: { ignore_ci: false }, return_to: stack_path(@stack) }
       assert_redirected_to stack_path(@stack)
     end
 
     test "#lookup redirects to the canonical URL" do
-      get :lookup, params: {id: @stack.id}
+      get :lookup, params: { id: @stack.id }
       assert_redirected_to stack_path(@stack)
     end
 

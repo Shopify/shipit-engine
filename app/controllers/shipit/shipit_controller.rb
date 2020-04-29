@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ShipitController < ApplicationController
     layout 'shipit'
@@ -27,7 +28,7 @@ module Shipit
     def ensure_required_settings
       return if Shipit.all_settings_present?
 
-      render 'shipit/missing_settings'
+      render('shipit/missing_settings')
     end
   end
 end

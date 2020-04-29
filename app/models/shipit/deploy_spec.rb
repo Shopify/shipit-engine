@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'pathname'
 
 module Shipit
@@ -259,11 +260,11 @@ module Shipit
     end
 
     def task_not_found!(id)
-      raise TaskDefinition::NotFound.new("No definition for task #{id.inspect}")
+      raise TaskDefinition::NotFound, "No definition for task #{id.inspect}"
     end
 
     def cant_detect!(type)
-      raise DeploySpec::Error.new(I18n.t("deploy_spec.hint.#{type}"))
+      raise DeploySpec::Error, I18n.t("deploy_spec.hint.#{type}")
     end
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -10,7 +11,7 @@ module Shipit
 
     test ":create allow users to append release statuses and mark the deploy as success" do
       assert_difference -> { ReleaseStatus.count }, +1 do
-        post :create, params: {stack_id: @stack, deploy_id: @deploy.id, status: 'success'}
+        post :create, params: { stack_id: @stack, deploy_id: @deploy.id, status: 'success' }
         assert_response :created
       end
 
@@ -23,7 +24,7 @@ module Shipit
 
     test ":create allow users to append release statuses and mark the deploy as faulty" do
       assert_difference -> { ReleaseStatus.count }, +1 do
-        post :create, params: {stack_id: @stack, deploy_id: @deploy.id, status: 'failure'}
+        post :create, params: { stack_id: @stack, deploy_id: @deploy.id, status: 'failure' }
         assert_response :created
       end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -10,7 +11,7 @@ module Shipit
         dependencies_steps!: ['bundle install --some-args'],
         deploy_steps!: ['bundle exec cap $ENVIRONMENT deploy'],
         rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
-        machine_env: {'GLOBAL' => '1'},
+        machine_env: { 'GLOBAL' => '1' },
         directory: nil,
         clear_working_directory?: true,
       )

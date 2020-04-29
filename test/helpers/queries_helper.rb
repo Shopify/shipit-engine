@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module QueriesHelper
   def assert_no_queries(ignored_sql = nil, &block)
     assert_queries(0, ignored_sql, &block)
@@ -8,7 +9,7 @@ module QueriesHelper
     subscriber = ActiveSupport::Notifications.subscribe('sql.active_record', counter)
     yield counter
     queries = counter.log.empty? ? '' : "\nQueries:\n#{counter.log.join("\n")}"
-    assert_equal num, counter.log.size, "#{counter.log.size} instead of #{num} queries were executed.#{queries}"
+    assert_equal(num, counter.log.size, "#{counter.log.size} instead of #{num} queries were executed.#{queries}")
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber)
   end
@@ -35,7 +36,7 @@ module QueriesHelper
 
     # FIXME: this needs to be refactored so specific database can add their own
     # ignored SQL.  This ignored SQL is for Oracle.
-    ignored_sql.concat [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im]
+    ignored_sql.concat([/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im])
 
     attr_reader :ignore
     attr_reader :log

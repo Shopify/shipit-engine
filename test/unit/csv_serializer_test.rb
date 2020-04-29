@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -28,7 +29,7 @@ module Shipit
     def assert_dumped(expected, object)
       message = "Expected CSVSerializer.dump(#{object.inspect}) to eq #{expected.inspect}"
       if expected.nil?
-        assert_nil Shipit::CSVSerializer.dump(object), message
+        assert_nil(Shipit::CSVSerializer.dump(object), message)
       else
         assert_equal(expected, Shipit::CSVSerializer.dump(object), message)
       end
@@ -37,7 +38,7 @@ module Shipit
     def assert_loaded(expected, payload)
       message = "Expected CSVSerializer.load(#{payload.inspect}) to eq #{expected.inspect}"
       if expected.nil?
-        assert_nil Shipit::CSVSerializer.load(payload), message
+        assert_nil(Shipit::CSVSerializer.load(payload), message)
       else
         assert_equal(expected, Shipit::CSVSerializer.load(payload), message)
       end

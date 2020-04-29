@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -23,7 +24,7 @@ module Shipit
     end
 
     test "#send! post the payload and update the status to `sent`" do
-      headers = {'content-type' => 'text/plain', 'content-length' => '2'}
+      headers = { 'content-type' => 'text/plain', 'content-length' => '2' }
       stub_request(:post, @delivery.url).to_return(headers: headers, body: 'OK')
 
       assert_equal 'scheduled', @delivery.status

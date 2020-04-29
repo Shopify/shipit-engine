@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
   class EnvironmentVariablesTest < ActiveSupport::TestCase
     def setup
       variable_defs = [
-        {"name" => "FOO", "title" => "Set to 0 to foo", "default" => 1},
-        {"name" => "BAR", "title" => "Set to 1 to bar", "default" => 0},
+        { "name" => "FOO", "title" => "Set to 0 to foo", "default" => 1 },
+        { "name" => "BAR", "title" => "Set to 1 to bar", "default" => 0 },
       ]
       @variable_definitions = variable_defs.map(&VariableDefinition.method(:new))
     end
@@ -16,7 +17,7 @@ module Shipit
     end
 
     test 'correctly sanitizes env variables' do
-      env = {'FOO' => 1, 'BAR' => 1}
+      env = { 'FOO' => 1, 'BAR' => 1 }
       assert_equal env, EnvironmentVariables.with(env).permit(@variable_definitions)
     end
 
@@ -27,7 +28,7 @@ module Shipit
     end
 
     test 'throws an exception when a variable is not whitelisted' do
-      env = {'UNSAFE_VARIABLE' => 1}
+      env = { 'UNSAFE_VARIABLE' => 1 }
       assert_raises(EnvironmentVariables::NotPermitted) do
         EnvironmentVariables.with(env).permit(@variable_definitions)
       end

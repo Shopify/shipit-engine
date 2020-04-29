@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique
@@ -40,7 +41,7 @@ module Shipit
         end
         commits.unshift(commit)
       end
-      return commits, nil
+      [commits, nil]
     end
 
     protected

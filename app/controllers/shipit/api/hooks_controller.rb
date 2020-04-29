@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class HooksController < BaseController
@@ -5,11 +6,11 @@ module Shipit
       require_permission :write, :hook, only: %i(create update destroy)
 
       def index
-        render_resources hooks
+        render_resources(hooks)
       end
 
       def show
-        render json: hook
+        render(json: hook)
       end
 
       params do
@@ -18,7 +19,7 @@ module Shipit
         accepts :content_type, String
       end
       def create
-        render_resource hooks.create(params)
+        render_resource(hooks.create(params))
       end
 
       params do
@@ -28,11 +29,11 @@ module Shipit
       end
       def update
         hook.update(params)
-        render_resource hook
+        render_resource(hook)
       end
 
       def destroy
-        render_resource hook.destroy
+        render_resource(hook.destroy)
       end
 
       private

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ApiClientsController < ShipitController
     include Pagination
@@ -28,9 +29,9 @@ module Shipit
     def update
       @api_client = ApiClient.find(params[:id])
       options = if @api_client.update(update_params)
-        {flash: {success: 'Successfully updated'}}
+        { flash: { success: 'Successfully updated' } }
       else
-        {flash: {warning: @stack.errors.full_messages.to_sentence}}
+        { flash: { warning: @stack.errors.full_messages.to_sentence } }
                 end
 
       redirect_to(params[:return_to].presence || api_client_path(@api_client), options)

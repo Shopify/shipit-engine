@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'pty'
 require 'shellwords'
 require 'fileutils'
@@ -27,7 +28,7 @@ module Shipit
 
     def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
       @args, options = parse_arguments(args)
-      @timeout = options['timeout'.freeze] || options[:timeout] || default_timeout
+      @timeout = options['timeout'] || options[:timeout] || default_timeout
       @env = env
       @chdir = chdir.to_s
       @timed_out = false
@@ -146,16 +147,16 @@ module Shipit
     def read_stream(io)
       touch_last_output_at
       loop do
-          yield_control
-          yield io.read_nonblock(MAX_READ)
-          touch_last_output_at
+        yield_control
+        yield io.read_nonblock(MAX_READ)
+        touch_last_output_at
       rescue IO::WaitReadable
-          if output_timed_out?
-            @timed_out = true
-            raise TimedOut
-          end
-          IO.select([io], nil, nil, 1)
-          retry
+        if output_timed_out?
+          @timed_out = true
+          raise TimedOut
+        end
+        IO.select([io], nil, nil, 1)
+        retry
       end
     rescue EOFError
     end
@@ -191,7 +192,7 @@ module Shipit
         # If we let the child a little bit of time, it solves it.
         retry_count -= 1
         if retry_count > 0
-          sleep 0.05
+          sleep(0.05)
           retry
         end
       end
@@ -215,7 +216,7 @@ module Shipit
           argument
         end
       end
-      return args, options
+      [args, options]
     end
 
     def running?

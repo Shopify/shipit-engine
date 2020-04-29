@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -12,7 +13,7 @@ module Shipit
       stub_request(:get, "https://api.github.com/user/emails").to_return(
         status: %w(200 OK),
         body: {}.to_json,
-        headers: {"Content-Type" => "application/json"},
+        headers: { "Content-Type" => "application/json" },
       )
     end
 
@@ -117,8 +118,8 @@ module Shipit
               message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
             },
             parents: [
-              {sha: "1864542e3d2f8a41916a2dec0f2b4d3c1bf4899b", url: '', html_url: ''},
-              {sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: ''},
+              { sha: "1864542e3d2f8a41916a2dec0f2b4d3c1bf4899b", url: '', html_url: '' },
+              { sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: '' },
             ],
           ),
         )
@@ -427,10 +428,10 @@ module Shipit
       commit = shipit_commits(:second)
       assert_predicate commit.status, :group?
       assert_equal 3, commit.status.size
-      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => [
+      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => { 'hide' => [
         'Travis CI',
         'metrics/coveralls',
-      ]}))
+      ] }))
       commit.reload
       refute_predicate commit.status, :group?
     end
@@ -560,7 +561,7 @@ module Shipit
       'error' => %w(success),
     }
     expected_webhook_transitions.each do |initial_state, firing_states|
-      initial_status_attributes = {state: initial_state, description: 'abc', context: 'ci/travis'}
+      initial_status_attributes = { state: initial_state, description: 'abc', context: 'ci/travis' }
       (expected_webhook_transitions.keys - %w(unknown)).each do |new_state|
         should_fire = firing_states.include?(new_state)
         action = should_fire ? 'fires' : 'does not fire'
@@ -579,7 +580,7 @@ module Shipit
           end
           assert_equal initial_state, commit.state
 
-          expected_status_attributes = {state: new_state, description: initial_state, context: 'ci/travis'}
+          expected_status_attributes = { state: new_state, description: initial_state, context: 'ci/travis' }
           add_status = lambda do
             attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))
             commit.create_status_from_github!(OpenStruct.new(attrs))

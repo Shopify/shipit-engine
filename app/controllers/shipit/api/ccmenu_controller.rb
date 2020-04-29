@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class CCMenuController < BaseController
@@ -19,7 +20,7 @@ module Shipit
 
       def show
         latest_deploy = stack.deploys_and_rollbacks.last || NoDeploy.new
-        render 'shipit/ccmenu/project.xml.builder', formats: [:xml], locals: {stack: stack, deploy: latest_deploy}
+        render('shipit/ccmenu/project.xml.builder', formats: [:xml], locals: { stack: stack, deploy: latest_deploy })
       end
 
       private

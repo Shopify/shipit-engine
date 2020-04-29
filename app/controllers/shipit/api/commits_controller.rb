@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class CommitsController < BaseController
@@ -9,7 +10,7 @@ module Shipit
           commits = commits.newer_than(stack.last_deployed_commit)
         end
 
-        render_resources commits
+        render_resources(commits)
       end
     end
   end

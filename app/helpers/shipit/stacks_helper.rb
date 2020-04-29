@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module StacksHelper
     def redeploy_button(deployed_commit)

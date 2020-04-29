@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -13,7 +14,7 @@ module Shipit
       test "#deploys returns the deploys and revisions for a given stack" do
         tasks = @stack.deploys_and_rollbacks.order(id: :desc)
 
-        get :index, params: {stack_id: @stack.to_param}
+        get :index, params: { stack_id: @stack.to_param }
         assert_response :ok
 
         (0...tasks.length).each do |i|
@@ -23,60 +24,60 @@ module Shipit
 
       test "#create triggers a new deploy for the stack" do
         assert_difference -> { @stack.deploys.count }, 1 do
-          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         end
         assert_response :accepted
         assert_json 'status', 'pending'
       end
 
       test "#create triggers a new deploy for whitelisted variables" do
-        correct_env = {'SAFETY_DISABLED' => 1}
-        post :create, params: {stack_id: @stack.to_param, sha: @commit.sha, env: correct_env}
+        correct_env = { 'SAFETY_DISABLED' => 1 }
+        post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, env: correct_env }
         assert_response :accepted
         assert_json 'type', 'deploy'
         assert_json 'status', 'pending'
       end
 
       test "#create refuses to trigger a new deploy with incorrect variables" do
-        incorrect_env = {'DANGEROUS_VARIABLE' => 1}
-        post :create, params: {stack_id: @stack.to_param, sha: @commit.sha, env: incorrect_env}
+        incorrect_env = { 'DANGEROUS_VARIABLE' => 1 }
+        post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, env: incorrect_env }
         assert_response :unprocessable_entity
         assert_json 'message', 'Variables DANGEROUS_VARIABLE have not been whitelisted'
       end
 
       test "#create use the claimed user as author" do
         request.headers['X-Shipit-User'] = @user.login
-        post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+        post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         deploy = Deploy.last
         deploy.user == @user
       end
 
       test "#create normalises the claimed user" do
         request.headers['X-Shipit-User'] = @user.login.swapcase
-        post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+        post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         deploy = Deploy.last
         assert_equal deploy.user, @user
       end
 
       test "#create renders a 422 if the sha isn't found" do
-        post :create, params: {stack_id: @stack.to_param, sha: '123443543545'}
+        post :create, params: { stack_id: @stack.to_param, sha: '123443543545' }
         assert_response :unprocessable_entity
         assert_json 'errors', 'sha' => ['Unknown revision']
       end
 
       test "#create renders a 422 if the sha format is invalid" do
-        post :create, params: {stack_id: @stack.to_param, sha: '1'}
+        post :create, params: { stack_id: @stack.to_param, sha: '1' }
         assert_response :unprocessable_entity
         assert_json 'errors', 'sha' => ['is too short (minimum is 6 characters)']
       end
 
       test "#create renders a 409 if a concurrent task is already running" do
         assert_difference -> { @stack.deploys.count }, 1 do
-          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         end
 
         assert_no_difference -> { @stack.deploys.count } do
-          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         end
 
         assert_response :conflict
@@ -86,7 +87,7 @@ module Shipit
         @stack.update!(lock_reason: 'Something broken')
 
         assert_no_difference -> { @stack.deploys.count } do
-          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha}
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         end
         assert_response :unprocessable_entity
         assert_json 'errors.force', ["Can't deploy a locked stack"]
@@ -96,7 +97,7 @@ module Shipit
         @stack.update!(lock_reason: 'Something broken')
 
         assert_difference -> { @stack.deploys.count }, 1 do
-          post :create, params: {stack_id: @stack.to_param, sha: @commit.sha, force: 'true'}
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true' }
         end
         assert_response :accepted
         assert_json 'status', 'pending'

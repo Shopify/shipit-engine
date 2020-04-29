@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'test_helper'
 
@@ -42,8 +43,8 @@ module Shipit
           api_client: {
             name: 'walrus_app',
             permissions: [
-             'read:stack',
-             'lock:stack',
+              'read:stack',
+              'lock:stack',
             ],
           },
         }
@@ -68,7 +69,7 @@ module Shipit
 
     test "#create when not valid renders new" do
       assert_no_difference "Stack.count" do
-        post :create, params: {api_client: {name: 'walrus_app', permissions: ['invalid']}}
+        post :create, params: { api_client: { name: 'walrus_app', permissions: ['invalid'] } }
       end
 
       assert flash[:warning]
@@ -76,7 +77,7 @@ module Shipit
     end
 
     test "#show is success" do
-      get :show, params: {id: @api_client.id}
+      get :show, params: { id: @api_client.id }
       assert_response :ok
     end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module FixtureAliasesHelper
   def shipit_deploys(*args)
     shipit_tasks(*args)

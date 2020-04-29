@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class StacksController < ShipitController
     before_action :load_stack, only: %i(update destroy settings statistics clear_git_cache refresh)
@@ -48,7 +49,7 @@ module Shipit
 
     def lookup
       @stack = Stack.find(params[:id])
-      redirect_to stack_url(@stack)
+      redirect_to(stack_url(@stack))
     end
 
     def create
@@ -62,7 +63,7 @@ module Shipit
 
     def destroy
       @stack.schedule_for_destroy!
-      redirect_to stacks_url
+      redirect_to(stacks_url)
     end
 
     def settings
@@ -73,7 +74,7 @@ module Shipit
       @deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.last_seven_days)
       if @deploy_stats.empty?
         flash[:warning] = 'Statistics not available without previous deploys'
-        return redirect_to stack_path(@stack)
+        return redirect_to(stack_path(@stack))
       end
       @diffs = @deploy_stats.compare(previous_deploy_stats)
     end
@@ -83,13 +84,13 @@ module Shipit
       RefreshCheckRunsJob.perform_later(stack_id: @stack.id)
       GithubSyncJob.perform_later(stack_id: @stack.id)
       flash[:success] = 'Refresh scheduled'
-      redirect_to request.referer.presence || stack_path(@stack)
+      redirect_to(request.referer.presence || stack_path(@stack))
     end
 
     def update
       options = {}
       unless @stack.update(update_params)
-        options = {flash: {warning: @stack.errors.full_messages.to_sentence}}
+        options = { flash: { warning: @stack.errors.full_messages.to_sentence } }
       end
 
       update_lock
@@ -101,7 +102,7 @@ module Shipit
     def clear_git_cache
       ClearGitCacheJob.perform_later(@stack)
       flash[:success] = 'Git Cache clearing scheduled'
-      redirect_to stack_settings_path(@stack)
+      redirect_to(stack_settings_path(@stack))
     end
 
     private

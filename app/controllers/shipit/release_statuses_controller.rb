@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ReleaseStatusesController < ShipitController
     before_action :load_stack
@@ -10,9 +11,9 @@ module Shipit
       when 'failure'
         @deploy.report_faulty!(user: current_user)
       else
-        render status: :unprocessable_entity, json: {message: "Invalid `status` parameter"}
+        render(status: :unprocessable_entity, json: { message: "Invalid `status` parameter" })
       end
-      render status: :created, json: @deploy.last_release_status
+      render(status: :created, json: @deploy.last_release_status)
     end
 
     private

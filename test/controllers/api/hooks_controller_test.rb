@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -9,7 +10,7 @@ module Shipit
       end
 
       test "the route has priority over stacks one" do
-        assert_recognizes({controller: 'shipit/api/hooks', action: 'show', id: '42'}, '/api/hooks/42')
+        assert_recognizes({ controller: 'shipit/api/hooks', action: 'show', id: '42' }, '/api/hooks/42')
       end
 
       test "#index without a stack_id returns the list of global hooks" do
@@ -26,7 +27,7 @@ module Shipit
       test "#index with a stack_id returns the list of scoped hooks" do
         hook = Hook.scoped_to(@stack).first
 
-        get :index, params: {stack_id: @stack.to_param}
+        get :index, params: { stack_id: @stack.to_param }
         assert_response :ok
         assert_json '0.id', hook.id
         assert_json '0.delivery_url', hook.delivery_url
@@ -37,7 +38,7 @@ module Shipit
       test "#show returns the hooks" do
         hook = Hook.scoped_to(@stack).first
 
-        get :show, params: {stack_id: @stack.to_param, id: hook.id}
+        get :show, params: { stack_id: @stack.to_param, id: hook.id }
         assert_response :ok
 
         assert_json 'id', hook.id
@@ -48,7 +49,7 @@ module Shipit
 
       test "#create adds a new hook" do
         assert_difference -> { Hook.count }, 1 do
-          post :create, params: {delivery_url: 'https://example.com/hook', events: %w(deploy rollback)}
+          post :create, params: { delivery_url: 'https://example.com/hook', events: %w(deploy rollback) }
         end
         hook = Hook.last
         assert_json 'delivery_url', 'https://example.com/hook'
@@ -66,21 +67,21 @@ module Shipit
       end
 
       test "#create returns validation errors" do
-        post :create, params: {delivery_url: '../etc/passwd', events: %w(deploy)}
+        post :create, params: { delivery_url: '../etc/passwd', events: %w(deploy) }
         assert_response :unprocessable_entity
         assert_json 'errors', 'delivery_url' => ['is not a valid URL']
       end
 
       test "#update changes an existing hook" do
         hook = Hook.global.first
-        patch :update, params: {id: hook.id, delivery_url: 'https://shipit.com/'}
+        patch :update, params: { id: hook.id, delivery_url: 'https://shipit.com/' }
         assert_response :ok
         assert_json 'delivery_url', 'https://shipit.com/'
       end
 
       test "#destroy removes an existing hook" do
         hook = Hook.global.first
-        delete :destroy, params: {id: hook.id}
+        delete :destroy, params: { id: hook.id }
         assert_response :no_content
       end
     end

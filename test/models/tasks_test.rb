@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
   class TasksTest < ActiveSupport::TestCase
     test "#title interpolates env" do
       task = shipit_tasks(:shipit_rendered_failover)
-      assert_equal({'POD_ID' => '12'}, task.env)
+      assert_equal({ 'POD_ID' => '12' }, task.env)
       assert_equal 'Failover pod 12', task.title
     end
 
