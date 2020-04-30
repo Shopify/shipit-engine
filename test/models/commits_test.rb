@@ -93,7 +93,7 @@ module Shipit
         )
       end
       commit = Commit.last
-      assert_equal 'ABCDEFGHIJ' * 25, commit.message
+      assert_equal ('ABCDEFGHIJ' * 30).truncate(250), commit.message
     end
 
     test '.create_from_github handle PRs merged by another Shipit stacks' do
