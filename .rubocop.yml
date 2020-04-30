@@ -42,3 +42,8 @@ Lint/SuppressedException:
 
 Lint/AssignmentInCondition:
   Enabled: false
+
+Style/PerlBackrefs:
+  Exclude:
+    - app/helpers/shipit/shipit_helper.rb
+    - app/models/shipit/pull_request.rb

@@ -112,11 +112,11 @@ module Shipit
     def self.extract_number(stack, number_or_url)
       case number_or_url
       when /\A#?(\d+)\z/
-        Regexp.last_match(1).to_i
+        $1.to_i
       when %r{\Ahttps://#{Regexp.escape(Shipit.github.domain)}/([^/]+)/([^/]+)/pull/(\d+)}
-        return unless Regexp.last_match(1).downcase == stack.repo_owner.downcase
-        return unless Regexp.last_match(2).downcase == stack.repo_name.downcase
-        Regexp.last_match(3).to_i
+        return unless $1.downcase == stack.repo_owner.downcase
+        return unless $2.downcase == stack.repo_name.downcase
+        $3.to_i
       end
     end
 

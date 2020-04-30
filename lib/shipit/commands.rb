@@ -11,9 +11,9 @@ module Shipit
       end
 
       def parse_git_version(raw_git_version)
-        raw_git_version =~ /(\d+\.\d+\.\d+)/
-        raise 'git command not found' unless Regexp.last_match(1)
-        Gem::Version.new(Regexp.last_match(1))
+        match_info = raw_git_version.match(/(\d+\.\d+\.\d+)/)
+        raise 'git command not found' unless match_info
+        Gem::Version.new(match_info[1])
       end
     end
 

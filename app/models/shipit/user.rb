@@ -24,9 +24,9 @@ module Shipit
     end
 
     def self.find_or_create_author_from_github_commit(github_commit)
-      if github_commit.commit.message =~ /^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/
+      if (match_info = github_commit.commit.message.match(/^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
         begin
-          return find_or_create_by_login!(Regexp.last_match(1))
+          return find_or_create_by_login!(match_info[1])
         rescue Octokit::NotFound
           # Corner case where the merge-requested-by user cannot be found (renamed/deleted).
           # In this case we carry on and search for the commit author

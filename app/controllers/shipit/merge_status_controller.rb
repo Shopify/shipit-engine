@@ -113,10 +113,10 @@ module Shipit
       attr_reader :repo_owner, :repo_name, :pull_request_number
 
       def initialize(referrer)
-        if URL_PATTERN =~ referrer.to_s
-          @repo_owner = Regexp.last_match(1).downcase
-          @repo_name = Regexp.last_match(2).downcase
-          @pull_request_number = Regexp.last_match(3).to_i
+        if (match_info = URL_PATTERN.match(referrer.to_s))
+          @repo_owner = match_info[1].downcase
+          @repo_name = match_info[2].downcase
+          @pull_request_number = match_info[3].to_i
         else
           raise ArgumentError, "Invalid referrer: #{referrer.inspect}"
         end
