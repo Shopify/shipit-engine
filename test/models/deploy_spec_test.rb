@@ -1084,5 +1084,10 @@ module Shipit
       )
       assert_nil @spec.max_divergence_age
     end
+
+    test "serialised deploy specs are normalised" do
+      stack = shipit_stacks(:shipit)
+      assert_equal stack.cached_deploy_spec_before_type_cast, DeploySpec.dump(stack.cached_deploy_spec)
+    end
   end
 end

@@ -42,5 +42,7 @@ Rails.application.configure do
 
   config.to_prepare do
     Shipit::DeferredTouch.enabled = false
+    # The deploy specs in fixtures are pretty printed, we should do the same to avoid marking stacks as dirty
+    Shipit::DeploySpec.pretty_generate = true
   end
 end
