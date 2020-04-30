@@ -47,3 +47,7 @@ Style/PerlBackrefs:
   Exclude:
     - app/helpers/shipit/shipit_helper.rb
     - app/models/shipit/pull_request.rb
+
+# This cop is broken https://github.com/rubocop-hq/rubocop/pull/7531
+Layout/RescueEnsureAlignment:
+  Enabled: false

@@ -130,8 +130,8 @@ module Shipit
           stack: stack,
           number: number,
         )
-                     rescue ActiveRecord::RecordNotUnique
-                       retry
+      rescue ActiveRecord::RecordNotUnique
+        retry
       end
       pull_request.update!(merge_requested_by: user.presence)
       pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
