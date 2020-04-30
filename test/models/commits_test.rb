@@ -69,6 +69,33 @@ module Shipit
       refute_predicate commit, :revert?
     end
 
+    test '.create_from_github truncates long messages' do
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              message: 'ABCDEFGHIJ' * 30,
+            },
+          ),
+        )
+      end
+      commit = Commit.last
+      assert_equal 'ABCDEFGHIJ' * 25, commit.message
+    end
+
     test '.create_from_github handle PRs merged by another Shipit stacks' do
       assert_difference -> { Commit.count }, +1 do
         @stack.commits.create_from_github!(

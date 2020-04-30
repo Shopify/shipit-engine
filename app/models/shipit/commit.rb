@@ -126,6 +126,7 @@ module Shipit
 
     def self.create_from_github!(commit, extra_attributes = {})
       record = from_github(commit)
+      extra_attributes.message = extra_attributes.message.truncate(250)
       record.update!(extra_attributes)
       record
     end
