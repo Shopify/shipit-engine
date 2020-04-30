@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class CommitChecks < EphemeralCommitChecks
     OUTPUT_TTL = 10.minutes.to_i

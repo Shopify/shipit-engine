@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -9,32 +10,32 @@ module Shipit
     end
 
     test "#interpolate_environment_variables replace environment variables by their value" do
-      command = Command.new('cap $ENVIRONMENT deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
+      command = Command.new('cap $ENVIRONMENT deploy', env: { 'ENVIRONMENT' => 'production' }, chdir: '.')
       assert_equal [%(cap production deploy)], command.interpolated_arguments
     end
 
     test "#interpolate_environment_variables coerce nil to empty string" do
-      command = Command.new('cap $FOO deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
+      command = Command.new('cap $FOO deploy', env: { 'ENVIRONMENT' => 'production' }, chdir: '.')
       assert_equal [%(cap '' deploy)], command.interpolated_arguments
     end
 
     test '#interpolate_environment_variables escape the variable contents' do
       malicious_string = '$(echo pwnd)'
-      command = Command.new('echo $FOO', env: {'FOO' => malicious_string}, chdir: '.')
+      command = Command.new('echo $FOO', env: { 'FOO' => malicious_string }, chdir: '.')
       assert_equal malicious_string, command.run.chomp
     end
 
     test "#interpolate_environment_variables fallback to ENV" do
       previous = ENV['SHIPIT_TEST']
       ENV['SHIPIT_TEST'] = 'quux'
-      command = Command.new('cap $SHIPIT_TEST deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
-      assert_equal [%(cap quux deploy)], command.interpolated_arguments
+      command = Command.new('cap $SHIPIT_TEST deploy', env: { 'ENVIRONMENT' => 'production' }, chdir: '.')
+      assert_equal([%(cap quux deploy)], command.interpolated_arguments)
     ensure
       ENV['SHIPIT_TEST'] = previous
     end
 
     test "#timeout is 5 minutes by default" do
-      command = Command.new('cap $LANG deploy', env: {'ENVIRONMENT' => 'production'}, chdir: '.')
+      command = Command.new('cap $LANG deploy', env: { 'ENVIRONMENT' => 'production' }, chdir: '.')
       assert_equal 5.minutes.to_i, command.timeout
     end
 
@@ -44,7 +45,7 @@ module Shipit
     end
 
     test "#timeout returns the command option timeout over the `default_timeout` if present" do
-      command = Command.new({'cap $LANG deploy' => {'timeout' => 10}}, default_timeout: 5, env: {}, chdir: '.')
+      command = Command.new({ 'cap $LANG deploy' => { 'timeout' => 10 } }, default_timeout: 5, env: {}, chdir: '.')
       assert_equal 10, command.timeout
     end
 

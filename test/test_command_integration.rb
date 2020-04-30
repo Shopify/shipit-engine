@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 path = './fixtures/timeout'
 buffer = []
-command = Shipit::Command.new({path => {'timeout' => 2}}, env: {}, chdir: __dir__)
+command = Shipit::Command.new({ path => { 'timeout' => 2 } }, env: {}, chdir: __dir__)
 begin
   command.stream! do |chunk|
     buffer << chunk
@@ -24,5 +25,5 @@ unless buffer.join == expected_output.join
   puts "Got: ------------"
   puts buffer.map(&:inspect).join("\n")
   puts "-----------------"
-  exit 1
+  exit(1)
 end

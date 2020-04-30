@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Status < ActiveRecord::Base
     include Common
@@ -11,7 +12,7 @@ module Shipit
 
     deferred_touch commit: :updated_at
 
-    validates :state, inclusion: {in: STATES, allow_blank: true}, presence: true
+    validates :state, inclusion: { in: STATES, allow_blank: true }, presence: true
 
     after_create :enable_ci_on_stack
     after_commit :schedule_continuous_delivery, :broadcast_update, on: :create

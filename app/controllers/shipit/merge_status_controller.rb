@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class MergeStatusController < ShipitController
     skip_authentication only: %i(check show)
@@ -12,25 +13,25 @@ module Shipit
       if stack
         return render('logged_out') unless current_user.logged_in?
         if stale?(last_modified: [stack.updated_at, pull_request.updated_at].max, template: false)
-          render stack_status, layout: !request.xhr?
+          render(stack_status, layout: !request.xhr?)
         end
       else
-        render html: ''
+        render(html: '')
       end
     rescue ArgumentError
-      render html: ''
+      render(html: '')
     end
 
     def enqueue
       PullRequest.request_merge!(stack, params[:number], current_user)
-      render stack_status, layout: !request.xhr?
+      render(stack_status, layout: !request.xhr?)
     end
 
     def dequeue
       if pull_request = stack.pull_requests.find_by_number(params[:number])
         pull_request.cancel! if pull_request.waiting?
       end
-      render stack_status, layout: !request.xhr?
+      render(stack_status, layout: !request.xhr?)
     end
 
     def check
@@ -42,7 +43,7 @@ module Shipit
             render plain: stack_status, status: 503
           end
         end
-        format.json { render json: {stack_status: stack_status} }
+        format.json { render json: { stack_status: stack_status } }
       end
     end
 
@@ -62,12 +63,12 @@ module Shipit
       else
         # Null ordering is inconsistent across DBMS's, this case statement is ugly but supported universally
         scope = Stack.order(Arel.sql('CASE WHEN locked_since IS NULL THEN 1 ELSE 0 END, locked_since'))
-                     .order(merge_queue_enabled: :desc, id: :asc).includes(:repository).where(
-                       repositories: {
-                         owner: referrer_parser.repo_owner,
-                         name: referrer_parser.repo_name,
-                       },
-                     )
+          .order(merge_queue_enabled: :desc, id: :asc).includes(:repository).where(
+            repositories: {
+              owner: referrer_parser.repo_owner,
+              name: referrer_parser.repo_name,
+            },
+          )
         scope = if params[:branch]
           scope.where(branch: params[:branch])
         else
@@ -112,10 +113,10 @@ module Shipit
       attr_reader :repo_owner, :repo_name, :pull_request_number
 
       def initialize(referrer)
-        if URL_PATTERN =~ referrer.to_s
-          @repo_owner = $1.downcase
-          @repo_name = $2.downcase
-          @pull_request_number = $3.to_i
+        if (match_info = URL_PATTERN.match(referrer.to_s))
+          @repo_owner = match_info[1].downcase
+          @repo_name = match_info[2].downcase
+          @pull_request_number = match_info[3].to_i
         else
           raise ArgumentError, "Invalid referrer: #{referrer.inspect}"
         end

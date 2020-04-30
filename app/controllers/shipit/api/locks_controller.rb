@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class LocksController < BaseController
@@ -8,10 +9,10 @@ module Shipit
       end
       def create
         if stack.locked?
-          render json: {message: 'Already locked'}, status: :conflict
+          render(json: { message: 'Already locked' }, status: :conflict)
         else
           stack.lock(params.reason, current_user)
-          render_resource stack
+          render_resource(stack)
         end
       end
 
@@ -20,12 +21,12 @@ module Shipit
       end
       def update
         stack.lock(params.reason, current_user)
-        render_resource stack
+        render_resource(stack)
       end
 
       def destroy
         stack.unlock
-        render_resource stack
+        render_resource(stack)
       end
     end
   end

@@ -1,13 +1,14 @@
+# frozen_string_literal: true
 module LinksHelper
   LINKS_PATTERN = /\<(.*?)\>; rel="(\w+)"/
 
   def assert_link(rel, url)
-    assert_includes response_links, rel
-    assert_equal url, response_links[rel], %(rel="#{rel}" is incorrect)
+    assert_includes(response_links, rel)
+    assert_equal(url, response_links[rel], %(rel="#{rel}" is incorrect))
   end
 
   def assert_no_link(rel)
-    assert_nil response_links[rel], %(expected rel="#{rel}" to be nil)
+    assert_nil(response_links[rel], %(expected rel="#{rel}" to be nil))
   end
 
   private

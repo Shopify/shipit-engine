@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class TasksController < ShipitController
     include Pagination
@@ -35,25 +36,25 @@ module Shipit
           env: task_params[:env],
           force: params[:force].present?,
         )
-        redirect_to [stack, @task]
+        redirect_to([stack, @task])
       rescue Task::ConcurrentTaskRunning
-        redirect_to new_stack_tasks_path(stack, @definition)
+        redirect_to(new_stack_tasks_path(stack, @definition))
       end
     end
 
     def abort
       task.abort!(rollback_once_aborted: params[:rollback].present?, aborted_by: current_user)
-      head :ok
+      head(:ok)
     end
 
     def tail
-      render json: TailTaskSerializer.new(task, context: params)
+      render(json: TailTaskSerializer.new(task, context: params))
     end
 
     def lookup
       @task = Task.find(params[:id])
 
-      redirect_to url_for_task
+      redirect_to(url_for_task)
     end
 
     private

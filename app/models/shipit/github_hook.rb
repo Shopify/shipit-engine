@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class GithubHook < ActiveRecord::Base
     # TODO: app-migration, delete class

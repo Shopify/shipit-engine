@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -15,7 +16,7 @@ module Shipit
       patch(:update, params: {
         stack_id: @stack.to_param,
         id: @commit.id,
-        commit: {locked: true},
+        commit: { locked: true },
       })
 
       assert_response(:ok)
@@ -30,7 +31,7 @@ module Shipit
       patch(:update, params: {
         stack_id: @stack.to_param,
         id: @commit.id,
-        commit: {locked: false},
+        commit: { locked: false },
       })
 
       assert_response(:ok)

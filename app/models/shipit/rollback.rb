@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Rollback < Deploy
     belongs_to :deploy, foreign_key: :parent_id, inverse_of: false

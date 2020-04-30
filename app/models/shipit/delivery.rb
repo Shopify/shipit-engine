@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Delivery < ActiveRecord::Base
     STATUSES = %w(pending scheduled sent).freeze
@@ -5,7 +6,7 @@ module Shipit
 
     belongs_to :hook
 
-    validates :url, presence: true, url: {no_local: true, allow_blank: true}
+    validates :url, presence: true, url: { no_local: true, allow_blank: true }
     validates :content_type, presence: true
 
     serialize :response_headers, JSON
@@ -36,7 +37,7 @@ module Shipit
     def http
       Faraday::Connection.new do |connection|
         connection.headers = headers
-        connection.adapter Faraday.default_adapter
+        connection.adapter(Faraday.default_adapter)
       end
     end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -20,7 +21,7 @@ module Shipit
     end
 
     test "#refresh_members! fetch all the team members from github" do
-      response = stub(rels: {members: members_resource})
+      response = stub(rels: { members: members_resource })
       Shipit.github.api.expects(:get).with(@team.api_url).returns(response)
       assert_difference -> { User.count }, 1 do
         @team.refresh_members!

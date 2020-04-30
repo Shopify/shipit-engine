@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :teams do
   desc "Import the members of each team configured through the github.oauth.teams config"
   task fetch: :environment do

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -91,8 +92,8 @@ module Shipit
 
       stub_request(:get, @emails_url).to_return(
         status: %w(200 OK),
-        body: [{email: expected_email}].to_json,
-        headers: {"Content-Type" => "application/json"},
+        body: [{ email: expected_email }].to_json,
+        headers: { "Content-Type" => "application/json" },
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -119,7 +120,7 @@ module Shipit
       stub_request(:get, @emails_url).to_return(
         status: %w(200 OK),
         body: result_email_records.to_json,
-        headers: {"Content-Type" => "application/json"},
+        headers: { "Content-Type" => "application/json" },
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -141,7 +142,7 @@ module Shipit
       stub_request(:get, @emails_url).to_return(
         status: %w(200 OK),
         body: result_email_records.to_json,
-        headers: {"Content-Type" => "application/json"},
+        headers: { "Content-Type" => "application/json" },
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -171,7 +172,7 @@ module Shipit
 
     test "#identifiers_for_ping returns a hash with the user's github_id, name, email and github_login" do
       user = shipit_users(:bob)
-      expected_ouput = {github_id: user.github_id, name: user.name, email: user.email, github_login: user.login}
+      expected_ouput = { github_id: user.github_id, name: user.name, email: user.email, github_login: user.login }
       assert_equal expected_ouput, user.identifiers_for_ping
     end
 

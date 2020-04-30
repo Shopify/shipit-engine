@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     module Paginable
       extend ActiveSupport::Concern
 
-      LINK = 'Link'.freeze
+      LINK = 'Link'
 
       included do
         class_attribute :max_page_size
@@ -12,7 +13,7 @@ module Shipit
 
         self.max_page_size = 100
         self.default_page_size = 30
-        self.default_order = {id: :desc}.freeze
+        self.default_order = { id: :desc }.freeze
       end
 
       private

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Hook < ActiveRecord::Base
     class DeliverySpec
@@ -19,7 +20,7 @@ module Shipit
       def http
         Faraday::Connection.new do |connection|
           connection.headers = headers
-          connection.adapter Faraday.default_adapter
+          connection.adapter(Faraday.default_adapter)
         end
       end
 
@@ -57,9 +58,9 @@ module Shipit
     belongs_to :stack, required: false
     has_many :deliveries
 
-    validates :delivery_url, presence: true, url: {no_local: true, allow_blank: true}
-    validates :content_type, presence: true, inclusion: {in: CONTENT_TYPES.keys}
-    validates :events, presence: true, subset: {of: EVENTS}
+    validates :delivery_url, presence: true, url: { no_local: true, allow_blank: true }
+    validates :content_type, presence: true, inclusion: { in: CONTENT_TYPES.keys }
+    validates :events, presence: true, subset: { of: EVENTS }
 
     serialize :events, Shipit::CSVSerializer
 

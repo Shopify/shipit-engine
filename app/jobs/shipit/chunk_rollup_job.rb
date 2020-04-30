@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ChunkRollupJob < BackgroundJob
     include BackgroundJob::Unique

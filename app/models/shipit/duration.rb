@@ -1,15 +1,16 @@
+# frozen_string_literal: true
 module Shipit
   class Duration < ActiveSupport::Duration
     ParseError = Class.new(ArgumentError)
 
-    FORMAT = /
+    FORMAT = %r{
       \A
       (?<days>\d+d)?
       (?<hours>\d+h)?
       (?<minutes>\d+m)?
       (?<seconds>\d+s?)?
       \z
-    /x
+    }x
     UNITS = {
       's' => :seconds,
       'm' => :minutes,

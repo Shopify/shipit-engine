@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module Shipit
   module GithubStatus
-    CACHE_KEY = 'github::status'.freeze
+    CACHE_KEY = 'github::status'
 
     class << self
       def status

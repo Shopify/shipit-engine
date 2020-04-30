@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class StacksController < BaseController
@@ -5,7 +6,7 @@ module Shipit
       require_permission :write, :stack, only: %i(create destroy)
 
       def index
-        render_resources stacks
+        render_resources(stacks)
       end
 
       params do
@@ -21,16 +22,16 @@ module Shipit
         stack = Stack.new(create_params)
         stack.repository = repository
         stack.save
-        render_resource stack
+        render_resource(stack)
       end
 
       def show
-        render_resource stack
+        render_resource(stack)
       end
 
       def destroy
         stack.schedule_for_destroy!
-        head :accepted
+        head(:accepted)
       end
 
       private

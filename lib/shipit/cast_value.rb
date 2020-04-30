@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module CastValue
     def to_boolean(value)

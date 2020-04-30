@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class PerformTaskJob < BackgroundJob
     queue_as :deploys
@@ -57,8 +58,8 @@ module Shipit
     end
 
     def perform_task
-      capture_all! @commands.install_dependencies
-      capture_all! @commands.perform
+      capture_all!(@commands.install_dependencies)
+      capture_all!(@commands.perform)
     end
 
     def checkout_repository
@@ -70,12 +71,12 @@ module Shipit
         @task.acquire_git_cache_lock do
           @task.ping
           unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-            capture! @commands.fetch
+            capture!(@commands.fetch)
           end
         end
       end
-      capture_all! @commands.clone
-      capture! @commands.checkout(@task.until_commit)
+      capture_all!(@commands.clone)
+      capture!(@commands.checkout(@task.until_commit))
     end
 
     def capture_all!(commands)

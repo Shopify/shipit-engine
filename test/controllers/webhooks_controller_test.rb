@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -54,14 +55,14 @@ module Shipit
 
     test ":state with a unexisting commit respond with 200 OK" do
       request.headers['X-Github-Event'] = 'status'
-      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{'name' => 'master'}]}.to_json
+      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{ 'name' => 'master' }] }.to_json
       post :create, body: params, as: :json
       assert_response :ok
     end
 
     test ":state in an untracked branche bails out" do
       request.headers['X-Github-Event'] = 'status'
-      params = {'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => []}.to_json
+      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [] }.to_json
       post :create, body: params, as: :json
       assert_response :ok
     end
@@ -79,7 +80,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'ping'
 
       assert_no_enqueued_jobs do
-        post :create, body: {zen: 'Git is beautiful'}.to_json, as: :json
+        post :create, body: { zen: 'Git is beautiful' }.to_json, as: :json
         assert_response :ok
       end
     end
@@ -87,7 +88,7 @@ module Shipit
     test "verifies webhook signature" do
       commit = shipit_commits(:first)
 
-      payload = {"sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output"}.to_json
+      payload = { "sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output" }.to_json
       signature = 'sha1=4848deb1c9642cd938e8caa578d201ca359a8249'
 
       @request.headers['X-Github-Event'] = 'push'
@@ -116,7 +117,7 @@ module Shipit
       @request.headers['X-Github-Event'] = 'membership'
       Shipit.github.api.expects(:user).with('george').returns(george)
       assert_difference -> { User.count }, 1 do
-        post :create, body: membership_params.merge(member: {login: 'george'}).to_json, as: :json
+        post :create, body: membership_params.merge(member: { login: 'george' }).to_json, as: :json
         assert_response :ok
       end
     end
@@ -132,7 +133,7 @@ module Shipit
     test ":membership can append an user membership" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Membership.count }, 1 do
-        post :create, body: membership_params.merge(member: {login: 'bob'}).to_json, as: :json
+        post :create, body: membership_params.merge(member: { login: 'bob' }).to_json, as: :json
         assert_response :ok
       end
     end
@@ -148,7 +149,7 @@ module Shipit
     test ":membership can delete an user twice" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_no_difference -> { Membership.count } do
-        post :create, body: membership_params.merge(action: 'removed', member: {login: 'bob'}).to_json, as: :json
+        post :create, body: membership_params.merge(action: 'removed', member: { login: 'bob' }).to_json, as: :json
         assert_response :ok
       end
     end
@@ -167,15 +168,15 @@ module Shipit
     private
 
     def pull_request_params
-      {action: 'opened', number: 2, pull_request: 'foobar'}
+      { action: 'opened', number: 2, pull_request: 'foobar' }
     end
 
     def membership_params
-      {action: 'added', team: team_params, organization: {login: 'shopify'}, member: {login: 'walrus'}}
+      { action: 'added', team: team_params, organization: { login: 'shopify' }, member: { login: 'walrus' } }
     end
 
     def team_params
-      {id: shipit_teams(:shopify_developers).id, slug: 'developers', name: 'Developers', url: 'http://example.com'}
+      { id: shipit_teams(:shopify_developers).id, slug: 'developers', name: 'Developers', url: 'http://example.com' }
     end
 
     def george

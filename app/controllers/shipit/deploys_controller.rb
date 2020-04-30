@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class DeploysController < ShipitController
     include ChunksHelper
@@ -29,7 +30,7 @@ module Shipit
       )
       respond_with(@deploy.stack, @deploy)
     rescue Task::ConcurrentTaskRunning
-      redirect_to new_stack_deploy_path(@stack, sha: @until_commit.sha)
+      redirect_to(new_stack_deploy_path(@stack, sha: @until_commit.sha))
     end
 
     def rollback
@@ -38,7 +39,7 @@ module Shipit
 
     def revert
       previous_deploy = @stack.deploys.success.where(until_commit_id: @deploy.since_commit_id).order(id: :desc).first!
-      redirect_to rollback_stack_deploy_path(@stack, previous_deploy)
+      redirect_to(rollback_stack_deploy_path(@stack, previous_deploy))
     end
 
     def short_commit_sha(task)

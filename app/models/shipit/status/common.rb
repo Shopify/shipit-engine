@@ -1,24 +1,25 @@
+# frozen_string_literal: true
 module Shipit
   class Status
     module Common
       def unknown?
-        state == 'unknown'.freeze
+        state == 'unknown'
       end
 
       def pending?
-        state == 'pending'.freeze
+        state == 'pending'
       end
 
       def success?
-        state == 'success'.freeze
+        state == 'success'
       end
 
       def error?
-        state == 'error'.freeze
+        state == 'error'
       end
 
       def failure?
-        state == 'failure'.freeze
+        state == 'failure'
       end
 
       def missing?
@@ -30,7 +31,7 @@ module Shipit
       end
 
       def simple_state
-        state == 'error'.freeze ? 'failure'.freeze : state
+        state == 'error' ? 'failure' : state
       end
 
       def allowed_to_fail?
