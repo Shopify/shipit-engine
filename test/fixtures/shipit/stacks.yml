@@ -288,7 +288,23 @@ shipit_undeployed:
         ]
       },
       "dependencies": {"override": []},
-      "deploy": {"override": null, "interval": 60, "max_commits": 3, "variables": [{"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0}]},
+      "deploy": {
+        "override": null,
+        "interval": 60,
+        "max_commits": 3,
+        "variables": [
+          {"name": "SAFETY_DISABLED", "title": "Set to 1 to do dangerous things", "default": 0},
+          {
+            "name": "DEPLOY_REGION",
+            "title": "Region to deploy to",
+            "default": "us-central",
+            "select": [
+              "us-central",
+              "us-east"
+            ]
+          }
+        ]
+      },
       "rollback": {"override": ["echo 'Rollback!'"]},
       "fetch": ["echo '42'"],
       "tasks": {

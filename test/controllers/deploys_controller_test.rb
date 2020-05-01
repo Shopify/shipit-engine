@@ -44,6 +44,16 @@ module Shipit
       assert_select '#new_deploy #force', 1
     end
 
+    test ":new selects default value" do
+      @stack = shipit_stacks(:shipit_undeployed)
+      get :new, params: { stack_id: @stack.to_param, sha: @stack.commits.last.sha }
+      assert_response :success
+
+      assert_select '.variables-fields option[selected=selected]' do |elements|
+        assert_equal 'us-central', elements.first.text
+      end
+    end
+
     test ":create persists a new deploy" do
       assert_difference '@stack.deploys.count', 1 do
         post :create, params: { stack_id: @stack.to_param, deploy: { until_commit_id: @commit.id } }
