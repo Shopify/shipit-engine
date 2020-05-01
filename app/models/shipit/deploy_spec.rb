@@ -6,19 +6,33 @@ module Shipit
     Error = Class.new(StandardError)
 
     class << self
+      attr_accessor :pretty_generate
+
       def load(json)
         config = json.blank? ? {} : JSON.parse(json)
         new(config)
       end
 
       def dump(spec)
-        JSON.dump(spec.cacheable.config) if spec
+        return unless spec
+
+        if pretty_generate?
+          JSON.pretty_generate(spec.cacheable.config)
+        else
+          JSON.dump(spec.cacheable.config)
+        end
       end
 
       def bundle_path
         Rails.root.join('data', 'bundler')
       end
+
+      def pretty_generate?
+        @pretty_generate
+      end
     end
+
+    self.pretty_generate = false
 
     def initialize(config)
       @config = config

@@ -390,7 +390,7 @@ module Shipit
 
     test "updating the stack emit a hook" do
       expect_hook(:stack, @stack, action: :updated, stack: @stack) do
-        @stack.update(repo_name: 'foo')
+        @stack.update(environment: 'foo')
       end
     end
 
