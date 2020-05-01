@@ -69,6 +69,39 @@ module Shipit
       refute_predicate commit, :revert?
     end
 
+    test '.create_from_github truncates long messages' do
+      message = 'ABCDEFGHIJ' * 7000
+
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              message: message,
+            },
+          ),
+        )
+      end
+
+      max_message_size = Shipit::Commit.columns_hash["message"].limit
+      commit = Commit.last
+
+      refute_predicate commit.message, :blank?
+      assert(commit.message.length <= Shipit::Commit.columns_hash["message"].limit) if max_message_size
+    end
+
     test '.create_from_github handle PRs merged by another Shipit stacks' do
       assert_difference -> { Commit.count }, +1 do
         @stack.commits.create_from_github!(
@@ -134,7 +167,7 @@ module Shipit
       limit = Shipit::Commit.columns_hash['message'].limit
 
       @commit.update!(message: 'a' * limit * 2)
-      assert_equal limit, @commit.message.size
+      assert_equal limit, @commit.message.bytesize
     end
 
     test "#pull_request? detect pull request based on message format" do
