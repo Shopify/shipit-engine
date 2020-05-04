@@ -142,8 +142,11 @@ module Shipit
 
     def trigger_deploy(*args, **kwargs)
       run_now = kwargs.delete(:run_now)
-      deploy = build_deploy(*args, **kwargs)
-      deploy.save!
+      deploy = with_lock do
+        deploy = build_deploy(*args, **kwargs)
+        deploy.save!
+        deploy
+      end
       run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
       deploy
