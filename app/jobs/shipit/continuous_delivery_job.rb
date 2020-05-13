@@ -3,7 +3,7 @@ module Shipit
   class ContinuousDeliveryJob < BackgroundJob
     include BackgroundJob::Unique
 
-    queue_as :default
+    queue_as :deploys
     on_duplicate :drop
 
     def perform(stack)
