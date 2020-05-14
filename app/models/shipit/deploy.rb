@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'fileutils'
 
 module Shipit
@@ -248,24 +249,12 @@ module Shipit
 
       # Create one for each pull request in the batch, to give feedback on the PR timeline
       commits.select(&:pull_request?).each do |commit|
-        if (pull_request_head = pull_request_head_for_commit(commit))
-          commit_deployments.create!(sha: pull_request_head)
-        end
+        next if commit.pull_request_head_sha.blank? # This attribute was not always populated
+        commit_deployments.create!(sha: commit.pull_request_head_sha)
       end
 
       # Immediately update to publish the status to the commit deployments
       update_commit_deployments
-    rescue Octokit::ClientError => error
-      Rails.logger.warn("Got #{error.class.name} (#{error.message}) when creating CommitDeployments for Deploy##{id}")
-    end
-
-    def pull_request_head_for_commit(commit)
-      pull_request = Shipit.github.api.pull_request(commit.stack.github_repo_name, commit.pull_request_number)
-      pull_request.head.sha
-    rescue Octokit::ClientError => error
-      pr_ref = "#{commit.stack.github_repo_name}##{commit.pull_request_number}"
-      Rails.logger.warn("Got #{error.class.name} (#{error.message}) when loading pull request #{pr_ref}")
-      nil
     end
 
     def update_release_status

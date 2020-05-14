@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class ReleaseStatusesController < BaseController
@@ -5,7 +6,7 @@ module Shipit
 
       params do
         requires :status, String
-        validates :status, inclusion: {in: %w(success failure)}
+        validates :status, inclusion: { in: %w(success failure) }
       end
       def create
         deploy = stack.deploys_and_rollbacks.find(params[:deploy_id])
@@ -15,7 +16,7 @@ module Shipit
         when 'failure'
           deploy.report_faulty!(user: current_user)
         end
-        render_resource deploy, status: :created
+        render_resource(deploy, status: :created)
       end
     end
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -10,7 +11,7 @@ module Shipit
       end
 
       test "#create renders a 422 if status is not found" do
-        post :create, params: {stack_id: @stack.to_param, deploy_id: @deploy.id}
+        post :create, params: { stack_id: @stack.to_param, deploy_id: @deploy.id }
         assert_response :unprocessable_entity
         assert_json 'errors', 'status' => ['is required', 'is not included in the list']
       end

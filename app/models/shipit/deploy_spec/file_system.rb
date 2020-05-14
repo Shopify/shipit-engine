@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
@@ -61,14 +62,14 @@ module Shipit
             'context' => release_status_context,
             'delay' => release_status_delay,
           },
-          'dependencies' => {'override' => dependencies_steps},
+          'dependencies' => { 'override' => dependencies_steps },
           'deploy' => {
             'override' => deploy_steps,
             'variables' => deploy_variables.map(&:to_h),
             'max_commits' => maximum_commits_per_deploy,
             'interval' => pause_between_deploys,
           },
-          'rollback' => {'override' => rollback_steps},
+          'rollback' => { 'override' => rollback_steps },
           'fetch' => fetch_deployed_revision_steps,
           'tasks' => cacheable_tasks,
         )

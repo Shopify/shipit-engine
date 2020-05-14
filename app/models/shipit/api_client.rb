@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ApiClient < ActiveRecord::Base
     InsufficientPermission = Class.new(StandardError)
@@ -16,7 +17,7 @@ module Shipit
       read:hook
       write:hook
     ).freeze
-    validates :permissions, subset: {of: PERMISSIONS}
+    validates :permissions, subset: { of: PERMISSIONS }
 
     class << self
       def authenticate(token)

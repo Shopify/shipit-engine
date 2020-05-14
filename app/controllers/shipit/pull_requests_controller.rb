@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class PullRequestsController < ShipitController
     def index
@@ -11,14 +12,14 @@ module Shipit
       else
         flash[:warning] = "Invalid or missing pull request number."
       end
-      redirect_to stack_pull_requests_path
+      redirect_to(stack_pull_requests_path)
     end
 
     def destroy
       pull_request = stack.pull_requests.find(params[:id])
       pull_request.cancel!
       flash[:success] = 'Merge canceled'
-      redirect_to stack_pull_requests_path
+      redirect_to(stack_pull_requests_path)
     end
 
     private

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Status
     class Unknown
@@ -21,7 +22,7 @@ module Shipit
       end
 
       def state
-        'unknown'.freeze
+        'unknown'
       end
 
       def missing?

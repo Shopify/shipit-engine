@@ -1,13 +1,14 @@
+# frozen_string_literal: true
 require 'json'
 
 module Shipit
   class DeploySpec
     module NpmDiscovery
       # https://docs.npmjs.com/cli/publish
-      PUBLIC = 'public'.freeze
-      PRIVATE = 'restricted'.freeze
+      PUBLIC = 'public'
+      PRIVATE = 'restricted'
       VALID_ACCESS = [PUBLIC, PRIVATE].freeze
-      NPM_REGISTRY = "https://registry.npmjs.org/".freeze
+      NPM_REGISTRY = "https://registry.npmjs.org/"
 
       def discover_dependencies_steps
         discover_package_json || super
@@ -57,7 +58,7 @@ module Shipit
         # are treated as 'next' npm dist-tags.
         # An 1.0.0-beta.1 would be installable using both:
         # `yarn add package@1.0.0-beta.1` and `yarn add package@next`
-        return 'next' if ['-beta', '-alpha', '-rc', '-next'].any? { |tag| version.include? tag }
+        return 'next' if ['-beta', '-alpha', '-rc', '-next'].any? { |tag| version.include?(tag) }
         'latest'
       end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -12,7 +13,7 @@ module Shipit
       stub_request(:get, "https://api.github.com/user/emails").to_return(
         status: %w(200 OK),
         body: {}.to_json,
-        headers: {"Content-Type" => "application/json"},
+        headers: { "Content-Type" => "application/json" },
       )
     end
 
@@ -68,6 +69,39 @@ module Shipit
       refute_predicate commit, :revert?
     end
 
+    test '.create_from_github truncates long messages' do
+      message = 'ABCDEFGHIJ' * 7000
+
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Lando Walrussian',
+                email: 'walrus@shopify.com',
+                date: Time.now,
+              },
+              message: message,
+            },
+          ),
+        )
+      end
+
+      max_message_size = Shipit::Commit.columns_hash["message"].limit
+      commit = Commit.last
+
+      refute_predicate commit.message, :blank?
+      assert(commit.message.length <= Shipit::Commit.columns_hash["message"].limit) if max_message_size
+    end
+
     test '.create_from_github handle PRs merged by another Shipit stacks' do
       assert_difference -> { Commit.count }, +1 do
         @stack.commits.create_from_github!(
@@ -96,12 +130,44 @@ module Shipit
       assert_equal shipit_users(:walrus), commit.author
     end
 
+    test '.create_from_github stores pull_request_head_sha' do
+      assert_difference -> { Commit.count }, +1 do
+        @stack.commits.create_from_github!(
+          resource(
+            sha: '2adaad1ad30c235d3a6e7981dfc1742f7ecb1e85',
+            author: {},
+            committer: {},
+            commit: {
+              author: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              committer: {
+                name: 'Shipit',
+                email: '',
+                date: Time.now,
+              },
+              message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+            },
+            parents: [
+              { sha: "1864542e3d2f8a41916a2dec0f2b4d3c1bf4899b", url: '', html_url: '' },
+              { sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: '' },
+            ],
+          ),
+        )
+      end
+
+      commit = Commit.last
+      assert_equal '63d7e03e517fd2ae1caeb1b7a9f21767f84d671a', commit.pull_request_head_sha
+    end
+
     test "#message= truncates the message" do
       skip unless Shipit::Commit.columns_hash['message'].limit
       limit = Shipit::Commit.columns_hash['message'].limit
 
       @commit.update!(message: 'a' * limit * 2)
-      assert_equal limit, @commit.message.size
+      assert_equal limit, @commit.message.bytesize
     end
 
     test "#pull_request? detect pull request based on message format" do
@@ -395,10 +461,10 @@ module Shipit
       commit = shipit_commits(:second)
       assert_predicate commit.status, :group?
       assert_equal 3, commit.status.size
-      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {'hide' => [
+      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => { 'hide' => [
         'Travis CI',
         'metrics/coveralls',
-      ]}))
+      ] }))
       commit.reload
       refute_predicate commit.status, :group?
     end
@@ -528,7 +594,7 @@ module Shipit
       'error' => %w(success),
     }
     expected_webhook_transitions.each do |initial_state, firing_states|
-      initial_status_attributes = {state: initial_state, description: 'abc', context: 'ci/travis'}
+      initial_status_attributes = { state: initial_state, description: 'abc', context: 'ci/travis' }
       (expected_webhook_transitions.keys - %w(unknown)).each do |new_state|
         should_fire = firing_states.include?(new_state)
         action = should_fire ? 'fires' : 'does not fire'
@@ -547,7 +613,7 @@ module Shipit
           end
           assert_equal initial_state, commit.state
 
-          expected_status_attributes = {state: new_state, description: initial_state, context: 'ci/travis'}
+          expected_status_attributes = { state: new_state, description: initial_state, context: 'ci/travis' }
           add_status = lambda do
             attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))
             commit.create_status_from_github!(OpenStruct.new(attrs))

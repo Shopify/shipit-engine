@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Task < ActiveRecord::Base
     include DeferredTouch
@@ -10,7 +11,7 @@ module Shipit
     UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze
     OUTPUT_SIZE_LIMIT = 16.megabytes # A MySQL mediumblob
     HUMAN_READABLE_OUTPUT_LIMIT = ActionController::Base.helpers.number_to_human_size(OUTPUT_SIZE_LIMIT)
-    OUTPUT_TRUNCATED_MESSAGE = "Output exceeded the limit of #{HUMAN_READABLE_OUTPUT_LIMIT} and was truncated\n".freeze
+    OUTPUT_TRUNCATED_MESSAGE = "Output exceeded the limit of #{HUMAN_READABLE_OUTPUT_LIMIT} and was truncated\n"
 
     attr_accessor :pid
 

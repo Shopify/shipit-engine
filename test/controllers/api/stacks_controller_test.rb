@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -13,7 +14,7 @@ module Shipit
         @client.save!
 
         assert_no_difference 'Stack.count' do
-          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
+          post :create, params: { repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging' }
         end
 
         assert_response :forbidden
@@ -22,7 +23,7 @@ module Shipit
 
       test "#create fails with invalid stack" do
         assert_no_difference "Stack.count" do
-          post :create, params: {repo_owner: 'some', repo_name: 'owner/path'}
+          post :create, params: { repo_owner: 'some', repo_name: 'owner/path' }
         end
         assert_response :unprocessable_entity
         assert_json 'errors', 'repository' => ['is invalid']
@@ -30,7 +31,7 @@ module Shipit
 
       test "#create creates a stack and renders it back" do
         assert_difference -> { Stack.count } do
-          post :create, params: {repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging'}
+          post :create, params: { repo_name: 'rails', repo_owner: 'rails', environment: 'staging', branch: 'staging' }
         end
 
         assert_response :ok
@@ -73,7 +74,7 @@ module Shipit
       end
 
       test "#index is paginable" do
-        get :index, params: {page_size: 1}
+        get :index, params: { page_size: 1 }
         assert_json do |list|
           assert_instance_of Array, list
           assert_equal 1, list.size
@@ -85,7 +86,7 @@ module Shipit
       end
 
       test "the `next` link is not provided when the last page is reached" do
-        get :index, params: {page_size: Stack.count}
+        get :index, params: { page_size: Stack.count }
         assert_no_link 'next'
       end
 
@@ -105,20 +106,20 @@ module Shipit
       end
 
       test "#show renders the stack" do
-        get :show, params: {id: @stack.to_param}
+        get :show, params: { id: @stack.to_param }
         assert_response :ok
         assert_json 'id', @stack.id
       end
 
       test "#show returns last_deployed_at column for stack" do
-        get :show, params: {id: @stack.to_param}
+        get :show, params: { id: @stack.to_param }
         assert_response :ok
         assert_json 'last_deployed_at', @stack.last_deployed_at
       end
 
       test "#destroy schedules stack deletion job" do
         assert_enqueued_with(job: DestroyStackJob) do
-          delete :destroy, params: {id: @stack.to_param}
+          delete :destroy, params: { id: @stack.to_param }
         end
         assert_response :accepted
       end
@@ -128,7 +129,7 @@ module Shipit
         @client.save!
 
         assert_no_difference 'Stack.count' do
-          delete :destroy, params: {id: @stack.to_param}
+          delete :destroy, params: { id: @stack.to_param }
         end
 
         assert_response :forbidden

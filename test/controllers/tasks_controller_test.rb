@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -11,7 +12,7 @@ module Shipit
     end
 
     test "tasks defined in the shipit.yml can be displayed" do
-      get :new, params: {stack_id: @stack, definition_id: @definition.id}
+      get :new, params: { stack_id: @stack, definition_id: @definition.id }
       assert_response :ok
     end
 
@@ -20,7 +21,7 @@ module Shipit
 
       assert_predicate @stack, :active_task?
       assert_no_difference -> { @stack.tasks.count } do
-        post :create, params: {stack_id: @stack, definition_id: @definition.id}
+        post :create, params: { stack_id: @stack, definition_id: @definition.id }
       end
       assert_redirected_to new_stack_tasks_path(@stack, @definition)
     end
@@ -30,7 +31,7 @@ module Shipit
 
       assert_predicate @stack, :active_task?
       assert_difference -> { @stack.tasks.count } do
-        post :create, params: {stack_id: @stack, definition_id: @definition.id, force: 'true'}
+        post :create, params: { stack_id: @stack, definition_id: @definition.id, force: 'true' }
       end
       assert_redirected_to stack_task_path(@stack, Task.last)
     end
@@ -38,26 +39,26 @@ module Shipit
     test "tasks defined in the shipit.yml can be triggered while the stack is being deployed if specified as such" do
       @definition = @stack.find_task_definition('flush_cache')
       assert_difference -> { @stack.tasks.count } do
-        post :create, params: {stack_id: @stack, definition_id: @definition.id}
+        post :create, params: { stack_id: @stack, definition_id: @definition.id }
       end
       assert_redirected_to stack_task_path(@stack, Task.last)
     end
 
     test "tasks with variables defined in the shipit.yml can be triggered with their variables set" do
-      env = {"FOO" => "0"}
+      env = { "FOO" => "0" }
 
-      post :create, params: {stack_id: @stack, definition_id: @definition.id, task: {env: env}, force: 'true'}
+      post :create, params: { stack_id: @stack, definition_id: @definition.id, task: { env: env }, force: 'true' }
 
       assert_redirected_to stack_tasks_path(@stack, Task.last)
     end
 
     test "triggered tasks can be observed" do
-      get :show, params: {stack_id: @stack, id: @task.id}
+      get :show, params: { stack_id: @stack, id: @task.id }
       assert_response :ok
     end
 
     test "triggered tasks can be observed as raw text" do
-      get :show, params: {stack_id: @stack, id: @task.id}, format: 'txt'
+      get :show, params: { stack_id: @stack, id: @task.id }, format: 'txt'
       assert_response :success
       assert_equal("text/plain", @response.media_type)
     end
@@ -65,7 +66,7 @@ module Shipit
     test ":abort call abort! on the deploy" do
       @task = shipit_deploys(:shipit_running)
       @task.ping
-      post :abort, params: {stack_id: @stack.to_param, id: @task.id}
+      post :abort, params: { stack_id: @stack.to_param, id: @task.id }
 
       @task.reload
       assert_response :success
@@ -77,7 +78,7 @@ module Shipit
     test ":abort schedule the rollback if `rollback` is present" do
       @task = shipit_deploys(:shipit_running)
       @task.ping
-      post :abort, params: {stack_id: @stack.to_param, id: @task.id, rollback: 'true'}
+      post :abort, params: { stack_id: @stack.to_param, id: @task.id, rollback: 'true' }
 
       @task.reload
       assert_response :success
@@ -87,13 +88,13 @@ module Shipit
     end
 
     test ":index list the stack deploys" do
-      get :index, params: {stack_id: @stack.to_param}
+      get :index, params: { stack_id: @stack.to_param }
       assert_response :success
       assert_select '.task-list .task', @stack.tasks.count
     end
 
     test ":index paginates with the `since` parameter" do
-      get :index, params: {stack_id: @stack.to_param, since: @stack.tasks.last.id}
+      get :index, params: { stack_id: @stack.to_param, since: @stack.tasks.last.id }
       assert_response :success
       assert_select '.task-list .task', @stack.tasks.count - 1
     end
@@ -102,7 +103,7 @@ module Shipit
       @task = shipit_deploys(:shipit_running)
       last_chunk = @task.chunks.last
 
-      get :tail, params: {stack_id: @stack.to_param, id: @task.id, last_id: last_chunk.id}, format: :json
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id, last_id: last_chunk.id }, format: :json
       assert_response :success
       assert_json_keys %w(url status output)
       assert_json 'status', @task.status
@@ -111,7 +112,7 @@ module Shipit
     test ":tail doesn't returns the next url if the task is finished" do
       @task = shipit_deploys(:shipit)
 
-      get :tail, params: {stack_id: @stack.to_param, id: @task.id}, format: :json
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
       assert_no_json 'url'
     end
@@ -119,7 +120,7 @@ module Shipit
     test ":tail returns the rollback url if the task have been aborted" do
       @task = shipit_deploys(:shipit_aborted)
 
-      get :tail, params: {stack_id: @stack.to_param, id: @task.id}, format: :json
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
       assert_json_keys %w(status output rollback_url)
     end
@@ -127,7 +128,7 @@ module Shipit
     test ":lookup returns stack task url if the task is an instance of Task" do
       @task = shipit_tasks(:shipit_restart)
 
-      get :lookup, params: {id: @task.id}
+      get :lookup, params: { id: @task.id }
 
       assert_redirected_to stack_task_path(@task.stack, @task)
     end
@@ -135,7 +136,7 @@ module Shipit
     test ":lookup returns stack deploy url if the task is an instance of Deploy" do
       @task = shipit_tasks(:shipit)
 
-      get :lookup, params: {id: @task.id}
+      get :lookup, params: { id: @task.id }
 
       assert_redirected_to stack_deploy_path(@task.stack, @task)
     end
@@ -143,7 +144,7 @@ module Shipit
     test ":lookup returns stack deploy url if the task is an instance of Rollback" do
       @task = shipit_tasks(:shipit_rollback)
 
-      get :lookup, params: {id: @task.id}
+      get :lookup, params: { id: @task.id }
 
       assert_redirected_to stack_deploy_path(@task.stack, @task)
     end

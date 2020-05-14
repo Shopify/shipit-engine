@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class UnlimitedApiClient
     def stack_id?

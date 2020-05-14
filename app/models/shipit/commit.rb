@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Commit < ActiveRecord::Base
     include DeferredTouch
@@ -92,7 +93,7 @@ module Shipit
       committer = User.find_or_create_committer_from_github_commit(commit)
       committer ||= Anonymous.new
 
-      new(
+      record = new(
         sha: commit.sha,
         message: commit.commit.message,
         author:  author,
@@ -102,12 +103,18 @@ module Shipit
         additions: commit.stats&.additions,
         deletions: commit.stats&.deletions,
       )
+
+      if record.pull_request?
+        record.pull_request_head_sha = commit.parents.last.sha
+      end
+
+      record
     end
 
     def message=(message)
       limit = self.class.columns_hash['message'].limit
       if limit && message && message.size > limit
-        message = message.slice(0, limit)
+        message = message.truncate_bytes(limit)
       end
       super(message)
     end
@@ -338,7 +345,7 @@ module Shipit
       new_status = status
 
       unless already_deployed
-        payload = {commit: self, stack: stack, status: new_status.state}
+        payload = { commit: self, stack: stack, status: new_status.state }
         if previous_status != new_status
           Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status))
         end

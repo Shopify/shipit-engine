@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -865,9 +866,6 @@ module Shipit
         until_commit: template_task.until_commit,
       )
 
-      pull_request_response = stub(head: stub(sha: '6dcb09b5b57875f334f61aebed695e2e4193db5e'))
-      Shipit.github.api.expects(:pull_request).with('shopify/shipit-engine', 7).returns(pull_request_response)
-
       expected_delta = deploy.commits.select(&:pull_request?).size + 1
       assert_difference -> { CommitDeployment.count }, expected_delta do
         assert_difference -> { CommitDeploymentStatus.count }, expected_delta do
@@ -876,25 +874,6 @@ module Shipit
       end
 
       refute_nil CommitDeployment.find_by(sha: '6dcb09b5b57875f334f61aebed695e2e4193db5e')
-      refute_nil CommitDeployment.find_by(sha: deploy.until_commit.sha)
-    end
-
-    test "#create_commit_deployments handles API errors when loading pull request details" do
-      template_task = shipit_tasks(:shipit_pending)
-      deploy = template_task.stack.deploys.build(
-        since_commit: template_task.since_commit,
-        until_commit: template_task.until_commit,
-      )
-
-      Shipit.github.api.expects(:pull_request).with('shopify/shipit-engine', 7).raises(Octokit::NotFound)
-
-      expected_delta = 1 # Only the batch head
-      assert_difference -> { CommitDeployment.count }, expected_delta do
-        assert_difference -> { CommitDeploymentStatus.count }, expected_delta do
-          deploy.save!
-        end
-      end
-
       refute_nil CommitDeployment.find_by(sha: deploy.until_commit.sha)
     end
 

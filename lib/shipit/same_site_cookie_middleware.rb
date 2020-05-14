@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module Shipit
   class SameSiteCookieMiddleware
-    COOKIE_SEPARATOR = "\n".freeze
+    COOKIE_SEPARATOR = "\n"
 
     def initialize(app)
       @app = app
@@ -12,13 +13,11 @@ module Shipit
       if headers && headers['Set-Cookie'] &&
          Rack::Request.new(env).ssl?
 
-        set_cookies = headers['Set-Cookie']
-                      .split(COOKIE_SEPARATOR)
-                      .compact
-                      .map do |cookie|
-            cookie << '; Secure' if cookie !~ /;\s*secure/i
-            cookie << '; SameSite=None' unless cookie.match?(/;\s*samesite=/i)
-            cookie
+        set_cookies = headers['Set-Cookie'].split(COOKIE_SEPARATOR).compact
+        set_cookies.map! do |cookie|
+          cookie << '; Secure' if cookie !~ /;\s*secure/i
+          cookie << '; SameSite=None' unless cookie.match?(/;\s*samesite=/i)
+          cookie
         end
 
         headers['Set-Cookie'] = set_cookies.join(COOKIE_SEPARATOR)

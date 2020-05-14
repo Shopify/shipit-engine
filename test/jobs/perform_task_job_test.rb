@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -132,7 +133,7 @@ module Shipit
 
         @job.perform(@deploy)
 
-        assert_equal 'timedout', @deploy.reload.status
+        assert_equal('timedout', @deploy.reload.status)
       ensure
         Shipit.timeout_exit_codes = previous_exit_codes
       end

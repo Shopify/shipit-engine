@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class ReleaseStatus < ActiveRecord::Base
     MAX_DESCRIPTION_LENGTH = 140
@@ -13,7 +14,7 @@ module Shipit
     scope :to_be_created, -> { where(github_id: nil).order(id: :asc) }
 
     STATES = %w(pending success failure error).freeze
-    validates :state, presence: true, inclusion: {in: STATES}
+    validates :state, presence: true, inclusion: { in: STATES }
 
     def create_status_on_github!
       return true if github_id?

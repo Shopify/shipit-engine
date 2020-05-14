@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module HooksHelper
   def expect_hook(event, stack = nil, payload = nil)
     spy_on_hook
@@ -24,7 +25,7 @@ module HooksHelper
     end
     matcher = args.map(&:inspect).join(', ')
     got = called&.args&.map(&:inspect)&.join(', ')
-    refute called, "Expected no hook matching: (#{matcher})\n  got: (#{got})"
+    refute(called, "Expected no hook matching: (#{matcher})\n  got: (#{got})")
   end
 
   private

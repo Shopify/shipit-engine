@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Shipit
   class PullRequest < ApplicationRecord
     include DeferredTouch
 
-    MERGE_REQUEST_FIELD = 'Merge-Requested-By'.freeze
+    MERGE_REQUEST_FIELD = 'Merge-Requested-By'
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
@@ -48,7 +49,8 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
-    validates :number, presence: true, uniqueness: {scope: :stack_id}
+    validates :number, presence: true, uniqueness: { scope: :stack_id }
+
     scope :merge_requests, -> { where(review_request: [false, nil]) }
     scope :waiting, -> { merge_requests.where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { merge_requests.where(merge_status: 'pending') }
@@ -191,10 +193,10 @@ module Shipit
         # branch was already deleted somehow
       end
       complete!
-      return true
+      true
     rescue Octokit::MethodNotAllowed # merge conflict
       reject!('merge_conflict')
-      return false
+      false
     rescue Octokit::Conflict # shas didn't match, PR was updated.
       raise NotReady
     end
@@ -333,7 +335,7 @@ module Shipit
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)
       if commit = stack.commits.by_sha(sha)
-        return commit
+        commit
       else
         github_commit = Shipit.github.api.commit(stack.github_repo_name, sha)
         stack.commits.create_from_github!(github_commit, attributes)

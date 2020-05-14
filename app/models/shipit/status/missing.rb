@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Status
     class Missing
@@ -15,7 +16,7 @@ module Shipit
       end
 
       def state
-        'pending'.freeze
+        'pending'
       end
 
       def missing?

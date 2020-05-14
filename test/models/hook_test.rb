@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -50,22 +51,22 @@ module Shipit
     end
 
     test ".emit calls #deliver on internal hooks" do
-        original_receivers = Shipit.internal_hook_receivers
-        FakeReceiver = Module.new
-        FakeReceiver.expects(:deliver).with(:deploy, @stack, 'foo' => 42)
+      original_receivers = Shipit.internal_hook_receivers
+      FakeReceiver = Module.new
+      FakeReceiver.expects(:deliver).with(:deploy, @stack, 'foo' => 42)
 
-        Shipit.internal_hook_receivers << FakeReceiver
-        Hook.emit(:deploy, @stack, 'foo' => 42)
+      Shipit.internal_hook_receivers << FakeReceiver
+      Hook.emit(:deploy, @stack, 'foo' => 42)
     ensure
-        Shipit.internal_hook_receivers = original_receivers
+      Shipit.internal_hook_receivers = original_receivers
     end
 
     test ".emit calls no internal hooks if there are no internal_hook_receivers" do
-        original_receivers = Shipit.internal_hook_receivers
-        Shipit.internal_hook_receivers = nil
-        Hook.emit(:deploy, @stack, 'foo' => 42)
+      original_receivers = Shipit.internal_hook_receivers
+      Shipit.internal_hook_receivers = nil
+      Hook.emit(:deploy, @stack, 'foo' => 42)
     ensure
-        Shipit.internal_hook_receivers = original_receivers
+      Shipit.internal_hook_receivers = original_receivers
     end
 
     test ".coerce_payload coerces anonymous user correctly" do

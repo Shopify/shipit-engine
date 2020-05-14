@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Engine < ::Rails::Engine
     isolate_namespace Shipit
@@ -32,8 +33,8 @@ module Shipit
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
 
       if Shipit.github.oauth?
-        OmniAuth::Strategies::GitHub.configure path_prefix: '/github/auth'
-        app.middleware.use OmniAuth::Builder do
+        OmniAuth::Strategies::GitHub.configure(path_prefix: '/github/auth')
+        app.middleware.use(OmniAuth::Builder) do
           provider(:github, *Shipit.github.oauth_config)
         end
       end

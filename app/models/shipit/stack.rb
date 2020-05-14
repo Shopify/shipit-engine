@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'fileutils'
 
 module Shipit
@@ -90,10 +91,10 @@ module Shipit
       scope: %i(environment), case_sensitive: false,
       message: 'cannot be used more than once with this environment. Check archived stacks.'
     }
-    validates :environment, format: {with: /\A[a-z0-9\-_\:]+\z/}, length: {maximum: ENVIRONMENT_MAX_SIZE}
-    validates :deploy_url, format: {with: URI.regexp(%w(http https ssh))}, allow_blank: true
+    validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
+    validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
 
-    validates :lock_reason, length: {maximum: 4096}
+    validates :lock_reason, length: { maximum: 4096 }
 
     serialize :cached_deploy_spec, DeploySpec
     delegate :find_task_definition, :supports_rollback?, :release_status?, :release_status_delay,
@@ -149,8 +150,11 @@ module Shipit
 
     def trigger_deploy(*args, **kwargs)
       run_now = kwargs.delete(:run_now)
-      deploy = build_deploy(*args, **kwargs)
-      deploy.save!
+      deploy = with_lock do
+        deploy = build_deploy(*args, **kwargs)
+        deploy.save!
+        deploy
+      end
       run_now ? deploy.run_now! : deploy.enqueue
       continuous_delivery_resumed!
       deploy
@@ -210,7 +214,7 @@ module Shipit
     def async_refresh_deployed_revision
       async_refresh_deployed_revision!
     rescue => error
-      logger.warn "Failed to dispatch FetchDeployedRevisionJob: [#{error.class.name}] #{error.message}"
+      logger.warn("Failed to dispatch FetchDeployedRevisionJob: [#{error.class.name}] #{error.message}")
     end
 
     def async_refresh_deployed_revision!
@@ -278,8 +282,8 @@ module Shipit
         next if commits_to_lock.empty?
 
         affected_rows += commits
-                         .where(id: commits_to_lock.map(&:id).uniq)
-                         .lock_all(revert.author)
+          .where(id: commits_to_lock.map(&:id).uniq)
+          .lock_all(revert.author)
       end
 
       touch if affected_rows > 1
@@ -418,7 +422,7 @@ module Shipit
     end
 
     def lock(reason, user, code: nil)
-      params = {lock_reason: reason, lock_reason_code: code, lock_author: user}
+      params = { lock_reason: reason, lock_reason_code: code, lock_author: user }
       update!(params)
     end
 
@@ -496,7 +500,7 @@ module Shipit
     def broadcast_update
       Pubsubstub.publish(
         "stack.#{id}",
-        {id: id, updated_at: updated_at}.to_json,
+        { id: id, updated_at: updated_at }.to_json,
         name: 'update',
       )
     end
@@ -590,7 +594,7 @@ module Shipit
       return unless previous_changes.include?('lock_reason')
 
       lock_details = if previous_changes['lock_reason'].last.blank?
-        {from: previous_changes['locked_since'].first, until: Time.zone.now}
+        { from: previous_changes['locked_since'].first, until: Time.zone.now }
       end
 
       Hook.emit(:lock, self, locked: locked?, lock_details: lock_details, stack: self)

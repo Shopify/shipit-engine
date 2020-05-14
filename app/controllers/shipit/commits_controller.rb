@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class CommitsController < ShipitController
     def update
@@ -9,7 +10,7 @@ module Shipit
         end
       end
 
-      head :ok
+      head(:ok)
     end
 
     private

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class User < ActiveRecord::Base
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
@@ -24,9 +25,9 @@ module Shipit
     end
 
     def self.find_or_create_author_from_github_commit(github_commit)
-      if github_commit.commit.message =~ /^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/
+      if (match_info = github_commit.commit.message.match(/^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
         begin
-          return find_or_create_by_login!($1)
+          return find_or_create_by_login!(match_info[1])
         rescue Octokit::NotFound
           # Corner case where the merge-requested-by user cannot be found (renamed/deleted).
           # In this case we carry on and search for the commit author
@@ -69,7 +70,7 @@ module Shipit
     end
 
     def identifiers_for_ping
-      {github_id: github_id, name: name, email: email, github_login: login}
+      { github_id: github_id, name: name, email: email, github_login: login }
     end
 
     def logged_in?
@@ -143,9 +144,9 @@ module Shipit
 
       begin
         github_api.emails
-                  .sort_by { |e| e.primary ? 0 : 1 }
-                  .map(&:email)
-                  .find { |e| email_valid_and_preferred?(e) }
+          .sort_by { |e| e.primary ? 0 : 1 }
+          .map(&:email)
+          .find { |e| email_valid_and_preferred?(e) }
       rescue Octokit::NotFound, Octokit::Forbidden, Octokit::Unauthorized
         # If the user hasn't agreed to the necessary permission, we can't access their private emails.
         Rails.logger.warn("Failed to retrieve emails for user '#{github_user.name || github_user.login}'")

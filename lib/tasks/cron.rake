@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :cron do
   desc "Updates deployed revisions"
   task minutely: :environment do

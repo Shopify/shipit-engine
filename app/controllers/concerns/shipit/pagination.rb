@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Pagination
     extend ActiveSupport::Concern
@@ -9,7 +10,7 @@ module Shipit
 
       self.max_page_size = 100
       self.default_page_size = 30
-      self.default_order = {id: :desc}.freeze
+      self.default_order = { id: :desc }.freeze
     end
 
     private

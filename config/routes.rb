@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Shipit::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   repository_id_format = %r{[^/]+/[^/]+}
@@ -84,7 +85,7 @@ Shipit::Engine.routes.draw do
 
   scope '/*stack_id', stack_id: stack_id_format, as: :stack do
     get '/commit/:sha/checks' => 'commit_checks#show', as: :commit_checks
-    get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: {format: :json}
+    get '/commit/:sha/checks/tail' => 'commit_checks#tail', as: :tail_commit_checks, defaults: { format: :json }
 
     get '/stats' => 'stats#show', as: :stats
 
@@ -99,7 +100,7 @@ Shipit::Engine.routes.draw do
 
       member do
         post :abort
-        get :tail, defaults: {format: :json}
+        get :tail, defaults: { format: :json }
       end
     end
 

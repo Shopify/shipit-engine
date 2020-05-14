@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   module Api
     class BaseController < ActionController::Base
@@ -22,7 +23,7 @@ module Shipit
       before_action :authenticate_api_client
 
       def index
-        render json: {stacks_url: api_stacks_url}
+        render(json: { stacks_url: api_stacks_url })
       end
 
       private
@@ -42,7 +43,7 @@ module Shipit
         end
         return if @current_api_client
         headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'
-        render status: :unauthorized, json: {message: 'Bad credentials'}
+        render(status: :unauthorized, json: { message: 'Bad credentials' })
       end
 
       attr_reader :current_api_client
@@ -69,19 +70,19 @@ module Shipit
       end
 
       def insufficient_permission(error)
-        render status: :forbidden, json: {message: error.message}
+        render(status: :forbidden, json: { message: error.message })
       end
 
       def validation_error(error)
-        render status: :unprocessable_entity, json: {message: error.message}
+        render(status: :unprocessable_entity, json: { message: error.message })
       end
 
       def not_found(_error)
-        render status: :not_found, json: {status: '404', error: 'Not Found'}
+        render(status: :not_found, json: { status: '404', error: 'Not Found' })
       end
 
       def conflict(_error)
-        render status: :conflict, json: {status: '409', error: 'Conflict'}
+        render(status: :conflict, json: { status: '409', error: 'Conflict' })
       end
     end
   end

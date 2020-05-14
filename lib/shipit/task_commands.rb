@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class TaskCommands < Commands
     delegate :fetch, :fetched?, to: :stack_commands
@@ -52,6 +53,7 @@ module Shipit
       [
         git(
           'clone',
+          '--quiet',
           '--local',
           '--origin', 'cache',
           @stack.git_path,

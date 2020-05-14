@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -310,7 +311,7 @@ module Shipit
           behind_by: 10,
         ),
       )
-      spec = {'merge' => {'max_divergence' => {'commits' => 1}}}
+      spec = { 'merge' => { 'max_divergence' => { 'commits' => 1 } } }
       @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       assert_predicate @pr, :stale?
     end
@@ -318,14 +319,14 @@ module Shipit
     test "#stale? returns true when the branch falls behind the maximum age" do
       @pr.base_commit = shipit_commits(:second)
       @pr.head.committed_at = 2.hours.ago
-      spec = {'merge' => {'max_divergence' => {'age' => '1h'}}}
+      spec = { 'merge' => { 'max_divergence' => { 'age' => '1h' } } }
       @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       assert_predicate @pr, :stale?
     end
 
     test "#stale? is false when base_commit information is missing" do
       @pr.base_commit = nil
-      spec = {'merge' => {'max_divergence' => {'age' => '1h', 'commits' => 10}}}
+      spec = { 'merge' => { 'max_divergence' => { 'age' => '1h', 'commits' => 10 } } }
       @pr.stack.cached_deploy_spec = DeploySpec.new(spec)
       refute_predicate @pr, :stale?
     end

@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 module Shipit
   class UpdateGithubLastDeployedRefJob < BackgroundJob
     queue_as :default
 
     # We do not prefix 'refs/' because Octokit methods will do this automatically.
-    BRANCH_REF_PREFIX = 'heads'.freeze
-    DEPLOY_PREFIX = "#{Shipit.app_name.downcase}-deploy".freeze
+    BRANCH_REF_PREFIX = 'heads'
+    DEPLOY_PREFIX = "#{Shipit.app_name.downcase}-deploy"
 
     def perform(stack)
       stack_sha = stack.last_successful_deploy_commit&.sha
@@ -33,7 +34,7 @@ module Shipit
       client.update_ref(repo_name, ref, new_sha)
     rescue Octokit::UnprocessableEntity => e
       error_msg = e.message
-      if error_msg.include? "Reference does not exist"
+      if error_msg.include?("Reference does not exist")
         create_ref(client: client, repo_name: repo_name, ref: ref, sha: new_sha)
       else
         raise

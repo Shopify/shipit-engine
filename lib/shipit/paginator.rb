@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module Shipit
   class Paginator
-    def initialize(resources, controller, order: {id: :desc}, max_page_size: 100, default_page_size: 30)
+    def initialize(resources, controller, order: { id: :desc }, max_page_size: 100, default_page_size: 30)
       @order = order
       @controller = controller
       @since = controller.params[:since].presence
@@ -15,7 +16,7 @@ module Shipit
     end
 
     def links
-      links = {first: link_to(since: nil, page_size: (page_size if page_size != @default_page_size))}
+      links = { first: link_to(since: nil, page_size: (page_size if page_size != @default_page_size)) }
       links[:next] = link_to(since: to_a.last.id) unless last_page?
       links
     end

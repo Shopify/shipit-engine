@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -9,7 +10,7 @@ module Shipit
 
     test "#perform schedule deliveries" do
       assert_enqueued_jobs(2, only: DeliverHookJob) do
-        @job.perform(event: :deploy, stack_id: @stack.id, payload: {foo: 42}.to_json)
+        @job.perform(event: :deploy, stack_id: @stack.id, payload: { foo: 42 }.to_json)
       end
     end
   end

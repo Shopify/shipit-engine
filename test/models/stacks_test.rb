@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 require 'securerandom'
 
@@ -70,11 +71,11 @@ module Shipit
 
       last_commit = shipit_commits(:third)
       deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new)
-      assert_includes FakeReceiver.hooks, [
+      assert_includes(FakeReceiver.hooks, [
         :deploy,
         @stack,
-        {deploy: deploy, status: "pending", stack: @stack},
-      ]
+        { deploy: deploy, status: "pending", stack: @stack },
+      ])
     ensure
       Shipit.internal_hook_receivers = original_receivers
     end
@@ -323,7 +324,7 @@ module Shipit
     end
 
     test "#monitoring returns deploy_spec's content" do
-      assert_equal [{'image' => 'https://example.com/monitor.png', 'width' => 200, 'height' => 300}], @stack.monitoring
+      assert_equal [{ 'image' => 'https://example.com/monitor.png', 'width' => 200, 'height' => 300 }], @stack.monitoring
     end
 
     test "#destroy deletes the related commits" do
@@ -355,7 +356,7 @@ module Shipit
         time = Time.current
         @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
         travel 1.day
-        expect_hook(:lock, @stack, locked: false, lock_details: {from: time, until: Time.current}, stack: @stack) do
+        expect_hook(:lock, @stack, locked: false, lock_details: { from: time, until: Time.current }, stack: @stack) do
           @stack.update(lock_reason: nil)
         end
       end
@@ -406,7 +407,7 @@ module Shipit
 
     test "updating the stack emit a hook" do
       expect_hook(:stack, @stack, action: :updated, stack: @stack) do
-        @stack.update(repo_name: 'foo')
+        @stack.update(environment: 'foo')
       end
     end
 
@@ -632,7 +633,7 @@ module Shipit
       @stack.tasks.delete_all
 
       deploy = @stack.trigger_continuous_delivery
-      assert_equal({'SAFETY_DISABLED' => '0'}, deploy.env)
+      assert_equal({ 'SAFETY_DISABLED' => '0' }, deploy.env)
     end
 
     test "#continuous_delivery_delayed! bumps updated_at" do

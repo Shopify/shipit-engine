@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -6,7 +7,7 @@ module Shipit
       test "authentication is required" do
         get :index
         assert_response :unauthorized
-        assert_equal({message: 'Bad credentials'}.to_json, response.body)
+        assert_equal({ message: 'Bad credentials' }.to_json, response.body)
       end
 
       test "with proper credentials the request is processed" do
@@ -17,7 +18,7 @@ module Shipit
       test "#index respond with a list of endpoints" do
         authenticate!
         get :index, format: :json
-        assert_equal({stacks_url: api_stacks_url}.to_json, response.body)
+        assert_equal({ stacks_url: api_stacks_url }.to_json, response.body)
       end
     end
   end

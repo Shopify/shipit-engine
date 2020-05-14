@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'active_support/all'
 require 'active_model_serializers'
 require 'state_machines-activerecord'
@@ -152,7 +153,7 @@ module Shipit
   end
 
   def env
-    {'SHIPIT' => '1'}.merge(secrets.env || {})
+    { 'SHIPIT' => '1' }.merge(secrets.env || {})
   end
 
   def shell_paths
@@ -164,7 +165,7 @@ module Shipit
       if revision_file.exist?
         revision_file.read
       else
-        `git rev-parse HEAD`
+        %x(git rev-parse HEAD)
       end.strip
     end
   end

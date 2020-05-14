@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 module Shipit
   module DeferredTouch
     extend ActiveSupport::Concern
 
-    SET_KEY = 'shipit:deferred_touches'.freeze
-    TMP_KEY = "#{SET_KEY}:updating".freeze
-    CACHE_KEY = "#{SET_KEY}:scheduled".freeze
+    SET_KEY = 'shipit:deferred_touches'
+    TMP_KEY = "#{SET_KEY}:updating"
+    CACHE_KEY = "#{SET_KEY}:scheduled"
     THROTTLE_TTL = 1.second
 
     included do

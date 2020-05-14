@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class Team < ActiveRecord::Base
     REQUIRED_HOOKS = %i(membership).freeze
