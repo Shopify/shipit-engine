@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module Shipit
@@ -26,18 +27,18 @@ module Shipit
     end
 
     test "#show is success" do
-      get :show, params: {id: @repository.to_param}
+      get :show, params: { id: @repository.to_param }
       assert_response :ok
     end
 
     test "#create creates a repository and redirects to it" do
       assert_difference "Repository.count" do
         post :create, params: {
-               repository: {
-                 name: 'valid',
-                 owner: 'repository',
-               },
-             }
+          repository: {
+            name: 'valid',
+            owner: 'repository',
+          },
+        }
       end
       assert_redirected_to repository_path(Repository.last)
     end
@@ -45,25 +46,25 @@ module Shipit
     test "#create when not valid renders new" do
       assert_no_difference "Repository.count" do
         post :create, params: {
-               repository: {
-                 owner: 'some',
-                 name: 'owner/path',
-               },
-             }
+          repository: {
+            owner: 'some',
+            name: 'owner/path',
+          },
+        }
       end
       assert_response :success
     end
 
     test "#destroy enqueues a DestroyRepositoryJob" do
       assert_enqueued_with(job: DestroyRepositoryJob, args: [@repository]) do
-        delete :destroy, params: {id: @repository.to_param}
+        delete :destroy, params: { id: @repository.to_param }
       end
 
       assert_redirected_to repositories_path
     end
 
     test "#settings is success" do
-      get :settings, params: {id: @repository.to_param}
+      get :settings, params: { id: @repository.to_param }
       assert_response :success
     end
   end

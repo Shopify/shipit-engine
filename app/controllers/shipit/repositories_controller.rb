@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Shipit
   class RepositoriesController < ShipitController
     before_action :load_repository, only: %i(destroy settings update new_stack)
@@ -31,13 +32,13 @@ module Shipit
 
     def destroy
       @repository.schedule_for_destroy!
-      redirect_to repositories_url
+      redirect_to(repositories_url)
     end
 
     def update
       options = {}
       unless @repository.update(update_params)
-        options = {flash: {warning: @repository.errors.full_messages.to_sentence}}
+        options = { flash: { warning: @repository.errors.full_messages.to_sentence } }
       end
 
       redirect_to(params[:return_to].presence || repository_settings_path(@repository), options)
@@ -48,7 +49,7 @@ module Shipit
 
     def new_stack
       @stack = @repository.stacks.new
-      render "shipit/stacks/new"
+      render("shipit/stacks/new")
     end
 
     private
