@@ -4,11 +4,10 @@ module Shipit
     include Enumerable
 
     def initialize(relation = nil)
-      if relation
-        @response = relation.get(per_page: 100)
+      @response = if relation
+        relation.get(per_page: 100)
       else
-        yield Shipit.github.api
-        @response = Shipit.github.api.last_response
+        yield
       end
     end
 
