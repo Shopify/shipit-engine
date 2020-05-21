@@ -7,16 +7,13 @@ module Shipit
       if relation
         @response = relation.get(per_page: 100)
       else
-        yield Shipit.github.api
-        @response = Shipit.github.api.last_response
+        data = yield Shipit.github.api
+        @response = Shipit.github.api.last_response if data.present?
       end
-    rescue Octokit::Conflict
-      # Repository is empty...
     end
 
     def each(&block)
       response = @response
-      return unless response
 
       loop do
         response.data.each(&block)
