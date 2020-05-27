@@ -151,6 +151,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     jwt (2.2.1)
+    libv8 (7.3.492.27.1)
     lodash-rails (4.6.1)
       railties (>= 3.1)
     loofah (2.5.0)
@@ -164,6 +165,8 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
+    mini_racer (0.2.14)
+      libv8 (> 7.3)
     minitest (5.14.0)
     mocha (1.11.2)
     multi_json (1.14.1)
@@ -326,6 +329,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   faker
+  mini_racer
   mocha
   mysql2
   pg
