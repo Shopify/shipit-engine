@@ -44,6 +44,8 @@ module Shipit
 
     scope :not_archived, -> { where(archived_since: nil) }
 
+    default_scope { preload(:repository) }
+
     def env
       {
         'ENVIRONMENT' => environment,
