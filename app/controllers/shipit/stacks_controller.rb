@@ -10,7 +10,16 @@ module Shipit
     def index
       @user_stacks = current_user.stacks_contributed_to
 
-      @stacks = Stack.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc)
+      @stacks = Stack.all
+      if params[:repo]
+        @stacks = if (repository = Repository.from_github_repo_name(params[:repo]))
+          repository.stacks
+        else
+          Stack.none
+        end
+      end
+
+      @stacks = @stacks.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc)
 
       @show_archived = params[:show_archived]
       @stacks = @stacks.not_archived unless @show_archived

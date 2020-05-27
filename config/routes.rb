@@ -107,4 +107,8 @@ Shipit::Engine.routes.draw do
     resources :pull_requests, only: %i(index destroy create)
   end
   get '/stacks/:id' => 'stacks#lookup'
+
+  scope '/*repo', repo: %r{[^/]+/[^/]+}, as: :stack_search do
+    get '/' => 'stacks#index'
+  end
 end
