@@ -12,9 +12,10 @@ module Shipit
     end
 
     test ".find_or_create_by_handle fetch the team from github if it's not in the db already" do
-      Shipit.github.api.expects(:org_teams).with('shopify', per_page: 100)
       response = stub(rels: {}, data: [new_team])
+      Shipit.github.api.expects(:org_teams).with('shopify', per_page: 100).returns(response.data)
       Shipit.github.api.expects(:last_response).returns(response)
+
       assert_difference -> { Team.count }, 1 do
         Team.find_or_create_by_handle('Shopify/new-team')
       end
