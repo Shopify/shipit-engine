@@ -15,7 +15,7 @@ AllCops:
 inherit_gem:
   rubocop-shopify: rubocop.yml
 
-Metrics/LineLength:
+Layout/LineLength:
   Exclude:
     - config/routes.rb
     - test/**/*

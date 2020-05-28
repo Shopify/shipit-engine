@@ -3,7 +3,7 @@ module Shipit
   module Api
     class StacksController < BaseController
       require_permission :read, :stack, only: %i(index show)
-      require_permission :write, :stack, only: %i(create destroy)
+      require_permission :write, :stack, only: %i(create update destroy)
 
       def index
         render_resources(stacks)
@@ -17,11 +17,23 @@ module Shipit
         accepts :deploy_url, String
         accepts :ignore_ci, Boolean
         accepts :merge_queue_enabled, Boolean
+        accepts :continuous_deployment, Boolean
       end
       def create
         stack = Stack.new(create_params)
         stack.repository = repository
         stack.save
+        render_resource(stack)
+      end
+
+      params do
+        accepts :deploy_url, String
+        accepts :ignore_ci, Boolean
+        accepts :merge_queue_enabled, Boolean
+        accepts :continuous_deployment, Boolean
+      end
+      def update
+        stack.update(params)
         render_resource(stack)
       end
 

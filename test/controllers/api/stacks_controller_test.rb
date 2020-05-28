@@ -62,6 +62,26 @@ module Shipit
         ]
       end
 
+      test "#update updates a stack and renders it back" do
+        assert_equal true, @stack.merge_queue_enabled
+        assert_equal false, @stack.ignore_ci
+        assert_equal false, @stack.continuous_deployment
+
+        patch :update, params: {
+          id: @stack.to_param,
+          merge_queue_enabled: false,
+          ignore_ci: true,
+          continuous_deployment: true,
+        }
+
+        assert_response :ok
+        @stack.reload
+
+        assert_equal false, @stack.merge_queue_enabled
+        assert_equal true, @stack.ignore_ci
+        assert_equal true, @stack.continuous_deployment
+      end
+
       test "#index returns a list of stacks" do
         stack = Stack.last
 
