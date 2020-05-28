@@ -17,11 +17,23 @@ module Shipit
         accepts :deploy_url, String
         accepts :ignore_ci, Boolean
         accepts :merge_queue_enabled, Boolean
+        accepts :continuous_deployment, Boolean
       end
       def create
         stack = Stack.new(create_params)
         stack.repository = repository
         stack.save
+        render_resource(stack)
+      end
+
+      params do
+        accepts :deploy_url, String
+        accepts :ignore_ci, Boolean
+        accepts :merge_queue_enabled, Boolean
+        accepts :continuous_deployment, Boolean
+      end
+      def update
+        stack.update(params)
         render_resource(stack)
       end
 
