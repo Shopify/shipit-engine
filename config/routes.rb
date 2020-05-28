@@ -14,10 +14,11 @@ Shipit::Engine.routes.draw do
   # API
   namespace :api do
     root to: 'base#index'
-    resources :stacks, only: %i(index create update)
+    resources :stacks, only: %i(index create)
     scope '/stacks/*id', id: stack_id_format, as: :stack do
       get '/' => 'stacks#show'
       delete '/' => 'stacks#destroy'
+      patch '/' => 'stacks#update'
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
