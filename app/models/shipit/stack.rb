@@ -5,6 +5,56 @@ module Shipit
   class Stack < ActiveRecord::Base
     NotYetSynced = Class.new(StandardError)
 
+    state_machine :provision_status, initial: :not_provisioned do
+      state :not_provisioned
+      state :pending_provision
+      state :provisioning
+      state :provisioning_error
+      state :provisioned
+      state :pending_deprovision
+      state :deprovisioning
+      state :deprovisioning_error
+      state :deprovisioned
+
+      event :schedule_provision do
+        transition(
+          %i(not_provisioned deprovisioned provisioning_error) => :pending_provision,
+          if: -> (stack) { stack.auto_provisioned? }
+        )
+      end
+
+      event :provision do
+        transition pending_provision: :provisioning, if: -> (stack) { stack.auto_provisioned? }
+      end
+
+      event :provisioned do
+        transition provisioning: :provisioned, if: -> (stack) { stack.auto_provisioned? }
+      end
+
+      event :fail_provisioning do
+        transition provisioning: :provisioning_error, if: -> (stack) { stack.auto_provisioned? }
+      end
+
+      event :schedule_deprovision do
+        transition(
+          %i(provisioned deprovisioning_error) => :pending_deprovision,
+          if: -> (stack) { stack.auto_provisioned? }
+        )
+      end
+
+      event :deprovision do
+        transition pending_deprovision: :deprovisioning, if: -> (stack) { stack.auto_provisioned? }
+      end
+
+      event :deprovisioned do
+        transition deprovisioning: :deprovisioned, if: -> (stack) { stack.auto_provisioned? }
+      end
+
+      event :fail_deprovisioning do
+        transition deprovisioning: :deprovisioning_error, if: -> (stack) { stack.auto_provisioned? }
+      end
+    end
+
     module NoDeployedCommit
       extend self
 
