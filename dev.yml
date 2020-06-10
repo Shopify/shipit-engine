@@ -23,4 +23,4 @@ commands:
   test: bin/rails test "$@"
 
 open:
-  shipit: https://shipit-engine.myshopify.io
+  app: https://shipit-engine.myshopify.io
