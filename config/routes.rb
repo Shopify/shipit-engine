@@ -64,6 +64,7 @@ Shipit::Engine.routes.draw do
     patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
     get :settings, controller: :stacks
+    get :tasks, controller: :stacks, as: :tasks_list
     get :statistics, controller: :stacks
     post :refresh, controller: :stacks
     get :refresh, controller: :stacks # For easier design, sorry :/

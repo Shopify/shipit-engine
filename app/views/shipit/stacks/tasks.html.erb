@@ -1,0 +1,28 @@
+<% subscribe events_path(channels: ["stack.#{@stack.id}"]), '#layout-content' %>
+
+<%= render partial: 'shipit/stacks/header', locals: {stack: @stack} %>
+<%= render partial: 'shipit/stacks/banners', locals: {stack: @stack} %>
+
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <h2>Available tasks</h2>
+    </header>
+    <ul class="task-list">
+      <% @stack.task_definitions.each do |definition| %>
+        <li class="task" id="task-<%= definition.id %>">
+          <%= link_to "#{definition.action}", new_stack_tasks_path(@stack, definition_id: definition.id), class: "trigger-deploy" %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section>
+    <header class="section-header">
+      <h2>Previous Tasks</h2>
+    </header>
+    <ul class="commit-list">
+      <%= render @tasks %>
+    </ul>
+  </section>
+</div>
