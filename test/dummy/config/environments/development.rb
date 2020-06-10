@@ -64,4 +64,6 @@ Rails.application.configure do
   Pubsubstub.use_persistent_connections = false
 
   Shipit.disable_api_authentication = true if ENV['PUBLIC_API']
+
+  config.hosts << "shipit-engine.myshopify.io"
 end
