@@ -143,6 +143,18 @@ module Shipit
     end
 
     def trigger_deploy(*args, **kwargs)
+      if changed?
+        # If this is the first deploy since the spec changed it's possible the record will be dirty here, meaning we
+        # cant lock. In this one case persist the changes, otherwise log a warning and let the lock raise, so we
+        # can debug what's going on here. We don't expect anything other than the deploy spec to dirty the model
+        # instance, because of how that field is serialised.
+        if changes.keys == ['cached_deploy_spec']
+          save!
+        else
+          Rails.logger.warning("#{changes.keys} field(s) were unexpectedly modified on stack #{id} while deploying")
+        end
+      end
+
       run_now = kwargs.delete(:run_now)
       deploy = with_lock do
         deploy = build_deploy(*args, **kwargs)
