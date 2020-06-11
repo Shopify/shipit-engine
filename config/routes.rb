@@ -29,6 +29,7 @@ Shipit::Engine.routes.draw do
       resources :deploys, only: %i(index create) do
         resources :release_statuses, only: %i(create)
       end
+      resources :rollbacks, only: %i(create)
       resources :commits, only: %i(index)
       resources :pull_requests, only: %i(index show update destroy)
       post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
