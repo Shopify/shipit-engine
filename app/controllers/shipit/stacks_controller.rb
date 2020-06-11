@@ -78,6 +78,11 @@ module Shipit
     def settings
     end
 
+    def tasks
+      @stack = Stack.from_param!(params[:id])
+      @tasks = @stack.tasks.where(type: nil).order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
+    end
+
     def statistics
       previous_deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.previous_seven_days)
       @deploy_stats = Shipit::DeployStats.new(@stack.deploys.not_active.last_seven_days)
