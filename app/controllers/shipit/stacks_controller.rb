@@ -78,7 +78,7 @@ module Shipit
     def settings
     end
 
-    def tasks
+    def all_tasks
       @stack = Stack.from_param!(params[:id])
       @tasks = @stack.tasks.where(type: nil).order(id: :desc).preload(:since_commit, :until_commit, :user).limit(10)
     end
