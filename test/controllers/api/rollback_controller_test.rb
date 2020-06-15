@@ -67,7 +67,7 @@ module Shipit
         assert_json 'errors', 'sha' => ['Cant find associated deploy']
       end
 
-      test "#create refuses to deploy locked stacks" do
+      test "#create refuses to rollback on locked stacks" do
         @stack.update!(lock_reason: 'Something broken')
 
         assert_no_difference -> { @stack.deploys.count } do
@@ -77,12 +77,34 @@ module Shipit
         assert_json 'errors.force', ["Can't rollback a locked stack"]
       end
 
-      test "#create accepts to deploy locked stacks if force mode is enabled" do
+      test "#create rollbacks on locked stack if force mode is enabled" do
         @stack.update!(lock_reason: 'Something broken')
 
         assert_difference -> { @stack.deploys.count }, 1 do
           post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true' }
         end
+        assert_response :accepted
+        assert_json 'status', 'pending'
+      end
+
+      test "#create refuses to rollback if active task" do
+        @stack.deploys.last.update!(status: 'running')
+
+        assert_no_difference -> { @stack.deploys.count } do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
+        end
+        assert_response :unprocessable_entity
+        assert_json 'errors.force', ["Can't rollback, deploy in progress"]
+      end
+
+      test "#create aborts active task and rollbacks if force mode is enabled" do
+        last_deploy = @stack.deploys.last
+        last_deploy.update!(status: 'running')
+
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true' }
+        end
+        refute_predicate last_deploy.reload, :active?
         assert_response :accepted
         assert_json 'status', 'pending'
       end

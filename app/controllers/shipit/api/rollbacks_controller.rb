@@ -15,6 +15,12 @@ module Shipit
         deploy = stack.deploys.find_by(until_commit: commit) || param_error!(:sha, 'Cant find associated deploy')
         deploy_env = stack.filter_deploy_envs(params.env)
 
+        if !params.force && stack.active_task?
+          param_error!(:force, "Can't rollback, deploy in progress")
+        elsif stack.active_task?
+          stack.active_task.abort!(aborted_by: current_user)
+        end
+
         rollback = deploy.trigger_rollback(current_user, env: deploy_env, force: params.force)
 
         render_resource(rollback, status: :accepted)
