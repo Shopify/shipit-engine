@@ -304,6 +304,20 @@ module Shipit
       end
     end
 
+    test "transitioning to aborted schedule a rollback to the designated deploy if set" do
+      @rollback_to = shipit_deploys(:shipit_pending)
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.ping
+      @deploy.pid = 42
+      @deploy.abort!(rollback_once_aborted: true, rollback_once_aborted_to: @rollback_to, aborted_by: @user)
+
+      assert_difference -> { @stack.rollbacks.count }, 1 do
+        assert_enqueued_with(job: PerformTaskJob) do
+          @deploy.aborted!
+        end
+      end
+    end
+
     test "#build_rollback returns an unsaved record" do
       assert @deploy.build_rollback.new_record?
     end
@@ -430,6 +444,20 @@ module Shipit
       assert_equal commit3, test_stack.last_deployed_commit
       assert_equal commit3, last_deploy.until_commit
       assert_equal "Shipit::Rollback", last_deploy.type
+    end
+
+    test "#trigger_revert uses rollback_to if set" do
+      test_stack = create_test_stack
+      test_stack.save
+      test_stack.reload
+
+      running_deploy = shipit_deploys(:shipit_running)
+      rollback_to = shipit_deploys(:shipit_pending)
+
+      final_rollback = running_deploy.trigger_revert(rollback_to: rollback_to)
+
+      assert_equal "Shipit::Rollback", final_rollback.type
+      assert_equal 4, final_rollback.until_commit_id
     end
 
     test "#trigger_revert skips unsuccessful deploys when reverting" do

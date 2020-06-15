@@ -9,7 +9,6 @@ module Shipit
         @user = shipit_users(:walrus)
         @stack = shipit_stacks(:shipit)
         @commit = shipit_commits(:fourth)
-        @deploy = shipit_tasks(:shipit_running)
       end
 
       test "#create triggers a new rollback for the stack" do
@@ -97,16 +96,17 @@ module Shipit
         assert_json 'errors.force', ["Can't rollback, deploy in progress"]
       end
 
-      test "#create aborts active task and rollbacks if force mode is enabled" do
+      test "#create aborts active task and sets rollback to" do
         last_deploy = @stack.deploys.last
         last_deploy.update!(status: 'running')
 
-        assert_difference -> { @stack.deploys.count }, 1 do
+        assert_no_difference -> { @stack.deploys.count } do
           post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true' }
         end
-        refute_predicate last_deploy.reload, :active?
+        last_deploy.reload
         assert_response :accepted
-        assert_json 'status', 'pending'
+        refute_predicate last_deploy, :active?
+        assert_json 'rollback_once_aborted_to.id', 4
       end
     end
   end

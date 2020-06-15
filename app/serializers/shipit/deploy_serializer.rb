@@ -5,7 +5,7 @@ module Shipit
 
     has_many :commits
 
-    attributes :compare_url, :rollback_url, :additions, :deletions
+    attributes :compare_url, :rollback_url, :additions, :deletions, :rollback_once_aborted_to
 
     def html_url
       stack_deploy_url(object.stack, object)
