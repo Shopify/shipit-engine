@@ -248,6 +248,8 @@ module Shipit
     end
 
     test "transitioning to success enqueues a last-deployed git reference update" do
+      Shipit.stubs(:update_latest_deployed_ref).returns(true)
+
       @deploy = shipit_deploys(:shipit_running)
       assert_enqueued_with(job: UpdateGithubLastDeployedRefJob, args: [@deploy.stack]) do
         @deploy.complete!

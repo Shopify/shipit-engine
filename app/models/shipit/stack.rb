@@ -500,7 +500,9 @@ module Shipit
     end
 
     def update_latest_deployed_ref
-      UpdateGithubLastDeployedRefJob.perform_later(self)
+      if Shipit.update_latest_deployed_ref
+        UpdateGithubLastDeployedRefJob.perform_later(self)
+      end
     end
 
     def broadcast_update
