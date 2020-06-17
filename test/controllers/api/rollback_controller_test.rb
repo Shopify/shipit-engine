@@ -106,7 +106,7 @@ module Shipit
         last_deploy.reload
         assert_response :accepted
         refute_predicate last_deploy, :active?
-        assert_json 'rollback_once_aborted_to.id', 4
+        assert_json 'rollback_once_aborted_to.until_commit_id', @commit.id
       end
     end
   end
