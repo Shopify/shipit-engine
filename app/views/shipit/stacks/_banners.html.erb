@@ -2,10 +2,10 @@
   <div class="banner">
     <div class="banner__inner wrapper">
       <div class="banner__content">
-        <h2 class="banner__title">Heads Up!</h2>
+        <h2 class="banner__title">Set up or ignore CI</h2>
         <p class="banner__text">
           This stack is not configured for CI, but it currently requires a passing build to be able to deploy a commit.<br>
-          You can either <a href="https://developer.github.com/v3/repos/statuses/">configure your CI to push statuses to GitHub</a>,
+          You can either <a href="https://developer.github.com/v3/repos/statuses/">configure the project’s CI to push statuses to GitHub</a>,
           or ignore CI and deploy any commits you want.
         </p>
         <%= button_to "Ignore CI", stack_path(stack, stack: {ignore_ci: true}, return_to: stack_path(stack)), method: :patch, class: 'banner__btn btn' %>
@@ -18,12 +18,12 @@
   <div class="banner banner--red">
     <div class="banner__inner wrapper">
       <div class="banner__content">
-        <h2 class="banner__title">This repository or branch seems to be missing!</h2>
+        <h2 class="banner__title">Missing repository or branch</h2>
         <p class="banner__text">
           <%= link_to stack.github_repo_name, github_repo_url(stack.repo_owner, stack.repo_name) %>
           has been inaccessible for <%= time_ago_in_words(stack.inaccessible_since) %>.
 
-          This could be a permission issue, or the repository have been deleted on GitHub.
+          This could be an issue with access permissions, or the repository or branch were deleted on GitHub.
         </p>
       </div>
     </div>
@@ -53,9 +53,9 @@
   <div class="banner">
     <div class="banner__inner wrapper">
       <div class="banner__content">
-        <h2 class="banner__title">Continuous Delivery Delayed!</h2>
+        <h2 class="banner__title">Continuous delivery delayed</h2>
         <p class="banner__text">
-          Continuous Delivery for this stack is currently paused because
+          Continuous delivery is currently paused for this stack because
           <%= link_to 'the pre-deploy checks failed', stack_commit_checks_path(stack, sha: stack.next_commit_to_deploy.sha) %>.
           You can either wait for them to pass, or trigger a deploy manually.
         </p>
