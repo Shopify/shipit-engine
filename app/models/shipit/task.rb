@@ -23,6 +23,8 @@ module Shipit
     belongs_to :until_commit, class_name: 'Commit', required: false
     belongs_to :since_commit, class_name: 'Commit', required: false
 
+    belongs_to :rollback_once_aborted_to, class_name: 'Task', optional: true
+
     deferred_touch stack: :updated_at
 
     has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all, inverse_of: :task
@@ -292,8 +294,12 @@ module Shipit
       end
     end
 
-    def abort!(rollback_once_aborted: false, aborted_by:)
-      update!(rollback_once_aborted: rollback_once_aborted, aborted_by_id: aborted_by.id)
+    def abort!(rollback_once_aborted: false, rollback_once_aborted_to: nil, aborted_by:)
+      update!(
+        rollback_once_aborted: rollback_once_aborted,
+        rollback_once_aborted_to: rollback_once_aborted_to,
+        aborted_by_id: aborted_by.id
+      )
 
       if alive?
         aborting
