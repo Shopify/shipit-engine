@@ -5,33 +5,36 @@ require 'test_helper'
 module Shipit
   class StackProvisioningHandlerTest < ActiveSupport::TestCase
     teardown do
-      Shipit::ProvisioningHandler.reset!
+      Shipit::ProvisioningHandler.reset_registry!
     end
 
-    test "uses default handler when no handler is registered for the stack's repository" do
-      stack = shipit_stacks(:shipit)
-
-      assert_equal Shipit::ProvisioningHandler::Base, Shipit::ProvisioningHandler.for_stack(stack)
+    test "uses the no-op handler as default when no default handler is registered" do
+      assert_equal Shipit::ProvisioningHandler::Base, Shipit::ProvisioningHandler.default
     end
 
     test "allows registration of a default handler" do
       mock_handler = mock("Mock Provisioning Handler")
 
-      Shipit::ProvisioningHandler.register(:default, mock_handler)
+      Shipit::ProvisioningHandler.default = mock_handler
 
-      assert_equal mock_handler, Shipit::ProvisioningHandler.for_stack(shipit_stacks(:shipit))
+      assert_equal mock_handler, Shipit::ProvisioningHandler.default
     end
 
-    test "registers handlers at the repository level" do
-      stack = shipit_stacks(:shipit)
+    test "UnregisteredProvisioningHandler is returned when an attempt to fetch an unregistered handler is made" do
+      unregistered_handler = mock("Mock Provisioning Handler")
+
+      assert_equal(
+        Shipit::ProvisioningHandler::UnregisteredProvisioningHandler,
+        Shipit::ProvisioningHandler.fetch(unregistered_handler)
+      )
+    end
+
+    test "registers handlers so they become fetchable" do
       mock_handler = mock("Mock Provisioning Handler")
 
-      Shipit::ProvisioningHandler.register(stack.github_repo_name, mock_handler)
+      Shipit::ProvisioningHandler.register(mock_handler)
 
-      assert_equal mock_handler, Shipit::ProvisioningHandler.for_stack(stack)
-
-      stack = shipit_stacks(:shipit_canaries)
-      assert_equal mock_handler, Shipit::ProvisioningHandler.for_stack(stack)
+      assert_equal mock_handler, Shipit::ProvisioningHandler.fetch(mock_handler.to_s)
     end
 
     test "handlers are called during provisioning" do
@@ -40,11 +43,9 @@ module Shipit
         provision_status: :deprovisioned,
         auto_provisioned: true
       )
-      mock_handler = mock("Mock Provisioning Handler")
-      mock_handler.expects(:new).with(stack).returns(mock_handler)
-      Shipit::ProvisioningHandler.register(stack.github_repo_name, mock_handler)
+      handler = Shipit::ProvisioningHandler.default
 
-      mock_handler.expects(:up)
+      handler.any_instance.expects(:up)
 
       assert stack.provision!, "stack should have provisioned."
     end
@@ -55,11 +56,9 @@ module Shipit
         provision_status: :provisioned,
         auto_provisioned: true
       )
-      mock_handler = mock("Mock Provisioning Handler")
-      mock_handler.expects(:new).with(stack).returns(mock_handler)
-      Shipit::ProvisioningHandler.register(stack.github_repo_name, mock_handler)
+      handler = Shipit::ProvisioningHandler.default
 
-      mock_handler.expects(:down)
+      handler.any_instance.expects(:down)
 
       assert stack.deprovision!, "stack should have deprovisioned."
     end
