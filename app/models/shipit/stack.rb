@@ -5,53 +5,6 @@ module Shipit
   class Stack < ActiveRecord::Base
     NotYetSynced = Class.new(StandardError)
 
-    state_machine :provision_status, initial: :deprovisioned do
-      state :provisioned
-      state :provisioning
-      state :deprovisioning
-      state :deprovisioned
-
-      event :provision do
-        transition deprovisioned: :provisioning, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      event :provision_success do
-        transition provisioning: :provisioned, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      event :provision_failure do
-        transition provisioning: :deprovisioned, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      event :deprovision do
-        transition provisioned: :deprovisioning, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      event :deprovision_success do
-        transition deprovisioning: :deprovisioned, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      event :deprovision_failure do
-        transition deprovisioning: :provisioned, if: -> (stack) { stack.auto_provisioned? }
-      end
-
-      after_transition deprovisioned: :provisioning do |stack, _|
-        stack.provisioner.up
-      end
-
-      after_transition provisioned: :deprovisioning do |stack, _|
-        stack.provisioner.down
-      end
-    end
-
-    def provisioner
-      provisioner_class.new(self)
-    end
-
-    def provisioner_class
-      ProvisioningHandler.fetch(provisioning_handler_name)
-    end
-
     module NoDeployedCommit
       extend self
 
@@ -89,7 +42,6 @@ module Shipit
     has_many :api_clients, dependent: :destroy
     belongs_to :lock_author, class_name: :User, optional: true
     belongs_to :repository
-    has_one :review_request, -> { where(review_request: true) }, class_name: "PullRequest"
     validates_associated :repository
 
     scope :not_archived, -> { where(archived_since: nil) }

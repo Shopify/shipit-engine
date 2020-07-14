@@ -38,10 +38,9 @@ module Shipit
     end
 
     test "handlers are called during provisioning" do
-      stack = shipit_stacks(:shipit)
+      stack = shipit_stacks(:review_stack)
       stack.update(
-        provision_status: :deprovisioned,
-        auto_provisioned: true
+        provision_status: :deprovisioned
       )
       handler = Shipit::ProvisioningHandler.default
 
@@ -51,10 +50,9 @@ module Shipit
     end
 
     test "handlers are called during deprovisioning" do
-      stack = shipit_stacks(:shipit)
+      stack = shipit_stacks(:review_stack)
       stack.update(
-        provision_status: :provisioned,
-        auto_provisioned: true
+        provision_status: :provisioned
       )
       handler = Shipit::ProvisioningHandler.default
 

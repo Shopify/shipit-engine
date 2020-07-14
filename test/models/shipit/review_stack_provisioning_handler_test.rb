@@ -3,15 +3,15 @@
 require 'test_helper'
 
 module Shipit
-  class StackProvisionStatusTest < ActiveSupport::TestCase
+  class ReviewStackProvisionStatusTest < ActiveSupport::TestCase
     test "stacks default to deprovisioned state" do
-      stack = Shipit::Stack.new
+      stack = Shipit::ReviewStack.new
 
       assert_equal 'deprovisioned', stack.provision_status
     end
 
     test "non-review stacks don't transition" do
-      stack = Shipit::Stack.new
+      stack = Shipit::ReviewStack.new
       stack.provision
 
       assert_equal 'deprovisioned', stack.provision_status
@@ -66,8 +66,7 @@ module Shipit
     end
 
     def review_stack(provision_status: :deprovisioned)
-      stack = shipit_stacks(:shipit)
-      stack.auto_provisioned = true
+      stack = shipit_stacks(:review_stack)
       stack.provision_status = provision_status
 
       stack.save!

@@ -7,7 +7,7 @@
     </header>
 
     <div class="setting-section">
-      <%= form_for @stack do |f| %>
+      <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
         <div class="field-wrapper">
           <%= f.label :environment %>
           <%= f.text_field :environment, placeholder: 'production' %>
@@ -43,7 +43,7 @@
 
     <div class="setting-section">
       <h5>Lock deploys</h5>
-      <%= form_for @stack do |f| %>
+      <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
         <div class="field-wrapper">
           <%= f.label :lock_reason, 'Reason for lock' %>
           <%= f.text_area :lock_reason %>
@@ -55,7 +55,7 @@
         <% end %>
       <% end %>
       <% if @stack.locked? %>
-        <%= form_for @stack do |f| %>
+        <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
           <%= f.hidden_field :lock_reason, value: nil %>
           <%= f.submit class: "btn btn--primary", value: "Unlock" %>
         <%- end -%>
@@ -85,14 +85,14 @@
       <% if @stack.archived? %>
         <h5>Restore Stack</h5>
         <p>This action will de-archive the Stack, restoring it in the stack list and unlocking it.</p>
-        <%= form_for @stack do |f| %>
+        <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
           <%= f.hidden_field :archived, value: false %>
           <%= f.submit class: "btn", value: "Restore" %>
         <% end %>
       <% else %>
         <h5>Archive Stack</h5>
         <p>This action will archive the Stack, hiding it from the stack list and locking it. It can still be found if you know the URL and de-archived.</p>
-        <%= form_for @stack do |f| %>
+        <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
           <%= f.hidden_field :archived, value: true %>
           <%= f.submit class: "btn", value: "Archive" %>
         <% end %>

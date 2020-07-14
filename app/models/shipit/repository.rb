@@ -14,6 +14,7 @@ module Shipit
     validates :name, format: { with: /\A[a-z0-9_\-\.]+\z/ }, length: { maximum: NAME_MAX_SIZE }
 
     has_many :stacks, dependent: :destroy
+    has_many :review_stacks, dependent: :destroy
 
     enum(
       provisioning_behavior: {

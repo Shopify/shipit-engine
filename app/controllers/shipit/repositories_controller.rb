@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class RepositoriesController < ShipitController
     before_action :load_repository, only: %i(destroy settings update new_stack)
