@@ -63,8 +63,8 @@ module Shipit
       assert_equal "https://github.com/#{@repository.owner}/#{@repository.name}.git", @repository.git_url
     end
 
-    test "provision_pr_stacks defaults to false" do
-      assert_equal false, Repository.new.provision_pr_stacks
+    test "review_stacks_enabled defaults to false" do
+      assert_equal false, Repository.new.review_stacks_enabled
     end
 
     test "from_github_repo_name" do

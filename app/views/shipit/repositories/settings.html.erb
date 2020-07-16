@@ -10,8 +10,8 @@
       <%= form_for @repository do |f| %>
         <fieldset class="form-group">
           <div class="field-wrapper">
-            <%= f.check_box :provision_pr_stacks %>
-            <%= f.label :provision_pr_stacks, "Dynamically provision stacks for Pull Requests?" %>
+            <%= f.check_box :review_stacks_enabled %>
+            <%= f.label :review_stacks_enabled, "Dynamically provision stacks for Pull Requests?" %>
           </div>
 
           <div class="field-wrapper">

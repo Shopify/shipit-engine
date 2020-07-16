@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_06_145406) do
+ActiveRecord::Schema.define(version: 2020_07_14_210043) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 2020_07_06_145406) do
     t.string "name", limit: 100, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "provision_pr_stacks", default: false
+    t.boolean "review_stacks_enabled", default: false
     t.integer "provisioning_behavior", default: 0
     t.string "provisioning_label_name"
     t.index ["owner", "name"], name: "repository_unicity", unique: true

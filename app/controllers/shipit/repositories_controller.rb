@@ -61,7 +61,7 @@ module Shipit
 
     def update_params
       params.require(:repository).permit(
-        :provision_pr_stacks,
+        :review_stacks_enabled,
         :provisioning_behavior,
         :provisioning_label_name,
       )
