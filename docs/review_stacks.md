@@ -41,6 +41,27 @@ class KubernetesProvisioningHandler < Shipit::ProvisioningHandler::Base
 end
 ```
 
+`ProvisioningHandler`s may provide a predicate to determine if a stack should be provisioned. For example a host application _may_ use this interrogate external systems to validate that ample resources are available to handle the new review stack before actual allocation of resources is made. Extending the above example, the ` KubernetesProvisioningHandler` _might_ first ask the cluster if it can provision the review stack:
+
+```ruby
+# <path-to-host-application>/app/provisioning_handlers/kubernetes_provisioning_handler.rb
+class KubernetesProvisioningHandler < Shipit::ProvisioningHandler::Base
+  def up
+    # allocate a namespace, copy resources, etc
+  end
+
+  def down
+    # delete the namespace, etc.
+  end
+
+  def provision?
+    # interrogate status of resources to determin if ample head room exists to provision a new review stack
+  end
+end
+```
+
+In the case where a ``ProvisioningHandler` does not specify a `#provision?` predicate, the provisioning handler will always attempt to provision a Review Stack.
+
 The host application **MUST** `#register` - whitelist - the custom ProvisioningHandler in the `Shipit::ProvisioningHandler` registry. This will  most likely happen as part of a shipit-engine initialization routine in the host application. For example:
 
 ```ruby

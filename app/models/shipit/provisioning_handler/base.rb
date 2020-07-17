@@ -15,6 +15,13 @@ module Shipit
         # Intentionally a noop
       end
 
+      # An (optional) guard to prevent provisioning. Intended to be
+      # use to set logic to determine if enough actual resources exist
+      # to complete the provisioning request.
+      def provision?
+        true
+      end
+
       private
 
       attr_accessor(
