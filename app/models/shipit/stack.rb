@@ -46,7 +46,6 @@ module Shipit
 
     scope :not_archived, -> { where(archived_since: nil) }
     scope :locked_because, ->(reason_code) { where(lock_reason_code: reason_code) }
-    scope :auto_provisioned, -> { where(auto_provisioned: true) }
 
     include DeferredTouch
     deferred_touch repository: :updated_at

@@ -32,7 +32,6 @@ module Shipit
         owner: Faker::Company.name.parameterize
       ),
       deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/",
-      auto_provisioned: num % 2 == 0,
       cached_deploy_spec: DeploySpec.load(%(
         {
           "ci": {

@@ -702,16 +702,6 @@ module Shipit
       assert_not_equal user, @stack.lock_author
     end
 
-    test "stacks can be marked auto-provisioned" do
-      @stack.update!(auto_provisioned: true)
-      assert @stack.auto_provisioned?
-    end
-
-    test "auto-provisioned stacks can be listed" do
-      @stack.update!(auto_provisioned: true)
-      assert_equal [@stack], Shipit::Stack.auto_provisioned
-    end
-
     test "stack contains valid deploy_url" do
       @stack.deploy_url = "Javascript:alert(0);//"
       assert_not_predicate @stack, :valid?

@@ -7,10 +7,7 @@ module Shipit
     class UnregisteredProvisioningHandlerTest < ActiveSupport::TestCase
       test "#up stops transitions" do
         stack = shipit_stacks(:shipit)
-        stack.update(
-          provision_status: :deprovisioned,
-          auto_provisioned: true
-        )
+        stack.update(provision_status: :deprovisioned)
 
         assert_throws :halt do
           UnregisteredProvisioningHandler.new(stack).up
@@ -19,10 +16,7 @@ module Shipit
 
       test "#up locks the stack" do
         stack = shipit_stacks(:shipit)
-        stack.update(
-          provision_status: :deprovisioned,
-          auto_provisioned: true
-        )
+        stack.update(provision_status: :deprovisioned)
 
         assert_changes -> { stack.locked? }, from: false, to: true do
           catch :halt do
@@ -33,10 +27,7 @@ module Shipit
 
       test "#down stops transitions" do
         stack = shipit_stacks(:shipit)
-        stack.update(
-          provision_status: :deprovisioned,
-          auto_provisioned: true
-        )
+        stack.update(provision_status: :deprovisioned)
 
         assert_throws :halt do
           UnregisteredProvisioningHandler.new(stack).down
@@ -45,10 +36,7 @@ module Shipit
 
       test "#down prevents transitions" do
         stack = shipit_stacks(:shipit)
-        stack.update(
-          provision_status: :deprovisioned,
-          auto_provisioned: true
-        )
+        stack.update(provision_status: :deprovisioned)
 
         assert_changes -> { stack.locked? }, from: false, to: true do
           catch :halt do
