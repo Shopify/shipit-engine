@@ -19,7 +19,14 @@
     </ul>
     <ul class="stack-lst">
       <% @stacks.each do |stack| %>
-        <%= render stack %>
+        <li class="stack search-item <%= stack.archived? ? 'archived' : '' %> <%= stack.undeployed_commits? ? 'undeployed' : '' %> <%= @user_stacks.include?(stack.id) ? 'contributor' : 'not-matching' %>" data-search="<%= stack.repo_name %> <%= stack.environment %> <%= stack.deploy_url %>" data-stack-id="<%= stack.id %>">
+          <%= link_to stack_path(stack), class: 'commits-path' do %>
+            <span class="col"><%= stack.repo_name %></span>
+            <small class="col"><%= stack.environment.capitalize %></small>
+            <small class="col"><%= stack.branch %></small>
+            <small class="col"><%= stack.deploy_url %></small>
+          <% end %>
+        </li>
       <% end %>
     </ul>
 

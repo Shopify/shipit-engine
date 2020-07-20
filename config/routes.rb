@@ -19,6 +19,7 @@ Shipit::Engine.routes.draw do
     scope '/stacks/*id', id: stack_id_format, as: :stack do
       get '/' => 'stacks#show'
       delete '/' => 'stacks#destroy'
+      patch '/' => 'stacks#update'
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
@@ -30,6 +31,7 @@ Shipit::Engine.routes.draw do
       resources :deploys, only: %i(index create) do
         resources :release_statuses, only: %i(create)
       end
+      resources :rollbacks, only: %i(create)
       resources :commits, only: %i(index)
       resources :pull_requests, only: %i(index show update destroy)
       post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
@@ -73,6 +75,7 @@ Shipit::Engine.routes.draw do
     patch '/' => 'stacks#update'
     delete '/' => 'stacks#destroy'
     get :settings, controller: :stacks
+    get :all_tasks, controller: :stacks, as: :tasks_list
     get :statistics, controller: :stacks
     post :refresh, controller: :stacks
     get :refresh, controller: :stacks # For easier design, sorry :/
@@ -117,4 +120,8 @@ Shipit::Engine.routes.draw do
     resources :pull_requests, only: %i(index destroy create)
   end
   get '/stacks/:id' => 'stacks#lookup'
+
+  scope '/*repo', repo: %r{[^/]+/[^/]+}, as: :stack_search do
+    get '/' => 'stacks#index'
+  end
 end

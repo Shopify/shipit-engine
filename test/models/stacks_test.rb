@@ -570,6 +570,8 @@ module Shipit
     end
 
     test "#trigger_continuous_delivery enqueues deployment ref update job" do
+      Shipit.stubs(:update_latest_deployed_ref).returns(true)
+
       @stack = shipit_stacks(:shipit_canaries)
       shipit_tasks(:canaries_running).delete
 
@@ -585,6 +587,8 @@ module Shipit
     end
 
     test "#trigger_continuous_delivery executes ref update job with correct sha" do
+      Shipit.stubs(:update_latest_deployed_ref).returns(true)
+
       @stack = shipit_stacks(:shipit_canaries)
       shipit_tasks(:canaries_running).delete
 

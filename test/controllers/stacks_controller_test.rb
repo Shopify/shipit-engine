@@ -47,6 +47,19 @@ module Shipit
       )
     end
 
+    test "#index list all stacks" do
+      get :index
+      assert_response :ok
+      assert_select ".stack", count: Stack.count
+    end
+
+    test "#index list a repo stacks if the :repo params is passed" do
+      repo = shipit_repositories(:shipit)
+      get :index, params: { repo: repo.full_name }
+      assert_response :ok
+      assert_select ".stack", count: repo.stacks.count
+    end
+
     test "#show is success" do
       get :show, params: { id: @stack.to_param }
       assert_response :ok

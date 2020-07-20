@@ -129,6 +129,10 @@ module Shipit
     secrets.default_merge_method || 'merge'
   end
 
+  def update_latest_deployed_ref
+    secrets.update_latest_deployed_ref
+  end
+
   def enforce_publish_config
     secrets.enforce_publish_config.presence
   end

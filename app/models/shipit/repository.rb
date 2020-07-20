@@ -43,7 +43,11 @@ module Shipit
     end
 
     def http_url
-      Shipit.github.url("#{owner}/#{name}")
+      Shipit.github.url(full_name)
+    end
+
+    def full_name
+      "#{owner}/#{name}"
     end
 
     def git_url

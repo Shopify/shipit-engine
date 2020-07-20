@@ -280,6 +280,7 @@ ActiveRecord::Schema.define(version: 2020_07_16_204019) do
     t.datetime "ended_at"
     t.boolean "ignored_safeties", default: false, null: false
     t.integer "aborted_by_id"
+    t.integer "rollback_once_aborted_to_id"
     t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
     t.index ["since_commit_id"], name: "index_tasks_on_since_commit_id"
     t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"

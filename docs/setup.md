@@ -153,6 +153,13 @@ production:
   default_merge_method: squash
 ```
 
+**`update_latest_deployed_ref`** can be set to true to have a shipit maintain a git branch pointing to the last deployed commit.
+
+```yml
+production:
+  update_latest_deployed_ref: true
+```
+
 ## Running Cron
 
 Shipit requires some periodic tasks to be executed to function properly. If you're running on Heroku, you can use the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) add on to run Shipit cron jobs, though it will only run at a maximum frequency of once every 10 minutes.
