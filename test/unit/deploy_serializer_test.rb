@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   class DeploySerializerTest < ActiveSupport::TestCase
-    test 'includes author object' do
+    test 'deploy commits includes author object' do
       deploy = shipit_deploys(:shipit)
       first_commit_author = deploy.commits.first.author
 
