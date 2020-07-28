@@ -2,7 +2,7 @@
 require 'test_helper'
 
 module Shipit
-  class DeploySerializerTest < ActiveSupport::TestCase
+  class CommitSerializerTest < ActiveSupport::TestCase
     test 'commit includes author object' do
       commit = shipit_commits(:first)
 
