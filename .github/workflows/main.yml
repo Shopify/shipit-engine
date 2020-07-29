@@ -35,7 +35,6 @@ jobs:
       matrix:
         ruby_version:
           - 2.5.x
-          - 2.6.x
 
     services:
       db:
@@ -88,7 +87,6 @@ jobs:
       matrix:
         ruby_version:
           - 2.5.x
-          - 2.6.x
 
     services:
       db:
@@ -138,6 +136,7 @@ jobs:
         ruby_version:
           - 2.5.x
           - 2.6.x
+          - 2.7.x
 
     services:
       redis:
