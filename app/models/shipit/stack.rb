@@ -2,7 +2,7 @@
 require 'fileutils'
 
 module Shipit
-  class Stack < ActiveRecord::Base
+  class Stack < Record
     module NoDeployedCommit
       extend self
 

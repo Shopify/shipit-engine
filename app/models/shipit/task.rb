@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Task < ActiveRecord::Base
+  class Task < Record
     include DeferredTouch
 
     ConcurrentTaskRunning = Class.new(StandardError)

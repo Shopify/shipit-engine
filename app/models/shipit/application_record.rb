@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class ApplicationRecord < ActiveRecord::Base
+  class ApplicationRecord < Record
     self.abstract_class = true
   end
 end

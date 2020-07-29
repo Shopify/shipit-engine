@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class CommitDeployment < ActiveRecord::Base
+  class CommitDeployment < Record
     belongs_to :task
     has_many :statuses, dependent: :destroy, class_name: 'CommitDeploymentStatus'
 

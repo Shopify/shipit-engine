@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class GithubHook < ActiveRecord::Base
+  class GithubHook < Record
     # TODO: app-migration, delete class
     belongs_to :stack, required: false # Required for fixtures
 

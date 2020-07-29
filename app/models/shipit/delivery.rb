@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Delivery < ActiveRecord::Base
+  class Delivery < Record
     STATUSES = %w(pending scheduled sent).freeze
     enum status: STATUSES.zip(STATUSES).to_h
 

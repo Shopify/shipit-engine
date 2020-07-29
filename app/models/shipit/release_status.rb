@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class ReleaseStatus < ActiveRecord::Base
+  class ReleaseStatus < Record
     MAX_DESCRIPTION_LENGTH = 140
     include DeferredTouch
 

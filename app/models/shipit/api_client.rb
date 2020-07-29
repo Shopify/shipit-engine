@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class ApiClient < ActiveRecord::Base
+  class ApiClient < Record
     InsufficientPermission = Class.new(StandardError)
 
     belongs_to :creator, class_name: 'User'
