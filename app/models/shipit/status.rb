@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Status < ActiveRecord::Base
+  class Status < Record
     include Common
     include DeferredTouch
 

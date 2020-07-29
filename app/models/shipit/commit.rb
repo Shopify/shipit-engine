@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Commit < ActiveRecord::Base
+  class Commit < Record
     include DeferredTouch
 
     RECENT_COMMIT_THRESHOLD = 10.seconds

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class CommitDeploymentStatus < ActiveRecord::Base
+  class CommitDeploymentStatus < Record
     DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB = 140
 
     belongs_to :commit_deployment

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class OutputChunk < ActiveRecord::Base
+  class OutputChunk < Record
     belongs_to :task
 
     scope :tail, ->(start) { order(id: :asc).where('id > ?', start || 0) }

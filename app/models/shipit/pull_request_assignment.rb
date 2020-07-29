@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class PullRequestAssignment < ActiveRecord::Base
+  class PullRequestAssignment < Record
     belongs_to :pull_request, required: true
     belongs_to :user, required: true
 

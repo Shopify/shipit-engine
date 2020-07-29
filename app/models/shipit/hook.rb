@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Hook < ActiveRecord::Base
+  class Hook < Record
     class DeliverySpec
       def initialize(event:, url:, content_type:, payload:)
         @event = event

@@ -2,7 +2,7 @@
 require 'fileutils'
 
 module Shipit
-  class Stack < ActiveRecord::Base
+  class Stack < Record
     NotYetSynced = Class.new(StandardError)
 
     module NoDeployedCommit

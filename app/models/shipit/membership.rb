@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class Membership < ActiveRecord::Base
+  class Membership < Record
     belongs_to :team, required: true
     belongs_to :user, required: true
 
