@@ -23,7 +23,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
-        gem install bundler:1.17.3
+        gem install bundler:2.1.4
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
         bundle exec rubocop
@@ -73,7 +73,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
-        gem install bundler:1.17.3
+        gem install bundler:2.1.4
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
         cp test/dummy/config/database.postgresql.yml test/dummy/config/database.yml
@@ -121,7 +121,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
-        gem install bundler:1.17.3
+        gem install bundler:2.1.4
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
         cp test/dummy/config/database.mysql.yml test/dummy/config/database.yml
@@ -163,7 +163,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
-        gem install bundler:1.17.3
+        gem install bundler:2.1.4
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
         bundle exec rake db:create db:schema:load test
