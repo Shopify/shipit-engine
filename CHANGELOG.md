@@ -1,5 +1,12 @@
 # Unreleased
 
+# 0.32.0
+
+* Optimize some queries (N+1).
+* Added an API endpoint to update stacks.
+* Added an API endpoint to trigger rollbacks.
+* Added a power user endpoint `/<org>/<repo>` to list all stack of a repository.
+* Fix the API response serialization for Ruby 2.6.6+ (#1092).
 * Prevent gem released unless the `allowed_push_host` metadata is set in the gemspec (#1037).
 * Added a new job `ReapDeadTasksJob` to support cleanup of jobs that are stuck in running, but report as dead.
   * This job runs every minute via the cron rake task.
