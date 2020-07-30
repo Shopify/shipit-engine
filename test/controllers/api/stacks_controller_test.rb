@@ -93,6 +93,16 @@ module Shipit
         end
       end
 
+      test "#index returns a list of stacks filter by repo" do
+        repo = shipit_repositories(:shipit)
+
+        get :index, params: { repo_owner: repo.owner, repo_name: repo.name }
+        assert_response :ok
+        assert_json do |stacks|
+          assert_equal stacks.count, repo.stacks.count
+        end
+      end
+
       test "#index is paginable" do
         get :index, params: { page_size: 1 }
         assert_json do |list|
