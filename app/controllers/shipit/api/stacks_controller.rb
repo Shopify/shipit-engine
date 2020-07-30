@@ -5,8 +5,21 @@ module Shipit
       require_permission :read, :stack, only: %i(index show)
       require_permission :write, :stack, only: %i(create update destroy)
 
+      params do
+        accepts :repo_owner, String
+        accepts :repo_name, String
+      end
       def index
-        render_resources(stacks)
+        all_stacks = if index_params[:repo_owner] && index_params[:repo_name]
+          stacks.joins(:repository).where(repository: {
+            repo_owner: index_params[:repo_owner],
+            repo_name: index_params[:repo_name],
+          })
+        else
+          stacks
+        end
+
+        render_resources(all_stacks)
       end
 
       params do
