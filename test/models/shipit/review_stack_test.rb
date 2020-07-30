@@ -21,5 +21,14 @@ module Shipit
 
       assert @stack.review_request, @pull_request
     end
+
+    test "clearing stale caches" do
+      # Asserting that :archived_25hours_ago, :archived_30minutes_ago and :shipit are not queued.
+      assert_enqueued_jobs 1 do
+        assert_enqueued_with(job: Shipit::ClearGitCacheJob, args: [shipit_stacks(:archived_6hours_ago)]) do
+          ReviewStack.clear_stale_caches
+        end
+      end
+    end
   end
 end

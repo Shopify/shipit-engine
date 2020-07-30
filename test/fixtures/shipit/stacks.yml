@@ -583,3 +583,45 @@ review_stack:
     }
   last_deployed_at: <%= 8.days.ago.to_s(:db) %>
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+archived_25hours_ago:
+  type: Shipit::ReviewStack
+  repository: cyclimse
+  environment: archived_25hours_ago
+  branch: master
+  ignore_ci: true
+  merge_queue_enabled: true
+  tasks_count: 8
+  undeployed_commits_count: 2
+  cached_deploy_spec: "{}"
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  archived_since: <%= 25.hours.ago.to_s(:db) %>
+
+archived_6hours_ago:
+  type: Shipit::ReviewStack
+  repository: cyclimse
+  environment: archived_6hours_ago
+  branch: master
+  ignore_ci: true
+  merge_queue_enabled: true
+  tasks_count: 8
+  undeployed_commits_count: 2
+  cached_deploy_spec: "{}"
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  archived_since: <%= 6.hours.ago.to_s(:db) %>
+
+archived_30minutes_ago:
+  type: Shipit::ReviewStack
+  repository: cyclimse
+  environment: archived_30minutes_ago
+  branch: master
+  ignore_ci: true
+  merge_queue_enabled: true
+  tasks_count: 8
+  undeployed_commits_count: 2
+  cached_deploy_spec: "{}"
+  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  archived_since: <%= 30.minutes.ago.to_s(:db) %>

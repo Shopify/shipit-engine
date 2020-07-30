@@ -48,9 +48,15 @@ module Shipit
     end
 
     test "#index list all stacks" do
-      get :index
+      get :index, params: { show_archived: true }
       assert_response :ok
       assert_select ".stack", count: Stack.count
+    end
+
+    test "#index list all not archived stacks" do
+      get :index
+      assert_response :ok
+      assert_select ".stack", count: Stack.not_archived.count
     end
 
     test "#index list a repo stacks if the :repo params is passed" do

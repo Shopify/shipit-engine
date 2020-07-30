@@ -10,7 +10,7 @@ namespace :cron do
     Shipit::ReviewStackProvisioningQueue.work
   end
 
-  task hourly: %i(rollup refresh_users)
+  task hourly: %i(rollup refresh_users clear_stale_caches delete_old_deployment_directories)
 
   desc "Rolls-up output chunks for completed deploys older than an hour"
   task rollup: :environment do
@@ -19,5 +19,13 @@ namespace :cron do
 
   task refresh_users: :environment do
     Shipit::User.refresh_shard(Time.now.hour % 24, 24)
+  end
+
+  task clear_stale_caches: :environment do
+    Shipit::ReviewStack.clear_stale_caches
+  end
+
+  task delete_old_deployment_directories: :environment do
+    Shipit::ReviewStack.delete_old_deployment_directories
   end
 end
