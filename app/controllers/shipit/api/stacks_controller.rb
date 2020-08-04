@@ -10,7 +10,7 @@ module Shipit
         accepts :repo_name, String
       end
       def index
-        @stacks = Stack.all
+        @stacks = stacks
         if params[:repo_owner] && params[:repo_name]
           full_repo_name = [repo_owner, repo_name].join('/')
           @stacks = if (repository = Repository.from_github_repo_name(full_repo_name))
@@ -19,7 +19,7 @@ module Shipit
             Stack.none
           end
         end
-        render_resources(@stacks.not_archived)
+        render_resources(@stacks)
       end
 
       params do
