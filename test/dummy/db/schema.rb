@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_16_204019) do
+ActiveRecord::Schema.define(version: 2020_08_03_194052) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -237,7 +237,9 @@ ActiveRecord::Schema.define(version: 2020_07_16_204019) do
     t.string "lock_reason_code"
     t.string "provision_status", default: "deprovisioned", null: false
     t.string "type", default: "Shipit::Stack"
+    t.boolean "awaiting_provision", default: false, null: false
     t.index ["archived_since"], name: "index_stacks_on_archived_since"
+    t.index ["awaiting_provision"], name: "index_stacks_on_awaiting_provision"
     t.index ["lock_reason_code"], name: "index_stacks_on_lock_reason_code"
     t.index ["provision_status"], name: "index_stacks_on_provision_status"
     t.index ["repository_id", "environment"], name: "stack_unicity", unique: true

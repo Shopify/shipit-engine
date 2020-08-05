@@ -6,15 +6,8 @@ module Shipit
       new.work
     end
 
-    PROVISIONING_QUEUED_LOCK_REASON = "This stack is in a queue waiting on " \
-                                      "provisioning. This may be because too many review stacks " \
-                                      "exist for this repository."
-
     def self.add(stack)
-      stack.lock(
-        PROVISIONING_QUEUED_LOCK_REASON,
-        Shipit::AnonymousUser.new
-      )
+      stack.enqueue_for_provisioning
     end
 
     def self.queued_stacks
@@ -28,7 +21,7 @@ module Shipit
     def queued_stacks
       @queued_stacks ||= Shipit::ReviewStack
         .with_provision_status(:deprovisioned)
-        .where(lock_reason: PROVISIONING_QUEUED_LOCK_REASON)
+        .where(awaiting_provision: true)
     end
 
     private

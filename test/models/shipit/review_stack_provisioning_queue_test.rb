@@ -8,7 +8,7 @@ module Shipit
       review_stack = shipit_stacks(:review_stack)
       review_stack.update(lock_reason: nil)
 
-      assert_changes -> { review_stack.lock_reason }, from: nil, to: provisioning_enqueued_lock_reason do
+      assert_changes -> { review_stack.awaiting_provision }, from: false, to: true do
         queue.add(review_stack)
       end
     end
@@ -58,10 +58,6 @@ module Shipit
 
     def queue
       ReviewStackProvisioningQueue
-    end
-
-    def provisioning_enqueued_lock_reason
-      queue::PROVISIONING_QUEUED_LOCK_REASON
     end
   end
 end
