@@ -357,7 +357,7 @@ module Shipit
     end
 
     def deployable?
-      !locked? && !active_task?
+      !locked? && !active_task? && !awaiting_provision?
     end
 
     def allows_merges?
