@@ -29,9 +29,6 @@ Style/SymbolProc:
   Exclude:
     - app/models/shipit/*
 
-Style/PerlBackrefs:
-  Enabled: false
-
 Naming/PredicateName:
   Exclude:
     - app/serializers/**/*
@@ -45,6 +42,11 @@ Lint/SuppressedException:
 
 Lint/AssignmentInCondition:
   Enabled: false
+
+Style/PerlBackrefs:
+  Exclude:
+    - app/helpers/shipit/shipit_helper.rb
+    - app/models/shipit/pull_request.rb
 
 # This cop is broken https://github.com/rubocop-hq/rubocop/pull/7531
 Layout/RescueEnsureAlignment:

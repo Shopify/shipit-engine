@@ -33,7 +33,7 @@ Shipit::Engine.routes.draw do
       end
       resources :rollbacks, only: %i(create)
       resources :commits, only: %i(index)
-      resources :merge_requests, only: %i(index show update destroy)
+      resources :pull_requests, only: %i(index show update destroy)
       post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
       resources :hooks, only: %i(index create show update destroy)
     end
@@ -47,8 +47,8 @@ Shipit::Engine.routes.draw do
 
   # Browser extension
   get '/merge_status', action: :show, controller: :merge_status, as: :merge_status
-  put '/merge_status/*stack_id/pull/:number', action: :enqueue, controller: :merge_status, id: stack_id_format, as: :enqueue_merge_request
-  delete '/merge_status/*stack_id/pull/:number', action: :dequeue, controller: :merge_status, id: stack_id_format, as: :dequeue_merge_request
+  put '/merge_status/*stack_id/pull/:number', action: :enqueue, controller: :merge_status, id: stack_id_format, as: :enqueue_pull_request
+  delete '/merge_status/*stack_id/pull/:number', action: :dequeue, controller: :merge_status, id: stack_id_format, as: :dequeue_pull_request
 
   # Humans
   resources :api_clients
@@ -117,7 +117,7 @@ Shipit::Engine.routes.draw do
       resources :release_statuses, only: %i(create)
     end
 
-    resources :merge_requests, only: %i(index destroy create)
+    resources :pull_requests, only: %i(index destroy create)
   end
   get '/stacks/:id' => 'stacks#lookup'
 

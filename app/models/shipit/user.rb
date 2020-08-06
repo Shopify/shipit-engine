@@ -25,7 +25,7 @@ module Shipit
     end
 
     def self.find_or_create_author_from_github_commit(github_commit)
-      if (match_info = github_commit.commit.message.match(/^#{MergeRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
+      if (match_info = github_commit.commit.message.match(/^#{PullRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
         begin
           return find_or_create_by_login!(match_info[1])
         rescue Octokit::NotFound

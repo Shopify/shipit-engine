@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 module Shipit
   module Api
-    class MergeRequestsController < BaseController
+    class PullRequestsController < BaseController
       require_permission :read, :stack
       require_permission :deploy, :stack, only: %i(update destroy)
 
       def index
-        render_resources(stack.merge_requests.includes(:head).order(id: :desc))
+        render_resources(stack.pull_requests.includes(:head).order(id: :desc))
       end
 
       def show
-        render_resource(stack.merge_requests.find_by!(number: params[:id]))
+        render_resource(stack.pull_requests.find_by!(number: params[:id]))
       end
 
       def update
-        merge_request = MergeRequest.request_merge!(stack, params[:id], current_user)
-        if merge_request.waiting?
+        pull_request = PullRequest.request_merge!(stack, params[:id], current_user)
+        if pull_request.waiting?
           head(:accepted)
-        elsif merge_request.merged?
+        elsif pull_request.merged?
           render(status: :method_not_allowed, json: {
             message: "This pull request was already merged.",
           })
@@ -27,8 +27,8 @@ module Shipit
       end
 
       def destroy
-        if merge_request = stack.merge_requests.where(number: params[:id]).first
-          merge_request.cancel! if merge_request.waiting?
+        if pull_request = stack.pull_requests.where(number: params[:id]).first
+          pull_request.cancel! if pull_request.waiting?
         end
         head(:no_content)
       end

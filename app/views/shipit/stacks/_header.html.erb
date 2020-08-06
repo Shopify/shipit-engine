@@ -27,7 +27,7 @@
     </li>
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
-        <%= link_to t('stack.nav.merge_queue', count: stack.merge_requests.queued.count), stack_merge_requests_path(stack) %>
+        <%= link_to t('stack.nav.merge_queue', count: stack.pull_requests.queued.count), stack_pull_requests_path(stack) %>
       </li>
     <% end %>
 

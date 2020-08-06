@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class MergeRequest < ApplicationRecord
+  class PullRequest < ApplicationRecord
     include DeferredTouch
 
     MERGE_REQUEST_FIELD = 'Merge-Requested-By'
@@ -30,11 +30,11 @@ module Shipit
       end
 
       def ignored_statuses
-        deploy_spec&.merge_request_ignored_statuses || []
+        deploy_spec&.pull_request_ignored_statuses || []
       end
 
       def required_statuses
-        deploy_spec&.merge_request_required_statuses || []
+        deploy_spec&.pull_request_required_statuses || []
       end
     end
 
@@ -128,7 +128,7 @@ module Shipit
 
     def self.request_merge!(stack, number, user)
       now = Time.now.utc
-      merge_request = begin
+      pull_request = begin
         create_with(
           merge_requested_at: now,
           merge_requested_by: user.presence,
@@ -139,20 +139,20 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         retry
       end
-      merge_request.update!(merge_requested_by: user.presence)
-      merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
-      merge_request.schedule_refresh!
-      merge_request
+      pull_request.update!(merge_requested_by: user.presence)
+      pull_request.retry! if pull_request.rejected? || pull_request.canceled? || pull_request.revalidating?
+      pull_request.schedule_refresh!
+      pull_request
     end
 
     def self.assign_to_stack!(stack, number)
-      merge_request = MergeRequest.find_or_create_by!(
+      pull_request = PullRequest.find_or_create_by!(
         stack: stack,
         number: number,
         review_request: true,
       )
-      merge_request.schedule_refresh!
-      merge_request
+      pull_request.schedule_refresh!
+      pull_request
     end
 
     def reject!(reason)
@@ -220,7 +220,7 @@ module Shipit
     end
 
     def need_revalidation?
-      timeout = stack.cached_deploy_spec&.revalidate_merge_requests_after
+      timeout = stack.cached_deploy_spec&.revalidate_pull_requests_after
       return false unless timeout
       (revalidated_at + timeout).past?
     end
@@ -234,7 +234,7 @@ module Shipit
     end
 
     def schedule_refresh!
-      RefreshMergeRequestJob.perform_later(self)
+      RefreshPullRequestJob.perform_later(self)
     end
 
     def closed?
@@ -326,7 +326,7 @@ module Shipit
     def emit_merge_status_event
       return unless @merge_status_changed
       @merge_status_changed = nil
-      Hook.emit('merge', stack, merge_request: self, status: merge_status, stack: stack)
+      Hook.emit('merge', stack, pull_request: self, status: merge_status, stack: stack)
     end
 
     def emit_pull_request_event(reason)

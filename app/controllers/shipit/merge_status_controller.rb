@@ -12,7 +12,7 @@ module Shipit
 
       if stack
         return render('logged_out') unless current_user.logged_in?
-        if stale?(last_modified: [stack.updated_at, merge_request.updated_at].max, template: false)
+        if stale?(last_modified: [stack.updated_at, pull_request.updated_at].max, template: false)
           render(stack_status, layout: !request.xhr?)
         end
       else
@@ -23,13 +23,13 @@ module Shipit
     end
 
     def enqueue
-      MergeRequest.request_merge!(stack, params[:number], current_user)
+      PullRequest.request_merge!(stack, params[:number], current_user)
       render(stack_status, layout: !request.xhr?)
     end
 
     def dequeue
-      if merge_request = stack.merge_requests.find_by_number(params[:number])
-        merge_request.cancel! if merge_request.waiting?
+      if pull_request = stack.pull_requests.find_by_number(params[:number])
+        pull_request.cancel! if pull_request.waiting?
       end
       render(stack_status, layout: !request.xhr?)
     end
@@ -82,10 +82,10 @@ module Shipit
       @referrer_parser ||= ReferrerParser.new(params[:referrer])
     end
 
-    def merge_request
-      return @merge_request if defined?(@merge_request)
-      @merge_request = pull_request_number && stack.merge_requests.find_by_number(pull_request_number)
-      @merge_request ||= UnknownMergeRequest.new
+    def pull_request
+      return @pull_request if defined?(@pull_request)
+      @pull_request = pull_request_number && stack.pull_requests.find_by_number(pull_request_number)
+      @pull_request ||= UnknownPullRequest.new
     end
 
     def pull_request_number
@@ -98,14 +98,14 @@ module Shipit
     end
 
     helper_method :pull_request_number
-    helper_method :merge_request
+    helper_method :pull_request
     helper_method :queue_enabled?
     helper_method :stack
     helper_method :stack_status
 
     # FIXME: for some reason if invoked in the view, those path helpers will link to /events?...
-    helper_method :enqueue_merge_request_path
-    helper_method :dequeue_merge_request_path
+    helper_method :enqueue_pull_request_path
+    helper_method :dequeue_pull_request_path
 
     class ReferrerParser
       URL_PATTERN = %r{\Ahttps://github\.com/([^/]+)/([^/]+)/pull/(\d+)}
@@ -123,7 +123,7 @@ module Shipit
       end
     end
 
-    class UnknownMergeRequest
+    class UnknownPullRequest
       attr_reader :updated_at
 
       def initialize

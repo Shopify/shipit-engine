@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_173912) do
+ActiveRecord::Schema.define(version: 2020_08_03_194052) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
     t.integer "deletions", limit: 4
     t.integer "pull_request_number"
     t.string "pull_request_title", limit: 1024
-    t.integer "merge_request_id"
+    t.integer "pull_request_id"
     t.boolean "locked", default: false, null: false
     t.integer "lock_author_id", limit: 4
     t.string "pull_request_head_sha", limit: 40
@@ -138,7 +138,22 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
-  create_table "merge_requests", force: :cascade do |t|
+  create_table "output_chunks", force: :cascade do |t|
+    t.integer "task_id", limit: 4
+    t.text "text", limit: 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["task_id"], name: "index_output_chunks_on_task_id"
+  end
+
+  create_table "pull_request_assignments", force: :cascade do |t|
+    t.integer "pull_request_id"
+    t.integer "user_id"
+    t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
+    t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
     t.integer "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
@@ -162,29 +177,14 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
     t.integer "base_commit_id"
     t.integer "user_id"
     t.boolean "review_request", default: false
-    t.index ["head_id"], name: "index_merge_requests_on_head_id"
-    t.index ["merge_requested_by_id"], name: "index_merge_requests_on_merge_requested_by_id"
-    t.index ["merge_status"], name: "index_merge_requests_on_merge_status"
-    t.index ["stack_id", "github_id"], name: "index_merge_requests_on_stack_id_and_github_id", unique: true
-    t.index ["stack_id", "merge_status"], name: "index_merge_requests_on_stack_id_and_merge_status"
-    t.index ["stack_id", "number"], name: "index_merge_requests_on_stack_id_and_number", unique: true
-    t.index ["stack_id"], name: "index_merge_requests_on_stack_id"
-    t.index ["user_id"], name: "index_merge_requests_on_user_id"
-  end
-
-  create_table "output_chunks", force: :cascade do |t|
-    t.integer "task_id", limit: 4
-    t.text "text", limit: 16777215
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["task_id"], name: "index_output_chunks_on_task_id"
-  end
-
-  create_table "pull_request_assignments", force: :cascade do |t|
-    t.integer "merge_request_id"
-    t.integer "user_id"
-    t.index ["merge_request_id"], name: "index_pull_request_assignments_on_merge_request_id"
-    t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
+    t.index ["head_id"], name: "index_pull_requests_on_head_id"
+    t.index ["merge_requested_by_id"], name: "index_pull_requests_on_merge_requested_by_id"
+    t.index ["merge_status"], name: "index_pull_requests_on_merge_status"
+    t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
+    t.index ["stack_id", "merge_status"], name: "index_pull_requests_on_stack_id_and_merge_status"
+    t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
+    t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
+    t.index ["user_id"], name: "index_pull_requests_on_user_id"
   end
 
   create_table "release_statuses", force: :cascade do |t|

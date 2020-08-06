@@ -2,38 +2,38 @@
 require 'test_helper'
 
 module Shipit
-  class MergeRequestTest < ActiveSupport::TestCase
+  class PullRequestTest < ActiveSupport::TestCase
     setup do
       @stack = shipit_stacks(:shipit)
-      @pr = shipit_merge_requests(:shipit_pending)
+      @pr = shipit_pull_requests(:shipit_pending)
       @user = shipit_users(:walrus)
     end
 
     test ".assign_to_stack! associates the pull request with a stack and schedules a pull request refresh" do
       pull_request = nil
-      assert_enqueued_with(job: RefreshMergeRequestJob) do
-        pull_request = MergeRequest.assign_to_stack!(@stack, 100)
+      assert_enqueued_with(job: RefreshPullRequestJob) do
+        pull_request = PullRequest.assign_to_stack!(@stack, 100)
       end
       assert_predicate pull_request, :persisted?
     end
 
     test ".assign_to_stack! is idempotent" do
-      assert_difference -> { MergeRequest.count }, +1 do
-        5.times { MergeRequest.assign_to_stack!(@stack, 100) }
+      assert_difference -> { PullRequest.count }, +1 do
+        5.times { PullRequest.assign_to_stack!(@stack, 100) }
       end
     end
 
     test ".request_merge! creates a record and schedule a refresh" do
-      merge_request = nil
-      assert_enqueued_with(job: RefreshMergeRequestJob) do
-        merge_request = MergeRequest.request_merge!(@stack, 64, @user)
+      pull_request = nil
+      assert_enqueued_with(job: RefreshPullRequestJob) do
+        pull_request = PullRequest.request_merge!(@stack, 64, @user)
       end
-      assert_predicate merge_request, :persisted?
+      assert_predicate pull_request, :persisted?
     end
 
     test ".request_merge! only track pull requests once" do
-      assert_difference -> { MergeRequest.count }, +1 do
-        5.times { MergeRequest.request_merge!(@stack, 999, @user) }
+      assert_difference -> { PullRequest.count }, +1 do
+        5.times { PullRequest.request_merge!(@stack, 999, @user) }
       end
     end
 
@@ -41,7 +41,7 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.cancel!
       assert_predicate @pr, :canceled?
-      MergeRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
       assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
@@ -51,7 +51,7 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.reject!('merge_conflict')
       assert_predicate @pr, :rejected?
-      MergeRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user)
       assert_predicate @pr.reload, :pending?
       assert_not_equal original_merge_requested_at, @pr.merge_requested_at
       assert_in_delta Time.now.utc, @pr.merge_requested_at, 2
@@ -62,30 +62,30 @@ module Shipit
       original_merge_requested_at = @pr.merge_requested_at
       @pr.revalidate!
       assert_predicate @pr, :revalidating?
-      MergeRequest.request_merge!(@stack, @pr.number, @user)
+      PullRequest.request_merge!(@stack, @pr.number, @user)
       assert_predicate @pr.reload, :pending?
       assert_equal original_merge_requested_at, @pr.merge_requested_at
     end
 
     test ".extract_number can get a pull request number from different formats" do
-      assert_equal 42, MergeRequest.extract_number(@stack, '42')
-      assert_equal 42, MergeRequest.extract_number(@stack, '#42')
-      assert_equal 42, MergeRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
+      assert_equal 42, PullRequest.extract_number(@stack, '42')
+      assert_equal 42, PullRequest.extract_number(@stack, '#42')
+      assert_equal 42, PullRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
 
-      assert_nil MergeRequest.extract_number(@stack, 'https://github.com/ACME/shipit-engine/pull/42')
+      assert_nil PullRequest.extract_number(@stack, 'https://github.com/ACME/shipit-engine/pull/42')
 
       Shipit.github.expects(:domain).returns('github.acme.com').at_least_once
-      assert_equal 42, MergeRequest.extract_number(@stack, 'https://github.acme.com/Shopify/shipit-engine/pull/42')
-      assert_nil MergeRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
+      assert_equal 42, PullRequest.extract_number(@stack, 'https://github.acme.com/Shopify/shipit-engine/pull/42')
+      assert_nil PullRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
     end
 
     test "refresh! pulls state from GitHub" do
-      merge_request = shipit_merge_requests(:shipit_fetching)
+      pull_request = shipit_pull_requests(:shipit_fetching)
       user = shipit_users(:bob)
 
       head_sha = '64b3833d39def7ec65b57b42f496eb27ab4980b6'
       base_sha = 'ba7ab50e02286f7d6c60c1ef75258133dd9ea763'
-      Shipit.github.api.expects(:pull_request).with(@stack.github_repo_name, merge_request.number).returns(
+      Shipit.github.api.expects(:pull_request).with(@stack.github_repo_name, pull_request.number).returns(
         stub(
           id: 4_857_578,
           url: 'https://api.github.com/repos/Shopify/shipit-engine/pulls/64',
@@ -152,17 +152,17 @@ module Shipit
         created_at: 1.day.ago,
       )])
 
-      merge_request.refresh!
+      pull_request.refresh!
 
-      assert_predicate merge_request, :mergeable?
-      assert_predicate merge_request, :pending?
-      assert_equal 'super-branch', merge_request.branch
-      assert_equal user, merge_request.user
-      assert_equal [user], merge_request.assignees
+      assert_predicate pull_request, :mergeable?
+      assert_predicate pull_request, :pending?
+      assert_equal 'super-branch', pull_request.branch
+      assert_equal user, pull_request.user
+      assert_equal [user], pull_request.assignees
 
-      assert_not_nil merge_request.head
-      assert_predicate merge_request.head, :detached?
-      assert_predicate merge_request.head, :success?
+      assert_not_nil pull_request.head
+      assert_predicate pull_request.head, :detached?
+      assert_predicate pull_request.head, :success?
     end
 
     test "#reject! records the reason" do
@@ -245,11 +245,11 @@ module Shipit
       assert_equal 'requires_rebase', @pr.rejection_reason
     end
 
-    test "#merge! raises a MergeRequest::NotReady if the PR isn't mergeable yet" do
+    test "#merge! raises a PullRequest::NotReady if the PR isn't mergeable yet" do
       @pr.update!(mergeable: nil)
 
       assert_predicate @pr, :not_mergeable_yet?
-      assert_raises MergeRequest::NotReady do
+      assert_raises PullRequest::NotReady do
         @pr.merge!
       end
       @pr.reload
@@ -263,8 +263,8 @@ module Shipit
       params = job.arguments.first
       assert_equal 'merge', params[:event]
       assert_json 'status', 'rejected', document: params[:payload]
-      assert_json 'merge_request.rejection_reason', 'merge_conflict', document: params[:payload]
-      assert_json 'merge_request.number', @pr.number, document: params[:payload]
+      assert_json 'pull_request.rejection_reason', 'merge_conflict', document: params[:payload]
+      assert_json 'pull_request.number', @pr.number, document: params[:payload]
     end
 
     test "changes to pull request emit hooks" do

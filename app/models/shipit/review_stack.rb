@@ -57,7 +57,7 @@ module Shipit
       update!(awaiting_provision: false)
     end
 
-    has_one :review_request, -> { where(review_request: true) }, class_name: "MergeRequest", foreign_key: :stack_id
+    has_one :review_request, -> { where(review_request: true) }, class_name: "PullRequest", foreign_key: :stack_id
 
     def to_partial_path
       "shipit/stacks/stack"

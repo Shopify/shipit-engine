@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class MergeRequestSerializer < ActiveModel::Serializer
+  class PullRequestSerializer < ActiveModel::Serializer
     include GithubUrlHelper
     include ConditionalAttributes
 

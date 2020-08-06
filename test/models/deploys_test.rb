@@ -200,7 +200,7 @@ module Shipit
         since_commit: shipit.commits.first,
         until_commit: shipit.commits.last,
       )
-      deploy.stubs(:merge_request_head_for_commit).returns(nil)
+      deploy.stubs(:pull_request_head_for_commit).returns(nil)
 
       expect_event(deploy)
       deploy.save!
@@ -263,9 +263,9 @@ module Shipit
       assert_in_delta @deploy.ended_at, @stack.last_deployed_at, 2
     end
 
-    test "transitioning to success schedule a MergeMergeRequests job" do
+    test "transitioning to success schedule a MergePullRequests job" do
       @deploy = shipit_deploys(:shipit_running)
-      assert_enqueued_with(job: ProcessMergeRequestsJob, args: [@deploy.stack]) do
+      assert_enqueued_with(job: MergePullRequestsJob, args: [@deploy.stack]) do
         @deploy.complete!
       end
     end

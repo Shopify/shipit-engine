@@ -147,7 +147,7 @@ module Shipit
       end
     end
 
-    stack.merge_requests.create!(
+    stack.pull_requests.create!(
       number: Faker::Number.number(digits: 3),
       title: Faker::Company.catch_phrase,
       merge_status: 'pending',

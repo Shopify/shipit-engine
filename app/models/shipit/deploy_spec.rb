@@ -183,12 +183,12 @@ module Shipit
       Array.wrap(config('ci', 'blocking'))
     end
 
-    def merge_request_merge_method
+    def pull_request_merge_method
       method = config('merge', 'method')
       method if %w(merge rebase squash).include?(method)
     end
 
-    def merge_request_required_statuses
+    def pull_request_required_statuses
       if config('merge', 'require') || config('merge', 'ignore')
         Array.wrap(config('merge', 'require'))
       else
@@ -196,7 +196,7 @@ module Shipit
       end
     end
 
-    def merge_request_ignored_statuses
+    def pull_request_ignored_statuses
       if config('merge', 'require') || config('merge', 'ignore')
         Array.wrap(config('merge', 'ignore')) + [release_status_context].compact
       else
@@ -204,7 +204,7 @@ module Shipit
       end
     end
 
-    def revalidate_merge_requests_after
+    def revalidate_pull_requests_after
       if timeout = config('merge', 'revalidate_after')
         begin
           Duration.parse(timeout)

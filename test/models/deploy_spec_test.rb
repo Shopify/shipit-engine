@@ -568,40 +568,40 @@ module Shipit
       assert_equal %w(ci/circleci soc/compliance), @spec.required_statuses
     end
 
-    test "merge_request_merge_method defaults to `nil`" do
+    test "pull_request_merge_method defaults to `nil`" do
       @spec.expects(:load_config).returns({})
-      assert_nil @spec.merge_request_merge_method
+      assert_nil @spec.pull_request_merge_method
     end
 
-    test "merge_request_merge_method returns `merge.method`" do
+    test "pull_request_merge_method returns `merge.method`" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'method' => 'squash',
         },
       )
-      assert_equal 'squash', @spec.merge_request_merge_method
+      assert_equal 'squash', @spec.pull_request_merge_method
     end
 
-    test "merge_request_merge_method returns `nil` if `merge.method` is invalid" do
+    test "pull_request_merge_method returns `nil` if `merge.method` is invalid" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'method' => 'squashing',
         },
       )
-      assert_nil @spec.merge_request_merge_method
+      assert_nil @spec.pull_request_merge_method
     end
 
-    test "merge_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do
+    test "pull_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do
       @spec.expects(:load_config).returns(
         'ci' => {
           'hide' => %w(ci/circleci ci/jenkins),
           'allow_failures' => %w(ci/circleci ci/travis),
         },
       )
-      assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.merge_request_ignored_statuses.sort
+      assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.pull_request_ignored_statuses.sort
     end
 
-    test "merge_request_ignored_statuses defaults to empty if `merge.require` is present" do
+    test "pull_request_ignored_statuses defaults to empty if `merge.require` is present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'require' => 'bar',
@@ -611,10 +611,10 @@ module Shipit
           'allow_failures' => %w(ci/circleci ci/travis),
         },
       )
-      assert_equal [], @spec.merge_request_ignored_statuses
+      assert_equal [], @spec.pull_request_ignored_statuses
     end
 
-    test "merge_request_ignored_statuses returns `merge.ignore` if present" do
+    test "pull_request_ignored_statuses returns `merge.ignore` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'ignore' => 'bar',
@@ -624,19 +624,19 @@ module Shipit
           'allow_failures' => %w(ci/circleci ci/travis),
         },
       )
-      assert_equal ['bar'], @spec.merge_request_ignored_statuses
+      assert_equal ['bar'], @spec.pull_request_ignored_statuses
     end
 
-    test "merge_request_required_statuses defaults to ci.require" do
+    test "pull_request_required_statuses defaults to ci.require" do
       @spec.expects(:load_config).returns(
         'ci' => {
           'require' => %w(ci/circleci ci/jenkins),
         },
       )
-      assert_equal %w(ci/circleci ci/jenkins), @spec.merge_request_required_statuses
+      assert_equal %w(ci/circleci ci/jenkins), @spec.pull_request_required_statuses
     end
 
-    test "merge_request_required_statuses defaults to empty if `merge.ignore` is present" do
+    test "pull_request_required_statuses defaults to empty if `merge.ignore` is present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'ignore' => 'bar',
@@ -645,10 +645,10 @@ module Shipit
           'require' => %w(ci/circleci ci/jenkins),
         },
       )
-      assert_equal [], @spec.merge_request_required_statuses
+      assert_equal [], @spec.pull_request_required_statuses
     end
 
-    test "merge_request_required_statuses returns `merge.require` if present" do
+    test "pull_request_required_statuses returns `merge.require` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'require' => 'bar',
@@ -658,21 +658,21 @@ module Shipit
           'allow_failures' => %w(ci/circleci ci/travis),
         },
       )
-      assert_equal ['bar'], @spec.merge_request_required_statuses
+      assert_equal ['bar'], @spec.pull_request_required_statuses
     end
 
-    test "revalidate_merge_requests_after defaults to `nil" do
+    test "revalidate_pull_requests_after defaults to `nil" do
       @spec.expects(:load_config).returns({})
-      assert_nil @spec.revalidate_merge_requests_after
+      assert_nil @spec.revalidate_pull_requests_after
     end
 
-    test "revalidate_merge_requests_after defaults to `nil` if `merge.timeout` cannot be parsed" do
+    test "revalidate_pull_requests_after defaults to `nil` if `merge.timeout` cannot be parsed" do
       @spec.expects(:load_config).returns(
         'merge' => {
           'revalidate_after' => 'ALSKhfjsdkf',
         },
       )
-      assert_nil @spec.revalidate_merge_requests_after
+      assert_nil @spec.revalidate_pull_requests_after
     end
 
     test "revalidate_after returns `merge.revalidate_after` if present" do
@@ -681,7 +681,7 @@ module Shipit
           'revalidate_after' => '5m30s',
         },
       )
-      assert_equal 330, @spec.revalidate_merge_requests_after.to_i
+      assert_equal 330, @spec.revalidate_pull_requests_after.to_i
     end
 
     test "#file is impacted by `machine.directory`" do

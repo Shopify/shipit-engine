@@ -29,7 +29,7 @@ module Shipit
     REQUIRED_HOOKS = %i(push status).freeze
 
     has_many :commits, dependent: :destroy
-    has_many :merge_requests, dependent: :destroy
+    has_many :pull_requests, dependent: :destroy
     has_many :tasks, dependent: :destroy
     has_many :deploys
     has_many :rollbacks
@@ -49,8 +49,6 @@ module Shipit
 
     include DeferredTouch
     deferred_touch repository: :updated_at
-
-    default_scope { preload(:repository) }
 
     default_scope { preload(:repository) }
 
@@ -217,7 +215,7 @@ module Shipit
     end
 
     def schedule_merges
-      ProcessMergeRequestsJob.perform_later(self)
+      MergePullRequestsJob.perform_later(self)
     end
 
     def next_commit_to_deploy
@@ -365,7 +363,7 @@ module Shipit
     end
 
     def merge_method
-      cached_deploy_spec&.merge_request_merge_method || Shipit.default_merge_method
+      cached_deploy_spec&.pull_request_merge_method || Shipit.default_merge_method
     end
 
     delegate :name=, to: :repository, prefix: :repo
