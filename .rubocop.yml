@@ -29,6 +29,9 @@ Style/SymbolProc:
   Exclude:
     - app/models/shipit/*
 
+Style/PerlBackrefs:
+  Enabled: false
+
 Naming/PredicateName:
   Exclude:
     - app/serializers/**/*
