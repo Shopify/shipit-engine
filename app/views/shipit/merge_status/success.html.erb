@@ -5,8 +5,8 @@
   </div>
 
   <h4 class="status-heading">
-    <% if pull_request.waiting? %>
-      <% if pull_request.all_status_checks_passed? %>
+    <% if merge_request.waiting? %>
+      <% if merge_request.all_status_checks_passed? %>
         Will be merged shortly!
       <% else %>
         Will be merged when required checks are passing.

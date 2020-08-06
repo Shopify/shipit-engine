@@ -9,7 +9,7 @@
     "url": "https://api.github.com/repos/Shopify/shipit-engine/check-suites/5",
     "before": "146e867f55c26428e5f9fade55a9bbf5e95a7912",
     "after": "d6fde92930d4715a2b49857d24b940956b26d2d3",
-    "pull_requests": [
+    "merge_requests": [
 
     ],
     "app": {

@@ -4,7 +4,7 @@
     <%= render 'anchor', color: '#bd2c00' %>
   </div>
   <h4 class="status-heading text-red">
-    <% if pull_request.waiting? %>
+    <% if merge_request.waiting? %>
       Will be merged shortly after the lock is removed!
     <% else %>
       Please hold off merging!

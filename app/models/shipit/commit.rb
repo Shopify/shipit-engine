@@ -13,11 +13,11 @@ module Shipit
     has_many :check_runs, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
     has_many :commit_deployments, dependent: :destroy
     has_many :release_statuses, dependent: :destroy
-    belongs_to :pull_request, inverse_of: :merge_commit, optional: true
+    belongs_to :merge_request, inverse_of: :merge_commit, optional: true
 
     deferred_touch stack: :updated_at
 
-    before_create :identify_pull_request
+    before_create :identify_merge_request
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
@@ -287,13 +287,13 @@ module Shipit
       stack.deploys.unsuccessful.where(until_commit_id: id).any?
     end
 
-    def identify_pull_request
+    def identify_merge_request
       return unless message_parser.pull_request?
-      if pull_request = stack.pull_requests.find_by(number: message_parser.pull_request_number)
-        self.pull_request = pull_request
-        self.pull_request_number = pull_request.number
-        self.pull_request_title = pull_request.title
-        self.author = pull_request.merge_requested_by if pull_request.merge_requested_by
+      if merge_request = stack.merge_requests.find_by(number: message_parser.pull_request_number)
+        self.merge_request = merge_request
+        self.pull_request_number = merge_request.number
+        self.pull_request_title = merge_request.title
+        self.author = merge_request.merge_requested_by if merge_request.merge_requested_by
       end
 
       self.pull_request_number = message_parser.pull_request_number unless self[:pull_request_number]
@@ -301,8 +301,8 @@ module Shipit
     end
 
     def deploy_requested_at
-      if pull_request&.merged?
-        pull_request.merge_requested_at
+      if merge_request&.merged?
+        merge_request.merge_requested_at
       else
         created_at
       end

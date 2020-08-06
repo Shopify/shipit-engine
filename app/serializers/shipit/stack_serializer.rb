@@ -4,10 +4,11 @@ module Shipit
     include ConditionalAttributes
 
     has_one :lock_author
-    attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url, :deploy_url, :pull_requests_url,
-               :deploy_spec, :undeployed_commits_count, :is_locked, :lock_reason, :continuous_deployment, :created_at,
-               :updated_at, :locked_since, :last_deployed_at, :branch, :merge_queue_enabled, :is_archived,
-               :archived_since
+
+    attributes :id, :repo_owner, :repo_name, :environment, :html_url, :url, :tasks_url, :deploy_url,
+      :merge_requests_url, :deploy_spec, :undeployed_commits_count, :is_locked, :lock_reason, :continuous_deployment,
+      :created_at, :updated_at, :locked_since, :last_deployed_at, :branch, :merge_queue_enabled, :is_archived,
+      :archived_since
 
     def url
       api_stack_url(object)
@@ -21,8 +22,8 @@ module Shipit
       api_stack_tasks_url(object)
     end
 
-    def pull_requests_url
-      api_stack_pull_requests_url(object)
+    def merge_requests_url
+      api_stack_merge_requests_url(object)
     end
 
     def is_locked
