@@ -20,7 +20,7 @@ module Shipit
 
     test "#github_pull_request_url returns a PR url" do
       expected = 'https://github.com/shopify/shipit-engine/pull/62'
-      assert_equal expected, github_pull_request_url(shipit_pull_requests(:shipit_pending))
+      assert_equal expected, github_pull_request_url(shipit_merge_requests(:shipit_pending))
     end
   end
 end

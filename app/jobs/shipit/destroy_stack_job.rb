@@ -11,7 +11,7 @@ module Shipit
     # |   +-- statuses
     # +-- github_hooks
     # +-- hooks
-    # +-- pull_requests
+    # +-- merge_requests
     # +-- tasks
     #     +-- chunks
 
@@ -26,7 +26,7 @@ module Shipit
       Shipit::Commit.where(id: commits_ids).delete_all
       Shipit::GithubHook.where(stack_id: stack.id).destroy_all
       Shipit::Hook.where(stack_id: stack.id).delete_all
-      Shipit::PullRequest.where(stack_id: stack.id).delete_all
+      Shipit::MergeRequest.where(stack_id: stack.id).delete_all
       tasks_ids.each_slice(100) do |ids|
         Shipit::OutputChunk.where(task_id: ids).delete_all
         Shipit::Task.where(id: ids).delete_all
