@@ -8,7 +8,7 @@ module Shipit
     end
 
     test "no duplicates are accepted" do
-      assignment = PullRequestAssignment.new(user: @assignment.user, pull_request: @assignment.pull_request)
+      assignment = PullRequestAssignment.new(user: @assignment.user, merge_request: @assignment.merge_request)
       refute assignment.valid?
     end
   end

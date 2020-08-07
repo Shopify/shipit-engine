@@ -84,12 +84,32 @@ module Shipit
 
       test "#index returns a list of stacks" do
         stack = Stack.last
-
         get :index
         assert_response :ok
         assert_json '0.id', stack.id
         assert_json do |stacks|
           assert_equal Stack.count, stacks.size
+        end
+      end
+
+      test "#index returns a list of stacks filtered by repo if name and owner given" do
+        repo = shipit_repositories(:shipit)
+        get :index, params: { repo_owner: repo.owner, repo_name: repo.name }
+        assert_response :ok
+        assert_json do |stacks|
+          assert_equal stacks.size, repo.stacks.size
+        end
+      end
+
+      test "#index returns a list of stacks filtered by repo and api client" do
+        authenticate!(:here_come_the_walrus)
+
+        repo = shipit_repositories(:soc)
+
+        get :index, params: { repo_owner: repo.owner, repo_name: repo.name }
+        assert_response :ok
+        assert_json do |stacks|
+          assert_equal 0, stacks.size
         end
       end
 

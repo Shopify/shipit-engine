@@ -17,7 +17,7 @@ module Shipit
     end
 
     test ".review_request returns latest non merge request" do
-      @pull_request = PullRequest.create!(stack: @stack, number: "1", review_request: true)
+      @pull_request = MergeRequest.create!(stack: @stack, number: "1", review_request: true)
 
       assert @stack.review_request, @pull_request
     end

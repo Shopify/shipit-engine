@@ -1,0 +1,20 @@
+<% subscribe events_path(channels: ["stack.#{@stack.id}"]), '.pr-list', '.header' %>
+
+<%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
+
+<div class="wrapper">
+  <section>
+    <header class="section-header">
+      <%= form_tag stack_merge_requests_path(@stack) do %>
+        <div class="field-wrapper inline">
+          <%= text_field_tag :number_or_url, '', placeholder: 'PR number or URL' %>
+          <%= submit_tag 'Request merge', class: 'btn' %>
+        </div>
+      <% end %>
+    </header>
+
+    <ul class="pr-list">
+      <%= render @merge_requests %>
+    </ul>
+  </section>
+</div>

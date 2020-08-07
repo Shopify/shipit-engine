@@ -351,12 +351,12 @@ module Shipit
       end
     end
 
-    test "unlocking the stack triggers a MergePullRequests job" do
-      assert_no_enqueued_jobs(only: MergePullRequestsJob) do
+    test "unlocking the stack triggers a MergeMergeRequests job" do
+      assert_no_enqueued_jobs(only: ProcessMergeRequestsJob) do
         @stack.update(lock_reason: "Just for fun", lock_author: shipit_users(:walrus))
       end
 
-      assert_enqueued_with(job: MergePullRequestsJob, args: [@stack]) do
+      assert_enqueued_with(job: ProcessMergeRequestsJob, args: [@stack]) do
         @stack.update(lock_reason: nil)
       end
     end

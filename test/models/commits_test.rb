@@ -678,7 +678,7 @@ module Shipit
       end
     end
 
-    test "#add_status schedule a MergePullRequests job if the commit transition to `pending` or `success`" do
+    test "#add_status schedule a MergeMergeRequests job if the commit transition to `pending` or `success`" do
       commit = shipit_commits(:second)
       github_status = OpenStruct.new(
         state: 'success',
@@ -688,7 +688,7 @@ module Shipit
       )
 
       assert_equal 'failure', commit.state
-      assert_enqueued_with(job: MergePullRequestsJob, args: [@commit.stack]) do
+      assert_enqueued_with(job: ProcessMergeRequestsJob, args: [@commit.stack]) do
         commit.create_status_from_github!(github_status)
         assert_equal 'success', commit.state
       end
@@ -729,12 +729,12 @@ module Shipit
         sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
         message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
       )
-      pull_request = shipit_pull_requests(:shipit_pending)
+      merge_request = shipit_merge_requests(:shipit_pending)
 
       assert_predicate commit, :pull_request?
       assert_equal 62, commit.pull_request_number
-      assert_equal pull_request.title, commit.pull_request_title
-      assert_equal pull_request, commit.pull_request
+      assert_equal merge_request.title, commit.pull_request_title
+      assert_equal merge_request, commit.merge_request
     end
 
     test "merge commits infer pull request number and title from the message if it's not a known pull request" do
@@ -750,7 +750,7 @@ module Shipit
       assert_predicate commit, :pull_request?
       assert_equal 99, commit.pull_request_number
       assert_equal 'yoloshipit!', commit.pull_request_title
-      assert_nil commit.pull_request
+      assert_nil commit.merge_request
     end
 
     test "the merge requester if known overrides the commit author" do
@@ -779,7 +779,7 @@ module Shipit
       refute_predicate commit, :pull_request?
       assert_nil commit.pull_request_number
       assert_nil commit.pull_request_title
-      assert_nil commit.pull_request
+      assert_nil commit.merge_request
     end
 
     test "#revert? returns false if the message doesn't follow the revert convention" do
@@ -838,12 +838,12 @@ module Shipit
     test "when merged via the queue, deploy_requested_at is merge_requested_at" do
       commit = shipit_commits(:cyclimse_merged)
       assert_predicate commit, :pull_request?
-      assert_equal commit.pull_request, shipit_pull_requests(:cyclimse_pending_merged)
-      assert_equal commit.deploy_requested_at, commit.pull_request.merge_requested_at
+      assert_equal commit.merge_request, shipit_merge_requests(:cyclimse_pending_merged)
+      assert_equal commit.deploy_requested_at, commit.merge_request.merge_requested_at
     end
 
     test "when merged manually after being queued, deploy_requested_at is created_at" do
-      pr = shipit_pull_requests(:cyclimse_pending_merged)
+      pr = shipit_merge_requests(:cyclimse_pending_merged)
       pr.cancel!
       commit = shipit_commits(:cyclimse_merged)
       assert_equal commit.deploy_requested_at, commit.created_at
