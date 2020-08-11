@@ -2,6 +2,30 @@
 
 module Shipit
   class ReviewStack < Shipit::Stack
+    def self.clear_stale_caches
+      Shipit::ReviewStack.where(
+        "archived_since > :earliest AND archived_since < :latest",
+        earliest: 1.day.ago,
+        latest: 1.hour.ago
+      ).each do |review_stack|
+        Shipit::ClearGitCacheJob.perform_later(review_stack)
+      end
+    end
+
+    def self.delete_old_deployment_directories
+      Shipit::Deploy.not_active.where(
+        "created_at > :earliest AND updated_at < :latest",
+        earliest: 1.day.ago,
+        latest: 1.hour.ago
+      ).find_each do |deploy|
+        Shipit::Commands.for(deploy).clear_working_directory
+      end
+    end
+
+    after_commit :emit_added_hooks, on: :create
+    after_commit :emit_updated_hooks, on: :update
+    after_commit :emit_removed_hooks, on: :destroy
+
     state_machine :provision_status, initial: :deprovisioned do
       state :provisioned
       state :provisioning
@@ -63,24 +87,17 @@ module Shipit
       "shipit/stacks/stack"
     end
 
-    def self.clear_stale_caches
-      Shipit::ReviewStack.where(
-        "archived_since > :earliest AND archived_since < :latest",
-        earliest: 1.day.ago,
-        latest: 1.hour.ago
-      ).each do |review_stack|
-        Shipit::ClearGitCacheJob.perform_later(review_stack)
-      end
+    def emit_added_hooks
+      Hook.emit(:review_stack, self, action: :added, review_stack: self)
     end
 
-    def self.delete_old_deployment_directories
-      Shipit::Deploy.not_active.where(
-        "created_at > :earliest AND updated_at < :latest",
-        earliest: 1.day.ago,
-        latest: 1.hour.ago
-      ).find_each do |deploy|
-        Shipit::Commands.for(deploy).clear_working_directory
-      end
+    def emit_updated_hooks
+      changed = !(previous_changes.keys - %w(updated_at)).empty?
+      Hook.emit(:review_stack, self, action: :updated, review_stack: self) if changed
+    end
+
+    def emit_removed_hooks
+      Hook.emit(:review_stack, self, action: :removed, review_stack: self)
     end
   end
 end

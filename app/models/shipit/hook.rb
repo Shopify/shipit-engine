@@ -45,6 +45,7 @@ module Shipit
 
     EVENTS = %w(
       stack
+      review_stack
       task
       deploy
       rollback
