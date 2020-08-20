@@ -158,7 +158,7 @@ module Shipit
       event = 'pull_request'
       mock_handler = mock
       mock_handler.expects(:call).with(pull_request_params.stringify_keys).once
-      Shipit::Webhooks.register_handler(event, mock_handler)
+      Shipit::Webhooks.handlers["pull_request"] = [mock_handler]
 
       @request.headers['X-Github-Event'] = event
       post :create, body: pull_request_params.to_json, as: :json

@@ -44,8 +44,8 @@ module Shipit
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
     belongs_to :user, optional: true
-    has_many :pull_request_assignments
-    has_many :assignees, class_name: :User, through: :pull_request_assignments, source: :user
+    has_many :merge_request_assignments
+    has_many :assignees, class_name: :User, through: :merge_request_assignments, source: :user
 
     deferred_touch stack: :updated_at
 
@@ -141,16 +141,6 @@ module Shipit
       end
       merge_request.update!(merge_requested_by: user.presence)
       merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
-      merge_request.schedule_refresh!
-      merge_request
-    end
-
-    def self.assign_to_stack!(stack, number)
-      merge_request = MergeRequest.find_or_create_by!(
-        stack: stack,
-        number: number,
-        review_request: true,
-      )
       merge_request.schedule_refresh!
       merge_request
     end

@@ -8,20 +8,6 @@ module Shipit
       @review_stack = shipit_stacks(:review_stack)
     end
 
-    test ".review_request is nil by default" do
-      assert_nil @review_stack.review_request
-    end
-
-    test ".review_request returns nil when all pull requests are merge requests" do
-      assert_nil @review_stack.review_request
-    end
-
-    test ".review_request returns latest non merge request" do
-      @pull_request = MergeRequest.create!(stack: @review_stack, number: "1", review_request: true)
-
-      assert @review_stack.review_request, @pull_request
-    end
-
     test "clearing stale caches" do
       # Asserting that :archived_25hours_ago, :archived_30minutes_ago and :shipit are not queued.
       assert_enqueued_jobs 1 do
@@ -60,6 +46,17 @@ module Shipit
       expect_hook(:review_stack, @review_stack, action: :removed, review_stack: @review_stack) do
         @review_stack.destroy!
       end
+    end
+
+    test "#env includes the stack's pull request labels" do
+      stack = shipit_stacks(:review_stack)
+      stack.pull_request.labels = [
+        Shipit::Label.find_or_create_by(name: "wip"),
+        Shipit::Label.find_or_create_by(name: "bug"),
+      ]
+
+      assert_equal stack.env["WIP"], "true"
+      assert_equal stack.env["BUG"], "true"
     end
   end
 end

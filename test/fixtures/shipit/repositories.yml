@@ -1,6 +1,7 @@
 shipit:
   owner: shopify
   name: shipit-engine
+  review_stacks_enabled: true
 
 cyclimse:
   owner: george

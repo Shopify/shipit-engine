@@ -2,6 +2,6 @@
 
 module Shipit
   class ReviewStackSerializer < Shipit::StackSerializer
-    has_one :review_request
+    has_one :pull_request
   end
 end

@@ -1,5 +1,35 @@
 # frozen_string_literal: true
 module Shipit
+  class NullRepository
+    def id
+      nil
+    end
+
+    def stacks
+      Shipit::Stack.none
+    end
+
+    def review_stacks
+      Shipit::ReviewStack.none
+    end
+
+    def review_stacks_enabled
+      false
+    end
+
+    def provisioning_behavior_allow_all?
+      false
+    end
+
+    def provisioning_behavior_allow_with_label?
+      false
+    end
+
+    def provisioning_behavior_prevent_with_label?
+      false
+    end
+  end
+
   class Repository < ApplicationRecord
     OWNER_MAX_SIZE = 39
     private_constant :OWNER_MAX_SIZE

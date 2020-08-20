@@ -5,6 +5,13 @@ walrus:
   encrypted_github_access_token: "ffHk4diyVKppJGfwfJefMizxF45H\n" # t0k3n
   encrypted_github_access_token_iv: "gRSldoTZ+fmrIDoY\n"
 
+codertocat:
+  name: Coding Cat
+  email: coding@cat.com
+  login: Codertocat
+  encrypted_github_access_token: "ffHk4diyVKppJGfwfJefMizxF45H\n" # t0k3n
+  encrypted_github_access_token_iv: "gRSldoTZ+fmrIDoY\n"
+
 bob:
   name:  Bob the Builder
   email: bob@bob.com

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_173912) do
+ActiveRecord::Schema.define(version: 2020_08_17_120832) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -129,6 +129,11 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
     t.index ["stack_id"], name: "index_hooks_on_stack_id"
   end
 
+  create_table "labels", force: :cascade do |t|
+    t.string "name"
+    t.index ["name"], name: "index_labels_on_name", unique: true
+  end
+
   create_table "memberships", force: :cascade do |t|
     t.integer "team_id", limit: 4
     t.integer "user_id", limit: 4
@@ -136,6 +141,13 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
     t.datetime "updated_at", null: false
     t.index ["team_id", "user_id"], name: "index_memberships_on_team_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
+  create_table "merge_request_assignments", force: :cascade do |t|
+    t.integer "merge_request_id"
+    t.integer "user_id"
+    t.index ["merge_request_id"], name: "index_merge_request_assignments_on_merge_request_id"
+    t.index ["user_id"], name: "index_merge_request_assignments_on_user_id"
   end
 
   create_table "merge_requests", force: :cascade do |t|
@@ -181,10 +193,35 @@ ActiveRecord::Schema.define(version: 2020_08_06_173912) do
   end
 
   create_table "pull_request_assignments", force: :cascade do |t|
-    t.integer "merge_request_id"
+    t.integer "pull_request_id"
     t.integer "user_id"
-    t.index ["merge_request_id"], name: "index_pull_request_assignments_on_merge_request_id"
+    t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
+  end
+
+  create_table "pull_request_labels", force: :cascade do |t|
+    t.integer "pull_request_id", null: false
+    t.integer "label_id", null: false
+    t.index ["label_id"], name: "index_pull_request_labels_on_label_id"
+    t.index ["pull_request_id", "label_id"], name: "index_pull_request_labels_on_pull_request_id_and_label_id", unique: true
+    t.index ["pull_request_id"], name: "index_pull_request_labels_on_pull_request_id"
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "number", null: false
+    t.string "title", limit: 256
+    t.integer "github_id", limit: 8
+    t.string "api_url", limit: 1024
+    t.string "state"
+    t.integer "additions", default: 0, null: false
+    t.integer "deletions", default: 0, null: false
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
+    t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
+    t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
   end
 
   create_table "release_statuses", force: :cascade do |t|

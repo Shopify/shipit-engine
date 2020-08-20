@@ -9,20 +9,6 @@ module Shipit
       @user = shipit_users(:walrus)
     end
 
-    test ".assign_to_stack! associates the pull request with a stack and schedules a pull request refresh" do
-      pull_request = nil
-      assert_enqueued_with(job: RefreshMergeRequestJob) do
-        pull_request = MergeRequest.assign_to_stack!(@stack, 100)
-      end
-      assert_predicate pull_request, :persisted?
-    end
-
-    test ".assign_to_stack! is idempotent" do
-      assert_difference -> { MergeRequest.count }, +1 do
-        5.times { MergeRequest.assign_to_stack!(@stack, 100) }
-      end
-    end
-
     test ".request_merge! creates a record and schedule a refresh" do
       merge_request = nil
       assert_enqueued_with(job: RefreshMergeRequestJob) do
