@@ -51,10 +51,9 @@ module Shipit
 
     validates :number, presence: true, uniqueness: { scope: :stack_id }
 
-    scope :merge_requests, -> { where(review_request: [false, nil]) }
-    scope :waiting, -> { merge_requests.where(merge_status: WAITING_STATUSES) }
-    scope :pending, -> { merge_requests.where(merge_status: 'pending') }
-    scope :queued, -> { merge_requests.where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
+    scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
+    scope :pending, -> { where(merge_status: 'pending') }
+    scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
 
     after_save :record_merge_status_change

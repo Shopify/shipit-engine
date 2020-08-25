@@ -52,8 +52,8 @@ module Shipit
     end
 
     def stack_github_url(stack)
-      if stack.respond_to?(:review_request) && stack.review_request.presence
-        github_pull_request_url(stack.review_request)
+      if stack.respond_to?(:pull_request) && stack.pull_request.presence
+        github_pull_request_url(stack.pull_requset)
       else
         github_repo_url(stack.repo_owner, stack.repo_name)
       end
