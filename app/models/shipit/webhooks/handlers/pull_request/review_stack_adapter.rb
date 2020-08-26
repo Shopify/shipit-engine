@@ -69,9 +69,12 @@ module Shipit
           end
 
           def create!
-            stack = scope.build(stack_attributes)
-            stack.pull_request = Shipit::PullRequest.from_github(params.pull_request)
-            stack.save!
+            stack = scope.create!(stack_attributes)
+            Shipit::PullRequest.create!(
+              stack: stack,
+              github_pull_request: params.pull_request
+            )
+
             Shipit::ReviewStackProvisioningQueue.add(stack)
 
             @stack = stack
@@ -79,7 +82,7 @@ module Shipit
 
           def stack_attributes
             {
-              branch: params.pull_request["head"]["ref"],
+              branch: params.pull_request.head.ref,
               environment: environment,
               ignore_ci: false,
               continuous_deployment: false,

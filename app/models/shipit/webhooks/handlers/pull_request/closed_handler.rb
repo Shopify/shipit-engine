@@ -16,6 +16,10 @@ module Shipit
               requires :state, String
               requires :additions, Integer
               requires :deletions, Integer
+              requires :head do
+                requires :sha, String
+                requires :ref, String
+              end
               requires :user do
                 requires :login, String
               end
