@@ -19,7 +19,6 @@ module Shipit
       assert_includes serialized.keys, :html_url
       assert_includes serialized.keys, :user
       assert_includes serialized.keys, :assignees
-      assert_includes serialized.keys, :head
     end
 
     def serializer

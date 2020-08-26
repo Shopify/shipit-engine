@@ -43,9 +43,11 @@ module Shipit
             payload = payload_parsed(:pull_request_opened)
             payload["pull_request"]["user"]["login"] = github_user.login
 
-            OpenedHandler.new(payload).process
+            assert_difference -> { Shipit::User.count } do
+              OpenedHandler.new(payload).process
+            end
 
-            user = Shipit::User.find_by(login: "some-new-user-login")
+            user = Shipit::User.find_by(login: github_user.login)
             assert_equal github_user.login, user.login
             assert_equal github_user.name, user.name
             assert_equal github_user.email, user.email
@@ -55,9 +57,8 @@ module Shipit
 
           test "does not create Shipit::Users when they're already present" do
             payload = payload_parsed(:pull_request_opened)
-            user_login = payload["pull_request"]["user"]["login"]
 
-            assert_no_difference -> { Shipit::User.where(login: user_login).count } do
+            assert_no_difference -> { Shipit::User.count } do
               OpenedHandler.new(payload).process
             end
           end
@@ -188,36 +189,6 @@ module Shipit
 
             assert(stack.awaiting_provision?, "Stack #{stack.environment} should be in the provisioning queue")
             assert(stack.deprovisioned?, "Stack #{stack.environment} should be pending provision")
-          end
-
-          setup do
-            Shipit.github.api.stubs(:commit)
-              .with("shopify/shipit-engine", "ec26c3e57ca3a959ca5aad62de7213c562f8c821")
-              .returns(
-                resource(
-                  {
-                    sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
-                    commit: {
-                      author: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      committer: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      message: "Update README.md",
-                    },
-                    stats: {
-                      total: 2,
-                      additions: 1,
-                      deletions: 1,
-                    },
-                  }
-                )
-              )
           end
         end
       end
