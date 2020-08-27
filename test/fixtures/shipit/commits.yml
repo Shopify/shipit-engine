@@ -390,7 +390,7 @@ check_deploy_spec_first:
 
 deployable_review_stack_commit:
   id: 801
-  sha: ec26c3e57ca3a959ca5aad62de7213c562f8c821
+  sha: 6d9278037b872fd9a6690523e411ecb3aa181355
   message: "lets go"
   stack: review_stack
   author: walrus

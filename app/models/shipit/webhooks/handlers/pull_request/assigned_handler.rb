@@ -16,10 +16,6 @@ module Shipit
               requires :state, String
               requires :additions, Integer
               requires :deletions, Integer
-              requires :head do
-                requires :sha, String
-                requires :ref, String
-              end
               requires :user do
                 requires :login, String
               end
@@ -41,7 +37,7 @@ module Shipit
           def process
             return unless respond_to_assignee_change?
 
-            pull_request.update(github_pull_request: params.pull_request) if pull_request.present?
+            pull_request.update(pull_request_attributes) if pull_request.present?
           end
 
           private
@@ -66,6 +62,10 @@ module Shipit
 
           def repository
             Shipit::Repository.from_github_repo_name(params.repository.full_name) || Shipit::NullRepository.new
+          end
+
+          def pull_request_attributes
+            Shipit::PullRequest.attributes_from_github(params.pull_request)
           end
         end
       end

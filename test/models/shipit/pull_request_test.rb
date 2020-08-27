@@ -4,7 +4,7 @@ require "test_helper"
 
 module Shipit
   class PullRequestTest < ActiveSupport::TestCase
-    test "github_pull_request= parses into a a Shipit::PullRequest" do
+    test ".from_github creates a Shipit::PullRequest" do
       github_pull_request = resource(
         {
           url: "https://api.github.com/repos/Codertocat/Hello-World/pulls/2",
@@ -14,9 +14,6 @@ module Shipit
           additions: 100,
           deletions: 101,
           title: "Update the README with new information.",
-          head: {
-            sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
-          },
           user: {
             login: "Codertocat",
           },
@@ -32,10 +29,8 @@ module Shipit
           ],
         }
       )
-      stack = shipit_stacks(:review_stack)
-      pull_request = stack.pull_request
 
-      stack.pull_request.github_pull_request = github_pull_request
+      pull_request = PullRequest.from_github(github_pull_request)
 
       assert_equal 279147437, pull_request.github_id
       assert_equal 2, pull_request.number

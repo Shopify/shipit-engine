@@ -287,36 +287,6 @@ module Shipit
             assert(stack.awaiting_provision?, "Stack #{stack.environment} should be in the provisioning queue")
             assert(stack.deprovisioned?, "Stack #{stack.environment} should be pending provision")
           end
-
-          setup do
-            Shipit.github.api.stubs(:commit)
-              .with("shopify/shipit-engine", "ec26c3e57ca3a959ca5aad62de7213c562f8c821")
-              .returns(
-                resource(
-                  {
-                    sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
-                    commit: {
-                      author: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      committer: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      message: "Update README.md",
-                    },
-                    stats: {
-                      total: 2,
-                      additions: 1,
-                      deletions: 1,
-                    },
-                  }
-                )
-              )
-          end
         end
       end
     end
