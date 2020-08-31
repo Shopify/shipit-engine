@@ -6,6 +6,7 @@ module Shipit
     include ConditionalAttributes
 
     has_one :user
+    has_one :head, serializer: ShortCommitSerializer
     has_many :assignees, serializer: UserSerializer
 
     attributes :id, :number, :title, :github_id, :additions, :deletions, :state, :html_url
