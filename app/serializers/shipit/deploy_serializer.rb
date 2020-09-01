@@ -22,11 +22,5 @@ module Shipit
     def type
       :deploy
     end
-
-    def rollback_once_aborted_to
-      return nil unless object.rollback_once_aborted_to
-
-      DeploySerializer.new(object.rollback_once_aborted_to)
-    end
   end
 end
