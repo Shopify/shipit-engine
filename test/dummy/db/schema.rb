@@ -180,7 +180,6 @@ ActiveRecord::Schema.define(version: 2020_08_25_084751) do
     t.index ["stack_id", "merge_status"], name: "index_merge_requests_on_stack_id_and_merge_status"
     t.index ["stack_id", "number"], name: "index_merge_requests_on_stack_id_and_number", unique: true
     t.index ["stack_id"], name: "index_merge_requests_on_stack_id"
-    t.index ["user_id"], name: "index_merge_requests_on_user_id"
   end
 
   create_table "output_chunks", force: :cascade do |t|

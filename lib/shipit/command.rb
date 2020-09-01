@@ -158,6 +158,7 @@ module Shipit
         IO.select([io], nil, nil, 1)
         retry
       end
+    rescue EOFError
     end
 
     def terminate!(&block)
