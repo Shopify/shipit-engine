@@ -43,9 +43,6 @@ module Shipit
     belongs_to :base_commit, class_name: 'Shipit::Commit', optional: true
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
-    belongs_to :user, optional: true
-    has_many :merge_request_assignments
-    has_many :assignees, class_name: :User, through: :merge_request_assignments, source: :user
 
     deferred_touch stack: :updated_at
 
@@ -53,13 +50,11 @@ module Shipit
 
     scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { where(merge_status: 'pending') }
-    scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
     scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
+    scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
 
     after_save :record_merge_status_change
-    after_create_commit :emit_create_hooks
-    after_update_commit :emit_update_hooks
-    after_destroy_commit :emit_destroy_hooks
+    after_commit :emit_hooks
 
     state_machine :merge_status, initial: :fetching do
       state :fetching
@@ -242,8 +237,6 @@ module Shipit
     end
 
     def github_pull_request=(github_pull_request)
-      user = User.find_by(login: github_pull_request.user.login) || Shipit::AnonymousUser.new
-
       self.github_id = github_pull_request.id
       self.api_url = github_pull_request.url
       self.title = github_pull_request.title
@@ -256,12 +249,6 @@ module Shipit
       self.merged_at = github_pull_request.merged_at
       self.base_ref = github_pull_request.base.ref
       self.base_commit = find_or_create_commit_from_github_by_sha!(github_pull_request.base.sha, detached: true)
-      self.user = user
-      self.assignees = find_and_assign_users(github_pull_request.assignees)
-    end
-
-    def find_and_assign_users(pr_assignees)
-      pr_assignees.map { |assignee| User.find_by(login: assignee.login) }.compact
     end
 
     def merge_message
@@ -295,31 +282,10 @@ module Shipit
       @merge_status_changed ||= saved_change_to_attribute?(:merge_status)
     end
 
-    def emit_destroy_hooks
-      emit_hooks(:destroyed)
-    end
-
-    def emit_create_hooks
-      emit_hooks(:created)
-    end
-
-    def emit_update_hooks
-      emit_hooks(:updated)
-    end
-
-    def emit_hooks(reason)
-      emit_merge_status_event
-      emit_pull_request_event(reason)
-    end
-
-    def emit_merge_status_event
+    def emit_hooks
       return unless @merge_status_changed
       @merge_status_changed = nil
       Hook.emit('merge', stack, merge_request: self, status: merge_status, stack: stack)
-    end
-
-    def emit_pull_request_event(reason)
-      Hook.emit('pull_request', stack, pull_request: self, action: reason, stack: stack)
     end
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)

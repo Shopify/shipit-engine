@@ -21,7 +21,7 @@ module Shipit
     test "#perform fetch commits from the API" do
       @job.stubs(:capture!)
       @job.stubs(:capture)
-      @commands = stub(commands: nil)
+      @commands = stub
       Commands.expects(:for).with(@deploy).returns(@commands)
 
       @commands.expects(:fetched?).once.returns(FakeSuccessfulCommand.new)
@@ -141,7 +141,7 @@ module Shipit
 
     test "records stack support for rollbacks and fetching deployed revision" do
       @job.stubs(:capture!)
-      @commands = stub(commands: nil)
+      @commands = stub
       @commands.stubs(:fetched?).returns([])
       @commands.stubs(:fetch).returns([])
       @commands.stubs(:clone).returns([])
