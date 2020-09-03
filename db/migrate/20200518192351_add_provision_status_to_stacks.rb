@@ -1,6 +1,6 @@
 class AddProvisionStatusToStacks < ActiveRecord::Migration[6.0]
   def up
-    add_column :stacks, :provision_status, :string, null: false, default: :not_provisioned
+    add_column :stacks, :provision_status, :string, null: false, default: :deprovisioned
     add_index :stacks, :provision_status
   end
 
