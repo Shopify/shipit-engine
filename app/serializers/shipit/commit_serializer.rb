@@ -7,7 +7,7 @@ module Shipit
     has_one :author
     has_one :committer
 
-    attributes :additions, :deletions, :authored_at, :committed_at, :html_url, :merge_request, :status, :deployed
+    attributes :additions, :deletions, :authored_at, :committed_at, :html_url, :pull_request, :status, :deployed
 
     def deployed
       object.deployed?
@@ -21,7 +21,7 @@ module Shipit
       github_commit_url(object)
     end
 
-    def merge_request
+    def pull_request
       {
         number: object.pull_request_number,
         html_url: github_pull_request_url(object),

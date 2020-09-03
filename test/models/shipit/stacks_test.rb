@@ -267,7 +267,7 @@ module Shipit
       end
     end
 
-    test "#deployable? returns true if the stack is not locked awaiting provision and is not deploying" do
+    test "#deployable? returns true if the stack is not locked, not awaiting provision, and is not deploying" do
       @stack.deploys.destroy_all
       @stack.update!(lock_reason: nil, awaiting_provision: false)
       assert_predicate @stack, :deployable?

@@ -25,7 +25,7 @@ module Shipit
     )
   end
 
-  stacks = 3.times.map do |num|
+  stacks = 3.times.map do
     Stack.create!(
       repository: Repository.find_or_create_by(
         name:  Faker::Internet.domain_name.parameterize,
