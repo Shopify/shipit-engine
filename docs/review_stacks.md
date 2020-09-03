@@ -60,7 +60,7 @@ class KubernetesProvisioningHandler < Shipit::ProvisioningHandler::Base
 end
 ```
 
-In the case where a ``ProvisioningHandler` does not specify a `#provision?` predicate, the provisioning handler will always attempt to provision a Review Stack.
+In the case where a `ProvisioningHandler` does not specify a `#provision?` predicate, the provisioning handler will always attempt to provision a Review Stack.
 
 The host application **MUST** `#register` - whitelist - the custom ProvisioningHandler in the `Shipit::ProvisioningHandler` registry. This will  most likely happen as part of a shipit-engine initialization routine in the host application. For example:
 
@@ -71,7 +71,7 @@ ActiveSupport::Reloader.to_prepare do
   Shipit::ProvisioningHandler.register(KubernetesProvisioningHandler)
 end
 ```
-The custom `KubernetesProvisioningHandler` can the  be used in a project's `shipit.yml`:
+The custom `KubernetesProvisioningHandler` can then be used in a project's `shipit.yml`:
 
 ```yaml
 # <path-to-managed-appliction>/shipit.yml
@@ -92,11 +92,11 @@ Register a host-application-wide default provisioning handler - IE how repositor
 # <path-to-host-application>/config/initializers/shipit.rb
 ActiveSupport::Reloader.to_prepare do
   ...
-  Shipit::ProvisioningHandler.register(KubernetesProvisioningHandler)
+  Shipit::ProvisioningHandler.default = KubernetesProvisioningHandler
 end
 ```
 
-A default, no-op provisioning handler - `Shipit::ProvisioningHandler::Base` - is provided. When the name of an unregistered handler is requested from the `Shipit::ProvisioningHandler` the `Shipit::ProvisioningHandler::UnregisteredProvisiningHander` is used. Effectively, this prevents transitions of the provisioning state machine and locks the Review Stack indicating that an attempt to provision the Review Stack instance was made, but can't be completed until the Review Stack's Provisioning Handler is registered.
+A default, no-op provisioning handler - `Shipit::ProvisioningHandler::Base` - is provided. When the name of an unregistered handler is requested from the `Shipit::ProvisioningHandler` the `Shipit::ProvisioningHandler::UnregisteredProvisioningHandler` is used. Effectively, this prevents transitions of the provisioning state machine and locks the Review Stack indicating that an attempt to provision the Review Stack instance was made, but can't be completed until the Review Stack's Provisioning Handler is registered.
 
 The ProvisioningHandler for a give stack is discovered at runtime using the following order of precedence:
 
