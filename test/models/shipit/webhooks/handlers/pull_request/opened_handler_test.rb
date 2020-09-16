@@ -23,6 +23,18 @@ module Shipit
             end
           end
 
+          test "does not create a stack when the Pull Request data can be saved" do
+            Shipit::PullRequest
+              .any_instance
+              .expects(:update!)
+              .raises(ActiveRecord::StatementInvalid)
+
+            assert_no_difference -> { Shipit::Stack.count } do
+              OpenedHandler.new(payload_parsed(:pull_request_opened)).process
+            rescue ActiveRecord::StatementInvalid # We expect this to be raised, so it shouldn't fail the test
+            end
+          end
+
           test "creates stacks for repos that are tracked" do
             assert_difference -> { Shipit::Stack.count } do
               OpenedHandler.new(payload_parsed(:pull_request_opened)).process
