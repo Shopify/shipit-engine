@@ -237,7 +237,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_172649) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "review_stacks_enabled", default: false
-    t.integer "provisioning_behavior", default: 0
+    t.string "provisioning_behavior", default: "allow_all"
     t.string "provisioning_label_name"
     t.index ["owner", "name"], name: "repository_unicity", unique: true
   end
