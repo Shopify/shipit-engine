@@ -12,19 +12,16 @@ module Shipit
       end
 
       def register(handler_class)
-        registry[handler_class.to_s] = handler_class if handler_class.present?
+        registry[handler_class.to_s] = handler_class
       end
 
       def fetch(name)
-        registry.fetch(name) do
-          return ProvisioningHandler::UnregisteredProvisioningHandler if name.present?
-
-          default
-        end
+        return default if name.blank?
+        registry.fetch(name) { ProvisioningHandler::UnregisteredProvisioningHandler }
       end
 
       def default=(handler_class)
-        registry[:default] = handler_class if handler_class.present?
+        registry[:default] = handler_class
       end
 
       def default
