@@ -1,7 +1,3 @@
-unless String::contains
-  String::contains = (args...) ->
-    @indexOf(args...) != -1
-
 KEY =
   UP: 38
   DOWN: 40
@@ -36,7 +32,7 @@ class RepositorySearch
     if query
       for item in @$items
         $item = $(item)
-        $item.toggleClass('not-matching', !$item.attr('data-search').toLowerCase().contains(query))
+        $item.toggleClass('not-matching', query not in $item.attr('data-search').toLowerCase())
       @selectFirst()
     else
       @$items.removeClass('not-matching')
