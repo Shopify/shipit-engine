@@ -24,9 +24,7 @@ module Shipit
 
       private
 
-      attr_accessor(
-        :stack,
-      )
+      attr_accessor :stack
     end
   end
 end
