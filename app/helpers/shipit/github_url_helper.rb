@@ -52,7 +52,7 @@ module Shipit
     end
 
     def stack_github_url(stack)
-      if stack.respond_to?(:pull_request) && stack.pull_request.presence
+      if stack.respond_to?(:pull_request) && stack.pull_request
         github_pull_request_url(stack.pull_request)
       else
         github_repo_url(stack.repo_owner, stack.repo_name)
