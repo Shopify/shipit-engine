@@ -14,7 +14,7 @@ module Shipit
 
             LabelCapturingHandler.new(payload).process
 
-            assert_has_label_variable stack, "expected-label"
+            assert_has_label stack, "expected-label"
           end
 
           test "does not create stacks when opening new pull requests" do
@@ -33,7 +33,7 @@ module Shipit
 
             LabelCapturingHandler.new(payload).process
 
-            assert_has_label_variable stack, "expected-label"
+            assert_has_label stack, "expected-label"
           end
 
           test "does not capture labels when labels are applied to archived stacks" do
@@ -46,21 +46,19 @@ module Shipit
             assert_empty stack.reload.pull_request.labels
           end
 
-          test "does not create labels for unknown stacks when labels are added" do
+          test "ignores unknown stacks when labels are added" do
             payload = payload_parsed(:pull_request_labeled)
             payload["repository"]["full_name"] = "unknown/repository"
             payload["pull_request"]["labels"] = [{ "name" => "expected-label" }]
 
             assert_no_difference -> { Shipit::Stack.count } do
-              assert_no_difference -> { Shipit::PullRequestLabel.count } do
-                LabelCapturingHandler.new(payload).process
-              end
+              LabelCapturingHandler.new(payload).process
             end
           end
 
           test "captures labels when labels are removed from stack which are not archived" do
             stack = create_stack
-            stack.pull_request.labels << Shipit::Label.find_or_create_by(name: "label-to-be-removed")
+            stack.pull_request.labels << "label-to-be-removed"
             payload = payload_parsed(:pull_request_unlabeled)
             payload["pull_request"]["labels"] = [{ "name" => "expected-label" }]
 
@@ -68,7 +66,7 @@ module Shipit
 
             stack.reload
             assert_does_not_have_label stack, "label-to-be-removed"
-            assert_has_label_variable stack, "expected-label"
+            assert_has_label stack, "expected-label"
           end
 
           test "does not capture labels when labels are removed from archived stacks" do
@@ -81,15 +79,13 @@ module Shipit
             assert_empty stack.reload.pull_request.labels
           end
 
-          test "does not create labels for unknown stacks when labels are removed" do
+          test "ignores unknown stacks when labels are removed" do
             payload = payload_parsed(:pull_request_unlabeled)
             payload["repository"]["full_name"] = "unknown/repository"
             payload["pull_request"]["labels"] = [{ "name" => "expected-label" }]
 
             assert_no_difference -> { Shipit::Stack.count } do
-              assert_no_difference -> { Shipit::PullRequestLabel.count } do
-                LabelCapturingHandler.new(payload).process
-              end
+              LabelCapturingHandler.new(payload).process
             end
           end
 
@@ -100,7 +96,7 @@ module Shipit
 
             LabelCapturingHandler.new(payload).process
 
-            assert_has_label_variable stack, "expected-label"
+            assert_has_label stack, "expected-label"
           end
 
           test "does not capture labels when reopening a pull request with an archived stack" do
@@ -113,15 +109,13 @@ module Shipit
             assert_empty stack.reload.pull_request.labels
           end
 
-          test "does not capture labels when reopening a pull request with an unknown repository" do
+          test "ignores reopening a pull request with an unknown repository" do
             payload = payload_parsed(:pull_request_reopened)
             payload["repository"]["full_name"] = "unknown/repository"
             payload["pull_request"]["labels"] = [{ "name" => "expected-label" }]
 
             assert_no_difference -> { Shipit::Stack.count } do
-              assert_no_difference -> { Shipit::PullRequestLabel.count } do
-                LabelCapturingHandler.new(payload).process
-              end
+              LabelCapturingHandler.new(payload).process
             end
           end
 
@@ -132,7 +126,7 @@ module Shipit
 
             LabelCapturingHandler.new(payload).process
 
-            assert_has_label_variable stack, "Shipit 🚢"
+            assert_has_label stack, "Shipit 🚢"
           end
 
           def create_archived_stack
@@ -167,12 +161,12 @@ module Shipit
             active_tasks.map(&:complete)
           end
 
-          def assert_has_label_variable(stack, label_name)
-            assert_includes(stack.pull_request.labels.pluck(:name), label_name)
+          def assert_has_label(stack, label_name)
+            assert_includes(stack.pull_request.labels, label_name)
           end
 
           def assert_does_not_have_label(stack, label_name)
-            assert_not_includes(stack.pull_request.labels.pluck(:name), label_name)
+            assert_not_includes(stack.pull_request.labels, label_name)
           end
 
           def environment_for(payload)

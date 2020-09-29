@@ -11,8 +11,7 @@ module Shipit
     has_many :pull_request_assignments
     has_many :assignees, class_name: :User, through: :pull_request_assignments, source: :user
 
-    has_many :pull_request_labels
-    has_many :labels, through: :pull_request_labels
+    serialize :labels, Array
 
     after_create_commit :emit_create_hooks
     after_update_commit :emit_update_hooks
@@ -46,9 +45,7 @@ module Shipit
       self.assignees = github_pull_request.assignees.map do |github_user|
         User.find_or_create_by_login!(github_user.login)
       end
-      self.labels = github_pull_request.labels.map do |github_label|
-        Label.find_or_create_from_github!(github_label)
-      end
+      self.labels = github_pull_request.labels.map(&:name)
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha)
     end
 

@@ -74,7 +74,6 @@ module Shipit
         .merge(
           pull_request
             .labels
-            .map(&:name)
             .each_with_object({}) { |label_name, labels| labels[label_name.upcase] = "true" }
         )
     end

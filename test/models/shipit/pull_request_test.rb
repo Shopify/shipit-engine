@@ -46,7 +46,7 @@ module Shipit
       assert_equal 101, pull_request.deletions
       assert_equal shipit_users(:codertocat), pull_request.user
       assert_equal [shipit_users(:bob)], pull_request.assignees
-      assert_equal [shipit_labels(:deploy)], pull_request.labels
+      assert_equal ["deploy"], pull_request.labels
     end
   end
 end

@@ -129,11 +129,6 @@ ActiveRecord::Schema.define(version: 2020_08_23_172649) do
     t.index ["stack_id"], name: "index_hooks_on_stack_id"
   end
 
-  create_table "labels", force: :cascade do |t|
-    t.string "name"
-    t.index ["name"], name: "index_labels_on_name", unique: true
-  end
-
   create_table "memberships", force: :cascade do |t|
     t.integer "team_id", limit: 4
     t.integer "user_id", limit: 4
@@ -189,14 +184,6 @@ ActiveRecord::Schema.define(version: 2020_08_23_172649) do
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
-  create_table "pull_request_labels", force: :cascade do |t|
-    t.integer "pull_request_id", null: false
-    t.integer "label_id", null: false
-    t.index ["label_id"], name: "index_pull_request_labels_on_label_id"
-    t.index ["pull_request_id", "label_id"], name: "index_pull_request_labels_on_pull_request_id_and_label_id", unique: true
-    t.index ["pull_request_id"], name: "index_pull_request_labels_on_pull_request_id"
-  end
-
   create_table "pull_requests", force: :cascade do |t|
     t.integer "stack_id", null: false
     t.integer "number", null: false
@@ -209,6 +196,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_172649) do
     t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "labels"
     t.integer "head_id"
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
