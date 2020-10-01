@@ -45,6 +45,7 @@ module Shipit
 
     EVENTS = %w(
       stack
+      review_stack
       task
       deploy
       rollback
@@ -53,6 +54,7 @@ module Shipit
       deployable_status
       merge_status
       merge
+      pull_request
     ).freeze
 
     belongs_to :stack, required: false

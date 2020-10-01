@@ -387,3 +387,17 @@ check_deploy_spec_first:
   additions: 420
   deletions: 342
   updated_at: <%= 8.days.ago.to_s(:db) %>
+
+deployable_review_stack_commit:
+  id: 801
+  sha: ec26c3e57ca3a959ca5aad62de7213c562f8c821
+  message: "lets go"
+  stack: review_stack
+  author: walrus
+  committer: walrus
+  authored_at: <%= 10.days.ago.to_s(:db) %>
+  committed_at: <%= 9.days.ago.to_s(:db) %>
+  additions: 42
+  deletions: 24
+  updated_at: <%= 8.days.ago.to_s(:db) %>
+  created_at: <%= 1.day.ago.to_s(:db) %>

@@ -22,6 +22,9 @@
     <li class="nav__list__item">
       <%= link_to t('stack.nav.statistics'), stack_statistics_path(stack) %>
     </li>
+    <li class="nav__list__item">
+      <%= link_to 'Repository', repository_path(stack.repository) %>
+    </li>
     <% if stack.merge_queue_enabled? %>
       <li class="nav__list__item">
         <%= link_to t('stack.nav.merge_queue', count: stack.merge_requests.queued.count), stack_merge_requests_path(stack) %>
@@ -64,7 +67,7 @@
       </li>
     <% end %>
     <li class="nav__list__item">
-      <%= link_to t('stack.nav.view_on_github'), github_repo_url(stack.repo_owner, stack.repo_name) %>
+      <%= link_to t('stack.nav.view_on_github'), stack_github_url(stack) %>
     </li>
     <% if stack.deploy_url.present? %>
       <li class="nav__list__item">

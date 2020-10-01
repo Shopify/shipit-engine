@@ -1,0 +1,19 @@
+<% content_for :page_title do %>
+  <span><%= repository.owner %></span>
+  <h1><%= repository.name %></h1>
+<% end %>
+
+<% content_for :primary_navigation do %>
+  <%= link_to 'Add a stack', repository_stacks_new_path(repository), class: 'btn secondary' %>
+<% end %>
+
+<% content_for :secondary_navigation do %>
+  <ul class="nav__list nav__list--primary">
+    <li class="nav__list__item">
+      <%= link_to 'Stacks', repository_path(repository) %>
+    </li>
+    <li class="nav__list__item">
+      <%= link_to 'Settings', repository_settings_path(repository) %>
+    </li>
+  </ul>
+<% end %>

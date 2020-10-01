@@ -48,9 +48,15 @@ module Shipit
     end
 
     test "#index list all stacks" do
-      get :index
+      get :index, params: { show_archived: true }
       assert_response :ok
       assert_select ".stack", count: Stack.count
+    end
+
+    test "#index list all not archived stacks" do
+      get :index
+      assert_response :ok
+      assert_select ".stack", count: Stack.not_archived.count
     end
 
     test "#index list a repo stacks if the :repo params is passed" do
@@ -175,6 +181,8 @@ module Shipit
       @stack.reload
       refute @stack.archived?
       refute @stack.locked?
+      assert_nil @stack.locked_since
+      assert_nil @stack.lock_reason
       assert_instance_of AnonymousUser, @stack.lock_author
     end
 

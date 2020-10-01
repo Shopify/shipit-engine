@@ -63,6 +63,7 @@ module Shipit
             'delay' => release_status_delay,
           },
           'dependencies' => { 'override' => dependencies_steps },
+          'provision' => { 'handler_name' => provisioning_handler_name },
           'deploy' => {
             'override' => deploy_steps,
             'variables' => deploy_variables.map(&:to_h),

@@ -49,6 +49,19 @@
   </div>
 <% end %>
 
+<% if stack.awaiting_provision? %>
+  <div class="banner banner--orange">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">
+          <i class="icon icon--list"></i>
+          This stack is in a queue waiting on provisioning. This may be because too many review stacks exist for this repository.
+        </h2>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <% if stack.continuous_delivery_delayed? %>
   <div class="banner">
     <div class="banner__inner wrapper">

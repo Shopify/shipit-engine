@@ -104,6 +104,10 @@ module Shipit
       Duration.parse(config('deploy', 'interval') { 0 })
     end
 
+    def provisioning_handler_name
+      config('provision', 'handler_name')
+    end
+
     def deploy_steps
       around_steps('deploy') do
         config('deploy', 'override') { discover_deploy_steps }

@@ -51,6 +51,14 @@ module Shipit
       github_repo_url(stack.repo_owner, stack.repo_name, 'pull', number)
     end
 
+    def stack_github_url(stack)
+      if stack.respond_to?(:pull_request) && stack.pull_request
+        github_pull_request_url(stack.pull_request)
+      else
+        github_repo_url(stack.repo_owner, stack.repo_name)
+      end
+    end
+
     def link_to_github_deploy(deploy)
       url = github_commit_range_url(deploy.stack, *deploy.commit_range)
       text = deploy.commit_range.map(&:short_sha).join('...')

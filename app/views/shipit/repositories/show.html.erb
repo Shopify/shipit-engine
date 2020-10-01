@@ -1,0 +1,30 @@
+<% subscribe events_path(channels: ["repository.#{@repository.id}"]), '#layout-content' %>
+
+<%= render partial: 'shipit/repositories/header', locals: {repository: @repository} %>
+
+<div class="wrapper">
+  <section>
+    <% cache [@repository, params[:show_archived]] do %>
+      <section>
+        <header class="section-header">
+          <h2>Stacks</h2>
+        </header>
+        <ul class="repository-table-header">
+          <li class="col">Name</li>
+          <li class="col">Environment</li>
+          <li class="col">Branch</li>
+          <li class="col">Deploy URL</li>
+        </ul>
+        <ul class="repository-lst">
+          <%= render @stacks %>
+        </ul>
+
+        <%= link_to 'show all stacks', '#', class: 'btn secondary show-all-stacks' %></p>
+        <% if @show_archived %>
+          <%= link_to 'hide archived stacks', '?', class: 'btn secondary' %></p>
+        <% else %>
+          <%= link_to 'show archived stacks', '?show_archived=1', class: 'btn secondary' %></p>
+        <% end %>
+      </section>
+    <% end %>
+</div>

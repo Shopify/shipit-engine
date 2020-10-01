@@ -2,6 +2,7 @@
   <h1><%= Shipit.app_name %></h1>
 <% end %>
 <% content_for :primary_navigation do %>
+  <%= link_to 'Repositories', repositories_path, class: 'btn secondary' %>
   <%= link_to 'Add a stack', new_stack_path, class: 'btn secondary' %>
 <% end %>
 

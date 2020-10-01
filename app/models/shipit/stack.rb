@@ -44,6 +44,9 @@ module Shipit
 
     scope :not_archived, -> { where(archived_since: nil) }
 
+    include DeferredTouch
+    deferred_touch repository: :updated_at
+
     default_scope { preload(:repository) }
 
     def env
@@ -91,8 +94,17 @@ module Shipit
     validates :lock_reason, length: { maximum: 4096 }
 
     serialize :cached_deploy_spec, DeploySpec
-    delegate :find_task_definition, :supports_rollback?, :release_status?, :release_status_delay,
-             :release_status_context, :supports_fetch_deployed_revision?, to: :cached_deploy_spec, allow_nil: true
+    delegate(
+      :provisioning_handler_name,
+      :find_task_definition,
+      :release_status?,
+      :release_status_context,
+      :release_status_delay,
+      :supports_fetch_deployed_revision?,
+      :supports_rollback?,
+      to: :cached_deploy_spec,
+      allow_nil: true
+    )
 
     def self.refresh_deployed_revisions
       find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
@@ -340,7 +352,7 @@ module Shipit
     end
 
     def deployable?
-      !locked? && !active_task?
+      !locked? && !active_task? && !awaiting_provision?
     end
 
     def allows_merges?
@@ -384,7 +396,7 @@ module Shipit
     end
 
     def github_repo_name
-      [repo_owner, repo_name].join('/')
+      repository.github_repo_name
     end
 
     def github_commits

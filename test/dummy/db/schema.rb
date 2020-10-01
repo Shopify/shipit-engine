@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_04_161512) do
+ActiveRecord::Schema.define(version: 2020_10_01_125502) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -177,6 +177,33 @@ ActiveRecord::Schema.define(version: 2020_08_04_161512) do
     t.index ["task_id"], name: "index_output_chunks_on_task_id"
   end
 
+  create_table "pull_request_assignments", force: :cascade do |t|
+    t.integer "pull_request_id"
+    t.integer "user_id"
+    t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
+    t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.integer "number", null: false
+    t.string "title", limit: 256
+    t.integer "github_id", limit: 8
+    t.string "api_url", limit: 1024
+    t.string "state"
+    t.integer "additions", default: 0, null: false
+    t.integer "deletions", default: 0, null: false
+    t.integer "user_id"
+    t.text "labels"
+    t.integer "head_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["head_id"], name: "index_pull_requests_on_head_id"
+    t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
+    t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
+    t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
+  end
+
   create_table "release_statuses", force: :cascade do |t|
     t.integer "stack_id", null: false
     t.integer "commit_id", null: false
@@ -197,6 +224,9 @@ ActiveRecord::Schema.define(version: 2020_08_04_161512) do
     t.string "name", limit: 100, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "review_stacks_enabled", default: false
+    t.string "provisioning_behavior", default: "allow_all"
+    t.string "provisioning_label_name"
     t.index ["owner", "name"], name: "repository_unicity", unique: true
   end
 
@@ -221,9 +251,15 @@ ActiveRecord::Schema.define(version: 2020_08_04_161512) do
     t.datetime "last_deployed_at"
     t.integer "repository_id", null: false
     t.datetime "archived_since"
+    t.string "provision_status", default: "deprovisioned", null: false
+    t.string "type", default: "Shipit::Stack"
+    t.boolean "awaiting_provision", default: false, null: false
     t.index ["archived_since"], name: "index_stacks_on_archived_since"
+    t.index ["awaiting_provision"], name: "index_stacks_on_awaiting_provision"
+    t.index ["provision_status"], name: "index_stacks_on_provision_status"
     t.index ["repository_id", "environment"], name: "stack_unicity", unique: true
     t.index ["repository_id"], name: "index_stacks_on_repository_id"
+    t.index ["type"], name: "index_stacks_on_type"
   end
 
   create_table "statuses", force: :cascade do |t|

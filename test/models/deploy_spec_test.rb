@@ -106,6 +106,12 @@ module Shipit
       refute @spec.bundle_install.last.include?('--frozen')
     end
 
+    test "#provisioning_handler returns `provision.handler` if present" do
+      @spec.stubs(:load_config).returns('provision' => { 'handler_name' => 'ExpectedProvisioningHandler' })
+
+      assert_equal "ExpectedProvisioningHandler", @spec.provisioning_handler_name
+    end
+
     test '#deploy_steps returns `deploy.override` if present' do
       @spec.stubs(:load_config).returns('deploy' => { 'override' => %w(foo bar baz) })
       assert_equal %w(foo bar baz), @spec.deploy_steps
@@ -364,6 +370,9 @@ module Shipit
         },
         'dependencies' => { 'override' => [] },
         'plugins' => {},
+        'provision' => {
+          'handler_name' => nil,
+        },
         'deploy' => {
           'override' => nil,
           'variables' => [],
