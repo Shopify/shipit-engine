@@ -11,6 +11,8 @@ class RecreateShipitPullRequests < ActiveRecord::Migration[6.0]
       t.integer :additions, null: false, default: 0
       t.integer :deletions, null: false, default: 0
       t.integer :user_id
+      t.text :labels
+      t.references :head
       t.timestamps
 
       t.index [:stack_id, :number], unique: true
