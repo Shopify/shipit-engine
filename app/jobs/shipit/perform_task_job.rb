@@ -3,9 +3,9 @@ module Shipit
   class PerformTaskJob < BackgroundJob
     queue_as :deploys
 
-    def perform(task, execution_strategy: Shipit::TaskExecutionStrategy::Default)
-      execution_strategy
-        .new(task)
+    def perform(task)
+      Shipit::TaskExecutionStrategy
+        .for(task)
         .execute
     end
 
