@@ -8,7 +8,5 @@ module Shipit
         .for(task)
         .execute
     end
-
-    attr_accessor :execution_strategy
   end
 end
