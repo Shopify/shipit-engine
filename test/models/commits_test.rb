@@ -170,6 +170,15 @@ module Shipit
       assert_equal limit, @commit.message.bytesize
     end
 
+    test "#message= truncates multibyte messages" do
+      skip unless Shipit::Commit.columns_hash['message'].limit
+      limit = Shipit::Commit.columns_hash['message'].limit
+
+      @commit.update!(message: '国' * limit)
+      assert_operator @commit.message.length, :<=, limit
+      assert_operator @commit.message.bytesize, :<=, limit
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?

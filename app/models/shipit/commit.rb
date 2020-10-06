@@ -113,7 +113,7 @@ module Shipit
 
     def message=(message)
       limit = self.class.columns_hash['message'].limit
-      if limit && message && message.size > limit
+      if limit && message && message.bytesize > limit
         message = message.truncate_bytes(limit)
       end
       super(message)
