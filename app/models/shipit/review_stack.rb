@@ -87,10 +87,12 @@ module Shipit
     end
 
     def enqueue_for_provisioning
+      return if awaiting_provision
       update!(awaiting_provision: true)
     end
 
     def remove_from_provisioning_queue
+      return unless awaiting_provision
       update!(awaiting_provision: false)
     end
 
