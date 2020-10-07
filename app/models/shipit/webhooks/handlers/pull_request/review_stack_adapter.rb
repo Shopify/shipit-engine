@@ -29,6 +29,7 @@ module Shipit
             end
             return if stack.archived?
 
+            stack.remove_from_provisioning_queue
             stack.deprovision
             stack.archive!(user, *args, &block)
           end
