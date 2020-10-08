@@ -25,6 +25,11 @@ module Shipit
       end
     end
 
+    # BEFORE COMMITING -- move to DeployCommands if necessary
+    def retries
+      deploy_spec.retries_on_deploy_timeout
+    end
+
     def steps
       @task.definition.steps
     end
