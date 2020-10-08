@@ -60,6 +60,98 @@ module Shipit
       assert_equal [], @deploy.commits
     end
 
+    test "deploys retry up to limit upon timeout when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(Shipit::Command::TimedOut, 'Deploy timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'timedout', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'failed', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
+    test "deploys do not retry upon timeout when not configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      runnable_deploy.update!(retry_attempt: 0, max_retries: 0)
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock)
+        .raises(Shipit::Command::TimedOut, 'Deploy timed out')
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 1
+
+      runnable_deploy.reload
+
+      assert_equal 'timedout', runnable_deploy.status
+    end
+
+    test "rollbacks retry on timeouts if configured" do
+      deploy = shipit_deploys(:shipit)
+      deploy_stack = deploy.stack
+
+      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(1)
+
+      Shipit::Command.any_instance.expects(:run).twice
+        .raises(Shipit::Command::TimedOut, 'Rollback timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      first_rollback = nil
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        first_rollback = deploy.trigger_rollback(@user, force: true)
+      end
+      assert_performed_jobs 2
+
+      first_rollback.reload
+
+      assert_equal 'timedout', first_rollback.status
+      retried_rollback = deploy_stack.deploys_and_rollbacks.last
+
+      assert_not_equal first_rollback.id, retried_rollback.id
+      assert_equal first_rollback.since_commit, retried_rollback.since_commit
+      assert_equal first_rollback.until_commit, retried_rollback.until_commit
+      assert_equal 'failed', retried_rollback.status
+      assert_equal 1, retried_rollback.max_retries
+    end
+
+    test "rollbacks does not retry on timeouts if not configured" do
+      deploy_stack = @deploy.stack
+
+      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(0)
+
+      Shipit::Command.any_instance.expects(:run).once
+        .raises(Shipit::Command::TimedOut, 'Rollback timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      first_rollback = nil
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        first_rollback = @deploy.trigger_rollback(@user, force: true)
+      end
+      assert_performed_jobs 1
+
+      first_rollback.reload
+
+      assert_equal 'timedout', first_rollback.status
+      assert_equal first_rollback, deploy_stack.deploys_and_rollbacks.last
+    end
+
     test "additions and deletions are denormalized on before create" do
       stack = shipit_stacks(:shipit)
       first = shipit_commits(:first)
