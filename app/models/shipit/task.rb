@@ -87,6 +87,10 @@ module Shipit
         task.async_update_estimated_deploy_duration
       end
 
+      after_transition any => :timedout do |task|
+        retry_if_necessary
+      end
+
       event :run do
         transition pending: :running
       end
@@ -382,6 +386,17 @@ module Shipit
         .reject(&:alive?)
     end
 
+    # Make private before commiting
+    def retry_if_necessary
+      if self.retry_attempt < self.max_retries
+        retry_task = duplicate_task
+        retry_task.retry_attempt = duplicate_task.retry_attempt + 1
+        retry_task.save!
+
+        retry_task.enqueue
+      end
+    end
+
     private
 
     def prevent_concurrency
@@ -404,6 +419,14 @@ module Shipit
 
     def output_line_buffer
       @output_line_buffer ||= LineBuffer.new
+    end
+
+    def duplicate_task
+      copy_task = self.dup
+      copy_task.status = 'pending'
+      copy_task.started_at = nil
+      copy_task.ended_at = nil
+      copy_task
     end
   end
 end

@@ -127,7 +127,7 @@ module Shipit
     end
 
     def retries_on_deploy_timeout
-      config('deploy', 'retries_on_timeout') { 3 }
+      config('deploy', 'retries_on_timeout') { nil }
     end
 
     def rollback_steps
@@ -141,7 +141,7 @@ module Shipit
     end
 
     def retries_on_rollback_timeout
-      config('rollback', 'retries_on_timeout') { 3 }
+      config('rollback', 'retries_on_timeout') { nil }
     end
 
     def fetch_deployed_revision_steps
