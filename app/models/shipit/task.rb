@@ -88,7 +88,7 @@ module Shipit
       end
 
       after_transition any => :timedout do |task|
-        retry_if_necessary
+        task.retry_if_necessary
       end
 
       event :run do
@@ -388,7 +388,7 @@ module Shipit
 
     # Make private before commiting
     def retry_if_necessary
-      if self.retry_attempt < self.max_retries
+      if retry_attempt < max_retries
         retry_task = duplicate_task
         retry_task.retry_attempt = duplicate_task.retry_attempt + 1
         retry_task.save!
