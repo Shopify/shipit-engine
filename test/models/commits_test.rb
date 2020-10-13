@@ -879,9 +879,9 @@ module Shipit
 
     def expect_hook_emit(commit, event, status_attributes, &block)
       matches = lambda do |payload|
-        assert_equal commit, payload[:commit]
-        assert_equal commit.stack, payload[:stack]
-        assert_equal status_attributes[:state], payload[:status]
+        assert_equal(commit, payload[:commit])
+        assert_equal(commit.stack, payload[:stack])
+        assert_equal(status_attributes[:state], payload[:status])
       end
       expect_hook(event, commit.stack, matches, &block)
     end

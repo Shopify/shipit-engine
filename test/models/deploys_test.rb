@@ -393,7 +393,7 @@ module Shipit
     # Check that the next item in the series is 1 greater than the last.
     def assert_generated_record_ids_are_sequential(record_id_series)
       record_id_series[0..-2].each_with_index do |id_element, index|
-        assert_equal id_element + 1, record_id_series[index + 1]
+        assert_equal(id_element + 1, record_id_series[index + 1])
       end
     end
 
