@@ -386,8 +386,9 @@ module Shipit
         .reject(&:alive?)
     end
 
-    # Make private before commiting
     def retry_if_necessary
+      return if max_retries.nil?
+
       if retry_attempt < max_retries
         retry_task = duplicate_task
         retry_task.retry_attempt = duplicate_task.retry_attempt + 1

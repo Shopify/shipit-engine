@@ -47,5 +47,26 @@ module Shipit
         "'#{Task::OUTPUT_TRUNCATED_MESSAGE.chomp}' was not present in the output",
       )
     end
+
+    test "#retry_if_necessary creates a duplicated task object with pending status and nil created_at and ended_at" do
+      task = shipit_tasks(:shipit)
+      task_stack = task.stack
+      task.retry_if_necessary
+
+      retried_task = task_stack.deploys.last
+
+      assert_not_equal task.id, retried_task.id
+      assert_nil retried_task.started_at
+      assert_nil retried_task.ended_at
+      assert_equal 'pending', retried_task.status
+    end
+
+    test "#retry_if_necessary does not create a new task object if max_retries is nil" do
+      task = shipit_tasks(:shipit2)
+
+      assert_no_difference 'Task.count', 'No new task should be created' do
+        task.retry_if_necessary
+      end
+    end
   end
 end

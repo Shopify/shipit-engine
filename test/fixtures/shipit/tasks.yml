@@ -11,6 +11,7 @@ shipit:
   created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
   started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
   ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
+  max_retries: 3
 
 shipit2:
   id: 2
