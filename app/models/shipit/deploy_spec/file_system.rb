@@ -13,6 +13,7 @@ module Shipit
       def initialize(app_dir, env)
         @app_dir = Pathname(app_dir)
         @env = env
+        super(nil)
       end
 
       def cacheable

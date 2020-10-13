@@ -6,6 +6,7 @@ module Shipit
 
     def initialize(commit)
       @commit = commit
+      super(commit)
     end
 
     def synchronize(&block)
