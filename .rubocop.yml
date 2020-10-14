@@ -38,7 +38,7 @@ Naming/PredicateName:
 
 Lint/RescueException:
   Exclude:
-    - app/jobs/shipit/perform_task_job.rb
+    - app/models/shipit/task_execution_strategy/default.rb
 
 Lint/SuppressedException:
   Enabled: false
