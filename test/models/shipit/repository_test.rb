@@ -20,7 +20,7 @@ module Shipit
 
     test "owner and name are case insensitive" do
       assert_no_difference -> { Repository.count } do
-        error = assert_raises ActiveRecord::RecordInvalid do
+        error = assert_raises(ActiveRecord::RecordInvalid) do
           Repository.create!(
             owner: @repository.owner.upcase,
             name: @repository.name.upcase,

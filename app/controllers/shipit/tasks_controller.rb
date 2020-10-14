@@ -22,7 +22,7 @@ module Shipit
       task
       respond_to do |format|
         format.html
-        format.text { render plain: @task.chunk_output }
+        format.text { render(plain: @task.chunk_output) }
       end
     end
 

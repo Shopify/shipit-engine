@@ -17,7 +17,7 @@ module Shipit
     def show
       respond_to do |format|
         format.html
-        format.text { render plain: @deploy.chunk_output }
+        format.text { render(plain: @deploy.chunk_output) }
       end
     end
 
