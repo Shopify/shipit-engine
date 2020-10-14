@@ -72,7 +72,7 @@ module Shipit
             'interval' => pause_between_deploys,
             'retries_on_timeout' => retries_on_deploy_timeout,
           },
-          'rollback' => { 
+          'rollback' => {
             'override' => rollback_steps,
             'retries_on_timeout' => retries_on_rollback_timeout,
           },

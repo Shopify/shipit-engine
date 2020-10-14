@@ -423,7 +423,7 @@ module Shipit
     end
 
     def duplicate_task
-      copy_task = self.dup
+      copy_task = dup
       copy_task.status = 'pending'
       copy_task.started_at = nil
       copy_task.ended_at = nil
