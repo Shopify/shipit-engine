@@ -57,7 +57,7 @@ module Shipit
       Dir.mktmpdir do |dir|
         git(
           'clone', @stack.git_path, @stack.repo_name,
-          '--origin', 'cache',
+          '--recursive', '--origin', 'cache',
           chdir: dir
         ).run!
 
