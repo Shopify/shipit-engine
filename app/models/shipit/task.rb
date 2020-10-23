@@ -387,7 +387,7 @@ module Shipit
     end
 
     def retry_if_necessary
-      return if max_retries.nil?
+      return unless retries_configured?
 
       if retry_attempt < max_retries
         retry_task = duplicate_task
@@ -396,6 +396,10 @@ module Shipit
 
         retry_task.enqueue
       end
+    end
+
+    def retries_configured?
+      !max_retries.nil? && max_retries > 0
     end
 
     private

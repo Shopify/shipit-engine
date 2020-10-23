@@ -68,5 +68,16 @@ module Shipit
         task.retry_if_necessary
       end
     end
+
+    test "#retries_configured? returns true when max_retries is not nil and is greater than zero" do
+      task_with_three_retries = shipit_tasks(:shipit)
+      assert_predicate task_with_three_retries, :retries_configured?
+
+      task_with_nil_retries = shipit_tasks(:shipit2)
+      refute_predicate task_with_nil_retries, :retries_configured?
+
+      task_with_zero_retries = shipit_tasks(:shipit_restart)
+      refute_predicate task_with_zero_retries, :retries_configured?
+    end
   end
 end
