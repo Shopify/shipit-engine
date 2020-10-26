@@ -126,6 +126,10 @@ module Shipit
       deploy_variables.map { |v| [v.name, v.default] }.to_h
     end
 
+    def retries_on_deploy_timeout
+      config('deploy', 'retries_on_timeout') { nil }
+    end
+
     def rollback_steps
       around_steps('rollback') do
         config('rollback', 'override') { discover_rollback_steps }
@@ -134,6 +138,10 @@ module Shipit
 
     def rollback_steps!
       rollback_steps || cant_detect!(:rollback)
+    end
+
+    def retries_on_rollback_timeout
+      config('rollback', 'retries_on_timeout') { nil }
     end
 
     def fetch_deployed_revision_steps

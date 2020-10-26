@@ -181,9 +181,29 @@ module Shipit
       end
     end
 
+    test '#retries_on_deploy_timeout returns `deploy.retries_on_timeout` if present' do
+      @spec.stubs(:load_config).returns('deploy' => { 'retries_on_timeout' => 5 })
+      assert_equal 5, @spec.retries_on_deploy_timeout
+    end
+
+    test '#retries_on_deploy_timeout returns a default value if `deploy.retries_on_timeout` is not present' do
+      @spec.stubs(:load_config).returns('deploy' => {})
+      assert_nil @spec.retries_on_deploy_timeout
+    end
+
     test '#rollback_steps returns `rollback.override` if present' do
       @spec.stubs(:load_config).returns('rollback' => { 'override' => %w(foo bar baz) })
       assert_equal %w(foo bar baz), @spec.rollback_steps
+    end
+
+    test '#retries_on_rollback_timeout returns `rollback.retries_on_timeout` if present' do
+      @spec.stubs(:load_config).returns('rollback' => { 'retries_on_timeout' => 5 })
+      assert_equal 5, @spec.retries_on_rollback_timeout
+    end
+
+    test '#retries_on_rollback_timeout returns a default value if `rollback.retries_on_timeout` is not present' do
+      @spec.stubs(:load_config).returns('rollback' => {})
+      assert_nil @spec.retries_on_rollback_timeout
     end
 
     test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
@@ -378,8 +398,12 @@ module Shipit
           'variables' => [],
           'max_commits' => 8,
           'interval' => 0,
+          'retries_on_timeout' => nil,
         },
-        'rollback' => { 'override' => nil },
+        'rollback' => {
+          'override' => nil,
+          'retries_on_timeout' => nil,
+        },
         'fetch' => nil,
         'tasks' => {},
       }

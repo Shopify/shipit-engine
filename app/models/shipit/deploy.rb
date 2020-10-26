@@ -92,6 +92,7 @@ module Shipit
         env: env&.to_h || {},
         allow_concurrency: force,
         ignored_safeties: force,
+        max_retries: stack.cached_deploy_spec.retries_on_rollback_timeout,
       )
     end
 

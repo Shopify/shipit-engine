@@ -151,6 +151,7 @@ module Shipit
         env: filter_deploy_envs(env&.to_h || {}),
         allow_concurrency: force,
         ignored_safeties: force || !until_commit.deployable?,
+        max_retries: retries_on_deploy_timeout,
       )
     end
 
@@ -487,7 +488,8 @@ module Shipit
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
              :blocking_statuses, :deploy_variables, :filter_task_envs, :filter_deploy_envs,
-             :maximum_commits_per_deploy, :pause_between_deploys, to: :cached_deploy_spec
+             :maximum_commits_per_deploy, :pause_between_deploys, :retries_on_deploy_timeout,
+             :retries_on_rollback_timeout, to: :cached_deploy_spec
 
     def monitoring?
       monitoring.present?
