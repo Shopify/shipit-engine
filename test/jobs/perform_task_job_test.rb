@@ -165,5 +165,113 @@ module Shipit
       assert @stack.supports_rollback?
       assert @stack.supports_fetch_deployed_revision?
     end
+
+    test "writes complex lines for git fetch operations" do
+      stream_output = "Cloning into 'test'...\r\nremote: Enumerating objects: 16, done.\e[K\r\nremote: Counting objects:   6% (1/16)\e[K\rremote: Counting objects:  12% (2/16)\e[K\rremote: Counting objects:  18% (3/16)\e[K\rremote: Counting objects:  25% (4/16)\e[K\rremote: Counting objects:  31% (5/16)\e[K\rremote: Counting objects:  37% (6/16)\e[K\rremote: Counting objects:  43% (7/16)\e[K\rremote: Counting objects:  50% (8/16)\e[K\rremote: Counting objects:  56% (9/16)\e[K\rremote: Counting objects:  62% (10/16)\e[K\rremote: Counting objects:  68% (11/16)\e[K\rremote: Counting objects:  75% (12/16)\e[K\rremote: Counting objects:  81% (13/16)\e[K\rremote: Counting objects:  87% (14/16)\e[K\rremote: Counting objects:  93% (15/16)\e[K\rremote: Counting objects: 100% (16/16)\e[K\rremote: Counting objects: 100% (16/16), done.\e[K\r\nremote: Compressing objects:   8% (1/12)\e[K\rremote: Compressing objects:  16% (2/12)\e[K\rremote: Compressing objects:  25% (3/12)\e[K\rremote: Compressing objects:  33% (4/12)\e[K\rremote: Compressing objects:  41% (5/12)\e[K\rremote: Compressing obje"
+
+      @commands = stub
+      Commands.expects(:for).with(@deploy).returns(@commands)
+
+      fetched_stub = stub
+      fetched_stub.expects(:run).twice
+      fetched_stub.expects(:success?).returns(false).twice
+      @commands.expects(:fetched?).returns(fetched_stub).twice
+
+      fake_command = stub
+      fake_command.stubs(:start)
+      fake_command.stubs(:pid).returns(123)
+      fake_command.stubs(:success?)
+      fake_command.stubs(:stream!).yields(stream_output)
+      @commands.expects(:fetch).returns(fake_command)
+
+      fake_checkout = stub
+      fake_checkout.stubs(:start)
+      fake_checkout.stubs(:pid).returns(456)
+      fake_checkout.stubs(:success?)
+      fake_checkout.stubs(:stream!)
+      @commands.expects(:checkout).with(@deploy.until_commit).returns(fake_checkout)
+
+      @commands.expects(:clone).returns([])
+      @commands.expects(:install_dependencies).returns([]).once
+      @commands.expects(:perform).returns([]).once
+      @commands.expects(:clear_working_directory)
+
+      expected_output = [
+        "$ #{fake_command}\npid: 123\n",
+        "Cloning into 'test'...\n",
+        "\n",
+        "remote: Enumerating objects: 16, done.\n",
+        "\n",
+        "remote: Counting objects:   6% (1/16)\n",
+        "remote: Counting objects:  12% (2/16)\n",
+        "remote: Counting objects:  18% (3/16)\n",
+        "remote: Counting objects:  25% (4/16)\n",
+        "remote: Counting objects:  31% (5/16)\n",
+        "remote: Counting objects:  37% (6/16)\n",
+        "remote: Counting objects:  43% (7/16)\n",
+        "remote: Counting objects:  50% (8/16)\n",
+        "remote: Counting objects:  56% (9/16)\n",
+        "remote: Counting objects:  62% (10/16)\n",
+        "remote: Counting objects:  68% (11/16)\n",
+        "remote: Counting objects:  75% (12/16)\n",
+        "remote: Counting objects:  81% (13/16)\n",
+        "remote: Counting objects:  87% (14/16)\n",
+        "remote: Counting objects:  93% (15/16)\n",
+        "remote: Counting objects: 100% (16/16)\n",
+        "remote: Counting objects: 100% (16/16), done.\n",
+        "\n",
+        "remote: Compressing objects:   8% (1/12)\n",
+        "remote: Compressing objects:  16% (2/12)\n",
+        "remote: Compressing objects:  25% (3/12)\n",
+        "remote: Compressing objects:  33% (4/12)\n",
+        "remote: Compressing objects:  41% (5/12)\n",
+        "remote: Compressing obje\n",
+        "\n",
+        "$ #{fake_checkout}\npid: 456\n",
+        "\n",
+        "\nCompleted successfully\n",
+      ]
+
+      with_fake_writer(@deploy) do |buffer|
+        @job.perform(@deploy)
+
+        assert_equal(expected_output, buffer)
+      end
+    end
+
+    private
+
+    def with_fake_writer(command)
+      original = command.method(:write)
+
+      def command.write(args)
+        FakeWriter.write(args)
+      end
+
+      yield(FakeWriter.buffer)
+    ensure
+      command.singleton_class.define_method(:write) do |args|
+        original.call(args)
+      end
+
+      FakeWriter.reset!
+    end
+
+    class FakeWriter
+      class << self
+        def buffer
+          @buffer ||= []
+        end
+
+        def reset!
+          @buffer = []
+        end
+
+        def write(line)
+          buffer << line
+        end
+      end
+    end
+    private_constant(:FakeWriter)
   end
 end

@@ -71,7 +71,21 @@ module Shipit
         @task.acquire_git_cache_lock do
           @task.ping
           unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-            capture!(@commands.fetch)
+            # The `git fetch` commands display progress incrementally, deleting
+            # the previous line if there's a new entry. It does this by using
+            # the `u001b[K` sequence, which erases until the end of the line,
+            # along with carriage returns (\r). Carriage returns aren't
+            # respected in the logs in the immediate log polling process, which
+            # causes massive blocks of text to be injected in a single line
+            # causing overlaps. Refreshing the page normally fixes this problem
+            # because the client is no longer streaming logs, and instead the
+            # HTML is rendered serverside.
+            capture!(@commands.fetch) do |line|
+              line.split(Regexp.union("\r", "\n")).each do |entry|
+                normalized_line = entry.tr("\e[K", "") + "\n"
+                @task.write(normalized_line)
+              end
+            end
           end
         end
       end
@@ -91,7 +105,11 @@ module Shipit
       @task.write("$ #{command}\npid: #{command.pid}\n")
       @task.pid = command.pid
       command.stream! do |line|
-        @task.write(line)
+        if block_given?
+          yield(line)
+        else
+          @task.write(line)
+        end
       end
       @task.write("\n")
       command.success?
