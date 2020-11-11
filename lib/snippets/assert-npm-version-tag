@@ -11,9 +11,10 @@ if [ $? != '0' ]; then
 fi
 
 TAG_REV=`git rev-list -n1 v$VERSION`
-HEAD_REV=`git rev-parse HEAD`
+HEAD_REV=`git rev-list -n1 HEAD`
+HEAD_REV_WITHOUT_MERGES=`git rev-list -n1 --no-merges HEAD`
 
-if [ $TAG_REV != $HEAD_REV ]; then
+if [ $TAG_REV != $HEAD_REV ] || [ $TAG_REV != $HEAD_REV_WITHOUT_MERGES ]; then
   echo -e "\033[1;31mYou're attempting to publish \033[0;33m$HEAD_REV\033[1;31m as \033[0;33mv$VERSION\033[1;31m but it already points to \033[0;33m$TAG_REV\033[1;31m.\033[0m"
   exit 1
 fi
