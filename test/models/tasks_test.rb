@@ -69,6 +69,15 @@ module Shipit
       end
     end
 
+    test "#retry_if_necessary does not create a new task object if the stack is locked" do
+      task = shipit_tasks(:shipit2)
+      task.stack.lock("test", task.user)
+
+      assert_no_difference 'Task.count', 'No new task should be created' do
+        task.retry_if_necessary
+      end
+    end
+
     test "#retries_configured? returns true when max_retries is not nil and is greater than zero" do
       task_with_three_retries = shipit_tasks(:shipit)
       assert_predicate task_with_three_retries, :retries_configured?

@@ -387,7 +387,7 @@ module Shipit
     end
 
     def retry_if_necessary
-      return unless retries_configured?
+      return unless retries_configured? && !stack.reload.locked?
 
       if retry_attempt < max_retries
         retry_task = duplicate_task
