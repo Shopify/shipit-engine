@@ -93,6 +93,11 @@ module Shipit
 
     validates :lock_reason, length: { maximum: 4096 }
 
+    validates :merge_queue_enabled, uniqueness: {
+        scope: %i(repository branch),
+        message: 'cannot be used more than once with this repository and branch. Check (archived) stacks.'
+    }
+
     serialize :cached_deploy_spec, DeploySpec
     delegate(
       :provisioning_handler_name,
