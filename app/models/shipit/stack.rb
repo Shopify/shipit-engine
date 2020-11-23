@@ -39,6 +39,7 @@ module Shipit
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
     belongs_to :lock_author, class_name: :User, optional: true
+    belongs_to :pipeline, class_name: :Pipeline, optional: true
     belongs_to :repository
     validates_associated :repository
 
@@ -51,6 +52,8 @@ module Shipit
 
     def env
       {
+        'PIPELINE_NAME' => pipeline.try(:name),
+        'PIPELINE_ID' => pipeline.try(:id),
         'ENVIRONMENT' => environment,
         'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
         'GITHUB_REPO_OWNER' => repository.owner,
@@ -377,7 +380,7 @@ module Shipit
     delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
-      Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
+      Rails.root.join('data', pipeline.try(:id) || 'no_pipeline' ,'stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path
@@ -442,7 +445,7 @@ module Shipit
     end
 
     def locked?
-      lock_reason.present?
+      lock_reason.present? || pipeline.try(:lock_reason).present?
     end
 
     def lock(reason, user)

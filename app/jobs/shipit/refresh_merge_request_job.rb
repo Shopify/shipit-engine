@@ -5,7 +5,18 @@ module Shipit
 
     def perform(merge_request)
       merge_request.refresh!
-      ProcessMergeRequestsJob.perform_later(merge_request.stack)
+
+      if merge_request.root?
+        with_merge_requests.each do |mr|
+          mr.schedule_refresh!
+        end
+
+        if merge_request.stack.pipline
+          ProcessPipelineIntegrationJob.perform_later(merge_request.stack.pipline)
+        else
+          ProcessMergeRequestsJob.perform_later(merge_request.stack)
+        end
+      end
     end
   end
 end

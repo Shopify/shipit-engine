@@ -1,13 +1,21 @@
 # frozen_string_literal: true
 module Shipit
-  class ProcessMergeRequestsJob < BackgroundJob
-    include BackgroundJob::Unique
-    on_duplicate :drop
+  class ProcessPipelineIntegrationJob < BackgroundJob
+    unique :while_executing, runtime_lock_ttl: 3.hours, on_conflict: :log
+    timeout 3.hours
+    queue_as :pipeline
 
-    queue_as :default
+    # Create a new child Stack
+    # Disable merge queue on child
 
-    def perform(stack)
-      return ProcessPipelineIntegrationJob.perform_later(stack.pipline) if stack.pipline
+    def perform(pipeline)
+      # Create a deployment
+
+      # Find all merge requests
+      # Build Predictive branches
+      # Run tasks
+      # verify nothing changed in Merge requests, lock on stacks of pipeline
+
 
       merge_requests = stack.merge_requests.to_be_merged.to_a
       merge_requests.each do |merge_request|
@@ -18,6 +26,7 @@ module Shipit
       end
 
       return false unless stack.allows_merges?
+      # TODO: Exist if
 
       merge_requests.select(&:pending?).each do |merge_request|
         merge_request.refresh!
@@ -30,5 +39,12 @@ module Shipit
         end
       end
     end
+
+    private
+
+    def predictive_branch(pipeline)
+
+    end
+
   end
 end

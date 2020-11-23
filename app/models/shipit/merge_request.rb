@@ -44,14 +44,22 @@ module Shipit
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
 
+    has_many :with_merge_requests, class_name: 'Shipit::MergeRequest', foreign_key: :merge_request_id
+    belongs_to :with_parent_merge_request, class_name: 'Shipit::MergeRequest', foreign_key: :merge_request_id, optional: true
+
     deferred_touch stack: :updated_at
 
     validates :number, presence: true, uniqueness: { scope: :stack_id }
 
+    scope :root, -> { where(merge_request_id: nil) }
     scope :waiting, -> { where(merge_status: WAITING_STATUSES) }
     scope :pending, -> { where(merge_status: 'pending') }
-    scope :to_be_merged, -> { pending.order(merge_requested_at: :asc) }
+    scope :to_be_merged, -> { pending.root.order(merge_requested_at: :asc) }
     scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
+
+    def root?
+      !with_parent_merge_request
+    end
 
     after_save :record_merge_status_change
     after_commit :emit_hooks
@@ -120,21 +128,49 @@ module Shipit
       end
     end
 
-    def self.request_merge!(stack, number, user)
-      now = Time.now.utc
-      merge_request = begin
-        create_with(
-          merge_requested_at: now,
-          merge_requested_by: user.presence,
-        ).find_or_create_by!(
-          stack: stack,
-          number: number,
-        )
-      rescue ActiveRecord::RecordNotUnique
-        retry
+    def self.request_merge!(stack, number, user, mode=Pipeline::MERGE_MODE_DEFAULT, with=[])
+      raise ArgumentError, "mode/with are not support for non-pipelined stacks (##{stack.id})" if !stack.pipline && (mode!=MERGE_MODE_DEFAULT || with)
+
+      PStore::transaction do
+        merge_request = request_merge(stack, number, user)
+        # raise ArgumentError, "Merge Queue is enabled for stack ##{stack.id}." if stack.merge_queue_enabled?
+        # errors << "Pull Request is neither waiting nor merged, this should be impossible." if !merge_request.waiting? && !merge_request.merged?
+
+        # 60 sec to do our thing
+        stack.pipeline.sync_lock.lock do
+          # Should change mode?
+          if merge_request.mode != mode && mode != Pipeline::MERGE_MODE_DRY_RUN
+            merge_request.update!(mode: mode)
+          end
+
+          # Validate
+          errors = []
+          final_with_merge_requests = []
+          with.each do |with_stack, with_prs|
+            with_prs.each do |with_number|
+              with_merge_request = request_merge(with_stack, with_number, user)
+
+              # Check that both root and with PRs belongs to the same pipeline
+              if merge_request.stack.pipeline != with_merge_request.stack.pipeline
+                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergable, it belongs to a different Pipeline."
+              # Check that that with PR is not associated with other PRs
+              elsif with_merge_request.parent && with_merge_request != merge_request
+                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergeable, already configured WITH a different Merge Request."
+              else
+                final_with_merge_requests << with_merge_request
+              end
+            end
+          end
+
+          raise ArgumentError, "invalid reason merge request: #{errors.split("\n")}" if errors
+          return PStore::abort if Pipeline::MERGE_MODE_DRY_RUN == mode
+
+          # Update new requirements
+          merge_request.with_merge_requests = final_with_merge_requests
+
+        end if stack.pipeline
       end
-      merge_request.update!(merge_requested_by: user.presence)
-      merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
+
       merge_request.schedule_refresh!
       merge_request
     end
@@ -277,6 +313,25 @@ module Shipit
     end
 
     private
+
+    def self.request_merge(stack, number, user)
+      now = Time.now.utc
+      merge_request = begin
+        create_with(
+          merge_requested_at: now,
+          merge_requested_by: user.presence,
+        ).find_or_create_by!(
+          stack: stack,
+          number: number,
+        )
+      rescue ActiveRecord::RecordNotUnique
+        retry
+      end
+      merge_request.update!(merge_requested_by: user.presence)
+      merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
+      merge_request
+    end
+
 
     def record_merge_status_change
       @merge_status_changed ||= saved_change_to_attribute?(:merge_status)
