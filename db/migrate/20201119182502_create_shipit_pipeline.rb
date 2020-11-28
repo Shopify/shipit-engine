@@ -1,5 +1,8 @@
 class CreateShipitPipeline < ActiveRecord::Migration[6.0]
   def change
+    #
+    # TODO add FK to all tables below
+    #
     create_table :pipelines do |t|
       t.string   "name",                     limit: 100,                          null: false
       t.string   "environment",              limit: 50,    default: "production", null: false
@@ -17,33 +20,31 @@ class CreateShipitPipeline < ActiveRecord::Migration[6.0]
       t.index [:environment]
     end
 
-    create_table :release do |t|
-      t.integer     "pipeline_id",          limit: 4
-      # pending, aborted, completed, partial, failure
+    create_table :predictive_build do |t|
+      t.references :pipeline,               foreign_key: true, null: false
       t.string      "status",               limit: 10,    default: "pending",   null: false
-      t.datetime    "started_at"
-      t.datetime    "ended_at"
 
       t.timestamps
 
       t.index [:pipeline_id]
     end
 
-    create_table :release_merge_requests do |t|
-      t.integer     "release_id",          limit: 4
-      t.integer     "merge_request_id",    limit: 4
+    add_column :tasks, :predictive_build_id, :integer, null: true
+    add_index :tasks, :predictive_build_id
 
-      # pending, aborted, completed, failure
+
+    create_table :predictive_merge_requests do |t|
+      t.references :predictive_build,       foreign_key: true, null: false
+      t.references :merge_request,          foreign_key: true, null: false
       t.string      "status",               limit: 10,    default: "pending",   null: false
 
       t.timestamps
-
-      t.index [:release_id]
-      t.index [:merge_request_id]
     end
 
-
     add_column :stacks, :pipeline_id, :integer, null: true
-    add_index :stacks, [:pipeline_id, :merge_status]
+    add_index :stacks, :pipeline_id
+
+    add_column :merge_requests, :mode, :string, limit: 10,    default: "default",   null: false
+    add_index :merge_requests, [:stack_id, :mode, :merge_status, :merge_request_id, :merge_requested_at], name: :index_stack_mod_status
   end
 end

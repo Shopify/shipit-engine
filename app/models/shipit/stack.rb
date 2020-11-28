@@ -364,8 +364,8 @@ module Shipit
       !locked? && !active_task? && !awaiting_provision?
     end
 
-    def allows_merges?
-      merge_queue_enabled? && !locked? && merge_status == 'success'
+    def allows_merges?(mode = nil)
+      merge_queue_enabled? && (!locked? || mode==Pipeline::MERGE_MODE_EMERGENCY) && merge_status == 'success'
     end
 
     def merge_method
@@ -380,11 +380,15 @@ module Shipit
     delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
-      Rails.root.join('data', pipeline.try(:id) || 'no_pipeline' ,'stacks', repo_owner, repo_name, environment)
+      Rails.root.join('data','stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path
       File.join(base_path, "deploys")
+    end
+
+    def builds_path
+      File.join(base_path, "builds")
     end
 
     def git_path

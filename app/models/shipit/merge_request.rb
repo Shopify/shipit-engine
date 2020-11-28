@@ -7,7 +7,7 @@ module Shipit
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
-    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase).freeze
+    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase with_merge_request_issue).freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
@@ -56,6 +56,10 @@ module Shipit
     scope :pending, -> { where(merge_status: 'pending') }
     scope :to_be_merged, -> { pending.root.order(merge_requested_at: :asc) }
     scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
+
+    scope :mode, ->(mode) {
+      where(:mode => mode)
+    }
 
     def root?
       !with_parent_merge_request
@@ -131,7 +135,7 @@ module Shipit
     def self.request_merge!(stack, number, user, mode=Pipeline::MERGE_MODE_DEFAULT, with=[])
       raise ArgumentError, "mode/with are not support for non-pipelined stacks (##{stack.id})" if !stack.pipline && (mode!=MERGE_MODE_DEFAULT || with)
 
-      PStore::transaction do
+      transaction do
         merge_request = request_merge(stack, number, user)
         # raise ArgumentError, "Merge Queue is enabled for stack ##{stack.id}." if stack.merge_queue_enabled?
         # errors << "Pull Request is neither waiting nor merged, this should be impossible." if !merge_request.waiting? && !merge_request.merged?
@@ -162,8 +166,14 @@ module Shipit
             end
           end
 
+          # Allow remove with_* only if its closed
+          removed_merged_requests = merge_request.with_merge_requests - final_with_merge_requests
+          removed_merged_requests.each do |removed_merged_request|
+            errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') cannot be removed, it must be closed."
+          end
+
           raise ArgumentError, "invalid reason merge request: #{errors.split("\n")}" if errors
-          return PStore::abort if Pipeline::MERGE_MODE_DRY_RUN == mode
+          return abort if Pipeline::MERGE_MODE_DRY_RUN == mode
 
           # Update new requirements
           merge_request.with_merge_requests = final_with_merge_requests

@@ -12,7 +12,7 @@ module Shipit
         end
 
         if merge_request.stack.pipline
-          ProcessPipelineIntegrationJob.perform_later(merge_request.stack.pipline)
+          ProcessPipelineBuildJob.perform_later(merge_request.stack.pipline)
         else
           ProcessMergeRequestsJob.perform_later(merge_request.stack)
         end
