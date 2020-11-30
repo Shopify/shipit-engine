@@ -8,6 +8,7 @@ namespace :cron do
     Shipit::MergeRequest.schedule_merges
     Shipit::ReapDeadTasksJob.perform_later
     Shipit::ReviewStackProvisioningQueue.work
+        # TODO: Schedule pipelines
   end
 
   task hourly: %i(rollup refresh_users clear_stale_caches delete_old_deployment_directories)

@@ -61,6 +61,12 @@ module Shipit
       where(:mode => mode)
     }
 
+    def with_all
+      ([self] + with_merge_requests).each do |merge_request|
+        yield merge_request
+      end
+    end
+
     def root?
       !with_parent_merge_request
     end

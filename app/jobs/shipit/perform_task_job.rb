@@ -63,6 +63,9 @@ module Shipit
     end
 
     def checkout_repository
+      if @task.predictive_build
+        # TODO
+      end
       unless @commands.fetched?(@task.until_commit).tap(&:run).success?
         # acquire_git_cache_lock can take upto 15 seconds
         # to process. Try to make sure that the job isn't

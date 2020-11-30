@@ -175,6 +175,20 @@ module Shipit
       (config('review', 'monitoring') || []).select(&:present?)
     end
 
+    def ci_timeout
+      config('ci', 'timeout') { 3600 }
+    end
+
+    def ci_steps
+      around_steps('ci') do
+        config('ci', 'override')
+      end
+    end
+
+    def ci_steps!
+      ci_steps || cant_detect!(:ci)
+    end
+
     def hidden_statuses
       Array.wrap(config('ci', 'hide')) + [release_status_context].compact
     end

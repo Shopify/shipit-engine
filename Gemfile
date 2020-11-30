@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sqlite3'
+gem 'activejob-uniqueness'
 
 group :ci do
   gem 'mysql2'
@@ -17,6 +18,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'libv8'
   gem 'spy'
   gem 'mocha'
   gem 'simplecov', require: false

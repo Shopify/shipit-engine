@@ -43,6 +43,7 @@ module Shipit
             },
           },
           'ci' => {
+            'override' => ci_steps,
             'hide' => hidden_statuses,
             'allow_failures' => soft_failing_statuses,
             'require' => required_statuses,

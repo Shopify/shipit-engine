@@ -3,7 +3,7 @@ class CreateShipitPipeline < ActiveRecord::Migration[6.0]
     #
     # TODO add FK to all tables below
     #
-    create_table :pipelines do |t|
+    create_table :pipelines do |t| # id: false
       t.string   "name",                     limit: 100,                          null: false
       t.string   "environment",              limit: 50,    default: "production", null: false
       t.string   "lock_reason",              limit: 255
@@ -20,22 +20,21 @@ class CreateShipitPipeline < ActiveRecord::Migration[6.0]
       t.index [:environment]
     end
 
-    create_table :predictive_build do |t|
-      t.references :pipeline,               foreign_key: true, null: false
+    create_table :predictive_builds do |t|
+      t.references :pipeline,               foreign_key: true, null: false, type: :bigint
       t.string      "status",               limit: 10,    default: "pending",   null: false
+      t.string      "branch",               limit: 10,    null: false
 
       t.timestamps
-
-      t.index [:pipeline_id]
     end
 
-    add_column :tasks, :predictive_build_id, :integer, null: true
-    add_index :tasks, :predictive_build_id
-
+    change_table :tasks do |t|
+      t.references :predictive_build,       foreign_key: true, null: true, type: :bigint
+    end
 
     create_table :predictive_merge_requests do |t|
-      t.references :predictive_build,       foreign_key: true, null: false
-      t.references :merge_request,          foreign_key: true, null: false
+      t.references :predictive_build,       foreign_key: true, null: true, type: :bigint
+      t.references :merge_request,          foreign_key: true, null: false, type: :integer
       t.string      "status",               limit: 10,    default: "pending",   null: false
 
       t.timestamps

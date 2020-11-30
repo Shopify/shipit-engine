@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_222746) do
+ActiveRecord::Schema.define(version: 2020_11_19_182502) do
 
   create_table "api_clients", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "permissions"
@@ -161,15 +161,15 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.string "base_ref", limit: 1024
     t.integer "base_commit_id"
     t.integer "merge_request_id"
-    t.integer "pipeline_id"
+    t.string "mode", limit: 10, default: "default", null: false
     t.index ["base_commit_id"], name: "fk_rails_eda2bf836a"
     t.index ["head_id"], name: "index_merge_requests_on_head_id"
     t.index ["merge_request_id"], name: "index_merge_requests_on_merge_request_id"
     t.index ["merge_requested_by_id"], name: "index_merge_requests_on_merge_requested_by_id"
     t.index ["merge_status"], name: "index_merge_requests_on_merge_status"
-    t.index ["pipeline_id", "merge_status"], name: "index_merge_requests_on_pipeline_id_and_merge_status"
     t.index ["stack_id", "github_id"], name: "index_merge_requests_on_stack_id_and_github_id", unique: true
     t.index ["stack_id", "merge_status"], name: "index_merge_requests_on_stack_id_and_merge_status"
+    t.index ["stack_id", "mode", "merge_status", "merge_request_id", "merge_requested_at"], name: "index_stack_mod_status"
     t.index ["stack_id", "number"], name: "index_merge_requests_on_stack_id_and_number", unique: true
     t.index ["stack_id"], name: "index_merge_requests_on_stack_id"
   end
@@ -182,7 +182,7 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.index ["task_id"], name: "index_output_chunks_on_task_id"
   end
 
-  create_table "pipelines", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pipelines", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", limit: 100, null: false
     t.string "environment", limit: 50, default: "production", null: false
     t.string "lock_reason"
@@ -197,14 +197,33 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.index ["environment"], name: "index_pipelines_on_environment"
   end
 
-  create_table "pull_request_assignments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "predictive_builds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "pipeline_id", null: false
+    t.string "status", limit: 10, default: "pending", null: false
+    t.string "branch", limit: 10, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["pipeline_id"], name: "index_predictive_builds_on_pipeline_id"
+  end
+
+  create_table "predictive_merge_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "predictive_build_id"
+    t.integer "merge_request_id", null: false
+    t.string "status", limit: 10, default: "pending", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["merge_request_id"], name: "index_predictive_merge_requests_on_merge_request_id"
+    t.index ["predictive_build_id"], name: "index_predictive_merge_requests_on_predictive_build_id"
+  end
+
+  create_table "pull_request_assignments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "pull_request_id"
     t.bigint "user_id"
     t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
-  create_table "pull_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pull_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
@@ -224,26 +243,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.index ["stack_id"], name: "index_pull_requests_on_stack_id"
   end
 
-  create_table "release", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "pipeline_id"
-    t.string "status", limit: 10, default: "pending", null: false
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["pipeline_id"], name: "index_release_on_pipeline_id"
-  end
-
-  create_table "release_merge_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "release_id"
-    t.integer "merge_request_id"
-    t.string "status", limit: 10, default: "pending", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["merge_request_id"], name: "index_release_merge_requests_on_merge_request_id"
-    t.index ["release_id"], name: "index_release_merge_requests_on_release_id"
-  end
-
   create_table "release_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "stack_id", null: false
     t.bigint "commit_id", null: false
@@ -259,7 +258,7 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.index ["user_id"], name: "index_release_statuses_on_user_id"
   end
 
-  create_table "repositories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "repositories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "owner", limit: 39, null: false
     t.string "name", limit: 100, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -294,19 +293,14 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.string "provision_status", default: "deprovisioned", null: false
     t.string "type", default: "Shipit::Stack"
     t.boolean "awaiting_provision", default: false, null: false
+    t.integer "pipeline_id"
     t.index ["archived_since"], name: "index_stacks_on_archived_since"
     t.index ["awaiting_provision"], name: "index_stacks_on_awaiting_provision"
+    t.index ["pipeline_id"], name: "index_stacks_on_pipeline_id"
     t.index ["provision_status"], name: "index_stacks_on_provision_status"
     t.index ["repository_id", "environment"], name: "stack_unicity", unique: true
     t.index ["repository_id"], name: "index_stacks_on_repository_id"
     t.index ["type"], name: "index_stacks_on_type"
-  end
-
-  create_table "stacks_stacks", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "parent_id"
-    t.integer "child_id"
-    t.index ["child_id", "parent_id"], name: "index_stacks_stacks_on_child_id_and_parent_id", unique: true
-    t.index ["parent_id", "child_id"], name: "index_stacks_stacks_on_parent_id_and_child_id", unique: true
   end
 
   create_table "statuses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -347,6 +341,8 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
     t.integer "rollback_once_aborted_to_id"
     t.integer "retry_attempt", default: 0, null: false
     t.integer "max_retries"
+    t.bigint "predictive_build_id"
+    t.index ["predictive_build_id"], name: "index_tasks_on_predictive_build_id"
     t.index ["rolled_up", "created_at", "status"], name: "index_tasks_on_rolled_up_and_created_at_and_status"
     t.index ["since_commit_id"], name: "index_tasks_on_since_commit_id"
     t.index ["stack_id", "allow_concurrency", "status"], name: "index_active_tasks"
@@ -394,4 +390,8 @@ ActiveRecord::Schema.define(version: 2020_11_19_222746) do
   add_foreign_key "merge_requests", "commits", column: "head_id"
   add_foreign_key "merge_requests", "stacks"
   add_foreign_key "merge_requests", "users", column: "merge_requested_by_id"
+  add_foreign_key "predictive_builds", "pipelines"
+  add_foreign_key "predictive_merge_requests", "merge_requests"
+  add_foreign_key "predictive_merge_requests", "predictive_builds"
+  add_foreign_key "tasks", "predictive_builds"
 end
