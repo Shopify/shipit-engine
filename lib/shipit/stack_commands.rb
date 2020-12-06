@@ -79,5 +79,9 @@ module Shipit
     def create_directories
       FileUtils.mkdir_p(@stack.deploys_path)
     end
+
+    def env
+      super.merge({ "ENVIRONMENT" => @stack.environment })
+    end
   end
 end
