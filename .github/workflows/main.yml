@@ -3,30 +3,30 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  # lint:
-  #   name: Lint Ruby
-  #   runs-on: ubuntu-latest
+  lint:
+    name: Lint Ruby
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Set up Ruby 2.5
-  #     uses: actions/setup-ruby@v1
-  #     with:
-  #       ruby-version: 2.5.x
-  #   - uses: actions/cache@v1
-  #     with:
-  #       path: vendor/bundle
-  #       key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-  #       restore-keys: |
-  #         ${{ runner.os }}-gems-
-  #   - name: rubocop
-  #     run: |
-  #       sudo apt-get update
-  #       sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
-  #       gem install bundler:2.1.4
-  #       bundle config path vendor/bundle
-  #       bundle install --jobs 4 --retry 3
-  #       bundle exec rubocop
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby 2.5
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.5.x
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+    - name: rubocop
+      run: |
+        sudo apt-get update
+        sudo apt-get -yqq install libpq-dev libsqlite3-dev libmysqlclient-dev
+        gem install bundler:2.1.4
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+        bundle exec rubocop
 
   # mysql:
   #   name: Tests with MySQL
