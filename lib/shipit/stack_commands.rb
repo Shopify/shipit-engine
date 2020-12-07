@@ -9,6 +9,10 @@ module Shipit
       @stack = stack
     end
 
+    def env
+      super.merge(@stack.env)
+    end
+
     def fetch
       create_directories
       if Dir.exist?(@stack.git_path)
