@@ -1,7 +1,6 @@
 <% content_for :main_classes do %>no-footer<% end %>
 
 <%= javascript_include_tag 'task' %>
-<%= include_plugins(@stack) %>
 <%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
 
 <div class="sidebar">
