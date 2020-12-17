@@ -1,0 +1,39 @@
+TODO:
+
+1. Merge-queue can be enabled for a single repo & branch
+2. ProcessMergeRequestsJob - use :while_executing https://github.com/veeqo/activejob-uniqueness
+3. Parent/Child relationship
+3. Pipeline (Stack)
+4. Comment handler - error on invalid input
+5. DB.merge_request create migration for
+    1. mode
+    2. parent_id
+    3. Add index 'mode' to KEY `index_merge_requests_on_stack_id_and_merge_status` (`stack_id`,`merge_status`)
+6. Handle update of shipit with:x mode:y, allow to remove only close PRs, new one can be added
+7. Process Predictive branch
+    - Candidate
+    - Predictive branches
+    - Merge one by one
+    - Task CI
+---
+    - Task Pipeline
+    - merge to target branch with lock
+    - Check for abort
+    - Run after merge to target branch @stack.commits.reachable.last sync_github, clear_git_cache!
+    - Update DestroyStackJob
+8 Basic UI
+    - Create/Edit pipeline environment, locked_at, lock_reason.
+    - Create/Update Stack with Pipeline
+
+8. Cleanup of old releases & relationships
+9. Report rejection status/job status back to Github `check`
+    - When a WITH PR is not ready
+    - When fail on CI (Repo/Pipeline)
+10. Update stack with AVG Build time
+9. UI
+10. convert ProcessPipelineBuildJob to task type = 'ci'
+    PerformTaskJob rename to PerformDeployJob , add creat one for Build with queue 'build'
+    add db.task.type='cd', make active!, etc as CD tasks
+    extend task creation, to have type attribute support in yaml default cd
+    extend task to create with default value 'cd' if not provided, db.task.type='cd' might do the trick
+11. Check code for TODOs

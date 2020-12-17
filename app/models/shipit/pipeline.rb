@@ -18,7 +18,7 @@ module Shipit
     MERGE_SINGLE_MODES = %w(emergency single).freeze
 
 
-    # merge_requests, invalid_merge_requests
+    # merge_requests
     def release_candidates(stacks, mode)
       # Find merge_requests candidates
       merge_requests = MergeRequest.where(stacks: stacks)

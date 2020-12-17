@@ -139,8 +139,9 @@ module Shipit
     end
 
     def self.request_merge!(stack, number, user, mode=Pipeline::MERGE_MODE_DEFAULT, with=[])
-      raise ArgumentError, "mode/with are not support for non-pipelined stacks (##{stack.id})" if !stack.pipline && (mode!=MERGE_MODE_DEFAULT || with)
+      raise ArgumentError, "mode/with are not support for non-pipelined stacks (##{stack.id}/#{mode}/#{with})" if !stack.pipeline && (mode!=Pipeline::MERGE_MODE_DEFAULT || with.present?)
 
+      merge_request = nil
       transaction do
         merge_request = request_merge(stack, number, user)
         # raise ArgumentError, "Merge Queue is enabled for stack ##{stack.id}." if stack.merge_queue_enabled?
@@ -187,7 +188,7 @@ module Shipit
         end if stack.pipeline
       end
 
-      merge_request.schedule_refresh!
+      merge_request.try(:schedule_refresh!)
       merge_request
     end
 

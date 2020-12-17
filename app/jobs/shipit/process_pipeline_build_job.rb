@@ -21,23 +21,23 @@ module Shipit
       predictive_build.update(branch: "PREDICTIVE-BRANCH-#{predictive_build.id}")
 
       Pipeline::MERGE_MODES.each do |mode|
-        # Release - is a set of merge-requests
         candidates = pipeline.release_candidates(stacks, mode)
         next unless candidates
 
         # Predictive branch
         limit = MERGE_SINGLE_MODES.include?(mode) ? 1 : nil
-        merged_candidates = create_predictive_branch(predictive_build, candidates, limit)
+    stack_candidates = []
+        merged_candidates, merged_stacks = create_predictive_branch(predictive_build, candidates, limit)
         if merged_candidates.length < candidates.length && limit > merged_candidates
           # TODO: Notify PullRequest about out attempt
           # Reject merge_request
         end
         next unless merged_candidates
 
-        # Find the stacks that were changes & send them for build
-        merged_candidates.each do |merge_request|
-          next if final_stacks.include? merge_request.stack
-          predictive_build.trigger_build_predictive_branch(Shipit::CommandLineUser.new, merge_request.stack)
+        # Build the stacks that were changed
+        merged_stacks.each do |merged_stack|
+          # TODO ?!
+          predictive_build.trigger_build_predictive_branch(Shipit::CommandLineUser.new, merged_stack)
         end
 
         # Wait up to an hour for build process to complete
@@ -50,7 +50,7 @@ module Shipit
         end
         # TODO: if iteration >= max_iteration timeout reached
 
-        # Remove all candidates were merged to rejected stacks
+        # Remove all candidates that were merged to rejected stacks
         built_stacks = []
         predictive_build.predictive_branches.each do |predictive_branch|
           if predictive_branch.success?
@@ -87,14 +87,14 @@ module Shipit
       end
     end
 
-    # Merge one merge_request at a time, include its WITH association
-    #   Once a merge_request cannot be merged, the process start over this time without the faulty merge_request
-    # The process will exist once the limit has reached or all merge_requests have been processed
+    # Merge merge_requests into their corresponding predictive-branches
+    #   The process will exist once the limit has reached or all merge_requests were processed
     def create_predictive_branch(predictive_build, merge_requests, limit = nil)
 
+      merged_stacks = []
       merged_to_predictive_branch = []
       Dir.mktmpdir do |dir|
-        # Sum our stacks & Clone our repos into their own folder - $dir/owner/repo-name/
+        # Sum our stacks & Clone our repos into their own folder - dir/organization/repo-name/
         stack_commands = {}
         merge_requests.each do |merge_request|
           merge_request.with_all do |mr|
@@ -111,7 +111,7 @@ module Shipit
           end
         end
 
-        # Merge one layer at a time, a layer includes the main merge_request and its WITH association
+        # Merge one layer at a time, a layer includes the main merge_request and its WITH associations
         #   On failure, try again, this time without the faulty merge_request
         begin
           # Create & Checkout predictive branch locally
@@ -129,10 +129,11 @@ module Shipit
               stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number)
             end
             merged_to_predictive_branch << merge_request
+            merged_stacks << merge_request.stack unless merged_stacks.include?(merge_request.stack)
 
             if limit <= merged_to_predictive_branch.length
-              push_predictive_branch(stack_commands, merged_to_predictive_branch)
-              return merged_to_predictive_branch
+              push_predictive_branch(stack_commands, merged_stacks)
+              return merged_to_predictive_branch, merged_stacks
             end
           end
         rescue
@@ -141,10 +142,10 @@ module Shipit
           retry unless merge_requests
         end
 
-        push_predictive_branch(stack_commands, merged_to_predictive_branch)
+        push_predictive_branch(stack_commands, merged_stacks)
       end
 
-      merged_to_predictive_branch
+      return merged_to_predictive_branch, merged_stacks
     end
 
     private
@@ -153,11 +154,7 @@ module Shipit
       [merge_request] + merge_request.with_merge_requests
     end
 
-    def push_predictive_branch(stack_commands, merged_to_predictive_branch)
-      changed_stacks = []
-      merged_to_predictive_branch.each do |merge_request|
-        changed_stacks << merge_request.stack unless changed_stacks.include? merge_request.stack
-      end
+    def push_predictive_branch(stack_commands, changed_stacks)
       changed_stacks.each do |stack|
         stack_commands[stack].git_push(true)
       end
