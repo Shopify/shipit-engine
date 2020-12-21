@@ -20,23 +20,18 @@ module Shipit
 
     # merge_requests
     def release_candidates(stacks, mode)
-      # Find merge_requests candidates
+      # Find root merge_requests candidates
       merge_requests = MergeRequest.where(stacks: stacks)
                            .to_be_merged.mode(mode)
       merge_requests = remove_invalid_merge_requests(merge_requests)
 
-      # Find all WITH merge_requests
-      with_merge_requests = []
-      merge_requests.each do |merge_request|
-        with_merge_requests = with_merge_requests | merge_request.with_merge_requests # Array unique
-      end
-      with_merge_requests = remove_invalid_merge_requests(with_merge_requests.uniq)
-
       # Reject candidates due to issues WITH their associated merge_requests
-      valid_with = valid_with_merge_requests(with_merge_requests)
+      valid_with = valid_with_merge_requests(merge_requests)
+
       merge_requests = merge_requests.select { |merge_request|
         merge_request.with_merge_requests.each do |with_mr|
           if !valid_with.include? with_mr
+            # TODO Add comment rejection reason on MR
             # merge_request.reject!('with_merge_request_issue')
             return false
           end
