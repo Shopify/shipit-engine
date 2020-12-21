@@ -160,12 +160,11 @@ module Shipit
           with.each do |with_stack, with_prs|
             with_prs.each do |with_number|
               with_merge_request = request_merge(with_stack, with_number, user)
-
               # Check that both root and with PRs belongs to the same pipeline
               if merge_request.stack.pipeline != with_merge_request.stack.pipeline
                 errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergable, it belongs to a different Pipeline."
               # Check that that with PR is not associated with other PRs
-              elsif with_merge_request.parent && with_merge_request != merge_request
+              elsif with_merge_request.with_parent_merge_request && with_merge_request.with_parent_merge_request.id != merge_request.id
                 errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergeable, already configured WITH a different Merge Request."
               else
                 final_with_merge_requests << with_merge_request
@@ -179,7 +178,7 @@ module Shipit
             errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') cannot be removed, it must be closed."
           end
 
-          raise ArgumentError, "invalid reason merge request: #{errors.split("\n")}" if errors
+          raise ArgumentError, "invalid reason merge request: #{errors.split("\n")}" if errors.any?
           return abort if Pipeline::MERGE_MODE_DRY_RUN == mode
 
           # Update new requirements
