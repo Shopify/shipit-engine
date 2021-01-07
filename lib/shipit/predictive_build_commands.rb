@@ -12,7 +12,9 @@ module Shipit
     end
 
     def git_clone(repo_name=nil, chdir: nil, **kwargs)
-      git('clone', '--recursive', '--branch', @stack.branch, @stack.repo_git_url, repo_name || @stack.repo_name, chdir: chdir || @stack.builds_path, env: env, **kwargs)
+      git('clone', '--recursive', '--branch',
+          @stack.branch, @stack.repo_git_url, repo_name || @stack.repo_name, chdir: chdir || @stack.builds_path,
+          env: env, **kwargs)
     end
 
     def git_fetch(branch = nil)
@@ -20,7 +22,8 @@ module Shipit
     end
 
     def git_merge_origin_as_pr(branch, pr_num)
-      git('merge', "origin/#{branch}", '--no-ff', '-m', "Merge pull request #{pr_num} from vcita/#{branch}", chdir: @chdir, env: env)
+      git('merge', "origin/#{branch}", '--no-ff', '-m',
+          "Merge pull request #{pr_num} from vcita/#{branch}", chdir: @chdir, env: env)
     end
 
     def git_merge_ff(branch)
@@ -31,7 +34,7 @@ module Shipit
       git('checkout', '-b', branch, chdir: @chdir, env: env)
     end
 
-    def git_push(force=true)
+    def git_push(force = true)
       git('push', (force ? '-f' : ''), '-u', 'origin', 'HEAD', chdir: @chdir, env: env)
     end
 

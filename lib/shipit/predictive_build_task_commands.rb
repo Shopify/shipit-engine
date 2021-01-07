@@ -5,7 +5,6 @@ require 'fileutils'
 
 module Shipit
   class PredictiveBuildTaskCommands < TaskCommands
-
     SPEC_TTL = 60.minutes
 
     def initialize(task)

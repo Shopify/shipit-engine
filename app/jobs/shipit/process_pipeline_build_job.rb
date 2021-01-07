@@ -14,12 +14,11 @@ module Shipit
     #         Stack CI: Stack's
     #         Pipeline CI: All
     def perform(pipeline)
-      predictive_builds = Shipit::PredictiveBuild.where(pipeline: pipeline)
-                                                 .where(status: Shipit::PredictiveBuild::WIP_STATUSES)
+      predictive_builds = PredictiveBuild.where(pipeline: pipeline).where(status: PredictiveBuild::WIP_STATUSES)
 
       if predictive_builds.any?
         predictive_build = predictive_builds.last
-        if predictive_build.mode != Shipit::Pipeline::MERGE_MODE_EMERGENCY && emergency_build?(pipeline)
+        if predictive_build.mode != Pipeline::MERGE_MODE_EMERGENCY && emergency_build?(pipeline)
           unless predictive_build.ci_pipeline_canceling?
             abort_running_predictive_build(predictive_build)
           end
@@ -50,7 +49,7 @@ module Shipit
     def merge_build(predictive_build)
       Dir.mktmpdir do |dir|
         stack_commands = merge_predictive_branches(predictive_build, dir)
-        push_build(predictive_build, stack_commands, dir) unless predictive_build.merging_failed?
+        push_build(predictive_build, stack_commands) unless predictive_build.merging_failed?
       end
       if predictive_build.merging_failed?
         update_failed_build(predictive_build, Shipit::PredictiveBranch::MERGE_PREDICTIVE_TO_STACK_FAILED)
@@ -93,7 +92,8 @@ module Shipit
       if predictive_build.pending? || predictive_build.ci_stack_tasks?
         predictive_build.cancel
         predictive_build.predictive_branches.each do |p_branch|
-          next unless p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? || p_branch.tasks_verifying?
+          next unless p_branch.pending? || p_branch.tasks_running? ||
+            p_branch.tasks_verification? || p_branch.tasks_verifying?
           p_branch.tasks_canceling
           p_branch.trigger_task(true)
           p_branch.cancel_predictive_merge_requests
@@ -111,8 +111,7 @@ module Shipit
     def emergency_build?(pipeline)
       stacks = pipeline.mergeable_stacks
       return false unless stacks
-      merge_requests = Shipit::MergeRequest.where(stack: stacks)
-                                           .to_be_merged.mode(Shipit::Pipeline::MERGE_MODE_EMERGENCY)
+      merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(Pipeline::MERGE_MODE_EMERGENCY)
       merge_requests.any?
     end
 
@@ -135,13 +134,13 @@ module Shipit
         break if merged_candidates.!empty?
       end
 
-      predictive_build.update(mode: predictive_build_mode) if predictive_build_mode != Shipit::Pipeline::MERGE_MODE_DEFAULT
+      predictive_build.update(mode: predictive_build_mode) if predictive_build_mode != Pipeline::MERGE_MODE_DEFAULT
       predictive_build.stack_tasks if predictive_build.predictive_branches.any?
       predictive_build
     end
 
     def run_stacks_tasks(pipeline, predictive_build)
-      p_branches = { :running => [], :stopped => [], :completed => [] }
+      p_branches = { running: [], stopped: [], completed: [] }
       predictive_build.predictive_branches.each do |p_branch|
         if p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? ||
             p_branch.tasks_verifying? || p_branch.tasks_canceling?
@@ -196,11 +195,16 @@ module Shipit
               mr.refresh!
               unless predictive_branches[mr.stack.id]
                 stack_commit = Shipit::Commit.where(stack_id: mr.stack.id, detached: 0).last
-                predictive_branches[mr.stack.id] = PredictiveBranch.create(predictive_build: predictive_build, branch: predictive_build.branch, stack: mr.stack, stack_commit: stack_commit)
+                predictive_branches[mr.stack.id] = PredictiveBranch.create(predictive_build: predictive_build,
+                                                                           branch: predictive_build.branch,
+                                                                           stack: mr.stack,
+                                                                           stack_commit: stack_commit)
               end
               stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number).run!
               merged_stacks[mr.stack.id] = mr.stack
-              PredictiveMergeRequest.create(merge_request: mr, predictive_branch: predictive_branches[mr.stack.id], head: mr.head)
+              PredictiveMergeRequest.create(merge_request: mr,
+                                            predictive_branch: predictive_branches[mr.stack.id],
+                                            head: mr.head)
             end
             merged_to_predictive_branch << merge_request
 
@@ -212,7 +216,10 @@ module Shipit
         rescue => error
           merge_request.with_all do |mr|
             rejected_merged_requests << mr
-            PredictiveMergeRequest.create(merge_request: mr, predictive_branch: predictive_branches[mr.stack.id], head: mr.head, status: :rejected)
+            PredictiveMergeRequest.create(merge_request: mr,
+                                          predictive_branch: predictive_branches[mr.stack.id],
+                                          head: mr.head,
+                                          status: :rejected)
           end
 
           merge_requests.delete(merge_request)
@@ -260,7 +267,9 @@ module Shipit
       stack_commands = {}
       begin
         predictive_build.predictive_branches.each do |p_branch|
-          stack_commands[p_branch.stack] = Commands.for(predictive_build, p_branch.stack, File.join(dir, p_branch.stack.repo_name))
+          stack_commands[p_branch.stack] = Commands.for(predictive_build,
+                                                        p_branch.stack,
+                                                        File.join(dir, p_branch.stack.repo_name))
           stack_commands[p_branch.stack].git_clone(chdir: dir).run!
           stack_commands[p_branch.stack].git_fetch(p_branch.branch).run!
           stack_commands[p_branch.stack].git_merge_ff(p_branch.branch).run!
@@ -272,7 +281,7 @@ module Shipit
       stack_commands
     end
 
-    def push_build(predictive_build, stack_commands, dir)
+    def push_build(predictive_build, stack_commands)
       predictive_build.predictive_branches.each do |p_branch|
         stack_commands[p_branch.stack].git_push(true).run!
       end
@@ -290,6 +299,5 @@ module Shipit
         stack_commands[stack].git_push(true).run!
       end
     end
-
   end
 end
