@@ -135,7 +135,7 @@ module Shipit
         limit = Shipit::Pipeline::MERGE_SINGLE_MODES.include?(mode) ? 1 : nil
         merged_candidates = create_predictive_branches(predictive_build, candidates, limit)
 
-        break if merged_candidates.!empty?
+        break if merged_candidates.any?
       end
 
       predictive_build.update(mode: predictive_build_mode) if predictive_build_mode != Pipeline::MERGE_MODE_DEFAULT
@@ -162,7 +162,7 @@ module Shipit
         abort_running_predictive_build(predictive_build)
         update_failed_build(predictive_build, Shipit::PredictiveBranch::STACK_TASKS_FAILED)
       else
-        if p_branches[:completed].!empty? && p_branches[:completed].size == predictive_build.predictive_branches.size
+        if p_branches[:completed].any? && p_branches[:completed].size == predictive_build.predictive_branches.size
           predictive_build.pipeline_tasks
         end
         Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
