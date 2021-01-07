@@ -84,7 +84,6 @@ module Shipit
         capture_all!(@commands.clone)
         capture!(@commands.checkout(@task.until_commit))
       end
-
     end
 
     def capture_all!(commands)

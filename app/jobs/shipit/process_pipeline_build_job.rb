@@ -6,14 +6,16 @@ module Shipit
     queue_as :pipeline
 
     # The process handle one batch at a time
-    #   if a batch fail, we reject the corresponding MergeRequests according to the selected mode (Emergency, Single & Default)
+    #   if a batch fail, we reject the corresponding MergeRequests according
+    #   to the selected mode (Emergency, Single & Default)
     #     Emergency/Single: All MergeRequests
     #     Default:
     #         Preparation: Individual
     #         Stack CI: Stack's
     #         Pipeline CI: All
     def perform(pipeline)
-      predictive_builds = Shipit::PredictiveBuild.where(pipeline: pipeline).where(status: Shipit::PredictiveBuild::WIP_STATUSES)
+      predictive_builds = Shipit::PredictiveBuild.where(pipeline: pipeline)
+                                                 .where(status: Shipit::PredictiveBuild::WIP_STATUSES)
 
       if predictive_builds.any?
         predictive_build = predictive_builds.last
@@ -29,14 +31,14 @@ module Shipit
       case predictive_build.status.to_sym
       when :ci_stack_tasks
         run_stacks_tasks(pipeline, predictive_build)
-      when :ci_pipeline_run, :ci_pipeline_running, :ci_pipeline_verification, :ci_pipeline_verifying, :ci_pipeline_canceling
+      when :ci_pipeline_run, :ci_pipeline_running, :ci_pipeline_verification,
+            :ci_pipeline_verifying, :ci_pipeline_canceling
         run_pipeline_tasks(pipeline, predictive_build)
       when :ci_pipeline_verified
         merging_process(predictive_build)
       else
         Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
       end
-
     end
 
     def merging_process(predictive_build)
@@ -44,7 +46,6 @@ module Shipit
       merge_build(predictive_build) if predictive_build.waiting_for_merging?
       predictive_build.update_completed_requests if predictive_build.completed?
     end
-
 
     def merge_build(predictive_build)
       Dir.mktmpdir do |dir|
@@ -92,11 +93,10 @@ module Shipit
       if predictive_build.pending? || predictive_build.ci_stack_tasks?
         predictive_build.cancel
         predictive_build.predictive_branches.each do |p_branch|
-          if p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? || p_branch.tasks_verifying?
-            p_branch.tasks_canceling
-            p_branch.trigger_task(true)
-            p_branch.cancel_predictive_merge_requests
-          end
+          next unless p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? || p_branch.tasks_verifying?
+          p_branch.tasks_canceling
+          p_branch.trigger_task(true)
+          p_branch.cancel_predictive_merge_requests
         end
       elsif predictive_build.in_ci_pipeline?
         predictive_build.ci_pipeline_canceling
@@ -111,7 +111,8 @@ module Shipit
     def emergency_build?(pipeline)
       stacks = pipeline.mergeable_stacks
       return false unless stacks
-      merge_requests = Shipit::MergeRequest.where(stack: stacks).to_be_merged.mode(Shipit::Pipeline::MERGE_MODE_EMERGENCY)
+      merge_requests = Shipit::MergeRequest.where(stack: stacks)
+                                           .to_be_merged.mode(Shipit::Pipeline::MERGE_MODE_EMERGENCY)
       merge_requests.any?
     end
 
@@ -129,9 +130,9 @@ module Shipit
         next unless candidates
 
         limit = Shipit::Pipeline::MERGE_SINGLE_MODES.include?(mode) ? 1 : nil
-        merged_candidates, merged_stacks, rejected_merged_requests = create_predictive_branches(predictive_build, candidates, limit)
+        merged_candidates = create_predictive_branches(predictive_build, candidates, limit)
 
-        break if merged_candidates.size > 0
+        break if merged_candidates.!empty?
       end
 
       predictive_build.update(mode: predictive_build_mode) if predictive_build_mode != Shipit::Pipeline::MERGE_MODE_DEFAULT
@@ -140,9 +141,10 @@ module Shipit
     end
 
     def run_stacks_tasks(pipeline, predictive_build)
-      p_branches = {:running => [], :stopped => [], :completed => []}
+      p_branches = { :running => [], :stopped => [], :completed => [] }
       predictive_build.predictive_branches.each do |p_branch|
-        if p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? || p_branch.tasks_verifying? || p_branch.tasks_canceling?
+        if p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? ||
+            p_branch.tasks_verifying? || p_branch.tasks_canceling?
           p_branch.trigger_task
           p_branches[:running] << p_branch
         elsif p_branch.tasks_canceled? || p_branch.failed?
@@ -157,7 +159,7 @@ module Shipit
         abort_running_predictive_build(predictive_build)
         update_failed_build(predictive_build, Shipit::PredictiveBranch::STACK_TASKS_FAILED)
       else
-        if p_branches[:completed].size > 0 && p_branches[:completed].size == predictive_build.predictive_branches.size
+        if p_branches[:completed].!empty? && p_branches[:completed].size == predictive_build.predictive_branches.size
           predictive_build.pipeline_tasks
         end
         Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
@@ -204,7 +206,7 @@ module Shipit
 
             if limit && limit <= merged_to_predictive_branch.length
               push_predictive_branch(stack_commands, merged_stacks)
-              return merged_to_predictive_branch, merged_stacks, rejected_merged_requests
+              return merged_to_predictive_branch
             end
           end
         rescue => error
@@ -221,7 +223,7 @@ module Shipit
         push_predictive_branch(stack_commands, merged_stacks)
       end
 
-      return merged_to_predictive_branch, merged_stacks, rejected_merged_requests
+      return merged_to_predictive_branch
     end
 
     # Checkout clean predictive branch locally
