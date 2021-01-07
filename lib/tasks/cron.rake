@@ -5,6 +5,7 @@ namespace :cron do
   task minutely: :environment do
     Shipit::Stack.refresh_deployed_revisions
     Shipit::Stack.schedule_continuous_delivery
+    Shipit::Pipeline.schedule_predictive_build
     Shipit::GithubStatus.refresh_status
     Shipit::MergeRequest.schedule_merges
     Shipit::ReapDeadTasksJob.perform_later
