@@ -28,6 +28,10 @@ module Shipit
       end
 
       case predictive_build.status.to_sym
+      when :pending
+        # Something went wrong
+        predictive_build.cancel
+        Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
       when :ci_stack_tasks
         run_stacks_tasks(pipeline, predictive_build)
       when :ci_pipeline_run, :ci_pipeline_running, :ci_pipeline_verification,
