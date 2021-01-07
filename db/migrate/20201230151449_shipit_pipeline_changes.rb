@@ -24,7 +24,7 @@ class ShipitPipelineChanges < ActiveRecord::Migration[6.0]
     add_reference :predictive_branches, :stack_commit, foreign_key: {to_table: :commits}, null: false, type: :int
     add_column :tasks, :predictive_task_type, :string, limit: 50
 
-    change_column :tasks, :stack_id, foreign_key: true, null: true, type: :int, references: :stacks
+    change_column :tasks, :stack_id, :integer, foreign_key: true, null: true, references: :stacks
     change_column :merge_requests, :mode, :string, limit: 30,    default: "default",   null: false
   end
 
