@@ -127,8 +127,7 @@ module Shipit
       stacks = pipeline.mergeable_stacks
       return false unless stacks
 
-      predictive_build = PredictiveBuild.create(pipeline: pipeline, branch: "PREDICTIVE-BRANCH-:id")
-      predictive_build.update(branch: "PREDICTIVE-BRANCH-#{predictive_build.id}")
+      predictive_build = nil
       predictive_build_mode = nil
 
       Shipit::Pipeline::MERGE_MODES.each do |mode|
@@ -136,11 +135,15 @@ module Shipit
         candidates = pipeline.release_candidates(stacks, mode)
         next unless candidates
 
+        predictive_build = PredictiveBuild.create(pipeline: pipeline, branch: "PREDICTIVE-BRANCH-:id")
+        predictive_build.update(branch: "PREDICTIVE-BRANCH-#{predictive_build.id}")
+
         limit = Shipit::Pipeline::MERGE_SINGLE_MODES.include?(mode) ? 1 : nil
         merged_candidates = create_predictive_branches(predictive_build, candidates, limit)
 
         break if merged_candidates.any?
       end
+      return false unless predictive_build
 
       # If no branches are found, we're done!
       if predictive_build.predictive_branches.empty?
