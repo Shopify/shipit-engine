@@ -140,13 +140,17 @@ module Shipit
     end
 
     def self.request_merge!(stack, number, user, mode=Pipeline::MERGE_MODE_DEFAULT, with=[])
-      raise ArgumentError, "mode/with are not support for non-pipelined stacks (##{stack.id}/#{mode}/#{with})" if !stack.pipeline && (mode!=Pipeline::MERGE_MODE_DEFAULT || with.present?)
+      if !stack.pipeline && (mode != Pipeline::MERGE_MODE_DEFAULT || with.present?)
+        error_msg = "mode/with are not support for non-pipelined stacks (##{stack.id}/#{mode}/#{with})"
+        raise ArgumentError, error_msg
+      end
 
       merge_request = nil
       transaction do
         merge_request = request_merge(stack, number, user)
         # raise ArgumentError, "Merge Queue is enabled for stack ##{stack.id}." if stack.merge_queue_enabled?
-        # errors << "Pull Request is neither waiting nor merged, this should be impossible." if !merge_request.waiting? && !merge_request.merged?
+        # errors << "Pull Request is neither waiting nor merged, this should be impossible."
+        # if !merge_request.waiting? && !merge_request.merged?
 
         # 60 sec to do our thing
         stack.pipeline.sync_lock.lock do
