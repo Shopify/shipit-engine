@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 namespace :cron do
   desc "Updates deployed revisions"
+  # TODO: Schedule minutely pipelines job
   task minutely: :environment do
     Shipit::Stack.refresh_deployed_revisions
     Shipit::Stack.schedule_continuous_delivery
@@ -8,7 +9,6 @@ namespace :cron do
     Shipit::MergeRequest.schedule_merges
     Shipit::ReapDeadTasksJob.perform_later
     Shipit::ReviewStackProvisioningQueue.work
-        # TODO: Schedule pipelines
   end
 
   task hourly: %i(rollup refresh_users clear_stale_caches delete_old_deployment_directories)

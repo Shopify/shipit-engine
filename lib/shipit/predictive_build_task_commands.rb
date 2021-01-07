@@ -38,7 +38,8 @@ module Shipit
     end
 
     def pipeline_spec
-      Rails.cache.fetch(@task.predictive_build.pipeline.id.to_s + ':' + @task.predictive_build.branch, expires_in: SPEC_TTL) do
+      key = @task.predictive_build.pipeline.id.to_s + ':' + @task.predictive_build.branch
+      Rails.cache.fetch(key, expires_in: SPEC_TTL) do
         return deploy_spec
       end
     end
@@ -55,7 +56,8 @@ module Shipit
         checkout(nil).run!
       else
         create_directories
-        git('clone', '--recursive', '--branch', predictive_build.branch, @stack.repo_git_url, '.', chdir: @task.working_directory, env: env).run!
+        git('clone', '--recursive', '--branch', predictive_build.branch, @stack.repo_git_url,
+            '.', chdir: @task.working_directory, env: env).run!
       end
     end
 
@@ -70,6 +72,5 @@ module Shipit
     def checkout(commit)
       git('checkout', '-b', @task.predictive_build.branch, chdir: @task.working_directory)
     end
-
   end
 end

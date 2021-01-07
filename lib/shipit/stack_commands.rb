@@ -44,7 +44,7 @@ module Shipit
     end
 
     def with_temporary_working_directory(commit: nil, branch: nil)
-      if !branch
+      unless branch
         commit ||= @stack.last_deployed_commit.presence || @stack.commits.reachable.last
 
         if !commit || !fetched?(commit).tap(&:run).success?

@@ -52,14 +52,10 @@ module Shipit
 
     def clone
       [
-        git(
-            'clone', '--quiet', '--local', '--origin', 'cache',
-            @stack.git_path, @task.working_directory, chdir: @stack.deploys_path,
-        ),
-        git(
-            'remote', 'add', 'origin',
-            @stack.repo_git_url, chdir: @task.working_directory
-        ),
+        git('clone', '--quiet', '--local', '--origin', 'cache',
+            @stack.git_path, @task.working_directory, chdir: @stack.deploys_path),
+        git('remote', 'add', 'origin',
+            @stack.repo_git_url, chdir: @task.working_directory)
       ]
     end
 
