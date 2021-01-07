@@ -38,6 +38,9 @@ dependencies:
       - debug
       - assets
 
+ci:
+  timeout: 3600
+
 # If this section is provided, shipit will execute that command every minute to verify
 # which revision is actually running in production. It's useful if you sometimes deploy manually.
 # That command must output a Git SHA.

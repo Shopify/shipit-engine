@@ -43,13 +43,15 @@ module Shipit
       end
     end
 
-    def with_temporary_working_directory(commit: nil)
-      commit ||= @stack.last_deployed_commit.presence || @stack.commits.reachable.last
+    def with_temporary_working_directory(commit: nil, branch: nil)
+      unless branch
+        commit ||= @stack.last_deployed_commit.presence || @stack.commits.reachable.last
 
-      if !commit || !fetched?(commit).tap(&:run).success?
-        @stack.acquire_git_cache_lock do
-          unless fetched?(commit).tap(&:run).success?
-            fetch.run!
+        if !commit || !fetched?(commit).tap(&:run).success?
+          @stack.acquire_git_cache_lock do
+            unless fetched?(commit).tap(&:run).success?
+              fetch.run!
+            end
           end
         end
       end
@@ -62,7 +64,13 @@ module Shipit
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
-        git('checkout', commit.sha, chdir: git_dir).run! if commit
+
+        if branch
+          git('checkout', '-b', branch, chdir: git_dir).run!
+        elsif commit
+          git('checkout', commit.sha, chdir: git_dir).run!
+        end
+
         yield Pathname.new(git_dir)
       end
     end

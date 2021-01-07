@@ -2,9 +2,15 @@ default: &default
   adapter: sqlite3
 
 development:
-  <<: *default
-  database: db/development.sqlite3
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  url: mysql2://root:123456@host.docker.internal:3306
+  database: shipit_dev
 
 test:
-  <<: *default
-  database: db/test.sqlite3
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  url: mysql2://root:123456@host.docker.internal:3306
+  database: shipit_test

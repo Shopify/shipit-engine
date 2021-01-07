@@ -43,10 +43,8 @@ module Shipit
             },
           },
           'ci' => {
-            'hide' => hidden_statuses,
-            'allow_failures' => soft_failing_statuses,
-            'require' => required_statuses,
-            'blocking' => blocking_statuses,
+            'stack' => ci_stack,
+            'pipeline' => ci_pipeline
           },
           'machine' => {
             'environment' => discover_machine_env.merge(machine_env),

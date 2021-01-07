@@ -7,6 +7,8 @@ module Shipit
     queue_as :default
 
     def perform(stack)
+      return ProcessPipelineBuildJob.perform_later(stack.pipeline) if stack.pipeline
+
       merge_requests = stack.merge_requests.to_be_merged.to_a
       merge_requests.each do |merge_request|
         merge_request.refresh!
@@ -17,7 +19,7 @@ module Shipit
 
       return false unless stack.allows_merges?
 
-      merge_requests.select(&:pending?).each do |merge_request|
+      merge_requests.select(&:root?).select(&:pending?).each do |merge_request|
         merge_request.refresh!
         next unless merge_request.all_status_checks_passed?
         begin

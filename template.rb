@@ -10,6 +10,7 @@ end
 route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
+gem 'activejob-uniqueness'
 gem 'shipit-engine'
 gsub_file 'Gemfile', "# Use Redis adapter to run Action Cable in production", ''
 gsub_file 'Gemfile', "# gem 'redis'", "gem 'redis'"
@@ -50,6 +51,7 @@ create_file 'config/sidekiq.yml', <<-CODE
 :queues:
   - default
   - deploys
+  - pipeline
   - hooks
   - low
 CODE

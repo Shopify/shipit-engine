@@ -14,6 +14,8 @@ module Shipit
     has_many :commit_deployments, dependent: :destroy
     has_many :release_statuses, dependent: :destroy
     belongs_to :merge_request, inverse_of: :merge_commit, optional: true
+    has_many :predictive_branches
+    has_many :predictive_merge_requests
 
     deferred_touch stack: :updated_at
 

@@ -2,8 +2,8 @@
 module Shipit
   class Commands
     class << self
-      def for(model)
-        "#{model.class.name}Commands".constantize.new(model)
+      def for(model, *args)
+        "#{model.class.name}Commands".constantize.new(model, *args)
       end
 
       def git_version

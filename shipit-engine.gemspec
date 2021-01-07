@@ -44,6 +44,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sprockets-rails', '>= 2.3.2')
   s.add_dependency('state_machines-activerecord', '~> 0.6.0')
   s.add_dependency('validate_url', '~> 1.0.0')
+  s.add_dependency('activejob-uniqueness', '~> 0.1.4')
 
   s.metadata['allowed_push_host'] = 'https://rubygems.org'
 end

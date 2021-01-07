@@ -39,6 +39,7 @@ module Shipit
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
     belongs_to :lock_author, class_name: :User, optional: true
+    belongs_to :pipeline, class_name: :Pipeline, optional: true
     belongs_to :repository
     validates_associated :repository
 
@@ -51,6 +52,8 @@ module Shipit
 
     def env
       {
+        'PIPELINE_NAME' => pipeline.try(:name),
+        'PIPELINE_ID' => pipeline.try(:id).to_s,
         'ENVIRONMENT' => environment,
         'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
         'GITHUB_REPO_OWNER' => repository.owner,
@@ -92,6 +95,11 @@ module Shipit
     validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
 
     validates :lock_reason, length: { maximum: 4096 }
+
+    validates :merge_queue_enabled, uniqueness: {
+        scope: %i(repository branch),
+        message: 'cannot be used more than once with this repository and branch. Check (archived) stacks.'
+    }
 
     serialize :cached_deploy_spec, DeploySpec
     delegate(
@@ -356,8 +364,8 @@ module Shipit
       !locked? && !active_task? && !awaiting_provision?
     end
 
-    def allows_merges?
-      merge_queue_enabled? && !locked? && merge_status == 'success'
+    def allows_merges?(mode = nil)
+      merge_queue_enabled? && (!locked? || mode==Shipit::Pipeline::MERGE_MODE_EMERGENCY) && merge_status == 'success'
     end
 
     def merge_method
@@ -372,11 +380,15 @@ module Shipit
     delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
-      Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
+      Rails.root.join('data','stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path
       File.join(base_path, "deploys")
+    end
+
+    def builds_path
+      File.join(base_path, "builds")
     end
 
     def git_path
@@ -437,7 +449,7 @@ module Shipit
     end
 
     def locked?
-      lock_reason.present?
+      lock_reason.present? || pipeline.try(:lock_reason).present?
     end
 
     def lock(reason, user)

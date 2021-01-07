@@ -175,6 +175,22 @@ module Shipit
       (config('review', 'monitoring') || []).select(&:present?)
     end
 
+    def ci_stack
+      config('ci', 'stack') || []
+    end
+
+    def ci_stack_step(step)
+      ci_stack[step] || {}
+    end
+
+    def ci_pipeline
+      config('ci', 'pipeline') || []
+    end
+
+    def ci_pipeline_step(step)
+      ci_pipeline[step] || {}
+    end
+
     def hidden_statuses
       Array.wrap(config('ci', 'hide')) + [release_status_context].compact
     end
