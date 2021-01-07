@@ -53,7 +53,7 @@ module Shipit
     def env
       {
         'PIPELINE_NAME' => pipeline.try(:name),
-        'PIPELINE_ID' => pipeline.try(:id),
+        'PIPELINE_ID' => pipeline.try(:id).to_s,
         'ENVIRONMENT' => environment,
         'LAST_DEPLOYED_SHA' => last_deployed_commit.sha,
         'GITHUB_REPO_OWNER' => repository.owner,
@@ -365,7 +365,7 @@ module Shipit
     end
 
     def allows_merges?(mode = nil)
-      merge_queue_enabled? && (!locked? || mode==Pipeline::MERGE_MODE_EMERGENCY) && merge_status == 'success'
+      merge_queue_enabled? && (!locked? || mode==Shipit::Pipeline::MERGE_MODE_EMERGENCY) && merge_status == 'success'
     end
 
     def merge_method

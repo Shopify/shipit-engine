@@ -44,6 +44,7 @@ module Shipit
     belongs_to :merge_requested_by, class_name: 'Shipit::User', optional: true
     has_one :merge_commit, class_name: 'Shipit::Commit'
 
+    has_many :predictive_merge_request
     has_many :with_merge_requests, class_name: 'Shipit::MergeRequest', foreign_key: :merge_request_id
     belongs_to :with_parent_merge_request, class_name: 'Shipit::MergeRequest', foreign_key: :merge_request_id, optional: true
 

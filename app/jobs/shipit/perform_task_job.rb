@@ -63,23 +63,28 @@ module Shipit
     end
 
     def checkout_repository
-      if @task.predictive_build
-        # TODO
-      end
-      unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-        # acquire_git_cache_lock can take upto 15 seconds
-        # to process. Try to make sure that the job isn't
-        # marked dead while we attempt to acquire the lock.
-        @task.ping
-        @task.acquire_git_cache_lock do
+      if @task.predictive_build_id
+        @commands.fetch(@task.predictive_build)
+      elsif @task.predictive_branch_id
+        @commands.fetch(@task.predictive_branch)
+      else
+        unless @commands.fetched?(@task.until_commit).tap(&:run).success?
+          # acquire_git_cache_lock can take upto 15 seconds
+          # to process. Try to make sure that the job isn't
+          # marked dead while we attempt to acquire the lock.
           @task.ping
-          unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-            capture!(@commands.fetch)
+          @task.acquire_git_cache_lock do
+            @task.ping
+            unless @commands.fetched?(@task.until_commit).tap(&:run).success?
+              capture!(@commands.fetch)
+            end
           end
         end
+
+        capture_all!(@commands.clone)
+        capture!(@commands.checkout(@task.until_commit))
       end
-      capture_all!(@commands.clone)
-      capture!(@commands.checkout(@task.until_commit))
+
     end
 
     def capture_all!(commands)

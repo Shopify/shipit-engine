@@ -31,6 +31,9 @@ TODO:
     - When fail on CI (Repo/Pipeline)
 10. Update stack with AVG Build time
 9. UI
+    - Merge Queue
+        - Supporting depended pr's in UI
+        -
 10. convert ProcessPipelineBuildJob to task type = 'ci'
     PerformTaskJob rename to PerformDeployJob , add creat one for Build with queue 'build'
     add db.task.type='cd', make active!, etc as CD tasks

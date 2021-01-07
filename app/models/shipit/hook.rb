@@ -55,6 +55,8 @@ module Shipit
       merge_status
       merge
       pull_request
+      predictive_branch_task
+      predictive_build_task
     ).freeze
 
     belongs_to :stack, required: false

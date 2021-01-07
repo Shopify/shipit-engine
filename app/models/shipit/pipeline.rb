@@ -21,8 +21,7 @@ module Shipit
     # merge_requests
     def release_candidates(stacks, mode)
       # Find root merge_requests candidates
-      merge_requests = MergeRequest.where(stacks: stacks)
-                           .to_be_merged.mode(mode)
+      merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
       merge_requests = remove_invalid_merge_requests(merge_requests)
 
       # Reject candidates due to issues WITH their associated merge_requests
@@ -40,23 +39,17 @@ module Shipit
         true
       }
 
-      return merge_requests
+      merge_requests
+    end
+
+    def mergeable_stacks
+      stacks.select(&:allows_merges?)
     end
 
     private
 
-    def mergable_stacks(pipeline)
-      # Not all stacks are mergable
-      #   We can not check for that using ActiveRecord
-      mergeable_stacks = []
-      pipeline.stacks.each do |stack|
-        mergeable_stacks << stack if stack.allows_merges? mode
-      end
-      mergeable_stacks
-    end
-
     def remove_invalid_merge_requests(merge_requests)
-      stacks = mergable_stacks(self)
+      stacks = mergeable_stacks
       return [] unless stacks
 
       final_merge_requests = []
@@ -68,10 +61,9 @@ module Shipit
         merge_request.revalidate! if merge_request.need_revalidation?
       end
 
-      merge_requests.select(&:pending?).select(&:root?).each do |merge_request|
+      merge_requests.select(&:pending?).each do |merge_request|
         merge_request.refresh!
 
-        # mergeable
         if !merge_request.not_mergeable_yet? && merge_request.all_status_checks_passed?
           final_merge_requests << merge_request
         else
@@ -80,7 +72,7 @@ module Shipit
         end
       end
 
-      return final_merge_requests
+      final_merge_requests
     end
 
     def valid_with_merge_requests(merge_requests)
@@ -93,7 +85,7 @@ module Shipit
       with_merge_requests = with_merge_requests.uniq
       valid_with_merge_requests = remove_invalid_merge_requests(with_merge_requests)
 
-      return valid_with_merge_requests
+      valid_with_merge_requests
     end
   end
 end

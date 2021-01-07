@@ -24,7 +24,7 @@ module Shipit
     end
 
     def git_merge_ff(branch)
-      git('merge', branch, '--ff-only', chdir: @chdir, env: env)
+      git('merge', "origin/#{branch}", '--ff-only', chdir: @chdir, env: env)
     end
 
     def git_checkout(branch)
@@ -35,12 +35,16 @@ module Shipit
       git('push', (force ? '-f' : ''), '-u', 'origin', 'HEAD', chdir: @chdir, env: env)
     end
 
-    def git_reset(to:)
+    def git_reset(to)
       git('reset', '--hard', to, chdir: @chdir, env: env)
     end
 
     def git_clean
-      git('reset', 'clean', '-ffdx', chdir: @chdir, env: env)
+      git('clean', '-ffdx', chdir: @chdir, env: env)
+    end
+
+    def git_rev_parse(branch, repo_url)
+      git('clean', 'rev-parse', '--verify', branch, repo_url)
     end
 
     def create_directories
