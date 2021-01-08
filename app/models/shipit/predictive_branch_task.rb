@@ -9,6 +9,10 @@ module Shipit
 
     # delegate :broadcast_update, to: :stack
 
+    def title
+      self.class.name
+    end
+
     def report_complete!
       super
       predictive_branch.update_status(self )
