@@ -90,7 +90,7 @@ module Shipit
 
     def self.schedule_predictive_build
       Shipit::Pipeline.find_each do |pipeline|
-        Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
+        # Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
       end
     end
   end
