@@ -4,8 +4,8 @@ module Shipit
     belongs_to :predictive_branch
     belongs_to :head, class_name: 'Shipit::Commit'
 
-    scope :waiting, -> { where(merge_status: 'pending') }
-    scope :blocked, -> { where(merge_status: 'rejected') }
+    scope :waiting, -> { where(status: 'pending') }
+    scope :blocked, -> { where(status: 'rejected') }
 
     state_machine :status, initial: :pending do
       state :pending
