@@ -256,7 +256,9 @@ module Shipit
     end
 
     def schedule_continuous_delivery
+      Rails.logger.error("<<<<<------>>>>> Shipit::Commit schedule_continuous_delivery commit.id=#{commit.id}")
       return unless deployable? && stack.continuous_deployment? && stack.deployable?
+      Rails.logger.error("<<<<<------>>>>> Shipit::Commit schedule_continuous_delivery ContinuousDeliveryJob stack=#{stack.id} commit.id=#{commit.id}")
       # This buffer is to allow for statuses and checks to be refreshed before evaluating if the commit is deployable
       # - e.g. if the commit was fast-forwarded with already passing CI.
       ContinuousDeliveryJob.set(wait: RECENT_COMMIT_THRESHOLD).perform_later(stack)
