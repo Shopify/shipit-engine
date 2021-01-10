@@ -164,6 +164,7 @@ module Shipit
     end
 
     def trigger_deploy(*args, **kwargs)
+      Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_deploy")
       if changed?
         # If this is the first deploy since the spec changed it's possible the record will be dirty here, meaning we
         # cant lock. In this one case persist the changes, otherwise log a warning and let the lock raise, so we
@@ -200,21 +201,28 @@ module Shipit
     end
 
     def trigger_continuous_delivery
+      Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery stack.id=#{id}")
+      Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery cached_deploy_spec.blank? yes") if cached_deploy_spec.blank?
       return if cached_deploy_spec.blank?
+      Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery cached_deploy_spec.blank? no - #{cached_deploy_spec}") if cached_deploy_spec.blank?
 
       commit = next_commit_to_deploy
+      Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery next_commit_to_deploy id=#{commit.id}")
 
       if should_resume_continuous_delivery?(commit)
+        Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery  id=#{commit.id}; should_resume_continuous_delivery? yes")
         continuous_delivery_resumed!
         return
       end
 
       if should_delay_continuous_delivery?(commit)
+        Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery  id=#{commit.id}; should_delay_continuous_delivery?? yes")
         continuous_delivery_delayed!
         return
       end
 
       begin
+        Rails.logger.error("<<<<<------>>>>> Shipit::Stack trigger_continuous_delivery  id=#{commit.id}; trigger_deploy? yes")
         trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
       rescue Task::ConcurrentTaskRunning
       end
