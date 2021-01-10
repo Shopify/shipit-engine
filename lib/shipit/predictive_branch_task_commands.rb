@@ -19,9 +19,19 @@ module Shipit
     end
 
     def env
+      repos = {}
+      branch_repo = @stack.repository
+      repo_name = "#{branch_repo.owner}/#{branch_repo.name}"
+      repos[repo_name] = []
+      @task.predictive_branch.predictive_merge_requests.waiting.each do |pmr|
+        repos[repo_name] << pmr.merge_request.head.sha
+      end
+
       super.merge(
-        'BRANCH' => @task.predictive_branch.branch,
-        'PREDICTIVE_BUILD_ID' => @task.predictive_branch.id.to_s,
+        'BRANCH' => @task.predictive_build.branch,
+        'PREDICTIVE_BUILD_ID' => @task.predictive_build.id.to_s,
+        'DESTINATION_BRANCH' => @stack.branch,
+        'REPOSITORIES' => Base64.encode64(repos.to_json)
       )
     end
 
