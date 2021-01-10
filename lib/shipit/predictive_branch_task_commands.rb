@@ -28,8 +28,8 @@ module Shipit
       end
 
       super.merge(
-        'BRANCH' => @task.predictive_build.branch,
-        'PREDICTIVE_BUILD_ID' => @task.predictive_build.id.to_s,
+        'BRANCH' => @task.predictive_branch.branch,
+        'PREDICTIVE_BUILD_ID' => @task.predictive_branch.id.to_s,
         'DESTINATION_BRANCH' => @stack.branch,
         'REPOSITORIES' => Base64.encode64(repos.to_json)
       )
