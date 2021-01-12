@@ -84,6 +84,54 @@ module Shipit
       assert_equal 1, retried_deploy.retry_attempt
     end
 
+    test "deploys retry up to limit upon failure when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(Shipit::Command::Error, 'Deploy failed')
+        .then.raises(Shipit::Command::Error, "Second deploy failed")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'failed', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'failed', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
+    test "deploys retry up to limit upon error when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(StandardError, 'Deploy failed')
+        .then.raises(StandardError, "Second deploy failed")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'error', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'error', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
     test "deploys do not retry upon timeout when not configured" do
       runnable_deploy = shipit_deploys(:shipit_pending)
       runnable_deploy.update!(retry_attempt: 0, max_retries: 0)
@@ -105,7 +153,7 @@ module Shipit
       deploy = shipit_deploys(:shipit)
       deploy_stack = deploy.stack
 
-      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(1)
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(1)
 
       Shipit::Command.any_instance.expects(:run).twice
         .raises(Shipit::Command::TimedOut, 'Rollback timed out')
@@ -130,10 +178,10 @@ module Shipit
       assert_equal 1, retried_rollback.max_retries
     end
 
-    test "rollbacks does not retry on timeouts if not configured" do
+    test "rollbacks do not retry if not configured" do
       deploy_stack = @deploy.stack
 
-      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(0)
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(0)
 
       Shipit::Command.any_instance.expects(:run).once
         .raises(Shipit::Command::TimedOut, 'Rollback timed out')

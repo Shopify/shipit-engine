@@ -70,11 +70,11 @@ module Shipit
             'variables' => deploy_variables.map(&:to_h),
             'max_commits' => maximum_commits_per_deploy,
             'interval' => pause_between_deploys,
-            'retries_on_timeout' => retries_on_deploy_timeout,
+            'retries' => retries_on_deploy,
           },
           'rollback' => {
             'override' => rollback_steps,
-            'retries_on_timeout' => retries_on_rollback_timeout,
+            'retries' => retries_on_rollback,
           },
           'fetch' => fetch_deployed_revision_steps,
           'tasks' => cacheable_tasks,
