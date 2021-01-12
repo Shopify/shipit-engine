@@ -18,7 +18,7 @@ module Shipit
 
       if predictive_builds.any?
         predictive_build = predictive_builds.last
-        if predictive_build.mode != Pipeline::MERGE_MODE_EMERGENCY && emergency_build?(pipeline)
+        if !predictive_build.mode.in?(Pipeline::MERGE_SINGLE_EMERGENCY) && emergency_build?(pipeline)
           unless predictive_build.ci_pipeline_canceling?
             abort_running_predictive_build(predictive_build)
           end
@@ -29,6 +29,12 @@ module Shipit
           Shipit::ProcessPipelineBuildJob.set(wait: 1.minute).perform_later(pipeline)
           return true
         end
+      end
+
+      # In case of hotfix, we are skipping pipeline tasks
+      if predictive_build.mode == Pipeline::MERGE_MODE_HOTFIX &&
+        predictive_build.status.to_sym == :ci_pipeline_run
+        predictive_build.ci_pipeline_verified
       end
 
       case predictive_build.status.to_sym
@@ -119,7 +125,7 @@ module Shipit
     def emergency_build?(pipeline)
       stacks = pipeline.mergeable_stacks
       return false unless stacks
-      merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(Pipeline::MERGE_MODE_EMERGENCY)
+      merge_requests = MergeRequest.where(stack: stacks).to_be_merged.emergency_mode
       merge_requests.any?
     end
 

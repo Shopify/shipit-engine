@@ -58,9 +58,8 @@ module Shipit
     scope :to_be_merged, -> { pending.root.order(merge_requested_at: :asc) }
     scope :queued, -> { where(merge_status: QUEUED_STATUSES).order(merge_requested_at: :asc) }
 
-    scope :mode, ->(mode) {
-      where(:mode => mode)
-    }
+    scope :emergency_mode, -> { where(mode: Pipeline::MERGE_SINGLE_EMERGENCY) }
+    scope :mode, ->(mode) { where(:mode => mode) }
 
     def with_all
       ([self] + with_merge_requests).each do |merge_request|
