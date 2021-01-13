@@ -33,6 +33,7 @@ module Shipit
 
     def reject(msg)
       rejected
+      merge_request.reject
       add_comment(msg)
     end
 
