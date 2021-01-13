@@ -139,6 +139,7 @@ module Shipit
       predictive_merge_requests.waiting.each do |pmr|
         pmr.reject(comment_msg(reject_reason))
       end
+      delete_closed_branch(stack.github_repo_name, base: branch)
     end
 
     def comment_msg(step)
