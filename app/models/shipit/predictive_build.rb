@@ -7,7 +7,7 @@ module Shipit
     has_many :predictive_branches
 
     WAITING_STATUSES = %w(pending).freeze
-    WIP_STATUSES = %w(pending ci_stack_tasks ci_pipeline_run ci_pipeline_running ci_pipeline_verification ci_pipeline_verifying ci_pipeline_verified ci_pipeline_canceling).freeze
+    WIP_STATUSES = %w(pending ci_stack_tasks ci_pipeline_run ci_pipeline_running ci_pipeline_verification ci_pipeline_verifying ci_pipeline_verified ci_pipeline_canceling waiting_for_merging).freeze
 
     state_machine :status, initial: :pending do
       state :pending
