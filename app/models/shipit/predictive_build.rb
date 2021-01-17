@@ -63,71 +63,71 @@ module Shipit
       end
     end
 
-    state_machine :ci_stack_status, initial: :pending do
-      state :pending
-      state :running
-      state :completed
-      state :failed
-      state :rejected
-      state :canceled
+    state_machine :ci_stack_status, initial: :ci_stack_pending do
+      state :ci_stack_pending
+      state :ci_stack_running
+      state :ci_stack_completed
+      state :ci_stack_failed
+      state :ci_stack_rejected
+      state :ci_stack_canceled
 
       event :ci_stack_pending do
-        transition any => :pending
+        transition any => :ci_stack_pending
       end
       event :ci_stack_running do
-        transition any => :running
+        transition any => :ci_stack_running
       end
       event :ci_stack_completed do
-        transition any => :completed
+        transition any => :ci_stack_completed
       end
       event :ci_stack_failed do
-        transition any => :failed
+        transition any => :ci_stack_failed
       end
       event :ci_stack_rejected do
-        transition any => :rejected
+        transition any => :ci_stack_rejected
       end
       event :ci_stack_canceled do
-        transition any => :canceled
+        transition any => :ci_stack_canceled
       end
     end
 
-    state_machine :ci_pipeline_status, initial: :pending do
-      state :pending
-      state :running
-      state :verification
-      state :verifying
-      state :completed
-      state :failed
-      state :rejected
-      state :canceling
-      state :canceled
+    state_machine :ci_pipeline_status, initial: :ci_pipeline_pending do
+      state :ci_pipeline_pending
+      state :ci_pipeline_running
+      state :ci_pipeline_verification
+      state :ci_pipeline_verifying
+      state :ci_pipeline_completed
+      state :ci_pipeline_failed
+      state :ci_pipeline_rejected
+      state :ci_pipeline_canceling
+      state :ci_pipeline_canceled
 
       event :ci_pipeline_pending do
-        transition any => :pending
+        transition any => :ci_pipeline_pending
       end
       event :ci_pipeline_running do
-        transition any => :running
+        transition any => :ci_pipeline_running
       end
       event :ci_pipeline_verification do
-        transition any => :verification
+        transition any => :ci_pipeline_verification
       end
       event :ci_pipeline_verifying do
-        transition any => :verifying
+        transition any => :ci_pipeline_verifying
       end
       event :ci_pipeline_completed do
-        transition any => :completed
+        transition any => :ci_pipeline_completed
       end
       event :ci_pipeline_failed do
-        transition any => :failed
+        transition any => :ci_pipeline_failed
       end
       event :ci_pipeline_rejected do
-        transition any => :rejected
+        transition any => :ci_pipeline_rejected
       end
       event :ci_pipeline_canceling do
-        transition any => :canceling
+        transition any => :ci_pipeline_canceling
       end
       event :ci_pipeline_canceled do
-        transition any => :canceled
+        transition any => :ci_pipeline_canceled
       end
     end
 
