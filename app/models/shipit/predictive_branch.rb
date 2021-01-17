@@ -59,6 +59,14 @@ module Shipit
 
     end
 
+    def tasks_in_progress?
+      pending? || tasks_running? || tasks_verification? || tasks_verifying? || tasks_canceling?
+    end
+
+    def branch_failed?
+      tasks_canceled? || failed?
+    end
+
     def new_task_type
       if pending?
         :run

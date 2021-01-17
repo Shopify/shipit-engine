@@ -15,42 +15,26 @@ module Shipit
     #         Pipeline CI: All
     def perform(pipeline)
       predictive_builds = PredictiveBuild.where(pipeline: pipeline).where(status: PredictiveBuild::WIP_STATUSES)
-
       if predictive_builds.any?
         predictive_build = predictive_builds.last
-        if !predictive_build.mode.in?(Pipeline::MERGE_SINGLE_EMERGENCY) && emergency_build?(pipeline)
-          unless predictive_build.ci_pipeline_canceling?
-            abort_running_predictive_build(predictive_build)
-          end
+        if !predictive_build.mode.in?(Pipeline::MERGE_SINGLE_EMERGENCY) && emergency_build?(pipeline) &&
+          !predictive_build.ci_pipeline_canceling?
+          predictive_build.cancel
+          predictive_build.aborting_tasks
+          Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
         end
       else
         predictive_build = generate_predictive_build(pipeline)
-        unless predictive_build
-          Shipit::ProcessPipelineBuildJob.set(wait: 1.minute).perform_later(pipeline)
-          return true
-        end
-      end
-
-      # In case of hotfix, we are skipping pipeline tasks
-      if predictive_build.mode == Pipeline::MERGE_MODE_HOTFIX &&
-        predictive_build.status.to_sym == :ci_pipeline_run
-        predictive_build.ci_pipeline_verified
+        return true unless predictive_build
       end
 
       case predictive_build.status.to_sym
-      when :pending
-        # Something went wrong
+      when :pending # Something went wrong
         predictive_build.cancel
-        Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
-      when :ci_stack_tasks
-        run_stacks_tasks(pipeline, predictive_build)
-      when :ci_pipeline_run, :ci_pipeline_running, :ci_pipeline_verification,
-            :ci_pipeline_verifying, :ci_pipeline_canceling
-        run_pipeline_tasks(pipeline, predictive_build)
-      when :ci_pipeline_verified
+      when :branched, :tasks_running
+        run_tasks(predictive_build)
+      when :tasks_completed
         merging_process(predictive_build)
-      else
-        Shipit::ProcessPipelineBuildJob.set(wait: 1.minute).perform_later(pipeline)
       end
     end
 
@@ -102,26 +86,6 @@ module Shipit
       end
     end
 
-    def abort_running_predictive_build(predictive_build)
-      if predictive_build.pending? || predictive_build.ci_stack_tasks?
-        predictive_build.cancel
-        predictive_build.predictive_branches.each do |p_branch|
-          next unless p_branch.pending? || p_branch.tasks_running? ||
-            p_branch.tasks_verification? || p_branch.tasks_verifying?
-          p_branch.tasks_canceling
-          p_branch.trigger_task(true)
-          p_branch.cancel_predictive_merge_requests
-        end
-      elsif predictive_build.in_ci_pipeline?
-        predictive_build.ci_pipeline_canceling
-        predictive_build.trigger_task(true)
-      end
-
-      predictive_build.predictive_branches.each do |p_branch|
-        p_branch.cancel_predictive_merge_requests
-      end
-    end
-
     def emergency_build?(pipeline)
       stacks = pipeline.mergeable_stacks
       return false unless stacks
@@ -158,40 +122,17 @@ module Shipit
       end
 
       predictive_build.update(mode: predictive_build_mode) if predictive_build_mode != Pipeline::MERGE_MODE_DEFAULT
-      predictive_build.stack_tasks
+      predictive_build.branched
       predictive_build
     end
 
-    def run_stacks_tasks(pipeline, predictive_build)
-      p_branches = { running: [], stopped: [], completed: [] }
-      predictive_build.predictive_branches.each do |p_branch|
-        if p_branch.pending? || p_branch.tasks_running? || p_branch.tasks_verification? ||
-            p_branch.tasks_verifying? || p_branch.tasks_canceling?
-          p_branch.trigger_task
-          p_branches[:running] << p_branch
-        elsif p_branch.tasks_canceled? || p_branch.failed?
-          p_branches[:stopped] << p_branch
-        elsif p_branch.completed?
-          p_branches[:completed] << p_branch
-        end
-      end
-
-      if p_branches[:running].size + p_branches[:completed].size != predictive_build.predictive_branches.size
-        predictive_build.ci_pipeline_failed
-        abort_running_predictive_build(predictive_build)
+    def run_tasks(predictive_build)
+      if predictive_build.build_failed?
+        predictive_build.build_failed
         update_failed_build(predictive_build, Shipit::PredictiveBranch::STACK_TASKS_FAILED)
       else
-        if p_branches[:completed].any? && p_branches[:completed].size == predictive_build.predictive_branches.size
-          predictive_build.pipeline_tasks
-        end
-        Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
-      end
-    end
-
-    def run_pipeline_tasks(pipeline, predictive_build)
-      predictive_build.trigger_task
-      unless predictive_build.completed? || predictive_build.failed? || predictive_build.canceled?
-        Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
+        predictive_build.tasks_running
+        predictive_build.trigger_tasks
       end
     end
 
