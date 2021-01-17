@@ -36,6 +36,8 @@ module Shipit
       when :tasks_completed
         merging_process(predictive_build)
       end
+
+      Shipit::ProcessPipelineBuildJob.set(wait: 1.minutes).perform_later(pipeline)
     end
 
     def merging_process(predictive_build)
