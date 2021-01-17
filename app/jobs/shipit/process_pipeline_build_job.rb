@@ -36,8 +36,6 @@ module Shipit
       when :tasks_completed
         merging_process(predictive_build)
       end
-
-      Shipit::ProcessPipelineBuildJob.set(wait: 1.minutes).perform_later(pipeline)
     end
 
     def merging_process(predictive_build)
@@ -132,6 +130,9 @@ module Shipit
       if predictive_build.build_failed?
         predictive_build.build_failed
         update_failed_build(predictive_build, Shipit::PredictiveBranch::STACK_TASKS_FAILED)
+      elsif predictive_build.tasks_completed?
+        predictive_build.tasks_completed
+        Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
       else
         predictive_build.tasks_running
         predictive_build.trigger_tasks
