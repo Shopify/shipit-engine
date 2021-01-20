@@ -19,8 +19,8 @@ module Shipit
     end
 
     test "#perform fetch commits from the API" do
-      @job.stubs(:capture!)
-      @job.stubs(:capture)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture)
       @commands = stub
       Commands.expects(:for).with(@deploy).returns(@commands)
 
@@ -39,7 +39,7 @@ module Shipit
       @deploy.stack.expects(:release_status?).at_least_once.returns(false)
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture!)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!)
 
       assert_enqueued_with(job: FetchDeployedRevisionJob, args: [@deploy.stack]) do
         @job.perform(@deploy)
@@ -50,7 +50,7 @@ module Shipit
       @deploy.stack.expects(:release_status?).at_least_once.returns(false)
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture!)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!)
 
       assert_equal 'pending', @deploy.status
       @job.perform(@deploy)
@@ -63,7 +63,7 @@ module Shipit
 
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture!)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!)
 
       assert_equal 'pending', @deploy.status
       @job.perform(@deploy)
@@ -77,7 +77,7 @@ module Shipit
 
       Dir.stubs(:chdir).yields
       DeployCommands.any_instance.expects(:perform).returns([])
-      @job.stubs(:capture!)
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!)
 
       assert_equal 'pending', @deploy.status
       @job.perform(@deploy)
@@ -85,7 +85,7 @@ module Shipit
     end
 
     test "marks deploy as `error` if any application error is raised" do
-      @job.expects(:capture!).raises("some error")
+      Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).raises("some error")
       assert_nothing_raised do
         @job.perform(@deploy)
       end
@@ -94,7 +94,7 @@ module Shipit
     end
 
     test "marks deploy as `failed` if a command exit with an error code" do
-      @job.expects(:capture!).at_least_once.raises(Command::Error.new('something'))
+      Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).at_least_once.raises(Command::Error.new('something'))
       @job.perform(@deploy)
       assert_equal 'failed', @deploy.reload.status
     end
