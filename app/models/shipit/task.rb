@@ -87,7 +87,7 @@ module Shipit
         task.async_update_estimated_deploy_duration
       end
 
-      after_transition any => :timedout do |task|
+      after_transition any => %i(failed error timedout) do |task|
         task.retry_if_necessary
       end
 
