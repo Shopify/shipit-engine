@@ -2,11 +2,11 @@
 
 # Default
 
-For most applications, the default execution strategy is sufficient. This strategy processes a task within the context of a shipit-engine Sidekiq worker. shipit-engine provides the `Shipit::TaskExecutionStrategy::Default` strategy to do this - on a vanilla shipit-engine instance _this_ is the registered default execution strategy.
+For most applications, the default execution strategy is sufficient. This strategy processes a task within the context of a shipit-engine Sidekiq worker. shipit-engine provides the `Shipit::TaskExecutionStrategy::Default` strategy to do this - on a vanilla shipit-engine instance _this_ is the default execution strategy.
 
 # Custom task execution strategies
 
-## Registering a strategy for a particular type of task
+## Registering a custom TaskExecutionStrategy
 
 1. Create a custom TaskExecutionStrategy by extending `Shipit::TaskExecutionStrategy::Base` and implementing the `#execute` method. The `Shipit::Task` to be processed is available as the `task` local - courtesy of the inherited `Shipit::TaskExecutionStrategy::Base#initialize` method:
     ```ruby
@@ -20,7 +20,7 @@ For most applications, the default execution strategy is sufficient. This strate
         # Shipit::TaskExecutionStrategy::Default stratgy on the task.
         #
         # Pseudo code below:
-        kube.apply(task_execution_pod_templte)
+        kube.apply(task_execution_pod_template)
       end
 
       def task_execution_pod_template
@@ -33,16 +33,8 @@ For most applications, the default execution strategy is sufficient. This strate
       end
     end
     ```
-2. Register the custom strategy as the strategy to use for the a particular task type. For example, the following uses the above `KubernetesPodExecutionStrategy` for any `Shipit::Deploy` type task:
+2. Register the custom strategy. For example, the following uses the above `KubernetesPodExecutionStrategy`
     ```ruby
     # probably in the host application's shipit initializer
-    Shipit::TaskExecutionStrategy.register(Shipit::Deploy, KubernetesPodExecutionStrategy)
+    Shipit.task_execution_strategy = KubernetesPodExecutionStrategy
     ```
-
-## Registering a new host-application-wide default task execution strategy
-
-The `Shipit::TaskExecutionStrategy` also provides a way to replace the system-wide default execution strategy. To do so, one would create a custom execution strategy as described above, and register it like so:
-
-```ruby
-Shipit::TaskExecutionStrategy.default = KubernetesPodExecutionStrategy
-```

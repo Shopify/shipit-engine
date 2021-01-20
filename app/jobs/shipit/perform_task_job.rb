@@ -4,8 +4,9 @@ module Shipit
     queue_as :deploys
 
     def perform(task)
-      Shipit::TaskExecutionStrategy
-        .for(task)
+      Shipit
+        .task_execution_strategy
+        .new(task)
         .execute
     end
   end
