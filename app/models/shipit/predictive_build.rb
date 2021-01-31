@@ -198,11 +198,11 @@ module Shipit
     end
 
     def build_failed
-      failed
       aborting_tasks
       predictive_branches.each do |p_branch|
         p_branch.reject_predictive_merge_requests(PredictiveBranch::PIPELINE_TASKS_FAILED)
       end
+      failed
     end
 
     def aborting_tasks
