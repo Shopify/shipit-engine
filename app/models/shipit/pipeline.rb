@@ -24,10 +24,10 @@ module Shipit
     def release_candidates(stacks, mode)
       # Find root merge_requests candidates
       merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
-      merge_requests = remove_invalid_merge_requests(merge_requests)
+      merge_requests = remove_invalid_merge_requests(merge_requests, mode)
 
       # Reject candidates due to issues WITH their associated merge_requests
-      valid_with = valid_with_merge_requests(merge_requests)
+      valid_with = valid_with_merge_requests(merge_requests, mode)
 
       merge_requests = merge_requests.select { |merge_request|
         merge_request.with_merge_requests.each do |with_mr|
@@ -44,14 +44,14 @@ module Shipit
       merge_requests
     end
 
-    def mergeable_stacks
-      stacks.select(&:allows_merges?)
+    def mergeable_stacks(mode)
+      stacks.select{ |s|  s.allows_merges?(mode) }
     end
 
     private
 
-    def remove_invalid_merge_requests(merge_requests)
-      stacks = mergeable_stacks
+    def remove_invalid_merge_requests(merge_requests, mode)
+      stacks = mergeable_stacks(mode)
       return [] unless stacks
 
       final_merge_requests = []
@@ -77,7 +77,7 @@ module Shipit
       final_merge_requests
     end
 
-    def valid_with_merge_requests(merge_requests)
+    def valid_with_merge_requests(merge_requests, mode)
       with_merge_requests = []
 
       merge_requests.each do |merge_request|
@@ -85,9 +85,7 @@ module Shipit
       end
 
       with_merge_requests = with_merge_requests.uniq
-      valid_with_merge_requests = remove_invalid_merge_requests(with_merge_requests)
-
-      valid_with_merge_requests
+      remove_invalid_merge_requests(with_merge_requests, mode)
     end
 
     def self.schedule_predictive_build

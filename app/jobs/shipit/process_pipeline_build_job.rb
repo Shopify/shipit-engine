@@ -87,22 +87,21 @@ module Shipit
     end
 
     def emergency_build?(pipeline)
-      stacks = pipeline.mergeable_stacks
+      stacks = pipeline.mergeable_stacks(Shipit::Pipeline::MERGE_MODE_EMERGENCY)
       return false unless stacks
       merge_requests = MergeRequest.where(stack: stacks).to_be_merged.emergency_mode
       merge_requests.any?
     end
 
     def generate_predictive_build(pipeline)
-      stacks = pipeline.mergeable_stacks
-      return false unless stacks
+      return false unless pipeline.stacks
 
       predictive_build = nil
       predictive_build_mode = nil
 
       Shipit::Pipeline::MERGE_MODES.each do |mode|
         predictive_build_mode = mode
-        candidates = pipeline.release_candidates(stacks, mode)
+        candidates = pipeline.release_candidates(pipeline.mergeable_stacks(mode), mode)
         next if candidates.empty?
 
         predictive_build = PredictiveBuild.create(pipeline: pipeline, branch: "PREDICTIVE-BRANCH-:id")
