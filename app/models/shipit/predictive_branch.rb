@@ -147,7 +147,7 @@ module Shipit
       predictive_merge_requests.waiting.each do |pmr|
         pmr.reject(comment_msg(reject_reason))
       end
-      delete_closed_branch(stack.github_repo_name, base: branch)
+      delete_closed_branch(stack.github_repo_name, branch)
     end
 
     def comment_msg(step)
@@ -176,7 +176,7 @@ module Shipit
         pmr.merge_request.complete!
         pmr.merge(comment_msg(MR_MERGED_TO_PREDICTIVE))
       end
-      delete_closed_branch(stack.github_repo_name, base: branch)
+      delete_closed_branch(stack.github_repo_name, branch)
 
       predictive_merge_requests.blocked.each do |pmr|
         pmr.merge_request.reject!('merge_conflict')
@@ -189,8 +189,8 @@ module Shipit
         if Shipit.github.api.pull_requests(repo_name, base: branch_name).empty?
           Shipit.github.api.delete_branch(repo_name, branch_name)
         end
-      rescue Octokit::UnprocessableEntity
-        # branch was already deleted somehow
+      rescue Exception => e
+        Rails.logger.error "Can't delete branch. message: #{e.message}", e
       end
     end
 
