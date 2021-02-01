@@ -190,7 +190,7 @@ module Shipit
           Shipit.github.api.delete_branch(repo_name, branch_name)
         end
       rescue Exception => e
-        Rails.logger.error "Can't delete branch. message: #{e.message}", e
+        Rails.logger.error "Can't delete branch. message: #{e.message}"
       end
     end
 
