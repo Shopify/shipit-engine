@@ -37,6 +37,7 @@ module Shipit
       case predictive_build.status.to_sym
       when :pending # Something went wrong
         predictive_build.cancel
+        predictive_build.aborting_tasks
       when :branched, :tasks_running
         run_tasks(predictive_build)
       when :tasks_completed
@@ -137,7 +138,6 @@ module Shipit
         update_failed_build(predictive_build, Shipit::PredictiveBranch::STACK_TASKS_FAILED)
       elsif predictive_build.tasks_completed?
         predictive_build.tasks_completed
-        Shipit::ProcessPipelineBuildJob.perform_later(pipeline)
       else
         predictive_build.tasks_running
         predictive_build.trigger_tasks

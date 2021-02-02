@@ -11,11 +11,8 @@ module Shipit
           mr.schedule_refresh!
         end
 
-        if merge_request.stack.pipeline
-          ProcessPipelineBuildJob.perform_later(merge_request.stack.pipeline)
-        else
-          ProcessMergeRequestsJob.perform_later(merge_request.stack)
-        end
+        return true if merge_request.stack.pipeline
+        ProcessMergeRequestsJob.perform_later(merge_request.stack)
       end
     end
   end
