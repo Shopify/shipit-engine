@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 namespace :cron do
   desc "Updates deployed revisions"
-  # TODO: Schedule minutely pipelines job
   task minutely: :environment do
-    Shipit::Stack.refresh_deployed_revisions
+
+    # The following job is not optimal and its overloading both Jenkins and Sidekiq
+    Rails.cache.fetch('shipit::minutely::refresh_deployed_revisions', expires_in: 15.minutes) do
+      Shipit::Stack.refresh_deployed_revisions
+    end
+
     Shipit::Stack.schedule_continuous_delivery
     Shipit::Pipeline.schedule_predictive_build
     Shipit::GithubStatus.refresh_status

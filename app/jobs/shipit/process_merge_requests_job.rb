@@ -7,7 +7,7 @@ module Shipit
     queue_as :default
 
     def perform(stack)
-      return ProcessPipelineBuildJob.perform_later(stack.pipeline) if stack.pipeline
+      return true if stack.pipeline
 
       merge_requests = stack.merge_requests.to_be_merged.to_a
       merge_requests.each do |merge_request|
