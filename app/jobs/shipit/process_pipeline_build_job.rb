@@ -6,7 +6,7 @@ module Shipit
     queue_as :pipeline
 
     def lock_key(*args)
-      key = ActiveJob::Arguments.serialize([self.class.name] + args.first.id).join('-')
+      key = ActiveJob::Arguments.serialize([self.class.name,args.first.id]).join('-')
       puts "--------- The Key: #{key}"
       key
     end
