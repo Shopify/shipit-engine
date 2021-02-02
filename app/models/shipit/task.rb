@@ -75,9 +75,9 @@ module Shipit
         task.ended_at ||= Time.now.utc
       end
 
-      after_transition any => %i(success failed error timedout) do |task|
-        task.async_refresh_deployed_revision
-      end
+      # after_transition any => %i(success failed error timedout) do |task|
+      #   task.async_refresh_deployed_revision
+      # end
 
       after_transition any => :flapping do |task|
         task.update!(confirmations: 0)
