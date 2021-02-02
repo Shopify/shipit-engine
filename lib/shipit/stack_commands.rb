@@ -31,7 +31,7 @@ module Shipit
       with_temporary_working_directory(commit: @stack.commits.reachable.last) do |dir|
         spec = DeploySpec::FileSystem.new(dir, @stack.environment)
         outputs = spec.fetch_deployed_revision_steps!.map do |command_line|
-          Command.new(command_line, env: env, chdir: dir).run
+          Command.new(command_line, env: env.merge(@stack.env), chdir: dir).run
         end
         outputs.find(&:present?).try(:strip)
       end

@@ -177,7 +177,7 @@ module Shipit
         ci_pipeline_running       if pipeline_task_status == :running || pipeline_task_status == :pending
         ci_pipeline_verification  if pipeline_task_status == :success
       elsif predictive_task_type == :verify
-        ci_pipeline_verifying     if pipeline_task_status == :running || pipeline_task_status == :pending
+        ci_pipeline_verifying     if pipeline_task_status == :running || pipeline_task_status == :pending || verifying_job_status?(task, 'RUNNING')
         ci_pipeline_completed     if pipeline_task_status == :success && verifying_job_status?(task, 'SUCCESS')
         pipeline_task_failed      if pipeline_task_status == :success && verifying_job_status?(task, 'ABORTED')
       elsif predictive_task_type == :abort
@@ -219,14 +219,20 @@ module Shipit
     end
 
     def verifying_job_status?(task, status)
-      res = false
+      job_status(task) == status
+    end
+
+    def job_status(task)
+      status = 'SUCCESS'
       task.chunks.each do |chunk|
-        if chunk.text.include? "finished with status: #{status}"
-          res = true
+        if chunk.text.include? "finished with status: ABORTED"
+          status = 'ABORTED'
           break
+        elsif chunk.text.include? "finished with status: RUNNING"
+          status = 'RUNNING'
         end
       end
-      res
+      status
     end
 
     def trigger_tasks(run_now = false)

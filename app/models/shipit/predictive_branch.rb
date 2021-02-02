@@ -89,7 +89,7 @@ module Shipit
         tasks_running       if task_status == :running || task_status == :pending
         tasks_verification  if task_status == :success
       elsif predictive_task_type == :verify
-        tasks_verifying     if task_status == :running || task_status == :pending
+        tasks_verifying     if task_status == :running || task_status == :pending || verifying_job_status?(task, 'RUNNING')
         completed           if task_status == :success && verifying_job_status?(task, 'SUCCESS')
         task_failed         if task_status == :success && verifying_job_status?(task, 'ABORTED')
       elsif predictive_task_type == :abort
@@ -100,15 +100,22 @@ module Shipit
     end
 
     def verifying_job_status?(task, status)
-      res = false
+      job_status(task) == status
+    end
+
+    def job_status(task)
+      status = 'SUCCESS'
       task.chunks.each do |chunk|
-        if chunk.text.include? "finished with status: #{status}"
-          res = true
+        if chunk.text.include? "finished with status: ABORTED"
+          status = 'ABORTED'
           break
+        elsif chunk.text.include? "finished with status: RUNNING"
+          status = 'RUNNING'
         end
       end
-      res
+      status
     end
+
 
     def trigger_task(run_now = false)
       predictive_task_type = new_task_type
