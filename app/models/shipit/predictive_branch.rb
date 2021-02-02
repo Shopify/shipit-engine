@@ -104,13 +104,15 @@ module Shipit
     end
 
     def job_status(task)
-      status = 'SUCCESS'
+      status = ''
       task.chunks.each do |chunk|
         if chunk.text.include? "finished with status: ABORTED"
           status = 'ABORTED'
           break
         elsif chunk.text.include? "finished with status: RUNNING"
           status = 'RUNNING'
+        elsif chunk.text.include?("finished with status: SUCCESS") && status == ''
+          status = 'SUCCESS'
         end
       end
       status
