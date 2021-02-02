@@ -3,7 +3,7 @@ namespace :cron do
   desc "Updates deployed revisions"
   # TODO: Schedule minutely pipelines job
   task minutely: :environment do
-    Shipit::Stack.refresh_deployed_revisions
+    Shipit::Stack.refresh_deployed_revisions unless ENV['SKIP_REFRESH_DEPLOYED_REVISION']
     Shipit::Stack.schedule_continuous_delivery
     Shipit::Pipeline.schedule_predictive_build
     Shipit::GithubStatus.refresh_status
