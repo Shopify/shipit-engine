@@ -203,6 +203,11 @@ module Shipit
     end
 
     def aborting_tasks(is_failed = false)
+      if ci_pipeline_tasks_running?
+        ci_pipeline_canceling
+        trigger_pipeline_tasks(true)
+      end
+
       predictive_branches.each do |p_branch|
         if ci_stack_tasks_running? && p_branch.tasks_in_progress? && !p_branch.tasks_canceling?
           p_branch.tasks_canceling
@@ -210,11 +215,6 @@ module Shipit
         end
         p_branch.cancel_predictive_merge_requests unless is_failed
         p_branch.reject_predictive_merge_requests(PredictiveBranch::PIPELINE_TASKS_FAILED) if is_failed
-      end
-
-      if ci_pipeline_tasks_running?
-        ci_pipeline_canceling
-        trigger_pipeline_tasks(true)
       end
     end
 
