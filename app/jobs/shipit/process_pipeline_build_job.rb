@@ -22,7 +22,7 @@ module Shipit
     def perform(pipeline)
       predictive_builds = PredictiveBuild.where(pipeline: pipeline).where(status: PredictiveBuild::WIP_STATUSES)
       if predictive_builds.any?
-        predictive_build = predictive_builds.last
+        predictive_build = predictive_builds.first
         if !predictive_build.mode.in?(Pipeline::MERGE_SINGLE_EMERGENCY) && emergency_build?(pipeline) &&
           !predictive_build.ci_pipeline_canceling?
           predictive_build.cancel

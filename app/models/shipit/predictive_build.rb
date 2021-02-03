@@ -238,12 +238,9 @@ module Shipit
     end
 
     def trigger_tasks(run_now = false)
-      if mode == Pipeline::MERGE_MODE_HOTFIX
-        # In case of hotfix, we are skipping pipeline tasks
-        ci_pipeline_completed
-      else
-        trigger_pipeline_tasks(run_now)
-      end
+      build_failed unless predictive_branches.any?
+      ci_pipeline_completed if mode == Pipeline::MERGE_MODE_HOTFIX # In case of hotfix, we are skipping pipeline tasks
+      trigger_pipeline_tasks(run_now)
       trigger_stack_tasks(run_now)
     end
 
