@@ -4,7 +4,7 @@ namespace :cron do
   task minutely: :environment do
 
     # The following job is not optimal and its overloading both Jenkins and Sidekiq
-    Rails.cache.fetch('shipit::minutely::refresh_deployed_revisions', expires_in: 15.minutes) do
+    Rails.cache.fetch('shipit::minutely::refresh_deployed_revisions', expires_in: 5.minutes) do
       Shipit::Stack.refresh_deployed_revisions
     end
 
