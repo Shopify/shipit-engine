@@ -274,7 +274,9 @@ module Shipit
 
     def push_predictive_branch(stack_commands, changed_stacks)
       changed_stacks.each do |key, stack|
-        stack_commands[stack].git_push(true).run!
+        puts "<<<--->>>push_predictive_branch - stack: #{stack.id}"
+        res = stack_commands[stack].git_push(true).run!
+        puts "<<<--->>>push_predictive_branch: res: #{res}"
       end
     end
   end
