@@ -153,6 +153,7 @@ module Shipit
 
         # 60 sec to do our thing
         stack.pipeline.sync_lock.lock do
+          # TODO: Allow changes as long as Pipeline is not running OR merge-requests are not involved in current pipeline cycle
           # Should change mode?
           if merge_request.mode != mode && mode != Pipeline::MERGE_MODE_DRY_RUN
             merge_request.update!(mode: mode)
@@ -169,7 +170,7 @@ module Shipit
                 errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergable, it belongs to a different Pipeline."
               # Check that that with PR is not associated with other PRs
               elsif with_merge_request.with_parent_merge_request && with_merge_request.with_parent_merge_request.id != merge_request.id
-                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergeable, already configured WITH a different Merge Request."
+                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergeable, already configured WITH a different Merge Request ('#{with_merge_request.with_parent_merge_request.stack.repository.full_name}/pull/#{with_merge_request.with_parent_merge_request.number}')"
               else
                 final_with_merge_requests << with_merge_request
               end
