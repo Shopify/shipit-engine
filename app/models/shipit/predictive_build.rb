@@ -167,6 +167,10 @@ module Shipit
       end
     end
 
+    def in_EMERGENCY_mode?
+      mode == Pipeline::MERGE_MODE_EMERGENCY
+    end
+
     def update_status(task)
       pipeline_task_status = task.status.to_sym
       predictive_task_type = task.predictive_task_type.to_sym
@@ -239,7 +243,7 @@ module Shipit
 
     def trigger_tasks(run_now = false)
       build_failed unless predictive_branches.any?
-      ci_pipeline_completed if mode == Pipeline::MERGE_MODE_HOTFIX # In case of hotfix, we are skipping pipeline tasks
+      ci_pipeline_completed if in_EMERGENCY_mode? # In case of emergency, we are skipping pipeline tasks
       trigger_pipeline_tasks(run_now)
       trigger_stack_tasks(run_now)
     end

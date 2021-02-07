@@ -13,11 +13,10 @@ module Shipit
     MERGE_MODE_DEFAULT = 'default'
     MERGE_MODE_SINGLE = 'single'
     MERGE_MODE_EMERGENCY = 'emergency'
-    MERGE_MODE_HOTFIX = 'hotfix'
 
-    MERGE_MODES = %w(hotfix emergency single default).freeze
-    MERGE_SINGLE_MODES = %w(hotfix emergency single).freeze
-    MERGE_SINGLE_EMERGENCY = %w(emergency hotfix).freeze
+    MERGE_MODES = %w(emergency single default).freeze
+    MERGE_SINGLE_MODES = %w(emergency single).freeze
+    MERGE_SINGLE_EMERGENCY = %w(emergency).freeze
 
 
     # merge_requests

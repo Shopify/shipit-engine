@@ -172,9 +172,7 @@ module Shipit
                                                                            stack: mr.stack,
                                                                            stack_commit: stack_commit)
               end
-              res = stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number).run!
-              puts "<<<--->>>create_predictive_branches: stack: #{mr.stack.id}; mr.branch:#{mr.branch}; mr.number:#{mr.number}"
-              puts "<<<--->>>create_predictive_branches: res: #{res}"
+              stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number).run!
               merged_stacks[mr.stack.id] = mr.stack
               PredictiveMergeRequest.create(merge_request: mr,
                                             predictive_branch: predictive_branches[mr.stack.id],
@@ -209,14 +207,10 @@ module Shipit
 
     # Checkout clean predictive branch locally
     def checkout_clean_stack_predictive_branch(predictive_build, stack_commands)
-      puts "<<<--->>> checkout_clean_stack_predictive_branch:"
       stack_commands.each do |stack, commands|
-        res = commands.git_checkout(predictive_build.branch).run!
-        puts "<<<--->>> checkout_clean_stack_predictive_branch: stack: #{stack.id}; git_checkout - res: #{res}"
-        res = commands.git_reset("origin/#{stack.branch}").run!
-        puts "<<<--->>> checkout_clean_stack_predictive_branch: stack: #{stack.id}; git_reset - res: #{res}"
-        res = commands.git_clean.run!
-        puts "<<<--->>> checkout_clean_stack_predictive_branch: stack: #{stack.id}; git_clean - res: #{res}"
+        commands.git_checkout(predictive_build.branch).run!
+        commands.git_reset("origin/#{stack.branch}").run!
+        commands.git_clean.run!
       end
 
       stack_commands
@@ -274,9 +268,7 @@ module Shipit
 
     def push_predictive_branch(stack_commands, changed_stacks)
       changed_stacks.each do |key, stack|
-        puts "<<<--->>>push_predictive_branch - stack: #{stack.id}"
-        res = stack_commands[stack].git_push(true).run!
-        puts "<<<--->>>push_predictive_branch: res: #{res}"
+        stack_commands[stack].git_push(true).run!
       end
     end
   end
