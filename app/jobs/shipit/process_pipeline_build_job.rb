@@ -54,7 +54,7 @@ module Shipit
     def merge_build(predictive_build)
       Dir.mktmpdir do |dir|
         stack_commands = merge_predictive_branches(predictive_build, dir)
-        push_build(predictive_build, stack_commands) unless predictive_build.merging_failed?
+        # push_build(predictive_build, stack_commands) unless predictive_build.merging_failed?
       end
       if predictive_build.merging_failed?
         update_failed_build(predictive_build, Shipit::PredictiveBranch::MERGE_PREDICTIVE_TO_STACK_FAILED)
@@ -239,12 +239,15 @@ module Shipit
       stack_commands = {}
       begin
         predictive_build.predictive_branches.each do |p_branch|
-          stack_commands[p_branch.stack] = Commands.for(predictive_build,
-                                                        p_branch.stack,
-                                                        File.join(dir, p_branch.stack.repo_name))
-          stack_commands[p_branch.stack].git_clone(chdir: dir).run!
-          stack_commands[p_branch.stack].git_fetch(p_branch.branch).run!
-          stack_commands[p_branch.stack].git_merge_ff(p_branch.branch).run!
+          p_branch.predictive_merge_requests.waiting.each do |pmr|
+            pmr.merge!
+          end
+          # stack_commands[p_branch.stack] = Commands.for(predictive_build,
+          #                                               p_branch.stack,
+          #                                               File.join(dir, p_branch.stack.repo_name))
+          # stack_commands[p_branch.stack].git_clone(chdir: dir).run!
+          # stack_commands[p_branch.stack].git_fetch(p_branch.branch).run!
+          # stack_commands[p_branch.stack].git_merge_ff(p_branch.branch).run!
         end
       rescue
         predictive_build.merging_failed

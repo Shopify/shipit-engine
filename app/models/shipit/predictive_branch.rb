@@ -181,7 +181,7 @@ module Shipit
 
     def update_completed_requests
       predictive_merge_requests.waiting.each do |pmr|
-        delete_closed_branch(pmr.merge_request.stack.github_repo_name, pmr.merge_request.branch)
+        # delete_closed_branch(pmr.merge_request.stack.github_repo_name, pmr.merge_request.branch)
         pmr.merge_request.complete!
         pmr.merge(comment_msg(MR_MERGED_TO_PREDICTIVE))
       end
