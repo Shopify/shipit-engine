@@ -6,6 +6,7 @@ module Shipit
 
     scope :waiting, -> { where(status: 'pending') }
     scope :blocked, -> { where(status: 'rejected') }
+    scope :completed, -> { where(status: 'merged') }
 
     state_machine :status, initial: :pending do
       state :pending

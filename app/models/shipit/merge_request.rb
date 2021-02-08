@@ -138,26 +138,27 @@ module Shipit
       end
     end
 
-    def self.request_merge!(stack, number, user, mode=Pipeline::MERGE_MODE_DEFAULT, with=[])
+    def self.request_merge!(stack, number, user, mode = Pipeline::MERGE_MODE_DEFAULT, with = [])
       if !stack.pipeline && (mode != Pipeline::MERGE_MODE_DEFAULT || with.present?)
         error_msg = "mode/with are not support for non-pipelined stacks (##{stack.id}/#{mode}/#{with})"
         raise ArgumentError, error_msg
       end
 
       merge_request = nil
+      prev_parent = nil
       transaction do
         merge_request = request_merge(stack, number, user)
-        # raise ArgumentError, "Merge Queue is enabled for stack ##{stack.id}." if stack.merge_queue_enabled?
-        # errors << "Pull Request is neither waiting nor merged, this should be impossible."
-        # if !merge_request.waiting? && !merge_request.merged?
+        if merge_request.predictive_merge_request.waiting.any? or merge_request.predictive_merge_request.completed.any?
+          raise ArgumentError, "Pull Request is neither waiting nor merged, this should be impossible."
+        end
 
         # 60 sec to do our thing
         stack.pipeline.sync_lock.lock do
-          # TODO: Allow changes as long as Pipeline is not running OR merge-requests are not involved in current pipeline cycle
-          # Should change mode?
-          if merge_request.mode != mode && mode != Pipeline::MERGE_MODE_DRY_RUN
-            merge_request.update!(mode: mode)
+          if merge_request.with_parent_merge_request.present?
+            prev_parent = merge_request.with_parent_merge_request
+            merge_request.with_parent_merge_request = nil
           end
+          merge_request.mode = mode if merge_request.mode != mode
 
           # Validate
           errors = []
@@ -165,12 +166,11 @@ module Shipit
           with.each do |with_stack, with_prs|
             with_prs.each do |with_number|
               with_merge_request = request_merge(with_stack, with_number, user)
+              if with_merge_request.predictive_merge_request.waiting.any? or with_merge_request.predictive_merge_request.completed.any?
+                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is neither waiting nor merged, this should be impossible."
               # Check that both root and with PRs belongs to the same pipeline
-              if merge_request.stack.pipeline != with_merge_request.stack.pipeline
+              elsif merge_request.stack.pipeline != with_merge_request.stack.pipeline
                 errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergable, it belongs to a different Pipeline."
-              # Check that that with PR is not associated with other PRs
-              elsif with_merge_request.with_parent_merge_request && with_merge_request.with_parent_merge_request.id != merge_request.id
-                errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') is not mergeable, already configured WITH a different Merge Request ('#{with_merge_request.with_parent_merge_request.stack.repository.full_name}/pull/#{with_merge_request.with_parent_merge_request.number}')"
               else
                 final_with_merge_requests << with_merge_request
               end
@@ -192,8 +192,13 @@ module Shipit
         end if stack.pipeline
       end
 
+      merge_request.save!
       merge_request.try(:schedule_refresh!)
       merge_request
+
+      if prev_parent.present? # Delete associated merge requests for the previous parent
+        prev_parent.with_merge_requests.destroy_all
+      end
     end
 
     def reject!(reason)
