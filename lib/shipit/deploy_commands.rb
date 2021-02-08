@@ -7,10 +7,18 @@ module Shipit
 
     def env
       commit = @task.until_commit
+      commits = Commit.where("stack_id = #{@stack.id}").where("id > #{@task.since_commit.id}")
+      commits = Commit.where("stack_id = #{stack.id}").where("id > #{task.since_commit.id}")
+      commits_sha = []
+      commits.each do |c|
+        commits_sha << c.sha
+      end
+
       super.merge(
         'SHA' => commit.sha,
         'REVISION' => commit.sha,
         'DIFF_LINK' => diff_url,
+        'COMMITS' => commits_sha,
       )
     end
 
