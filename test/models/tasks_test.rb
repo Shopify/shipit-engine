@@ -34,9 +34,9 @@ module Shipit
 
     test "#chunk_output truncates output exceeding the storage limit" do
       task = shipit_tasks(:shipit)
-      task.chunks.delete_all
-      # Dont persist the chunk to the DB, as it may exceed the MySQL max packet size on CI
-      task.chunks.build(text: 'a' * (Task::OUTPUT_SIZE_LIMIT * 1.1))
+      Shipit.redis.del(task.output_key)
+
+      task.write('a' * (Task::OUTPUT_SIZE_LIMIT * 1.1))
 
       output = task.chunk_output
 

@@ -5,6 +5,7 @@ module Shipit
   class DeploysTest < ActiveSupport::TestCase
     def setup
       @deploy = shipit_deploys(:shipit)
+      @deploy.write("dummy output")
       @deploy.pid = 42
       @stack = shipit_stacks(:shipit)
       @user = shipit_users(:walrus)
@@ -839,20 +840,13 @@ module Shipit
       assert_predicate @deploy, :error?
     end
 
-    test "destroy deletes the related output chunks" do
-      assert_difference -> { @deploy.chunks.count }, -@deploy.chunks.count do
-        @deploy.destroy
-      end
-    end
-
-    test "#chunk_output joins all chunk test if logs not rolled up" do
-      assert_equal @deploy.chunks.count, @deploy.chunks.count
-      assert_equal @deploy.chunks.pluck(:text).join, @deploy.chunk_output
+    test "#chunk_output fetches from Redis if logs not rolled up" do
+      assert_equal Shipit.redis.get(@deploy.output_key), @deploy.chunk_output
       refute @deploy.rolled_up
     end
 
     test "#chunk_output returns logs from records if rolled up" do
-      expected_output = @deploy.chunks.pluck(:text).join
+      expected_output = Shipit.redis.get(@deploy.output_key)
       @deploy.rollup_chunks
 
       assert_no_queries do
