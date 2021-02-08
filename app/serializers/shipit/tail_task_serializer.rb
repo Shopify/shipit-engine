@@ -16,7 +16,7 @@ module Shipit
     end
 
     def output
-      task.chunks.tail(context[:last_id]).pluck(:text).join
+      task.tail_output(context[:last_id])
     end
 
     def rollback_url
