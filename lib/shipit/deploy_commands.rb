@@ -8,9 +8,10 @@ module Shipit
     def env
       commit = @task.until_commit
       commits = Commit.where("stack_id = #{@stack.id}").where("id > #{@task.since_commit.id}")
-      commits_sha = []
+      commits_sha = ''
       commits.each do |c|
-        commits_sha << c.sha
+        commits_sha = commits_sha + ',' if commits_sha != ''
+        commits_sha = commits_sha + c
       end
 
       super.merge(
