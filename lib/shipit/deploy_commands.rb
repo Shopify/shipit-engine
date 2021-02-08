@@ -11,7 +11,7 @@ module Shipit
       commits_sha = ''
       commits.each do |c|
         commits_sha = commits_sha + ',' if commits_sha != ''
-        commits_sha = commits_sha + c
+        commits_sha = commits_sha + c.sha
       end
 
       super.merge(
