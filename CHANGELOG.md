@@ -1,5 +1,7 @@
 # Unreleased
 
+* Use a Redis cache to store task output, instead of `output_chunks` (deprecate their use).
+
 # 0.32.0
 
 * Optimize some queries (N+1).
