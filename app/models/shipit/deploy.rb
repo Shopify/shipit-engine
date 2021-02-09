@@ -202,17 +202,16 @@ module Shipit
         target_url: link,
         description: description,
       )
-      set_deploy_commit_on_pr(state, description + " " + link)
+      set_deploy_commit_on_pr(state, description, link)
       status
     end
 
-    def set_deploy_commit_on_pr(state, description)
-      puts "<<<--->>>> Shipit::Deploy#set_deploy_commit_on_pr - state = #{state} - description = #{description}"
+    def set_deploy_commit_on_pr(state, description, link)
       commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
       mrs = Shipit::MergeRequest.where(head_id: commits_ids)
       mrs.each do |mr|
-        res = Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, description)
-        puts "<<<--->>>> Shipit::Deploy#set_deploy_commit_on_pr - mr.id = #{mr.id} - res = #{res}"
+        msg = '[' + description + '](' + link + ')'
+        Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, msg)
       end
     end
 
