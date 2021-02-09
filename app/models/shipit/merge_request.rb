@@ -155,7 +155,6 @@ module Shipit
         # 60 sec to do our thing
         stack.pipeline.sync_lock.lock do
           if merge_request.with_parent_merge_request.present?
-            prev_parent = merge_request.with_parent_merge_request
             merge_request.with_parent_merge_request = nil
           end
           merge_request.mode = mode if merge_request.mode != mode
@@ -194,10 +193,6 @@ module Shipit
 
       merge_request.save!
       merge_request.try(:schedule_refresh!)
-
-      if prev_parent.present? # Delete associated merge requests for the previous parent
-        prev_parent.with_merge_requests.destroy_all
-      end
 
       merge_request
     end
