@@ -404,14 +404,14 @@ module Shipit
       !max_retries.nil? && max_retries > 0
     end
 
-    def output_key
-      "#{status_key}:output"
-    end
-
     private
 
     def prevent_concurrency
       raise ConcurrentTaskRunning if stack.tasks.active.exclusive.count > 1
+    end
+
+    def output_key
+      "#{status_key}:output"
     end
 
     def status_key

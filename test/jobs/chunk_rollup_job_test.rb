@@ -19,7 +19,7 @@ module Shipit
       assert @task.output.present?
       assert_equal expected_output, @task.chunk_output
       assert @task.rolled_up
-      assert_nil Shipit.redis.get(@task.output_key)
+      assert_nil Shipit.redis.get(@task.send(:output_key))
     end
 
     test "#peform ignores non-finished jobs" do

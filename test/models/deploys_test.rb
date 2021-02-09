@@ -841,12 +841,12 @@ module Shipit
     end
 
     test "#chunk_output fetches from Redis if logs not rolled up" do
-      assert_equal Shipit.redis.get(@deploy.output_key), @deploy.chunk_output
+      assert_equal Shipit.redis.get(@deploy.send(:output_key)), @deploy.chunk_output
       refute @deploy.rolled_up
     end
 
     test "#chunk_output returns logs from records if rolled up" do
-      expected_output = Shipit.redis.get(@deploy.output_key)
+      expected_output = Shipit.redis.get(@deploy.send(:output_key))
       @deploy.rollup_chunks
 
       assert_no_queries do

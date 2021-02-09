@@ -34,7 +34,7 @@ module Shipit
 
     test "#chunk_output truncates output exceeding the storage limit" do
       task = shipit_tasks(:shipit)
-      Shipit.redis.del(task.output_key)
+      Shipit.redis.del(task.send(:output_key))
 
       task.write('a' * (Task::OUTPUT_SIZE_LIMIT * 1.1))
 
