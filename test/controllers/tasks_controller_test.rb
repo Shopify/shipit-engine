@@ -109,7 +109,7 @@ module Shipit
       assert_json_keys %w(url status output)
       assert_json 'status', @task.status
       assert_json 'output', @task.chunk_output
-      assert_json 'url', "/shopify/shipit-engine/production/tasks/#{@task.id}/tail?last_id=#{last_chunk}"
+      assert_json 'url', "/shopify/shipit-engine/production/tasks/#{@task.id}/tail?last_byte=#{last_chunk}"
     end
 
     test ":tail doesn't returns the next url if the task is finished" do

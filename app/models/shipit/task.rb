@@ -218,6 +218,12 @@ module Shipit
       end
     end
 
+    def chunk_output_size
+      return 0 if rolled_up?
+
+      Shipit.redis.strlen(output_key)
+    end
+
     def tail_output(range_start)
       Shipit.redis.getrange(output_key, range_start || 0, -1)
     end
