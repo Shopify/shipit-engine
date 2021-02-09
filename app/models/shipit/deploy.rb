@@ -210,7 +210,7 @@ module Shipit
       commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
       mrs = Shipit::MergeRequest.where(head_id: commits_ids)
       mrs.each do |mr|
-        msg = '[' + description + '](' + link + ')'
+        msg = '### **[' + description + '](' + link + ')**'
         Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, msg)
       end
     end
