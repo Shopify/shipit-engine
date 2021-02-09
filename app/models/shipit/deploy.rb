@@ -195,13 +195,25 @@ module Shipit
 
     delegate :last_release_status, to: :until_commit
     def append_release_status(state, description, user: self.user)
+      link = permalink
       status = until_commit.create_release_status!(
         state,
         user: user.presence,
-        target_url: permalink,
+        target_url: link,
         description: description,
       )
+      set_deploy_commit_on_pr(state, description + " " + link)
       status
+    end
+
+    def set_deploy_commit_on_pr(state, description)
+      puts "<<<--->>>> Shipit::Deploy#set_deploy_commit_on_pr - state = #{state} - description = #{description}"
+      commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
+      mrs = Shipit::MergeRequest.where(head_id: commits_ids)
+      mrs.each do |mr|
+        res = Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, description)
+        puts "<<<--->>>> Shipit::Deploy#set_deploy_commit_on_pr - mr.id = #{mr.id} - res = #{res}"
+      end
     end
 
     def permalink
