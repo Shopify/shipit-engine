@@ -194,11 +194,12 @@ module Shipit
 
       merge_request.save!
       merge_request.try(:schedule_refresh!)
-      merge_request
 
       if prev_parent.present? # Delete associated merge requests for the previous parent
         prev_parent.with_merge_requests.destroy_all
       end
+
+      merge_request
     end
 
     def reject!(reason)
