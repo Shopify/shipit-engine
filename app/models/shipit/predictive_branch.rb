@@ -14,6 +14,7 @@ module Shipit
     MERGE_PREDICTIVE_TO_STACK_FAILED = 'merge_predictive_to_stack_failed'
     MERGE_MR_TO_PREDICTIVE_FAILED = 'merge_mr_to_predictive_failed'
     MR_MERGED_TO_PREDICTIVE = 'mr_merged_to_predictive'
+    CANCELED_DUE_TO_EMERGENCY = 'canceled_due_to_emergency'
 
     REJECTION_OPTIONS = %w(stack_tasks_failed pipeline_tasks_failed merged_failed).freeze
     WAITING_STATUSES = %w(pending).freeze
@@ -143,12 +144,9 @@ module Shipit
       reject_predictive_merge_requests(STACK_TASKS_FAILED)
     end
 
-    def cancel_predictive_merge_requests
+    def cancel_predictive_merge_requests(reject_reason = nil)
       predictive_merge_requests.waiting.each do |pmr|
-        msg = <<~MSG
-          Pull request build attempt was canceled as part of branch '#{branch}' due to emergency build.
-        MSG
-        pmr.cancel(msg)
+        pmr.cancel(comment_msg(reject_reason))
       end
     end
 
@@ -168,9 +166,11 @@ module Shipit
       when MERGE_PREDICTIVE_TO_STACK_FAILED
         msg = "Failed to merge predictive branch to #{branch}"
       when MERGE_MR_TO_PREDICTIVE_FAILED
-        msg = "Failed to merge MergeRequest to predictive branch"
+        msg = "Failed to merge pull request to predictive branch"
       when MR_MERGED_TO_PREDICTIVE
-        msg = "MergeRequest merged to branch #{stack.branch}"
+        msg = "Pull request merged to branch #{stack.branch}"
+      when CANCELED_DUE_TO_EMERGENCY
+        msg = "Pull request build attempt was canceled as part of branch '#{branch}' due to emergency build."
       else
         return false
       end

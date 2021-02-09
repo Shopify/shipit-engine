@@ -26,7 +26,7 @@ module Shipit
         if !predictive_build.mode.in?(Pipeline::MERGE_SINGLE_EMERGENCY) && emergency_build?(pipeline) &&
           !predictive_build.ci_pipeline_canceling?
           predictive_build.cancel
-          predictive_build.aborting_tasks
+          predictive_build.aborting_tasks(false, PredictiveBranch::CANCELED_DUE_TO_EMERGENCY)
           Shipit::ProcessPipelineBuildJob.set(wait: 5.seconds).perform_later(pipeline)
         end
       else
@@ -37,7 +37,7 @@ module Shipit
       case predictive_build.status.to_sym
       when :pending # Something went wrong
         predictive_build.cancel
-        predictive_build.aborting_tasks
+        predictive_build.aborting_tasks(true, PredictiveBranch::PIPELINE_TASKS_FAILED)
       when :branched, :tasks_running
         run_tasks(predictive_build)
       when :tasks_completed
