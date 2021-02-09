@@ -217,8 +217,12 @@ module Shipit
           p_branch.tasks_canceling
           p_branch.trigger_task(true)
         end
-        p_branch.cancel_predictive_merge_requests unless is_failed
-        p_branch.reject_predictive_merge_requests(PredictiveBranch::PIPELINE_TASKS_FAILED) if is_failed
+
+        if is_failed && p_branch.failed?
+          p_branch.reject_predictive_merge_requests(PredictiveBranch::PIPELINE_TASKS_FAILED)
+        else
+          p_branch.cancel_predictive_merge_requests
+        end
       end
     end
 

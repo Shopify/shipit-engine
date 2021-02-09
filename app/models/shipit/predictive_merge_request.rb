@@ -35,6 +35,9 @@ module Shipit
     def reject(msg)
       rejected
       merge_request.reject
+      merge_request.with_merge_requests.each do |mr|
+        mr.reject
+      end
       add_comment(msg)
     end
 
