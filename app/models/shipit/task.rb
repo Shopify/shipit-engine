@@ -77,6 +77,10 @@ module Shipit
         task.async_refresh_deployed_revision
       end
 
+      after_transition any => %i(aborted success failed error timedout) do |task|
+        task.schedule_rollup_chunks
+      end
+
       after_transition any => :flapping do |task|
         task.update!(confirmations: 0)
       end
