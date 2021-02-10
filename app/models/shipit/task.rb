@@ -238,9 +238,14 @@ module Shipit
 
     def rollup_chunks
       ActiveRecord::Base.transaction do
-        self.output = chunk_output
+        chunks = Shipit::OutputChunk.where(task: self).pluck(:text)
+        chunks << chunk_output
+        self.output = chunks.join("\n")
+
         update_attribute(:rolled_up, true)
+
         Shipit.redis.del(output_key)
+        Shipit::OutputChunk.where(task: self).delete_all
       end
     end
 

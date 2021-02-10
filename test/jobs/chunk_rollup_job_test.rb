@@ -41,5 +41,18 @@ module Shipit
 
       @job.perform(@task)
     end
+
+    test "#perform takes into account data still in the DB" do
+      output_chunks = Shipit::OutputChunk.create(text: "DB output", task: @task)
+      expected_output = [output_chunks.text, @task.chunk_output].join("\n")
+
+      @job.perform(@task)
+
+      @task.reload
+      assert_equal expected_output, @task.chunk_output
+      assert @task.rolled_up
+      assert_empty Shipit::OutputChunk.where(task: @task)
+      assert_nil Shipit.redis.get(@task.send(:output_key))
+    end
   end
 end
