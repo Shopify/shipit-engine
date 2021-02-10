@@ -27,8 +27,6 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
-    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all, inverse_of: :task
-
     serialize :definition, TaskDefinition
     serialize :env, Hash
 
@@ -77,6 +75,10 @@ module Shipit
 
       after_transition any => %i(success failed error timedout) do |task|
         task.async_refresh_deployed_revision
+      end
+
+      after_transition any => %i(aborted success failed error timedout) do |task|
+        task.schedule_rollup_chunks
       end
 
       after_transition any => :flapping do |task|
@@ -201,16 +203,16 @@ module Shipit
 
     def write(text)
       log_output(text)
-      chunks.create!(text: text)
+      Shipit.redis.append(output_key, text)
     end
 
     def chunk_output
       if rolled_up?
         output
       else
-        blob = chunks.pluck(:text).join
+        blob = Shipit.redis.get(output_key)
 
-        if blob.size > OUTPUT_SIZE_LIMIT
+        if blob && blob.size > OUTPUT_SIZE_LIMIT
           Rails.logger.warn("Task #{id} output exceeds limit of #{HUMAN_READABLE_OUTPUT_LIMIT}, and will be truncated.")
           blob = blob.last(OUTPUT_SIZE_LIMIT - OUTPUT_TRUNCATED_MESSAGE.size)
           blob = OUTPUT_TRUNCATED_MESSAGE + blob
@@ -220,6 +222,16 @@ module Shipit
       end
     end
 
+    def chunk_output_size
+      return 0 if rolled_up?
+
+      Shipit.redis.strlen(output_key)
+    end
+
+    def tail_output(range_start)
+      Shipit.redis.getrange(output_key, range_start || 0, -1)
+    end
+
     def schedule_rollup_chunks
       ChunkRollupJob.perform_later(self)
     end
@@ -227,8 +239,8 @@ module Shipit
     def rollup_chunks
       ActiveRecord::Base.transaction do
         self.output = chunk_output
-        chunks.delete_all
         update_attribute(:rolled_up, true)
+        Shipit.redis.del(output_key)
       end
     end
 
@@ -406,6 +418,10 @@ module Shipit
 
     def prevent_concurrency
       raise ConcurrentTaskRunning if stack.tasks.active.exclusive.count > 1
+    end
+
+    def output_key
+      "#{status_key}:output"
     end
 
     def status_key
