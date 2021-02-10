@@ -33,7 +33,7 @@ module Shipit
     delegate :stack, to: :object
 
     def offset
-      (output&.bytesize || 0) + (context[:last_byte] || 0)
+      (output&.bytesize || 0) + (context[:last_byte]&.to_i || 0)
     end
 
     def rollback
