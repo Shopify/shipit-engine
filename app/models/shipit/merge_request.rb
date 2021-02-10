@@ -145,7 +145,6 @@ module Shipit
       end
 
       merge_request = nil
-      prev_parent = nil
       transaction do
         merge_request = request_merge(stack, number, user)
         if merge_request.predictive_merge_request.waiting.any? or merge_request.predictive_merge_request.completed.any?
@@ -179,7 +178,7 @@ module Shipit
           # Allow remove with_* only if its closed
           removed_merged_requests = merge_request.with_merge_requests - final_with_merge_requests
           removed_merged_requests.each do |removed_merged_request|
-            errors << "Pull Request ('#{stack.repository.full_name}/pull/#{with_number}') cannot be removed, it must be closed."
+            removed_merged_request.with_parent_merge_request = nil
           end
 
           raise ArgumentError, "invalid reason merge request: #{errors.split("\n")}" if errors.any?
