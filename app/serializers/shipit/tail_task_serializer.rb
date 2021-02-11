@@ -8,7 +8,7 @@ module Shipit
 
     def url
       return @url if defined? @url
-      @url = next_chunks_url(task, last_byte: offset)
+      @url = next_chunks_url(task, last_byte: next_offset)
     end
 
     def include_url?
@@ -16,7 +16,7 @@ module Shipit
     end
 
     def output
-      task.tail_output(context[:last_byte])
+      @output ||= task.tail_output(last_byte)
     end
 
     def rollback_url
@@ -32,8 +32,12 @@ module Shipit
     alias_method :task, :object
     delegate :stack, to: :object
 
-    def offset
-      (output&.bytesize || 0) + (context[:last_byte]&.to_i || 0)
+    def next_offset
+      last_byte + output.bytesize
+    end
+
+    def last_byte
+      context[:last_byte].to_i
     end
 
     def rollback

@@ -48,7 +48,7 @@ module Shipit
     end
 
     def tail
-      render(json: TailTaskSerializer.new(task, context: params))
+      render(json: TailTaskSerializer.new(task, context: { last_byte: params[:last_byte].to_i }))
     end
 
     def lookup

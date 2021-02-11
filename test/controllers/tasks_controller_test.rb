@@ -104,7 +104,7 @@ module Shipit
       @task.write("dummy output")
       last_chunk = @task.chunk_output.bytesize
 
-      get :tail, params: { stack_id: @stack.to_param, id: @task.id, last_byte: 0 }, format: :json
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
       assert_json_keys %w(url status output)
       assert_json 'status', @task.status
