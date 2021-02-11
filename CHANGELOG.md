@@ -1,4 +1,4 @@
-# Unreleased
+# 0.33.0
 
 * Use a Redis cache to store task output, instead of `output_chunks` (deprecate their use).
 
