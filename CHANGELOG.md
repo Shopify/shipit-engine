@@ -5,7 +5,7 @@
 * Use a Redis cache to store task output, instead of `output_chunks` (deprecate their use).
 * Allow to replace the default task execution strategy (#1117).
 * Clone repositories with `--recursive` to better handle repos with submodules (#1110).
-* Added a `deploy.retries_on_timeout` and `rollback.retries_on_timeout` properties (#1109).
+* Added a `deploy.retries` and `rollback.retries` properties (#1109).
 * Added review stacks, which allow to automatically create a stack when a pull request is opened,
   and to delete it when the pull request is closed. This allows to test branch on staging like
   environments (#1102).
