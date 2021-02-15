@@ -231,18 +231,19 @@ module Shipit
     end
 
     def set_ci_comments
-      build_info = {}
-      msg = "### CI ##{id} in progress."
-      build_info['build_id'] =
-      predictive_branches.each do |p_branch|
-        key = p_branch.stack.repository.full_name
-        msg = msg + "<br /><br />**#{key}:**"
-        p_branch.predictive_merge_requests.each do |pmr|
-          msg = msg + "<br />/#{key}/pulls/#{pmr.merge_request.number}"
+      comment = []
+      comment << "### CI ##{id} is now in progress for #{pipeline.environment}"
+      comment << ""
+      predictive_branches.each do |predictive_branch|
+        key = predictive_branch.stack.repository.full_name
+        comment << "**#{key}**"
+        predictive_branch.predictive_merge_requests.each do |predictive_merge_request|
+          link = "/#{key}/pulls/#{predictive_merge_request.merge_request.number}"
+          comment << '* [' + link + '](' + link + ')'
         end
       end
       msg = <<~MSG
-        #{msg}
+        #{comment.join("\n")}
       MSG
       predictive_branches.each do |p_branch|
         p_branch.set_comment_to_related_merge_requests(msg)
