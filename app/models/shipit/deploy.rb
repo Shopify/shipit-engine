@@ -195,24 +195,27 @@ module Shipit
 
     delegate :last_release_status, to: :until_commit
     def append_release_status(state, description, user: self.user)
-      link = permalink
       status = until_commit.create_release_status!(
         state,
         user: user.presence,
-        target_url: link,
+        target_url: permalink,
         description: description,
       )
-      set_deploy_commit_on_pr(state, description, link)
       status
+    rescue Exception => error
+      Rails.logger.error "Can't append release status. message: #{error.message}"
     end
 
     def set_deploy_commit_on_pr(state, description, link)
+      puts "Shipit::Deploy#set_deploy_commit_on_pr; description: #{description}; link: #{link}"
       commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
       mrs = Shipit::MergeRequest.where(head_id: commits_ids)
       mrs.each do |mr|
         msg = '### **[' + description + '](' + link + ')**'
         Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, msg)
       end
+    rescue Exception => error
+      Rails.logger.error "Can't set_deploy_commit_on_pr. message: #{error.message}"
     end
 
     def permalink
@@ -271,24 +274,30 @@ module Shipit
 
     def update_release_status
       return unless stack.release_status?
-
+      description = nil
       case status
       when 'pending'
-        append_release_status('pending', "A deploy was triggered on #{stack.environment}")
+        description = "A deploy was triggered on #{stack.environment}"
+          append_release_status('pending', description)
       when 'failed', 'error', 'timedout'
-        append_release_status('error', "The deploy on #{stack.environment} did not succeed (#{status})")
+        description = "The deploy on #{stack.environment} did not succeed (#{status})"
+        append_release_status('error', description)
       when 'aborted', 'aborting'
-        append_release_status('failure', "The deploy on #{stack.environment} was canceled")
+        description = "The deploy on #{stack.environment} was canceled"
+        append_release_status('failure', description)
       when 'validating'
         if stack.release_status_delay.positive?
-          append_release_status('pending', "The deploy on #{stack.environment} succeeded")
+          description = "The deploy on #{stack.environment} succeeded"
+          append_release_status('pending', description)
           MarkDeployHealthyJob.set(wait: stack.release_status_delay).perform_later(self)
         end
       when 'success'
         if stack.release_status_delay.zero?
-          append_release_status('success', "The deploy on #{stack.environment} succeeded")
+          description = "The deploy on #{stack.environment} succeeded"
+          append_release_status('success', description)
         end
       end
+      set_deploy_commit_on_pr(status, description, permalink) if description
     end
 
     def trigger_revert_if_required
