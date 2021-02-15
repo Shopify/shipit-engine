@@ -46,8 +46,6 @@ module Shipit
       add_comment(msg)
     end
 
-    private
-
     def add_comment(msg)
       Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
     end

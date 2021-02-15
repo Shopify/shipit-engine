@@ -39,6 +39,7 @@ module Shipit
         predictive_build.cancel
         predictive_build.aborting_tasks(true, PredictiveBranch::PIPELINE_TASKS_FAILED)
       when :branched, :tasks_running
+        predictive_build.set_ci_comments
         run_tasks(predictive_build)
       when :tasks_completed
         merging_process(predictive_build)

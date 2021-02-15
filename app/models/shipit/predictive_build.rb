@@ -230,6 +230,25 @@ module Shipit
       job_status(task) == status
     end
 
+    def set_ci_comments
+      build_info = {}
+      msg = "### CI ##{id} in progress."
+      build_info['build_id'] =
+      predictive_branches.each do |p_branch|
+        key = p_branch.stack.repository.full_name
+        msg = msg + "<br /><br />**#{key}:**"
+        p_branch.predictive_merge_requests.each do |pmr|
+          msg = msg + "<br />/#{key}/pulls/#{pmr.merge_request.number}"
+        end
+      end
+      msg = <<~MSG
+        #{msg}
+      MSG
+      predictive_branches.each do |p_branch|
+        p_branch.set_comment_to_related_merge_requests(msg)
+      end
+    end
+
     def job_status(task)
       status = ''
       task.chunks.each do |chunk|

@@ -203,5 +203,10 @@ module Shipit
       end
     end
 
+    def set_comment_to_related_merge_requests(msg)
+      predictive_merge_requests.each do |pmr|
+        pmr.add_comment(msg)
+      end
+    end
   end
 end
