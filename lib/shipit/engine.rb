@@ -28,10 +28,6 @@ module Shipit
 
       ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found
 
-      ActiveModel::Serializer._root = false
-      ActiveModel::ArraySerializer._root = false
-      ActiveModel::Serializer.include(Engine.routes.url_helpers)
-
       if Shipit.github.oauth?
         OmniAuth::Strategies::GitHub.configure(path_prefix: '/github/auth')
         app.middleware.use(OmniAuth::Builder) do
@@ -41,10 +37,6 @@ module Shipit
 
       if Shipit.enable_samesite_middleware?
         app.config.middleware.insert_after(::Rack::Runtime, Shipit::SameSiteCookieMiddleware)
-      end
-
-      app.config.after_initialize do
-        ActionController::Base.include(Shipit::ActiveModelSerializersPatch)
       end
     end
   end

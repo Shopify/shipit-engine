@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 module Shipit
-  class PullRequestSerializer < ActiveModel::Serializer
+  class PullRequestSerializer < Serializer
     include GithubUrlHelper
-    include ConditionalAttributes
 
-    has_one :user
+    has_one :user, serializer: UserSerializer
     has_one :head, serializer: ShortCommitSerializer
     has_many :assignees, serializer: UserSerializer
 
     attributes :id, :number, :title, :github_id, :additions, :deletions, :state, :html_url
 
     def html_url
-      github_pull_request_url(object) if object.stack.present?
+      if object.stack.present?
+        github_pull_request_url(object)
+      else
+        SKIP
+      end
     end
   end
 end

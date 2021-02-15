@@ -101,8 +101,8 @@ module Shipit
       def coerce_payload(payload)
         coerced_payload = payload.dup
         payload.each do |key, value|
-          if serializer = ActiveModel::Serializer.serializer_for(value)
-            coerced_payload[key] = serializer.new(value)
+          if serializer = Serializer.for(value)
+            coerced_payload[key] = serializer.new.serialize(value)
           end
         end
         coerced_payload.to_json

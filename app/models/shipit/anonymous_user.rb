@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 module Shipit
   class AnonymousUser
+    class << self
+      def attribute_aliases
+        {}.freeze
+      end
+    end
+
     def present?
       false
     end

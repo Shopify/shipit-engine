@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 module Shipit
-  class TailTaskSerializer < ActiveModel::Serializer
+  class TailTaskSerializer < Serializer
     include ChunksHelper
-    include ConditionalAttributes
 
     attributes :url, :status, :output, :rollback_url
 
     def url
       return @url if defined? @url
-      @url = next_chunks_url(task, last_byte: next_offset)
+      @url = next_chunks_url(task, last_byte: next_offset) || SKIP
     end
 
     def include_url?
@@ -20,11 +19,11 @@ module Shipit
     end
 
     def rollback_url
-      stack_deploy_path(stack, rollback)
-    end
-
-    def include_rollback_url?
-      !rollback.nil?
+      if rollback.nil?
+        SKIP
+      else
+        stack_deploy_path(stack, rollback)
+      end
     end
 
     private

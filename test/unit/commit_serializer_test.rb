@@ -6,9 +6,9 @@ module Shipit
     test 'commit includes author object' do
       commit = shipit_commits(:first)
 
-      serializer = ActiveModel::Serializer.serializer_for(commit)
+      serializer = Serializer.for(commit)
       assert_equal CommitSerializer, serializer
-      serialized = serializer.new(commit).to_json
+      serialized = serializer.new.serialize(commit).to_json
 
       assert_json("author.name", commit.author.name, document: serialized)
     end

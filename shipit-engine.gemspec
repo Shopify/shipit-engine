@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"] - Dir["test/dummy/tmp/**/*"] - Dir["test/dummy/log/**/*"]
 
-  s.add_dependency('active_model_serializers', '~> 0.9.3')
+  s.add_dependency('panko_serializer', '~> 0.7.5')
   s.add_dependency('ansi_stream', '~> 0.0.6')
   s.add_dependency('attr_encrypted', '~> 3.1.0')
   s.add_dependency('autoprefixer-rails', '~> 6.4.1')
