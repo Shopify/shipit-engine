@@ -10,7 +10,7 @@ In the future we'd like to provide it fully packaged inside a Docker container, 
 
 ## Creating the Rails app
 
-*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.5 or superior.*
+*Shipit requires a database (MySQL, PostgreSQL or SQLite3), Redis, and Ruby 2.6 or superior.*
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
