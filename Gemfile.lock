@@ -97,7 +97,7 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     ansi_stream (0.0.6)
-    ast (2.4.1)
+    ast (2.4.2)
     attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
     autoprefixer-rails (6.4.1.1)
@@ -118,9 +118,9 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.6)
-    crack (0.4.3)
-      safe_yaml (~> 1.0.0)
+    concurrent-ruby (1.1.8)
+    crack (0.4.5)
+      rexml
     crass (1.0.6)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -133,7 +133,7 @@ GEM
       actionpack (>= 6.0)
       activemodel (>= 6.0)
       virtus (~> 1.0)
-    faker (2.13.0)
+    faker (2.16.0)
       i18n (>= 1.6, < 2)
     faraday (0.17.4)
       multipart-post (>= 1.2, < 3)
@@ -145,7 +145,7 @@ GEM
       activesupport (>= 4.2.0)
     hashdiff (1.0.1)
     hashie (4.1.0)
-    i18n (1.8.5)
+    i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jquery-rails (4.1.1)
@@ -153,7 +153,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     jwt (2.2.2)
-    libv8 (8.4.255.0)
+    libv8 (8.4.255.0-x86_64-darwin-19)
     lodash-rails (4.6.1)
       railties (>= 3.1)
     loofah (2.9.0)
@@ -166,7 +166,6 @@ GEM
     method_source (1.0.0)
     mimemagic (0.3.5)
     mini_mime (1.0.2)
-    mini_portile2 (2.5.0)
     mini_racer (0.3.1)
       libv8 (~> 8.4.255)
     minitest (5.14.3)
@@ -176,8 +175,7 @@ GEM
     multipart-post (2.1.1)
     mysql2 (0.5.3)
     nio4r (2.5.5)
-    nokogiri (1.11.1)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.11.1-x86_64-darwin)
       racc (~> 1.4)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
@@ -197,14 +195,14 @@ GEM
     omniauth-oauth2 (1.7.1)
       oauth2 (~> 1.4)
       omniauth (>= 1.9, < 3)
-    parallel (1.19.2)
-    parser (2.7.2.0)
+    parallel (1.20.1)
+    parser (3.0.0.0)
       ast (~> 2.4.1)
     pg (1.2.3)
-    pry (0.13.1)
+    pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (4.0.5)
+    public_suffix (4.0.6)
     pubsubstub (0.2.1)
       rack
       redis (~> 4.0)
@@ -251,25 +249,25 @@ GEM
     redis (4.2.5)
     redis-objects (1.4.3)
       redis (~> 4.0)
-    regexp_parser (1.8.2)
+    regexp_parser (2.0.3)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.4)
-    rubocop (0.89.1)
+    rubocop (1.10.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.1)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.7)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 0.3.0, < 1.0)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.8.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
-    rubocop-shopify (1.0.5)
-      rubocop (~> 0.89.0)
-    ruby-progressbar (1.10.1)
+    rubocop-shopify (1.0.7)
+      rubocop (~> 1.4)
+    ruby-progressbar (1.11.0)
     safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -313,7 +311,7 @@ GEM
     tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (1.7.0)
+    unicode-display_width (2.0.0)
     validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
@@ -322,7 +320,7 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
-    webmock (3.8.3)
+    webmock (3.11.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -332,7 +330,7 @@ GEM
     zeitwerk (2.4.2)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-19
 
 DEPENDENCIES
   byebug
@@ -351,4 +349,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.1.4
+   2.2.10
