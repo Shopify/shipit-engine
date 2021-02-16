@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 module Shipit
-  class MergeRequestSerializer < ActiveModel::Serializer
+  class MergeRequestSerializer < Serializer
     include GithubUrlHelper
-    include ConditionalAttributes
 
-    has_one :merge_requested_by
+    has_one :merge_requested_by, serializer: UserSerializer
     has_one :head, serializer: ShortCommitSerializer
 
     attributes :id, :number, :title, :github_id, :additions, :deletions, :state, :merge_status, :mergeable,
@@ -14,8 +13,12 @@ module Shipit
       github_pull_request_url(object)
     end
 
-    def include_rejection_reason?
-      object.rejection_reason?
+    def rejection_reason
+      if object.rejection_reason?
+        object.rejection_reason
+      else
+        SKIP
+      end
     end
   end
 end

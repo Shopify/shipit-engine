@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 module Shipit
-  class TaskSerializer < ActiveModel::Serializer
-    include ConditionalAttributes
-
-    has_one :author
-    has_one :revision, serializer: ShortCommitSerializer
+  class TaskSerializer < Serializer
+    has_one :author, serializer: UserSerializer
+    has_one :until_commit, serializer: ShortCommitSerializer, name: :revision
 
     attributes(:id, :url, :html_url, :output_url, :type, :status, :action, :title, :description, :started_at, :ended_at, :updated_at, :created_at, :env, :ignored_safeties, :max_retries, :retry_attempt)
-
-    def revision
-      object.until_commit
-    end
 
     def url
       api_stack_task_url(object.stack, object)
@@ -29,19 +23,19 @@ module Shipit
     end
 
     def action
-      object.definition&.action
-    end
-
-    def include_action?
-      type == :task
+      if type == :task
+        object.definition&.action
+      else
+        SKIP
+      end
     end
 
     def description
-      object.definition&.action
-    end
-
-    def include_description?
-      type == :task
+      if type == :task
+        object.definition&.action
+      else
+        SKIP
+      end
     end
   end
 end

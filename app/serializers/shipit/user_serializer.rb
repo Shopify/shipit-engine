@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class UserSerializer < ActiveModel::Serializer
+  class UserSerializer < Serializer
     attributes :id, :name, :email, :login, :avatar_url, :created_at, :updated_at, :github_id, :anonymous
 
     def anonymous

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Shipit
-  class ShortCommitSerializer < ActiveModel::Serializer
+  class ShortCommitSerializer < Serializer
     attributes :sha, :message
 
     def message

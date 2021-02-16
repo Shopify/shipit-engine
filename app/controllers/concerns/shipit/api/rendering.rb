@@ -5,7 +5,7 @@ module Shipit
       private
 
       def render_resources(resources, options = {})
-        options[:json] = resources
+        options[:json] = Panko::ArraySerializer.new(resources, each_serializer: Serializer.for(resources)).to_json
         render(options)
       end
 
@@ -15,7 +15,8 @@ module Shipit
         elsif resource.errors.any?
           render(options.reverse_merge(status: :unprocessable_entity, json: { errors: resource.errors }))
         else
-          render(options.reverse_merge(json: resource))
+          serializer = Serializer.for(resource).new
+          render(options.reverse_merge(json: serializer.serialize(resource)))
         end
       end
     end

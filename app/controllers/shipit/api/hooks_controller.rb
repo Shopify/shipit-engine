@@ -10,7 +10,7 @@ module Shipit
       end
 
       def show
-        render(json: hook)
+        render_resource(hook)
       end
 
       params do

@@ -7,9 +7,9 @@ module Shipit
       deploy = shipit_deploys(:shipit)
       first_commit_author = deploy.commits.first.author
 
-      serializer = ActiveModel::Serializer.serializer_for(deploy)
+      serializer = Serializer.for(deploy)
       assert_equal DeploySerializer, serializer
-      serialized = serializer.new(deploy).to_json
+      serialized = serializer.new.serialize(deploy).to_json
 
       assert_json("commits.0.author.name", first_commit_author.name, document: serialized)
     end

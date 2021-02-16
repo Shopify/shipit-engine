@@ -5,8 +5,8 @@ module Shipit
       :rollback
     end
 
-    def include_rollback_url?
-      false
+    def rollback_url
+      SKIP
     end
   end
 end
