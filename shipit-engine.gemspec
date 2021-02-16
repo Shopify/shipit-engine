@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency('explicit-parameters', '~> 0.4.0')
   s.add_dependency('faraday', '~> 0.15')
   s.add_dependency('faraday-http-cache', '~> 1.2.2')
-  s.add_dependency('gemoji', '~> 2.1')
+  s.add_dependency('gemoji', '~> 3.0')
   s.add_dependency('jquery-rails', '~> 4.1.0')
   s.add_dependency('lodash-rails', '~> 4.6.1')
   s.add_dependency('octokit', '~> 4.15')
