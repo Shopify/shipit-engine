@@ -20,7 +20,6 @@ PATH
       rails-timeago (~> 2.13.0)
       rails_autolink (~> 1.1.6)
       rake
-      redis-namespace (~> 1.6.0)
       redis-objects (~> 1.4.3)
       responders (~> 3.0)
       safe_yaml (~> 1.0.4)
@@ -246,8 +245,6 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.2.5)
-    redis-namespace (1.6.0)
-      redis (>= 3.0.4)
     redis-objects (1.4.3)
       redis (~> 4.0)
     regexp_parser (1.8.2)
