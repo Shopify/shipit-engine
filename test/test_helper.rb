@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 ENV["RAILS_ENV"] ||= "test"
 
+if Warning.respond_to?(:[]=)
+  Warning[:deprecated] = true
+end
+
 require 'simplecov'
 SimpleCov.start('rails') do
   enable_coverage :branch

@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_dependency('octokit', '~> 4.15')
   s.add_dependency('omniauth-github', '~> 1.4')
   s.add_dependency('pubsubstub', '~> 0.2.0')
-  s.add_dependency('rails', '~> 6.0.0')
+  s.add_dependency('rails', '~> 6.1.0')
   s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rails_autolink', '~> 1.1.6')
   s.add_dependency('rake')
@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sass-rails', '~> 5.0')
   s.add_dependency('securecompare', '~> 1.0.0')
   s.add_dependency('sprockets-rails', '>= 2.3.2')
-  s.add_dependency('state_machines-activerecord', '~> 0.6.0')
+  s.add_dependency('state_machines-activerecord', '~> 0.8.0')
   s.add_dependency('validate_url', '~> 1.0.0')
 
   s.metadata['allowed_push_host'] = 'https://rubygems.org'
