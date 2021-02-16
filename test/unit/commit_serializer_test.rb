@@ -10,7 +10,7 @@ module Shipit
       assert_equal CommitSerializer, serializer
       serialized = serializer.new(commit).to_json
 
-      assert_json("author.name", commit.author.name, document: serialized)
+      assert_json_document(serialized, "author.name", commit.author.name)
     end
   end
 end

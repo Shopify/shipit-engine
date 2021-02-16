@@ -11,7 +11,7 @@ module Shipit
       assert_equal DeploySerializer, serializer
       serialized = serializer.new(deploy).to_json
 
-      assert_json("commits.0.author.name", first_commit_author.name, document: serialized)
+      assert_json_document(serialized, "commits.0.author.name", first_commit_author.name)
     end
   end
 end

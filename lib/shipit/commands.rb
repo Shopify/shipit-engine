@@ -30,5 +30,6 @@ module Shipit
     def git(*args)
       Command.new("git", *args)
     end
+    ruby2_keywords :git if respond_to?(:ruby2_keywords, true)
   end
 end

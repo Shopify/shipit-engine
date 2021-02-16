@@ -73,7 +73,7 @@ module Shipit
       locked_stack = Stack.first
       locked_stack.lock("Some Reason", nil)
       serialized = Hook.coerce_payload(stack: locked_stack)
-      assert_json("stack.lock_author.anonymous", true, document: serialized)
+      assert_json_document(serialized, "stack.lock_author.anonymous", true)
     end
   end
 end

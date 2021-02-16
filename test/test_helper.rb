@@ -36,6 +36,17 @@ begin
 rescue LoadError
 end
 
+# FIXME: We need to get rid of active_model_serializers
+# This is a monkey patch for Ruby 2.7+ compatibility
+module ActionController
+  module SerializationAssertions
+    def process(*, **)
+      @serializers = Hash.new(0)
+      super
+    end
+  end
+end
+
 module ActiveSupport
   class TestCase
     include PayloadsHelper
