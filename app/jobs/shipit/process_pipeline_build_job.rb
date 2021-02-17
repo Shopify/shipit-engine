@@ -32,6 +32,7 @@ module Shipit
       else
         predictive_build = generate_predictive_build(pipeline)
         return true unless predictive_build
+        predictive_build.set_ci_comments
       end
 
       case predictive_build.status.to_sym
@@ -39,7 +40,6 @@ module Shipit
         predictive_build.cancel
         predictive_build.aborting_tasks(true, PredictiveBranch::PIPELINE_TASKS_FAILED)
       when :branched, :tasks_running
-        predictive_build.set_ci_comments
         run_tasks(predictive_build)
       when :tasks_completed
         merging_process(predictive_build)
