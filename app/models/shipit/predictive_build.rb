@@ -232,7 +232,7 @@ module Shipit
 
     def set_ci_comments
       comment = []
-      comment << "***CI ##{id} is now in progress for #{pipeline.environment}***"
+      comment << "**CI ##{id} is now in progress for #{pipeline.environment}**"
       comment << ""
       predictive_branches.each do |predictive_branch|
         key = predictive_branch.stack.repository.full_name
