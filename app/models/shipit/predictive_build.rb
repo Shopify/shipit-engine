@@ -196,7 +196,7 @@ module Shipit
     def upsert_ci_job_statuses(jobs)
       ci_jobs_statuses.each do |job_status|
         if jobs[job_status.name].present?
-          job_status.status = jobs[job_status.name].status
+          job_status.status = jobs[job_status.name].status.downcase.to_sym
           job_status.link = jobs[job_status.name].link
           job_status.name = jobs[job_status.name].job_name
           job_status.save
@@ -206,7 +206,7 @@ module Shipit
 
       if jobs.any?
         jobs.each do |job|
-          CiJobsStatus.create(predictive_build: self , name: job.job_name, status: job.status, link: job.link)
+          CiJobsStatus.create(predictive_build_id: self.id , name: job.job_name, status: job.status, link: job.link)
         end
       end
     end
@@ -219,9 +219,9 @@ module Shipit
           cmd = {}
           chunk.text.split(' ').each do |substr|
             substr_arr = substr.split(':')
-            cmd[substr_arr.first.to_sym] = substr_arr.last
+            cmd[substr_arr.first.to_sym] = substr_arr.last if substr_arr.first.in?(['job_name', 'link', 'status'])
           end
-          jobs[:job_name] = cmd
+          jobs[cmd[:job_name]] = cmd
           statuses[cmd[:status].downcase.to_sym] += 1 if statuses[cmd[:status].downcase.to_sym].present?
         end
       end
