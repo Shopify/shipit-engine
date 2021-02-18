@@ -6,6 +6,7 @@ module Shipit
     belongs_to :stack
     has_many :predictive_branch_tasks
     has_many :predictive_merge_requests
+    has_many :ci_jobs_statuses
     belongs_to :stack_commit, class_name: 'Shipit::Commit'
 
     STACK_TASKS_FAILED = 'stack_tasks_failed'
@@ -84,15 +85,17 @@ module Shipit
       task_status = task.status.to_sym
       predictive_task_type = task.predictive_task_type.to_sym
 
-      task_failed if task_status != :running && task_status != :pending && task_status != :success
+      status, jobs = parse_task_output(task)
+      upsert_ci_job_statuses(jobs)
+      return task_failed unless [:success, :pending, :running].include? task_status
 
       if predictive_task_type == :run
         tasks_running       if task_status == :running || task_status == :pending
         tasks_verification  if task_status == :success
       elsif predictive_task_type == :verify
-        tasks_verifying     if task_status == :running || task_status == :pending || verifying_job_status?(task, 'RUNNING')
-        completed           if task_status == :success && verifying_job_status?(task, 'SUCCESS')
-        task_failed         if task_status == :success && verifying_job_status?(task, 'ABORTED')
+        tasks_verifying     if task_status == :running || task_status == :pending || status == :running
+        completed           if task_status == :success && status == :success
+        task_failed         if task_status == :success && status == :aborted
       elsif predictive_task_type == :abort
         tasks_canceling     if task_status == :running || task_status == :pending
         tasks_canceled      if task_status == :success
@@ -100,23 +103,43 @@ module Shipit
 
     end
 
-    def verifying_job_status?(task, status)
-      job_status(task) == status
-    end
-
-    def job_status(task)
-      status = ''
-      task.chunks.each do |chunk|
-        if chunk.text.include? "finished with status: ABORTED"
-          status = 'ABORTED'
-          break
-        elsif chunk.text.include? "finished with status: RUNNING"
-          status = 'RUNNING'
-        elsif chunk.text.include?("finished with status: SUCCESS") && status == ''
-          status = 'SUCCESS'
+    def upsert_ci_job_statuses(jobs)
+      ci_jobs_statuses.each do |job_status|
+        if jobs[job_status.name].present?
+          job_status.status = jobs[job_status.name].status
+          job_status.link = jobs[job_status.name].link
+          job_status.name = jobs[job_status.name].job_name
+          job_status.save
+          jobs.delete(job_status.name)
         end
       end
-      status
+
+      if jobs.any?
+        jobs.each do |job|
+          CiJobsStatus.create(predictive_branch: self , name: job.job_name, status: job.status, link: job.link)
+        end
+      end
+    end
+
+    def parse_task_output(task)
+      jobs = {}
+      statuses = {aborted: 0, running: 0, success: 0}
+      task.chunks.each do |chunk|
+        if chunk.text.include?('job_name:') && chunk.text.include?('link:') && chunk.text.include?('status:')
+          cmd = {}
+          chunk.text.split(' ').each do |substr|
+            substr_arr = substr.split(':')
+            cmd[substr_arr.first.to_sym] = substr_arr.last
+          end
+          jobs[:job_name] = cmd
+          statuses[cmd[:status].downcase.to_sym] += 1 if statuses[cmd[:status].downcase.to_sym].present?
+        end
+      end
+
+      return :aborted, jobs if statuses[:aborted] > 0
+      return :running, jobs if statuses[:running] > 0
+      return :success, jobs if statuses[:success] > 0
+      return false, jobs
     end
 
 

@@ -5,6 +5,7 @@ module Shipit
     belongs_to :pipeline
     has_many :predictive_build_tasks
     has_many :predictive_branches
+    has_many :ci_jobs_statuses
 
     WAITING_STATUSES = %w(pending).freeze
     WIP_STATUSES = %w(pending branched tasks_running tasks_completed waiting_for_merging failed_commits_validation).freeze
@@ -175,19 +176,60 @@ module Shipit
       pipeline_task_status = task.status.to_sym
       predictive_task_type = task.predictive_task_type.to_sym
 
-      pipeline_task_failed unless [:success, :pending, :running].include? pipeline_task_status
+      status, jobs = parse_task_output(task)
+      upsert_ci_job_statuses(jobs)
+      return pipeline_task_failed unless [:success, :pending, :running].include? pipeline_task_status
 
       if predictive_task_type == :run
         ci_pipeline_running       if pipeline_task_status == :running || pipeline_task_status == :pending
         ci_pipeline_verification  if pipeline_task_status == :success
       elsif predictive_task_type == :verify
-        ci_pipeline_verifying     if pipeline_task_status == :running || pipeline_task_status == :pending || verifying_job_status?(task, 'RUNNING')
-        ci_pipeline_completed     if pipeline_task_status == :success && verifying_job_status?(task, 'SUCCESS')
-        pipeline_task_failed      if pipeline_task_status == :success && verifying_job_status?(task, 'ABORTED')
+        ci_pipeline_verifying     if pipeline_task_status == :running || pipeline_task_status == :pending || status == :running
+        ci_pipeline_completed     if pipeline_task_status == :success && status == :success
+        pipeline_task_failed      if pipeline_task_status == :success && status == :aborted
       elsif predictive_task_type == :abort
         ci_pipeline_canceling     if pipeline_task_status == :running || pipeline_task_status == :pending
-        canceled      if pipeline_task_status == :success
+        canceled                  if pipeline_task_status == :success
       end
+    end
+
+    def upsert_ci_job_statuses(jobs)
+      ci_jobs_statuses.each do |job_status|
+        if jobs[job_status.name].present?
+          job_status.status = jobs[job_status.name].status
+          job_status.link = jobs[job_status.name].link
+          job_status.name = jobs[job_status.name].job_name
+          job_status.save
+          jobs.delete(job_status.name)
+        end
+      end
+
+      if jobs.any?
+        jobs.each do |job|
+          CiJobsStatus.create(predictive_build: self , name: job.job_name, status: job.status, link: job.link)
+        end
+      end
+    end
+
+    def parse_task_output(task)
+      jobs = {}
+      statuses = {aborted: 0, running: 0, success: 0}
+      task.chunks.each do |chunk|
+        if chunk.text.include?('job_name:') && chunk.text.include?('link:') && chunk.text.include?('status:')
+          cmd = {}
+          chunk.text.split(' ').each do |substr|
+            substr_arr = substr.split(':')
+            cmd[substr_arr.first.to_sym] = substr_arr.last
+          end
+          jobs[:job_name] = cmd
+          statuses[cmd[:status].downcase.to_sym] += 1 if statuses[cmd[:status].downcase.to_sym].present?
+        end
+      end
+
+      return :aborted, jobs if statuses[:aborted] > 0
+      return :running, jobs if statuses[:running] > 0
+      return :success, jobs if statuses[:success] > 0
+      return false, jobs
     end
 
     def update_completed_requests
@@ -226,10 +268,6 @@ module Shipit
       end
     end
 
-    def verifying_job_status?(task, status)
-      job_status(task) == status
-    end
-
     def set_ci_comments
       comment = []
       comment << "**CI ##{id} is now in progress for #{pipeline.environment}**"
@@ -248,21 +286,6 @@ module Shipit
       predictive_branches.each do |p_branch|
         p_branch.set_comment_to_related_merge_requests(msg)
       end
-    end
-
-    def job_status(task)
-      status = ''
-      task.chunks.each do |chunk|
-        if chunk.text.include? "finished with status: ABORTED"
-          status = 'ABORTED'
-          break
-        elsif chunk.text.include? "finished with status: RUNNING"
-          status = 'RUNNING'
-        elsif chunk.text.include?("finished with status: SUCCESS") && status == ''
-          status = 'SUCCESS'
-        end
-      end
-      status
     end
 
     def trigger_tasks(run_now = false)
