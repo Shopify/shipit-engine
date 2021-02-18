@@ -1,4 +1,4 @@
-class ShipitPipelineChanges < ActiveRecord::Migration[6.0]
+class CiJobsStatuses < ActiveRecord::Migration[6.0]
 
   def change
 
