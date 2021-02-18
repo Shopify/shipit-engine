@@ -24,7 +24,8 @@ module Git
   end
 
   def tag_exists?(version)
-    system('git', 'rev-parse', '--verify', "v#{version}^{commit}", out: File::NULL, err: File::NULL)
+    system('git', 'rev-parse', '--verify', "v#{version}^{commit}", out: File::NULL, err: File::NULL) ||
+      system('git', 'rev-parse', '--verify', "#{version}^{commit}", out: File::NULL, err: File::NULL)
   end
 
   def tag(version)
