@@ -196,9 +196,9 @@ module Shipit
     def upsert_ci_job_statuses(jobs)
       ci_jobs_statuses.each do |job_status|
         if jobs[job_status.name].present?
-          job_status.status = jobs[job_status.name].status.downcase.to_sym
-          job_status.link = jobs[job_status.name].link
-          job_status.name = jobs[job_status.name].job_name
+          job_status.status = jobs[job_status.name][:status].downcase.to_sym
+          job_status.link = jobs[job_status.name][:link]
+          job_status.name = jobs[job_status.name][:job_name]
           job_status.save
           jobs.delete(job_status.name)
         end
@@ -206,7 +206,7 @@ module Shipit
 
       if jobs.any?
         jobs.each do |job|
-          CiJobsStatus.create(predictive_build_id: self.id , name: job.job_name, status: job.status, link: job.link)
+          CiJobsStatus.create!(predictive_build_id: self.id, name: job[:job_name], status: job[:status], link: job[:link])
         end
       end
     end
