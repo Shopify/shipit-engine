@@ -279,6 +279,7 @@ module Shipit
           link = "/#{key}/pulls/#{predictive_merge_request.merge_request.number}"
           comment << '* [' + link + '](' + link + ')'
         end
+        comment << ""
       end
       msg = <<~MSG
         #{comment.join("\n")}
