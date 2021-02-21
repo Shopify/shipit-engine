@@ -56,8 +56,14 @@ module Shipit
       if wip
         info[:pipeline] = {
           id: wip.id,
-          repos: {}
+          repos: {},
+          tasks: []
         }
+
+        wip.ci_jobs_statuses.each do |cjs|
+          info[:pipeline][:tasks] << {name: cjs.name, status: cjs.status, link: cjs.link}
+        end
+
         wip.predictive_branches.each do |p_branch|
           prs = []
           tasks = []
