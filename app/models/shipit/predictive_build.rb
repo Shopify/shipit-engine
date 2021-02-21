@@ -205,8 +205,11 @@ module Shipit
       end
 
       if jobs.any?
-        jobs.each do |job|
-          CiJobsStatus.create!(predictive_build_id: self.id, name: job[:job_name], status: job[:status], link: job[:link])
+        jobs.each do |name, params|
+          Shipit::CiJobsStatus.create!(predictive_build_id: self.id,
+                                       name: params[:job_name],
+                                       status: params[:status].downcase.to_sym,
+                                       link: params[:link])
         end
       end
     end

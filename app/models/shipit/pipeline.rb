@@ -47,6 +47,46 @@ module Shipit
       stacks.select{ |s|  s.allows_merges?(mode) }
     end
 
+    def stats
+      info = {
+        pipeline: nil,
+        merge_queue: {}
+      }
+      wip = predictive_builds.where(status: Shipit::PredictiveBuild::WIP_STATUSES).first
+      if wip
+        info[:pipeline] = {
+          id: wip.id,
+          repos: {}
+        }
+        wip.predictive_branches.each do |p_branch|
+          prs = []
+          tasks = []
+          name = p_branch.stack.repository.full_name
+          p_branch.predictive_merge_requests.each do |pmr|
+            prs << "/#{name}/pulls/#{pmr.merge_request.number}"
+          end
+
+          p_branch.ci_jobs_statuses.each do |cjs|
+            tasks << {name: cjs.name, status: cjs.status, link: cjs.link}
+          end
+
+          info[:pipeline][:repos][name] = { prs: prs, tasks: tasks }
+        end
+      end
+
+      stacks.each do |stack|
+        stack.merge_requests.pending.each do |mr|
+          unless mr.predictive_merge_request.waiting.any?
+            name = stack.repository.full_name
+            info[:merge_queue][name] = [] unless info[:merge_queue][name].present?
+            info[:merge_queue][name] << "/#{name}/pulls/#{mr.number}"
+          end
+        end
+      end
+
+      info
+    end
+
     private
 
     def remove_invalid_merge_requests(merge_requests, mode)
