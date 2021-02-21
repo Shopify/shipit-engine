@@ -2,8 +2,8 @@
 
 module Shipit
   class CiJobsStatus < Record
-    belongs_to :predictive_build
-    belongs_to :predictive_branch
+    belongs_to :predictive_build, optional: true
+    belongs_to :predictive_branch, optional: true
 
     state_machine :status, initial: :running do
       state :running
