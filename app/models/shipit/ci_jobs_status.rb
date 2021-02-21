@@ -29,5 +29,22 @@ module Shipit
 
     end
 
+    def update_status(status_name)
+      case status_name
+      when :running
+        running
+        return
+      when :failed
+        failed
+        return
+      when :aborted
+        aborted
+        return
+      when :success, :completed
+        completed
+        return
+      end
+    end
+
   end
 end
