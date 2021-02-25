@@ -276,7 +276,7 @@ module Shipit
         key = predictive_branch.stack.repository.full_name
         comment << "**#{key}**"
         predictive_branch.predictive_merge_requests.each do |predictive_merge_request|
-          link = "/#{key}/pulls/#{predictive_merge_request.merge_request.number}"
+          link = "/#{key}/pull/#{predictive_merge_request.merge_request.number}"
           comment << '* [' + link + '](' + link + ')'
         end
         comment << ""

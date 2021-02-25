@@ -69,7 +69,7 @@ module Shipit
           tasks = []
           name = p_branch.stack.repository.full_name
           p_branch.predictive_merge_requests.each do |pmr|
-            prs << "/#{name}/pulls/#{pmr.merge_request.number}"
+            prs << "/#{name}/pull/#{pmr.merge_request.number}"
           end
 
           p_branch.ci_jobs_statuses.each do |cjs|
@@ -85,7 +85,7 @@ module Shipit
           unless mr.predictive_merge_request.waiting.any?
             name = stack.repository.full_name
             info[:merge_queue][name] = [] unless info[:merge_queue][name].present?
-            info[:merge_queue][name] << "/#{name}/pulls/#{mr.number}"
+            info[:merge_queue][name] << "/#{name}/pull/#{mr.number}"
           end
         end
       end
