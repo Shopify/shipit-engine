@@ -83,19 +83,18 @@ module Shipit
       end
 
       def capture!(command)
-        started_at = Time.now
+        started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         command.start do
           @task.ping
           check_for_abort
         end
-        @task.write("$ #{command}\npid: #{command.pid}\nstarted at: #{started_at}\n")
+        @task.write("\n$ #{command}\npid: #{command.pid}\n")
         @task.pid = command.pid
         command.stream! do |line|
           @task.write(line)
         end
-        @task.write("\n")
-        finished_at = Time.now
-        @task.write("pid: #{command.pid}\nfinished at: #{finished_at}\nran in: #{finished_at - started_at} seconds\n")
+        finished_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        @task.write("pid: #{command.pid} finished in: #{finished_at - started_at} seconds\n")
         command.success?
       end
 
