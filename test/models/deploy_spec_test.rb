@@ -196,16 +196,6 @@ module Shipit
       assert_equal %w(foo bar baz), @spec.rollback_steps
     end
 
-    test '#retries_on_rollback returns `rollback.retries` if present' do
-      @spec.stubs(:load_config).returns('rollback' => { 'retries' => 5 })
-      assert_equal 5, @spec.retries_on_rollback
-    end
-
-    test '#retries_on_rollback returns a default value if `rollback.retries` is not present' do
-      @spec.stubs(:load_config).returns('rollback' => {})
-      assert_nil @spec.retries_on_rollback
-    end
-
     test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
       @spec.expects(:bundler?).returns(true).at_least_once
       @spec.expects(:capistrano?).returns(true)
@@ -402,7 +392,6 @@ module Shipit
         },
         'rollback' => {
           'override' => nil,
-          'retries' => nil,
         },
         'fetch' => nil,
         'tasks' => {},
