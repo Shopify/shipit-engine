@@ -7,8 +7,8 @@ module Shipit
         "archived_since > :earliest AND archived_since < :latest",
         earliest: 1.day.ago,
         latest: 1.hour.ago
-      ).each do |review_stack|
-        Shipit::ClearGitCacheJob.perform_later(review_stack)
+      ).find_each do |review_stack|
+        review_stack.clear_local_files
       end
     end
 

@@ -581,14 +581,14 @@ module Shipit
       links_spec.transform_values { |url| context.interpolate(url) }
     end
 
+    def clear_local_files
+      FileUtils.rm_rf(base_path.to_s)
+    end
+
     private
 
     def clear_cache
       remove_instance_variable(:@active_task) if defined?(@active_task)
-    end
-
-    def clear_local_files
-      FileUtils.rm_rf(base_path.to_s)
     end
 
     def update_defaults
