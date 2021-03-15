@@ -30,17 +30,31 @@ module Shipit
             review_stack.archive!
           end
 
+          test "archive! removes stacks awaiting provisioning from the provisioning queue" do
+            stack = create_stack
+            stack.enqueue_for_provisioning
+            review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
+              params_for(stack),
+              scope: stack.repository.stacks
+            )
+
+            assert_changes -> { stack.reload.awaiting_provision }, from: true, to: false do
+              review_stack.archive!
+            end
+          end
+
           def params_for(stack)
             OpenStruct.new(
               number: pr_number,
               repository: {
                 "full_name" => stack.github_repo_name,
-              }
+              },
+              sender: { login: shipit_users(:walrus).login }
             )
           end
 
           def create_stack
-            stack = shipit_stacks(:shipit)
+            stack = shipit_stacks(:review_stack)
             stack.environment = environment
 
             stack.save!

@@ -27,8 +27,6 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
-    has_many :chunks, -> { order(:id) }, class_name: 'OutputChunk', dependent: :delete_all, inverse_of: :task
-
     serialize :definition, TaskDefinition
     serialize :env, Hash
 
@@ -79,12 +77,20 @@ module Shipit
         task.async_refresh_deployed_revision
       end
 
+      after_transition any => %i(aborted success failed error timedout) do |task|
+        task.schedule_rollup_chunks
+      end
+
       after_transition any => :flapping do |task|
         task.update!(confirmations: 0)
       end
 
       after_transition any => :success do |task|
         task.async_update_estimated_deploy_duration
+      end
+
+      after_transition any => %i(failed error timedout) do |task|
+        task.retry_if_necessary
       end
 
       event :run do
@@ -197,16 +203,16 @@ module Shipit
 
     def write(text)
       log_output(text)
-      chunks.create!(text: text)
+      Shipit.redis.append(output_key, text)
     end
 
     def chunk_output
       if rolled_up?
         output
       else
-        blob = chunks.pluck(:text).join
+        blob = Shipit.redis.get(output_key)
 
-        if blob.size > OUTPUT_SIZE_LIMIT
+        if blob && blob.size > OUTPUT_SIZE_LIMIT
           Rails.logger.warn("Task #{id} output exceeds limit of #{HUMAN_READABLE_OUTPUT_LIMIT}, and will be truncated.")
           blob = blob.last(OUTPUT_SIZE_LIMIT - OUTPUT_TRUNCATED_MESSAGE.size)
           blob = OUTPUT_TRUNCATED_MESSAGE + blob
@@ -216,15 +222,30 @@ module Shipit
       end
     end
 
+    def chunk_output_size
+      return 0 if rolled_up?
+
+      Shipit.redis.strlen(output_key)
+    end
+
+    def tail_output(range_start)
+      Shipit.redis.getrange(output_key, range_start || 0, -1)
+    end
+
     def schedule_rollup_chunks
       ChunkRollupJob.perform_later(self)
     end
 
     def rollup_chunks
       ActiveRecord::Base.transaction do
-        self.output = chunk_output
-        chunks.delete_all
+        chunks = Shipit::OutputChunk.where(task: self).pluck(:text)
+        chunks << chunk_output
+        self.output = chunks.join("\n")
+
         update_attribute(:rolled_up, true)
+
+        Shipit.redis.del(output_key)
+        Shipit::OutputChunk.where(task: self).delete_all
       end
     end
 
@@ -382,10 +403,30 @@ module Shipit
         .reject(&:alive?)
     end
 
+    def retry_if_necessary
+      return unless retries_configured? && !stack.reload.locked?
+
+      if retry_attempt < max_retries
+        retry_task = duplicate_task
+        retry_task.retry_attempt = duplicate_task.retry_attempt + 1
+        retry_task.save!
+
+        retry_task.enqueue
+      end
+    end
+
+    def retries_configured?
+      !max_retries.nil? && max_retries > 0
+    end
+
     private
 
     def prevent_concurrency
       raise ConcurrentTaskRunning if stack.tasks.active.exclusive.count > 1
+    end
+
+    def output_key
+      "#{status_key}:output"
     end
 
     def status_key
@@ -404,6 +445,14 @@ module Shipit
 
     def output_line_buffer
       @output_line_buffer ||= LineBuffer.new
+    end
+
+    def duplicate_task
+      copy_task = dup
+      copy_task.status = 'pending'
+      copy_task.started_at = nil
+      copy_task.ended_at = nil
+      copy_task
     end
   end
 end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 module Shipit
   class SimpleMessageVerifier < ActiveSupport::MessageVerifier
-    def initialize(secret, options = {})
+    def initialize(secret, **options)
       options[:serializer] ||= ToS
-      super(secret, options)
+      super(secret, **options)
     end
 
     private

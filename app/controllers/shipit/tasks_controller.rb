@@ -22,7 +22,7 @@ module Shipit
       task
       respond_to do |format|
         format.html
-        format.text { render plain: @task.chunk_output }
+        format.text { render(plain: @task.chunk_output) }
       end
     end
 
@@ -48,7 +48,7 @@ module Shipit
     end
 
     def tail
-      render(json: TailTaskSerializer.new(task, context: params))
+      render(json: TailTaskSerializer.new(task, context: { last_byte: params[:last_byte].to_i }))
     end
 
     def lookup

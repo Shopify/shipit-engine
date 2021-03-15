@@ -170,6 +170,15 @@ module Shipit
       assert_equal limit, @commit.message.bytesize
     end
 
+    test "#message= truncates multibyte messages" do
+      skip unless Shipit::Commit.columns_hash['message'].limit
+      limit = Shipit::Commit.columns_hash['message'].limit
+
+      @commit.update!(message: '国' * limit)
+      assert_operator @commit.message.length, :<=, limit
+      assert_operator @commit.message.bytesize, :<=, limit
+    end
+
     test "#pull_request? detect pull request based on message format" do
       assert @pr.pull_request?
       refute @commit.pull_request?
@@ -870,9 +879,9 @@ module Shipit
 
     def expect_hook_emit(commit, event, status_attributes, &block)
       matches = lambda do |payload|
-        assert_equal commit, payload[:commit]
-        assert_equal commit.stack, payload[:stack]
-        assert_equal status_attributes[:state], payload[:status]
+        assert_equal(commit, payload[:commit])
+        assert_equal(commit.stack, payload[:stack])
+        assert_equal(status_attributes[:state], payload[:status])
       end
       expect_hook(event, commit.stack, matches, &block)
     end

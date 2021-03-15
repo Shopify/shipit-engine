@@ -8,7 +8,6 @@ module Shipit
     AmbiguousRevision = Class.new(StandardError)
 
     belongs_to :stack
-    has_many :deploys
     has_many :statuses, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
     has_many :check_runs, -> { order(created_at: :desc) }, dependent: :destroy, inverse_of: :commit
     has_many :commit_deployments, dependent: :destroy
@@ -113,7 +112,7 @@ module Shipit
 
     def message=(message)
       limit = self.class.columns_hash['message'].limit
-      if limit && message && message.size > limit
+      if limit && message && message.bytesize > limit
         message = message.truncate_bytes(limit)
       end
       super(message)

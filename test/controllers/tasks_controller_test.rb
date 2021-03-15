@@ -101,12 +101,24 @@ module Shipit
 
     test ":tail returns the task status, output, and next url" do
       @task = shipit_deploys(:shipit_running)
-      last_chunk = @task.chunks.last
+      @task.write("dummy output")
+      last_chunk = @task.chunk_output.bytesize
 
-      get :tail, params: { stack_id: @stack.to_param, id: @task.id, last_id: last_chunk.id }, format: :json
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
       assert_json_keys %w(url status output)
       assert_json 'status', @task.status
+      assert_json 'output', @task.chunk_output
+      assert_json 'url', "/shopify/shipit-engine/production/tasks/#{@task.id}/tail?last_byte=#{last_chunk}"
+    end
+
+    test ":tail can handle last_byte as string" do
+      @task = shipit_deploys(:shipit_running)
+      @task.write("dummy output")
+
+      get :tail, params: { stack_id: @stack.to_param, id: @task.id, last_byte: "50" }, format: :json
+      assert_response :success
+      assert_json_keys %w(url status output)
     end
 
     test ":tail doesn't returns the next url if the task is finished" do

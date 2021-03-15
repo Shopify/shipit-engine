@@ -12,7 +12,7 @@ jobs:
     - name: Set up Ruby 2.5
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.5.x
+        ruby-version: 2.6.x
     - uses: actions/cache@v1
       with:
         path: vendor/bundle
@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         ruby_version:
-          - 2.5.x
+          - 2.6.x
 
     services:
       db:
@@ -86,7 +86,7 @@ jobs:
     strategy:
       matrix:
         ruby_version:
-          - 2.5.x
+          - 2.6.x
 
     services:
       db:
@@ -134,9 +134,10 @@ jobs:
     strategy:
       matrix:
         ruby_version:
-          - 2.5.x
+          - 2.6.x
           - 2.6.x
           - 2.7.x
+          - 3.0.x
 
     services:
       redis:

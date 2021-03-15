@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Lint/MissingSuper
 require 'pathname'
 require 'fileutils'
 
@@ -6,6 +7,10 @@ module Shipit
   class StackCommands < Commands
     def initialize(stack)
       @stack = stack
+    end
+
+    def env
+      super.merge(@stack.env)
     end
 
     def fetch
@@ -56,7 +61,7 @@ module Shipit
       Dir.mktmpdir do |dir|
         git(
           'clone', @stack.git_path, @stack.repo_name,
-          '--origin', 'cache',
+          '--recursive', '--origin', 'cache',
           chdir: dir
         ).run!
 

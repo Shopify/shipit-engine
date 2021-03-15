@@ -13,6 +13,7 @@ module Shipit
       def initialize(app_dir, env)
         @app_dir = Pathname(app_dir)
         @env = env
+        super(nil)
       end
 
       def cacheable
@@ -69,8 +70,12 @@ module Shipit
             'variables' => deploy_variables.map(&:to_h),
             'max_commits' => maximum_commits_per_deploy,
             'interval' => pause_between_deploys,
+            'retries' => retries_on_deploy,
           },
-          'rollback' => { 'override' => rollback_steps },
+          'rollback' => {
+            'override' => rollback_steps,
+            'retries' => retries_on_rollback,
+          },
           'fetch' => fetch_deployed_revision_steps,
           'tasks' => cacheable_tasks,
         )

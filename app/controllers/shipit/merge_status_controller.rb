@@ -38,12 +38,12 @@ module Shipit
       respond_to do |format|
         format.html do
           if stack_status == 'success'
-            render plain: 'ok'
+            render(plain: 'ok')
           else
-            render plain: stack_status, status: 503
+            render(plain: stack_status, status: 503)
           end
         end
-        format.json { render json: { stack_status: stack_status } }
+        format.json { render(json: { stack_status: stack_status }) }
       end
     end
 

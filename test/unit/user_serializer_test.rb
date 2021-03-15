@@ -8,7 +8,7 @@ module Shipit
       serializer = ActiveModel::Serializer.serializer_for(user)
       assert_equal UserSerializer, serializer
       serialized = serializer.new(user).to_json
-      assert_json("anonymous", false, document: serialized)
+      assert_json_document(serialized, "anonymous", false)
     end
   end
 end

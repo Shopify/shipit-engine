@@ -33,7 +33,7 @@ module Shipit
       status = deployment.statuses.create!(status: 'success')
       status.stubs(:description).returns('desc' * limit)
       create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
-      status.author.github_api.expects(:create_deployment_status).with do |*_args, **kwargs|
+      status.author.github_api.expects(:create_deployment_status).with do |_url, _status, kwargs|
         kwargs[:description].size <= limit
       end.returns(create_status_response)
 
@@ -47,7 +47,7 @@ module Shipit
       stack = status.stack
       stack.deploy_url = "stack-deploy-url"
       create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
-      status.author.github_api.expects(:create_deployment_status).with do |*_args, **kwargs|
+      status.author.github_api.expects(:create_deployment_status).with do |_url, _status, kwargs|
         kwargs[:environment_url] == 'stack-deploy-url'
       end.returns(create_status_response)
 

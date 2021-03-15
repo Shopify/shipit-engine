@@ -59,14 +59,14 @@ module Shipit
     end
 
     test "command not found" do
-      error = assert_raises Command::NotFound do
+      error = assert_raises(Command::NotFound) do
         Command.new('does-not-exist foo bar', env: {}, chdir: '.').run
       end
       assert_equal 'does-not-exist: command not found', error.message
     end
 
     test "permission denied" do
-      error = assert_raises Command::Denied do
+      error = assert_raises(Command::Denied) do
         Command.new('/etc/passwd foo bar', env: {}, chdir: '.').run
       end
       assert_equal '/etc/passwd: Permission denied', error.message
@@ -121,7 +121,7 @@ module Shipit
             signalled = true
             break
           end
-          sleep 0.1
+          sleep(0.1)
         end
         signalled
       end

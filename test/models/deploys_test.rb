@@ -5,6 +5,7 @@ module Shipit
   class DeploysTest < ActiveSupport::TestCase
     def setup
       @deploy = shipit_deploys(:shipit)
+      @deploy.write("dummy output")
       @deploy.pid = 42
       @stack = shipit_stacks(:shipit)
       @user = shipit_users(:walrus)
@@ -58,6 +59,146 @@ module Shipit
     test "#commits returns empty array if stack isn't set" do
       @deploy.expects(:stack).returns(nil)
       assert_equal [], @deploy.commits
+    end
+
+    test "deploys retry up to limit upon timeout when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(Shipit::Command::TimedOut, 'Deploy timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'timedout', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'failed', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
+    test "deploys retry up to limit upon failure when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(Shipit::Command::Error, 'Deploy failed')
+        .then.raises(Shipit::Command::Error, "Second deploy failed")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'failed', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'failed', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
+    test "deploys retry up to limit upon error when configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      deploy_stack = runnable_deploy.stack
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock).twice
+        .raises(StandardError, 'Deploy failed')
+        .then.raises(StandardError, "Second deploy failed")
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 2
+
+      runnable_deploy.reload
+      assert_equal 'error', runnable_deploy.status
+
+      retried_deploy = deploy_stack.deploys.last
+      assert_not_equal runnable_deploy.id, retried_deploy.id
+      assert_equal runnable_deploy.since_commit, retried_deploy.since_commit
+      assert_equal runnable_deploy.until_commit, retried_deploy.until_commit
+      assert_equal 'error', retried_deploy.status
+      assert_equal 1, retried_deploy.retry_attempt
+    end
+
+    test "deploys do not retry upon timeout when not configured" do
+      runnable_deploy = shipit_deploys(:shipit_pending)
+      runnable_deploy.update!(retry_attempt: 0, max_retries: 0)
+
+      Shipit::Deploy.any_instance.expects(:acquire_git_cache_lock)
+        .raises(Shipit::Command::TimedOut, 'Deploy timed out')
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        runnable_deploy.enqueue
+      end
+      assert_performed_jobs 1
+
+      runnable_deploy.reload
+
+      assert_equal 'timedout', runnable_deploy.status
+    end
+
+    test "rollbacks retry on timeouts if configured" do
+      deploy = shipit_deploys(:shipit)
+      deploy_stack = deploy.stack
+
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(1)
+
+      Shipit::Command.any_instance.expects(:run).twice
+        .raises(Shipit::Command::TimedOut, 'Rollback timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      first_rollback = nil
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        first_rollback = deploy.trigger_rollback(@user, force: true)
+      end
+      assert_performed_jobs 2
+
+      first_rollback.reload
+
+      assert_equal 'timedout', first_rollback.status
+      retried_rollback = deploy_stack.deploys_and_rollbacks.last
+
+      assert_not_equal first_rollback.id, retried_rollback.id
+      assert_equal first_rollback.since_commit, retried_rollback.since_commit
+      assert_equal first_rollback.until_commit, retried_rollback.until_commit
+      assert_equal 'failed', retried_rollback.status
+      assert_equal 1, retried_rollback.max_retries
+    end
+
+    test "rollbacks do not retry if not configured" do
+      deploy_stack = @deploy.stack
+
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(0)
+
+      Shipit::Command.any_instance.expects(:run).once
+        .raises(Shipit::Command::TimedOut, 'Rollback timed out')
+        .then.raises(Shipit::Command::Error, "Second command error failure")
+
+      first_rollback = nil
+
+      perform_enqueued_jobs(only: Shipit::PerformTaskJob) do
+        first_rollback = @deploy.trigger_rollback(@user, force: true)
+      end
+      assert_performed_jobs 1
+
+      first_rollback.reload
+
+      assert_equal 'timedout', first_rollback.status
+      assert_equal first_rollback, deploy_stack.deploys_and_rollbacks.last
     end
 
     test "additions and deletions are denormalized on before create" do
@@ -393,7 +534,7 @@ module Shipit
     # Check that the next item in the series is 1 greater than the last.
     def assert_generated_record_ids_are_sequential(record_id_series)
       record_id_series[0..-2].each_with_index do |id_element, index|
-        assert_equal id_element + 1, record_id_series[index + 1]
+        assert_equal(id_element + 1, record_id_series[index + 1])
       end
     end
 
@@ -699,20 +840,13 @@ module Shipit
       assert_predicate @deploy, :error?
     end
 
-    test "destroy deletes the related output chunks" do
-      assert_difference -> { @deploy.chunks.count }, -@deploy.chunks.count do
-        @deploy.destroy
-      end
-    end
-
-    test "#chunk_output joins all chunk test if logs not rolled up" do
-      assert_equal @deploy.chunks.count, @deploy.chunks.count
-      assert_equal @deploy.chunks.pluck(:text).join, @deploy.chunk_output
+    test "#chunk_output fetches from Redis if logs not rolled up" do
+      assert_equal Shipit.redis.get(@deploy.send(:output_key)), @deploy.chunk_output
       refute @deploy.rolled_up
     end
 
     test "#chunk_output returns logs from records if rolled up" do
-      expected_output = @deploy.chunks.pluck(:text).join
+      expected_output = Shipit.redis.get(@deploy.send(:output_key))
       @deploy.rollup_chunks
 
       assert_no_queries do

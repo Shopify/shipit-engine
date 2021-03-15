@@ -3,7 +3,11 @@ module JSONHelper
   UNDEFINED = Object.new.freeze
   private_constant :UNDEFINED
 
-  def assert_json(path = nil, expected_value = UNDEFINED, document: response.body)
+  def assert_json(path = nil, expected_value = UNDEFINED, &block)
+    assert_json_document(response.body, path, expected_value, &block)
+  end
+
+  def assert_json_document(document, path, expected_value = UNDEFINED)
     value = follow_path(path.to_s.split('.'), document: document)
     if block_given?
       yield value

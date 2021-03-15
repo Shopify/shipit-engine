@@ -52,7 +52,7 @@ module Shipit
       oauth = (@config[:oauth] || {}).with_indifferent_access
       @oauth_id = oauth[:id]
       @oauth_secret = oauth[:secret]
-      @oauth_teams = Array.wrap(oauth[:teams] || oauth[:teams])
+      @oauth_teams = Array.wrap(oauth[:teams])
     end
 
     def login

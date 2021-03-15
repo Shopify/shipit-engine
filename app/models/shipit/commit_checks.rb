@@ -6,17 +6,18 @@ module Shipit
 
     def initialize(commit)
       @commit = commit
+      super(commit)
     end
 
     def synchronize(&block)
-      @lock ||= Redis::Lock.new('lock', redis, expiration: 1, timeout: 2)
+      @lock ||= Redis::Lock.new(key('lock'), Shipit.redis, expiration: 1, timeout: 2)
       @lock.lock(&block)
     end
 
     def schedule
-      return false if redis.get('status').present?
+      return false if Shipit.redis.get(key('status')).present?
       synchronize do
-        return false if redis.get('status').present?
+        return false if Shipit.redis.get(key('status')).present?
 
         initialize_redis_state
       end
@@ -25,34 +26,34 @@ module Shipit
     end
 
     def initialize_redis_state
-      redis.pipelined do
-        redis.set('output', '', ex: OUTPUT_TTL)
-        redis.set('status', 'scheduled', ex: OUTPUT_TTL)
-      end
+      Shipit.redis.set(key('status'), 'scheduled', ex: OUTPUT_TTL)
       @status = 'scheduled'
     end
 
     def status
-      @status ||= redis.get('status')
+      @status ||= Shipit.redis.get(key('status'))
     end
 
     def status=(status)
-      redis.set('status', status)
+      Shipit.redis.set(key('status'), status)
       @status = status
     end
 
     def output(since: 0)
-      redis.getrange('output', since, -1)
+      Shipit.redis.getrange(key('output'), since, -1)
     end
 
     def write(output)
-      redis.append('output', output)
+      Shipit.redis.pipelined do
+        Shipit.redis.append(key('output'), output)
+        Shipit.redis.expire(key('output'), OUTPUT_TTL)
+      end
     end
 
     private
 
-    def redis
-      @redis ||= Shipit.redis("commit:#{commit.id}:checks")
+    def key(key)
+      "commit:#{commit.id}:checks:#{key}"
     end
   end
 end

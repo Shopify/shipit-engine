@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 ENV["RAILS_ENV"] ||= "test"
 
+if Warning.respond_to?(:[]=)
+  Warning[:deprecated] = true
+end
+
 require 'simplecov'
 SimpleCov.start('rails') do
   enable_coverage :branch
@@ -30,6 +34,17 @@ end
 begin
   require 'pry'
 rescue LoadError
+end
+
+# FIXME: We need to get rid of active_model_serializers
+# This is a monkey patch for Ruby 2.7+ compatibility
+module ActionController
+  module SerializationAssertions
+    def process(*, **)
+      @serializers = Hash.new(0)
+      super
+    end
+  end
 end
 
 module ActiveSupport

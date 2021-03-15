@@ -15,8 +15,8 @@ module Shipit
       after_transition any => any, do: :update_last_deploy_time
     end
 
-    belongs_to :until_commit, class_name: 'Commit', required: true, inverse_of: :deploys
-    belongs_to :since_commit, class_name: 'Commit', required: true, inverse_of: :deploys
+    belongs_to :until_commit, class_name: 'Commit', required: true
+    belongs_to :since_commit, class_name: 'Commit', required: true
     has_many :commit_deployments, dependent: :destroy, inverse_of: :task, foreign_key: :task_id do
       GITHUB_STATUSES = {
         'pending' => 'pending',
@@ -92,6 +92,7 @@ module Shipit
         env: env&.to_h || {},
         allow_concurrency: force,
         ignored_safeties: force,
+        max_retries: stack.retries_on_rollback,
       )
     end
 
