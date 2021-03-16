@@ -9,12 +9,20 @@ module Shipit
     end
 
     test "clearing stale caches" do
-      # Asserting that :archived_25hours_ago, :archived_30minutes_ago and :shipit are not queued.
-      assert_enqueued_jobs 1 do
-        assert_enqueued_with(job: Shipit::ClearGitCacheJob, args: [shipit_stacks(:archived_6hours_ago)]) do
-          ReviewStack.clear_stale_caches
-        end
-      end
+      stale_stack = shipit_stacks(:archived_6hours_ago)
+      FileUtils.mkdir_p(stale_stack.base_path)
+      path = File.join(stale_stack.base_path, 'foo')
+      File.write(path, 'bar')
+
+      not_stale_stack = shipit_stacks(:archived_30minutes_ago)
+      FileUtils.mkdir_p(not_stale_stack.base_path)
+      path = File.join(not_stale_stack.base_path, 'foo')
+      File.write(path, 'bar')
+
+      ReviewStack.clear_stale_caches
+
+      refute File.exist?(stale_stack.base_path)
+      assert File.exist?(not_stale_stack.base_path)
     end
 
     test "creating a review stack emits a hook" do
