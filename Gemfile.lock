@@ -167,7 +167,8 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
+    mimemagic (0.3.8)
+      nokogiri (~> 1)
     mini_mime (1.0.2)
     mini_racer (0.3.1)
       libv8 (~> 8.4.255)
@@ -353,4 +354,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.2.10
+   2.2.11
