@@ -39,6 +39,8 @@ module Shipit
     test ".deliver! sends request with correct method, headers, and body" do
       stub_request(:post, @hook.delivery_url).to_return(body: 'OK')
       body = { 'foo' => 42 }
+      expected_body = JSON.pretty_generate(body)
+      expected_signature = Hook::DeliverySigner.new(@hook.secret).sign(expected_body)
 
       perform_enqueued_jobs(only: DeliverHookJob) do
         @hook.deliver!(:deploy, body)
@@ -49,10 +51,10 @@ module Shipit
           'User-Agent' => 'Shipit Webhook',
           'Content-Type' => 'application/json',
           'X-Shipit-Event' => 'deploy',
-          'X-Shipit-Secret' => @hook.secret,
+          'X-Shipit-Signature' => expected_signature,
           'Accept' => '*/*',
         },
-        body: JSON.pretty_generate(body),
+        body: expected_body,
         times: 1
     end
 

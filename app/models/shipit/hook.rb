@@ -1,6 +1,21 @@
 # frozen_string_literal: true
 module Shipit
   class Hook < Record
+    class DeliverySigner
+      attr_reader :secret
+
+      ALGORITHM = 'sha256'
+
+      def initialize(secret)
+        @secret = secret
+      end
+
+      def sign(payload)
+        hmac = OpenSSL::HMAC.hexdigest(ALGORITHM, secret, payload)
+        "#{ALGORITHM}=#{hmac}"
+      end
+    end
+
     class DeliverySpec
       def initialize(event:, url:, content_type:, payload:, secret:)
         @event = event
@@ -30,9 +45,13 @@ module Shipit
           'User-Agent' => 'Shipit Webhook',
           'Content-Type' => content_type,
           'X-Shipit-Event' => event,
-          'X-Shipit-Secret' => secret,
+          'X-Shipit-Signature' => signature,
           'Accept' => '*/*',
         }
+      end
+
+      def signature
+        DeliverySigner.new(secret).sign(payload)
       end
     end
 
