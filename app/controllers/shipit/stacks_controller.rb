@@ -154,7 +154,7 @@ module Shipit
     end
 
     def create_params
-      params.require(:stack).permit(:environment, :branch, :deploy_url, :ignore_ci)
+      params.require(:stack).permit(:repo_owner, :repo_name, :environment, :branch, :deploy_url, :ignore_ci)
     end
 
     def update_params
@@ -180,7 +180,7 @@ module Shipit
     end
 
     def repository_params
-      params.require(:stack).permit(:repo_owner, :repo_name)
+      params.require(:stack).permit(:repo_owner, :repo_name, :branch, :environment, :deploy_url, :ignore_ci)
     end
   end
 end

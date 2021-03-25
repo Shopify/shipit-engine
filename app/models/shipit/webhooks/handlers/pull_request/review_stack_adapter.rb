@@ -50,7 +50,7 @@ module Shipit
           end
 
           def user
-            @user ||= Shipit::User.find_or_create_by_login!(params.sender["login"])
+            @user ||= Shipit::User.find_or_create_by_login!(stack.owner, params.sender["login"])
           end
 
           private

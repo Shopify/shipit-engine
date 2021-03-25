@@ -13,9 +13,9 @@ module Shipit
 
     attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
 
-    def self.find_or_create_by_login!(login)
+    def self.find_or_create_by_login!(organization, login)
       find_or_create_by!(login: login) do |user|
-        user.github_user = Shipit.github.api.user(login)
+        user.github_user = Shipit.github(organization: organization).api.user(login)
       end
     end
 
@@ -91,7 +91,9 @@ module Shipit
     end
 
     def refresh_from_github!
-      update!(github_user: Shipit.github.api.user(github_id))
+      Shipit.github_config_organizations.each do |org|
+        update!(github_user: Shipit.github.api(organization: org).user(github_id))
+      end
     rescue Octokit::NotFound
       identify_renamed_user!
     end

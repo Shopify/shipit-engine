@@ -20,7 +20,7 @@ module Shipit
         end
         def process
           team = find_or_create_team!
-          member = User.find_or_create_by_login!(params.member.login)
+          member = User.find_or_create_by_login!(team.organization, params.member.login)
 
           case params.action
           when 'added'

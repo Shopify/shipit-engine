@@ -25,7 +25,7 @@ module Shipit
     private
 
     def create_status_on_github
-      Shipit.github.api.create_status(
+      stack.repository.github_api.create_status(
         stack.github_repo_name,
         commit.sha,
         state,

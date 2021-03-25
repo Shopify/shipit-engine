@@ -16,7 +16,8 @@ module Shipit
     private
 
     def verify_signature
-      head(422) unless Shipit.github.verify_webhook_signature(request.headers['X-Hub-Signature'], request.raw_post)
+      github_api = Shipit.github(organization: @stack.owner)
+      head(422) unless github_api.verify_webhook_signature(request.headers['X-Hub-Signature'], request.raw_post)
     end
 
     def check_if_ping

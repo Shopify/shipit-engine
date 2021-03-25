@@ -208,7 +208,7 @@ module Shipit
       end
 
       begin
-        trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
+        trigger_deploy(commit, Shipit.user(repository.owner), env: cached_deploy_spec.default_deploy_env)
       rescue Task::ConcurrentTaskRunning
       end
     end
@@ -403,7 +403,7 @@ module Shipit
 
     def github_commits
       handle_github_redirections do
-        Shipit.github.api.commits(github_repo_name, sha: branch)
+        repository.github_api.commits(github_repo_name, sha: branch)
       end
     rescue Octokit::Conflict
       [] # Repository is empty...
@@ -421,9 +421,9 @@ module Shipit
     end
 
     def refresh_repository!
-      resource = Shipit.github.api.repo(github_repo_name)
+      resource = repository.github_api.repo(github_repo_name)
       if resource.try(:message) == 'Moved Permanently'
-        resource = Shipit.github.api.get(resource.url)
+        resource = repository.github_api.get(resource.url)
       end
       repository.update!(owner: resource.owner.login, name: resource.name)
     end

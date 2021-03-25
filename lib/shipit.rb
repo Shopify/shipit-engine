@@ -59,6 +59,9 @@ SafeYAML::OPTIONS[:deserialize_symbols] = false
 module Shipit
   extend self
 
+  GithubOrganizationUnknown = Class.new(StandardError)
+  TOP_LEVEL_GH_KEYS = [:app_id, :installation_id, :webhook_secret, :private_key, :oauth, :domain]
+
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
@@ -101,8 +104,27 @@ module Shipit
     )
   end
 
-  def github
-    @github ||= GitHubApp.new(secrets.github)
+  def github(organization: github_default_organization)
+    # Backwards compatibility
+    if github_default_organization.nil?
+      config = secrets.github
+    else
+      org = organization.to_sym
+      raise GithubOrganizationUnknown if secrets.github[org].nil?
+      config = secrets.github[org]
+    end
+    @github ||= {}
+    @github[organization] ||= GitHubApp.new(organization, config)
+  end
+
+  def github_default_organization
+    # github_config_organizations.first
+    org = github_config_organizations.first
+    TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
+  end
+
+  def github_config_organizations
+    secrets.github.keys
   end
 
   def legacy_github_api
@@ -111,10 +133,11 @@ module Shipit
     end
   end
 
-  def user
+  def user(organization)
     if github.bot_login
-      User.find_or_create_by_login!(github.bot_login)
+      User.find_or_create_by_login!(organization, github.bot_login)
     else
+      # TODO: Anything needed here?
       AnonymousUser.new
     end
   end

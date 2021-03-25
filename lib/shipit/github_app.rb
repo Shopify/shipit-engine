@@ -42,8 +42,9 @@ module Shipit
 
     attr_reader :oauth_teams, :domain, :bot_login
 
-    def initialize(config)
+    def initialize(organization, config)
       super()
+      @organization = organization
       @config = (config || {}).with_indifferent_access
       @domain = @config[:domain] || DOMAIN
       @webhook_secret = @config[:webhook_secret].presence
@@ -85,7 +86,7 @@ module Shipit
 
     def token
       return 't0kEn' if Rails.env.test? # TODO: figure out something cleaner
-      return unless private_key && app_id && installation_id
+      return unless private_key && @organization && installation_id
 
       @token = @token.presence || synchronize { @token.presence || fetch_new_token }
       @token.to_s
@@ -95,7 +96,7 @@ module Shipit
       # Rails can add 5 minutes to the cache entry expiration time when any TTL is provided,
       # so our TTL setting can be lower, and TTL + expires_in should be lower than the GitHub token expiration.
       Rails.cache.fetch(
-        'github:integration:access-token',
+        "github:integration:#{@organization}:access-token",
         expires_in: GITHUB_TOKEN_RAILS_CACHE_LIFETIME,
         race_condition_ttl: 4.minutes,
       ) do
@@ -181,15 +182,15 @@ module Shipit
     end
 
     def app_id
-      @app_id ||= @config.fetch(:app_id)
+      @config.fetch(:app_id)
     end
 
     def installation_id
-      @installation_id ||= @config.fetch(:installation_id)
+      @config.fetch(:installation_id)
     end
 
     def private_key
-      @private_key ||= @config.fetch(:private_key)
+      @config.fetch(:private_key)
     end
 
     def authentication_payload
