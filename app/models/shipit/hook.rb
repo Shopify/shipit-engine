@@ -2,11 +2,12 @@
 module Shipit
   class Hook < Record
     class DeliverySpec
-      def initialize(event:, url:, content_type:, payload:)
+      def initialize(event:, url:, content_type:, payload:, secret:)
         @event = event
         @url = url
         @content_type = content_type
         @payload = payload
+        @secret = secret
       end
 
       def send!
@@ -15,7 +16,7 @@ module Shipit
 
       private
 
-      attr_reader :event, :url, :content_type, :payload
+      attr_reader :event, :url, :content_type, :payload, :secret
 
       def http
         Faraday::Connection.new do |connection|
@@ -29,6 +30,7 @@ module Shipit
           'User-Agent' => 'Shipit Webhook',
           'Content-Type' => content_type,
           'X-Shipit-Event' => event,
+          'X-Shipit-Secret' => secret,
           'Accept' => '*/*',
         }
       end
@@ -119,6 +121,7 @@ module Shipit
         url: delivery_url,
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
+        secret: secret,
       )
     end
 
