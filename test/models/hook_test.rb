@@ -36,6 +36,26 @@ module Shipit
       end
     end
 
+    test ".deliver! sends request with correct method, headers, and body" do
+      stub_request(:post, @hook.delivery_url).to_return(body: 'OK')
+      body = { 'foo' => 42 }
+
+      perform_enqueued_jobs(only: DeliverHookJob) do
+        @hook.deliver!(:deploy, body)
+      end
+      assert_performed_jobs 1
+      assert_requested :post, @hook.delivery_url,
+        headers: {
+          'User-Agent' => 'Shipit Webhook',
+          'Content-Type' => 'application/json',
+          'X-Shipit-Event' => 'deploy',
+          'X-Shipit-Secret' => @hook.secret,
+          'Accept' => '*/*',
+        },
+        body: JSON.pretty_generate(body),
+        times: 1
+    end
+
     test ".scoped? returns true if the hook has a stack_id" do
       @hook.stack_id = nil
       refute @hook.scoped?
