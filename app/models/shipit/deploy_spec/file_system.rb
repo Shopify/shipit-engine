@@ -2,6 +2,7 @@
 module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
+      include PackageCloudDiscovery
       include NpmDiscovery
       include LernaDiscovery
       include PypiDiscovery
