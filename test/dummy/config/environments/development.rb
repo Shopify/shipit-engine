@@ -50,7 +50,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  if Rails.application.config_for(:database)['adapter'] == 'sqlite3'
+  if Rails.application.config_for(:database)&.dig('adapter') == 'sqlite3'
     config.to_prepare do
       Shipit::DeferredTouch.enabled = false
     end

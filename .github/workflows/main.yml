@@ -32,6 +32,7 @@ jobs:
     name: Tests with Postgres
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby_version:
           - 2.6.x
@@ -84,13 +85,14 @@ jobs:
     name: Tests with MySQL
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby_version:
           - 2.6.x
 
     services:
       db:
-        image: mysql:5.7
+        image: mysql:8.0
         ports:
           - 3306
         env:
@@ -132,6 +134,7 @@ jobs:
     name: Tests with SQLite3
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby_version:
           - 2.6.x
