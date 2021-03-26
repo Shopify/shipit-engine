@@ -13,6 +13,7 @@ volumes:
 services:
   - redis
   - nginx
+  - mysql
 
 hostnames:
   - shipit-engine.myshopify.io: { proxy_to_host_port: 55330 }
