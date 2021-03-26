@@ -25,7 +25,7 @@ module Shipit
     def fetched?(commit)
       git_dir = File.join(@stack.git_path, '.git')
       if Dir.exist?(git_dir)
-        git('rev-parse', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
+        git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
       else
         Command.new('test', '-d', git_dir, env: env, chdir: @stack.deploys_path)
       end
