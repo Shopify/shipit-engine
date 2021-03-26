@@ -4,7 +4,7 @@ module Shipit
     queue_as :hooks
 
     def perform(delivery)
-      delivery = Hook::DeliverySpec.new(delivery) if delivery.is_a?(Hash)
+      delivery = Hook::DeliverySpec.new(**delivery) if delivery.is_a?(Hash)
       delivery.send!
     end
   end
