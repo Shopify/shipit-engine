@@ -168,7 +168,7 @@ module Shipit
       end
     end
 
-    def in_EMERGENCY_mode?
+    def in_emergency_mode?
       mode == Pipeline::MERGE_MODE_EMERGENCY
     end
 
@@ -291,7 +291,9 @@ module Shipit
 
     def trigger_tasks(run_now = false)
       build_failed unless predictive_branches.any?
-      ci_pipeline_completed if in_EMERGENCY_mode? # In case of emergency, we are skipping pipeline tasks
+      # TODO: removing ci_pipeline_completed in all cases and do it just in case of emergency
+      # ci_pipeline_completed if in_emergency_mode? # In case of emergency, we are skipping pipeline tasks
+      ci_pipeline_completed # TODO: disabling automation tasks - to remove later
       trigger_pipeline_tasks(run_now)
       trigger_stack_tasks(run_now)
     end
