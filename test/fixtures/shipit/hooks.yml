@@ -3,6 +3,7 @@ shipit_deploys:
   events: 'deploy,rollback'
   delivery_url: https://example.com/events/deploy
   content_type: json
+  secret: 'example-secret-key'
 
 all_deploys:
   events: 'deploy,rollback'

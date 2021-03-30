@@ -36,6 +36,35 @@ module Shipit
       end
     end
 
+    test ".deliver! sends request with correct method, headers, and body" do
+      stub_request(:post, @hook.delivery_url).to_return(body: 'OK')
+      body = { 'foo' => 42 }
+      expected_body = JSON.pretty_generate(body)
+      expected_signature = Hook::DeliverySigner.new(@hook.secret).sign(expected_body)
+
+      perform_enqueued_jobs(only: DeliverHookJob) do
+        @hook.deliver!(:deploy, body)
+      end
+      assert_performed_jobs 1
+      assert_requested :post, @hook.delivery_url do |req|
+        req.headers['X-Shipit-Signature'] == expected_signature
+      end
+    end
+
+    test ".deliver! sends without signature if no secret is configured" do
+      stub_request(:post, @hook.delivery_url).to_return(body: 'OK')
+      @hook.update!(secret: '')
+      body = { 'foo' => 42 }
+
+      perform_enqueued_jobs(only: DeliverHookJob) do
+        @hook.deliver!(:deploy, body)
+      end
+      assert_performed_jobs 1
+      assert_requested :post, @hook.delivery_url do |req|
+        !req.headers.key?('X-Shipit-Signature')
+      end
+    end
+
     test ".scoped? returns true if the hook has a stack_id" do
       @hook.stack_id = nil
       refute @hook.scoped?
