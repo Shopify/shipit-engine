@@ -74,7 +74,6 @@ module Shipit
           },
           'rollback' => {
             'override' => rollback_steps,
-            'retries' => retries_on_rollback,
           },
           'fetch' => fetch_deployed_revision_steps,
           'tasks' => cacheable_tasks,

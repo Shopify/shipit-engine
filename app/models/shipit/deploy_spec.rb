@@ -140,10 +140,6 @@ module Shipit
       rollback_steps || cant_detect!(:rollback)
     end
 
-    def retries_on_rollback
-      config('rollback', 'retries') { nil }
-    end
-
     def fetch_deployed_revision_steps
       config('fetch') || discover_fetch_deployed_revision_steps
     end
