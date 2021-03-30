@@ -46,16 +46,23 @@ module Shipit
         @hook.deliver!(:deploy, body)
       end
       assert_performed_jobs 1
-      assert_requested :post, @hook.delivery_url,
-        headers: {
-          'User-Agent' => 'Shipit Webhook',
-          'Content-Type' => 'application/json',
-          'X-Shipit-Event' => 'deploy',
-          'X-Shipit-Signature' => expected_signature,
-          'Accept' => '*/*',
-        },
-        body: expected_body,
-        times: 1
+      assert_requested :post, @hook.delivery_url do |req|
+        req.headers['X-Shipit-Signature'] == expected_signature
+      end
+    end
+
+    test ".deliver! sends without signature if no secret is configured" do
+      stub_request(:post, @hook.delivery_url).to_return(body: 'OK')
+      @hook.update!(secret: '')
+      body = { 'foo' => 42 }
+
+      perform_enqueued_jobs(only: DeliverHookJob) do
+        @hook.deliver!(:deploy, body)
+      end
+      assert_performed_jobs 1
+      assert_requested :post, @hook.delivery_url do |req|
+        !req.headers.key?('X-Shipit-Signature')
+      end
     end
 
     test ".scoped? returns true if the hook has a stack_id" do

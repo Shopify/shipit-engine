@@ -51,6 +51,8 @@ module Shipit
       end
 
       def signature
+        return nil if secret.empty?
+
         DeliverySigner.new(secret).sign(payload)
       end
     end
