@@ -208,7 +208,7 @@ module Shipit
       end
 
       begin
-        trigger_deploy(commit, Shipit.user(repository.owner), env: cached_deploy_spec.default_deploy_env)
+        trigger_deploy(commit, Shipit.user, env: cached_deploy_spec.default_deploy_env)
       rescue Task::ConcurrentTaskRunning
       end
     end

@@ -41,9 +41,9 @@ module Shipit
       self.state = github_pull_request.state
       self.additions = github_pull_request.additions
       self.deletions = github_pull_request.deletions
-      self.user = User.find_or_create_by_login!(stack.owner, github_pull_request.user.login)
+      self.user = User.find_or_create_by_login!(github_pull_request.user.login)
       self.assignees = github_pull_request.assignees.map do |github_user|
-        User.find_or_create_by_login!(stack.owner, github_user.login)
+        User.find_or_create_by_login!(github_user.login)
       end
       self.labels = github_pull_request.labels.map(&:name)
       self.head = find_or_create_commit_from_github_by_sha!(github_pull_request.head.sha)

@@ -105,12 +105,13 @@ module Shipit
   end
 
   def github(organization: github_default_organization)
-    # Backwards compatibility
+    # Backward compatibility
+    # nil signifies the single github app config schema is being used
     if github_default_organization.nil?
       config = secrets.github
     else
       org = organization.to_sym
-      raise GithubOrganizationUnknown if secrets.github[org].nil?
+      raise GithubOrganizationUnknown, org if secrets.github[org].nil?
       config = secrets.github[org]
     end
     @github ||= {}
@@ -118,12 +119,12 @@ module Shipit
   end
 
   def github_default_organization
-    # github_config_organizations.first
-    org = github_config_organizations.first
+    org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
   end
 
-  def github_config_organizations
+  def github_organizations
+    return [nil] unless github_default_organization
     secrets.github.keys
   end
 
@@ -133,9 +134,9 @@ module Shipit
     end
   end
 
-  def user(organization)
+  def user
     if github.bot_login
-      User.find_or_create_by_login!(organization, github.bot_login)
+      User.find_or_create_by_login!(github.bot_login)
     else
       # TODO: Anything needed here?
       AnonymousUser.new

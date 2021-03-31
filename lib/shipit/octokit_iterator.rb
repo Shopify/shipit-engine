@@ -3,12 +3,12 @@ module Shipit
   class OctokitIterator
     include Enumerable
 
-    def initialize(relation = nil, github_client: nil)
+    def initialize(relation = nil, github_api: nil)
       if relation
         @response = relation.get(per_page: 100)
       else
-        data = yield github_client
-        @response = github_client.last_response if data.present?
+        data = yield github_api
+        @response = github_api.last_response if data.present?
       end
     end
 

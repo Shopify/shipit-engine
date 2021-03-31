@@ -13,9 +13,11 @@ module Shipit
 
     attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
 
-    def self.find_or_create_by_login!(organization, login)
+    def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
-        user.github_user = Shipit.github(organization: organization).api.user(login)
+        # Users are global, any app can be used
+        # This will not work for users that only exist in an Enterprise install
+        user.github_user = Shipit.github.api.user(login)
       end
     end
 
@@ -91,9 +93,9 @@ module Shipit
     end
 
     def refresh_from_github!
-      Shipit.github_config_organizations.each do |org|
-        update!(github_user: Shipit.github.api(organization: org).user(github_id))
-      end
+      # Users are global, any app can be used
+      # This will not work for users that only exist in an Enterprise install
+      update!(github_user: Shipit.github.api.user(github_id))
     rescue Octokit::NotFound
       identify_renamed_user!
     end

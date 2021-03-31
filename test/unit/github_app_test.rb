@@ -18,7 +18,7 @@ module Shipit
 
     test "#initialize doesn't raise if given an empty config" do
       assert_nothing_raised do
-        GitHubApp.new({})
+        GitHubApp.new(nil, {})
       end
     end
 
@@ -183,7 +183,6 @@ module Shipit
           .any_instance
           .expects(:create_app_installation_access_token).with(config[:installation_id], anything)
           .returns(second_token)
-
         first_token = valid_app.token
 
         first_cached_token = Rails.cache.fetch(@token_cache_key)
@@ -199,7 +198,7 @@ module Shipit
     private
 
     def app(extra_config = {})
-      GitHubApp.new(default_config.deep_merge(extra_config))
+      GitHubApp.new(nil, default_config.deep_merge(extra_config))
     end
 
     def default_config
