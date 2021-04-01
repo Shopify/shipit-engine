@@ -16,12 +16,11 @@ module Shipit
     private
 
     def verify_signature
-      verified = Shipit.github_organizations.map do |gh_org|
-        Shipit.github(organization: gh_org).verify_webhook_signature(
-          request.headers['X-Hub-Signature'],
-          request.raw_post
-        )
-      end.any?
+      github_app = @stack&.repository&.github_app_instance || Shipit.github # TODO: figure out something cleaner
+      verified = github_app.verify_webhook_signature(
+        request.headers['X-Hub-Signature'],
+        request.raw_post
+      )
       head(422) unless verified
     end
 

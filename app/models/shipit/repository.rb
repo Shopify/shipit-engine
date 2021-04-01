@@ -70,6 +70,10 @@ module Shipit
       github_app_instance.api
     end
 
+    def github_app_instance
+      Shipit.github(organization: owner)
+    end
+
     def http_url
       github_app_instance.url(full_name)
     end
@@ -96,12 +100,6 @@ module Shipit
         owner: repo_owner.downcase,
         name: repo_name.downcase,
       ).first!
-    end
-
-    protected
-
-    def github_app_instance
-      Shipit.github(organization: owner)
     end
   end
 end
