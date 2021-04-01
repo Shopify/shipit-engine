@@ -90,6 +90,7 @@ module Shipit
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
     validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
+    validates :branch, presence: true
 
     validates :lock_reason, length: { maximum: 4096 }
 
@@ -593,7 +594,13 @@ module Shipit
 
     def update_defaults
       self.environment = 'production' if environment.blank?
-      self.branch = 'master' if branch.blank?
+      self.branch = default_branch_name if branch.blank?
+    end
+
+    def default_branch_name
+      Shipit.github.api.repo(github_repo_name).default_branch
+    rescue Octokit::NotFound, Octokit::InvalidRepository
+      nil
     end
 
     def set_locked_since

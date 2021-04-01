@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_08_152744) do
+ActiveRecord::Schema.define(version: 2021_03_25_194053) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -178,14 +178,14 @@ ActiveRecord::Schema.define(version: 2020_10_08_152744) do
   end
 
   create_table "pull_request_assignments", force: :cascade do |t|
-    t.integer "pull_request_id"
-    t.integer "user_id"
+    t.bigint "pull_request_id"
+    t.bigint "user_id"
     t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
   create_table "pull_requests", force: :cascade do |t|
-    t.integer "stack_id", null: false
+    t.bigint "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
     t.integer "github_id", limit: 8
@@ -195,7 +195,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_152744) do
     t.integer "deletions", default: 0, null: false
     t.integer "user_id"
     t.text "labels"
-    t.integer "head_id"
+    t.bigint "head_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
@@ -214,9 +214,9 @@ ActiveRecord::Schema.define(version: 2020_10_08_152744) do
     t.bigint "github_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commit_id", "github_id"], name: "index_deploy_statuses_on_commit_id_and_github_id"
-    t.index ["stack_id", "commit_id"], name: "index_deploy_statuses_on_stack_id_and_commit_id"
-    t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
+    t.index ["commit_id", "github_id"], name: "index_release_statuses_on_commit_id_and_github_id"
+    t.index ["stack_id", "commit_id"], name: "index_release_statuses_on_stack_id_and_commit_id"
+    t.index ["user_id"], name: "index_release_statuses_on_user_id"
   end
 
   create_table "repositories", force: :cascade do |t|
@@ -234,7 +234,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_152744) do
     t.string "environment", limit: 50, default: "production", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "branch", limit: 255, default: "master", null: false
+    t.string "branch", limit: 255, null: false
     t.string "deploy_url", limit: 255
     t.string "lock_reason", limit: 4096
     t.integer "tasks_count", limit: 4, default: 0, null: false
@@ -288,7 +288,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_152744) do
     t.integer "additions", limit: 4, default: 0
     t.integer "deletions", limit: 4, default: 0
     t.text "definition", limit: 65535
-    t.binary "gzip_output"
+    t.binary "gzip_output", limit: 16777215
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false

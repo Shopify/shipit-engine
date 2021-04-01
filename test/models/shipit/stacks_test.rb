@@ -10,10 +10,20 @@ module Shipit
       GithubHook.any_instance.stubs(:teardown!)
     end
 
-    test "branch defaults to master" do
+    test "branch defaults to default branch name" do
       @stack.branch = ""
+      Shipit.github.api.expects(:repo).with("shopify/shipit-engine").returns(
+        Struct.new(:default_branch).new('something')
+      )
       assert @stack.save
-      assert_equal 'master', @stack.branch
+      assert_equal 'something', @stack.branch
+    end
+
+    test "branch is blank when default cannot be determined" do
+      @stack.branch = ""
+      Shipit.github.api.expects(:repo).raises(Octokit::NotFound)
+      assert_not @stack.save
+      assert_nil @stack.branch
     end
 
     test "environment defaults to production" do
@@ -201,7 +211,7 @@ module Shipit
 
     test "#create queues a GithubSyncJob" do
       assert_enqueued_with(job: GithubSyncJob) do
-        Stack.create!(repository: shipit_repositories(:rails))
+        Stack.create!(repository: shipit_repositories(:rails), branch: 'main')
       end
     end
 
@@ -252,6 +262,7 @@ module Shipit
       stack = Stack.create!(
         repository: Repository.new(owner: "foo", name: "bar"),
         environment: 'production',
+        branch: 'main',
       )
       commit = shipit_commits(:first)
       stack.commits << commit
