@@ -53,7 +53,7 @@ module Shipit
       if commit = stack.commits.by_sha(sha)
         commit
       else
-        github_commit = stack.repository.github_api.commit(stack.github_repo_name, sha)
+        github_commit = stack.github_api.commit(stack.github_repo_name, sha)
         stack.commits.create_from_github!(github_commit)
       end
     rescue ActiveRecord::RecordNotUnique
