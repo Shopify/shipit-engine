@@ -209,7 +209,7 @@ module Shipit
     def set_deploy_commit_on_pr(state, description, link)
       puts "Shipit::Deploy#set_deploy_commit_on_pr; description: #{description}; link: #{link}"
       commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
-      mrs = Shipit::MergeRequest.where(head_id: commits_ids)
+      mrs = Shipit::MergeRequest.where("stack_id = #{stack.id}").where(head_id: commits_ids).where(merge_status: 'merged')
       mrs.each do |mr|
         msg = <<~MSG
           #{description}:
