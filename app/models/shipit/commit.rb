@@ -21,7 +21,7 @@ module Shipit
     after_create { stack.update_undeployed_commits_count }
 
     after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
-                 :schedule_continuous_delivery, on: :create
+      :schedule_continuous_delivery, on: :create
 
     belongs_to :author, class_name: 'User', inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', inverse_of: :commits
@@ -42,7 +42,7 @@ module Shipit
     scope :reachable, -> { where(detached: false) }
 
     delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
-             :soft_failing_statuses, to: :stack
+      :soft_failing_statuses, to: :stack
 
     def self.newer_than(commit)
       return all unless commit

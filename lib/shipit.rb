@@ -195,13 +195,11 @@ module Shipit
   end
 
   def revision
-    @revision ||= begin
-      if revision_file.exist?
-        revision_file.read
-      else
-        %x(git rev-parse HEAD)
-      end.strip
-    end
+    @revision ||= if revision_file.exist?
+      revision_file.read
+    else
+      %x(git rev-parse HEAD)
+    end.strip
   end
 
   def default_inactivity_timeout
