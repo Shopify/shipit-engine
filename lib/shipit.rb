@@ -131,7 +131,7 @@ module Shipit
 
   def legacy_github_api
     if secrets&.github_api.present?
-      @legacy_github_api ||= github.new_client(access_token: secrets.github_api['access_token'])
+      @legacy_github_api ||= github.new_client(access_token: secrets.github_api[:access_token])
     end
   end
 
@@ -234,7 +234,7 @@ module Shipit
   end
 
   def secrets
-    Rails.application.secrets
+    Rails.application.secrets.deep_symbolize_keys!
   end
 end
 
