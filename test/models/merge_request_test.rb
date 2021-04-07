@@ -60,7 +60,7 @@ module Shipit
 
       assert_nil MergeRequest.extract_number(@stack, 'https://github.com/ACME/shipit-engine/pull/42')
 
-      Shipit.github.expects(:domain).returns('github.acme.com').at_least_once
+      Shipit.github.class.any_instance.expects(:domain).returns('github.acme.com').at_least_once
       assert_equal 42, MergeRequest.extract_number(@stack, 'https://github.acme.com/Shopify/shipit-engine/pull/42')
       assert_nil MergeRequest.extract_number(@stack, 'https://github.com/Shopify/shipit-engine/pull/42')
     end

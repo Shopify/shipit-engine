@@ -12,7 +12,7 @@ module Shipit
 
     test 'creation on GitHub' do
       response = stub(id: 44, url: 'https://example.com')
-      @author.github_api.expects(:create_deployment_status).with(
+      @author.github_api.class.any_instance.expects(:create_deployment_status).with(
         @deployment.api_url,
         'in_progress',
         accept: "application/vnd.github.flash-preview+json",
@@ -33,7 +33,7 @@ module Shipit
       status = deployment.statuses.create!(status: 'success')
       status.stubs(:description).returns('desc' * limit)
       create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
-      status.author.github_api.expects(:create_deployment_status).with do |_url, _status, kwargs|
+      status.author.github_api.class.any_instance.expects(:create_deployment_status).with do |_url, _status, kwargs|
         kwargs[:description].size <= limit
       end.returns(create_status_response)
 
@@ -47,7 +47,7 @@ module Shipit
       stack = status.stack
       stack.deploy_url = "stack-deploy-url"
       create_status_response = stub(id: 'abcd', url: 'https://github.com/status/abcd')
-      status.author.github_api.expects(:create_deployment_status).with do |_url, _status, kwargs|
+      status.author.github_api.class.any_instance.expects(:create_deployment_status).with do |_url, _status, kwargs|
         kwargs[:environment_url] == 'stack-deploy-url'
       end.returns(create_status_response)
 

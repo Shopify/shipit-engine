@@ -67,7 +67,7 @@ module Shipit
     end
 
     def http_url
-      Shipit.github.url(full_name)
+      github_app.url(full_name)
     end
 
     def full_name
@@ -75,7 +75,7 @@ module Shipit
     end
 
     def git_url
-      "https://#{Shipit.github.domain}/#{owner}/#{name}.git"
+      "https://#{github_app.domain}/#{owner}/#{name}.git"
     end
 
     def schedule_for_destroy!
@@ -92,6 +92,12 @@ module Shipit
         owner: repo_owner.downcase,
         name: repo_name.downcase,
       ).first!
+    end
+
+    protected
+
+    def github_app
+      Shipit.github(organization: owner)
     end
   end
 end

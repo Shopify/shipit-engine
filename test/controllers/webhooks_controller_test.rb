@@ -10,7 +10,7 @@ module Shipit
 
     test "create github repository which is not yet present in the datastore" do
       request.headers['X-Github-Event'] = 'push'
-      unknown_repo_payload = JSON.parse(payload(:push_master))
+      unknown_repo_payload = JSON.parse(payload(:push_master)).merge(stack_params)
       unknown_repo_payload["repository"]["full_name"] = "owner/unknown-repository"
       unknown_repo_payload = unknown_repo_payload.to_json
 
@@ -22,14 +22,15 @@ module Shipit
     test ":push with the target branch queues a GithubSyncJob" do
       request.headers['X-Github-Event'] = 'push'
 
+      body = JSON.parse(payload(:push_master)).merge(stack_params).to_json
       assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :create, body: payload(:push_master), as: :json
+        post :create, body: body, as: :json
       end
     end
 
     test ":push does not enqueue a job if not the target branch" do
       request.headers['X-Github-Event'] = 'push'
-      params = payload(:push_not_master)
+      params = JSON.parse(payload(:push_not_master)).merge(stack_params).to_json
       assert_no_enqueued_jobs do
         post :create, body: params, as: :json
       end
@@ -40,8 +41,9 @@ module Shipit
 
       commit = shipit_commits(:first)
 
+      body = JSON.parse(payload(:status_master)).merge(stack_params).to_json
       assert_difference 'commit.statuses.count', 1 do
-        post :create, body: payload(:status_master), as: :json
+        post :create, body: body, as: :json
       end
 
       status = commit.statuses.last
@@ -55,14 +57,14 @@ module Shipit
 
     test ":state with a unexisting commit respond with 200 OK" do
       request.headers['X-Github-Event'] = 'status'
-      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{ 'name' => 'master' }] }.to_json
+      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [{ 'name' => 'master' }] }.merge(stack_params).to_json
       post :create, body: params, as: :json
       assert_response :ok
     end
 
     test ":state in an untracked branche bails out" do
       request.headers['X-Github-Event'] = 'status'
-      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [] }.to_json
+      params = { 'sha' => 'notarealcommit', 'state' => 'pending', 'branches' => [] }.merge(stack_params).to_json
       post :create, body: params, as: :json
       assert_response :ok
     end
@@ -70,8 +72,9 @@ module Shipit
     test ":check_suite with the target branch queues a RefreshCheckRunsJob" do
       request.headers['X-Github-Event'] = 'check_suite'
 
+      body = JSON.parse(payload(:check_suite_master)).merge(stack_params).to_json
       assert_enqueued_with(job: RefreshCheckRunsJob) do
-        post :create, body: payload(:check_suite_master), as: :json
+        post :create, body: body, as: :json
         assert_response :ok
       end
     end
@@ -88,13 +91,13 @@ module Shipit
     test "verifies webhook signature" do
       commit = shipit_commits(:first)
 
-      payload = { "sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output" }.to_json
+      payload = { "sha" => commit.sha, "state" => "pending", "target_url" => "https://ci.example.com/1000/output" }.merge(stack_params).to_json
       signature = 'sha1=4848deb1c9642cd938e8caa578d201ca359a8249'
 
       @request.headers['X-Github-Event'] = 'push'
       @request.headers['X-Hub-Signature'] = signature
 
-      Shipit.github.expects(:verify_webhook_signature).with(signature, payload).returns(false)
+      Shipit.github(organization: 'shopify').expects(:verify_webhook_signature).with(signature, payload).returns(false)
 
       post :create, body: payload, as: :json
       assert_response :unprocessable_entity
@@ -168,15 +171,19 @@ module Shipit
     private
 
     def pull_request_params
-      { action: 'opened', number: 2, pull_request: 'foobar' }
+      { action: 'opened', number: 2, pull_request: 'foobar' }.merge(stack_params)
     end
 
     def membership_params
-      { action: 'added', team: team_params, organization: { login: 'shopify' }, member: { login: 'walrus' } }
+      { action: 'added', team: team_params, organization: { login: 'shopify' }, member: { login: 'walrus' } }.merge(stack_params)
     end
 
     def team_params
       { id: shipit_teams(:shopify_developers).id, slug: 'developers', name: 'Developers', url: 'http://example.com' }
+    end
+
+    def stack_params
+      { stack_id: @stack.id }
     end
 
     def george

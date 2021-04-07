@@ -13,7 +13,7 @@ module Shipit
 
       environment = stack.environment
       stack_ref = create_full_ref(environment)
-      client = Shipit.github.api
+      client = stack.github_api
 
       full_repo_name = stack.github_repo_name
 

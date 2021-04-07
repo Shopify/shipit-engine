@@ -16,7 +16,12 @@ module Shipit
     private
 
     def verify_signature
-      head(422) unless Shipit.github.verify_webhook_signature(request.headers['X-Hub-Signature'], request.raw_post)
+      github_app = stack&.github_app
+      verified = github_app.verify_webhook_signature(
+        request.headers['X-Hub-Signature'],
+        request.raw_post
+      )
+      head(422) unless verified
     end
 
     def check_if_ping

@@ -91,7 +91,7 @@ module Shipit
       last = stub(sha: 123)
       first = stub(sha: 345)
       Shipit::FirstParentCommitsIterator.any_instance.stubs(:each).multiple_yields(last, first)
-      @job.stubs(lookup_commit: nil)
+      @job.stubs(lookup_commit: nil, stack: @stack)
 
       commits, parent = @job.fetch_missing_commits { stub }
       assert_nil parent
@@ -104,6 +104,7 @@ module Shipit
       Shipit::FirstParentCommitsIterator.any_instance.stubs(:each).multiple_yields(last, first)
       @job.stubs(:lookup_commit).with(123).returns(nil)
       @job.stubs(:lookup_commit).with(345).returns(first)
+      @job.stubs(stack: @stack)
 
       commits, parent = @job.fetch_missing_commits { stub }
       assert_equal first, parent
