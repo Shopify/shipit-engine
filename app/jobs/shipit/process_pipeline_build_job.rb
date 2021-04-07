@@ -92,6 +92,7 @@ module Shipit
       predictive_build.predictive_branches.each do |p_branch|
         p_branch.reject_predictive_merge_requests(reject_reason)
       end
+      predictive_build.failed
     end
 
     def emergency_build?(pipeline)
