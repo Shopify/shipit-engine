@@ -43,6 +43,8 @@ module Shipit
         run_tasks(predictive_build)
       when :tasks_completed
         merging_process(predictive_build)
+      when :failed_commits_validation
+        predictive_build.failed
       end
     end
 
@@ -92,7 +94,6 @@ module Shipit
       predictive_build.predictive_branches.each do |p_branch|
         p_branch.reject_predictive_merge_requests(reject_reason)
       end
-      predictive_build.failed
     end
 
     def emergency_build?(pipeline)
