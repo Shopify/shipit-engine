@@ -119,6 +119,7 @@ module Shipit
   end
 
   def github_default_organization
+    return nil unless secrets&.github
     org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
   end
