@@ -138,7 +138,6 @@ module Shipit
     if github.bot_login
       User.find_or_create_by_login!(github.bot_login)
     else
-      # TODO: Anything needed here?
       AnonymousUser.new
     end
   end

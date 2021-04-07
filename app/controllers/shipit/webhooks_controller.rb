@@ -16,7 +16,7 @@ module Shipit
     private
 
     def verify_signature
-      github_app = @stack&.github_app || Shipit.github # TODO: figure out something cleaner
+      github_app = stack&.github_app
       verified = github_app.verify_webhook_signature(
         request.headers['X-Hub-Signature'],
         request.raw_post
