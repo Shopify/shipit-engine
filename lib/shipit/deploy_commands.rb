@@ -7,11 +7,13 @@ module Shipit
 
     def env
       commit = @task.until_commit
-      commits = Commit.where("stack_id = #{@stack.id}").where("id > #{@task.since_commit.id}")
+      mrs = Shipit::MergeRequest.where("stack_id = #{@stack.id}")
+                                .where("head_id > #{@task.since_commit.id} and head_id < #{@task.until_commit.id}" )
+                                .where(merge_status: 'merged')
       commits_sha = ''
-      commits.each do |c|
+      mrs.each do |c|
         commits_sha = commits_sha + ',' if commits_sha != ''
-        commits_sha = commits_sha + c.sha
+        commits_sha = commits_sha + c.head.sha
       end
 
       super.merge(

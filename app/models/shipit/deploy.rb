@@ -206,8 +206,8 @@ module Shipit
       Rails.logger.error "Can't append release status. message: #{error.message}"
     end
 
-    def set_deploy_commit_on_pr(state, description, link)
-      puts "Shipit::Deploy#set_deploy_commit_on_pr; description: #{description}; link: #{link}"
+    def set_deploy_comment_on_pr(state, description, link)
+      puts "Shipit::Deploy#set_deploy_comment_on_pr; description: #{description}; link: #{link}"
       commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
       mrs = Shipit::MergeRequest.where("stack_id = #{stack.id}").where(head_id: commits_ids).where(merge_status: 'merged')
       mrs.each do |mr|
@@ -218,7 +218,7 @@ module Shipit
         Shipit.github.api.add_comment(mr.stack.repository.full_name, mr.number, msg)
       end
     rescue Exception => error
-      Rails.logger.error "Can't set_deploy_commit_on_pr. message: #{error.message}"
+      Rails.logger.error "Can't set_deploy_comment_on_pr. message: #{error.message}"
     end
 
     def permalink
@@ -300,7 +300,7 @@ module Shipit
           append_release_status('success', description)
         end
       end
-      set_deploy_commit_on_pr(status, description, permalink) if description
+      set_deploy_comment_on_pr(status, description, permalink) if description
     end
 
     def trigger_revert_if_required

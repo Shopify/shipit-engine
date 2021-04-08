@@ -189,18 +189,20 @@ module Shipit
             end
           end
         rescue => error
-          merge_request.with_all do |mr|
-            rejected_merged_requests << mr
-            PredictiveMergeRequest.create(merge_request: mr,
-                                          predictive_branch: predictive_branches[mr.stack.id],
-                                          head: mr.head,
-                                          status: :rejected)
-          end
+          if merge_request
+            merge_request.with_all do |mr|
+              rejected_merged_requests << mr
+              PredictiveMergeRequest.create(merge_request: mr,
+                                            predictive_branch: predictive_branches[mr.stack.id],
+                                            head: mr.head,
+                                            status: :rejected)
+            end
 
-          merge_requests.delete(merge_request)
-          merged_stacks = []
-          merged_to_predictive_branch = []
-          retry unless merge_requests
+            merge_requests.delete(merge_request)
+            merged_stacks = []
+            merged_to_predictive_branch = []
+            retry unless merge_requests
+          end
         end
         push_predictive_branch(stack_commands, merged_stacks)
       end
