@@ -234,7 +234,7 @@ module Shipit
   end
 
   def secrets
-    Rails.application.secrets.deep_symbolize_keys!
+    Rails.application.secrets
   end
 end
 
