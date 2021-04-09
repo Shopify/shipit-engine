@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module Shipit
   class AnonymousUser
-    def present?
-      false
+    def blank?
+      true
     end
 
     def email
@@ -62,6 +62,10 @@ module Shipit
 
     def serializer_class
       AnonymousUserSerializer
+    end
+
+    def marked_for_destruction?
+      true
     end
   end
 end

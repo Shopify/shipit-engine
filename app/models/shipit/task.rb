@@ -283,6 +283,10 @@ module Shipit
       user || AnonymousUser.new
     end
 
+    def author=(user)
+      super(user.presence)
+    end
+
     def finished?
       !pending? && !running? && !aborting?
     end

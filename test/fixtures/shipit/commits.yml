@@ -45,8 +45,8 @@ fourth:
   sha: 467578b362bf2b4df5903e1c7960929361c3435a
   message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"
   stack: shipit
-  author: walrus
-  committer: walrus
+  author: ~
+  committer: ~
   authored_at: <%= 4.days.ago.to_s(:db) %>
   committed_at: <%= 3.days.ago.to_s(:db) %>
   additions: 420

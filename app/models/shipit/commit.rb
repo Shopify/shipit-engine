@@ -23,20 +23,32 @@ module Shipit
     after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
       :schedule_continuous_delivery, on: :create
 
-    belongs_to :author, class_name: 'User', inverse_of: :authored_commits
-    belongs_to :committer, class_name: 'User', inverse_of: :commits
-    belongs_to :lock_author, class_name: :User, optional: true, inverse_of: false
+    belongs_to :author, class_name: 'User', optional: true, inverse_of: :authored_commits
+    belongs_to :committer, class_name: 'User', optional: true, inverse_of: :commits
+    belongs_to :lock_author, class_name: 'User', optional: true, inverse_of: false
 
     def author
       super || AnonymousUser.new
+    end
+
+    def author=(user)
+      super(user.presence)
     end
 
     def committer
       super || AnonymousUser.new
     end
 
+    def committer=(user)
+      super(user.presence)
+    end
+
     def lock_author
       super || AnonymousUser.new
+    end
+
+    def lock_author=(user)
+      super(user.presence)
     end
 
     scope :reachable, -> { where(detached: false) }
