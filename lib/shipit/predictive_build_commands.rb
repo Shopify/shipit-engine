@@ -54,6 +54,10 @@ module Shipit
       git('rev-parse', '--verify', "origin/#{branch}", chdir: @chdir)
     end
 
+    def git_get_commits_in_range(from, to)
+      git('rev-list', "#{from}..#{to}",'--first-parent', chdir: @chdir)
+    end
+
     def create_directories
       FileUtils.mkdir_p(@stack.builds_path)
     end
