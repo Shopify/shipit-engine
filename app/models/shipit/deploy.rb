@@ -208,8 +208,7 @@ module Shipit
 
     def set_deploy_comment_on_pr(state, description, link)
       puts "Shipit::Deploy#set_deploy_comment_on_pr; description: #{description}; link: #{link}"
-      commits_ids = Commit.where("stack_id = #{stack.id}").where("id > #{since_commit.id} and id < #{until_commit.id}").ids
-      mrs = Shipit::MergeRequest.where("stack_id = #{stack.id}").where(head_id: commits_ids).where(merge_status: 'merged')
+      mrs = related_merge_requests
       mrs.each do |mr|
         msg = <<~MSG
           #{description}:
@@ -257,6 +256,29 @@ module Shipit
 
     def update_commit_deployments
       commit_deployments.append_status(status)
+    end
+
+    def related_merge_requests
+      mrs = []
+      commits_sha = related_commits_sha
+      predictive_branches = Shipit::PredictiveBranch.where(until_commit_sha: commits_sha)
+      predictive_branches.each do |p_branch|
+        p_branch.predictive_merge_requests.each do |pmr|
+          mrs << pmr.merge_request
+        end
+      end
+      mrs
+    end
+
+    def related_commits_sha
+      commits_sha = []
+      Dir.mktmpdir do |dir|
+        stack_command = Shipit::PredictiveBuildCommands.new(nil, stack, File.join(dir + "deploy/", stack.repo_name))
+        stack_command.git_clone(stack.repo_name).run!
+        commits_sha = stack_command.git_get_commits_in_range(since_commit.sha, until_commit.sha).run!
+        commits_sha = commits_sha.split(/[\r\n]+/)
+      end
+      commits_sha
     end
 
     private
