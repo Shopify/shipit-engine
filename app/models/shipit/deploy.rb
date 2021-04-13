@@ -273,8 +273,8 @@ module Shipit
     def related_commits_sha
       commits_sha = []
       Dir.mktmpdir do |dir|
-        stack_command = Shipit::PredictiveBuildCommands.new(nil, stack, File.join(dir + "deploy/", stack.repo_name))
-        stack_command.git_clone(stack.repo_name).run!
+        stack_command = Shipit::PredictiveBuildCommands.new(nil, stack, File.join(dir, stack.repo_name))
+        stack_command.git_clone(chdir: dir).run!
         commits_sha = stack_command.git_get_commits_in_range(since_commit.sha, until_commit.sha).run!
         commits_sha = commits_sha.split(/[\r\n]+/)
       end
