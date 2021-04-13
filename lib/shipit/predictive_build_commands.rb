@@ -51,7 +51,7 @@ module Shipit
     end
 
     def git_last_commit(branch)
-      git('rev-parse', '--verify', "origin/#{branch}")
+      git('rev-parse', '--verify', "origin/#{branch}", chdir: @chdir)
     end
 
     def create_directories
