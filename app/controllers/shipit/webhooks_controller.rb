@@ -23,6 +23,14 @@ module Shipit
         request.raw_post
       )
       head(422) unless verified
+
+      Rails.logger.info([
+        'WebhookController#verify_signature',
+        "event=#{event}",
+        "repository_owner=#{repository_owner}",
+        "signature=#{request.headers['X-Hub-Signature']}",
+        "status=#{status}",
+      ].join(' '))
     end
 
     def check_if_ping
