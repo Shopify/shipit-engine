@@ -39,7 +39,7 @@ module Shipit
         predictive_build.aborting_tasks(true, PredictiveBranch::PIPELINE_TASKS_FAILED)
       when :branched, :tasks_running
         run_tasks(predictive_build)
-      when :tasks_completed
+      when :tasks_completed, :waiting_for_merging
         merging_process(predictive_build)
       when :failed_commits_validation
         predictive_build.failed
@@ -47,7 +47,7 @@ module Shipit
     end
 
     def merging_process(predictive_build)
-      commits_validation(predictive_build)
+      commits_validation(predictive_build) unless predictive_build.waiting_for_merging?
       merge_build(predictive_build) if predictive_build.waiting_for_merging?
       predictive_build.update_completed_requests if predictive_build.completed?
     end
