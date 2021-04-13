@@ -6,9 +6,7 @@ module Shipit
     queue_as :pipeline
 
     def lock_key(*args)
-      key = ActiveJob::Arguments.serialize([self.class.name,args.first.id]).join('-')
-      puts "--------- The Key: #{key}"
-      key
+      ActiveJob::Arguments.serialize([self.class.name,args.first.id]).join('-')
     end
 
     # The process handle one batch at a time
@@ -260,12 +258,18 @@ module Shipit
 
     def push_build(predictive_build, stack_commands)
       predictive_build.predictive_branches.each do |p_branch|
+        puts "--------- push_build:: Pushing #{p_branch.branch}"
         stack_commands[p_branch.stack].git_push(true).run!
+        puts "--------- push_build:: Getting #{p_branch.stack.branch} last commit sha"
         last_commit_sha = stack_commands[p_branch.stack].git_last_commit(p_branch.stack.branch).run!
-        last_commit_sha.slice! "\r\n"
-        last_commit = Shipit::Commit.where(sha: last_commit_sha)
-        if last_commit.present?
-          p_branch.until_commit = last_commit
+        puts "--------- push_build:: last_commit_sha = #{last_commit_sha}"
+        if last_commit_sha.present?
+          last_commit_sha.slice! "\r\n"
+          puts "--------- push_build:: last_commit not found, save commit sha"
+          p_branch.until_commit_sha = last_commit_sha
+          last_commit = Shipit::Commit.where(sha: last_commit_sha)
+          puts "--------- push_build:: last_commit.id = #{last_commit.id}" if last_commit.present?
+          p_branch.until_commit = last_commit if last_commit.present?
           p_branch.save!
         end
       end
