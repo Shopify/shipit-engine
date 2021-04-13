@@ -265,11 +265,14 @@ module Shipit
         puts "--------- push_build:: last_commit_sha = #{last_commit_sha}"
         if last_commit_sha.present?
           last_commit_sha.slice! "\r\n"
-          puts "--------- push_build:: last_commit not found, save commit sha"
           p_branch.until_commit_sha = last_commit_sha
-          last_commit = Shipit::Commit.where(sha: last_commit_sha)
-          puts "--------- push_build:: last_commit.id = #{last_commit.id}" if last_commit.present?
-          p_branch.until_commit = last_commit if last_commit.present?
+          puts "--------- push_build:: lGet last commit"
+          last_commits = Shipit::Commit.where(sha: last_commit_sha)
+          if last_commits.any?
+            last_commit = last_commits.first
+            puts "--------- push_build:: last_commit.id = #{last_commit.id}" if last_commit.present?
+            p_branch.until_commit = last_commit if last_commit.present?
+          end
           p_branch.save!
         end
       end
