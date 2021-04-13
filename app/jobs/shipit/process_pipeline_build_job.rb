@@ -261,6 +261,13 @@ module Shipit
     def push_build(predictive_build, stack_commands)
       predictive_build.predictive_branches.each do |p_branch|
         stack_commands[p_branch.stack].git_push(true).run!
+        last_commit_sha = stack_commands[p_branch.stack].git_last_commit(p_branch.stack.branch).run!
+        last_commit_sha.slice! "\r\n"
+        last_commit = Shipit::Commit.where(sha: last_commit_sha)
+        if last_commit.present?
+          p_branch.until_commit = last_commit
+          p_branch.save!
+        end
       end
       stack_commands
     end
