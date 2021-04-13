@@ -271,7 +271,7 @@ module Shipit
           if last_commits.any?
             last_commit = last_commits.first
             puts "--------- push_build:: last_commit.id = #{last_commit.id}" if last_commit.present?
-            p_branch.until_commit = last_commit if last_commit.present?
+            p_branch.until_commit_id = last_commit.id if last_commit.present?
           end
           p_branch.save!
         end
