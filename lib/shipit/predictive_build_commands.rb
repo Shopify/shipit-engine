@@ -50,6 +50,10 @@ module Shipit
       git('clean', 'rev-parse', '--verify', branch, repo_url)
     end
 
+    def git_last_commit(branch)
+      git('rev-parse', '--verify', "origin/#{branch}")
+    end
+
     def create_directories
       FileUtils.mkdir_p(@stack.builds_path)
     end
