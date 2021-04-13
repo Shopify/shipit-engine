@@ -20,7 +20,9 @@ module Shipit
 
 
     # merge_requests
-    def release_candidates(stacks, mode)
+    def release_candidates(mode)
+      update_rejected_stacks(mode)
+      stacks = mergeable_stacks(mode)
       # Find root merge_requests candidates
       merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
       merge_requests = remove_invalid_merge_requests(merge_requests, mode)
@@ -41,6 +43,19 @@ module Shipit
       }
 
       merge_requests
+    end
+
+    def update_rejected_stacks(mode)
+      stacks = unmergeable_stacks(mode)
+      merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
+      merge_requests.each do |merge_request|
+        msg = "The repository does not allow merges right now. We will try again later."
+        Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
+      end
+    end
+
+    def unmergeable_stacks(mode)
+      stacks.select{ |s|  !s.allows_merges?(mode) }
     end
 
     def mergeable_stacks(mode)
@@ -114,8 +129,8 @@ module Shipit
         if !merge_request.not_mergeable_yet? && merge_request.all_status_checks_passed?
           final_merge_requests << merge_request
         else
-          # Todo: Count how long its been queue / Attempts
-          #   Auto reject merge_request + comment after a while
+          msg = "Pull request is not mergeable yet or not all status checks passed. We will try again later."
+          Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
         end
       end
 
