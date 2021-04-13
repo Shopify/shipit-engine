@@ -67,24 +67,7 @@
     "name": "shipit-engine",
     "full_name": "Shopify/shipit-engine",
     "owner": {
-      "login": "github",
-      "id": 340,
-      "node_id": "MDQ6VXNlcjIxMDMxMDY3",
-      "avatar_url": "http://alambic.github.com/avatars/u/340?",
-      "gravatar_id": "",
-      "url": "https://api.github.com/users/github",
-      "html_url": "http://github.com/github",
-      "followers_url": "https://api.github.com/users/github/followers",
-      "following_url": "https://api.github.com/users/github/following{/other_user}",
-      "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
-      "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/github/subscriptions",
-      "organizations_url": "https://api.github.com/users/github/orgs",
-      "repos_url": "https://api.github.com/users/github/repos",
-      "events_url": "https://api.github.com/users/github/events{/privacy}",
-      "received_events_url": "https://api.github.com/users/github/received_events",
-      "type": "Organization",
-      "site_admin": false
+      "login": "Shopify"
     },
     "private": false,
     "html_url": "http://github.com/Shopify/shipit-engine",
@@ -155,18 +138,7 @@
     "default_branch": "master"
   },
   "organization": {
-    "login": "github",
-    "id": 340,
-    "node_id": "MDEyOk9yZ2FuaXphdGlvbjM4MzAyODk5",
-    "url": "https://api.github.com/orgs/github",
-    "repos_url": "https://api.github.com/orgs/github/repos",
-    "events_url": "https://api.github.com/orgs/github/events",
-    "hooks_url": "https://api.github.com/orgs/github/hooks",
-    "issues_url": "https://api.github.com/orgs/github/issues",
-    "members_url": "https://api.github.com/orgs/github/members{/member}",
-    "public_members_url": "https://api.github.com/orgs/github/public_members{/member}",
-    "avatar_url": "http://alambic.github.com/avatars/u/340?",
-    "description": "How people build software."
+    "login": "Shopify"
   },
   "sender": {
     "login": "octocat",
