@@ -110,9 +110,8 @@ module Shipit
     if github_default_organization.nil?
       config = secrets.github
     else
-      org = organization.to_sym
-      raise GithubOrganizationUnknown, org if secrets.github[org].nil?
-      config = secrets.github[org]
+      config = github_app_config(organization)
+      raise GithubOrganizationUnknown, organization if config.nil?
     end
     @github ||= {}
     @github[organization] ||= GitHubApp.new(organization, config)
@@ -127,6 +126,12 @@ module Shipit
   def github_organizations
     return [nil] unless github_default_organization
     secrets.github.keys
+  end
+
+  def github_app_config(organization)
+    github_config = secrets.github.deep_transform_keys(&:downcase)
+    github_organization = organization.downcase.to_sym
+    github_config[github_organization]
   end
 
   def legacy_github_api
