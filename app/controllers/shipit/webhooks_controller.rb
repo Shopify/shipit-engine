@@ -42,7 +42,8 @@ module Shipit
     end
 
     def repository_owner
-      params.dig('repository', 'owner', 'login')
+      # Fallback to the organization sub-object if repository isn't included in the payload
+      params.dig('repository', 'owner', 'login') || params.dig('organization', 'login')
     end
   end
 end
