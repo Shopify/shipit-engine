@@ -926,6 +926,16 @@ module Shipit
       )
     end
 
+    test "#unarchive! triggers a GithubSync job" do
+      assert_no_enqueued_jobs(only: GithubSyncJob) do
+        @stack.archive!(shipit_users(:codertocat))
+      end
+
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
+        @stack.unarchive!
+      end
+    end
+
     private
 
     def generate_revert_commit(stack:, reverted_commit:, author: reverted_commit.author)

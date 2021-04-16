@@ -7,7 +7,10 @@ module Shipit
           requires :ref
         end
         def process
-          stacks.where(branch: branch).each(&:sync_github)
+          stacks
+            .not_archived
+            .where(branch: branch)
+            .find_each(&:sync_github)
         end
 
         private

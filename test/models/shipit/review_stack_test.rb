@@ -63,5 +63,16 @@ module Shipit
       assert_equal stack.env["WIP"], "true"
       assert_equal stack.env["BUG"], "true"
     end
+
+    test "#unarchive! triggers a GithubSync job" do
+      stack = shipit_stacks(:review_stack)
+      assert_no_enqueued_jobs(only: GithubSyncJob) do
+        stack.archive!(shipit_users(:codertocat))
+      end
+
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id]) do
+        stack.unarchive!
+      end
+    end
   end
 end
