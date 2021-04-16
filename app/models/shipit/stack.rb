@@ -459,6 +459,8 @@ module Shipit
 
     def unarchive!
       update!(archived_since: nil, lock_reason: nil, lock_author: nil, locked_since: nil)
+
+      sync_github
     end
 
     def to_param
