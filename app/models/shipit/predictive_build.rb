@@ -251,7 +251,7 @@ module Shipit
     def aborting_tasks(is_failed, reject_reason)
       if ci_pipeline_tasks_running?
         ci_pipeline_canceling
-        trigger_pipeline_tasks(true)
+        trigger_pipeline_tasks(true) if predictive_branches.any?
       end
 
       predictive_branches.each do |p_branch|
