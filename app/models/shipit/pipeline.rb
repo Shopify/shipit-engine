@@ -119,6 +119,11 @@ module Shipit
       merge_requests.each do |merge_request|
         merge_request.refresh!
         merge_request.reject_unless_mergeable!
+        if merge_request.rejected?
+          msg = "Pull request was rejected"
+          msg = "#{msg} due to #{merge_request.rejection_reason}" if merge_request.rejection_reason
+          Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg)
+        end
         merge_request.cancel! if merge_request.closed?
         merge_request.revalidate! if merge_request.need_revalidation?
       end
@@ -129,7 +134,10 @@ module Shipit
         if !merge_request.not_mergeable_yet? && merge_request.all_status_checks_passed?
           final_merge_requests << merge_request
         else
-          msg = "Pull request is not mergeable yet or not all status checks passed. We will try again later."
+          msg = ""
+          msg = "Pull request is not mergeable yet. Please try again later." if merge_request.not_mergeable_yet?
+          msg = "#{msg} Not all status checks passed. Please try again later." unless merge_request.all_status_checks_passed?
+          merge_request.reject!("not_mergeable")
           Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
         end
       end

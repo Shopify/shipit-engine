@@ -7,7 +7,7 @@ module Shipit
 
     WAITING_STATUSES = %w(fetching pending).freeze
     QUEUED_STATUSES = %w(pending revalidating).freeze
-    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase with_merge_request_issue).freeze
+    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase with_merge_request_issue not_mergeable).freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
