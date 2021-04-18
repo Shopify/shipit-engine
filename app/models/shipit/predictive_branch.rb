@@ -86,7 +86,7 @@ module Shipit
       predictive_task_type = task.predictive_task_type.to_sym
 
       status, jobs = parse_task_output(task)
-      upsert_ci_job_statuses(jobs)
+      upsert_ci_job_statuses(jobs) unless predictive_task_type == :run
       return task_failed unless [:success, :pending, :running].include? task_status
 
       if predictive_task_type == :run
