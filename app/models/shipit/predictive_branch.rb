@@ -113,10 +113,16 @@ module Shipit
 
       if jobs.any?
         jobs.each do |name, params|
-          Shipit::CiJobsStatus.create!(predictive_branch_id: self.id,
-                                       name: params[:job_name],
-                                       status: params[:status].downcase.to_sym,
-                                       link: params[:link])
+          begin
+            Shipit::CiJobsStatus.create!(predictive_branch_id: self.id,
+                                         name: params[:job_name],
+                                         status: params[:status].downcase.to_sym,
+                                         link: params[:link])
+          rescue
+            puts "--------- upsert_ci_job_statuses:: failed to create CiJobsStatus."
+            puts "--------- upsert_ci_job_statuses:: predictive_branch_id: #{self.id} ; name: #{params[:job_name]} ; status: #{params[:status]} link: #{params[:link]}"
+          end
+
         end
       end
     end
