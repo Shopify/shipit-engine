@@ -2,7 +2,7 @@
 module Shipit
   class WebhooksController < ActionController::Base
     skip_before_action :verify_authenticity_token, raise: false
-    before_action :check_if_ping, :verify_signature
+    before_action :check_if_ping, :drop_unhandled_event, :verify_signature
 
     respond_to :json
 
@@ -15,8 +15,12 @@ module Shipit
 
     private
 
+    def drop_unhandled_event
+      # Acknowledge, but do nothing
+      head(204) unless Shipit::Webhooks.for_event(event).present?
+    end
+
     def verify_signature
-      head(404) unless repository_owner
       github_app = Shipit.github(organization: repository_owner)
       verified = github_app.verify_webhook_signature(
         request.headers['X-Hub-Signature'],
