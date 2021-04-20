@@ -83,6 +83,13 @@ module Shipit
     after_commit :emit_merge_status_hooks, on: :update
     after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
+    after_commit :sync_github_if_necessary, on: :update
+
+    def sync_github_if_necessary
+      if archived_since_previously_changed? && archived_since.nil?
+        sync_github
+      end
+    end
 
     validates :repository, uniqueness: {
       scope: %i(environment), case_sensitive: false,
