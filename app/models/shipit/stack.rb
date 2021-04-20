@@ -86,7 +86,7 @@ module Shipit
     after_commit :sync_github_if_necessary, on: :update
 
     def sync_github_if_necessary
-      if previous_changes.include?('archived_since') && previous_changes['archived_since'].last.nil?
+      if archived_since_previously_changed? && archived_since.nil?
         sync_github
       end
     end
