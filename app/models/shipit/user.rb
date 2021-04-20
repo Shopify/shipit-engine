@@ -15,6 +15,8 @@ module Shipit
 
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
+        # Users are global, any app can be used
+        # This will not work for users that only exist in an Enterprise install
         user.github_user = Shipit.github.api.user(login)
       end
     end
@@ -91,6 +93,8 @@ module Shipit
     end
 
     def refresh_from_github!
+      # Users are global, any app can be used
+      # This will not work for users that only exist in an Enterprise install
       update!(github_user: Shipit.github.api.user(github_id))
     rescue Octokit::NotFound
       identify_renamed_user!

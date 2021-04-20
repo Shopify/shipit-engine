@@ -64,7 +64,7 @@
     "fork": false,
     "size": 0,
     "owner": {
-      "name": "Shopify",
+      "login": "Shopify",
       "email": "jean.boussier@gmail.com"
     },
     "private": false,

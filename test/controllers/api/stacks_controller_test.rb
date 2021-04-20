@@ -23,7 +23,7 @@ module Shipit
 
       test "#create fails with invalid stack" do
         assert_no_difference "Stack.count" do
-          post :create, params: { repo_owner: 'some', repo_name: 'owner/path' }
+          post :create, params: { repo_owner: 'some', repo_name: 'owner/path', branch: 'main' }
         end
         assert_response :unprocessable_entity
         assert_json 'errors', 'repository' => ['is invalid']
@@ -48,12 +48,12 @@ module Shipit
 
         assert_no_difference -> { Stack.count } do
           post :create,
-               params: {
-                 repo_name: existing_stack.repo_name,
-                 repo_owner: existing_stack.repo_owner,
-                 environment: existing_stack.environment,
-                 branch: existing_stack.branch,
-               }
+            params: {
+              repo_name: existing_stack.repo_name,
+              repo_owner: existing_stack.repo_owner,
+              environment: existing_stack.environment,
+              branch: existing_stack.branch,
+            }
         end
 
         assert_response :unprocessable_entity

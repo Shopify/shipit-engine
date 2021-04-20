@@ -29,7 +29,7 @@ shipit2:
 
 shipit_restart:
   id: 3
-  user: walrus
+  user: ~
   type: Shipit::Task
   stack: shipit
   status: success

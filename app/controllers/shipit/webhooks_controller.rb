@@ -16,7 +16,21 @@ module Shipit
     private
 
     def verify_signature
-      head(422) unless Shipit.github.verify_webhook_signature(request.headers['X-Hub-Signature'], request.raw_post)
+      head(404) unless repository_owner
+      github_app = Shipit.github(organization: repository_owner)
+      verified = github_app.verify_webhook_signature(
+        request.headers['X-Hub-Signature'],
+        request.raw_post
+      )
+      head(422) unless verified
+
+      Rails.logger.info([
+        'WebhookController#verify_signature',
+        "event=#{event}",
+        "repository_owner=#{repository_owner}",
+        "signature=#{request.headers['X-Hub-Signature']}",
+        "status=#{status}",
+      ].join(' '))
     end
 
     def check_if_ping
@@ -27,8 +41,9 @@ module Shipit
       request.headers.fetch('X-Github-Event')
     end
 
-    def stack
-      @stack ||= Stack.find(params[:stack_id])
+    def repository_owner
+      # Fallback to the organization sub-object if repository isn't included in the payload
+      params.dig('repository', 'owner', 'login') || params.dig('organization', 'login')
     end
   end
 end

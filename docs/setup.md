@@ -160,6 +160,35 @@ production:
   update_latest_deployed_ref: true
 ```
 
+### Using Multiple Github Applications
+
+A Github application can only authenticate to the Github organization it's installed in. If you want to deploy code from multiple Github organizations the `github` section of your `config/secrets.yml` will need to be formatted differently. The top-level keys should be the name of each Github organization, and the following sub-keys are the Github app details for that particular organization.
+
+For example:
+
+```yml
+production:
+  github:
+    somegithuborg:
+      app_id:
+      installation_id:
+      webhook_secret:
+      private_key:
+      oauth:
+        id:
+        secret:
+        teams:
+    someothergithuborg:
+      app_id:
+      installation_id:
+      webhook_secret:
+      private_key:
+      oauth:
+        id:
+        secret:
+        teams:
+```
+
 ## Running Cron
 
 Shipit requires some periodic tasks to be executed to function properly. If you're running on Heroku, you can use the [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) add on to run Shipit cron jobs, though it will only run at a maximum frequency of once every 10 minutes.

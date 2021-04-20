@@ -43,7 +43,6 @@ module Shipit
     end
 
     def missing_github_app_message
-      # TODO: Document how to create an app
       <<-MESSAGE.html_safe
         Shipit requires a GitHub App to authenticate users and perform API calls.
       MESSAGE

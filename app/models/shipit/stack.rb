@@ -32,9 +32,9 @@ module Shipit
     has_many :deploys
     has_many :rollbacks
     has_many :deploys_and_rollbacks,
-             -> { where(type: %w(Shipit::Deploy Shipit::Rollback)) },
-             class_name: 'Task',
-             inverse_of: :stack
+      -> { where(type: %w(Shipit::Deploy Shipit::Rollback)) },
+      class_name: 'Task',
+      inverse_of: :stack
     has_many :github_hooks, dependent: :destroy, class_name: 'Shipit::GithubHook::Repo'
     has_many :hooks, dependent: :destroy
     has_many :api_clients, dependent: :destroy
@@ -83,6 +83,13 @@ module Shipit
     after_commit :emit_merge_status_hooks, on: :update
     after_commit :sync_github, on: :create
     after_commit :schedule_merges_if_necessary, on: :update
+    after_commit :sync_github_if_necessary, on: :update
+
+    def sync_github_if_necessary
+      if archived_since_previously_changed? && archived_since.nil?
+        sync_github
+      end
+    end
 
     validates :repository, uniqueness: {
       scope: %i(environment), case_sensitive: false,
@@ -90,6 +97,7 @@ module Shipit
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
     validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
+    validates :branch, presence: true
 
     validates :lock_reason, length: { maximum: 4096 }
 
@@ -402,10 +410,18 @@ module Shipit
 
     def github_commits
       handle_github_redirections do
-        Shipit.github.api.commits(github_repo_name, sha: branch)
+        github_api.commits(github_repo_name, sha: branch)
       end
     rescue Octokit::Conflict
       [] # Repository is empty...
+    end
+
+    def github_api
+      github_app.api
+    end
+
+    def github_app
+      Shipit.github(organization: repository.owner)
     end
 
     def handle_github_redirections
@@ -420,9 +436,9 @@ module Shipit
     end
 
     def refresh_repository!
-      resource = Shipit.github.api.repo(github_repo_name)
+      resource = github_api.repo(github_repo_name)
       if resource.try(:message) == 'Moved Permanently'
-        resource = Shipit.github.api.get(resource.url)
+        resource = github_api.get(resource.url)
       end
       repository.update!(owner: resource.owner.login, name: resource.name)
     end
@@ -487,9 +503,9 @@ module Shipit
     end
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
-             :blocking_statuses, :deploy_variables, :filter_task_envs, :filter_deploy_envs,
-             :maximum_commits_per_deploy, :pause_between_deploys, :retries_on_deploy, :retries_on_rollback,
-             to: :cached_deploy_spec
+      :blocking_statuses, :deploy_variables, :filter_task_envs, :filter_deploy_envs,
+      :maximum_commits_per_deploy, :pause_between_deploys, :retries_on_deploy, :retries_on_rollback,
+      to: :cached_deploy_spec
 
     def monitoring?
       monitoring.present?
@@ -593,7 +609,13 @@ module Shipit
 
     def update_defaults
       self.environment = 'production' if environment.blank?
-      self.branch = 'master' if branch.blank?
+      self.branch = default_branch_name if branch.blank?
+    end
+
+    def default_branch_name
+      Shipit.github.api.repo(github_repo_name).default_branch
+    rescue Octokit::NotFound, Octokit::InvalidRepository
+      nil
     end
 
     def set_locked_since
@@ -607,7 +629,7 @@ module Shipit
     end
 
     def schedule_merges_if_necessary
-      if previous_changes.include?('lock_reason') && previous_changes['lock_reason'].last.blank?
+      if lock_reason_previously_changed? && lock_reason.blank?
         schedule_merges
       end
     end

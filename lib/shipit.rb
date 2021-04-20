@@ -59,6 +59,9 @@ SafeYAML::OPTIONS[:deserialize_symbols] = false
 module Shipit
   extend self
 
+  GithubOrganizationUnknown = Class.new(StandardError)
+  TOP_LEVEL_GH_KEYS = [:app_id, :installation_id, :webhook_secret, :private_key, :oauth, :domain]
+
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes
@@ -101,13 +104,39 @@ module Shipit
     )
   end
 
-  def github
-    @github ||= GitHubApp.new(secrets.github)
+  def github(organization: github_default_organization)
+    # Backward compatibility
+    # nil signifies the single github app config schema is being used
+    if github_default_organization.nil?
+      config = secrets.github
+    else
+      config = github_app_config(organization)
+      raise GithubOrganizationUnknown, organization if config.nil?
+    end
+    @github ||= {}
+    @github[organization] ||= GitHubApp.new(organization, config)
+  end
+
+  def github_default_organization
+    return nil unless secrets&.github
+    org = secrets.github.keys.first
+    TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
+  end
+
+  def github_organizations
+    return [nil] unless github_default_organization
+    secrets.github.keys
+  end
+
+  def github_app_config(organization)
+    github_config = secrets.github.deep_transform_keys(&:downcase)
+    github_organization = organization.downcase.to_sym
+    github_config[github_organization]
   end
 
   def legacy_github_api
     if secrets&.github_api.present?
-      @legacy_github_api ||= github.new_client(access_token: secrets.github_api['access_token'])
+      @legacy_github_api ||= github.new_client(access_token: secrets.github_api[:access_token])
     end
   end
 
@@ -172,13 +201,11 @@ module Shipit
   end
 
   def revision
-    @revision ||= begin
-      if revision_file.exist?
-        revision_file.read
-      else
-        %x(git rev-parse HEAD)
-      end.strip
-    end
+    @revision ||= if revision_file.exist?
+      revision_file.read
+    else
+      %x(git rev-parse HEAD)
+    end.strip
   end
 
   def default_inactivity_timeout

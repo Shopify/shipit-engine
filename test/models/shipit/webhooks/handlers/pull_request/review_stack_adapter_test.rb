@@ -19,6 +19,30 @@ module Shipit
             review_stack.unarchive!
           end
 
+          test "unarchive! syncs with GitHub" do
+            stack = create_archived_stack
+            review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
+              params_for(stack),
+              scope: stack.repository.stacks
+            )
+
+            assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id]) do
+              review_stack.unarchive!
+            end
+          end
+
+          test "unarchive! schedules provisioning" do
+            stack = create_archived_stack
+            review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
+              params_for(stack),
+              scope: stack.repository.stacks
+            )
+
+            assert_changes -> { stack.reload.awaiting_provision }, from: false, to: true do
+              review_stack.unarchive!
+            end
+          end
+
           test "archive! on an archived stack is a no-op" do
             stack = create_archived_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(

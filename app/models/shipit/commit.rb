@@ -21,28 +21,40 @@ module Shipit
     after_create { stack.update_undeployed_commits_count }
 
     after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
-                 :schedule_continuous_delivery, on: :create
+      :schedule_continuous_delivery, on: :create
 
-    belongs_to :author, class_name: 'User', inverse_of: :authored_commits
-    belongs_to :committer, class_name: 'User', inverse_of: :commits
-    belongs_to :lock_author, class_name: :User, optional: true, inverse_of: false
+    belongs_to :author, class_name: 'User', optional: true, inverse_of: :authored_commits
+    belongs_to :committer, class_name: 'User', optional: true, inverse_of: :commits
+    belongs_to :lock_author, class_name: 'User', optional: true, inverse_of: false
 
     def author
       super || AnonymousUser.new
+    end
+
+    def author=(user)
+      super(user.presence)
     end
 
     def committer
       super || AnonymousUser.new
     end
 
+    def committer=(user)
+      super(user.presence)
+    end
+
     def lock_author
       super || AnonymousUser.new
+    end
+
+    def lock_author=(user)
+      super(user.presence)
     end
 
     scope :reachable, -> { where(detached: false) }
 
     delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
-             :soft_failing_statuses, to: :stack
+      :soft_failing_statuses, to: :stack
 
     def self.newer_than(commit)
       return all unless commit
@@ -143,7 +155,7 @@ module Shipit
 
     def refresh_statuses!
       github_statuses = stack.handle_github_redirections do
-        Shipit.github.api.statuses(github_repo_name, sha, per_page: 100)
+        stack.github_api.statuses(github_repo_name, sha, per_page: 100)
       end
       github_statuses.each do |status|
         create_status_from_github!(status)
@@ -158,7 +170,7 @@ module Shipit
 
     def refresh_check_runs!
       response = stack.handle_github_redirections do
-        Shipit.github.api.check_runs(github_repo_name, sha)
+        stack.github_api.check_runs(github_repo_name, sha)
       end
       response.check_runs.each do |check_run|
         create_or_update_check_run_from_github!(check_run)
@@ -260,7 +272,7 @@ module Shipit
     end
 
     def github_commit
-      @github_commit ||= Shipit.github.api.commit(github_repo_name, sha)
+      @github_commit ||= stack.github_api.commit(github_repo_name, sha)
     end
 
     def schedule_fetch_stats!

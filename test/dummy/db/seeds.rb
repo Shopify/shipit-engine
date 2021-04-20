@@ -31,6 +31,7 @@ module Shipit
         name:  Faker::Internet.domain_name.parameterize,
         owner: Faker::Company.name.parameterize
       ),
+      branch: "main",
       deploy_url:  "https://#{Faker::Internet.domain_name.parameterize}.#{Faker::Internet.domain_suffix}/",
       cached_deploy_spec: DeploySpec.load(%(
         {

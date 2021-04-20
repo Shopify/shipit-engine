@@ -175,7 +175,7 @@ module Shipit
     end
 
     delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, :async_update_estimated_deploy_duration,
-             to: :stack
+      to: :stack
 
     delegate :checklist, to: :definition
 
@@ -281,6 +281,10 @@ module Shipit
 
     def author
       user || AnonymousUser.new
+    end
+
+    def author=(user)
+      super(user.presence)
     end
 
     def finished?

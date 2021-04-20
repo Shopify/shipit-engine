@@ -44,8 +44,8 @@ module Shipit
             return unless stack.archived?
 
             stack.transaction do
-              stack.unarchive!(*args, &block)
               Shipit::ReviewStackProvisioningQueue.add(stack)
+              stack.unarchive!(*args, &block)
             end
           end
 

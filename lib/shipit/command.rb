@@ -13,7 +13,7 @@ module Shipit
     Denied = Class.new(Error)
     TimedOut = Class.new(Error)
 
-    BASE_ENV = Bundler.clean_env.merge((ENV.keys - Bundler.clean_env.keys).map { |k| [k, nil] }.to_h)
+    BASE_ENV = Bundler.unbundled_env.merge((ENV.keys - Bundler.unbundled_env.keys).map { |k| [k, nil] }.to_h)
 
     class Failed < Error
       attr_reader :exit_code
@@ -86,7 +86,7 @@ module Shipit
       @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
       begin
-        @out, child_in, @pid = PTY.spawn(clean_env, *interpolated_arguments, chdir: @chdir)
+        @out, child_in, @pid = PTY.spawn(unbundled_env, *interpolated_arguments, chdir: @chdir)
         child_in.close
       rescue Errno::ENOENT
         raise NotFound, "#{Shellwords.split(interpolated_arguments.first).first}: command not found"
@@ -97,7 +97,7 @@ module Shipit
       self
     end
 
-    def clean_env
+    def unbundled_env
       BASE_ENV.merge('PATH' => "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}").merge(@env.stringify_keys)
     end
 

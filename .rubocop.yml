@@ -1,6 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.6
   Exclude:
+    - tmp/*
     - bin/*
     - Gemfile
     - lib/snippets/**/*
@@ -48,4 +49,10 @@ Lint/AssignmentInCondition:
 
 # This cop is broken https://github.com/rubocop-hq/rubocop/pull/7531
 Layout/RescueEnsureAlignment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/StringLiteralsInInterpolation:
   Enabled: false
