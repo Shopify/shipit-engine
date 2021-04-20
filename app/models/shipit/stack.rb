@@ -607,7 +607,7 @@ module Shipit
     end
 
     def schedule_merges_if_necessary
-      if previous_changes.include?('lock_reason') && previous_changes['lock_reason'].last.blank?
+      if lock_reason_previously_changed? && lock_reason.blank?
         schedule_merges
       end
     end
