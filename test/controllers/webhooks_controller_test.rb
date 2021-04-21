@@ -168,6 +168,14 @@ module Shipit
       assert_response :ok
     end
 
+    test "events with no handler are dropped" do
+      event = 'not_a_real_event'
+
+      @request.headers['X-Github-Event'] = event
+      post :create, body: pull_request_params.to_json, as: :json
+      assert_response 204
+    end
+
     private
 
     def pull_request_params
