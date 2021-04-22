@@ -368,6 +368,12 @@ module Shipit
       merge_queue_enabled? && (!locked? || mode==Shipit::Pipeline::MERGE_MODE_EMERGENCY) && merge_status == 'success'
     end
 
+    def not_mergeable_reason(mode = nil)
+      return 'CI disabled' if !merge_queue_enabled?
+      return merge_status if merge_status != 'success' && (!locked? || mode==Shipit::Pipeline::MERGE_MODE_EMERGENCY)
+      return 'Unknown'
+    end
+
     def merge_method
       cached_deploy_spec&.merge_request_merge_method || Shipit.default_merge_method
     end
