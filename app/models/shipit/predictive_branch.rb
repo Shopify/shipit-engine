@@ -191,9 +191,9 @@ module Shipit
       when PIPELINE_TASKS_FAILED, STACK_TASKS_FAILED
         msg = "Failed to process your request due to CI failures"
       when COMMIT_VALIDATION_FAILED
-        msg = 'Someone pushed changes, we had to stop what we\'re doing and start over.'
+        msg = "Someone pushed changes directly to #{stack.branch} branch, we had to stop what we're doing, please try again later."
       when MERGE_PREDICTIVE_TO_STACK_FAILED
-        msg = "Failed to merge predictive branch to #{branch}"
+        msg = "Failed to merge predictive branch to #{stack.branch}"
       when MERGE_MR_TO_PREDICTIVE_FAILED
         msg = "Failed to merge pull request to predictive branch"
       when MR_MERGED_TO_PREDICTIVE
