@@ -66,7 +66,8 @@ module Shipit
     def stats
       info = {
         pipeline: nil,
-        merge_queue: {}
+        merge_queue: {},
+        unmergeable_stacks: unmergeable_stacks(MERGE_MODE_DEFAULT)
       }
       wip = predictive_builds.where(status: Shipit::PredictiveBuild::WIP_STATUSES).first
       if wip
