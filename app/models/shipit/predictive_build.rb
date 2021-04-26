@@ -176,8 +176,18 @@ module Shipit
       pipeline_task_status = task.status.to_sym
       predictive_task_type = task.predictive_task_type.to_sym
 
-      status, jobs = parse_task_output(task)
+      status, jobs, no_match_message = parse_task_output(task)
       upsert_ci_job_statuses(jobs)
+
+      pipeline_tasks_cache_key = "PredictiveBranch::update_status_#{id}"
+      if no_match_message
+        Shipit.redis.incr(pipeline_tasks_cache_key)
+        Shipit.redis.get(pipeline_tasks_cache_key).to_i > 2
+        pipeline_task_status = :failed
+      else
+        Shipit.redis.del(pipeline_tasks_cache_key) if Shipit.redis.get(pipeline_tasks_cache_key).present?
+      end
+
       return pipeline_task_failed unless [:success, :pending, :running].include? pipeline_task_status
 
       if predictive_task_type == :run
@@ -212,6 +222,7 @@ module Shipit
     end
 
     def parse_task_output(task)
+      no_match_message = false
       jobs = {}
       statuses = {aborted: 0, running: 0, success: 0}
       task.chunks.each do |chunk|
@@ -224,12 +235,15 @@ module Shipit
           jobs[cmd[:job_name]] = cmd
           statuses[cmd[:status].downcase.to_sym] += 1 if statuses[cmd[:status].downcase.to_sym].present?
         end
+        if chunk.text.include?('No match found')
+          no_match_message = true
+        end
       end
 
-      return :aborted, jobs if statuses[:aborted] > 0
-      return :running, jobs if statuses[:running] > 0
-      return :success, jobs if statuses[:success] > 0
-      return false, jobs
+      return :aborted, jobs, no_match_message if statuses[:aborted] > 0
+      return :running, jobs, no_match_message if statuses[:running] > 0
+      return :success, jobs, no_match_message if statuses[:success] > 0
+      return false, jobs, no_match_message
     end
 
     def update_completed_requests
