@@ -16,6 +16,7 @@ module Shipit
     MERGE_MR_TO_PREDICTIVE_FAILED = 'merge_mr_to_predictive_failed'
     MR_MERGED_TO_PREDICTIVE = 'mr_merged_to_predictive'
     CANCELED_DUE_TO_EMERGENCY = 'canceled_due_to_emergency'
+    MR_STOPPED = 'mr_stopped'
 
     REJECTION_OPTIONS = %w(stack_tasks_failed pipeline_tasks_failed merged_failed).freeze
     WAITING_STATUSES = %w(pending).freeze
@@ -214,6 +215,8 @@ module Shipit
         msg = "Pull request merged to branch #{stack.branch}"
       when CANCELED_DUE_TO_EMERGENCY
         msg = "Pull request build attempt was canceled as part of branch '#{branch}' due to emergency build."
+      when MR_STOPPED
+        msg = "The pipeline process was stopped"
       else
         return false
       end
