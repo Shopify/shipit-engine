@@ -4,8 +4,9 @@ require 'test_helper'
 module Shipit
   class DeployCommandsTest < ActiveSupport::TestCase
     def setup
-      @stack = shipit_stacks(:shipit)
       @deploy = shipit_deploys(:shipit_pending)
+      @stack = @deploy.stack
+      @stack.stubs(:clear_git_cache!)
       @commands = DeployCommands.new(@deploy)
       @deploy_spec = stub(
         dependencies_steps!: ['bundle install --some-args'],
@@ -21,35 +22,84 @@ module Shipit
     end
 
     test "#fetch calls git fetch if repository cache already exist" do
-      Dir.expects(:exist?).with(@stack.git_path).returns(true)
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+
       command = @commands.fetch
+
       assert_equal %w(git fetch origin --tags master), command.args
     end
 
     test "#fetch calls git fetch in git_path directory if repository cache already exist" do
-      Dir.expects(:exist?).with(@stack.git_path).returns(true)
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+
       command = @commands.fetch
+
       assert_equal @stack.git_path.to_s, command.chdir
     end
 
     test "#fetch calls git clone if repository cache do not exist" do
-      Dir.expects(:exist?).with(@stack.git_path).returns(false)
+      @stack.git_path.stubs(:exist?).returns(false)
+
       command = @commands.fetch
+
       expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
     end
 
-    test "#fetch does not use --single-branch if git is outdated" do
-      Dir.expects(:exist?).with(@stack.git_path).returns(false)
-      StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
+    test "#fetch calls git clone if repository cache is empty" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(true)
+
       command = @commands.fetch
+
+      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+    end
+
+    test "#fetch calls git clone if repository cache corrupt" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+      StackCommands.any_instance.expects(:git_cmd_succeeds?)
+        .with(@stack.git_path)
+        .returns(false)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+    end
+
+    test "#fetch clears a corrupted git stash before cloning" do
+      @stack.expects(:clear_git_cache!)
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+      StackCommands.any_instance.expects(:git_cmd_succeeds?)
+        .with(@stack.git_path)
+        .returns(false)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+    end
+
+    test "#fetch does not use --single-branch if git is outdated" do
+      @stack.git_path.stubs(:exist?).returns(false)
+      StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
+
+      command = @commands.fetch
+
       expected = %W(git clone --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
     end
 
     test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
-      Dir.expects(:exist?).with(@stack.git_path).returns(false)
+      @stack.git_path.stubs(:exist?).returns(false)
+
       command = @commands.fetch
+
       assert_equal @stack.deploys_path.to_s, command.chdir
     end
 

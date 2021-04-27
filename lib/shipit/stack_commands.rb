@@ -15,19 +15,25 @@ module Shipit
 
     def fetch
       create_directories
-      if Dir.exist?(@stack.git_path)
+      if valid_git_repository?(@stack.git_path)
         git('fetch', 'origin', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
       else
+        @stack.clear_git_cache!
         git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
       end
     end
 
     def fetched?(commit)
-      git_dir = File.join(@stack.git_path, '.git')
-      if Dir.exist?(git_dir)
+      if valid_git_repository?(@stack.git_path)
         git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
       else
-        Command.new('test', '-d', git_dir, env: env, chdir: @stack.deploys_path)
+        # When the stack's git cache is not valid, the commit is
+        # NOT fetched. To keep the interface of this method
+        # consistent, we must return a Shipit::Command whose #success?
+        # method returns false - has a non-zero exit status. We utilize
+        # the POSIX 'test' command with no arguments which should
+        # always have an exit status of 1.
+        Command.new('test', env: env, chdir: @stack.deploys_path)
       end
     end
 
@@ -69,6 +75,18 @@ module Shipit
         git('checkout', commit.sha, chdir: git_dir).run! if commit
         yield Pathname.new(git_dir)
       end
+    end
+
+    def valid_git_repository?(path)
+      path.exist? &&
+        !path.empty? &&
+        git_cmd_succeeds?(path)
+    end
+
+    def git_cmd_succeeds?(path)
+      git("rev-parse", "--git-dir", chdir: path)
+        .tap(&:run)
+        .success?
     end
 
     def git_clone(url, path, branch: 'master', **kwargs)
