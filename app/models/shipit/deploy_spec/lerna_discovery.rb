@@ -87,7 +87,6 @@ module Shipit
             'publish-lerna-independent-packages',
           ]
         end
-        
         command
       end
 
