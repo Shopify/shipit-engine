@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+const {resolve} = require('path');
+const {execSync} = require('child_process')
+const Repository = require(resolve('.', 'node_modules', 'lerna', 'lib', 'Repository'));
+const PackageUtilities = require(resolve('.', 'node_modules', 'lerna', 'lib', 'PackageUtilities'));
+
+function npmTag(version) {
+  const isNext = ['-beta', '-alpha', '-rc', '-next'].some(distributionType =>
+    version.includes(distributionType),
+  );
+  return isNext ? 'next' : 'latest';
+}
+
+const taggedPackages = execSync('git tag --points-at HEAD')
+  .toString()
+  .trim()
+  .split('\n')
+  .map(tag => {
+    if (tag.startsWith('@')) {
+      return `@${tag.split('@')[1]}`;
+    }
+    return tag.split('@')[0];
+  });
+
+const repository = new Repository('.');
+const unsortedPackages = PackageUtilities.getPackages({rootPath: '.', packageConfigs: repository.packageConfigs});
+const packages = PackageUtilities.topologicallyBatchPackages(unsortedPackages, true)
+  .reduce((acc, packageGroup) => [...acc, ...packageGroup], [])
+  .filter(({name}) => taggedPackages.includes(name));
+
+packages.forEach(({name, version}) => {
+  const command = `node_modules/.bin/lerna publish --yes --npm-client=npm --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} --scope=${name} --npm-tag=${npmTag(
+    version,
+  )}`;
+
+  // eslint-disable-next-line no-console
+  console.log(command);
+  require('child_process').execSync(command);
+});

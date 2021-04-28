@@ -79,12 +79,12 @@ module Shipit
         command = if lerna_lerna >= LATEST_MAJOR_VERSION
           [
             'assert-lerna-independent-version-tags',
-            'publish-lerna-independent-packages-newer',
+            'publish-lerna-independent-packages',
           ]
         else
           [
             'assert-lerna-independent-version-tags',
-            'publish-lerna-independent-packages',
+            'publish-lerna-independent-packages-legacy',
           ]
         end
         command

@@ -828,14 +828,14 @@ module Shipit
       @spec.stubs(:lerna?).returns(true)
       @spec.stubs(:lerna_config).returns('lerna' => '2.0.0', 'version' => 'independent')
       assert_equal 'assert-lerna-independent-version-tags', @spec.deploy_steps[0]
-      assert_equal 'publish-lerna-independent-packages', @spec.deploy_steps[1]
+      assert_equal 'publish-lerna-independent-packages-legacy', @spec.deploy_steps[1]
     end
 
     test '#publish_lerna_packages checks if independent version tags exist, checks if a newer version of lerna is used, and then invokes lerna deploy script' do
       @spec.stubs(:lerna?).returns(true)
       @spec.stubs(:lerna_config).returns('lerna' => '3.0.0', 'version' => 'independent')
       assert_equal 'assert-lerna-independent-version-tags', @spec.deploy_steps[0]
-      assert_equal 'publish-lerna-independent-packages-newer', @spec.deploy_steps[1]
+      assert_equal 'publish-lerna-independent-packages', @spec.deploy_steps[1]
     end
 
     test '#publish_lerna_packages checks if fixed version tag exists, and then invokes lerna deploy script' do
