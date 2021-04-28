@@ -1,39 +1,43 @@
 #!/usr/bin/env node
-const {resolve} = require('path');
-const {execSync} = require('child_process')
-const Repository = require(resolve('.', 'node_modules', 'lerna', 'lib', 'Repository'));
-const PackageUtilities = require(resolve('.', 'node_modules', 'lerna', 'lib', 'PackageUtilities'));
+const { execSync } = require("child_process");
 
-function npmTag(version) {
-  const isNext = ['-beta', '-alpha', '-rc', '-next'].some(distributionType =>
-    version.includes(distributionType),
-  );
-  return isNext ? 'next' : 'latest';
-}
-
-const taggedPackages = execSync('git tag --points-at HEAD')
+const taggedPackages = execSync("git tag --points-at HEAD")
   .toString()
   .trim()
-  .split('\n')
-  .map(tag => {
-    if (tag.startsWith('@')) {
-      return `@${tag.split('@')[1]}`;
-    }
-    return tag.split('@')[0];
+  .split("\n");
+
+const hasBetaRelease = taggedPackages.some((version) =>
+  version.includes("-beta")
+);
+if (
+  hasBetaRelease &&
+  !taggedPackages.every((version) => version.includes("-beta"))
+) {
+  throw Error("All packages must be beta releases. Versions cannot be mixed.");
+}
+const isNext =
+  !hasBetaRelease &&
+  taggedPackages.some((version) => {
+    return ["-alpha", "-rc", "-next"].some((distributionType) =>
+      version.includes(distributionType)
+    );
   });
 
-const repository = new Repository('.');
-const unsortedPackages = PackageUtilities.getPackages({rootPath: '.', packageConfigs: repository.packageConfigs});
-const packages = PackageUtilities.topologicallyBatchPackages(unsortedPackages, true)
-  .reduce((acc, packageGroup) => [...acc, ...packageGroup], [])
-  .filter(({name}) => taggedPackages.includes(name));
+function distTag() {
+  if (hasBetaRelease) {
+    return "beta";
+  }
+  return isNext ? "next" : "latest";
+}
 
-packages.forEach(({name, version}) => {
-  const command = `node_modules/.bin/lerna publish --yes --npm-client=npm --skip-npm=false --skip-git --force-publish=${name} --repo-version=${version} --scope=${name} --npm-tag=${npmTag(
-    version,
-  )}`;
+const command = [
+  "node_modules/.bin/lerna publish",
+  "from-package",
+  "--yes",
+  `--dist-tag ${distTag()}`,
+];
 
-  // eslint-disable-next-line no-console
-  console.log(command);
-  require('child_process').execSync(command);
-});
+const commandString = command.join(" ");
+
+console.log(`${commandString}`);
+execSync(commandString);
