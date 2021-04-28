@@ -6,12 +6,12 @@ const taggedPackages = execSync('git tag --points-at HEAD')
   .trim()
   .split('\n');
 
-const isBeta = taggedPackages.some((version) => version.includes('-beta'));
-if(isBeta && !taggedPackages.every((version) => version.includes('-beta'))) {
+const hasBetaRelease = taggedPackages.some((version) => version.includes('-beta'));
+if(hasBetaRelease && !taggedPackages.every((version) => version.includes('-beta'))) {
   throw Error('All packages must be beta releases. Versions cannot be mixed.');
 }
 const isNext =
-  !isBeta &&
+  !hasBetaRelease &&
   taggedPackages.some((version) => {
     return ['-alpha', '-rc', '-next'].some((distributionType) =>
       version.includes(distributionType),
@@ -19,7 +19,7 @@ const isNext =
   });
 
 function distTag() {
-  if (isBeta) {
+  if (hasBetaRelease) {
     return 'beta';
   }
   return isNext ? 'next' : 'latest';
