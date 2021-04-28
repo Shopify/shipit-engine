@@ -1,38 +1,43 @@
 #!/usr/bin/env node
-const {execSync} = require('child_process');
+const { execSync } = require("child_process");
 
-const taggedPackages = execSync('git tag --points-at HEAD')
+const taggedPackages = execSync("git tag --points-at HEAD")
   .toString()
   .trim()
-  .split('\n');
+  .split("\n");
 
-const hasBetaRelease = taggedPackages.some((version) => version.includes('-beta'));
-if(hasBetaRelease && !taggedPackages.every((version) => version.includes('-beta'))) {
-  throw Error('All packages must be beta releases. Versions cannot be mixed.');
+const hasBetaRelease = taggedPackages.some((version) =>
+  version.includes("-beta")
+);
+if (
+  hasBetaRelease &&
+  !taggedPackages.every((version) => version.includes("-beta"))
+) {
+  throw Error("All packages must be beta releases. Versions cannot be mixed.");
 }
 const isNext =
   !hasBetaRelease &&
   taggedPackages.some((version) => {
-    return ['-alpha', '-rc', '-next'].some((distributionType) =>
-      version.includes(distributionType),
+    return ["-alpha", "-rc", "-next"].some((distributionType) =>
+      version.includes(distributionType)
     );
   });
 
 function distTag() {
   if (hasBetaRelease) {
-    return 'beta';
+    return "beta";
   }
-  return isNext ? 'next' : 'latest';
+  return isNext ? "next" : "latest";
 }
 
 const command = [
-  'node_modules/.bin/lerna publish',
-  'from-package',
-  '--yes',
+  "node_modules/.bin/lerna publish",
+  "from-package",
+  "--yes",
   `--dist-tag ${distTag()}`,
 ];
 
-const commandString = command.join(' ');
+const commandString = command.join(" ");
 
 console.log(`${commandString}`);
 execSync(commandString);
