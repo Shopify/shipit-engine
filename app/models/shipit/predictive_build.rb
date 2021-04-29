@@ -347,6 +347,7 @@ module Shipit
 
       if p_branches[:running].size + p_branches[:completed].size != predictive_branches.size
         ci_stack_failed
+        aborting_tasks(false, PredictiveBranch::STACK_TASKS_FAILED)
       elsif p_branches[:completed].any? && p_branches[:completed].size == predictive_branches.size
         ci_stack_completed
       else
