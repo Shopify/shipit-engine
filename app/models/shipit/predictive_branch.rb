@@ -92,8 +92,7 @@ module Shipit
       ci_tasks_cache_key = "PredictiveBranch::update_status_#{id}"
       if no_match_message
         Shipit.redis.incr(ci_tasks_cache_key)
-        Shipit.redis.get(ci_tasks_cache_key).to_i > 2
-        task_status = :failed
+        task_status = :failed if Shipit.redis.get(ci_tasks_cache_key).to_i > 2
       else
         Shipit.redis.del(ci_tasks_cache_key) if Shipit.redis.get(ci_tasks_cache_key).present?
       end
@@ -229,7 +228,7 @@ module Shipit
       when MERGE_MR_TO_PREDICTIVE_FAILED
         msg = "Failed to merge pull request to predictive branch"
       when MR_MERGED_TO_PREDICTIVE
-        msg = "Pull request merged to branch #{stack.branch}"
+        msg = "Pull request merged to branch #{stack.branch}.\n#{predictive_build.build_message}"
       when CANCELED_DUE_TO_EMERGENCY
         msg = "Pull request build attempt was canceled as part of branch '#{branch}' due to emergency build."
       when MR_STOPPED

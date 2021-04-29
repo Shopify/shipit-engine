@@ -282,6 +282,17 @@ module Shipit
       end
     end
 
+    def build_message
+      if status.in?(WIP_STATUSES)
+        minutes = ((Time.now - created_at) / 60).to_i
+        return "Your PR is next inline, shipit is currently busy processing CI ##{id} which started #{minutes} minutes ago."
+      else completed?
+        minutes = ((updated_at - created_at) / 60).to_i
+        return "CI ##{id} took #{minutes} minutes to complete."
+      end
+      return ''
+    end
+
     def set_ci_comments
       comment = []
       comment << "**CI ##{id} is now in progress for #{pipeline.environment}**"
