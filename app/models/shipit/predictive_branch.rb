@@ -201,10 +201,27 @@ module Shipit
       # delete_closed_branch(stack.github_repo_name, branch)
     end
 
+    def additional_failed_information
+      return '' if failed?
+      failed_branches = []
+      predictive_build.predictive_branches.each do |p_build_branch|
+        failed_branches << p_build_branch if p_build_branch.failed?
+      end
+      return '' if failed_branches.empty?
+      res = " of: "
+      failed_branches.each do |fb|
+        name = fb.stack.repository.full_name
+        fb.predictive_merge_requests.each do |pmr|
+          res = res + " /#{name}/pull/#{pmr.merge_request.number}"
+        end
+      end
+      res
+    end
+
     def comment_msg(step)
       case step
       when PIPELINE_TASKS_FAILED, STACK_TASKS_FAILED
-        msg = "Failed to process your request due to CI failures"
+        msg = "Failed to process your request due to CI failures" + additional_failed_information
       when COMMIT_VALIDATION_FAILED
         msg = "Someone pushed changes directly to #{stack.branch} branch, we had to stop what we're doing, please try again later."
       when MERGE_PREDICTIVE_TO_STACK_FAILED
