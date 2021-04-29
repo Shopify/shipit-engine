@@ -63,13 +63,17 @@ module Shipit
       stacks.select{ |s|  s.allows_merges?(mode) }
     end
 
+    def build_in_progress
+      predictive_builds.where(status: Shipit::PredictiveBuild::WIP_STATUSES).first
+    end
+
     def stats
       info = {
         pipeline: nil,
         merge_queue: {},
         unmergeable_stacks: unmergeable_stacks(MERGE_MODE_DEFAULT)
       }
-      wip = predictive_builds.where(status: Shipit::PredictiveBuild::WIP_STATUSES).first
+      wip = build_in_progress
       if wip
         info[:pipeline] = {
           id: wip.id,
