@@ -110,7 +110,7 @@ module Shipit
       Shipit::Pipeline::MERGE_MODES.each do |mode|
         predictive_build_mode = mode
         candidates = pipeline.release_candidates(mode)
-        next if candidates.empty?
+        next if !candidates || candidates.empty?
 
         predictive_build = PredictiveBuild.create(pipeline: pipeline, branch: "PREDICTIVE-BRANCH-:id")
         predictive_build.update(branch: "PREDICTIVE-BRANCH-#{predictive_build.id}")

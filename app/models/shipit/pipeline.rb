@@ -14,7 +14,7 @@ module Shipit
     MERGE_MODE_SINGLE = 'single'
     MERGE_MODE_EMERGENCY = 'emergency'
 
-    MERGE_MODES = %w(emergency single default).freeze
+    MERGE_MODES = %w(emergency default single).freeze
     MERGE_SINGLE_MODES = %w(emergency single).freeze
     MERGE_SINGLE_EMERGENCY = %w(emergency).freeze
 
@@ -113,8 +113,6 @@ module Shipit
 
       info
     end
-
-    private
 
     def remove_invalid_merge_requests(merge_requests, mode)
       stacks = mergeable_stacks(mode)
