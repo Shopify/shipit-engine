@@ -83,5 +83,11 @@ module Shipit
     def create_directories
       FileUtils.mkdir_p(@stack.deploys_path)
     end
+
+    private
+
+    def github
+      Shipit.github(organization: @stack.repository.owner)
+    end
   end
 end

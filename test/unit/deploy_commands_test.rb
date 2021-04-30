@@ -59,6 +59,12 @@ module Shipit
       assert_equal 5, command.env["SPECIFIC_CONFIG"]
     end
 
+    test "#env uses the correct Github token for a stack" do
+      Shipit.github(organization: 'shopify').stubs(:token).returns('aS3cr3Tt0kEn')
+      command = @commands.fetch
+      assert_equal 'aS3cr3Tt0kEn', command.env["GITHUB_TOKEN"]
+    end
+
     test "#clone clones the repository cache into the working directory" do
       commands = @commands.clone
       assert_equal 2, commands.size
