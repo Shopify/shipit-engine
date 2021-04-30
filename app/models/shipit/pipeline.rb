@@ -30,19 +30,29 @@ module Shipit
       # Reject candidates due to issues WITH their associated merge_requests
       valid_with = valid_with_merge_requests(merge_requests, mode)
 
-      merge_requests = merge_requests.select { |merge_request|
+      candidates = []
+      merge_requests.each do |merge_request|
+        is_rejected = false
         merge_request.with_merge_requests.each do |with_mr|
-          if !valid_with.include? with_mr
-            # TODO Add comment rejection reason on MR
-            # merge_request.reject!('with_merge_request_issue')
-            return false
-          end
+          is_rejected = true if !valid_with.include? with_mr
         end
 
-        true
-      }
+        if is_rejected
+          merge_request.reject!('with_merge_request_issue')
+          msg = <<~MSG
+            Failed to process your request due to connected pull request issue.
+          MSG
+          merge_request.with_merge_requests.each do |with_mr|
+            with_mr.reject!('with_merge_request_issue')
+            Shipit.github.api.add_comment(with_mr.stack.repository.full_name, with_mr.number, msg)
+          end
+          Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg)
+        end
 
-      merge_requests
+        candidates << merge_request unless is_rejected
+      end
+
+      candidates
     end
 
     def update_rejected_stacks(mode)
