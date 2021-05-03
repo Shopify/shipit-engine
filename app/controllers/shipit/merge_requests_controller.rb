@@ -8,7 +8,7 @@ module Shipit
     def create
       if pr_number = MergeRequest.extract_number(stack, params[:number_or_url])
         merge_request = MergeRequest.request_merge!(stack, pr_number, current_user)
-        flash[:success] = "Pull request ##{merge_request.number} added to the queue."
+        flash[:success] = "Pull request #{merge_request.number} added to the queue."
       else
         flash[:warning] = "Invalid or missing pull request number."
       end

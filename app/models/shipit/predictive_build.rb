@@ -285,17 +285,17 @@ module Shipit
     def build_message
       if status.in?(WIP_STATUSES)
         minutes = ((Time.now - created_at) / 60).to_i
-        return "Your PR is next in line, shipit is currently busy processing CI ##{id} which started #{minutes} minutes ago."
+        return "Your PR is next in line, shipit is currently busy processing CI #{id} which started #{minutes} minutes ago."
       else completed?
         minutes = ((updated_at - created_at) / 60).to_i
-        return "CI ##{id} took #{minutes} minutes to complete."
+        return "CI #{id} took #{minutes} minutes to complete."
       end
       return ''
     end
 
     def set_ci_comments
       comment = []
-      comment << "**CI ##{id} is now in progress for #{pipeline.environment}**"
+      comment << "**CI #{id} is now in progress for #{pipeline.environment}**"
       comment << ""
       predictive_branches.each do |predictive_branch|
         key = predictive_branch.stack.repository.full_name

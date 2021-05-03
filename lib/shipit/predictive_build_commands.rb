@@ -23,7 +23,7 @@ module Shipit
 
     def git_merge_origin_as_pr(branch, pr_num)
       git('merge', "origin/#{branch}", '--no-ff', '-m',
-          "Merge pull request ##{pr_num} from vcita/#{branch}", chdir: @chdir, env: env)
+          "Merge pull request #{pr_num} from vcita/#{branch}", chdir: @chdir, env: env)
     end
 
     def git_merge_ff(branch)
