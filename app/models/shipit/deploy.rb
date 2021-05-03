@@ -327,7 +327,11 @@ module Shipit
     end
 
     def check_for_retry
-      retry_if_necessary if status.in?(['failed', 'error', 'timedout'])
+      begin
+        retry_if_necessary if status.in?(['failed', 'error', 'timedout'])
+      rescue Exception => error
+        puts "Shipit::Deploy#retry_if_necessary failed to check; status: #{status}; message: #{error.message}"
+      end
     end
 
     def trigger_revert_if_required
