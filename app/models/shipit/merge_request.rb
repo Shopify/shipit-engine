@@ -140,7 +140,7 @@ module Shipit
 
     def self.request_merge!(stack, number, user, mode = Pipeline::MERGE_MODE_DEFAULT, with = [])
       if !stack.pipeline && (mode != Pipeline::MERGE_MODE_DEFAULT || with.present?)
-        error_msg = "mode/with are not support for non-pipelined stacks (##{stack.id}/#{mode}/#{with})"
+        error_msg = "mode/with are not support for non-pipelined stacks (#{stack.id}/#{mode}/#{with})"
         raise ArgumentError, error_msg
       end
 
