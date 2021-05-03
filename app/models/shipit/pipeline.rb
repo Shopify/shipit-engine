@@ -59,7 +59,7 @@ module Shipit
       stacks = unmergeable_stacks(mode)
       merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
       merge_requests.each do |merge_request|
-        "The repository does not allow merges (#{merge_request.stack.not_mergeable_reason(mode)}). Please try try again later."
+        msg = "The repository does not allow merges (#{merge_request.stack.not_mergeable_reason(mode)}). Please try try again later."
         Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
         merge_request.reject!("not_mergeable")
       end
