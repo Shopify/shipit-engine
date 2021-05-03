@@ -13,6 +13,7 @@ module Shipit
       after_transition any => any, do: :update_release_status
       after_transition any => any, do: :update_commit_deployments
       after_transition any => any, do: :update_last_deploy_time
+      after_transition any => any, do: :check_for_retry
     end
 
     belongs_to :until_commit, class_name: 'Commit', required: true, inverse_of: :deploys
@@ -323,6 +324,10 @@ module Shipit
         end
       end
       set_deploy_comment_on_pr(status, description, permalink) if description
+    end
+
+    def check_for_retry
+      retry_if_necessary if status.in?(['failed', 'error', 'timedout'])
     end
 
     def trigger_revert_if_required
