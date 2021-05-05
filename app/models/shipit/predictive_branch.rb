@@ -92,7 +92,7 @@ module Shipit
       ci_tasks_cache_key = "PredictiveBranch::update_status_#{id}"
       if no_match_message
         Shipit.redis.incr(ci_tasks_cache_key)
-        task_status = :failed if Shipit.redis.get(ci_tasks_cache_key).to_i > 2
+        task_status = :failed if Shipit.redis.get(ci_tasks_cache_key).to_i > 3
       else
         Shipit.redis.del(ci_tasks_cache_key) if Shipit.redis.get(ci_tasks_cache_key).present?
       end
