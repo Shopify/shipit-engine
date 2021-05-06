@@ -373,11 +373,22 @@ module Shipit
     end
 
     test "the git cache lock prevent concurrent access to the git cache" do
-      @stack.acquire_git_cache_lock do
+      second_stack = Shipit::Stack.find(@stack.id)
+      second_stack.acquire_git_cache_lock do
         assert_raises Flock::TimeoutError do
           @stack.acquire_git_cache_lock(timeout: 0.1) {}
         end
       end
+    end
+
+    test "the git cache lock is reentrant if called on the same Stack instance" do
+      called = false
+      @stack.acquire_git_cache_lock(timeout: 0.01) do
+        @stack.acquire_git_cache_lock(timeout: 0.01) do
+          called = true
+        end
+      end
+      assert called
     end
 
     test "the git cache lock is scoped to the stack" do

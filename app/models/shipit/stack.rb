@@ -392,7 +392,8 @@ module Shipit
     end
 
     def acquire_git_cache_lock(timeout: 15, &block)
-      Flock.new(git_path.to_s + '.lock').lock(timeout: timeout, &block)
+      @git_cache_lock ||= Flock.new(git_path.to_s + '.lock')
+      @git_cache_lock.lock(timeout: timeout, &block)
     end
 
     def clear_git_cache!
