@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'prometheus/client'
 module Shipit
   class Task < Record
     include DeferredTouch
@@ -77,6 +78,8 @@ module Shipit
 
       after_transition any => %i(success failed error timedout) do |task|
         task.async_refresh_deployed_revision
+        puts "Shipit::Task#after_transition"
+        task.set_metrics
       end
 
       after_transition any => :flapping do |task|
@@ -142,6 +145,32 @@ module Shipit
       state :aborting
       state :aborted
       state :flapping
+    end
+
+    def set_metrics
+      puts "Shipit::Task#set_metrics - Start"
+      registry = Prometheus::Client.registry
+      if predictive_build.present?
+        pipeline = predictive_build.pipeline.id.to_s
+        stack_name = predictive_build.pipeline.name
+      elsif predictive_branch.present?
+        pipeline = predictive_branch.predictive_build.pipeline.id.to_s
+        stack_name = predictive_branch.stack.repository.full_name
+      else
+        pipeline = stack.pipeline.id.to_s
+        stack_name = stack.repository.full_name
+      end
+      labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s}
+      puts "Shipit::Task#set_metrics - labels : #{labels}"
+      minutes = ((updated_at - created_at) / 60).to_i
+      puts "Shipit::Task#set_metrics - minutes : #{minutes}"
+      shipit_task_count = registry.get(:shipit_task_count)
+      shipit_task_count.increment(labels: labels)
+      shipit_task_duration_seconds_sum = registry.get(:shipit_task_duration_seconds_sum)
+      shipit_task_duration_seconds_sum.increment(by: minutes, labels: labels)
+      puts "Shipit::Task#set_metrics - End"
+    rescue Exception => e
+      puts "Shipit::Task#set_metrics - Error: #{e.message}"
     end
 
     def active?

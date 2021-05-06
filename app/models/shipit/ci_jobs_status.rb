@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'prometheus/client'
 
 module Shipit
   class CiJobsStatus < Record
@@ -27,6 +28,36 @@ module Shipit
         transition any => :completed
       end
 
+      after_transition any => %i(failed aborted completed) do |ci_jobs_status|
+        puts "Shipit::CiJobsStatus#after_transition"
+        ci_jobs_status.set_metrics
+      end
+    end
+
+    def set_metrics
+      puts "Shipit::CiJobsStatus#set_metrics - Start"
+      registry = Prometheus::Client.registry
+      if predictive_build.present?
+        pipeline = predictive_build.pipeline.id.to_s
+        stack_name = predictive_build.pipeline.name
+      elsif predictive_branch.present?
+        pipeline = predictive_branch.predictive_build.pipeline.id.to_s
+        stack_name = predictive_branch.stack.repository.full_name
+      else
+        pipeline = 'unknown'
+        stack_name = 'unknown'
+      end
+      labels = {pipeline: pipeline, stack: stack_name, type: name, status: status.to_s}
+      puts "Shipit::CiJobsStatus#set_metrics - labels : #{labels}"
+      minutes = ((updated_at - created_at) / 60).to_i
+      puts "Shipit::CiJobsStatus#set_metrics - minutes : #{minutes}"
+      shipit_ci_task_count = registry.get(:shipit_ci_task_count)
+      shipit_ci_task_count.increment(labels: labels)
+      shipit_ci_task_duration_minutes_sum = registry.get(:shipit_ci_task_duration_minutes_sum)
+      shipit_ci_task_duration_minutes_sum.increment(by: minutes, labels: labels)
+      puts "Shipit::CiJobsStatus#set_metrics - End"
+    rescue Exception => e
+      puts "Shipit::CiJobsStatus#set_metrics - Error: #{e.message}"
     end
 
     def update_status(status_name)
