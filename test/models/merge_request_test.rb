@@ -125,6 +125,20 @@ module Shipit
         created_at: 1.day.ago,
       )])
 
+      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, head_sha).returns(stub(
+        check_runs: [stub(
+          id: 123456,
+          name: 'check run',
+          conclusion: 'success',
+          output: stub(
+            title: 'a test checkrun',
+          ),
+          details_url: 'http://example.com',
+          html_url: 'http://example.com',
+          success_at: Time.now,
+        )]
+      ))
+
       merge_request.refresh!
 
       assert_predicate merge_request, :mergeable?
