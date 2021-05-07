@@ -88,5 +88,27 @@ module Shipit
       task_with_zero_retries = shipit_tasks(:shipit_restart)
       refute_predicate task_with_zero_retries, :retries_configured?
     end
+
+    test ".due_for_rollup includes tasks in successful terminal states" do
+      task = shipit_tasks(:shipit)
+      task.update(
+        rolled_up: false,
+        created_at: (60 + 1).minutes.ago.to_s(:db),
+        status: "success",
+      )
+
+      assert_includes Shipit::Task.due_for_rollup, task
+    end
+
+    test ".due_for_rollup includes tasks in unsuccessful terminal states" do
+      task = shipit_tasks(:shipit)
+      task.update(
+        rolled_up: false,
+        created_at: (60 + 1).minutes.ago.to_s(:db),
+        status: "error",
+      )
+
+      assert_includes Shipit::Task.due_for_rollup, task
+    end
   end
 end
