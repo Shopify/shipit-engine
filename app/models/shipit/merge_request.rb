@@ -233,6 +233,7 @@ module Shipit
     def refresh!
       update!(github_pull_request: stack.github_api.pull_request(stack.github_repo_name, number))
       head.refresh_statuses!
+      head.refresh_check_runs!
       fetched! if fetching?
       @comparison = nil
     end
