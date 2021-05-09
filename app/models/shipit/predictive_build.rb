@@ -140,11 +140,11 @@ module Shipit
     def set_metrics
       registry = Prometheus::Client.registry
       labels = {pipeline: pipeline.id.to_s, status: status.to_s}
-      minutes = ((updated_at - created_at) / 60).to_i
+      seconds = (updated_at - created_at).to_i
       shipit_predictive_build_count = registry.get(:shipit_predictive_build_count)
       shipit_predictive_build_count.increment(labels: labels)
-      shipit_predictive_build_duration_minutes_sum = registry.get(:shipit_predictive_build_duration_minutes_sum)
-      shipit_predictive_build_duration_minutes_sum.increment(by: minutes, labels: labels)
+      shipit_predictive_build_duration_seconds_sum = registry.get(:shipit_predictive_build_duration_seconds_sum)
+      shipit_predictive_build_duration_seconds_sum.increment(by: seconds, labels: labels)
     rescue Exception => e
       puts "Shipit::PredictiveBuild#set_metrics - Error: #{e.message}"
     end
