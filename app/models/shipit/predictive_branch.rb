@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'prometheus/client'
 
 module Shipit
   class PredictiveBranch < Record
@@ -60,6 +61,26 @@ module Shipit
         transition any => :failed
       end
 
+      after_transition any => %i(tasks_canceled failed completed) do |predictive_branch|
+        puts "Shipit::PredictiveBranch#after_transition"
+        predictive_branch.set_metrics
+      end
+    end
+
+    def set_metrics
+      puts "Shipit::PredictiveBranch#set_metrics - Start"
+      registry = Prometheus::Client.registry
+      labels = {pipeline: predictive_build.pipeline.id.to_s, stack: stack.repository.full_name, status: status.to_s}
+      puts "Shipit::PredictiveBranch#set_metrics - labels : #{labels}"
+      minutes = ((updated_at - created_at) / 60).to_i
+      puts "Shipit::PredictiveBranch#set_metrics - minutes : #{minutes}"
+      shipit_predictive_branch_count = registry.get(:shipit_predictive_branch_count)
+      shipit_predictive_branch_count.increment(labels: labels)
+      shipit_predictive_branch_duration_minutes_sum = registry.get(:shipit_predictive_branch_duration_minutes_sum)
+      shipit_predictive_branch_duration_minutes_sum.increment(by: minutes, labels: labels)
+      puts "Shipit::PredictiveBranch#set_metrics - end"
+    rescue Exception => e
+      puts "Shipit::PredictiveBranch#set_metrics - Error: #{e.message}"
     end
 
     def tasks_in_progress?
