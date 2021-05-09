@@ -362,6 +362,9 @@ module Shipit
     def trigger_stack_tasks(run_now = false)
       p_branches = { running: [], stopped: [], completed: [] }
       predictive_branches.each do |p_branch|
+        if !p_branch.completed? && !p_branch.has_ci_tasks?
+          p_branch.completed
+        end
         if p_branch.tasks_in_progress?
           p_branch.trigger_task(run_now)
           p_branches[:running] << p_branch
