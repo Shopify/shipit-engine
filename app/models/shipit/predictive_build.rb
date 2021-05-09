@@ -65,7 +65,6 @@ module Shipit
       end
 
       after_transition any => %i(completed failed rejected canceled) do |predictive_build|
-        puts "Shipit::PredictiveBuild#after_transition"
         predictive_build.set_metrics
       end
     end
@@ -139,17 +138,13 @@ module Shipit
     end
 
     def set_metrics
-      puts "Shipit::PredictiveBuild#set_metrics - Start"
       registry = Prometheus::Client.registry
       labels = {pipeline: pipeline.id.to_s, status: status.to_s}
-      puts "Shipit::PredictiveBuild#set_metrics - labels : #{labels}"
       minutes = ((updated_at - created_at) / 60).to_i
-      puts "Shipit::PredictiveBuild#set_metrics - minutes : #{minutes}"
       shipit_predictive_build_count = registry.get(:shipit_predictive_build_count)
       shipit_predictive_build_count.increment(labels: labels)
       shipit_predictive_build_duration_minutes_sum = registry.get(:shipit_predictive_build_duration_minutes_sum)
       shipit_predictive_build_duration_minutes_sum.increment(by: minutes, labels: labels)
-      puts "Shipit::PredictiveBuild#set_metrics - End"
     rescue Exception => e
       puts "Shipit::PredictiveBuild#set_metrics - Error: #{e.message}"
     end

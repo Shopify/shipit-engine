@@ -78,7 +78,6 @@ module Shipit
 
       after_transition any => %i(success failed error timedout) do |task|
         task.async_refresh_deployed_revision
-        puts "Shipit::Task#after_transition"
         task.set_metrics
       end
 
@@ -148,7 +147,6 @@ module Shipit
     end
 
     def set_metrics
-      puts "Shipit::Task#set_metrics - Start"
       registry = Prometheus::Client.registry
       pipeline = stack.pipeline.id.to_s
       stack_name = stack.repository.full_name
@@ -162,14 +160,11 @@ module Shipit
         stack_name = predictive_branch.stack.repository.full_name if predictive_branch.present?
       end
       labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s}
-      puts "Shipit::Task#set_metrics - labels : #{labels}"
-      minutes = ((updated_at - created_at) / 60).to_i
-      puts "Shipit::Task#set_metrics - minutes : #{minutes}"
+      seconds = (updated_at - created_at).to_i
       shipit_task_count = registry.get(:shipit_task_count)
       shipit_task_count.increment(labels: labels)
       shipit_task_duration_seconds_sum = registry.get(:shipit_task_duration_seconds_sum)
-      shipit_task_duration_seconds_sum.increment(by: minutes, labels: labels)
-      puts "Shipit::Task#set_metrics - End"
+      shipit_task_duration_seconds_sum.increment(by: seconds, labels: labels)
     rescue Exception => e
       puts "Shipit::Task#set_metrics - Error: #{e.message}"
     end

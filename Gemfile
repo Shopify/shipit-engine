@@ -29,3 +29,5 @@ group :development, :test do
   gem 'pry'
   gem 'mini_racer'
 end
+
+gem 'prometheus-client', '~> 2.1'
