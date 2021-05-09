@@ -150,15 +150,16 @@ module Shipit
     def set_metrics
       puts "Shipit::Task#set_metrics - Start"
       registry = Prometheus::Client.registry
-      if predictive_build.present?
-        pipeline = predictive_build.pipeline.id.to_s
-        stack_name = predictive_build.pipeline.name
-      elsif predictive_branch.present?
-        pipeline = predictive_branch.predictive_build.pipeline.id.to_s
-        stack_name = predictive_branch.stack.repository.full_name
-      else
-        pipeline = stack.pipeline.id.to_s
-        stack_name = stack.repository.full_name
+      pipeline = stack.pipeline.id.to_s
+      stack_name = stack.repository.full_name
+      if predictive_build_id.present?
+        predictive_build = Shipit::PredictiveBuild.find(predictive_build_id)
+        pipeline = predictive_build.pipeline.id.to_s if predictive_build.present
+        stack_name = predictive_build.pipeline.name if predictive_build.present
+      elsif predictive_branch_id.present?
+        predictive_branch = Shipit::PredictiveBranch.find(predictive_branch_id)
+        pipeline = predictive_branch.predictive_build.pipeline.id.to_s if predictive_branch.present?
+        stack_name = predictive_branch.stack.repository.full_name if predictive_branch.present?
       end
       labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s}
       puts "Shipit::Task#set_metrics - labels : #{labels}"
