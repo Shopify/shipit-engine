@@ -28,7 +28,7 @@ module Shipit
         transition any => :completed
       end
 
-      after_transition any => %i(failed aborted completed) do |ci_jobs_status|
+      after_transition :running => %i(failed aborted completed) do |ci_jobs_status|
         ci_jobs_status.set_metrics
       end
     end
