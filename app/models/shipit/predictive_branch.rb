@@ -149,8 +149,8 @@ module Shipit
                                          name: params[:job_name],
                                          status: params[:status].downcase.to_sym,
                                          link: params[:link])
-          rescue
-            puts "--------- upsert_ci_job_statuses:: failed to create CiJobsStatus."
+          rescue Exception => e
+            puts "--------- upsert_ci_job_statuses:: failed to create CiJobsStatus. Error: #{e.message}"
             puts "--------- upsert_ci_job_statuses:: predictive_branch_id: #{self.id} ; name: #{params[:job_name]} ; status: #{params[:status]} link: #{params[:link]}"
           end
 

@@ -132,12 +132,12 @@ module Shipit
     def set_metrics
       puts "Shipit::MergeRequest#set_metrics - Start"
       registry = Prometheus::Client.registry
-      labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name, mode: mode, status: status.to_s}
+      labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name, mode: mode, status: merge_status.to_s}
       puts "Shipit::MergeRequest#set_metrics - labels : #{labels}"
       minutes = ((updated_at - created_at) / 60).to_i
       puts "Shipit::MergeRequest#set_metrics - minutes : #{minutes}"
       metric_name = :merge_requests_dequeue_count
-      metric_name = :merge_requests_enqueue_count if status == 'pending'
+      metric_name = :merge_requests_enqueue_count if merge_status == 'pending'
       puts "Shipit::MergeRequest#set_metrics - metric_name : #{metric_name.to_s}"
       merge_requests_count = registry.get(metric_name)
       merge_requests_count.increment(labels: labels)
