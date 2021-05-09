@@ -145,6 +145,7 @@ module Shipit
       if jobs.any?
         jobs.each do |name, params|
           begin
+            params[:status] = 'completed' if params[:status] == 'SUCCESS'
             Shipit::CiJobsStatus.create!(predictive_branch_id: self.id,
                                          name: params[:job_name],
                                          status: params[:status].downcase.to_sym,
