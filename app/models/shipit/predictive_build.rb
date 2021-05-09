@@ -151,7 +151,8 @@ module Shipit
       shipit_predictive_build_duration_minutes_sum.increment(by: minutes, labels: labels)
       puts "Shipit::PredictiveBuild#set_metrics - End"
     rescue Exception => e
-      puts "Shipit::PredictiveBuild#set_metrics - Error: #{e.message}" end
+      puts "Shipit::PredictiveBuild#set_metrics - Error: #{e.message}"
+    end
 
     def build_failed?
       ci_stack_tasks_failed? || ci_pipeline_tasks_failed?
@@ -219,7 +220,7 @@ module Shipit
         pipeline_task_failed      if pipeline_task_status == :success && status == :aborted
       elsif predictive_task_type == :abort
         ci_pipeline_canceling     if pipeline_task_status == :running || pipeline_task_status == :pending
-        canceled                  if pipeline_task_status == :success
+        cancel                    if pipeline_task_status == :success
       end
     end
 
