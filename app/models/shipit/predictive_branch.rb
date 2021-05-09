@@ -179,6 +179,14 @@ module Shipit
       return false, jobs, no_match_message
     end
 
+    def has_ci_tasks?
+      stack.cached_deploy_spec.present? && stack.cached_deploy_spec.config.present? &&
+        stack.cached_deploy_spec.config['ci'].present? && stack.cached_deploy_spec.config['ci']['stack'].present? &&
+        stack.cached_deploy_spec.config['ci']['stack'].size == 3
+    rescue Exception => e
+      puts "Shipit::PredictiveBranch#has_ci_tasks? - Error: #{e.message}"
+      return false
+    end
 
     def trigger_task(run_now = false)
       predictive_task_type = new_task_type
