@@ -131,7 +131,7 @@ module Shipit
     def set_metrics
       registry = Prometheus::Client.registry
       labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name, mode: mode, status: merge_status.to_s}
-      minutes = ((updated_at - created_at) / 60).to_i
+      minutes = (updated_at - created_at).to_i
       merge_requests_count = registry.get(:merge_requests_count)
       merge_requests_count.increment(labels: labels)
       merge_requests_duration_seconds_sum = registry.get(:merge_requests_duration_seconds_sum)
