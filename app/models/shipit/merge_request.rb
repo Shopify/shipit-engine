@@ -132,12 +132,16 @@ module Shipit
       registry = Prometheus::Client.registry
       labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name, mode: mode, status: merge_status.to_s}
       minutes = ((updated_at - created_at) / 60).to_i
-      metric_name = :merge_requests_dequeue_count
-      metric_name = :merge_requests_enqueue_count if merge_status == 'pending'
-      merge_requests_count = registry.get(metric_name)
+      merge_requests_count = registry.get(:merge_requests_count)
       merge_requests_count.increment(labels: labels)
-      merge_requests_dequeue_duration = registry.get(:merge_requests_dequeue_duration)
-      merge_requests_dequeue_duration.increment(by: minutes, labels: labels)
+      merge_requests_duration_seconds_sum = registry.get(:merge_requests_duration_seconds_sum)
+      merge_requests_duration_seconds_sum.increment(by: minutes, labels: labels)
+      merge_requests_gauge = registry.get(:merge_requests_gauge)
+      if merge_status == 'pending'
+        merge_requests_gauge.increment(labels: labels)
+      else
+        merge_requests_gauge.decrement(labels: labels)
+      end
     rescue Exception => e
       puts "Shipit::MergeRequest#set_metrics - Error: #{e.message}"
     end
