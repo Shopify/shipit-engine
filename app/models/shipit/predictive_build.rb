@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'prometheus/client'
 
 module Shipit
   class PredictiveBuild < Record
@@ -138,13 +137,10 @@ module Shipit
     end
 
     def set_metrics
-      registry = Prometheus::Client.registry
       labels = {pipeline: pipeline.id.to_s, status: status.to_s}
       seconds = (updated_at - created_at).to_i
-      shipit_predictive_build_count = registry.get(:shipit_predictive_build_count)
-      shipit_predictive_build_count.increment(labels: labels)
-      shipit_predictive_build_duration_seconds_sum = registry.get(:shipit_predictive_build_duration_seconds_sum)
-      shipit_predictive_build_duration_seconds_sum.increment(by: seconds, labels: labels)
+      ApplicationMetrics.increment_counter(:shipit_predictive_build_count, labels)
+      ApplicationMetrics.increment_counter(:shipit_predictive_build_duration_seconds_sum, labels, seconds)
     rescue Exception => e
       puts "Shipit::PredictiveBuild#set_metrics - Error: #{e.message}"
     end
