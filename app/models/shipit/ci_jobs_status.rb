@@ -45,12 +45,12 @@ module Shipit
         pipeline = 'unknown'
         stack_name = 'unknown'
       end
-      labels = {pipeline: pipeline, stack: stack_name, type: name, status: status.to_s}
+      labels = {pipeline: pipeline, stack: stack_name, type: name, status: status.to_s, executor: 'External'}
       seconds = (updated_at - created_at).to_i
-      shipit_ci_task_count = registry.get(:shipit_ci_task_count)
-      shipit_ci_task_count.increment(labels: labels)
-      shipit_ci_task_duration_seconds_sum = registry.get(:shipit_ci_task_duration_seconds_sum)
-      shipit_ci_task_duration_seconds_sum.increment(by: seconds, labels: labels)
+      shipit_task_count = registry.get(:shipit_task_count)
+      shipit_task_count.increment(labels: labels)
+      shipit_task_duration_seconds_sum = registry.get(:shipit_task_duration_seconds_sum)
+      shipit_task_duration_seconds_sum.increment(by: seconds, labels: labels)
     rescue Exception => e
       puts "Shipit::CiJobsStatus#set_metrics - Error: #{e.message}"
     end

@@ -159,7 +159,7 @@ module Shipit
         pipeline = predictive_branch.predictive_build.pipeline.id.to_s if predictive_branch.present?
         stack_name = predictive_branch.stack.repository.full_name if predictive_branch.present?
       end
-      labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s}
+      labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s, executor: 'Shipit'}
       seconds = (updated_at - created_at).to_i
       shipit_task_count = registry.get(:shipit_task_count)
       shipit_task_count.increment(labels: labels)
