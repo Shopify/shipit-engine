@@ -7,3 +7,4 @@ ApplicationMetrics.register_metric(:counter, :shipit_task_duration_seconds_sum, 
 ApplicationMetrics.register_metric(:counter, :merge_requests_count, [:pipeline, :stack, :mode, :status], 'Count processed PRs')
 ApplicationMetrics.register_metric(:counter, :merge_requests_duration_seconds_sum, [:pipeline, :stack, :mode, :status],  'Summarize processed PRs durations')
 ApplicationMetrics.register_metric(:gauge, :merge_requests_gauge, [:pipeline, :stack],  'PRs Queue Gauge')
+ApplicationMetrics.register_metric(:gauge, :cd_sequential_failures, [:pipeline, :stack],  'CD Sequential Failures')
