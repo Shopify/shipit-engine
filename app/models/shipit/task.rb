@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'prometheus/client'
+
 module Shipit
   class Task < Record
     include DeferredTouch
@@ -147,7 +147,6 @@ module Shipit
     end
 
     def set_metrics
-      registry = Prometheus::Client.registry
       pipeline = stack.pipeline.id.to_s
       stack_name = stack.repository.full_name
       if predictive_build_id.present?
@@ -161,10 +160,8 @@ module Shipit
       end
       labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s, executor: 'Shipit'}
       seconds = (updated_at - created_at).to_i
-      shipit_task_count = registry.get(:shipit_task_count)
-      shipit_task_count.increment(labels: labels)
-      shipit_task_duration_seconds_sum = registry.get(:shipit_task_duration_seconds_sum)
-      shipit_task_duration_seconds_sum.increment(by: seconds, labels: labels)
+      ApplicationMetrics.increment_counter(:shipit_task_count, labels)
+      ApplicationMetrics.increment_counter(:shipit_task_duration_seconds_sum, labels, seconds)
     rescue Exception => e
       puts "Shipit::Task#set_metrics - Error: #{e.message}"
     end

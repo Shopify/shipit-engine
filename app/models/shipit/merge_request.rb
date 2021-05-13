@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'prometheus/client'
+
 module Shipit
   class MergeRequest < ApplicationRecord
     include DeferredTouch
@@ -129,19 +129,13 @@ module Shipit
     end
 
     def set_metrics
-      registry = Prometheus::Client.registry
       labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name, mode: mode, status: merge_status.to_s}
-      minutes = (updated_at - created_at).to_i
-      merge_requests_count = registry.get(:merge_requests_count)
-      merge_requests_count.increment(labels: labels)
-      merge_requests_duration_seconds_sum = registry.get(:merge_requests_duration_seconds_sum)
-      merge_requests_duration_seconds_sum.increment(by: minutes, labels: labels)
-      merge_requests_gauge = registry.get(:merge_requests_gauge)
-      if merge_status == 'pending'
-        merge_requests_gauge.increment(labels: labels)
-      else
-        merge_requests_gauge.decrement(labels: labels)
-      end
+      seconds = (updated_at - created_at).to_i
+      ApplicationMetrics.increment_counter(:merge_requests_count, labels)
+      ApplicationMetrics.increment_counter(:merge_requests_duration_seconds_sum, labels, seconds)
+      labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name}
+      ApplicationMetrics.increment_gauge(:merge_requests_gauge, labels) if merge_status == 'pending'
+      ApplicationMetrics.decrement_gauge(:merge_requests_gauge, labels) if merge_status != 'pending'
     rescue Exception => e
       puts "Shipit::MergeRequest#set_metrics - Error: #{e.message}"
     end

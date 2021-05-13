@@ -63,6 +63,18 @@ module Shipit
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
+    def set_metrics
+      super()
+      pipeline = stack.pipeline.id.to_s
+      stack_name = stack.repository.full_name
+      labels = {pipeline: pipeline, stack: stack_name, type: type, status: status.to_s, executor: 'Shipit'}
+      value = 0
+      value = retry_attempt if status.in?(UNSUCCESSFUL_STATUSES)
+      ApplicationMetrics.set_gauge(:shipit_task_count, labels, value)
+    rescue Exception => e
+      puts "Shipit::Deploy#set_metrics - Error: #{e.message}"
+    end
+
     def self.newer_than(deploy)
       return all unless deploy
       where('id > ?', deploy.try(:id) || deploy)
