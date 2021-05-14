@@ -88,5 +88,11 @@ module Shipit
         @task.working_directory
       end
     end
+
+    private
+
+    def github
+      Shipit.github(organization: @stack.repository.owner)
+    end
   end
 end

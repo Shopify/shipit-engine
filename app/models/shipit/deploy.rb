@@ -209,7 +209,7 @@ module Shipit
     end
 
     def report_complete!
-      if stack.release_status? && stack.release_status_delay.positive?
+      if stack.release_status? && !stack.release_status_delay.zero?
         enter_validation!
       else
         super
@@ -269,10 +269,13 @@ module Shipit
       when 'aborted', 'aborting'
         append_release_status('failure', "The deploy on #{stack.environment} was canceled")
       when 'validating'
-        if stack.release_status_delay.positive?
-          append_release_status('pending', "The deploy on #{stack.environment} succeeded")
-          MarkDeployHealthyJob.set(wait: stack.release_status_delay).perform_later(self)
-        end
+        append_release_status(
+          'pending',
+          "The deploy on #{stack.environment} succeeded"
+        ) unless stack.release_status_delay.zero?
+
+        MarkDeployHealthyJob.set(wait: stack.release_status_delay)
+          .perform_later(self) if stack.release_status_delay.positive?
       when 'success'
         if stack.release_status_delay.zero?
           append_release_status('success', "The deploy on #{stack.environment} succeeded")

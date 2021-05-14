@@ -20,6 +20,8 @@ module Shipit
 
     class << self
       def parse(value)
+        return new(-1) if value.to_s == "-1"
+
         unless match = FORMAT.match(value.to_s)
           raise ParseError, "not a duration: #{value.inspect}"
         end

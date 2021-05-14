@@ -21,8 +21,8 @@ module Shipit
 
     def env
       @env ||= Shipit.env.merge(
-        'GITHUB_DOMAIN' => Shipit.github.domain,
-        'GITHUB_TOKEN' => Shipit.github.token,
+        'GITHUB_DOMAIN' => github.domain,
+        'GITHUB_TOKEN' => github.token,
         'GIT_ASKPASS' => Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s,
       )
     end
@@ -31,5 +31,11 @@ module Shipit
       Command.new("git", *args)
     end
     ruby2_keywords :git if respond_to?(:ruby2_keywords, true)
+
+    private
+
+    def github
+      Shipit.github
+    end
   end
 end

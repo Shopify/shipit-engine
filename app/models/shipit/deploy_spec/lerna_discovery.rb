@@ -76,10 +76,18 @@ module Shipit
       end
 
       def publish_independent_packages
-        [
-          'assert-lerna-independent-version-tags',
-          'publish-lerna-independent-packages',
-        ]
+        command = if lerna_lerna >= LATEST_MAJOR_VERSION
+          [
+            'assert-lerna-independent-version-tags',
+            'publish-lerna-independent-packages',
+          ]
+        else
+          [
+            'assert-lerna-independent-version-tags',
+            'publish-lerna-independent-packages-legacy',
+          ]
+        end
+        command
       end
 
       def publish_fixed_version_packages

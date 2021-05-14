@@ -967,6 +967,18 @@ module Shipit
       end
     end
 
+    test "succeeding a deploy sets the release status as pending and does not schedule job if the status delay is negative (-1)" do
+      @deploy = shipit_deploys(:canaries_running)
+      @deploy.stack.expects(:release_status_delay).at_least_once.returns(Duration.parse(-1))
+
+      assert_difference -> { ReleaseStatus.count }, +1 do
+        assert_not_equal 'success', @deploy.last_release_status.state
+        @deploy.report_complete!
+        assert_equal 'validating', @deploy.status
+        assert_equal 'pending', @deploy.last_release_status.state
+      end
+    end
+
     test "triggering a rollback via abort! sets the release status as failure" do
       @deploy = shipit_deploys(:canaries_running)
       @deploy.ping

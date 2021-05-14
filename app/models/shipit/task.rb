@@ -39,7 +39,7 @@ module Shipit
     scope :last_seven_days, -> { where("created_at > ?", 7.days.ago) }
     scope :previous_seven_days, -> { where(created_at: 14.days.ago..7.days.ago) }
 
-    scope :due_for_rollup, -> { completed.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
+    scope :due_for_rollup, -> { not_active.where(rolled_up: false).where('created_at <= ?', 1.hour.ago) }
 
     after_save :record_status_change
     after_create :prevent_concurrency, unless: :allow_concurrency?

@@ -380,26 +380,27 @@ module Shipit
     delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
-      Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
+      @base_path ||= Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path
-      File.join(base_path, "deploys")
+      @deploys_path ||= base_path.join("deploys")
     end
 
     def git_path
-      File.join(base_path, "git")
+      @git_path ||= base_path.join("git")
     end
 
     def acquire_git_cache_lock(timeout: 15, &block)
-      Flock.new(git_path.to_s + '.lock').lock(timeout: timeout, &block)
+      @git_cache_lock ||= Flock.new(git_path.to_s + '.lock')
+      @git_cache_lock.lock(timeout: timeout, &block)
     end
 
     def clear_git_cache!
       tmp_path = "#{git_path}-#{SecureRandom.hex}"
-      return unless File.exist?(git_path)
+      return unless git_path.exist?
       acquire_git_cache_lock do
-        File.rename(git_path, tmp_path)
+        git_path.rename(tmp_path)
       end
       FileUtils.rm_rf(tmp_path)
     end
