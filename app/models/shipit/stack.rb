@@ -380,15 +380,15 @@ module Shipit
     delegate :git_url, to: :repository, prefix: :repo
 
     def base_path
-      Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
+      @base_path ||= Rails.root.join('data', 'stacks', repo_owner, repo_name, environment)
     end
 
     def deploys_path
-      base_path.join("deploys")
+      @deploys_path ||= base_path.join("deploys")
     end
 
     def git_path
-      base_path.join("git")
+      @git_path ||= base_path.join("git")
     end
 
     def acquire_git_cache_lock(timeout: 15, &block)
