@@ -27,7 +27,7 @@ Shipit understands `lerna.json` files (up to version `3.22.x`), and will publish
 
 ### From Git
 
-In addition to the semver keywords supported by [lerna version](https://github.com/lerna/lerna/tree/main/commands/version#positionals), [lerna publish](https://github.com/lerna/lerna/tree/main/commands/publish) also supports the from-git keyword. This will identify packages tagged by lerna version and publish them to npm. This is useful in CI scenarios where you wish to manually increment versions, but have the package contents themselves consistently published by an automated process.
+In addition to the `semver` keyword supported by [`lerna version`](https://github.com/lerna/lerna/tree/main/commands/version#positionals), [`lerna publish`](https://github.com/lerna/lerna/tree/main/commands/publish) also supports the `from-git` keyword. This will identify packages tagged by `lerna version` and publish them to npm. This is useful in CI scenarios where you wish to manually increment versions, but have the package contents themselves consistently published by an automated process.
 
 In order to use this feature with `shipit-engine`, you will need to add the following to your `shipit.yml`:
 
