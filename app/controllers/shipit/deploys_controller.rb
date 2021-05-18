@@ -55,7 +55,7 @@ module Shipit
     end
 
     def load_stack
-      @stack ||= Stack.from_param!(params[:stack_id]).becomes(Stack)
+      @stack ||= Stack.from_param!(params[:stack_id])
     end
 
     def load_until_commit
