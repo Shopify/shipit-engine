@@ -384,11 +384,11 @@ module Shipit
     end
 
     def deploys_path
-      @deploys_path ||= base_path.join("deploys")
+      File.join(base_path, "deploys")
     end
 
     def git_path
-      @git_path ||= base_path.join("git")
+      File.join(base_path, "git")
     end
 
     def acquire_git_cache_lock(timeout: 15, &block)
@@ -398,9 +398,9 @@ module Shipit
 
     def clear_git_cache!
       tmp_path = "#{git_path}-#{SecureRandom.hex}"
-      return unless git_path.exist?
+      return unless File.exist?(git_path)
       acquire_git_cache_lock do
-        git_path.rename(tmp_path)
+        File.rename(git_path, tmp_path)
       end
       FileUtils.rm_rf(tmp_path)
     end
