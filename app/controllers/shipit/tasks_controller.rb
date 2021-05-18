@@ -36,7 +36,7 @@ module Shipit
           env: task_params[:env],
           force: params[:force].present?,
         )
-        redirect_to([stack, @task])
+        redirect_to([stack.becomes(Stack), @task])
       rescue Task::ConcurrentTaskRunning
         redirect_to(new_stack_tasks_path(stack, @definition))
       end
@@ -70,7 +70,7 @@ module Shipit
     end
 
     def stack
-      @stack ||= Stack.from_param!(params[:stack_id]).becomes(Stack)
+      @stack ||= Stack.from_param!(params[:stack_id])
     end
 
     def task_params
