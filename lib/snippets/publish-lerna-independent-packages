@@ -9,6 +9,10 @@ const taggedPackages = execSync("git tag --points-at HEAD")
 const hasBetaRelease = taggedPackages.some((version) =>
   version.includes("-beta")
 );
+
+// set this using machine.environment.SHIPIT_LERNA_PUBLISH_FROM_GIT in your shipit.yml
+const useFromGit = process.env.SHIPIT_LERNA_PUBLISH_FROM_GIT || false;
+
 if (
   hasBetaRelease &&
   !taggedPackages.every((version) => version.includes("-beta"))
@@ -32,7 +36,7 @@ function distTag() {
 
 const command = [
   "node_modules/.bin/lerna publish",
-  "from-package",
+  useFromGit ? "from-git" : "from-package",
   "--yes",
   `--dist-tag ${distTag()}`,
 ];
