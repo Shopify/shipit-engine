@@ -272,6 +272,7 @@ module Shipit
     end
 
     def any_status_checks_missing?
+      StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).statuses.present? &&
       StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).missing?
     end
 
