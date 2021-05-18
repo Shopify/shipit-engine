@@ -40,7 +40,7 @@ machine:
 
 ### From Packages (Default)
 
-Similar to the from-git keyword except the list of packages to publish is determined by inspecting each package.json and determining if any package version is not present in the registry. Any versions not present in the registry will be published. This is useful when a previous lerna publish failed to publish all packages to the registry.
+Similar to the `from-git` keyword, except the list of packages to publish is determined by inspecting each package.json and determining if any package version is not present in the registry. Any versions not present in the registry will be published. This is useful when a previous `lerna publish` failed to publish all packages to the registry.
 
 ### Pre-releases
 
