@@ -29,7 +29,7 @@ module Shipit
     def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
       @args, options = parse_arguments(args)
       @timeout = options['timeout'] || options[:timeout] || default_timeout
-      @env = env.transform_values(&:to_s)
+      @env = env.transform_values { |v| v&.to_s }
       @chdir = chdir.to_s
       @timed_out = false
     end
