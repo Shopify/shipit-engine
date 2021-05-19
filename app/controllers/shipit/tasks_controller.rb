@@ -62,7 +62,7 @@ module Shipit
     def url_for_task
       base_task = @task.is_a?(Deploy) ? @task.becomes(Deploy) : @task
 
-      url_for([base_task.stack.becomes(Stack), base_task])
+      url_for([base_task.stack, base_task])
     end
 
     def task
@@ -70,7 +70,7 @@ module Shipit
     end
 
     def stack
-      @stack ||= Stack.from_param!(params[:stack_id]).becomes(Stack)
+      @stack ||= Stack.from_param!(params[:stack_id])
     end
 
     def task_params
