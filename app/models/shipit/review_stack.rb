@@ -22,6 +22,16 @@ module Shipit
       end
     end
 
+    model_name.class_eval do
+      def route_key
+        "stacks"
+      end
+
+      def singular_route_key
+        "stack"
+      end
+    end
+
     has_one :pull_request, foreign_key: :stack_id
 
     after_commit :emit_added_hooks, on: :create
