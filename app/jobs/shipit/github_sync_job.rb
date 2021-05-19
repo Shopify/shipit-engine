@@ -7,6 +7,7 @@ module Shipit
 
     MAX_FETCHED_COMMITS = 25
     queue_as :default
+    on_duplicate :drop
 
     self.timeout = 60
     self.lock_timeout = 20
