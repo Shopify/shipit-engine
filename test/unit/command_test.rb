@@ -36,7 +36,7 @@ module Shipit
 
     test "#env cast to strings except for `nil`" do
       command = Command.new('echo foo', env: { 'SOME_PATH' => Pathname.new('/foo'), 'HOST' => nil }, chdir: '.')
-      assert_equal({ 'SOME_PATH' => '/foo', 'HOST' => nil}, command.env)
+      assert_equal({ 'SOME_PATH' => '/foo', 'HOST' => nil }, command.env)
     end
 
     test "#timeout is 5 minutes by default" do
