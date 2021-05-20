@@ -74,5 +74,18 @@ module Shipit
         stack.unarchive!
       end
     end
+
+    test "#trigger_continuous_delivery does not enqueue deployment ref update job" do
+      Shipit.stubs(:update_latest_deployed_ref).returns(true)
+      @stack = shipit_stacks(:review_stack)
+      assert_no_enqueued_jobs(only: Shipit::UpdateGithubLastDeployedRefJob) do
+        task = @stack.trigger_continuous_delivery
+        task.update!(status: "running")
+      end
+
+      assert_no_enqueued_jobs(only: Shipit::UpdateGithubLastDeployedRefJob) do
+        @stack.last_active_task.complete!
+      end
+    end
   end
 end
