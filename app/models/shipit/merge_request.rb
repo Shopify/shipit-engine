@@ -135,7 +135,9 @@ module Shipit
       ApplicationMetrics.increment_counter(:merge_requests_duration_seconds_sum, labels, seconds)
       labels = {pipeline: stack.pipeline.id.to_s, stack: stack.repository.full_name}
       ApplicationMetrics.increment_gauge(:merge_requests_gauge, labels) if merge_status == 'pending'
+      ApplicationMetrics.set_gauge(:merge_requests_gauge_test, labels, 99) if merge_status == 'pending'
       ApplicationMetrics.decrement_gauge(:merge_requests_gauge, labels) if merge_status != 'pending'
+      ApplicationMetrics.set_gauge(:merge_requests_gauge_test, labels, 99) if merge_status != 'pending'
     rescue Exception => e
       puts "Shipit::MergeRequest#set_metrics - Error: #{e.message}"
     end
