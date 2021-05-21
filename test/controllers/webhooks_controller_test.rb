@@ -79,6 +79,18 @@ module Shipit
       end
     end
 
+    test ":check_run creates a check run for a commit" do
+      request.headers['X-Github-Event'] = 'check_run'
+
+      body = JSON.parse(payload(:check_run_success)).to_json
+      assert_no_enqueued_jobs(only: RefreshCheckRunsJob) do
+        assert_difference -> { Commit.find_by(sha: "6d9278037b872fd9a6690523e411ecb3aa181355").check_runs.count }, +1 do
+          post :create, body: body, as: :json
+          assert_response :ok
+        end
+      end
+    end
+
     test "returns head :ok if request is ping" do
       @request.headers['X-Github-Event'] = 'ping'
 
