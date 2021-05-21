@@ -60,6 +60,27 @@ module Shipit
       end
     end
 
+    test ".create_or_update_from_github! does not enqueues refresh when old statuses has no timestamp" do
+      checkrun_time = Time.now
+      assert_difference -> { @commit.check_runs.count }, +1 do
+        @commit.check_runs.create_or_update_from_github!(
+          @stack.id,
+          github_check_run(conclusion: 'success', checkrun_time: checkrun_time)
+        )
+      end
+
+      @commit.check_runs.last.update!(github_updated_at: nil)
+
+      assert_no_difference -> { @commit.check_runs.count } do
+        assert_no_enqueued_jobs(only: RefreshCheckRunsJob) do
+          @commit.check_runs.create_or_update_from_github!(
+            @stack.id,
+            github_check_run(conclusion: nil, checkrun_time: checkrun_time - 1.minute)
+          )
+        end
+      end
+    end
+
     test ".create_or_update_from_github! enqueues refresh when new statues have no timestamps" do
       assert_no_difference -> { @commit.check_runs.count } do
         assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do

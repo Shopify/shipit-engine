@@ -22,7 +22,7 @@ module Shipit
       rescue ActiveRecord::RecordNotUnique
         record = find_by!(selector)
 
-        if record.github_updated_at < attributes[:github_updated_at]
+        if !record.github_updated_at || record.github_updated_at < attributes[:github_updated_at]
           record.update!(attributes)
         elsif attributes[:conclusion] != record.conclusion
           Rails.logger.warn(
