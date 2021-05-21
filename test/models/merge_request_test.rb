@@ -135,7 +135,8 @@ module Shipit
           ),
           details_url: 'http://example.com',
           html_url: 'http://example.com',
-          success_at: Time.now,
+          completed_at: Time.now,
+          started_at: 1.minute.ago,
         )]
       ))
 
