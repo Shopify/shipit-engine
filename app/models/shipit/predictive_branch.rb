@@ -222,11 +222,12 @@ module Shipit
     end
 
     def additional_failed_information
+      return "Failed to process your request due to CI failures.\n For additional information, please check below." if failed?
       failed_branches = []
       predictive_build.predictive_branches.each do |p_build_branch|
         failed_branches << p_build_branch if p_build_branch.failed?
       end
-      return "Failed to process your request due to CI failures.\n For additional information, please check below." if failed_branches.empty?
+      return "Failed to process your request due to unknown CI failure." if failed_branches.empty?
       res = "We had to start over, we failed to process your request due to CI failures of the following projects: "
       failed_branches.each do |fb|
         name = fb.stack.repository.full_name
