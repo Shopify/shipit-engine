@@ -222,7 +222,6 @@ module Shipit
     end
 
     def additional_failed_information
-      return '' if failed?
       failed_branches = []
       predictive_build.predictive_branches.each do |p_build_branch|
         failed_branches << p_build_branch if p_build_branch.failed?
