@@ -228,7 +228,8 @@ module Shipit
         failed_branches << p_build_branch if p_build_branch.failed?
       end
       return "Something went wrong, we had to start over." if failed_branches.empty?
-      res = "We had to start over, we failed to process your request due to CI failures of the following projects: "
+      res = []
+      res << "We had to start over, we failed to process your request due to CI failures of the following projects: "
       failed_branches.each do |fb|
         name = fb.stack.repository.full_name
         res << "**#{name}**"
