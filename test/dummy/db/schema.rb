@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_194053) do
+ActiveRecord::Schema.define(version: 2021_05_04_200438) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_194053) do
     t.string "html_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "github_updated_at"
     t.index ["commit_id"], name: "index_check_runs_on_commit_id"
     t.index ["github_id", "commit_id"], name: "index_check_runs_on_github_id_and_commit_id", unique: true
     t.index ["stack_id"], name: "index_check_runs_on_stack_id"
@@ -178,14 +179,14 @@ ActiveRecord::Schema.define(version: 2021_03_25_194053) do
   end
 
   create_table "pull_request_assignments", force: :cascade do |t|
-    t.bigint "pull_request_id"
-    t.bigint "user_id"
+    t.integer "pull_request_id"
+    t.integer "user_id"
     t.index ["pull_request_id"], name: "index_pull_request_assignments_on_pull_request_id"
     t.index ["user_id"], name: "index_pull_request_assignments_on_user_id"
   end
 
   create_table "pull_requests", force: :cascade do |t|
-    t.bigint "stack_id", null: false
+    t.integer "stack_id", null: false
     t.integer "number", null: false
     t.string "title", limit: 256
     t.integer "github_id", limit: 8
@@ -195,7 +196,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_194053) do
     t.integer "deletions", default: 0, null: false
     t.integer "user_id"
     t.text "labels"
-    t.bigint "head_id"
+    t.integer "head_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
@@ -214,9 +215,9 @@ ActiveRecord::Schema.define(version: 2021_03_25_194053) do
     t.bigint "github_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commit_id", "github_id"], name: "index_release_statuses_on_commit_id_and_github_id"
-    t.index ["stack_id", "commit_id"], name: "index_release_statuses_on_stack_id_and_commit_id"
-    t.index ["user_id"], name: "index_release_statuses_on_user_id"
+    t.index ["commit_id", "github_id"], name: "index_deploy_statuses_on_commit_id_and_github_id"
+    t.index ["stack_id", "commit_id"], name: "index_deploy_statuses_on_stack_id_and_commit_id"
+    t.index ["user_id"], name: "index_deploy_statuses_on_user_id"
   end
 
   create_table "repositories", force: :cascade do |t|
@@ -288,7 +289,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_194053) do
     t.integer "additions", limit: 4, default: 0
     t.integer "deletions", limit: 4, default: 0
     t.text "definition", limit: 65535
-    t.binary "gzip_output", limit: 16777215
+    t.binary "gzip_output"
     t.boolean "rollback_once_aborted", default: false, null: false
     t.text "env"
     t.integer "confirmations", default: 0, null: false

@@ -5,6 +5,8 @@ module Shipit
     include DeferredTouch
     include Status::Common
 
+    CHECK_RUN_REFRESH_DELAY = 5.seconds
+
     belongs_to :stack, required: true
     belongs_to :commit, required: true
 
@@ -19,11 +21,28 @@ module Shipit
         create!(selector.merge(attributes))
       rescue ActiveRecord::RecordNotUnique
         record = find_by!(selector)
-        record.update!(attributes)
+
+        if !record.github_updated_at || record.github_updated_at < attributes[:github_updated_at]
+          record.update!(attributes)
+        elsif attributes[:conclusion] != record.conclusion
+          Rails.logger.warn(
+            "Conflicting stale checkrun received. Checkrun id: #{selector[:github_id]}, Details: #{attributes}"
+          )
+          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(commit_id: record.commit_id)
+        end
+
         record
       end
 
       def create_or_update_from_github!(stack_id, github_check_run)
+        checkrun_date = github_check_run.completed_at&.to_s || github_check_run.started_at&.to_s
+
+        unless checkrun_date
+          Rails.logger.warn("No valid timestamp found in checkrun data. Checkrun id: #{github_check_run.id}.")
+          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(stack_id: stack_id)
+          return
+        end
+
         create_or_update_by!(
           selector: {
             github_id: github_check_run.id,
@@ -35,6 +54,7 @@ module Shipit
             title: github_check_run.output.title.to_s.truncate(1_000),
             details_url: github_check_run.details_url,
             html_url: github_check_run.html_url,
+            github_updated_at: Time.parse(checkrun_date),
           },
         )
       end
