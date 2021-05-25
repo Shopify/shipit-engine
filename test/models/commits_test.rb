@@ -350,7 +350,6 @@ module Shipit
         output: mock(
           title: 'Tests build ran successfully',
         ),
-        completed_at: Time.now,
       )
       response = mock(
         check_runs: [check_run],
