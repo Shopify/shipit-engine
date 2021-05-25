@@ -22,6 +22,10 @@ module Shipit
       end
     end
 
+    def update_latest_deployed_ref
+      # noop: last deployed ref is useless for review stacks
+    end
+
     model_name.class_eval do
       def route_key
         "stacks"
