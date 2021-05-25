@@ -18,7 +18,6 @@ module Shipit
           'status' => [Handlers::StatusHandler],
           'membership' => [Handlers::MembershipHandler],
           'check_suite' => [Handlers::CheckSuiteHandler],
-          'check_run' => [Handlers::CheckRunHandler],
         }
       end
 
