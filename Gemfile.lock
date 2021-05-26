@@ -177,7 +177,7 @@ GEM
     multipart-post (2.1.1)
     mysql2 (0.5.3)
     nio4r (2.5.7)
-    nokogiri (1.11.3)
+    nokogiri (1.11.4)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     oauth2 (1.4.7)
