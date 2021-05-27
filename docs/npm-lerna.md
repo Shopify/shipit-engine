@@ -25,7 +25,7 @@ If the version in `package.json` contains one of these patterns, Shipit will pub
 [Lerna](https://github.com/lerna/lerna) is a tool for managing projects with multiple npm packages.
 Shipit understands `lerna.json` files (up to version `3.22.x`), and will publish all packages in a Lerna project to npm.
 
-### From Git
+### From Git (Default)
 
 In addition to the `semver` keyword supported by [`lerna version`](https://github.com/lerna/lerna/tree/main/commands/version#positionals), [`lerna publish`](https://github.com/lerna/lerna/tree/main/commands/publish) also supports the `from-git` keyword. This will identify packages tagged by `lerna version` and publish them to npm. This is useful in CI scenarios where you wish to manually increment versions, but have the package contents themselves consistently published by an automated process.
 
@@ -35,12 +35,21 @@ In order to use this feature with `shipit-engine`, you will need to add the foll
 ```
 machine:
   environment:
-    SHIPIT_LERNA_PUBLISH_FROM_GIT: true
+    SHIPIT_LERNA_PUBLISH_MECHANISM: 'from-git'
 ```
 
-### From Packages (Default)
+### From Package
 
 Similar to the `from-git` keyword, except the list of packages to publish is determined by inspecting each package.json and determining if any package version is not present in the registry. Any versions not present in the registry will be published. This is useful when a previous `lerna publish` failed to publish all packages to the registry.
+
+In order to use this feature with `shipit-engine`, you will need to add the following to your `shipit.yml`:
+
+#### Usage
+```
+machine:
+  environment:
+    SHIPIT_LERNA_PUBLISH_MECHANISM: 'from-package'
+```
 
 ### Pre-releases
 
