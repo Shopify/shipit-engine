@@ -947,6 +947,12 @@ module Shipit
       end
     end
 
+    test "#update that changes the branch name triggers a GithubSync job" do
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
+        @stack.update!(branch: 'test')
+      end
+    end
+
     private
 
     def generate_revert_commit(stack:, reverted_commit:, author: reverted_commit.author)
