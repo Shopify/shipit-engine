@@ -98,7 +98,7 @@ module Shipit
     end
 
     def unbundled_env
-      BASE_ENV.merge('PATH' => "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}").merge(@env.stringify_keys)
+      BASE_ENV.merge('PATH' => "#{Shipit.shell_paths.join(':')}:#{ENV['PATH']}").merge(@env.stringify_keys)
     end
 
     def stream(&block)
