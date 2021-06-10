@@ -1,5 +1,7 @@
 # Unreleased
 
+* Give precedence to configured `shell_paths` when executing commands (#1186)
+
 # 0.33.0
 
 * Use a Redis cache to store task output, instead of `output_chunks` (deprecate their use).
