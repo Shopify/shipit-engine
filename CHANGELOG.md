@@ -1,6 +1,13 @@
 # Unreleased
 
 * Give precedence to configured `shell_paths` when executing commands (#1186)
+* Improved detection of out-of-order, stale and inconsistent checkrun webhook and github API data. (#1167, #1184)
+* Added support for [from-git](https://github.com/Shopify/shipit-engine/blob/master/docs/npm-lerna.md#from-git-default) for lerna deploys. (#1174, #1183)
+* Improved self-healing when the git cache is in an invalid state and emits exit code 128. (#1169)
+* Skip MarkDeployHealthyJob execution by setting a negative status delay value. (#1164)
+* Drop unhandled webhook events. (#1162)
+* Only sync GitHub repo data for a stack if it is not archived. (#1161, #1163)
+* Improved support for multiple GitHub organizations. (#1158, #1153, others)
 
 # 0.33.0
 
