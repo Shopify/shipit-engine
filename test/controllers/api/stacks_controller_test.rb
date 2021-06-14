@@ -82,6 +82,20 @@ module Shipit
         assert_equal true, @stack.continuous_deployment
       end
 
+      test "#update allows changing the branch name" do
+        assert_equal 'master', @stack.branch
+
+        patch :update, params: {
+          id: @stack.to_param,
+          branch: 'test',
+        }
+
+        assert_response :ok
+        @stack.reload
+
+        assert_equal 'test', @stack.branch
+      end
+
       test "#index returns a list of stacks" do
         stack = Stack.last
         get :index
