@@ -292,6 +292,15 @@ deploy:
   interval: 5m
 ```
 
+**<code>deploy.retries</code>** enables retries for a stack, and defines the maximum amount of times that Shipit will retry a deploy that finished with a `failed`, `error` or `timedout` status.
+
+For example, this will retry a deploy twice if it fails.
+
+```yaml
+deploy:
+  retries: 2
+```
+
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to `disabled` unless Capistrano is detected.
 
 For example:
