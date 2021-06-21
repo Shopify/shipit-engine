@@ -48,8 +48,13 @@ module Shipit
       begin
         puts "Shipit::User#create_from_github:: start"
         puts github_user
+        unless github_user.id
+          user = find_by(name: github_user.name, email: github_user.email)
+          puts user
+          return user if user
+        end
+
         create(github_user: github_user)
-        puts "Shipit::User#create_from_github:: end"
       rescue Exception => e
         puts "Shipit::User#create_from_github:: Error: #{e.message}"
       end

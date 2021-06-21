@@ -91,9 +91,9 @@ module Shipit
 
     def self.from_github(commit)
       author = User.find_or_create_author_from_github_commit(commit)
-      author ||= Anonymous.new
+      author ||= AnonymousUser.new
       committer = User.find_or_create_committer_from_github_commit(commit)
-      committer ||= Anonymous.new
+      committer ||= AnonymousUser.new
 
       record = new(
         sha: commit.sha,
