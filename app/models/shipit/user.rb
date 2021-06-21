@@ -45,7 +45,14 @@ module Shipit
     end
 
     def self.create_from_github(github_user)
-      create(github_user: github_user)
+      begin
+        puts "Shipit::User#create_from_github:: start"
+        puts github_user
+        create(github_user: github_user)
+        puts "Shipit::User#create_from_github:: end"
+      rescue Exception => e
+        puts "Shipit::User#create_from_github:: Error: #{e.message}"
+      end
     end
 
     def self.refresh_shard(shard_index, shards_count)
