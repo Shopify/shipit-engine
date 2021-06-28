@@ -270,7 +270,9 @@ deploy:
 ```
 <br>
 
-**<code>deploy.max_commits</code>** defines the maximum number of commits that should be shipped per deploys. Defaults to `8`.
+**<code>deploy.max_commits</code>** defines the maximum number of commits that should be shipped per deploy. Defaults to `8` if no value is provided.
+
+To disable this limit, you can use use an explicit null value: `max_commits: null`. Continuous Delivery will then deploy any number of commits.
 
 Human users will be warned that they are not respecting the recommendation, but allowed to continue.
 However continuous delivery will respect this limit. If there is no deployable commits in this range, a human intervention will be required.
