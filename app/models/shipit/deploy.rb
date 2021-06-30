@@ -71,7 +71,6 @@ module Shipit
       value = 0
       value = retry_attempt if status.in?(UNSUCCESSFUL_STATUSES)
       ApplicationMetrics.set_gauge(:cd_sequential_failures, labels, value)
-      ApplicationMetrics.increment_gauge(:cd_sequential_failures_test, labels)
     rescue Exception => e
       puts "Shipit::Deploy#set_metrics - Error: #{e.message}"
     end
