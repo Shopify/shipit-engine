@@ -152,6 +152,7 @@ module Shipit
       merged_to_predictive_branch = []
       rejected_merged_requests = []
       predictive_branches = {}
+      predictive_merge_requests = []
 
       Dir.mktmpdir do |dir|
         merge_requests, stack_commands = fetch_and_clone_merge_requests(predictive_build, merge_requests, dir)
@@ -168,16 +169,11 @@ module Shipit
               mr.refresh!
               unless predictive_branches[mr.stack.id]
                 stack_commit = Shipit::Commit.where(stack_id: mr.stack.id, detached: 0).last
-                predictive_branches[mr.stack.id] = PredictiveBranch.create(predictive_build: predictive_build,
-                                                                           branch: predictive_build.branch,
-                                                                           stack: mr.stack,
-                                                                           stack_commit: stack_commit)
+                predictive_branches[mr.stack.id] = PredictiveBranch.create(predictive_build: predictive_build, branch: predictive_build.branch, stack: mr.stack, stack_commit: stack_commit)
               end
               stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number).run!
               merged_stacks[mr.stack.id] = mr.stack
-              PredictiveMergeRequest.create(merge_request: mr,
-                                            predictive_branch: predictive_branches[mr.stack.id],
-                                            head: mr.head)
+              predictive_merge_requests << PredictiveMergeRequest.create(merge_request: mr, predictive_branch: predictive_branches[mr.stack.id], head: mr.head)
             end
             merged_to_predictive_branch << merge_request
 
@@ -186,26 +182,28 @@ module Shipit
               return merged_to_predictive_branch
             end
           end
+          push_predictive_branch(stack_commands, merged_stacks)
         rescue => error
           if merge_request
             merge_request.with_all do |mr|
               rejected_merged_requests << mr
-              PredictiveMergeRequest.create(merge_request: mr,
-                                            predictive_branch: predictive_branches[mr.stack.id],
-                                            head: mr.head,
-                                            status: :rejected)
+              predictive_merge_requests.each do |pmr|
+                PredictiveMergeRequest.delete(pmr.id)
+              end
+              predictive_branches.each do |pb|
+                PredictiveBranch.delete(pb.id)
+              end
+              mr.reject!("not_mergeable")
             end
-
+            merge_request.reject!("not_mergeable")
             merge_requests.delete(merge_request)
-            merged_stacks = []
-            merged_to_predictive_branch = []
-            retry unless merge_requests
           end
         end
-        push_predictive_branch(stack_commands, merged_stacks)
       end
 
-      return merged_to_predictive_branch
+      return create_predictive_branches(predictive_build, merge_requests, limit) if rejected_merged_requests.any? && merge_requests.any?
+      return merged_to_predictive_branch unless rejected_merged_requests.any?
+      []
     end
 
     # Checkout clean predictive branch locally
