@@ -97,14 +97,16 @@ module Shipit
     end
 
     # Rolls the stack back to this deploy
-    def trigger_rollback(user = AnonymousUser.new, env: nil, force: false)
+    def trigger_rollback(user = AnonymousUser.new, env: nil, force: false, lock: true)
       rollback = build_rollback(user, env: env, force: force)
       rollback.save!
       rollback.enqueue
 
-      lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
-        "Please make sure the reason for the rollback has been addressed before deploying again."
-      stack.update!(lock_reason: lock_reason, lock_author_id: user.id)
+      if lock
+        lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
+          "Please make sure the reason for the rollback has been addressed before deploying again."
+        stack.update!(lock_reason: lock_reason, lock_author_id: user.id)
+      end
 
       rollback
     end
