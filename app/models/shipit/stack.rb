@@ -93,7 +93,7 @@ module Shipit
 
     validates :repository, uniqueness: {
       scope: %i(environment), case_sensitive: false,
-      message: 'cannot be used more than once with this environment. Check archived stacks.'
+      message: 'cannot be used more than once with this environment. Check archived stacks.',
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
     validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
