@@ -38,7 +38,7 @@ module Shipit
     private_constant :NAME_MAX_SIZE
 
     validates :name, uniqueness: { scope: %i(owner), case_sensitive: false,
-                                   message: 'cannot be used more than once' }
+                                   message: 'cannot be used more than once', }
     validates :owner, :name, presence: true, ascii_only: true
     validates :owner, format: { with: /\A[a-z0-9_\-\.]+\z/ }, length: { maximum: OWNER_MAX_SIZE }
     validates :name, format: { with: /\A[a-z0-9_\-\.]+\z/ }, length: { maximum: NAME_MAX_SIZE }
