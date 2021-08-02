@@ -281,6 +281,10 @@ module Shipit
       MSG
     end
 
+    def self.get_message(key)
+      return comment_msg(key)
+    end
+
     def update_completed_requests
       predictive_merge_requests.waiting.each do |pmr|
         # delete_closed_branch(pmr.merge_request.stack.github_repo_name, pmr.merge_request.branch)

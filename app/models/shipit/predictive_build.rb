@@ -192,7 +192,7 @@ module Shipit
       status, jobs, no_match_message = parse_task_output(task)
       upsert_ci_job_statuses(jobs)
 
-      pipeline_tasks_cache_key = "PredictiveBranch::update_status_#{id}"
+      pipeline_tasks_cache_key = "PredictiveBuild::update_status_#{id}"
       if no_match_message
         Shipit.redis.incr(pipeline_tasks_cache_key)
         pipeline_task_status = :failed if Shipit.redis.get(pipeline_tasks_cache_key).to_i > 3

@@ -353,6 +353,10 @@ module Shipit
       )
     end
 
+    def set_comment(msg)
+      Shipit.github.api.add_comment(stack.repository.full_name, number, msg) if msg
+    end
+
     private
 
     def self.request_merge(stack, number, user)
