@@ -11,6 +11,7 @@ module Shipit
 
     STACK_TASKS_FAILED = 'stack_tasks_failed'
     PIPELINE_TASKS_FAILED = 'pipeline_tasks_failed'
+    PREDICTIVE_BRANCH_CREATION_MERGE_FAILED = 'predictive_branch_creation_merge_failed'
     COMMIT_VALIDATION_FAILED = 'commit_validation_failed'
     MERGE_PREDICTIVE_TO_STACK_FAILED = 'merge_predictive_to_stack_failed'
     MERGE_MR_TO_PREDICTIVE_FAILED = 'merge_mr_to_predictive_failed'
@@ -109,7 +110,11 @@ module Shipit
         Shipit.redis.del(ci_tasks_cache_key) if Shipit.redis.get(ci_tasks_cache_key).present?
       end
 
-      return task_failed unless [:success, :pending, :running].include? task_status
+      unless [:success, :pending, :running].include? task_status
+        return run_task_failed(task) if predictive_task_type == :run
+        return task_failed
+      end
+
 
       if predictive_task_type == :run
         tasks_running       if task_status == :running || task_status == :pending
@@ -208,6 +213,16 @@ module Shipit
       reject_predictive_merge_requests(STACK_TASKS_FAILED)
     end
 
+    def run_task_failed(task)
+      msg = STACK_TASKS_FAILED
+      task.chunks.each do |chunk|
+        msg = PREDICTIVE_BRANCH_CREATION_MERGE_FAILED if chunk.text.include?('terminated with exit status 128')
+      end
+
+      failed
+      reject_predictive_merge_requests(msg)
+    end
+
     def cancel_predictive_merge_requests(reject_reason = nil)
       predictive_merge_requests.waiting.each do |pmr|
         pmr.cancel(comment_msg(reject_reason))
@@ -250,6 +265,8 @@ module Shipit
         msg = "Failed to merge predictive branch to #{stack.branch}"
       when MERGE_MR_TO_PREDICTIVE_FAILED
         msg = "Failed to merge pull request to predictive branch"
+      when PREDICTIVE_BRANCH_CREATION_MERGE_FAILED
+        msg = "Failed to process your request due to merge conflicts with other PRs / branch #{stack.branch} in this CI cycle.\nShipit will re-try in case and the current cycle will fail. Please check again later."
       when MR_MERGED_TO_PREDICTIVE
         msg = "Pull request merged to branch #{stack.branch}.\n#{predictive_build.build_message}"
       when CANCELED_DUE_TO_EMERGENCY
