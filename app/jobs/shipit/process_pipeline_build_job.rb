@@ -184,18 +184,23 @@ module Shipit
           end
           push_predictive_branch(stack_commands, merged_stacks)
         rescue => error
+          puts "ProcessPipelineBuildJob#create_predictive_branches = failed"
           if merge_request
             merge_request.with_all do |mr|
               rejected_merged_requests << mr
               predictive_merge_requests.each do |pmr|
+                puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveMergeRequest id=#{pmr.id}"
                 PredictiveMergeRequest.delete(pmr.id)
               end
               predictive_branches.each do |pb|
+                puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveBranch id=#{pb.id}"
                 PredictiveBranch.delete(pb.id)
               end
+              puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{mr.id}"
               mr.reject!("not_mergeable")
               mr.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             end
+            puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{merge_request.id}"
             merge_request.reject!("not_mergeable")
             merge_request.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             merge_requests.delete(merge_request)
