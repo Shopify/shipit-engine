@@ -194,8 +194,10 @@ module Shipit
                 PredictiveBranch.delete(pb.id)
               end
               mr.reject!("not_mergeable")
+              mr.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             end
             merge_request.reject!("not_mergeable")
+            merge_request.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             merge_requests.delete(merge_request)
           end
         end
