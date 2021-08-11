@@ -192,7 +192,7 @@ module Shipit
     end
 
     def continuous_delivery_delayed?
-      continuous_delivery_delayed_since? && continuous_deployment? && checks?
+      continuous_delivery_delayed_since? && continuous_deployment? && (checks? || deployment_checks?)
     end
 
     def continuous_delivery_delayed!
@@ -361,7 +361,7 @@ module Shipit
     end
 
     def deployable?
-      !locked? && !active_task? && !awaiting_provision?
+      !locked? && !active_task? && !awaiting_provision? && deployment_checks_passed?
     end
 
     def allows_merges?
@@ -602,6 +602,12 @@ module Shipit
       FileUtils.rm_rf(base_path.to_s)
     end
 
+    def deployment_checks_passed?
+      return true unless deployment_checks?
+
+      Shipit.deployment_checks.call(self)
+    end
+
     private
 
     def clear_cache
@@ -667,7 +673,7 @@ module Shipit
     end
 
     def should_resume_continuous_delivery?(commit)
-      !deployable? ||
+      (deployment_checks_passed? && !deployable?) ||
         deployed_too_recently? ||
         commit.nil? ||
         commit.deployed?
@@ -676,7 +682,12 @@ module Shipit
     def should_delay_continuous_delivery?(commit)
       commit.deploy_failed? ||
         (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
+        !deployment_checks_passed? ||
         commit.recently_pushed?
+    end
+
+    def deployment_checks?
+      Shipit.deployment_checks.present?
     end
   end
 end
