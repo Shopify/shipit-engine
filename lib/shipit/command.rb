@@ -13,7 +13,8 @@ module Shipit
     Denied = Class.new(Error)
     TimedOut = Class.new(Error)
 
-    BASE_ENV = Bundler.unbundled_env.merge((ENV.keys - Bundler.unbundled_env.keys).map { |k| [k, nil] }.to_h)
+    unbundled_env = Bundler.respond_to?(:unbundled_env) ? Bundler.unbundled_env : Bundler.clean_env
+    BASE_ENV = unbundled_env.merge((ENV.keys - unbundled_env.keys).map { |k| [k, nil] }.to_h)
 
     class Failed < Error
       attr_reader :exit_code
@@ -98,7 +99,7 @@ module Shipit
     end
 
     def unbundled_env
-      BASE_ENV.merge('PATH' => "#{ENV['PATH']}:#{Shipit.shell_paths.join(':')}").merge(@env.stringify_keys)
+      BASE_ENV.merge('PATH' => "#{Shipit.shell_paths.join(':')}:#{ENV['PATH']}").merge(@env.stringify_keys)
     end
 
     def stream(&block)

@@ -6,39 +6,32 @@ const taggedPackages = execSync("git tag --points-at HEAD")
   .trim()
   .split("\n");
 
-const hasBetaRelease = taggedPackages.some((version) =>
-  version.includes("-beta")
-);
+// anything that matches `-` after MAJOR.MINOR.PATCH
+const validPattern = new RegExp(/\d+\.\d+\.\d+-(\w+)/);
 
-// set this using machine.environment.SHIPIT_LERNA_PUBLISH_FROM_GIT in your shipit.yml
-const useFromGit = process.env.SHIPIT_LERNA_PUBLISH_FROM_GIT || false;
-
-if (
-  hasBetaRelease &&
-  !taggedPackages.every((version) => version.includes("-beta"))
-) {
-  throw Error("All packages must be beta releases. Versions cannot be mixed.");
+// Ensure that all releases use the same prerelease suffix.
+// We want to only release all final versions, or all betas etc
+const allPrereleaseSuffixes =  taggedPackages.map((version) => {
+  const result = validPattern.exec(version);
+  return result ? result[1] : '';
+});
+if ((new Set(allPrereleaseSuffixes)).size > 1) {
+  throw Error("All packages must be of the same type of release. Versions cannot be mixed.");
 }
-const isNext =
-  !hasBetaRelease &&
-  taggedPackages.some((version) => {
-    return ["-alpha", "-rc", "-next"].some((distributionType) =>
-      version.includes(distributionType)
-    );
-  });
 
-function distTag() {
-  if (hasBetaRelease) {
-    return "beta";
-  }
-  return isNext ? "next" : "latest";
+// set this using machine.environment.SHIPIT_LERNA_PUBLISH_MECHANISM in your shipit.yml
+const publishMechanism = process.env.SHIPIT_LERNA_PUBLISH_MECHANISM || 'from-git';
+
+if (!['from-package', 'from-git'].includes(publishMechanism)) {
+  throw Error("SHIPIT_LERNA_PUBLISH_MECHANISM must be 'from-package' or 'from-git'.");
 }
 
 const command = [
   "node_modules/.bin/lerna publish",
-  useFromGit ? "from-git" : "from-package",
+  publishMechanism,
   "--yes",
-  `--dist-tag ${distTag()}`,
+  "--dist-tag latest",
+  "--pre-dist-tag next",
 ];
 
 const commandString = command.join(" ");

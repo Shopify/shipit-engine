@@ -83,6 +83,23 @@ module Shipit
         assert_response :conflict
       end
 
+      test "#create refuses to deploy unsuccessful commits if the require_ci flag is passed" do
+        Commit.any_instance.expects(:deployable?).returns(false)
+
+        assert_no_difference -> { @stack.deploys.count } do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, require_ci: true }
+        end
+        assert_response :unprocessable_entity
+        assert_json 'errors.require_ci', ["Commit is not deployable"]
+      end
+
+      test "#create deploys failing commits if the require_ci flag is not passed" do
+        Commit.any_instance.expects(:deployable?).returns(false)
+
+        post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
+        assert_response :accepted
+      end
+
       test "#create refuses to deploy locked stacks" do
         @stack.update!(lock_reason: 'Something broken')
 

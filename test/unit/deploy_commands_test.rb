@@ -121,7 +121,7 @@ module Shipit
       clone_args = [
         'git', 'clone', '--quiet',
         '--local', '--origin', 'cache',
-        @stack.git_path.to_s, @deploy.working_directory
+        @stack.git_path.to_s, @deploy.working_directory,
       ]
       assert_equal clone_args, commands.first.args
       assert_equal ['git', 'remote', 'add', 'origin', @stack.repo_git_url.to_s], commands.second.args

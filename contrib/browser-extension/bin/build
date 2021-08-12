@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+if [ $# -lt 2 ];
+then
+cat << EOF
+  USAGE: build [shipit_host] [github_organization]
+  Example: build shipit.github.com github
+EOF
+exit 1
+fi
+
+rm -rf builds/
+mkdir -p builds/tmp
+
+cp -r src builds/tmp
+cp -r icons builds/tmp
+cp -r manifest.json builds/tmp
+
+SHIPIT_HOST=${1}
+GITHUB_ORGANIZATION=$(echo "${2}" | tr '[:upper:]' '[:lower:]')
+
+grep -rl '[SHIPIT_HOST]' builds/tmp/src/* | xargs perl -pi -e "s/\[SHIPIT_HOST\]/${SHIPIT_HOST}/g"
+grep -rl '[GITHUB_ORGANIZATION]' builds/tmp/src/* | xargs perl -pi -e "s/\[GITHUB_ORGANIZATION\]/${GITHUB_ORGANIZATION}/g"
+
+rm -f builds/hctw-chrome.zip
+pushd builds/tmp > /dev/null
+zip ../hctw-chrome.zip src/* icons/* manifest.json -q
+popd > /dev/null
+
+rm -rf builds/hctw-safari.safariextension
+mkdir builds/hctw-safari.safariextension
+cp builds/tmp/src/* builds/hctw-safari.safariextension/ 2> /dev/null
+cp builds/tmp/icons/icon128.png builds/hctw-safari.safariextension/icon.png
+cp builds/tmp/src/safari/info.plist builds/hctw-safari.safariextension/
+
+rm -rf builds/tmp

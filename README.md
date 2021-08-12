@@ -270,7 +270,9 @@ deploy:
 ```
 <br>
 
-**<code>deploy.max_commits</code>** defines the maximum number of commits that should be shipped per deploys. Defaults to `8`.
+**<code>deploy.max_commits</code>** defines the maximum number of commits that should be shipped per deploy. Defaults to `8` if no value is provided.
+
+To disable this limit, you can use use an explicit null value: `max_commits: null`. Continuous Delivery will then deploy any number of commits.
 
 Human users will be warned that they are not respecting the recommendation, but allowed to continue.
 However continuous delivery will respect this limit. If there is no deployable commits in this range, a human intervention will be required.
@@ -290,6 +292,15 @@ For example, this will wait 5 minutes after the end of a deploy before starting 
 ```yaml
 deploy:
   interval: 5m
+```
+
+**<code>deploy.retries</code>** enables retries for a stack, and defines the maximum amount of times that Shipit will retry a deploy that finished with a `failed`, `error` or `timedout` status.
+
+For example, this will retry a deploy twice if it fails.
+
+```yaml
+deploy:
+  retries: 2
 ```
 
 **<code>rollback.override</code>** contains an array of the shell commands required to rollback the application to a previous state. Shipit will try to infer it from the repository structure, but you can change the default inference. This key defaults to `disabled` unless Capistrano is detected.

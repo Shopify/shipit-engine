@@ -1,0 +1,26 @@
+{
+  "name": "Shipit",
+  "version": "1.2.2",
+  "manifest_version": 2,
+  "description": "Integrate Shipit directly inside GitHub",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+      "src/frame.html",
+      "src/frame.js",
+      "src/frame.css"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "src/inject.js"
+      ]
+    }
+  ]
+}

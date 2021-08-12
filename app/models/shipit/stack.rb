@@ -86,14 +86,14 @@ module Shipit
     after_commit :sync_github_if_necessary, on: :update
 
     def sync_github_if_necessary
-      if archived_since_previously_changed? && archived_since.nil?
+      if (archived_since_previously_changed? && archived_since.nil?) || branch_previously_changed?
         sync_github
       end
     end
 
     validates :repository, uniqueness: {
       scope: %i(environment), case_sensitive: false,
-      message: 'cannot be used more than once with this environment. Check archived stacks.'
+      message: 'cannot be used more than once with this environment. Check archived stacks.',
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
     validates :deploy_url, format: { with: URI.regexp(%w(http https ssh)) }, allow_blank: true
@@ -192,7 +192,7 @@ module Shipit
     end
 
     def continuous_delivery_delayed?
-      continuous_delivery_delayed_since? && continuous_deployment? && checks?
+      continuous_delivery_delayed_since? && continuous_deployment? && (checks? || deployment_checks?)
     end
 
     def continuous_delivery_delayed!
@@ -361,7 +361,7 @@ module Shipit
     end
 
     def deployable?
-      !locked? && !active_task? && !awaiting_provision?
+      !locked? && !active_task? && !awaiting_provision? && deployment_checks_passed?
     end
 
     def allows_merges?
@@ -602,6 +602,12 @@ module Shipit
       FileUtils.rm_rf(base_path.to_s)
     end
 
+    def deployment_checks_passed?
+      return true unless deployment_checks?
+
+      Shipit.deployment_checks.call(self)
+    end
+
     private
 
     def clear_cache
@@ -667,7 +673,7 @@ module Shipit
     end
 
     def should_resume_continuous_delivery?(commit)
-      !deployable? ||
+      (deployment_checks_passed? && !deployable?) ||
         deployed_too_recently? ||
         commit.nil? ||
         commit.deployed?
@@ -676,7 +682,12 @@ module Shipit
     def should_delay_continuous_delivery?(commit)
       commit.deploy_failed? ||
         (checks? && !EphemeralCommitChecks.new(commit).run.success?) ||
+        !deployment_checks_passed? ||
         commit.recently_pushed?
+    end
+
+    def deployment_checks?
+      Shipit.deployment_checks.present?
     end
   end
 end
