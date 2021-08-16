@@ -10,7 +10,11 @@ end
 route %(mount Shipit::Engine, at: '/')
 
 gem 'sidekiq'
-gem 'shipit-engine'
+if ENV['SHIPIT_GEM_PATH']
+  gem 'shipit-engine', path: ENV['SHIPIT_GEM_PATH']
+else
+  gem 'shipit-engine'
+end
 gsub_file 'Gemfile', "# Use Redis adapter to run Action Cable in production", ''
 gsub_file 'Gemfile', "# gem 'redis'", "gem 'redis'"
 
