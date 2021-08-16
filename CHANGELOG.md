@@ -1,7 +1,15 @@
 # Unreleased
 
-* Give precedence to configured `shell_paths` when executing commands (#1186)
+# 0.34.0
 
+* Upgraded to Rails 6.1.
+* Fixed Ruby 3.0 compatibility.
+* The minimum required ruby version is now 2.6.
+* Give precedence to configured `shell_paths` when executing commands. (#1186)
+* Support for sending signed webhooks with the secret key. (#1150)
+* No longer assume `master` is the default branch. (#1149)
+* Support multiple GitHub organisations. (#1151)
+* Allow changing the branch name through the API. (#1185)
 # 0.33.0
 
 * Use a Redis cache to store task output, instead of `output_chunks` (deprecate their use).
