@@ -67,7 +67,8 @@
 }
 
 .deploy-banner {
-  height: 4rem;
+  min-height: 4rem;
+  height: auto;
   background-color: #f0f4f7;
   display: flex;
   justify-content: center;
