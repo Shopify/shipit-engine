@@ -28,7 +28,9 @@ module Shipit
     end
 
     def git(*args)
-      Command.new("git", *args)
+      kwargs = args.extract_options!
+      kwargs[:env] ||= env
+      Command.new("git", *args, **kwargs)
     end
     ruby2_keywords :git if respond_to?(:ruby2_keywords, true)
 
