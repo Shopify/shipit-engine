@@ -30,12 +30,12 @@
       </p>
       <p class="commit-meta">
         <% if read_only %>
-          <span class="utc-timecode">on <%= deploy.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
+          Started <span class="utc-timecode">on <%= deploy.created_at.strftime('%Y-%m-%d %H:%M:%S') %> UTC</span>
         <% else %>
-          <%= timeago_tag(deploy.created_at, force: true) %>
+          Started <%= timeago_tag(deploy.created_at, force: true) %>
         <% end %>
         <% if deploy.duration? %>
-          in <%= deploy.duration %>
+          and finished in <%= deploy.duration %>
         <% end %>
       </p>
     </div>
