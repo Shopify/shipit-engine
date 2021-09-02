@@ -1030,6 +1030,28 @@ module Shipit
       end
     end
 
+    test "manually triggered rollbacks sets rollbacked deploys as faulty and not the rollback task" do
+      @deploy = shipit_deploys(:canaries_validating)
+      @middle_deploy = shipit_deploys(:canaries_faulty)
+      @rollback_to_deploy = shipit_deploys(:canaries_success)
+
+      @rollback_task = @rollback_to_deploy.trigger_rollback(force: true)
+
+      @rollback_task.run!
+      @rollback_task.complete!
+      @rollback_task.reload
+      @deploy.reload
+      @middle_deploy.reload
+
+      assert_equal 'faulty', @deploy.status
+      assert_equal 'failure', @deploy.last_release_status.state
+
+      assert_equal 'faulty', @middle_deploy.status
+      assert_equal 'failure', @middle_deploy.last_release_status.state
+
+      assert_equal 'success', @rollback_task.status
+    end
+
     test "succeeding a deploy creates CommitDeploymentStatuses" do
       @deploy = shipit_deploys(:shipit_running)
       refute_empty @deploy.commit_deployments

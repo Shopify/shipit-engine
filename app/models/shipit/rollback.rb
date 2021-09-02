@@ -33,6 +33,10 @@ module Shipit
       'deploys/deploy'
     end
 
+    def report_complete!
+      complete!
+    end
+
     private
 
     def update_release_status
@@ -40,6 +44,7 @@ module Shipit
 
       # When we rollback to a certain revision, assume that all later deploys were faulty
       stack.deploys.newer_than(deploy.id).until(stack.last_completed_deploy.id).to_a.each do |deploy|
+        next if deploy.id == id
         deploy.report_faulty!(description: "A rollback of #{stack.to_param} was triggered")
       end
     end
