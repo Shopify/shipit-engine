@@ -44,7 +44,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -54,7 +54,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
     end
 
@@ -67,7 +67,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
     end
 
@@ -81,7 +81,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
     end
 
@@ -91,7 +91,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W(git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
     end
 
