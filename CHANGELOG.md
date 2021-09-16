@@ -7,9 +7,6 @@
 * Bump Rails to 6.1.4.1. (#1216)
 * Avoid reading the shipit.yml before the repo is fully cloned. (#1215)
 * Properly pass the base env to git commands. (#1214)
-* Fix the rails binstub.
-* Add an extra migration to change CheckRun#github_updated_at default to nil.
-* Fix the setup script CI. (#1211)
 * check_runs github_updated_at column defaults to nil instead of 0.
 * Allow the deploy banner to stretch so that buttons do not get hidden. (#1208)
 * Don't mark rollback task as faulty.
