@@ -72,7 +72,7 @@ module Shipit
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
-        git('checkout', '--config', 'advice.detachedHead=false', commit.sha, chdir: git_dir).run! if commit
+        git('-c', 'advice.detachedHead=false', 'checkout', commit.sha, chdir: git_dir).run! if commit
         yield Pathname.new(git_dir)
       end
     end
