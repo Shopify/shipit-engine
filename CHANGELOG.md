@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.35.1
+
+* Fixup #1219: Suppress detached head advisory. (#1222)
+
 # 0.35.0
 
 * Suppress initial git clone progress output and detached head advisory. (#1219)
