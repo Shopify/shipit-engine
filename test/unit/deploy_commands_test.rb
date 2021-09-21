@@ -27,7 +27,7 @@ module Shipit
 
       command = @commands.fetch
 
-      assert_equal %w(git fetch origin --tags master), command.args
+      assert_equal %w(git fetch origin --quiet --tags master), command.args
     end
 
     test "#fetch calls git fetch in git_path directory if repository cache already exist" do
