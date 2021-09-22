@@ -1,5 +1,7 @@
 # Unreleased
 
+* Suppress git fetch progress output. (#1225)
+
 # 0.35.1
 
 * Fixup #1219: Suppress detached head advisory. (#1222)
