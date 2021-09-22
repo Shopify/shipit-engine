@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.35.2
+
 * Suppress git fetch progress output. (#1225)
 
 # 0.35.1
