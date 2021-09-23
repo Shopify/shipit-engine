@@ -162,8 +162,9 @@ module Shipit
         #   On failure, try again, this time without the faulty merge_request
         begin
           # Merge
-          merge_request = nil
+          current_merge_request = nil
           merge_requests.each do |merge_request|
+            current_merge_request = merge_request
             # One layer at a time
             merge_request.with_all do |mr|
               mr.refresh!
@@ -181,12 +182,13 @@ module Shipit
               push_predictive_branch(stack_commands, merged_stacks)
               return merged_to_predictive_branch
             end
+            current_merge_request = nil
           end
           push_predictive_branch(stack_commands, merged_stacks)
         rescue => error
           puts "ProcessPipelineBuildJob#create_predictive_branches = failed"
-          if merge_request
-            merge_request.with_all do |mr|
+          if current_merge_request
+            current_merge_request.with_all do |mr|
               rejected_merged_requests << mr
               predictive_merge_requests.each do |pmr|
                 puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveMergeRequest id=#{pmr.id}"
@@ -200,10 +202,10 @@ module Shipit
               mr.reject!("not_mergeable")
               mr.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             end
-            puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{merge_request.id}"
-            merge_request.reject!("not_mergeable")
-            merge_request.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
-            merge_requests.delete(merge_request)
+            puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{current_merge_request.id}"
+            current_merge_request.reject!("not_mergeable")
+            current_merge_request.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
+            current_merge_request.delete(current_merge_request)
           end
         end
       end
