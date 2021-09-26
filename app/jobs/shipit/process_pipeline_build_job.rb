@@ -170,11 +170,11 @@ module Shipit
               mr.refresh!
               unless predictive_branches[mr.stack.id]
                 stack_commit = Shipit::Commit.where(stack_id: mr.stack.id, detached: 0).last
-                predictive_branches[mr.stack.id] = PredictiveBranch.create(predictive_build: predictive_build, branch: predictive_build.branch, stack: mr.stack, stack_commit: stack_commit)
+                predictive_branches[mr.stack.id] = Shipit::PredictiveBranch.create(predictive_build: predictive_build, branch: predictive_build.branch, stack: mr.stack, stack_commit: stack_commit)
               end
               stack_commands[mr.stack].git_merge_origin_as_pr(mr.branch, mr.number).run!
               merged_stacks[mr.stack.id] = mr.stack
-              predictive_merge_requests << PredictiveMergeRequest.create(merge_request: mr, predictive_branch: predictive_branches[mr.stack.id], head: mr.head)
+              predictive_merge_requests << Shipit::PredictiveMergeRequest.create(merge_request: mr, predictive_branch: predictive_branches[mr.stack.id], head: mr.head)
             end
             merged_to_predictive_branch << merge_request
 
@@ -188,23 +188,25 @@ module Shipit
         rescue => error
           puts "ProcessPipelineBuildJob#create_predictive_branches = failed"
           if current_merge_request
+            puts "there is a merge request"
             current_merge_request.with_all do |mr|
+              puts "Current MR ID= #{mr.id}"
               rejected_merged_requests << mr
+              puts "predictive_merge_requests= #{predictive_merge_requests.size}"
               predictive_merge_requests.each do |pmr|
                 puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveMergeRequest id=#{pmr.id}"
-                PredictiveMergeRequest.delete(pmr.id)
+                Shipit::PredictiveMergeRequest.delete(pmr.id)
               end
-              predictive_branches.each do |pb|
-                puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveBranch id=#{pb.id}"
-                PredictiveBranch.delete(pb.id)
+              puts "predictive_branches= #{predictive_branches.size}"
+              predictive_branches.each do |key, val|
+                puts "predictive_branches key= #{key}"
+                puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveBranch id=#{val.id}"
+                Shipit::PredictiveBranch.delete(val.id)
               end
               puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{mr.id}"
               mr.reject!("not_mergeable")
-              mr.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
+              mr.set_comment(Shipit::PredictiveBranch.get_message(Shipit::PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             end
-            puts "ProcessPipelineBuildJob#create_predictive_branches reject! MergeRequest id=#{current_merge_request.id}"
-            current_merge_request.reject!("not_mergeable")
-            current_merge_request.set_comment(PredictiveBranch.get_message(PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED))
             current_merge_request.delete(current_merge_request)
           end
         end
