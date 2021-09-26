@@ -182,7 +182,7 @@ module Shipit
               push_predictive_branch(stack_commands, merged_stacks)
               return merged_to_predictive_branch
             end
-            current_merge_request = nil
+            # current_merge_request = nil
           end
           push_predictive_branch(stack_commands, merged_stacks)
         rescue => error
