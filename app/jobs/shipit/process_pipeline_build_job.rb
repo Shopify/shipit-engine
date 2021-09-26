@@ -200,7 +200,7 @@ module Shipit
               puts "predictive_branches= #{predictive_branches.size}"
               stack_messages = {}
               predictive_branches.each do |key, val|
-                stack_messages[val.stack_id] = Shipit::PredictiveBranch.comment_msg(Shipit::PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED)
+                stack_messages[val.stack_id] = val.comment_msg(Shipit::PredictiveBranch::PREDICTIVE_BRANCH_CREATION_MERGE_FAILED)
                 puts "predictive_branches key= #{key}"
                 puts "ProcessPipelineBuildJob#create_predictive_branches Delete PredictiveBranch id=#{val.id}"
                 Shipit::PredictiveBranch.delete(val.id)
