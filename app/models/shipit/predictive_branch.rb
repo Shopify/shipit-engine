@@ -225,13 +225,13 @@ module Shipit
 
     def cancel_predictive_merge_requests(reject_reason = nil)
       predictive_merge_requests.waiting.each do |pmr|
-        pmr.cancel(self.class.comment_msg(reject_reason))
+        pmr.cancel(comment_msg(reject_reason))
       end
     end
 
     def reject_predictive_merge_requests(reject_reason)
       predictive_merge_requests.waiting.each do |pmr|
-        pmr.reject(self.class.comment_msg(reject_reason))
+        pmr.reject(comment_msg(reject_reason))
       end
       # delete_closed_branch(stack.github_repo_name, branch)
     end
@@ -255,7 +255,7 @@ module Shipit
       res
     end
 
-    def self.comment_msg(step)
+    def comment_msg(step)
       case step
       when PIPELINE_TASKS_FAILED, STACK_TASKS_FAILED
         msg = additional_failed_information
@@ -281,21 +281,17 @@ module Shipit
       MSG
     end
 
-    def self.get_message(key)
-      return self.class.comment_msg(key)
-    end
-
     def update_completed_requests
       predictive_merge_requests.waiting.each do |pmr|
         # delete_closed_branch(pmr.merge_request.stack.github_repo_name, pmr.merge_request.branch)
         pmr.merge_request.complete!
-        pmr.merge(self.class.comment_msg(MR_MERGED_TO_PREDICTIVE))
+        pmr.merge(comment_msg(MR_MERGED_TO_PREDICTIVE))
       end
       # delete_closed_branch(stack.github_repo_name, branch)
 
       predictive_merge_requests.blocked.each do |pmr|
         pmr.merge_request.reject!('merge_conflict')
-        pmr.reject(self.class.comment_msg(MERGE_PREDICTIVE_TO_STACK_FAILED))
+        pmr.reject(comment_msg(MERGE_PREDICTIVE_TO_STACK_FAILED))
       end
     end
 
