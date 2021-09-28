@@ -60,6 +60,11 @@ module Shipit
         head(:accepted)
       end
 
+      def refresh
+        GithubSyncJob.perform_later(id: stack.id)
+        render_resource(stack, status: :accepted)
+      end
+
       private
 
       def create_params
