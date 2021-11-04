@@ -32,3 +32,24 @@
 		<%= f.submit class: "btn", value: "Save" %>
 	<% end %>
 </div>
+
+<div class="setting-section">
+	<h5>Lock deploys</h5>
+	<%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
+		<div class="field-wrapper">
+			<%= f.label :lock_reason, 'Reason for lock' %>
+			<%= f.text_area :lock_reason %>
+		</div>
+		<% if @stack.locked? %>
+			<%= f.submit class: "btn", value: "Update Reason" %>
+		<% else %>
+				<%= f.submit class: "btn", value: "Lock" %>
+		<% end %>
+	<% end %>
+	<% if @stack.locked? %>
+		<%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
+			<%= f.hidden_field :lock_reason, value: nil %>
+			<%= f.submit class: "btn btn--primary", value: "Unlock" %>
+		<%- end -%>
+	<% end %>
+</div>
