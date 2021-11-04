@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_23_075617) do
+ActiveRecord::Schema.define(version: 2021_11_03_154121) do
 
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
@@ -315,7 +315,7 @@ ActiveRecord::Schema.define(version: 2021_08_23_075617) do
   create_table "teams", force: :cascade do |t|
     t.integer "github_id", limit: 4
     t.string "api_url", limit: 255
-    t.string "slug", limit: 50
+    t.string "slug", limit: 255
     t.string "name", limit: 255
     t.string "organization", limit: 39
     t.datetime "created_at", null: false
