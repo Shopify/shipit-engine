@@ -61,6 +61,7 @@
           <%= link_to 'Rollback to this deploy...', rollback_stack_deploy_path(@stack, deploy), class: 'btn btn--delete deploy-action rollback-action' %>
         <% end %>
       <% elsif deploy.currently_deployed? && !deploy.stack.active_task? %>
+        <%= "Time: #{Time.now} "%>
         <%= redeploy_button(deploy.until_commit) %>
       <% end %>
     </div>
