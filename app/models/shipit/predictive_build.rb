@@ -331,8 +331,16 @@ module Shipit
       # TODO: removing ci_pipeline_completed in all cases and do it just in case of emergency
       # ci_pipeline_completed if in_emergency_mode? # In case of emergency, we are skipping pipeline tasks
       ci_pipeline_completed # TODO: disabling automation tasks - to remove later
-      trigger_pipeline_tasks(run_now)
-      trigger_stack_tasks(run_now)
+      
+      if in_emergency_mode?
+        predictive_branches.each do |p_branch|
+          p_branch.completed
+        end
+        ci_stack_completed
+      elsif
+        trigger_pipeline_tasks(run_now)
+        trigger_stack_tasks(run_now)
+      end
     end
 
     def trigger_pipeline_tasks(run_now = false)
