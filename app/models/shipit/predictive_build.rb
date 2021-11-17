@@ -337,8 +337,8 @@ module Shipit
           p_branch.completed
         end
         ci_stack_completed
-      elsif
-        trigger_pipeline_tasks(run_now)
+      else
+        trigger_pipeline_tasks(run_now) unless ci_pipeline_completed?
         trigger_stack_tasks(run_now)
       end
     end
