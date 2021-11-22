@@ -237,7 +237,7 @@ module Shipit
     end
 
     def additional_failed_information
-      return "Failed to process your request due to CI failures.\n For additional information, please check below." if failed?
+      return "Failed to process your request due to CI failures.\n For additional informations, please check the github checks below.\nThis can be dued to CI failure on another branch, if you think that the error is not related to your code you can try to run /shipit mode:single to run your PR alone (take into account that mode:single is handled only if there are no other PRs to handle so it can take some time during rush hours).\nOtherwise you can just /shipit again. \nFor more informations you can check the [Shipit documentation - Failed due to CI failures.](https://myvcita.atlassian.net/wiki/spaces/IT/pages/2174976098/Shipit+Troubleshooting+Guide#Failed-due-to-CI-failures)" if failed?
       failed_branches = []
       predictive_build.predictive_branches.each do |p_build_branch|
         failed_branches << p_build_branch if p_build_branch.failed?

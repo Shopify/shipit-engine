@@ -59,7 +59,7 @@ module Shipit
       stacks = unmergeable_stacks(mode)
       merge_requests = MergeRequest.where(stack: stacks).to_be_merged.mode(mode)
       merge_requests.each do |merge_request|
-        msg = "The repository does not allow merges (#{merge_request.stack.not_mergeable_reason(mode)}). Please try try again later."
+        msg = "The repository does not allow merges (#{merge_request.stack.not_mergeable_reason(mode)}). \nIt's typically due to sequential CD failures. \nPlease see the [Shipit documentation - Repository does not allow merges.](https://myvcita.atlassian.net/wiki/spaces/IT/pages/2174976098/Shipit+Troubleshooting+Guide#The-repository-does-not-allow-merges%2Fdeployment-failed) to release the situation or try again later."
         Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
         merge_request.reject!("not_mergeable")
       end
@@ -149,7 +149,7 @@ module Shipit
           final_merge_requests << merge_request
         else
           msg = ""
-          msg = "Pull request is not mergeable yet. Please try again later." if merge_request.not_mergeable_yet?
+          msg = "Pull request is not mergeable yet. \nIt's typically due to one of the following reasons:\n* Github has not checked the mergeability of your PR yet: Just try again.\n* Shipit doesn't have permissions to your repository: Contact Devops team.\n For more informations please check the [Shipit documentation - Pull request is not mergeable.](https://myvcita.atlassian.net/wiki/spaces/IT/pages/2174976098/Shipit+Troubleshooting+Guide#Pull-request-is-not-mergeable-yet)." if merge_request.not_mergeable_yet?
           msg = "#{msg} Not all status checks passed. Please try again later." unless merge_request.all_status_checks_passed?
           merge_request.reject!("not_mergeable")
           Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
