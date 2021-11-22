@@ -36,6 +36,17 @@ module Shipit
       assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
     end
 
+    test "users which require a fresh login are redirected" do
+      user = shipit_users(:walrus)
+      user.update!(github_access_token: 'some_legacy_value')
+      assert_predicate user, :requires_fresh_login?
+
+      get :index
+
+      assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
+      assert_nil session[:user_id]
+    end
+
     test "current_user must be a member of at least a Shipit.github_teams" do
       session[:user_id] = shipit_users(:bob).id
       Shipit.stubs(:github_teams).returns([shipit_teams(:cyclimse_cooks), shipit_teams(:shopify_developers)])

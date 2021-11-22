@@ -17,7 +17,11 @@ module Shipit
     private
 
     def force_github_authentication
-      if Shipit.authentication_disabled? || current_user.logged_in?
+      if current_user.logged_in? && current_user.requires_fresh_login?
+        Rails.logger.warn("User #{current_user.id} requires a fresh login, logging out...")
+        reset_session
+        redirect_to(Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url))
+      elsif Shipit.authentication_disabled? || current_user.logged_in?
         unless current_user.authorized?
           team_handles = Shipit.github_teams.map(&:handle)
           team_list = team_handles.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
