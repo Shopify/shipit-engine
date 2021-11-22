@@ -31,6 +31,10 @@ module Shipit
       false
     end
 
+    def requires_fresh_login?
+      false
+    end
+
     def authorized?
       Shipit.authentication_disabled?
     end
