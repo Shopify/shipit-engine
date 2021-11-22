@@ -226,9 +226,9 @@ module Shipit
       assert_nil legacy.encrypted_github_access_token
       assert_nil legacy.encrypted_github_access_token_iv
 
-      legacy.update!(github_access_token: 't0k3n')
+      legacy.update!(github_access_token: 'ghu_t0k3n')
       legacy.reload
-      assert_equal 't0k3n', legacy.github_access_token
+      assert_equal 'ghu_t0k3n', legacy.github_access_token
     end
 
     test "users are always logged_in?" do
@@ -272,6 +272,21 @@ module Shipit
       )
       found_user = Shipit::User.find_or_create_author_from_github_commit(github_commit)
       assert_equal user, found_user
+    end
+
+    test "requires_fresh_login? defaults to false" do
+      u = User.new
+      refute_predicate u, :requires_fresh_login?
+    end
+
+    test "requires_fresh_login? is true for users with legacy github_access_token" do
+      @user.update!(github_access_token: 'some_legacy_value')
+      assert_predicate @user, :requires_fresh_login?
+    end
+
+    test "requires_fresh_login? is false for users with a new format github_access_token" do
+      @user.update!(github_access_token: 'ghu_tok3n')
+      refute_predicate @user, :requires_fresh_login?
     end
 
     private
