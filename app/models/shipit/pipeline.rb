@@ -149,7 +149,7 @@ module Shipit
           final_merge_requests << merge_request
         else
           msg = ""
-          msg = "Pull request is not mergeable yet. \nIt's typically due to one of the following reasons:\n* Github has not checked the mergeability of your PR yet: Just try again.\n*Your PR contains conflicts: Please fix the conflicts listed below and /shipit again your PR.\n* Shipit doesn't have permissions to your repository: Contact Devops team.\n For more informations please check the [Shipit documentation - Pull request is not mergeable.](https://myvcita.atlassian.net/wiki/spaces/IT/pages/2174976098/Shipit+Troubleshooting+Guide#Pull-request-is-not-mergeable-yet)." if merge_request.not_mergeable_yet?
+          msg = "Pull request is not mergeable yet. \nIt's typically due to one of the following reasons:\n* Github has not checked the mergeability of your PR yet: Just try again.\n* Your PR contains conflicts: Please fix the conflicts listed below and /shipit again your PR.\n* Shipit doesn't have permissions to your repository: Contact Devops team.\n For more informations please check the [Shipit documentation - Pull request is not mergeable.](https://myvcita.atlassian.net/wiki/spaces/IT/pages/2174976098/Shipit+Troubleshooting+Guide#Pull-request-is-not-mergeable-yet)." if merge_request.not_mergeable_yet?
           msg = "#{msg} Not all status checks passed. Please try again later." unless merge_request.all_status_checks_passed?
           merge_request.reject!("not_mergeable")
           Shipit.github.api.add_comment(merge_request.stack.repository.full_name, merge_request.number, msg) if msg
