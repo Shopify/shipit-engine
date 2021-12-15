@@ -40,6 +40,7 @@ module Shipit
       end
 
       params do
+        accepts :environment, String
         accepts :branch, String
         accepts :deploy_url, String
         accepts :ignore_ci, Boolean
