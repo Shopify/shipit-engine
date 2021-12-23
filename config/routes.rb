@@ -27,6 +27,9 @@ Shipit::Engine.routes.draw do
       resource :lock, only: %i(create update destroy)
       resources :tasks, only: %i(index show) do
         resource :output, only: :show
+        member do
+          put :abort
+        end
       end
       resources :deploys, only: %i(index create) do
         resources :release_statuses, only: %i(create)
