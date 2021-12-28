@@ -172,3 +172,25 @@ jobs:
         bundle install --jobs 4 --retry 3
         bundle exec rake db:create db:schema:load test
         bundle exec rake db:seed
+
+  setup:
+    name: Test setup script
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 3.0.x
+    - name: Run setup script
+      run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+
+        export SHIPIT_GEM_PATH="${PWD}"
+        mkdir /tmp/new-app
+        cd /tmp/new-app
+        gem install rails -v '~> 6.1.4' --no-document
+        rails new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer --skip-active-storage --skip-webpack-install --skip-action-mailbox --skip-action-text -m "${SHIPIT_GEM_PATH}/template.rb"
+      env:
+        SHIPIT_EDGE: "1"

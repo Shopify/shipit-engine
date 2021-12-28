@@ -41,7 +41,7 @@ en:
     reject: Mark the release as faulty
   deploy_button:
     hint:
-      max_commits: It is recommended not to deploy more than %{maximum} commits at once.
+      max_commits: Use caution when deploying more than %{maximum} commits at once.
       blocked: This commit range includes a commit that can't be deployed.
     caption:
       pending: Pending CI

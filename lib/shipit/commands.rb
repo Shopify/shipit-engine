@@ -20,19 +20,25 @@ module Shipit
     delegate :git_version, to: :class
 
     def env
-      @env ||= Shipit.env.merge(
+      base_env
+    end
+
+    def git(*args)
+      kwargs = args.extract_options!
+      kwargs[:env] ||= base_env
+      Command.new("git", *args, **kwargs)
+    end
+    ruby2_keywords :git if respond_to?(:ruby2_keywords, true)
+
+    private
+
+    def base_env
+      @base_env ||= Shipit.env.merge(
         'GITHUB_DOMAIN' => github.domain,
         'GITHUB_TOKEN' => github.token,
         'GIT_ASKPASS' => Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s,
       )
     end
-
-    def git(*args)
-      Command.new("git", *args)
-    end
-    ruby2_keywords :git if respond_to?(:ruby2_keywords, true)
-
-    private
 
     def github
       Shipit.github

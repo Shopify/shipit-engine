@@ -123,6 +123,13 @@ module Shipit
       DEFAULT_AVATAR.dup
     end
 
+    # https://github.blog/2021-04-05-behind-githubs-new-authentication-token-formats
+    GITHUB_TOKEN_FORMAT = /^gh[a-z]_/
+
+    def requires_fresh_login?
+      github_access_token.present? && !github_access_token.match(GITHUB_TOKEN_FORMAT)
+    end
+
     private
 
     def identify_renamed_user!

@@ -189,6 +189,13 @@ module Shipit
         assert_response :forbidden
         assert_json 'message', 'This operation requires the `write:stack` permission'
       end
+
+      test "#refresh queues a GithubSyncJob" do
+        assert_enqueued_with(job: GithubSyncJob, args: [id: @stack.id]) do
+          post :refresh, params: { id: @stack.to_param }
+        end
+        assert_response :accepted
+      end
     end
   end
 end

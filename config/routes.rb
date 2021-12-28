@@ -20,6 +20,7 @@ Shipit::Engine.routes.draw do
       get '/' => 'stacks#show'
       delete '/' => 'stacks#destroy'
       patch '/' => 'stacks#update'
+      post '/refresh' => 'stacks#refresh'
     end
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do

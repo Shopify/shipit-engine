@@ -40,6 +40,7 @@ module Shipit
       end
 
       params do
+        accepts :environment, String
         accepts :branch, String
         accepts :deploy_url, String
         accepts :ignore_ci, Boolean
@@ -58,6 +59,11 @@ module Shipit
       def destroy
         stack.schedule_for_destroy!
         head(:accepted)
+      end
+
+      def refresh
+        GithubSyncJob.perform_later(id: stack.id)
+        render_resource(stack, status: :accepted)
       end
 
       private

@@ -6,61 +6,7 @@
       <h2>Settings (Stack #<%= @stack.id %>)</h2>
     </header>
 
-    <div class="setting-section">
-      <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
-        <div class="field-wrapper">
-          <%= f.label :environment %>
-          <%= f.text_field :environment, placeholder: 'production' %>
-        </div>
-
-        <div class="field-wrapper">
-          <span>Branch: <%= @stack.branch %></span>
-        </div>
-
-        <div class="field-wrapper">
-          <%= f.label :deploy_url, 'Deploy URL (Where is this stack deployed to?)' %>
-          <%= f.text_field :deploy_url, placeholder: 'https://' %>
-        </div>
-
-        <div class="field-wrapper">
-          <%= f.check_box :continuous_deployment %>
-          <%= f.label :continuous_deployment, 'Enable continuous deployment' %>
-        </div>
-
-        <div class="field-wrapper">
-          <%= f.check_box :merge_queue_enabled %>
-          <%= f.label :merge_queue_enabled, 'Enable merge queue' %>
-        </div>
-
-        <div class="field-wrapper">
-          <%= f.check_box :ignore_ci %>
-          <%= f.label :ignore_ci, "Don't require CI to deploy" %>
-        </div>
-
-        <%= f.submit class: "btn", value: "Save" %>
-      <% end %>
-    </div>
-
-    <div class="setting-section">
-      <h5>Lock deploys</h5>
-      <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
-        <div class="field-wrapper">
-          <%= f.label :lock_reason, 'Reason for lock' %>
-          <%= f.text_area :lock_reason %>
-        </div>
-        <% if @stack.locked? %>
-          <%= f.submit class: "btn", value: "Update Reason" %>
-        <% else %>
-            <%= f.submit class: "btn", value: "Lock" %>
-        <% end %>
-      <% end %>
-      <% if @stack.locked? %>
-        <%= form_with scope: :stack, url: stack_path(@stack), method: :patch do |f| %>
-          <%= f.hidden_field :lock_reason, value: nil %>
-          <%= f.submit class: "btn btn--primary", value: "Unlock" %>
-        <%- end -%>
-      <% end %>
-    </div>
+    <%= render partial: 'shipit/stacks/settings_form', locals: { stack: @stack } %>
 
     <div class="setting-section">
       <h5>Resynchronize this stack</h5>

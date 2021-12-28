@@ -1,6 +1,32 @@
 # Unreleased
 
-* Give precedence to configured `shell_paths` when executing commands (#1186)
+* Suppress git fetch progress output. (#1225)
+
+# 0.35.1
+
+* Fixup #1219: Suppress detached head advisory. (#1222)
+
+# 0.35.0
+
+* Suppress initial git clone progress output and detached head advisory. (#1219)
+* Don't mark rollback tasks as faulty. (#1207)
+* Bump Rails to 6.1.4.1. (#1216)
+* Avoid reading the shipit.yml before the repo is fully cloned. (#1215)
+* Properly pass the base env to git commands. (#1214)
+* check_runs github_updated_at column defaults to nil instead of 0.
+* Allow the deploy banner to stretch so that buttons do not get hidden. (#1208)
+* Don't mark rollback task as faulty.
+
+# 0.34.0
+
+* Upgraded to Rails 6.1.
+* Fixed Ruby 3.0 compatibility.
+* The minimum required ruby version is now 2.6.
+* Give precedence to configured `shell_paths` when executing commands. (#1186)
+* Support for sending signed webhooks with the secret key. (#1150)
+* No longer assume `master` is the default branch. (#1149)
+* Support multiple GitHub organisations. (#1151)
+* Allow changing the branch name through the API. (#1185)
 
 # 0.33.0
 

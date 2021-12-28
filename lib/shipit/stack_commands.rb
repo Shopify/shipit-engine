@@ -16,7 +16,7 @@ module Shipit
     def fetch
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', '--quiet', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
         git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
@@ -72,7 +72,7 @@ module Shipit
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
-        git('checkout', commit.sha, chdir: git_dir).run! if commit
+        git('-c', 'advice.detachedHead=false', 'checkout', commit.sha, chdir: git_dir).run! if commit
         yield Pathname.new(git_dir)
       end
     end
@@ -90,7 +90,7 @@ module Shipit
     end
 
     def git_clone(url, path, branch: 'master', **kwargs)
-      git('clone', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
+      git('clone', '--quiet', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
     end
 
     def modern_git_args
