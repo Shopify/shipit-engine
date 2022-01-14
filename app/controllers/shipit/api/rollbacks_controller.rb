@@ -21,7 +21,7 @@ module Shipit
           param_error!(:force, "Can't rollback, deploy in progress")
         elsif stack.active_task?
           active_task = stack.active_task
-          active_task.abort!(aborted_by: current_user, rollback_once_aborted_to: deploy)
+          active_task.abort!(aborted_by: current_user, rollback_once_aborted_to: deploy, rollback_once_aborted: true)
           response = active_task
         else
           response = deploy.trigger_rollback(current_user, env: deploy_env, force: params.force, lock: params.lock)
