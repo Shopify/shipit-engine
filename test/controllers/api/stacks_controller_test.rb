@@ -178,6 +178,24 @@ module Shipit
         assert_response :accepted
       end
 
+      test "#update updates the stack when nil deploy_url" do
+        @stack.update(deploy_url: nil)
+        @stack.update(continuous_deployment: true)
+        assert_nil @stack.deploy_url
+        assert @stack.continuous_deployment
+
+        patch :update, params: {
+          id: @stack.to_param,
+          continuous_deployment: false,
+        }
+
+        assert_response :ok
+        @stack.reload
+
+        assert_nil @stack.deploy_url
+        refute @stack.continuous_deployment
+      end
+
       test "#destroy fails with insufficient permissions" do
         @client.permissions.delete('write:stack')
         @client.save!
