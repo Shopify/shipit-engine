@@ -27,7 +27,7 @@ module Shipit
         requires :repo_name, String
         accepts :environment, String
         accepts :branch, String
-        accepts :deploy_url, String
+        accepts :deploy_url, String, allow_nil: true
         accepts :ignore_ci, Boolean
         accepts :merge_queue_enabled, Boolean
         accepts :continuous_deployment, Boolean
@@ -42,7 +42,7 @@ module Shipit
       params do
         accepts :environment, String
         accepts :branch, String
-        accepts :deploy_url, String
+        accepts :deploy_url, String, allow_nil: true
         accepts :ignore_ci, Boolean
         accepts :merge_queue_enabled, Boolean
         accepts :continuous_deployment, Boolean
