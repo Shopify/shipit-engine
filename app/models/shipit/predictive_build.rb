@@ -330,7 +330,7 @@ module Shipit
       build_failed unless predictive_branches.any?
       # TODO: removing ci_pipeline_completed in all cases and do it just in case of emergency
       ci_pipeline_completed if in_emergency_mode? # In case of emergency, we are skipping pipeline tasks
-      ci_pipeline_completed # TODO: disabling automation tasks - to remove later
+      # ci_pipeline_completed # TODO: disabling automation tasks - to remove later
       
       if in_emergency_mode?
         predictive_branches.each do |p_branch|
