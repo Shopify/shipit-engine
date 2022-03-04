@@ -28,6 +28,18 @@ module Shipit
 
       private
 
+      module BasicAuth
+        # Workaround for https://github.com/rails/rails/pull/44610
+        extend ActionController::HttpAuthentication::Basic
+        extend self
+
+        private
+
+        def has_basic_credentials?(request)
+          request.authorization.present? && (auth_scheme(request).downcase == "basic")
+        end
+      end
+
       def namespace_for_serializer
         nil
       end
@@ -36,7 +48,7 @@ module Shipit
         @current_api_client = if Shipit.disable_api_authentication
           UnlimitedApiClient.new
         else
-          authenticate_with_http_basic do |*parts|
+          BasicAuth.authenticate(request) do |*parts|
             token = parts.select(&:present?).join('--')
             ApiClient.authenticate(token)
           end

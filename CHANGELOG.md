@@ -1,5 +1,6 @@
 # Unreleased
 
+* Upgraded to Rails 7.0
 * Minimum Ruby version is now Ruby 2.7
 * Suppress git fetch progress output. (#1225)
 
