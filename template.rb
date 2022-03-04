@@ -1,7 +1,7 @@
 # Template for rails new app
 # Run this like `rails new shipit -m template.rb`
-if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.6')
-  raise Thor::Error, "You need at least Ruby 2.6 to install shipit"
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7')
+  raise Thor::Error, "You need at least Ruby 2.7 to install shipit"
 end
 if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('6.1')
   raise Thor::Error, "You need Rails 6.1 to install shipit"
