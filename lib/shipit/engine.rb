@@ -43,7 +43,7 @@ module Shipit
         app.config.middleware.insert_after(::Rack::Runtime, Shipit::SameSiteCookieMiddleware)
       end
 
-      unless app.credentials.active_record_encryption.present?
+      if app.credentials.active_record_encryption.blank? && Shipit.user_access_tokens_key.present?
         # For ease of upgrade, we derive an Active Record encryption config automatically.
         # But if AR Encryption is already configured, we just use that
         app.credentials[:active_record_encryption] = {

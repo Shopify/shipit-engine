@@ -152,10 +152,11 @@ module Shipit
   end
 
   def user_access_tokens_key
-    (
-      secrets.user_access_tokens_key.presence ||
+    if secrets.user_access_tokens_key.present?
+      secrets.user_access_tokens_key
+    elsif secrets.secret_key_base
       Digest::SHA256.digest("user_access_tokens_key" + secrets.secret_key_base)
-    ).byteslice(0, 32)
+    end
   end
 
   def host
