@@ -3,6 +3,8 @@ module Shipit
   class User < Record
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
 
+    self.ignored_columns = %w(encrypted_github_access_token_iv)
+
     has_many :memberships
     has_many :teams, through: :memberships
     has_many :authored_commits, class_name: :Commit, foreign_key: :author_id, inverse_of: :author
@@ -11,7 +13,7 @@ module Shipit
 
     validates :name, presence: true
 
-    attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
+    encrypts :encrypted_github_access_token
 
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
@@ -56,11 +58,11 @@ module Shipit
       end
     end
 
-    alias_method :original_github_access_token, :github_access_token
+    alias_attribute :github_access_token, :encrypted_github_access_token
     def github_access_token
-      original_github_access_token
-    rescue OpenSSL::Cipher::CipherError
-      update_columns(encrypted_github_access_token: nil, encrypted_github_access_token_iv: nil)
+      encrypted_github_access_token
+    rescue ActiveRecord::Encryption::Errors::Decryption
+      update_columns(encrypted_github_access_token: nil)
       nil
     end
 

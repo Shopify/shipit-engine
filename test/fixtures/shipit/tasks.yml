@@ -8,9 +8,9 @@ shipit:
   status: success
   additions: 1
   deletions: 1
-  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 6).minutes.ago.to_formatted_s(:db) %>
   max_retries: 3
 
 shipit2:
@@ -23,9 +23,9 @@ shipit2:
   status: failed
   additions: 12
   deletions: 64
-  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_restart:
   id: 3
@@ -46,9 +46,9 @@ shipit_restart:
         "cap $ENVIRONMENT deploy:restart"
       ]
     }
-  created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_pending:
   id: 4
@@ -59,7 +59,7 @@ shipit_pending:
   status: pending
   additions: 432
   deletions: 406
-  created_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
   allow_concurrency: true
   max_retries: 1
   retry_attempt: 0
@@ -74,8 +74,8 @@ shipit_running:
   status: running
   additions: 420
   deletions: 342
-  created_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 5).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 5).minutes.ago.to_formatted_s(:db) %>
   allow_concurrency: true
 
 shipit_complete:
@@ -88,9 +88,9 @@ shipit_complete:
   status: success
   additions: 420
   deletions: 342
-  created_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 6).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 6).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 8).minutes.ago.to_formatted_s(:db) %>
 
 shipit_aborted:
   id: 7
@@ -103,9 +103,9 @@ shipit_aborted:
   additions: 420
   deletions: 342
   rollback_once_aborted: true
-  created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 6).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 6).minutes.ago.to_formatted_s(:db) %>
 
 shipit_rollback:
   id: 8
@@ -118,9 +118,9 @@ shipit_rollback:
   status: aborted
   additions: 420
   deletions: 342
-  created_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 8).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 8).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 8).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
 
 soc_deploy:
   id: 9
@@ -132,9 +132,9 @@ soc_deploy:
   status: success
   additions: 1
   deletions: 1
-  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
 
 shipit_rendered_failover:
   id: 10
@@ -159,9 +159,9 @@ shipit_rendered_failover:
     }
   env:
     POD_ID: "12"
-  created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 canaries_success:
   id: 101
@@ -171,9 +171,9 @@ canaries_success:
   until_commit_id: 302
   type: Shipit::Deploy
   status: success
-  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
 
 canaries_faulty:
   id: 102
@@ -183,9 +183,9 @@ canaries_faulty:
   until_commit_id: 303
   type: Shipit::Deploy
   status: faulty
-  created_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
 
 canaries_validating:
   id: 103
@@ -195,9 +195,9 @@ canaries_validating:
   until_commit_id: 304
   type: Shipit::Deploy
   status: validating
-  created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 10).minutes.ago.to_formatted_s(:db) %>
 
 canaries_running:
   id: 104
@@ -207,9 +207,9 @@ canaries_running:
   until_commit_id: 305
   type: Shipit::Deploy
   status: running
-  created_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 7).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 7).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 10).minutes.ago.to_formatted_s(:db) %>
 
 shipit_with_title_parsing_issue:
   id: 105
@@ -234,9 +234,9 @@ shipit_with_title_parsing_issue:
     }
   env:
     POD_ID: "12"
-  created_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_undeployed_1:
   id: 201
@@ -248,9 +248,9 @@ shipit_undeployed_1:
   status: success
   additions: 1
   deletions: 1
-  created_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 1).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 3).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 3).minutes.ago.to_formatted_s(:db) %>
 
 shipit_undeployed_2:
   id: 202
@@ -262,9 +262,9 @@ shipit_undeployed_2:
   status: running
   additions: 12
   deletions: 64
-  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_single:
   id: 301
@@ -276,9 +276,9 @@ shipit_single:
   status: running
   additions: 12
   deletions: 64
-  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_stats:
   id: 401
@@ -290,9 +290,9 @@ shipit_stats:
   status: success
   additions: 12
   deletions: 64
-  created_at: <%= 60.minutes.ago.to_s(:db) %>
-  started_at: <%= 60.minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 4).minutes.ago.to_s(:db) %>
+  created_at: <%= 60.minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= 60.minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 4).minutes.ago.to_formatted_s(:db) %>
 
 shipit_stats_2:
   id: 402
@@ -304,9 +304,9 @@ shipit_stats_2:
   status: failed
   additions: 12
   deletions: 64
-  created_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 5).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 11).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 5).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 5).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 11).minutes.ago.to_formatted_s(:db) %>
 
 shipit_stats_3:
   id: 403
@@ -318,9 +318,9 @@ shipit_stats_3:
   status: success
   additions: 12
   deletions: 64
-  created_at: <%= (60 - 10).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 12).minutes.ago.to_s(:db) %>
-  ended_at: <%= (60 - 15).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 10).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 12).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (60 - 15).minutes.ago.to_formatted_s(:db) %>
 
 shipit_stats_4:
   id: 404
@@ -332,9 +332,9 @@ shipit_stats_4:
   status: success
   additions: 12
   deletions: 64
-  created_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
-  started_at: <%= (30 - 15).minutes.ago.to_s(:db) %>
-  ended_at: <%= (30 - 17).minutes.ago.to_s(:db) %>
+  created_at: <%= (30 - 15).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (30 - 15).minutes.ago.to_formatted_s(:db) %>
+  ended_at: <%= (30 - 17).minutes.ago.to_formatted_s(:db) %>
 
 shipit_nocommit_task:
   id: 501
@@ -342,5 +342,5 @@ shipit_nocommit_task:
   type: Shipit::Task
   stack: shipit_task_no_commits
   status: pending
-  created_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
-  started_at: <%= (60 - 2).minutes.ago.to_s(:db) %>
+  created_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>

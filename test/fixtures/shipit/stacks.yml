@@ -97,8 +97,8 @@ shipit:
         ]
       }
     }
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 shipit_canaries:
   repository: shipit
@@ -156,8 +156,8 @@ shipit_canaries:
         "allow_failures": ["ci/ok_to_fail"]
       }
     }
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 cyclimse:
   repository: cyclimse
@@ -189,8 +189,8 @@ cyclimse:
         }
       }
     }
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_stack:
   repository: foo-bar
@@ -226,7 +226,7 @@ undeployed_stack:
         "allow_failures": ["ci/ok_to_fail"]
       }
     }
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 soc:
   repository: soc
@@ -260,7 +260,7 @@ soc:
         "blocking": ["soc/compliance"]
       }
     }
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 check_runs:
   repository: check_runs
@@ -337,8 +337,8 @@ shipit_undeployed:
         "allow_failures": ["ci/ok_to_fail"]
       }
     }
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 shipit_single:
   repository: shipit
@@ -374,8 +374,8 @@ shipit_single:
         "blocking": ["soc/compliance"]
       }
     }
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 shipit_stats:
   repository: shipit
@@ -411,8 +411,8 @@ shipit_stats:
         "blocking": ["soc/compliance"]
       }
     }
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 shipit_task_no_commits:
   repository: shipit
@@ -466,7 +466,7 @@ shipit_task_no_commits:
         "allow_failures": ["ci/ok_to_fail"]
       }
     }
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 check_deploy_spec:
   repository: check_deploy_spec
@@ -478,8 +478,8 @@ check_deploy_spec:
   undeployed_commits_count: 1
   continuous_deployment: true
   cached_deploy_spec: "{}"
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 review_stack:
   type: Shipit::ReviewStack
@@ -581,8 +581,8 @@ review_stack:
         ]
       }
     }
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 archived_25hours_ago:
   type: Shipit::ReviewStack
@@ -594,9 +594,9 @@ archived_25hours_ago:
   tasks_count: 8
   undeployed_commits_count: 2
   cached_deploy_spec: "{}"
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  archived_since: <%= 25.hours.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  archived_since: <%= 25.hours.ago.to_formatted_s(:db) %>
 
 archived_6hours_ago:
   type: Shipit::ReviewStack
@@ -608,9 +608,9 @@ archived_6hours_ago:
   tasks_count: 8
   undeployed_commits_count: 2
   cached_deploy_spec: "{}"
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  archived_since: <%= 6.hours.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  archived_since: <%= 6.hours.ago.to_formatted_s(:db) %>
 
 archived_30minutes_ago:
   type: Shipit::ReviewStack
@@ -622,6 +622,6 @@ archived_30minutes_ago:
   tasks_count: 8
   undeployed_commits_count: 2
   cached_deploy_spec: "{}"
-  last_deployed_at: <%= 8.days.ago.to_s(:db) %>
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  archived_since: <%= 30.minutes.ago.to_s(:db) %>
+  last_deployed_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  archived_since: <%= 30.minutes.ago.to_formatted_s(:db) %>

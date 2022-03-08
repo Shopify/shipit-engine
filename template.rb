@@ -3,8 +3,8 @@
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.7')
   raise Thor::Error, "You need at least Ruby 2.7 to install shipit"
 end
-if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('6.1')
-  raise Thor::Error, "You need Rails 6.1 to install shipit"
+if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('7.0')
+  raise Thor::Error, "You need Rails 7.0 to install shipit"
 end
 
 route %(mount Shipit::Engine, at: '/')
@@ -124,19 +124,8 @@ Sidekiq.configure_client do |config|
 end
 CODE
 
-inject_into_file 'config/application.rb', after: "load_defaults 6.1\n" do
+inject_into_file 'config/application.rb', after: "load_defaults 7.0\n" do
   "\n    config.active_job.queue_adapter = :sidekiq\n"
-end
-
-if ENV['CI'] || yes?("Are you hosting Shipit on Heroku? (y/n)")
-  gsub_file 'Gemfile', "# Use sqlite3 as the database for Active Record", ''
-  gsub_file 'Gemfile', "gem 'sqlite3', '~> 1.4'", ''
-  gem_group :production do
-    gem 'pg'
-  end
-  gem_group :development, :test do
-    gem 'sqlite3'
-  end
 end
 
 after_bundle do
