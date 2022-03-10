@@ -287,6 +287,11 @@ module Shipit
       refute_predicate @user, :requires_fresh_login?
     end
 
+    test "can update github_access_token with unserialised data in the db" do
+      user = shipit_users(:legacy)
+      @user.update!(github_access_token: 'ghu_tok3n')
+    end
+
     private
 
     def fetch_user
