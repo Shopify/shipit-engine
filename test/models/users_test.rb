@@ -289,7 +289,9 @@ module Shipit
 
     test "can update github_access_token with unserialised data in the db" do
       user = shipit_users(:legacy)
-      user.update!(github_access_token: 'some_new_token')
+      assert_nothing_raised(ActiveRecord::Encryption::Errors::Decryption) do
+        user.update!(github_access_token: 'some_new_token')
+      end
     end
 
     private

@@ -6,7 +6,6 @@ gem 'sqlite3'
 
 group :ci do
   gem 'mysql2'
-  gem 'pg'
 end
 
 group :development, :test do
