@@ -217,16 +217,23 @@ module Shipit
 
     test "users with legacy encrypted access token get their token reset automatically" do
       legacy = shipit_users(:legacy)
-
-      assert_not_nil legacy.encrypted_github_access_token_before_type_cast
-
       assert_nil legacy.github_access_token
-      legacy.reload
-      assert_nil legacy.encrypted_github_access_token_before_type_cast
 
+      legacy.update!(github_access_token: 'ghu_t0k3n')
+      assert_equal 'ghu_t0k3n', legacy.github_access_token
+    end
+
+    test "users with legacy encrypted access token can be updated" do
+      legacy = shipit_users(:legacy)
       legacy.update!(github_access_token: 'ghu_t0k3n')
       legacy.reload
       assert_equal 'ghu_t0k3n', legacy.github_access_token
+    end
+
+    test "users with legacy encrypted access token can have unrelated attributes updated" do
+      legacy = shipit_users(:legacy)
+      legacy.update!(name: 'Test')
+      assert_equal 'Test', legacy.name
     end
 
     test "users are always logged_in?" do
