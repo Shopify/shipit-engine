@@ -289,7 +289,7 @@ module Shipit
 
     test "can update github_access_token with unserialised data in the db" do
       user = shipit_users(:legacy)
-      @user.update!(github_access_token: 'ghu_tok3n')
+      user.update!(github_access_token: 'some_new_token')
     end
 
     private
