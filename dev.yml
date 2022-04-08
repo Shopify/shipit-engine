@@ -8,7 +8,7 @@ up:
   - homebrew:
     - sqlite
   - ruby:
-      version: 2.6.6
+      version: 2.7.5
   - railgun
   - bundler:
       without: ci

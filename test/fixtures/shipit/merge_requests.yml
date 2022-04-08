@@ -2,7 +2,7 @@ shipit_fetching:
   stack: shipit
   number: 63
   merge_status: fetching
-  merge_requested_at: <%= 1.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 1.minute.ago.to_formatted_s(:db) %>
   merge_requested_by: walrus
 
 shipit_pending:
@@ -10,8 +10,8 @@ shipit_pending:
   number: 62
   title: Super duper nice feature
   merge_status: pending
-  merge_requested_at: <%= 5.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 5.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 5.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 5.minute.ago.to_formatted_s(:db) %>
   merge_requested_by: walrus
   github_id: 42424424242424
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/62
@@ -27,8 +27,8 @@ shipit_pending_unmergeable:
   number: 61
   title: Other cool feature
   merge_status: pending
-  merge_requested_at: <%= 4.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 4.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 4.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 4.minute.ago.to_formatted_s(:db) %>
   merge_requested_by: walrus
   github_id: 43434434343434
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/61
@@ -44,8 +44,8 @@ shipit_pending_not_mergeable_yet:
   number: 64
   merge_status: pending
   merge_requested_by: walrus
-  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 3.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_formatted_s(:db) %>
   github_id: 45454454545454
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/64
   state: open
@@ -60,8 +60,8 @@ shipit_pending_closed:
   number: 65
   merge_status: pending
   merge_requested_by: walrus
-  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 3.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_formatted_s(:db) %>
   github_id: 43243243243243
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/65
   state: closed
@@ -76,9 +76,9 @@ shipit_pending_merged:
   number: 66
   merge_status: pending
   merge_requested_by: walrus
-  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
-  merged_at: <%= 2.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 3.minute.ago.to_formatted_s(:db) %>
+  merged_at: <%= 2.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_formatted_s(:db) %>
   github_id: 43243243243232
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/66
   state: closed
@@ -93,8 +93,8 @@ shipit_mergeable_pending_ci:
   number: 67
   title: Super duper nice feature
   merge_status: pending
-  merge_requested_at: <%= 5.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 5.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 5.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 5.minute.ago.to_formatted_s(:db) %>
   merge_requested_by: walrus
   github_id: 424244242424241
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/67
@@ -110,8 +110,8 @@ shipit_pending_expired:
   number: 68
   title: Noice !
   merge_status: pending
-  merge_requested_at: <%= 50.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 25.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 50.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 25.minute.ago.to_formatted_s(:db) %>
   merge_requested_by: walrus
   github_id: 48484848484848
   api_url: https://api.github.com/repos/shopify/shipit-engine/pulls/68
@@ -128,9 +128,9 @@ cyclimse_pending_merged:
   number: 66
   merge_status: merged
   merge_requested_by: walrus
-  merge_requested_at: <%= 3.minute.ago.to_s(:db) %>
-  merged_at: <%= 2.minute.ago.to_s(:db) %>
-  revalidated_at: <%= 3.minute.ago.to_s(:db) %>
+  merge_requested_at: <%= 3.minute.ago.to_formatted_s(:db) %>
+  merged_at: <%= 2.minute.ago.to_formatted_s(:db) %>
+  revalidated_at: <%= 3.minute.ago.to_formatted_s(:db) %>
   github_id: 43243243243232
   api_url: https://api.github.com/repos/shopify/cyclimse/pulls/66
   state: closed

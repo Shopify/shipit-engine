@@ -5,12 +5,12 @@ first:
   stack: shipit
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 second:
   id: 2
@@ -19,12 +19,12 @@ second:
   stack: shipit
   author: walrus
   committer: walrus
-  authored_at: <%= 8.days.ago.to_s(:db) %>
-  committed_at: <%= 7.days.ago.to_s(:db) %>
+  authored_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 7.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 1
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 third:
   id: 3
@@ -33,12 +33,12 @@ third:
   stack: shipit
   author: walrus
   committer: walrus
-  authored_at: <%= 6.days.ago.to_s(:db) %>
-  committed_at: <%= 5.days.ago.to_s(:db) %>
+  authored_at: <%= 6.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 5.days.ago.to_formatted_s(:db) %>
   additions: 12
   deletions: 64
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 fourth:
   id: 4
@@ -47,12 +47,12 @@ fourth:
   stack: shipit
   author: ~
   committer: ~
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
   pull_request_head_sha: '6dcb09b5b57875f334f61aebed695e2e4193db5e'
 
 fifth:
@@ -62,12 +62,12 @@ fifth:
   stack: shipit
   author: walrus
   committer: walrus
-  authored_at: <%= 2.days.ago.to_s(:db) %>
-  committed_at: <%= 1.days.ago.to_s(:db) %>
+  authored_at: <%= 2.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 1.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 cyclimse_first:
   id: 6
@@ -76,11 +76,11 @@ cyclimse_first:
   stack: cyclimse
   author: bob
   committer: bob
-  authored_at: <%= 2.days.ago.to_s(:db) %>
-  committed_at: <%= 1.days.ago.to_s(:db) %>
+  authored_at: <%= 2.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 1.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_stack_first:
   id: 7
@@ -89,11 +89,11 @@ undeployed_stack_first:
   stack: undeployed_stack
   author: bob
   committer: bob
-  authored_at: <%= 2.days.ago.to_s(:db) %>
-  committed_at: <%= 1.days.ago.to_s(:db) %>
+  authored_at: <%= 2.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 1.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 shipit_pending_pr_head:
   id: 8
@@ -102,11 +102,11 @@ shipit_pending_pr_head:
   stack: shipit
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
   detached: true
 
 cyclimse_merged:
@@ -116,11 +116,11 @@ cyclimse_merged:
   stack: cyclimse
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
   merge_request_id: 99
 
 anonymous:
@@ -130,11 +130,11 @@ anonymous:
   stack: shipit
   author:
   committer:
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 soc_first:
   id: 101
@@ -143,11 +143,11 @@ soc_first:
   stack: soc
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 soc_second:
   id: 102
@@ -156,11 +156,11 @@ soc_second:
   stack: soc
   author: walrus
   committer: walrus
-  authored_at: <%= 8.days.ago.to_s(:db) %>
-  committed_at: <%= 7.days.ago.to_s(:db) %>
+  authored_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 7.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 1
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 soc_third:
   id: 103
@@ -169,11 +169,11 @@ soc_third:
   stack: soc
   author: walrus
   committer: walrus
-  authored_at: <%= 6.days.ago.to_s(:db) %>
-  committed_at: <%= 5.days.ago.to_s(:db) %>
+  authored_at: <%= 6.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 5.days.ago.to_formatted_s(:db) %>
   additions: 12
   deletions: 64
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 check_runs_first:
   id: 201
@@ -182,11 +182,11 @@ check_runs_first:
   stack: check_runs
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 canaries_first:
   id: 301
@@ -195,12 +195,12 @@ canaries_first:
   stack: shipit_canaries
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 canaries_second:
   id: 302
@@ -209,12 +209,12 @@ canaries_second:
   stack: shipit_canaries
   author: walrus
   committer: walrus
-  authored_at: <%= 8.days.ago.to_s(:db) %>
-  committed_at: <%= 7.days.ago.to_s(:db) %>
+  authored_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 7.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 1
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 canaries_third:
   id: 303
@@ -223,12 +223,12 @@ canaries_third:
   stack: shipit_canaries
   author: walrus
   committer: walrus
-  authored_at: <%= 6.days.ago.to_s(:db) %>
-  committed_at: <%= 5.days.ago.to_s(:db) %>
+  authored_at: <%= 6.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 5.days.ago.to_formatted_s(:db) %>
   additions: 12
   deletions: 64
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 canaries_fourth:
   id: 304
@@ -237,12 +237,12 @@ canaries_fourth:
   stack: shipit_canaries
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 canaries_fifth:
   id: 305
@@ -251,12 +251,12 @@ canaries_fifth:
   stack: shipit_canaries
   author: walrus
   committer: walrus
-  authored_at: <%= 2.days.ago.to_s(:db) %>
-  committed_at: <%= 1.days.ago.to_s(:db) %>
+  authored_at: <%= 2.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 1.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
 undeployed_1:
   id: 401
@@ -265,11 +265,11 @@ undeployed_1:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_2:
   id: 402
@@ -278,11 +278,11 @@ undeployed_2:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 8.days.ago.to_s(:db) %>
-  committed_at: <%= 7.days.ago.to_s(:db) %>
+  authored_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 7.days.ago.to_formatted_s(:db) %>
   additions: 1
   deletions: 1
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_3:
   id: 403
@@ -291,11 +291,11 @@ undeployed_3:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 6.days.ago.to_s(:db) %>
-  committed_at: <%= 5.days.ago.to_s(:db) %>
+  authored_at: <%= 6.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 5.days.ago.to_formatted_s(:db) %>
   additions: 12
   deletions: 64
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_4:
   id: 404
@@ -304,11 +304,11 @@ undeployed_4:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_5:
   id: 405
@@ -317,11 +317,11 @@ undeployed_5:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_6:
   id: 406
@@ -330,11 +330,11 @@ undeployed_6:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 undeployed_7:
   id: 407
@@ -343,11 +343,11 @@ undeployed_7:
   stack: shipit_undeployed
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 single:
   id: 501
@@ -356,11 +356,11 @@ single:
   stack: shipit_single
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 task_no_commits:
   id: 601
@@ -369,11 +369,11 @@ task_no_commits:
   stack: shipit_task_no_commits
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 check_deploy_spec_first:
   id: 701
@@ -382,11 +382,11 @@ check_deploy_spec_first:
   stack: check_deploy_spec
   author: walrus
   committer: walrus
-  authored_at: <%= 4.days.ago.to_s(:db) %>
-  committed_at: <%= 3.days.ago.to_s(:db) %>
+  authored_at: <%= 4.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 3.days.ago.to_formatted_s(:db) %>
   additions: 420
   deletions: 342
-  updated_at: <%= 8.days.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
 deployable_review_stack_commit:
   id: 801
@@ -395,9 +395,9 @@ deployable_review_stack_commit:
   stack: review_stack
   author: walrus
   committer: walrus
-  authored_at: <%= 10.days.ago.to_s(:db) %>
-  committed_at: <%= 9.days.ago.to_s(:db) %>
+  authored_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  committed_at: <%= 9.days.ago.to_formatted_s(:db) %>
   additions: 42
   deletions: 24
-  updated_at: <%= 8.days.ago.to_s(:db) %>
-  created_at: <%= 1.day.ago.to_s(:db) %>
+  updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 1.day.ago.to_formatted_s(:db) %>

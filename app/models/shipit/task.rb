@@ -313,9 +313,9 @@ module Shipit
     end
 
     def request_abort
-      Shipit.redis.pipelined do
-        Shipit.redis.incr(abort_key)
-        Shipit.redis.expire(abort_key, 1.month.to_i)
+      Shipit.redis.pipelined do |pipeline|
+        pipeline.incr(abort_key)
+        pipeline.expire(abort_key, 1.month.to_i)
       end
     end
 

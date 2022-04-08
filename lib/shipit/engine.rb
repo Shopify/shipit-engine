@@ -5,7 +5,7 @@ module Shipit
 
     paths['app/models'] << 'app/serializers' << 'app/serializers/concerns'
 
-    initializer 'shipit.config' do |app|
+    initializer 'shipit.config', before: 'active_record_encryption.configuration' do |app|
       Rails.application.routes.default_url_options[:host] = Shipit.host
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
       Pubsubstub.redis_url = Shipit.redis_url.to_s
@@ -28,8 +28,6 @@ module Shipit
         path.end_with?('.svg') || (path.start_with?('emoji/') && path.end_with?('.png'))
       end
 
-      ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found
-
       ActiveModel::Serializer._root = false
       ActiveModel::ArraySerializer._root = false
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
@@ -45,9 +43,19 @@ module Shipit
         app.config.middleware.insert_after(::Rack::Runtime, Shipit::SameSiteCookieMiddleware)
       end
 
-      app.config.after_initialize do
-        ActionController::Base.include(Shipit::ActiveModelSerializersPatch)
+      if app.credentials.active_record_encryption.blank? && Shipit.user_access_tokens_key.present?
+        # For ease of upgrade, we derive an Active Record encryption config automatically.
+        # But if AR Encryption is already configured, we just use that
+        app.credentials[:active_record_encryption] = {
+          primary_key: Shipit.user_access_tokens_key,
+          key_derivation_salt: Digest::SHA256.digest("salt:".b + Shipit.user_access_tokens_key),
+        }
       end
+    end
+
+    config.after_initialize do
+      ActionDispatch::ExceptionWrapper.rescue_responses[Shipit::TaskDefinition::NotFound.name] = :not_found
+      ActionController::Base.include(Shipit::ActiveModelSerializersPatch)
     end
   end
 end
