@@ -93,7 +93,7 @@ module Shipit
       task = shipit_tasks(:shipit)
       task.update(
         rolled_up: false,
-        created_at: (60 + 1).minutes.ago.to_s(:db),
+        created_at: (60 + 1).minutes.ago.to_formatted_s(:db),
         status: "success",
       )
 
@@ -104,7 +104,7 @@ module Shipit
       task = shipit_tasks(:shipit)
       task.update(
         rolled_up: false,
-        created_at: (60 + 1).minutes.ago.to_s(:db),
+        created_at: (60 + 1).minutes.ago.to_formatted_s(:db),
         status: "error",
       )
 

@@ -44,9 +44,9 @@ module Shipit
     end
 
     def write(output)
-      Shipit.redis.pipelined do
-        Shipit.redis.append(key('output'), output)
-        Shipit.redis.expire(key('output'), OUTPUT_TTL)
+      Shipit.redis.pipelined do |pipeline|
+        pipeline.append(key('output'), output)
+        pipeline.expire(key('output'), OUTPUT_TTL)
       end
     end
 

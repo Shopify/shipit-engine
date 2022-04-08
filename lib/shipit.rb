@@ -5,7 +5,6 @@ require 'state_machines-activerecord'
 require 'validate_url'
 require 'responders'
 require 'explicit-parameters'
-require 'attr_encrypted'
 
 require 'sass-rails'
 require 'coffee-rails'
@@ -153,7 +152,11 @@ module Shipit
   end
 
   def user_access_tokens_key
-    (secrets.user_access_tokens_key.presence || secrets.secret_key_base).byteslice(0, 32)
+    if secrets.user_access_tokens_key.present?
+      secrets.user_access_tokens_key
+    elsif secrets.secret_key_base
+      Digest::SHA256.digest("user_access_tokens_key" + secrets.secret_key_base)
+    end
   end
 
   def host
