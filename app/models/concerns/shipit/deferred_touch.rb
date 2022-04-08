@@ -49,9 +49,9 @@ module Shipit
       end
 
       def fetch_members
-        Shipit.redis.multi do |transaction|
-          transaction.sunionstore(TMP_KEY, SET_KEY)
-          transaction.del(SET_KEY)
+        Shipit.redis.multi do
+          Shipit.redis.sunionstore(TMP_KEY, SET_KEY)
+          Shipit.redis.del(SET_KEY)
         end
 
         yield Shipit.redis.smembers(TMP_KEY).map { |r| r.split('|') }

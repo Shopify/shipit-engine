@@ -618,7 +618,7 @@ module Shipit
           unless initial_state == 'unknown'
             attrs = initial_status_attributes.merge(
               stack_id: commit.stack_id,
-              created_at: 10.days.ago.to_formatted_s(:db),
+              created_at: 10.days.ago.to_s(:db),
             )
             commit.statuses.create!(attrs)
           end
@@ -626,7 +626,7 @@ module Shipit
 
           expected_status_attributes = { state: new_state, description: initial_state, context: 'ci/travis' }
           add_status = lambda do
-            attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_formatted_s(:db))
+            attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_s(:db))
             commit.create_status_from_github!(OpenStruct.new(attrs))
           end
           expect_hook_emit(commit, :commit_status, expected_status_attributes) do
@@ -651,7 +651,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/hidden',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_s(:db),
         )
         commit.create_status_from_github!(github_status)
       end
@@ -668,7 +668,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/ok_to_fail',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_s(:db),
         )
         commit.create_status_from_github!(github_status)
       end
@@ -683,7 +683,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/travis',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_s(:db),
         )
         commit.create_status_from_github!(github_status)
       end
@@ -695,7 +695,7 @@ module Shipit
         state: 'success',
         description: 'Cool',
         context: 'metrics/coveralls',
-        created_at: 1.day.ago.to_formatted_s(:db),
+        created_at: 1.day.ago.to_s(:db),
       )
 
       assert_equal 'failure', commit.state

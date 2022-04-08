@@ -3,8 +3,6 @@ module Shipit
   class User < Record
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
 
-    self.ignored_columns = %w(encrypted_github_access_token_iv)
-
     has_many :memberships
     has_many :teams, through: :memberships
     has_many :authored_commits, class_name: :Commit, foreign_key: :author_id, inverse_of: :author
@@ -13,10 +11,7 @@ module Shipit
 
     validates :name, presence: true
 
-    encrypts :encrypted_github_access_token
-    alias_attribute :github_access_token, :encrypted_github_access_token
-
-    after_find :discard_outdated_credentials!
+    attr_encrypted :github_access_token, key: Shipit.user_access_tokens_key
 
     def self.find_or_create_by_login!(login)
       find_or_create_by!(login: login) do |user|
@@ -59,6 +54,14 @@ module Shipit
       where.not(login: nil).where('id % ? = ?', shards_count, shard_index).find_each do |user|
         RefreshGithubUserJob.perform_later(user)
       end
+    end
+
+    alias_method :original_github_access_token, :github_access_token
+    def github_access_token
+      original_github_access_token
+    rescue OpenSSL::Cipher::CipherError
+      update_columns(encrypted_github_access_token: nil, encrypted_github_access_token_iv: nil)
+      nil
     end
 
     def github_api
@@ -128,16 +131,6 @@ module Shipit
     end
 
     private
-
-    def discard_outdated_credentials!
-      if encrypted_github_access_token_before_type_cast.present?
-        begin
-          encrypted_github_access_token
-        rescue ActiveRecord::Encryption::Errors::Decryption
-          update_column(:encrypted_github_access_token, nil)
-        end
-      end
-    end
 
     def identify_renamed_user!
       last_commit = commits.last

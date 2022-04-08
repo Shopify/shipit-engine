@@ -390,7 +390,7 @@ machine:
 
 <h3 id="ci">CI</h3>
 
-**<code>ci.require</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) you want Shipit to disallow deploys if any of them is missing on the commit being deployed.
+**<code>ci.require</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to disallow deploys if any of them is missing on the commit being deployed.
 
 For example:
 ```yml
@@ -399,7 +399,7 @@ ci:
     - ci/circleci
 ```
 
-**<code>ci.hide</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) you want Shipit to ignore.
+**<code>ci.hide</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want Shipit to ignore.
 
 For example:
 ```yml
@@ -408,7 +408,7 @@ ci:
     - ci/circleci
 ```
 
-**<code>ci.allow_failures</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) you want to be visible but not to required for deploy.
+**<code>ci.allow_failures</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want to be visible but not to required for deploy.
 
 For example:
 ```yml
@@ -417,7 +417,7 @@ ci:
     - ci/circleci
 ```
 
-**<code>ci.blocking</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) you want to disallow deploys if any of them is missing or failing on any of the commits being deployed.
+**<code>ci.blocking</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) you want to disallow deploys if any of them is missing or failing on any of the commits being deployed.
 
 For example:
 ```yml
@@ -440,7 +440,7 @@ merge:
   revalidate_after: 12m30s
 ```
 
-**<code>merge.require</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) that you want Shipit to consider as failing if they aren't present on the pull request. Defaults to `ci.require` if present, or empty otherwise.
+**<code>merge.require</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) that you want Shipit to consider as failing if they aren't present on the pull request. Defaults to `ci.require` if present, or empty otherwise.
 
 For example:
 ```yml
@@ -449,7 +449,7 @@ merge:
     - continuous-integration/travis-ci/push
 ```
 
-**<code>merge.ignore</code>** contains an array of the [statuses context](https://docs.github.com/en/rest/reference/commits#commit-statuses) that you want Shipit not to consider when merging pull requests. Defaults to the union of `ci.allow_failures` and `ci.hide` if any is present or empty otherwise.
+**<code>merge.ignore</code>** contains an array of the [statuses context](https://developer.github.com/v3/repos/statuses/) that you want Shipit not to consider when merging pull requests. Defaults to the union of `ci.allow_failures` and `ci.hide` if any is present or empty otherwise.
 
 For example:
 ```yml
@@ -458,7 +458,7 @@ merge:
     - codeclimate
 ```
 
-**<code>merge.method</code>** the [merge method](https://docs.github.com/en/rest/reference/pulls#merge-a-pull-request--parameters) to use for this stack. If it's not set the default merge method will be used. Can be either `merge`, `squash` or `rebase`.
+**<code>merge.method</code>** the [merge method](https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button) to use for this stack. If it's not set the default merge method will be used. Can be either `merge`, `squash` or `rebase`.
 
 For example:
 ```yml

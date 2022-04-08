@@ -2,13 +2,15 @@ walrus:
   name:  Lando Walrussian
   email: walrus@shopify.com
   login: walrus
-  encrypted_github_access_token: '{"p":"Ak5D+/jUFz3e","h":{"iv":"dwwXJyB7F7fWqviI","at":"NQ4U3zu9ijCrZ/iGmZBQtg=="}}' # ghu_t0k3n
+  encrypted_github_access_token: "n5J+kyq6EQPI/kRu3JjGAaTWXDCVsH5UBw==\n" # ghu_t0k3n
+  encrypted_github_access_token_iv: "ovGDX8uyBC4ynp/T\n"
 
 codertocat:
   name: Coding Cat
   email: coding@cat.com
   login: Codertocat
-  encrypted_github_access_token: '{"p":"Ak5D+/jUFz3e","h":{"iv":"dwwXJyB7F7fWqviI","at":"NQ4U3zu9ijCrZ/iGmZBQtg=="}}' # ghu_t0k3n
+  encrypted_github_access_token: "n5J+kyq6EQPI/kRu3JjGAaTWXDCVsH5UBw==\n" # ghu_t0k3n
+  encrypted_github_access_token_iv: "ovGDX8uyBC4ynp/T\n"
 
 bob:
   name:  Bob the Builder
@@ -31,3 +33,4 @@ legacy:
   email: legacy@shopify.com
   login: legacy
   encrypted_github_access_token: FuQv9jpHmMZ8Px64xmqASJtKlefv # t0k3n
+  encrypted_github_access_token_iv: "QNS4smChXEXtOjxb\n"

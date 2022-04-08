@@ -7,7 +7,7 @@ second_pending_travis:
   conclusion: success
   html_url: "http://www.example.com/run/424242"
   details_url: "http://www.example.com/build/424242"
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
 
 check_runs_first_pending_coveralls:
   stack: check_runs
@@ -15,7 +15,7 @@ check_runs_first_pending_coveralls:
   github_id: 43
   title: lets go
   name: Coverage metrics
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
   conclusion: pending
   html_url: "http://www.example.com/run/434343"
   details_url: "http://www.example.com/build/434343"
@@ -26,7 +26,7 @@ check_runs_first_success_coveralls:
   github_id: 434343
   title: lets go
   name: Coverage metrics
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   conclusion: success
   html_url: "http://www.example.com/run/434343"
   details_url: "http://www.example.com/build/434343"

@@ -61,7 +61,7 @@ module Shipit
         post :create, params: {
           delivery_url: 'https://example.com/hook',
           events: %w(deploy rollback),
-          created_at: 2.months.ago.to_formatted_s(:db),
+          created_at: 2.months.ago.to_s(:db),
         }
         Hook.last.created_at > 2.seconds.ago
       end

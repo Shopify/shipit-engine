@@ -5,7 +5,7 @@ first_pending:
   commit_id: 1 # first
   description: lets go
   context: ci/travis
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
   state: pending
   target_url: "http://www.example.com"
 
@@ -14,7 +14,7 @@ second_pending_travis:
   commit_id: 2 # second
   description: lets go
   context: ci/travis
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
   state: pending
   target_url: "http://www.example.com"
 
@@ -23,7 +23,7 @@ second_pending_coveralls:
   commit_id: 2 # second
   description: lets go
   context: metrics/coveralls
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
   state: pending
   target_url: "http://www.example.com"
 
@@ -32,7 +32,7 @@ second_success_travis:
   commit_id: 2 # second
   description: lets go
   context: ci/travis
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -41,7 +41,7 @@ second_failure_coveralls:
   commit_id: 2 # second
   description: lets go
   context: metrics/coveralls
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: failure
   target_url: "http://www.example.com"
 
@@ -50,7 +50,7 @@ third_success_travis:
   commit_id: 3 # third
   description: lets go
   context: ci/travis
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -59,7 +59,7 @@ third_success_coveralls:
   commit_id: 3 # third
   description: lets go
   context: metrics/coveralls
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -68,7 +68,7 @@ fourth_pending_travis:
   commit_id: 4 # fourth
   description: lets go
   context: ci/travis
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: pending
   target_url: "http://www.example.com"
 
@@ -77,7 +77,7 @@ fourth_success_coveralls:
   commit_id: 4 # fourth
   description: lets go
   context: metrics/coveralls
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -86,7 +86,7 @@ cyclimse_success_travis:
   commit_id: 6 # cyclimse_first
   description: lets go
   context: ci/travis
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -95,7 +95,7 @@ shipit_pending_pr_success_travis:
   commit_id: 8 # shipit_pending_pr_head
   description: Super feature
   context: ci/travis
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -104,7 +104,7 @@ soc_first:
   commit_id: 101 # soc_first
   description: Woops
   context: soc/compliance
-  created_at: <%= 9.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 9.days.ago.to_s(:db) %>
   state: failure
   target_url: "http://www.example.com"
 
@@ -113,7 +113,7 @@ soc_second:
   commit_id: 102 # soc_second
   description: All good
   context: soc/compliance
-  created_at: <%= 7.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 7.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -122,7 +122,7 @@ soc_third:
   commit_id: 103 # soc_third
   description: All good
   context: soc/compliance
-  created_at: <%= 7.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 7.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -131,7 +131,7 @@ canaries_fifth_success:
   commit_id: 305
   description: All good
   context: ci/travis
-  created_at: <%= 7.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 7.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"
 
@@ -140,6 +140,6 @@ review_stack_commit_success:
   commit_id: 801
   description: lets go
   context: ci/travis
-  created_at: <%= 10.days.ago.to_formatted_s(:db) %>
+  created_at: <%= 10.days.ago.to_s(:db) %>
   state: success
   target_url: "http://www.example.com"

@@ -38,8 +38,8 @@ case $SUITE in
     git config --global user.email "anonymous@example.com"
     git config --global user.name "Anonymous"
 
-    gem install rails -v 7.0
-    rails _7.0_ new shipit -m "${TEMPLATE}" \
+    gem install rails -v 6.1
+    rails _6.1_ new shipit -m "${TEMPLATE}" \
       --skip-action-cable \
       --skip-turbolinks \
       --skip-action-mailer \

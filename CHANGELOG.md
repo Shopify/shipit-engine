@@ -1,10 +1,5 @@
 # Unreleased
 
-* Allow to abort a task via the API. (#1240)
-* Allow to update a Stack `environment` property from the API. (#1237)
-* Increased `teams.slug` column from 50 to 255 characters. (#1233)
-* Upgraded to Rails 7.0
-* Minimum Ruby version is now Ruby 2.7
 * Suppress git fetch progress output. (#1225)
 
 # 0.35.1

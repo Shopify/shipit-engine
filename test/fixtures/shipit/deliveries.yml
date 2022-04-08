@@ -11,4 +11,4 @@ scheduled_shipit_deploy:
       "deploy": {
       }
     }
-  created_at: <%= 5.minutes.ago.to_formatted_s(:db) %>
+  created_at: <%= 5.minutes.ago.to_s(:db) %>

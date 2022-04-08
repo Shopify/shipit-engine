@@ -107,7 +107,6 @@ module Shipit
         assert_response :accepted
         refute_predicate last_deploy, :active?
         assert_json 'rollback_once_aborted_to.revision.sha', @commit.sha
-        assert last_deploy.rollback_once_aborted?
       end
     end
   end

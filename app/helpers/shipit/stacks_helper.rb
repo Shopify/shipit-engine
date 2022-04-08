@@ -36,17 +36,6 @@ module Shipit
       link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data: data)
     end
 
-    def rollback_button(deploy)
-      if deploy.stack.active_task?
-        link_to('Deploy in progress...', '#', class: 'btn disabled deploy-action')
-      else
-        url = rollback_stack_deploy_path(deploy.stack, deploy)
-        classes = %w(btn btn--delete deploy-action rollback-action)
-
-        link_to('Rollback to this deploy...', url, class: classes)
-      end
-    end
-
     def github_change_url(commit)
       if commit.pull_request?
         github_pull_request_url(commit)
