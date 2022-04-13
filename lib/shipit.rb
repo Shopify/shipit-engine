@@ -69,6 +69,7 @@ module Shipit
     :preferred_org_emails,
     :task_execution_strategy,
     :task_logger,
+    :respect_bare_shipit_file,
   )
 
   def task_execution_strategy
@@ -234,6 +235,13 @@ module Shipit
   def task_logger
     @task_logger ||= Logger.new(nil)
   end
+
+  def respect_bare_shipit_file
+    @respect_bare_shipit_file = true if @respect_bare_shipit_file.nil?
+    !!@respect_bare_shipit_file
+  end
+
+  alias_method :respect_bare_shipit_file?, :respect_bare_shipit_file
 
   protected
 
