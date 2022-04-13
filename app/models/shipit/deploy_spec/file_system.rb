@@ -91,10 +91,31 @@ module Shipit
       end
 
       def load_config
-        read_config(file("#{app_name}.#{@env}.yml", root: true)) ||
-          read_config(file("#{app_name}.yml", root: true)) ||
-          read_config(file("shipit.#{@env}.yml", root: true)) ||
-          read_config(file('shipit.yml', root: true))
+        return if config_file_path.nil?
+        loaded_config = read_config(config_file_path)
+        return if loaded_config&.empty?
+
+        if !Shipit.respect_bare_shipit_file? && config_file_path.to_s.end_with?(*bare_shipit_filenames)
+          loaded_config["deploy"]["pre"] = [shipit_not_obeying_bare_file_echo_command, "exit 1"]
+        end
+        loaded_config
+      end
+
+      def shipit_file_names_in_priority_order
+        ["#{app_name}.#{@env}.yml", "#{app_name}.yml", "shipit.#{@env}.yml", "shipit.yml"].uniq
+      end
+
+      def bare_shipit_filenames
+        ["#{app_name}.yml", "shipit.yml"].uniq
+      end
+
+      def config_file_path
+        shipit_file_names_in_priority_order.each do |filename|
+          path = file(filename, root: true)
+          return path if path.exist?
+        end
+
+        nil
       end
 
       def app_name
@@ -103,6 +124,14 @@ module Shipit
 
       def read_config(path)
         SafeYAML.load(path.read) if path.exist?
+      end
+
+      def shipit_not_obeying_bare_file_echo_command
+        <<~EOM
+          echo \"\e[1;31mShipit is configured to ignore the bare '#{app_name}.yml' file.
+          Please rename this file to more specifically include the environment name.
+          Deployments will fail until a valid '#{app_name}.#{@env}.yml' file is found.\e[0m\"
+        EOM
       end
     end
   end
