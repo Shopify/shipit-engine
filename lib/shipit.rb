@@ -63,13 +63,12 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
-  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks
+  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks, :respect_bare_shipit_file
   attr_writer(
     :internal_hook_receivers,
     :preferred_org_emails,
     :task_execution_strategy,
     :task_logger,
-    :respect_bare_shipit_file,
   )
 
   def task_execution_strategy
@@ -77,6 +76,9 @@ module Shipit
   end
 
   self.timeout_exit_codes = [].freeze
+  self.respect_bare_shipit_file = true
+
+  alias_method :respect_bare_shipit_file?, :respect_bare_shipit_file
 
   def authentication_disabled?
     ENV['SHIPIT_DISABLE_AUTH'].present?
@@ -235,13 +237,6 @@ module Shipit
   def task_logger
     @task_logger ||= Logger.new(nil)
   end
-
-  def respect_bare_shipit_file
-    @respect_bare_shipit_file = true if @respect_bare_shipit_file.nil?
-    !!@respect_bare_shipit_file
-  end
-
-  alias_method :respect_bare_shipit_file?, :respect_bare_shipit_file
 
   protected
 
