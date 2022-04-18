@@ -63,7 +63,7 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
-  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks
+  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks, :respect_bare_shipit_file
   attr_writer(
     :internal_hook_receivers,
     :preferred_org_emails,
@@ -76,6 +76,9 @@ module Shipit
   end
 
   self.timeout_exit_codes = [].freeze
+  self.respect_bare_shipit_file = true
+
+  alias_method :respect_bare_shipit_file?, :respect_bare_shipit_file
 
   def authentication_disabled?
     ENV['SHIPIT_DISABLE_AUTH'].present?
