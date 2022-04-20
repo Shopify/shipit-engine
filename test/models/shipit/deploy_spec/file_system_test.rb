@@ -38,6 +38,17 @@ module Shipit
         end
       end
 
+      test '#load_config does not error if there is no "deploy" key' do
+        Shipit.expects(:respect_bare_shipit_file?).returns(false).at_least_once
+        deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, 'env')
+        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.yml').at_least_once
+        deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_missing_deploy_yaml))
+        loaded_config = deploy_spec.send(:load_config)
+        assert loaded_config.key?("deploy")
+        assert loaded_config["deploy"].key?("pre")
+        assert loaded_config["deploy"]["pre"].include?('exit 1')
+      end
+
       def deploy_spec_yaml
         <<~EOYAML
           deploy:
@@ -45,6 +56,15 @@ module Shipit
               - test 2
             override:
               - test 1
+        EOYAML
+      end
+
+      def deploy_spec_missing_deploy_yaml
+        <<~EOYAML
+          production_platform:
+            application: test-application
+            runtime_ids:
+              - production-unrestricted-1234
         EOYAML
       end
     end
