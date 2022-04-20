@@ -96,7 +96,7 @@ module Shipit
         return if loaded_config&.empty?
 
         if !Shipit.respect_bare_shipit_file? && config_file_path.to_s.end_with?(*bare_shipit_filenames)
-          loaded_config["deploy"]["pre"] = [shipit_not_obeying_bare_file_echo_command, "exit 1"]
+          loaded_config.deep_merge!({ 'deploy' => { 'pre' => [shipit_not_obeying_bare_file_echo_command, 'exit 1'] } })
         end
         loaded_config
       end
