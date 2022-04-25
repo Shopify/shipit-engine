@@ -62,7 +62,7 @@ module Shipit
       end
 
       def refresh
-        GithubSyncJob.perform_later(id: stack.id)
+        GithubSyncJob.perform_later(stack_id: stack.id)
         render_resource(stack, status: :accepted)
       end
 
