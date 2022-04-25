@@ -209,7 +209,7 @@ module Shipit
       end
 
       test "#refresh queues a GithubSyncJob" do
-        assert_enqueued_with(job: GithubSyncJob, args: [id: @stack.id]) do
+        assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
           post :refresh, params: { id: @stack.to_param }
         end
         assert_response :accepted
