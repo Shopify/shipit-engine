@@ -92,13 +92,12 @@ module Shipit
 
       def load_config
         return if config_file_path.nil?
-        loaded_config = read_config(config_file_path)
-        return if loaded_config&.empty?
 
         if !Shipit.respect_bare_shipit_file? && config_file_path.to_s.end_with?(*bare_shipit_filenames)
-          loaded_config.deep_merge!({ 'deploy' => { 'pre' => [shipit_not_obeying_bare_file_echo_command, 'exit 1'] } })
+          return { 'deploy' => { 'pre' => [shipit_not_obeying_bare_file_echo_command, 'exit 1'] } }
         end
-        loaded_config
+
+        read_config(config_file_path)
       end
 
       def shipit_file_names_in_priority_order
