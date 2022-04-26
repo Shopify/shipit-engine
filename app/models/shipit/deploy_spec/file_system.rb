@@ -91,9 +91,7 @@ module Shipit
       end
 
       def load_config
-        return if config_file_path.nil?
-        loaded_config = read_config(config_file_path)
-        return if loaded_config&.empty?
+        return unless config_file_path && (loaded_config = read_config(config_file_path))
 
         if !Shipit.respect_bare_shipit_file? && config_file_path.to_s.end_with?(*bare_shipit_filenames)
           loaded_config.deep_merge!({ 'deploy' => { 'pre' => [shipit_not_obeying_bare_file_echo_command, 'exit 1'] } })
@@ -110,12 +108,10 @@ module Shipit
       end
 
       def config_file_path
-        shipit_file_names_in_priority_order.each do |filename|
+        @config_file_path ||= shipit_file_names_in_priority_order.each do |filename|
           path = file(filename, root: true)
-          return path if path.exist?
+          break path if path.exist?
         end
-
-        nil
       end
 
       def app_name
@@ -123,7 +119,7 @@ module Shipit
       end
 
       def read_config(path)
-        SafeYAML.load(path.read) if path.exist?
+        SafeYAML.load(path.read).presence if path.exist?
       end
 
       def shipit_not_obeying_bare_file_echo_command
