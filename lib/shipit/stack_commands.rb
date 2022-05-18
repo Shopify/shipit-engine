@@ -16,7 +16,7 @@ module Shipit
     def fetch
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', '--quiet', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
         git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
@@ -25,7 +25,7 @@ module Shipit
 
     def fetched?(commit)
       if valid_git_repository?(@stack.git_path)
-        git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
+        git('rev-parse', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
       else
         # When the stack's git cache is not valid, the commit is
         # NOT fetched. To keep the interface of this method
@@ -90,7 +90,7 @@ module Shipit
     end
 
     def git_clone(url, path, branch: 'master', **kwargs)
-      git('clone', '--quiet', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
+      git('clone', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
     end
 
     def modern_git_args
