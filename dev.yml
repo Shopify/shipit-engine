@@ -9,7 +9,7 @@ up:
     - sqlite
   - ruby:
       version: 2.7.5
-  - railgun
+  - isogun
   - bundler:
       without: ci
 
