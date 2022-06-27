@@ -459,6 +459,32 @@ module Shipit
       end
     end
 
+    test "transitioning to aborted locks the stack if a rollback is scheduled" do
+      refute @stack.locked?
+
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.ping
+      @deploy.pid = 42
+      @deploy.abort!(rollback_once_aborted: true, aborted_by: @user)
+      @deploy.aborted!
+
+      assert @stack.reload.locked?
+      assert_equal @user, @stack.lock_author
+    end
+
+    test "transitioning to aborted emits a lock hook if a rollback is scheduled" do
+      refute @stack.locked?
+
+      @deploy = shipit_deploys(:shipit_running)
+      @deploy.ping
+      @deploy.pid = 42
+      @deploy.abort!(rollback_once_aborted: true, aborted_by: @user)
+
+      expect_hook(:lock, @stack, locked: true, lock_details: nil, stack: @stack) do
+        @deploy.aborted!
+      end
+    end
+
     test "#build_rollback returns an unsaved record" do
       assert @deploy.build_rollback.new_record?
     end

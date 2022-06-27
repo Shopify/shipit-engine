@@ -642,9 +642,7 @@ module Shipit
     end
 
     def emit_lock_hooks
-      return unless previous_changes.include?('lock_reason')
-
-      lock_details = if previous_changes['lock_reason'].last.blank?
+      lock_details = if previous_changes.include?('lock_reason') && previous_changes['lock_reason'].last.blank?
         { from: previous_changes['locked_since'].first, until: Time.zone.now }
       end
 
