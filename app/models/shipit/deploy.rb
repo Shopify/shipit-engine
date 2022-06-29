@@ -128,6 +128,7 @@ module Shipit
       lock_reason = "A rollback for #{until_commit.sha} has been triggered. " \
         "Please make sure the reason for the rollback has been addressed before deploying again."
       stack.update!(lock_reason: lock_reason, lock_author_id: user_id)
+      stack.emit_lock_hooks
       rollback
     end
 
