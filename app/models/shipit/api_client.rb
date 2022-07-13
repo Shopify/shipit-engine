@@ -8,7 +8,7 @@ module Shipit
 
     validates :creator, :name, presence: true
 
-    serialize :permissions, Array
+    serialize :permissions, Shipit.serialized_column(:permissions, type: Array)
     PERMISSIONS = %w(
       read:stack
       write:stack

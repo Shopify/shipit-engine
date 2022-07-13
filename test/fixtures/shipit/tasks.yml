@@ -344,3 +344,15 @@ shipit_nocommit_task:
   status: pending
   created_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
   started_at: <%= (60 - 2).minutes.ago.to_formatted_s(:db) %>
+
+shipit_legacy_yaml_task:
+  id: 502
+  user: walrus
+  type: Shipit::Task
+  stack: shipit_task_no_commits
+  status: pending
+  created_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  started_at: <%= (60 - 1).minutes.ago.to_formatted_s(:db) %>
+  env: |
+    --- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    POD_ID: '12'
