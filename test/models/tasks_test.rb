@@ -110,5 +110,17 @@ module Shipit
 
       assert_includes Shipit::Task.due_for_rollup, task
     end
+
+    test "load legacy YAML records" do
+      task = Shipit::Task.find(shipit_tasks(:shipit_legacy_yaml_task).id)
+      assert_equal({ "POD_ID" => "12" }, task.env)
+      assert_equal Hash, task.env.class
+
+      task.save
+      task.reload
+
+      assert_equal({ "POD_ID" => "12" }, task.env)
+      assert_equal Hash, task.env.class
+    end
   end
 end

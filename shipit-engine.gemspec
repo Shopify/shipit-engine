@@ -44,6 +44,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sprockets', '< 4')
   s.add_dependency('state_machines-activerecord', '~> 0.8.0')
   s.add_dependency('validate_url', '~> 1.0.0')
+  s.add_dependency('paquito')
 
   s.metadata['allowed_push_host'] = 'https://rubygems.org'
 end

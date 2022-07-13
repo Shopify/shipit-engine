@@ -9,7 +9,7 @@ module Shipit
     validates :url, presence: true, url: { no_local: true, allow_blank: true }
     validates :content_type, presence: true
 
-    serialize :response_headers, JSON
+    serialize :response_headers, SafeJSON
 
     after_commit :purge_old_deliveries, on: :create
 
