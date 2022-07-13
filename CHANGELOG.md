@@ -1,6 +1,11 @@
 # Unreleased
 
+# 0.36.1
+
 * Fix compatibility with Rails 7.0.3.1 (YAML serialized fields). (#1273)
+
+# 0.36.0
+
 * Allow to abort a task via the API. (#1240)
 * Allow to update a Stack `environment` property from the API. (#1237)
 * Increased `teams.slug` column from 50 to 255 characters. (#1233)
