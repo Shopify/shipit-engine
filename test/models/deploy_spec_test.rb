@@ -286,29 +286,6 @@ module Shipit
       assert_equal({ 'GLOBAL' => '1' }, @spec.machine_env)
     end
 
-    test '#load_config can grab the env-specific shipit.yml file' do
-      config = {}
-      config.expects(:exist?).returns(true)
-      config.expects(:read).returns({ 'dependencies' => { 'override' => %w(foo bar baz) } }.to_yaml)
-      spec = DeploySpec::FileSystem.new('.', 'staging')
-      spec.expects(:file).with('shipit.staging.yml', root: true).returns(config)
-      assert_equal %w(foo bar baz), spec.dependencies_steps
-    end
-
-    test '#load_config grabs the global shipit.yml file if there is no env-specific file' do
-      not_config = {}
-      not_config.expects(:exist?).returns(false)
-
-      config = {}
-      config.expects(:exist?).returns(true)
-      config.expects(:read).returns({ 'dependencies' => { 'override' => %w(foo bar baz) } }.to_yaml)
-
-      spec = DeploySpec::FileSystem.new('.', 'staging')
-      spec.expects(:file).with('shipit.staging.yml', root: true).returns(not_config)
-      spec.expects(:file).with('shipit.yml', root: true).returns(config)
-      assert_equal %w(foo bar baz), spec.dependencies_steps
-    end
-
     test '#gemspec gives the path of the repo gemspec if present' do
       spec = DeploySpec::FileSystem.new('foobar/', 'production')
       Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])

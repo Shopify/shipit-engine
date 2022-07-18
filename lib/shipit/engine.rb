@@ -5,7 +5,18 @@ module Shipit
 
     paths['app/models'] << 'app/serializers' << 'app/serializers/concerns'
 
-    initializer 'shipit.config', before: 'active_record_encryption.configuration' do |app|
+    initializer 'shipit.encryption_config', before: 'active_record_encryption.configuration' do |app|
+      if app.credentials.active_record_encryption.blank? && Shipit.user_access_tokens_key.present?
+        # For ease of upgrade, we derive an Active Record encryption config automatically.
+        # But if AR Encryption is already configured, we just use that
+        app.credentials[:active_record_encryption] = {
+          primary_key: Shipit.user_access_tokens_key,
+          key_derivation_salt: Digest::SHA256.digest("salt:".b + Shipit.user_access_tokens_key),
+        }
+      end
+    end
+
+    initializer 'shipit.config' do |app|
       Rails.application.routes.default_url_options[:host] = Shipit.host
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
       Pubsubstub.redis_url = Shipit.redis_url.to_s
@@ -41,15 +52,6 @@ module Shipit
 
       if Shipit.enable_samesite_middleware?
         app.config.middleware.insert_after(::Rack::Runtime, Shipit::SameSiteCookieMiddleware)
-      end
-
-      if app.credentials.active_record_encryption.blank? && Shipit.user_access_tokens_key.present?
-        # For ease of upgrade, we derive an Active Record encryption config automatically.
-        # But if AR Encryption is already configured, we just use that
-        app.credentials[:active_record_encryption] = {
-          primary_key: Shipit.user_access_tokens_key,
-          key_derivation_salt: Digest::SHA256.digest("salt:".b + Shipit.user_access_tokens_key),
-        }
       end
     end
 

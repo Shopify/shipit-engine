@@ -9,7 +9,7 @@ up:
     - sqlite
   - ruby:
       version: 2.7.5
-  - railgun
+  - isogun
   - bundler:
       without: ci
 
@@ -21,6 +21,7 @@ commands:
   bootstrap: bin/bootstrap shopify
   console: test/dummy/bin/rails console
   test: bin/rails test "$@"
+  style: bin/rubocop --auto-correct
 
 open:
   app: https://shipit-engine.myshopify.io

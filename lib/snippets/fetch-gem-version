@@ -10,7 +10,7 @@ github_repository = ARGV[1]
 def get_json(url)
   uri = URI.parse(url)
   response = Net::HTTP.get_response(uri)
-  versions = JSON.load(response.body)
+  versions = JSON.parse(response.body)
 end
 
 versions = get_json("https://rubygems.org/api/v1/versions/#{gem_name}.json")

@@ -27,8 +27,35 @@ module Shipit
 
     deferred_touch stack: :updated_at
 
+    module EnvHash
+      class << self
+        def dump(hash)
+          raise TypeError, "Task#env should be a Hash[String => String]" unless hash.is_a?(Hash)
+          hash = hash.to_h.stringify_keys
+          hash.transform_values! do |value|
+            case value
+            when String, Symbol, Numeric
+              value.to_s
+            else
+              raise TypeError, "Task#env should be a Hash[String => String]" unless hash.is_a?(Hash)
+            end
+          end
+
+          hash unless hash.empty?
+        end
+
+        def load(hash)
+          hash&.to_h || {} # cast back to a real hash
+        end
+
+        def new
+          nil
+        end
+      end
+    end
+
     serialize :definition, TaskDefinition
-    serialize :env, Hash
+    serialize :env, Shipit.serialized_column(:env, coder: EnvHash)
 
     scope :success, -> { where(status: 'success') }
     scope :completed, -> { where(status: COMPLETED_STATUSES) }

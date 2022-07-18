@@ -608,6 +608,16 @@ module Shipit
       Shipit.deployment_checks.call(self)
     end
 
+    def emit_lock_hooks
+      return unless previous_changes.include?('lock_reason')
+
+      lock_details = if previous_changes['lock_reason'].last.blank?
+        { from: previous_changes['locked_since'].first, until: Time.zone.now }
+      end
+
+      Hook.emit(:lock, self, locked: locked?, lock_details: lock_details, stack: self)
+    end
+
     private
 
     def clear_cache
@@ -639,16 +649,6 @@ module Shipit
       if lock_reason_previously_changed? && lock_reason.blank?
         schedule_merges
       end
-    end
-
-    def emit_lock_hooks
-      return unless previous_changes.include?('lock_reason')
-
-      lock_details = if previous_changes['lock_reason'].last.blank?
-        { from: previous_changes['locked_since'].first, until: Time.zone.now }
-      end
-
-      Hook.emit(:lock, self, locked: locked?, lock_details: lock_details, stack: self)
     end
 
     def emit_added_hooks

@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency('active_model_serializers', '~> 0.9.3')
   s.add_dependency('ansi_stream', '~> 0.0.6')
-  s.add_dependency('attr_encrypted', '~> 3.1.0')
   s.add_dependency('autoprefixer-rails', '~> 6.4.1')
   s.add_dependency('coffee-rails', '~> 5.0')
   s.add_dependency('explicit-parameters', '~> 0.4.0')
@@ -44,6 +43,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sprockets', '< 4')
   s.add_dependency('state_machines-activerecord', '~> 0.8.0')
   s.add_dependency('validate_url', '~> 1.0.0')
+  s.add_dependency('paquito')
 
   s.metadata['allowed_push_host'] = 'https://rubygems.org'
 end

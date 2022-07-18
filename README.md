@@ -134,6 +134,19 @@ Lastly, if you override the `app_name` configuration in your Shipit deployment, 
 
 * * *
 
+<h3 id="respecting-bare-files">Respecting bare <code>shipit.yml</code> files</h3>
+
+Shipit will, by default, respect the "bare" <code>shipit.yml</code> file as a fallback option if no more specifically-named file exists (such as <code>shipit.staging.yml</code>).
+
+You can configure this behavior via the attribute <code>Shipit.respect_bare_shipit_file</code>.
+
+- The value <code>false</code> will disable this behavior and instead cause Shipit to emit an error upon deploy if Shipit cannot find a more specifically-named file.
+- Setting this attribute to any other value (**including <code>nil</code>**), or not setting this attribute, will cause Shipit to use the default behavior of respecting bare <code>shipit.yml</code> files.
+
+You can determine if Shipit is configured to respect bare files using <code>Shipit.respect_bare_shipit_file?</code>.
+
+* * *
+
 <h3 id="installing-dependencies">Installing dependencies</h3>
 
 The **<code>dependencies</code>** step allows you to install all the packages your deploy script needs.
