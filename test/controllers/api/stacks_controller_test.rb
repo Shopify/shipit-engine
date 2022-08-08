@@ -214,6 +214,15 @@ module Shipit
         end
         assert_response :accepted
       end
+
+      test "#refresh queues a RefreshStatusesJob and RefreshCheckRunsJob" do
+        assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
+          assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do
+            post :refresh, params: { id: @stack.to_param }
+          end
+        end
+        assert_response :accepted
+      end
     end
   end
 end
