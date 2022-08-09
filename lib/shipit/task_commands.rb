@@ -47,7 +47,14 @@ module Shipit
     end
 
     def checkout(commit)
-      git('-c', 'advice.detachedHead=false', 'checkout', commit.sha, chdir: @task.working_directory)
+      git(
+        '-c',
+        'advice.detachedHead=false',
+        'checkout',
+        '--quiet',
+        commit.sha,
+        chdir: @task.working_directory
+      )
     end
 
     def clone

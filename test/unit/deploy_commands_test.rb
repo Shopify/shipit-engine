@@ -134,7 +134,11 @@ module Shipit
 
     test "#checkout checks out the deployed commit" do
       command = @commands.checkout(@deploy.until_commit)
-      assert_equal ['git', '-c', 'advice.detachedHead=false', 'checkout', @deploy.until_commit.sha], command.args
+      checkout_args = [
+        'git', '-c', 'advice.detachedHead=false', 'checkout', '--quiet',
+        @deploy.until_commit.sha,
+      ]
+      assert_equal checkout_args, command.args
     end
 
     test "#checkout checks out the deployed commit from the working directory" do
