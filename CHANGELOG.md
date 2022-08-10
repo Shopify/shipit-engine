@@ -1,5 +1,10 @@
 # Unreleased
 
+# 0.37.0
+
+* Suppress progress output for git checkout (#1278)
+* Make API refresh action match non-API refresh action for stacks (#1277)
+
 # 0.36.1
 
 * Fix compatibility with Rails 7.0.3.1 (YAML serialized fields). (#1273)
