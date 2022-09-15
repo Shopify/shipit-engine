@@ -46,9 +46,13 @@ module Shipit
         accepts :ignore_ci, Boolean
         accepts :merge_queue_enabled, Boolean
         accepts :continuous_deployment, Boolean
+        accepts :archived, Boolean
       end
       def update
-        stack.update(params)
+        stack.update(update_params)
+
+        update_archived
+
         render_resource(stack)
       end
 
@@ -76,6 +80,26 @@ module Shipit
 
       def stack
         @stack ||= stacks.from_param!(params[:id])
+      end
+
+      def update_archived
+        if key?(:archived)
+          if params[:archived]
+            stack.archive!(nil)
+          elsif stack.archived?
+            stack.unarchive!
+          end
+        end
+      end
+
+      def key?(key)
+        params.to_h.key?(key)
+      end
+
+      def update_params
+        params.select do |key, _|
+          %i(environment branch deploy_url ignore_ci merge_queue_enabled continuous_deployment).include?(key)
+        end
       end
 
       def repository
