@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class CommitsControllerTest < ActionController::TestCase
+    class CommitsControllerTest < ApiControllerTestCase
       setup do
         @stack = shipit_stacks(:shipit)
         authenticate!

@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class BaseControllerTest < ActionController::TestCase
+    class BaseControllerTest < ApiControllerTestCase
       test "authentication is required" do
         get :index
         assert_response :unauthorized
