@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class RollbacksControllerTest < ActionController::TestCase
+    class RollbacksControllerTest < ApiControllerTestCase
       setup do
         authenticate!
         @user = shipit_users(:walrus)

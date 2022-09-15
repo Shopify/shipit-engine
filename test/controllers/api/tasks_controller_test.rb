@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class TasksControllerTest < ActionController::TestCase
+    class TasksControllerTest < ApiControllerTestCase
       setup do
         @stack = shipit_stacks(:shipit)
         @user = shipit_users(:walrus)

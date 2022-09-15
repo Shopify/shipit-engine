@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class MergeRequestsControllerTest < ActionController::TestCase
+    class MergeRequestsControllerTest < ApiControllerTestCase
       setup do
         @stack = shipit_stacks(:shipit)
         @merge_request = shipit_merge_requests(:shipit_pending)
