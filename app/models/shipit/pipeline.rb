@@ -10,7 +10,7 @@ module Shipit
     has_many :predictive_builds
 
     MERGE_MODE_DRY_RUN = 'dryrun'
-    MERGE_MODE_DEFAULT = 'default'
+    MERGE_MODE_DEFAULT = 'single'
     MERGE_MODE_SINGLE = 'single'
     MERGE_MODE_EMERGENCY = 'emergency'
 
