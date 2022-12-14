@@ -9,6 +9,7 @@ module Shipit
         accepts :force, Boolean, default: false
         accepts :env, Hash, default: {}
         accepts :lock, Boolean, default: true
+        accepts :safeties_enforced, Boolean, default: false
       end
       def create
         commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
@@ -24,7 +25,8 @@ module Shipit
           active_task.abort!(aborted_by: current_user, rollback_once_aborted_to: deploy, rollback_once_aborted: true)
           response = active_task
         else
-          response = deploy.trigger_rollback(current_user, env: deploy_env, force: params.force, lock: params.lock)
+          response = deploy.trigger_rollback(current_user, env: deploy_env, force: params.force, lock: params.lock,
+            safeties_enforced: params.safeties_enforced)
         end
 
         render_resource(response, status: :accepted)

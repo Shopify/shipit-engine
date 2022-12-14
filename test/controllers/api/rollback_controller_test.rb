@@ -86,6 +86,24 @@ module Shipit
         assert_json 'status', 'pending'
       end
 
+      test "#create marks the rollback as ignored_safeties if force mode is enabled" do
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true' }
+        end
+
+        deploy = Deploy.last
+        assert_predicate deploy, :ignored_safeties?
+      end
+
+      test "#create doesn't mark a forced rollback as ignored_safeties if `safeties_enforced` is true" do
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true', safeties_enforced: 'true' }
+        end
+
+        deploy = Deploy.last
+        refute_predicate deploy, :ignored_safeties?
+      end
+
       test "#create refuses to rollback if active task" do
         @stack.deploys.last.update!(status: 'running')
 

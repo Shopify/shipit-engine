@@ -144,6 +144,13 @@ module Shipit
       refute_predicate deploy, :ignored_safeties?
     end
 
+    test "#trigger_deploy doesn't mark a forced deploy as `ignored_safeties` if `safeties_enforced` is true" do
+      last_commit = shipit_commits(:third)
+
+      deploy = @stack.trigger_deploy(last_commit, AnonymousUser.new, force: true, safeties_enforced: true)
+      refute_predicate deploy, :ignored_safeties?
+    end
+
     test "#update_deployed_revision bail out if there is an active deploy" do
       @stack.deploys_and_rollbacks.last.update_columns(status: 'running')
       assert_no_difference 'Deploy.count' do

@@ -839,6 +839,11 @@ module Shipit
       assert_predicate rollback, :ignored_safeties?
     end
 
+    test "#trigger_rollback doesn't mark a forced deploy as `ignored_safeties` if `safeties_enforced` is true" do
+      rollback = @deploy.trigger_rollback(@user, force: true, safeties_enforced: true)
+      refute_predicate rollback, :ignored_safeties?
+    end
+
     test "abort! transition to `aborting`" do
       @deploy.ping
       @deploy.abort!(aborted_by: @user)

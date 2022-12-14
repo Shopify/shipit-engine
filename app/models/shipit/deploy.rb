@@ -82,7 +82,7 @@ module Shipit
       where('id <= ?', deploy.try(:id) || deploy)
     end
 
-    def build_rollback(user = nil, env: nil, force: false)
+    def build_rollback(user = nil, env: nil, force: false, safeties_enforced: false)
       Rollback.new(
         user_id: user&.id,
         stack_id: stack_id,
@@ -91,14 +91,14 @@ module Shipit
         until_commit: until_commit,
         env: env&.to_h || {},
         allow_concurrency: force,
-        ignored_safeties: force,
+        ignored_safeties: safeties_enforced ? false : force,
         max_retries: stack.retries_on_rollback,
       )
     end
 
     # Rolls the stack back to this deploy
-    def trigger_rollback(user = AnonymousUser.new, env: nil, force: false, lock: true)
-      rollback = build_rollback(user, env: env, force: force)
+    def trigger_rollback(user = AnonymousUser.new, env: nil, force: false, lock: true, safeties_enforced: false)
+      rollback = build_rollback(user, env: env, force: force, safeties_enforced: safeties_enforced)
       rollback.save!
       rollback.enqueue
 
