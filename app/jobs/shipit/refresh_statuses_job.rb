@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 module Shipit
   class RefreshStatusesJob < BackgroundJob
+    include BackgroundJob::Unique
+    on_duplicate :drop
+
     queue_as :default
 
     def perform(params)
