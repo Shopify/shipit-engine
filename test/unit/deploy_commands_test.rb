@@ -30,6 +30,15 @@ module Shipit
       assert_equal %w(git fetch origin --quiet --tags master), command.args
     end
 
+    test "#fetch calls git fetch_commit if repository cache already exist" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+
+      command = @commands.fetch_commit(@deploy.until_commit)
+
+      assert_equal %w(git fetch origin --quiet --tags 467578b362bf2b4df5903e1c7960929361c3435a), command.args
+    end
+
     test "#fetch calls git fetch in git_path directory if repository cache already exist" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)

@@ -23,6 +23,12 @@ module Shipit
       end
     end
 
+    def fetch_commit(commit)
+      if valid_git_repository?(@stack.git_path)
+        git('fetch', 'origin', '--quiet', '--tags', commit.sha, env: env, chdir: @stack.git_path)
+      end
+    end
+
     def fetched?(commit)
       if valid_git_repository?(@stack.git_path)
         git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
