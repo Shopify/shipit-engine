@@ -70,7 +70,6 @@ module Shipit
           @task.acquire_git_cache_lock do
             @task.ping
             unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-              capture!(@commands.fetch)
               capture!(@commands.fetch_commit(@task.until_commit))
             end
           end
