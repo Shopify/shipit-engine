@@ -25,16 +25,16 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
-      assert_equal %w(git fetch origin --quiet --tags master), command.args
+      assert_equal %W(git fetch origin --quiet --tags #{@deploy.until_commit.sha}), command.args
     end
 
     test "#fetch calls git fetch in git_path directory if repository cache already exist" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       assert_equal @stack.git_path.to_s, command.chdir
     end
@@ -42,7 +42,7 @@ module Shipit
     test "#fetch calls git clone if repository cache do not exist" do
       @stack.git_path.stubs(:exist?).returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
@@ -52,7 +52,7 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(true)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
@@ -65,7 +65,7 @@ module Shipit
         .with(@stack.git_path)
         .returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
@@ -79,7 +79,7 @@ module Shipit
         .with(@stack.git_path)
         .returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
@@ -89,7 +89,7 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(false)
       StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       expected = %W(git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
@@ -98,20 +98,20 @@ module Shipit
     test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
       @stack.git_path.stubs(:exist?).returns(false)
 
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
 
       assert_equal @stack.deploys_path.to_s, command.chdir
     end
 
     test "#fetch merges Shipit.env in ENVIRONMENT" do
       Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
       assert_equal '5', command.env["SPECIFIC_CONFIG"]
     end
 
     test "#env uses the correct Github token for a stack" do
       Shipit.github(organization: 'shopify').stubs(:token).returns('aS3cr3Tt0kEn')
-      command = @commands.fetch
+      command = @commands.fetch_commit(@deploy.until_commit)
       assert_equal 'aS3cr3Tt0kEn', command.env["GITHUB_TOKEN"]
     end
 

@@ -2,7 +2,7 @@
 # rubocop:disable Lint/MissingSuper
 module Shipit
   class TaskCommands < Commands
-    delegate :fetch, :fetched?, to: :stack_commands
+    delegate :fetch_commit, :fetched?, to: :stack_commands
 
     def initialize(task)
       @task = task
