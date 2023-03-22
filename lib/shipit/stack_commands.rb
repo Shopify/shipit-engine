@@ -23,6 +23,16 @@ module Shipit
       end
     end
 
+    def fetch
+      create_directories
+      if valid_git_repository?(@stack.git_path)
+        git('fetch', 'origin', '--quiet', '--tags', @stack.branch, env: env, chdir: @stack.git_path)
+      else
+        @stack.clear_git_cache!
+        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
+      end
+    end
+
     def fetched?(commit)
       if valid_git_repository?(@stack.git_path)
         git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
