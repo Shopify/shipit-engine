@@ -21,7 +21,7 @@ module Shipit
       StackCommands.stubs(git_version: Gem::Version.new('1.8.4.3'))
     end
 
-    test "#fetch calls git fetch if repository cache already exist" do
+    test "#fetch_commit calls git fetch if repository cache already exist" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
 
@@ -30,7 +30,7 @@ module Shipit
       assert_equal %W(git fetch origin --quiet --tags #{@deploy.until_commit.sha}), command.args
     end
 
-    test "#fetch calls git fetch in git_path directory if repository cache already exist" do
+    test "#fetch_commit calls git fetch in git_path directory if repository cache already exist" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
 
@@ -39,7 +39,7 @@ module Shipit
       assert_equal @stack.git_path.to_s, command.chdir
     end
 
-    test "#fetch calls git clone if repository cache do not exist" do
+    test "#fetch_commit calls git clone if repository cache do not exist" do
       @stack.git_path.stubs(:exist?).returns(false)
 
       command = @commands.fetch_commit(@deploy.until_commit)
@@ -48,7 +48,7 @@ module Shipit
       assert_equal expected, command.args.map(&:to_s)
     end
 
-    test "#fetch calls git clone if repository cache is empty" do
+    test "#fetch_commit calls git clone if repository cache is empty" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(true)
 
@@ -58,7 +58,7 @@ module Shipit
       assert_equal expected, command.args
     end
 
-    test "#fetch calls git clone if repository cache corrupt" do
+    test "#fetch_commit calls git clone if repository cache corrupt" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
       StackCommands.any_instance.expects(:git_cmd_succeeds?)
@@ -71,7 +71,7 @@ module Shipit
       assert_equal expected, command.args
     end
 
-    test "#fetch clears a corrupted git stash before cloning" do
+    test "#fetch_commit clears a corrupted git stash before cloning" do
       @stack.expects(:clear_git_cache!)
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
@@ -85,7 +85,7 @@ module Shipit
       assert_equal expected, command.args
     end
 
-    test "#fetch does not use --single-branch if git is outdated" do
+    test "#fetch_commit does not use --single-branch if git is outdated" do
       @stack.git_path.stubs(:exist?).returns(false)
       StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
 
@@ -95,7 +95,7 @@ module Shipit
       assert_equal expected, command.args.map(&:to_s)
     end
 
-    test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
+    test "#fetch_commit calls git fetch in base_path directory if repository cache do not exist" do
       @stack.git_path.stubs(:exist?).returns(false)
 
       command = @commands.fetch_commit(@deploy.until_commit)
@@ -103,7 +103,7 @@ module Shipit
       assert_equal @stack.deploys_path.to_s, command.chdir
     end
 
-    test "#fetch merges Shipit.env in ENVIRONMENT" do
+    test "#fetch_commit merges Shipit.env in ENVIRONMENT" do
       Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
       command = @commands.fetch_commit(@deploy.until_commit)
       assert_equal '5', command.env["SPECIFIC_CONFIG"]
@@ -113,6 +113,75 @@ module Shipit
       Shipit.github(organization: 'shopify').stubs(:token).returns('aS3cr3Tt0kEn')
       command = @commands.fetch_commit(@deploy.until_commit)
       assert_equal 'aS3cr3Tt0kEn', command.env["GITHUB_TOKEN"]
+    end
+
+    test "#fetch calls git fetch if repository cache already exist" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+
+      command = @commands.fetch
+
+      assert_equal %w(git fetch origin --quiet --tags master), command.args
+    end
+
+    test "#fetch calls git fetch in git_path directory if repository cache already exist" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+
+      command = @commands.fetch
+
+      assert_equal @stack.git_path.to_s, command.chdir
+    end
+
+    test "#fetch calls git clone if repository cache do not exist" do
+      @stack.git_path.stubs(:exist?).returns(false)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args.map(&:to_s)
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(true)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+        .with(@stack.git_path)
+        .returns(false)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+        .with(@stack.git_path)
+        .returns(false)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args
+      @stack.git_path.stubs(:exist?).returns(false)
+      StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
+
+      command = @commands.fetch
+
+      expected = %W(git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args.map(&:to_s)
+    end
+
+    test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
+      @stack.git_path.stubs(:exist?).returns(false)
+
+      command = @commands.fetch
+
+      assert_equal @stack.deploys_path.to_s, command.chdir
+    end
+
+    test "#fetch merges Shipit.env in ENVIRONMENT" do
+      Shipit.stubs(:env).returns("SPECIFIC_CONFIG" => 5)
+      command = @commands.fetch
+      assert_equal '5', command.env["SPECIFIC_CONFIG"]
     end
 
     test "#clone clones the repository cache into the working directory" do
