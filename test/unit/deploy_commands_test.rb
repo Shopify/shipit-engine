@@ -140,6 +140,9 @@ module Shipit
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args.map(&:to_s)
+    end
+
+    test "#fetch calls git clone if repository cache is empty" do
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(true)
 
@@ -147,6 +150,12 @@ module Shipit
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
+    end
+
+    test "#fetch calls git clone if repository cache corrupt" do
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+      StackCommands.any_instance.expects(:git_cmd_succeeds?)
         .with(@stack.git_path)
         .returns(false)
 
@@ -154,6 +163,13 @@ module Shipit
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
+    end
+
+    test "#fetch clears a corrupted git stash before cloning" do
+      @stack.expects(:clear_git_cache!)
+      @stack.git_path.stubs(:exist?).returns(true)
+      @stack.git_path.stubs(:empty?).returns(false)
+      StackCommands.any_instance.expects(:git_cmd_succeeds?)
         .with(@stack.git_path)
         .returns(false)
 
@@ -161,6 +177,9 @@ module Shipit
 
       expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
       assert_equal expected, command.args
+    end
+
+    test "#fetch does not use --single-branch if git is outdated" do
       @stack.git_path.stubs(:exist?).returns(false)
       StackCommands.stubs(git_version: Gem::Version.new('1.7.2.30'))
 
