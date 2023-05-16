@@ -16,6 +16,8 @@ module Shipit
       response = @response
 
       loop do
+        return unless response.present?
+
         response.data.each(&block)
         return unless response.rels[:next]
         response = response.rels[:next].get
