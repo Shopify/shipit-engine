@@ -278,6 +278,36 @@ module Shipit
       end
     end
 
+    test "#active_task? is false if stack has a concurrent deploy in active state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new, force: true)
+      refute @stack.active_task?
+    end
+
+    test "#occupied? is false if stack has no deploy in either pending or running state" do
+      @stack.deploys.active.destroy_all
+      refute @stack.occupied?
+    end
+
+    test "#occupied? is false if stack has no deploy at all" do
+      @stack.deploys.destroy_all
+      refute @stack.occupied?
+    end
+
+    test "occupied? is true if stack has a concurrent deploy in active state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new, force: true)
+      assert @stack.occupied?
+    end
+
+    test "occupied? is true if stack has a deploy in pending state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new)
+      assert @stack.occupied?
+    end
+
+    test "#occupied? is true if a rollback is ongoing" do
+      shipit_deploys(:shipit_complete).trigger_rollback(AnonymousUser.new)
+      assert @stack.occupied?
+    end
+
     test "#deployable? returns true if the stack is not locked, not awaiting provision, and is not deploying" do
       @stack.deploys.destroy_all
       @stack.update!(lock_reason: nil, awaiting_provision: false)
