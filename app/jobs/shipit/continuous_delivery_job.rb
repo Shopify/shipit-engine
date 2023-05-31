@@ -8,7 +8,10 @@ module Shipit
 
     def perform(stack)
       return unless stack.continuous_deployment?
-      return if stack.active_task?
+
+      # checks if there are any tasks running, including concurrent tasks
+      return if stack.occupied?
+
       stack.trigger_continuous_delivery
     end
   end

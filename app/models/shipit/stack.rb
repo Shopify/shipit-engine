@@ -453,6 +453,14 @@ module Shipit
       @active_task ||= tasks.current
     end
 
+    def occupied?
+      !!occupied
+    end
+
+    def occupied
+      @occupied ||= tasks.active.last
+    end
+
     def locked?
       lock_reason.present?
     end
