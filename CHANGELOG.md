@@ -1,5 +1,11 @@
 # Unreleased
 
+# 0.38.0
+
+* Convert `commit_deployment_statuses.github_id` to bigint (#1312)
+* Allow to lock and archive stacks from the API (#1282)
+* Hide API tokens from the user interface after the initial creation (#1298)
+
 # 0.37.0
 
 * Suppress progress output for git checkout (#1278)
