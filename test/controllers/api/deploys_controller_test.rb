@@ -81,6 +81,7 @@ module Shipit
         end
 
         assert_response :conflict
+        assert_json 'error', 'A task is already running.'
       end
 
       test "#create refuses to deploy unsuccessful commits if the require_ci flag is passed" do
