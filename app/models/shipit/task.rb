@@ -3,7 +3,11 @@ module Shipit
   class Task < Record
     include DeferredTouch
 
-    ConcurrentTaskRunning = Class.new(StandardError)
+    class ConcurrentTaskRunning < StandardError
+      def message
+        "A task is already running."
+      end
+    end
 
     PRESENCE_CHECK_TIMEOUT = 30
     ACTIVE_STATUSES = %w(pending running aborting).freeze
