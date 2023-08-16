@@ -25,8 +25,8 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 **II. USING SHIPIT**
 
 * [Adding stacks](#adding-stacks)
-* [Working on stacks](#working-on-stacks),
-* [Configuring stacks](#configuring-stacks).
+* [Working on stacks](#working-on-stacks)
+* [Configuring stacks](#configuring-stacks)
 
 **III. REFERENCE**
 
