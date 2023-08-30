@@ -198,7 +198,8 @@ GEM
     mini_racer (0.6.2)
       libv8-node (~> 16.10.0.0)
     minitest (5.19.0)
-    mocha (1.13.0)
+    mocha (2.1.0)
+      ruby2_keywords (>= 0.0.5)
     msgpack (1.7.1)
     multi_xml (0.6.0)
     multipart-post (2.3.0)
@@ -382,6 +383,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-22
   x86_64-darwin-20
   x86_64-linux
 
@@ -402,4 +404,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.8
+   2.4.18
