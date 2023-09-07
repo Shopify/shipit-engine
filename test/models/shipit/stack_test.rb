@@ -3,7 +3,7 @@ require 'test_helper'
 require 'securerandom'
 
 module Shipit
-  class StacksTest < ActiveSupport::TestCase
+  class StackTest < ActiveSupport::TestCase
     def setup
       @stack = shipit_stacks(:shipit)
       @expected_base_path = Rails.root.join('data', 'stacks', @stack.to_param).to_s
