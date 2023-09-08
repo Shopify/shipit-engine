@@ -226,8 +226,12 @@ module Shipit
 
     def next_commit_to_deploy
       commits_to_deploy = commits.order(id: :asc).newer_than(last_deployed_commit).reachable.preload(:statuses)
-      commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
-      commits_to_deploy.to_a.reverse.find(&:deployable?)
+      if maximum_commits_per_deploy
+        commits_with_max_applied = commits_to_deploy.limit(maximum_commits_per_deploy)
+        deployable_commits(commits_with_max_applied) || deployable_commits(commits_to_deploy)
+      else
+        deployable_commits(commits_to_deploy)
+      end
     end
 
     def deployed_too_recently?
@@ -627,6 +631,10 @@ module Shipit
     end
 
     private
+
+    def deployable_commits(commits)
+      commits.to_a.reverse.find(&:deployable?)
+    end
 
     def clear_cache
       remove_instance_variable(:@active_task) if defined?(@active_task)
