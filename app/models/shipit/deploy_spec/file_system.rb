@@ -101,7 +101,16 @@ module Shipit
       end
 
       def shipit_file_names_in_priority_order
-        ["#{app_name}.#{@env}.yml", "#{app_name}.yml", "shipit.#{@env}.yml", "shipit.yml"].uniq
+        [
+          "#{app_name}.#{@env}.yml",
+          "#{app_name}.yml",
+          "shipit.#{@env}.yml",
+          "shipit.yml",
+          ".shipit/#{app_name}.#{@env}.yml",
+          ".shipit/#{app_name}.yml",
+          ".shipit/#{@env}.yml",
+          ".shipit/shipit.yml",
+        ].uniq
       end
 
       def bare_shipit_filenames
