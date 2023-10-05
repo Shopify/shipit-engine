@@ -151,5 +151,5 @@ after_bundle do
     )
   end
 
-  say("Read https://github.com/Shopify/shipit-engine/blob/master/docs/setup.md for the details on how to create the App and update config/secrets.yml", Thor::Shell::Color::GREEN, true)
+  say("Read https://github.com/Shopify/shipit-engine/blob/main/docs/setup.md for the details on how to create the App and update config/secrets.yml", Thor::Shell::Color::GREEN, true)
 end

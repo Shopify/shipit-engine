@@ -1,8 +1,8 @@
 # Shipit Browser Extension
 
-If you have ever pushed to a broken `master` because you forgot to check CI/Slack then we have the extension for you.
+If you have ever pushed to a broken `main` because you forgot to check CI/Slack then we have the extension for you.
 
-This extension will alert you on GitHub's pull request page if `master` is broken, so that you can avoid the embarassment of having merged on red master.
+This extension will alert you on GitHub's pull request page if `main` is broken, so that you can avoid the embarassment of having merged on red master.
 
 ## Installation
 
