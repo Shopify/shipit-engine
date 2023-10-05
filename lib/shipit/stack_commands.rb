@@ -106,7 +106,7 @@ module Shipit
         .success?
     end
 
-    def git_clone(url, path, branch: 'master', **kwargs)
+    def git_clone(url, path, branch: 'main', **kwargs)
       git('clone', '--quiet', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
     end
 
