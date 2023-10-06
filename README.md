@@ -641,7 +641,7 @@ Your deploy scripts have access to the following environment variables:
 * `GITHUB_REPO_OWNER`: The GitHub username of the repository owner for the current deploy/task.
 * `EMAIL`: Email of the user that triggered the deploy/task (if available)
 * `ENVIRONMENT`: The stack environment (e.g `production` / `staging`)
-* `BRANCH`: The stack branch (e.g `master`)
+* `BRANCH`: The stack branch (e.g `main`)
 * `LAST_DEPLOYED_SHA`: The git SHA of the last deployed commit
 * `DIFF_LINK`: URL to the diff on GitHub.
 * `TASK_ID`: ID of the task that is running
