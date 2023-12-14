@@ -15,14 +15,6 @@ module Shipit
       @default_provided
     end
 
-    def override_value(value)
-      @override = value.to_s
-    end
-
-    def value
-      @override.presence || default
-    end
-
     def to_h
       {
         'name' => @name,

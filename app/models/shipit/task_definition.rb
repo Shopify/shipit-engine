@@ -40,14 +40,6 @@ module Shipit
       "This task (title: #{@title}) cannot be shown due to an incorrect variable name. Check your shipit.yml file"
     end
 
-    def override_variables(params)
-      variables.each do |var|
-        if params.key?(var.name)
-          var.override_value(params[var.name])
-        end
-      end
-    end
-
     def allow_concurrency?
       @allow_concurrency
     end

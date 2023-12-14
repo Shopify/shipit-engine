@@ -16,7 +16,6 @@ module Shipit
     def new
       @definition = stack.find_task_definition(params[:definition_id])
       @task = stack.tasks.build(definition: @definition)
-      @task.definition.override_variables(params)
     end
 
     def show
