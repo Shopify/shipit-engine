@@ -150,7 +150,7 @@ jobs:
         export SHIPIT_GEM_PATH="${PWD}"
         mkdir /tmp/new-app
         cd /tmp/new-app
-        gem install rails -v '~> 7.0.2' --no-document
+        gem install rails -v '~> 7.1.1' --no-document
         rails new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer --skip-active-storage --skip-webpack-install --skip-action-mailbox --skip-action-text -m "${SHIPIT_GEM_PATH}/template.rb"
       env:
         SHIPIT_EDGE: "1"

@@ -14,7 +14,7 @@ In the future we'd like to provide it fully packaged inside a Docker container, 
 
 Shipit provides you with a Rails template. To bootstrap your Shipit installation:
 
-1. If you don't have Rails installed, run this command: `gem install rails -v 7.0`
+1. If you don't have Rails installed, run this command: `gem install rails -v 7.1.1`
 2. Run this command:  `rails _7.0_ new shipit --skip-action-cable --skip-turbolinks --skip-action-mailer --skip-active-storage --skip-webpack-install --skip-action-mailbox --skip-action-text -m https://raw.githubusercontent.com/Shopify/shipit-engine/main/template.rb`
 
 ## Creating the GitHub App
