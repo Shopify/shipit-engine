@@ -1,5 +1,7 @@
 # Unreleased
 
+* Upgraded to Rails 7.1.1
+
 # 0.38.0
 
 * Convert `commit_deployment_statuses.github_id` to bigint (#1312)
