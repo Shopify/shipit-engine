@@ -11,7 +11,7 @@ module Shipit
             stack = create_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
               params_for(stack),
-              scope: stack.repository.stacks
+              scope: stack.repository.stacks,
             )
             Shipit::ReviewStack.any_instance.expects(:unarchive!).never
             Shipit::ReviewStackProvisioningQueue.expects(:add).never
@@ -23,7 +23,7 @@ module Shipit
             stack = create_archived_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
               params_for(stack),
-              scope: stack.repository.stacks
+              scope: stack.repository.stacks,
             )
 
             assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id]) do
@@ -35,7 +35,7 @@ module Shipit
             stack = create_archived_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
               params_for(stack),
-              scope: stack.repository.stacks
+              scope: stack.repository.stacks,
             )
 
             assert_changes -> { stack.reload.awaiting_provision }, from: false, to: true do
@@ -47,7 +47,7 @@ module Shipit
             stack = create_archived_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
               params_for(stack),
-              scope: stack.repository.stacks
+              scope: stack.repository.stacks,
             )
             Shipit::Stack.any_instance.expects(:archive!).never
 
@@ -59,7 +59,7 @@ module Shipit
             stack.enqueue_for_provisioning
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
               params_for(stack),
-              scope: stack.repository.stacks
+              scope: stack.repository.stacks,
             )
 
             assert_changes -> { stack.reload.awaiting_provision }, from: true, to: false do
@@ -73,7 +73,7 @@ module Shipit
               repository: {
                 "full_name" => stack.github_repo_name,
               },
-              sender: { login: shipit_users(:walrus).login }
+              sender: { login: shipit_users(:walrus).login },
             )
           end
 

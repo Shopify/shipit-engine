@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CheckRun < ApplicationRecord
     CONCLUSIONS = %w(success failure neutral cancelled timed_out action_required stale skipped).freeze
@@ -27,7 +28,7 @@ module Shipit
         # Persist the received data anyways, in case it is now the canonical data on GitHub despite the timestamp.
         if attributes[:conclusion] != record.conclusion && record.newer_than_webhook?(attributes)
           Rails.logger.warn(
-            "Conflicting stale checkrun received. Checkrun id: #{selector[:github_id]}, Details: #{attributes}"
+            "Conflicting stale checkrun received. Checkrun id: #{selector[:github_id]}, Details: #{attributes}",
           )
           RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(commit_id: record.commit_id)
         end

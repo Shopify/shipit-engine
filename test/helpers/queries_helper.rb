@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module QueriesHelper
   def assert_no_queries(ignored_sql = nil, &block)
     assert_queries(0, ignored_sql, &block)
@@ -52,6 +53,7 @@ module QueriesHelper
       # FIXME: this seems bad. we should probably have a better way to indicate
       # the query was cached
       return if values[:name] == 'CACHE' || ignore.any? { |x| x =~ sql }
+
       log << sql
     end
   end

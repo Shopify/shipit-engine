@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class RollbacksController < ShipitController
     before_action :load_stack

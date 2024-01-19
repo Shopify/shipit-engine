@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'pathname'
 
 module Shipit
@@ -255,6 +256,7 @@ module Shipit
     def around_steps(section)
       steps = yield
       return unless steps
+
       config(section, 'pre') { [] } + steps + config(section, 'post') { [] }
     end
 

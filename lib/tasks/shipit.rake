@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :shipit do
   desc "Deploy from a running instance. "
   task deploy: :environment do

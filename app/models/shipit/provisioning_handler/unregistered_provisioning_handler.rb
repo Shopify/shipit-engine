@@ -16,8 +16,8 @@ module Shipit
       def lock_and_prevent_transition
         stack.lock(
           "Failed to find a provisioning handler named '#{stack.provisioning_handler_name}' in the " \
-          "ProvisioningHandler registry. Have you registered it via Provisioning::Handler.register?",
-          Shipit::AnonymousUser.new
+            "ProvisioningHandler registry. Have you registered it via Provisioning::Handler.register?",
+          Shipit::AnonymousUser.new,
         )
 
         # Prevent transition of the ReviewStack 'provision_status'

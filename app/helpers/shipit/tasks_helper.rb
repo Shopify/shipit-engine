@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module TasksHelper
     def task_description(task)

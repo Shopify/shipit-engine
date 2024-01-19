@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class UndeployedCommit < DelegateClass(Commit)
     attr_reader :index
@@ -50,6 +51,7 @@ module Shipit
 
     def blocked?
       return @blocked if defined?(@blocked)
+
       @blocked = super
     end
   end

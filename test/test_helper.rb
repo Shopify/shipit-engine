@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 ENV["RAILS_ENV"] ||= "test"
 
 if Warning.respond_to?(:[]=)
@@ -67,6 +68,7 @@ module ActiveSupport
       Shipit.redis.flushdb
       Shipit.instance_variable_names.each do |name|
         next if %w(@mocha @redis).include?(name)
+
         Shipit.remove_instance_variable(name)
       end
     end

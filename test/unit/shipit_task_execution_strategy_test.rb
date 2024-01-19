@@ -29,7 +29,7 @@ module Shipit
 
       assert_equal(
         strategy,
-        Shipit.task_execution_strategy
+        Shipit.task_execution_strategy,
       )
     end
 

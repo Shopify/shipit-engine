@@ -1,18 +1,22 @@
 # frozen_string_literal: true
+
 module Shipit
   module DeploysHelper
     def render_checklist(checklist)
       return if checklist.blank?
+
       render('shipit/deploys/checklist', checklist: checklist)
     end
 
     def render_monitoring(stack)
       return unless stack.monitoring?
+
       render('shipit/deploys/monitoring', stack: stack)
     end
 
     def render_checks(commit)
       return unless commit.stack.checks?
+
       render('shipit/commit_checks/checks', commit: commit)
     end
 

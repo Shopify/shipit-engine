@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class WebhooksController < ActionController::Base
     skip_before_action :verify_authenticity_token, raise: false
@@ -24,7 +25,7 @@ module Shipit
       github_app = Shipit.github(organization: repository_owner)
       verified = github_app.verify_webhook_signature(
         request.headers['X-Hub-Signature'],
-        request.raw_post
+        request.raw_post,
       )
       head(422) unless verified
 

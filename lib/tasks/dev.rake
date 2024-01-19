@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :dev do
   desc "Appends chunks to the last deploy, or specify with DEPLOY=id"
   task stream: :environment do

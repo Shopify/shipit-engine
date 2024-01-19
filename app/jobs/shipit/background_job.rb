@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class BackgroundJob < ActiveJob::Base
     class << self
@@ -18,6 +19,7 @@ module Shipit
 
     def with_timeout(&block)
       return yield unless timeout
+
       Timeout.timeout(timeout, &block)
     end
 

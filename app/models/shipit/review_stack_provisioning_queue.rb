@@ -31,7 +31,7 @@ module Shipit
         stack.provision
       else
         Rails.logger.info(
-          "Putting review ReviewStack<#{stack.id}> back into the provisioning queue - #provision? was falsey."
+          "Putting review ReviewStack<#{stack.id}> back into the provisioning queue - #provision? was falsey.",
         )
       end
     end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'active_support/all'
 require 'active_model_serializers'
 require 'state_machines-activerecord'
@@ -64,7 +65,10 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
-  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks, :respect_bare_shipit_file,
+  attr_accessor :disable_api_authentication,
+    :timeout_exit_codes,
+    :deployment_checks,
+    :respect_bare_shipit_file,
     :database_serializer
   attr_writer(
     :internal_hook_receivers,
@@ -112,6 +116,7 @@ module Shipit
     class << self
       def load(serial)
         return nil if serial.nil?
+
         # JSON.load is unsafe, we should use parse instead
         JSON.parse(serial)
       end
@@ -136,6 +141,7 @@ module Shipit
 
       def dump(object)
         return if object.nil?
+
         JSON.dump(object)
       end
     end
@@ -167,12 +173,14 @@ module Shipit
 
   def github_default_organization
     return nil unless secrets&.github
+
     org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
   end
 
   def github_organizations
     return [nil] unless github_default_organization
+
     secrets.github.keys
   end
 

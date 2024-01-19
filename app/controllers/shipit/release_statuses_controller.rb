@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class ReleaseStatusesController < ShipitController
     before_action :load_stack
