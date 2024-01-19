@@ -2,16 +2,18 @@
 
 module Shipit
   class ReviewStackProvisioningQueue
-    def self.work
-      new.work
-    end
+    class << self
+      def work
+        new.work
+      end
 
-    def self.add(stack)
-      stack.enqueue_for_provisioning
-    end
+      def add(stack)
+        stack.enqueue_for_provisioning
+      end
 
-    def self.queued_stacks
-      new.queued_stacks
+      def queued_stacks
+        new.queued_stacks
+      end
     end
 
     def work

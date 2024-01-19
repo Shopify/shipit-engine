@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/MissingSuper
 require 'pathname'
 require 'fileutils'
 
 module Shipit
   class StackCommands < Commands
     def initialize(stack)
+      super()
       @stack = stack
     end
 

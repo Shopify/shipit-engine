@@ -4,6 +4,11 @@ require 'test_helper'
 
 module Shipit
   class CheckRunTest < ActiveSupport::TestCase
+    Struct.new('GithubCheckRun', :id, :conclusion, :output, :name, :html_url, :details_url, :completed_at, :started_at)
+    Struct::GithubCheckRun.superclass
+    Struct.new('Output', :description)
+    Struct::Output.superclass
+
     setup do
       @commit = shipit_commits(:first)
       @stack = @commit.stack
@@ -155,17 +160,17 @@ module Shipit
     private
 
     def github_check_run(conclusion: 'success', completed_at: Time.now, started_at: Time.now - 1.minute)
-      OpenStruct.new(
-        id: 424_242,
-        conclusion: conclusion,
-        output: OpenStruct.new(
+      Struct::GithubCheckRun.new(
+        424_242,
+        conclusion,
+        Struct::Output.new(
           description: 'This is a description',
         ),
-        name: 'Test Suite',
-        html_url: 'http://example.com/run',
-        details_url: 'http://example.com/details',
-        completed_at: completed_at,
-        started_at: started_at,
+        'Test Suite',
+        'http://example.com/run',
+        'http://example.com/details',
+        completed_at,
+        started_at,
       )
     end
   end

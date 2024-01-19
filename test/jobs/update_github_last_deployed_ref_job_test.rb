@@ -4,6 +4,11 @@ require 'test_helper'
 
 module Shipit
   class UpdateGithubLastDeployedRefJobTest < ActiveSupport::TestCase
+    Struct.new('ResponseInner', :sha, :type, :url)
+    Struct::ResponseInner.superclass
+    Struct.new('Response', :ref, :node_id, :url, :object)
+    Struct::Response.superclass
+
     setup do
       @stack = shipit_stacks(:shipit)
       @job = UpdateGithubLastDeployedRefJob.new
@@ -18,8 +23,8 @@ module Shipit
 
       ref_url = "http://api.github.test.com/shopify/shipit-engine/git/#{@expected_ref}"
       commit_url = "https://api.github.test.com/repos/shopify/shipit-engine/git/commits/#{@commit.sha}"
-      response_inner_obj = OpenStruct.new(sha: @commit.sha, type: "commit", url: commit_url)
-      @response = OpenStruct.new(ref: @expected_ref, node_id: "blah", url: ref_url, object: response_inner_obj)
+      response_inner_obj = Struct::ResponseInner.new(@commit.sha, "commit", commit_url)
+      @response = Struct::Response.new(@expected_ref, "blah", ref_url, response_inner_obj)
     end
 
     test "#perform will create a ref when one is not present" do
