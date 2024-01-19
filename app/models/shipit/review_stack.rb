@@ -2,23 +2,25 @@
 
 module Shipit
   class ReviewStack < Shipit::Stack
-    def self.clear_stale_caches
-      Shipit::ReviewStack.where(
-        "archived_since > :earliest AND archived_since < :latest",
-        earliest: 1.day.ago,
-        latest: 1.hour.ago,
-      ).find_each do |review_stack|
-        review_stack.clear_local_files
+    class << self
+      def clear_stale_caches
+        Shipit::ReviewStack.where(
+          "archived_since > :earliest AND archived_since < :latest",
+          earliest: 1.day.ago,
+          latest: 1.hour.ago,
+        ).find_each do |review_stack|
+          review_stack.clear_local_files
+        end
       end
-    end
 
-    def self.delete_old_deployment_directories
-      Shipit::Deploy.not_active.where(
-        "created_at > :earliest AND updated_at < :latest",
-        earliest: 1.day.ago,
-        latest: 1.hour.ago,
-      ).find_each do |deploy|
-        Shipit::Commands.for(deploy).clear_working_directory
+      def delete_old_deployment_directories
+        Shipit::Deploy.not_active.where(
+          "created_at > :earliest AND updated_at < :latest",
+          earliest: 1.day.ago,
+          latest: 1.hour.ago,
+        ).find_each do |deploy|
+          Shipit::Commands.for(deploy).clear_working_directory
+        end
       end
     end
 

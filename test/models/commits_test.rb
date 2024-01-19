@@ -4,6 +4,9 @@ require 'test_helper'
 
 module Shipit
   class CommitsTest < ActiveSupport::TestCase
+    Struct.new('GithubStatus', :state, :description, :context, :created_at, :target_url)
+    Struct::GithubStatus.superclass
+
     setup do
       @stack = shipit_stacks(:shipit)
       @pr = @stack.commits.new
@@ -630,7 +633,7 @@ module Shipit
           expected_status_attributes = { state: new_state, description: initial_state, context: 'ci/travis' }
           add_status = lambda do
             attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_formatted_s(:db))
-            commit.create_status_from_github!(OpenStruct.new(attrs))
+            commit.create_status_from_github!(Struct::GithubStatus.new(**attrs))
           end
           expect_hook_emit(commit, :commit_status, expected_status_attributes) do
             if should_fire
@@ -650,7 +653,7 @@ module Shipit
       refute_predicate commit, :deployed?
 
       expect_no_hook(:deployable_status) do
-        github_status = OpenStruct.new(
+        github_status = Struct::GithubStatus.new(
           state: 'failure',
           description: 'Sad',
           context: 'ci/hidden',
@@ -667,7 +670,7 @@ module Shipit
       refute_predicate commit, :deployed?
 
       expect_no_hook(:deployable_status) do
-        github_status = OpenStruct.new(
+        github_status = Struct::GithubStatus.new(
           state: 'failure',
           description: 'Sad',
           context: 'ci/ok_to_fail',
@@ -682,7 +685,7 @@ module Shipit
       assert_predicate commit, :deployed?
 
       expect_no_hook(:deployable_status) do
-        github_status = OpenStruct.new(
+        github_status = Struct::GithubStatus.new(
           state: 'failure',
           description: 'Sad',
           context: 'ci/travis',
@@ -694,7 +697,7 @@ module Shipit
 
     test "#add_status schedule a MergeMergeRequests job if the commit transition to `pending` or `success`" do
       commit = shipit_commits(:second)
-      github_status = OpenStruct.new(
+      github_status = Struct::GithubStatus.new(
         state: 'success',
         description: 'Cool',
         context: 'metrics/coveralls',

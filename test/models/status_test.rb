@@ -4,6 +4,9 @@ require 'test_helper'
 
 module Shipit
   class StatusTest < ActiveSupport::TestCase
+    Struct.new('GithubStatus', :state, :description, :context, :target_url, :created_at)
+    Struct::GithubStatus.superclass
+
     setup do
       @commit = shipit_commits(:first)
       @stack = @commit.stack
@@ -46,12 +49,8 @@ module Shipit
     private
 
     def github_status
-      @github_status ||= OpenStruct.new(
-        state: 'success',
-        description: 'This is a description',
-        context: 'default',
-        target_url: 'http://example.com',
-        created_at: 1.day.ago.to_time,
+      @github_status ||= Struct::GithubStatus.new(
+        'success', 'This is a description', 'default', 'http://example.com', 1.day.ago.to_time
       )
     end
 

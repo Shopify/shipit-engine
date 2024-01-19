@@ -13,10 +13,12 @@ end
 
 module Gem
   class Specification
-    def self.new
+    class << self
+      def new
       spec = FakeSpec.new
       yield spec
       print spec.version
+      end
     end
   end
 end

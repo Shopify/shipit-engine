@@ -65,75 +65,90 @@ module Shipit
       :soft_failing_statuses,
       to: :stack
 
-    def self.newer_than(commit)
-      return all unless commit
+    class << self
+      def newer_than(commit)
+        return all unless commit
 
-      where('id > ?', commit.try(:id) || commit)
-    end
-
-    def self.older_than(commit)
-      return all unless commit
-
-      where('id < ?', commit.try(:id) || commit)
-    end
-
-    def self.since(commit)
-      return all unless commit
-
-      where('id >= ?', commit.try(:id) || commit)
-    end
-
-    def self.until(commit)
-      return all unless commit
-
-      where('id <= ?', commit.try(:id) || commit)
-    end
-
-    def self.successful
-      preload(:statuses).to_a.select(&:success?)
-    end
-
-    def self.detach!
-      Commit.where(id: ids).update_all(detached: true)
-    end
-
-    def self.by_sha(sha)
-      if sha.to_s.size < 6
-        raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (too short)"
+        where('id > ?', commit.try(:id) || commit)
       end
 
-      commits = where('sha like ?', "#{sha}%").take(2)
-      raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+      def older_than(commit)
+        return all unless commit
 
-      commits.first
-    end
-
-    def self.by_sha!(sha)
-      by_sha(sha) || raise(ActiveRecord::RecordNotFound, "Couldn't find commit with sha #{sha}")
-    end
-
-    def self.from_github(commit)
-      author = User.find_or_create_author_from_github_commit(commit)
-      author ||= Anonymous.new
-      committer = User.find_or_create_committer_from_github_commit(commit)
-      committer ||= Anonymous.new
-
-      record = new(
-        sha: commit.sha,
-        message: commit.commit.message,
-        author:  author,
-        committer: committer,
-        committed_at: commit.commit.committer.date,
-        authored_at: commit.commit.author.date,
-        additions: commit.stats&.additions,
-        deletions: commit.stats&.deletions,
-      )
-
-      if record.pull_request?
-        record.pull_request_head_sha = commit.parents.last.sha
+        where('id < ?', commit.try(:id) || commit)
       end
 
-      record
+      def since(commit)
+        return all unless commit
+
+        where('id >= ?', commit.try(:id) || commit)
+      end
+
+      def until(commit)
+        return all unless commit
+
+        where('id <= ?', commit.try(:id) || commit)
+      end
+
+      def successful
+        preload(:statuses).to_a.select(&:success?)
+      end
+
+      def detach!
+        Commit.where(id: ids).update_all(detached: true)
+      end
+
+      def by_sha(sha)
+        if sha.to_s.size < 6
+          raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (too short)"
+        end
+
+        commits = where('sha like ?', "#{sha}%").take(2)
+        raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+
+        commits.first
+      end
+
+      def by_sha!(sha)
+        by_sha(sha) || raise(ActiveRecord::RecordNotFound, "Couldn't find commit with sha #{sha}")
+      end
+
+      def from_github(commit)
+        author = User.find_or_create_author_from_github_commit(commit)
+        author ||= Anonymous.new
+        committer = User.find_or_create_committer_from_github_commit(commit)
+        committer ||= Anonymous.new
+
+        record = new(
+          sha: commit.sha,
+          message: commit.commit.message,
+          author:  author,
+          committer: committer,
+          committed_at: commit.commit.committer.date,
+          authored_at: commit.commit.author.date,
+          additions: commit.stats&.additions,
+          deletions: commit.stats&.deletions,
+        )
+
+        if record.pull_request?
+          record.pull_request_head_sha = commit.parents.last.sha
+        end
+
+        record
+      end
+
+      def create_from_github!(commit, extra_attributes = {})
+        record = from_github(commit)
+        record.update!(extra_attributes)
+        record
+      end
+
+      def lock_all(user)
+        update_all(
+          locked: true,
+          lock_author_id: user.id,
+        )
+      end
     end
 
     def message=(message)
@@ -147,12 +162,6 @@ module Shipit
     def reload(*)
       @status = nil
       super
-    end
-
-    def self.create_from_github!(commit, extra_attributes = {})
-      record = from_github(commit)
-      record.update!(extra_attributes)
-      record
     end
 
     def statuses_and_check_runs
@@ -337,13 +346,6 @@ module Shipit
 
     def lock(user)
       update!(
-        locked: true,
-        lock_author_id: user.id,
-      )
-    end
-
-    def self.lock_all(user)
-      update_all(
         locked: true,
         lock_author_id: user.id,
       )

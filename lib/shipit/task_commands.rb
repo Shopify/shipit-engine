@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/MissingSuper
 module Shipit
   class TaskCommands < Commands
     delegate :fetch_commit, :fetch, :fetched?, to: :stack_commands
 
     def initialize(task)
+      super()
       @task = task
       @stack = task.stack
     end

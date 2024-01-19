@@ -10,10 +10,10 @@ module Shipit
           def params(&block)
             @param_parser = ExplicitParameters::Parameters.define(&block)
           end
-        end
 
-        def self.call(params)
-          new(params).process
+          def call(params)
+            new(params).process
+          end
         end
 
         attr_reader :params, :payload
