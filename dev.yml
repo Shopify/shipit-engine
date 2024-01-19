@@ -8,7 +8,7 @@ up:
   - packages:
     - sqlite
   - ruby:
-      version: 2.7.5
+      version: 3.2.0
   - isogun
   - bundler:
       without: ci
