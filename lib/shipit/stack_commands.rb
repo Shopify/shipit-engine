@@ -6,6 +6,7 @@ require 'fileutils'
 module Shipit
   class StackCommands < Commands
     def initialize(stack)
+      super()
       @stack = stack
     end
 

@@ -5,6 +5,7 @@ module Shipit
     delegate :fetch_commit, :fetch, :fetched?, to: :stack_commands
 
     def initialize(task)
+      super()
       @task = task
       @stack = task.stack
     end
