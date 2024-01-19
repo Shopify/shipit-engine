@@ -63,28 +63,30 @@ module Shipit
 
     delegate :broadcast_update, :filter_deploy_envs, to: :stack
 
-    def self.newer_than(deploy)
-      return all unless deploy
+    class << self
+      def newer_than(deploy)
+        return all unless deploy
 
-      where('id > ?', deploy.try(:id) || deploy)
-    end
+        where('id > ?', deploy.try(:id) || deploy)
+      end
 
-    def self.older_than(deploy)
-      return all unless deploy
+      def older_than(deploy)
+        return all unless deploy
 
-      where('id < ?', deploy.try(:id) || deploy)
-    end
+        where('id < ?', deploy.try(:id) || deploy)
+      end
 
-    def self.since(deploy)
-      return all unless deploy
+      def since(deploy)
+        return all unless deploy
 
-      where('id >= ?', deploy.try(:id) || deploy)
-    end
+        where('id >= ?', deploy.try(:id) || deploy)
+      end
 
-    def self.until(deploy)
-      return all unless deploy
+      def until(deploy)
+        return all unless deploy
 
-      where('id <= ?', deploy.try(:id) || deploy)
+        where('id <= ?', deploy.try(:id) || deploy)
+      end
     end
 
     def build_rollback(user = nil, env: nil, force: false)

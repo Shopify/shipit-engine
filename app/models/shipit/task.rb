@@ -430,20 +430,23 @@ module Shipit
       end
     end
 
-    def self.recently_created_at
-      5.minutes.ago
+    class << self
+      def recently_created_at
+        5.minutes.ago
+      end
+
+      def zombies
+        where(status: ZOMBIE_STATES)
+          .where(
+            "created_at <= :recently",
+            recently: recently_created_at,
+          )
+          .reject(&:alive?)
+      end
     end
 
     ZOMBIE_STATES = %w(running aborting).freeze
     private_constant :ZOMBIE_STATES
-    def self.zombies
-      where(status: ZOMBIE_STATES)
-        .where(
-          "created_at <= :recently",
-          recently: recently_created_at,
-        )
-        .reject(&:alive?)
-    end
 
     def retry_if_necessary
       return unless retries_configured? && !stack.reload.locked?

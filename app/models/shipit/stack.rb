@@ -116,13 +116,36 @@ module Shipit
       allow_nil: true,
     )
 
-    def self.refresh_deployed_revisions
-      find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
-    end
+    class << self
+      def refresh_deployed_revisions
+        find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
+      end
 
-    def self.schedule_continuous_delivery
-      where(continuous_deployment: true).find_each do |stack|
-        ContinuousDeliveryJob.perform_later(stack)
+      def schedule_continuous_delivery
+        where(continuous_deployment: true).find_each do |stack|
+          ContinuousDeliveryJob.perform_later(stack)
+        end
+      end
+
+      def run_deploy_in_foreground(stack:, revision:)
+        stack = Shipit::Stack.from_param!(stack)
+        until_commit = stack.commits.where(sha: revision).limit(1).first
+        env = stack.cached_deploy_spec.default_deploy_env
+        current_user = Shipit::CommandLineUser.new
+
+        stack.trigger_deploy(until_commit, current_user, env: env, force: true, run_now: true)
+      end
+
+      def from_param!(param)
+        repo_owner, repo_name, environment = param.split('/')
+        includes(:repository)
+          .where(
+            repositories: {
+              owner: repo_owner.downcase,
+              name: repo_name.downcase,
+            },
+            environment: environment,
+          ).first!
       end
     end
 
@@ -498,27 +521,6 @@ module Shipit
 
     def to_param
       [repo_owner, repo_name, environment].join('/')
-    end
-
-    def self.run_deploy_in_foreground(stack:, revision:)
-      stack = Shipit::Stack.from_param!(stack)
-      until_commit = stack.commits.where(sha: revision).limit(1).first
-      env = stack.cached_deploy_spec.default_deploy_env
-      current_user = Shipit::CommandLineUser.new
-
-      stack.trigger_deploy(until_commit, current_user, env: env, force: true, run_now: true)
-    end
-
-    def self.from_param!(param)
-      repo_owner, repo_name, environment = param.split('/')
-      includes(:repository)
-        .where(
-          repositories: {
-            owner: repo_owner.downcase,
-            name: repo_name.downcase,
-          },
-          environment: environment,
-        ).first!
     end
 
     delegate :plugins,

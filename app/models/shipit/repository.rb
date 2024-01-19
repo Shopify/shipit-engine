@@ -53,9 +53,11 @@ module Shipit
     PROVISIONING_BEHAVIORS = %w(allow_all allow_with_label prevent_with_label).freeze
     enum provisioning_behavior: PROVISIONING_BEHAVIORS.zip(PROVISIONING_BEHAVIORS).to_h, _prefix: :provisioning_behavior
 
-    def self.from_github_repo_name(github_repo_name)
-      repo_owner, repo_name = github_repo_name.downcase.split('/')
-      find_by(owner: repo_owner, name: repo_name)
+    class << self
+      def from_github_repo_name(github_repo_name)
+        repo_owner, repo_name = github_repo_name.downcase.split('/')
+        find_by(owner: repo_owner, name: repo_name)
+      end
     end
 
     def name=(n)
@@ -90,12 +92,14 @@ module Shipit
       github_repo_name
     end
 
-    def self.from_param!(param)
-      repo_owner, repo_name = param.split('/')
-      where(
-        owner: repo_owner.downcase,
-        name: repo_name.downcase,
-      ).first!
+    class << self
+      def from_param!(param)
+        repo_owner, repo_name = param.split('/')
+        where(
+          owner: repo_owner.downcase,
+          name: repo_name.downcase,
+        ).first!
+      end
     end
 
     protected

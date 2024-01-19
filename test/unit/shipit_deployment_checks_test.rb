@@ -6,8 +6,10 @@ module Shipit
   class ShipitDeploymentChecksTest < ActiveSupport::TestCase
     setup do
       class FakeDeploymentChecks
-        def self.call(_stack)
-          true
+        class << self
+          def call(_stack)
+            true
+          end
         end
       end
     end
@@ -57,8 +59,10 @@ module Shipit
 
     test "prevents deployments and delays continuous delivery when checks fail" do
       class FakeDeploymentChecks
-        def self.call(_stack)
-          false
+        class << self
+          def call(_stack)
+            false
+          end
         end
       end
 

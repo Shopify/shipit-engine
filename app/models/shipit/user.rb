@@ -19,47 +19,49 @@ module Shipit
 
     after_find :discard_outdated_credentials!
 
-    def self.find_or_create_by_login!(login)
-      find_or_create_by!(login: login) do |user|
-        # Users are global, any app can be used
-        # This will not work for users that only exist in an Enterprise install
-        user.github_user = Shipit.github.api.user(login)
-      end
-    end
-
-    def self.find_or_create_committer_from_github_commit(github_commit)
-      find_or_create_from_github(github_commit.committer.presence || github_commit.commit.committer.presence)
-    end
-
-    def self.find_or_create_author_from_github_commit(github_commit)
-      if (match_info = github_commit.commit.message.match(/^#{MergeRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
-        begin
-          return find_or_create_by_login!(match_info[1])
-        rescue Octokit::NotFound
-          # Corner case where the merge-requested-by user cannot be found (renamed/deleted).
-          # In this case we carry on and search for the commit author
+    class << self
+      def find_or_create_by_login!(login)
+        find_or_create_by!(login: login) do |user|
+          # Users are global, any app can be used
+          # This will not work for users that only exist in an Enterprise install
+          user.github_user = Shipit.github.api.user(login)
         end
       end
-      find_or_create_from_github(github_commit.author.presence || github_commit.commit.author.presence)
-    end
 
-    def self.find_or_create_from_github(github_user)
-      find_from_github(github_user) || create_from_github(github_user)
-    end
+      def find_or_create_committer_from_github_commit(github_commit)
+        find_or_create_from_github(github_commit.committer.presence || github_commit.commit.committer.presence)
+      end
 
-    def self.find_from_github(github_user)
-      return unless github_user.id
+      def find_or_create_author_from_github_commit(github_commit)
+        if (match_info = github_commit.commit.message.match(/^#{MergeRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
+          begin
+            return find_or_create_by_login!(match_info[1])
+          rescue Octokit::NotFound
+            # Corner case where the merge-requested-by user cannot be found (renamed/deleted).
+            # In this case we carry on and search for the commit author
+          end
+        end
+        find_or_create_from_github(github_commit.author.presence || github_commit.commit.author.presence)
+      end
 
-      find_by(github_id: github_user.id)
-    end
+      def find_or_create_from_github(github_user)
+        find_from_github(github_user) || create_from_github(github_user)
+      end
 
-    def self.create_from_github(github_user)
-      create(github_user: github_user)
-    end
+      def find_from_github(github_user)
+        return unless github_user.id
 
-    def self.refresh_shard(shard_index, shards_count)
-      where.not(login: nil).where('id % ? = ?', shards_count, shard_index).find_each do |user|
-        RefreshGithubUserJob.perform_later(user)
+        find_by(github_id: github_user.id)
+      end
+
+      def create_from_github(github_user)
+        create(github_user: github_user)
+      end
+
+      def refresh_shard(shard_index, shards_count)
+        where.not(login: nil).where('id % ? = ?', shards_count, shard_index).find_each do |user|
+          RefreshGithubUserJob.perform_later(user)
+        end
       end
     end
 

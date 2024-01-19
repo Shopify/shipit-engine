@@ -74,8 +74,10 @@ module Shipit
         mattr_accessor :hooks
         self.hooks = []
 
-        def self.deliver(event, stack, payload)
-          hooks << [event, stack, payload]
+        class << self
+          def deliver(event, stack, payload)
+            hooks << [event, stack, payload]
+          end
         end
       end
       Shipit.internal_hook_receivers = [FakeReceiver]

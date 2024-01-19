@@ -18,12 +18,14 @@ module Shipit
     end
 
     module ToS
-      def self.dump(object)
-        object.to_s
-      end
+      class << self
+        def dump(object)
+          object.to_s
+        end
 
-      def self.load(payload)
-        payload
+        def load(payload)
+          payload
+        end
       end
     end
   end
