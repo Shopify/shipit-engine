@@ -40,7 +40,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_all,
             )
 
@@ -53,7 +53,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -69,7 +69,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -85,7 +85,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -101,7 +101,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )

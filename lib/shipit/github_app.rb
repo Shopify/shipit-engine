@@ -156,8 +156,8 @@ module Shipit
     def new_client(options = {})
       if enterprise?
         options = options.reverse_merge(
-          api_endpoint: api_endpoint,
-          web_endpoint: web_endpoint,
+          api_endpoint:,
+          web_endpoint:,
         )
       end
       client = Octokit::Client.new(options)

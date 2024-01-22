@@ -35,7 +35,7 @@ module Shipit
       skip unless limit
 
       slug = 'a' * 255
-      team = new_team(slug: slug)
+      team = new_team(slug:)
 
       response = stub(rels: {}, data: [team])
       Shipit.github.api.expects(:org_teams).with('shopify', per_page: 100).returns(response.data)
@@ -70,7 +70,7 @@ module Shipit
       stub(
         id: 24,
         name: 'New Team',
-        slug: slug,
+        slug:,
         url: 'https://example.com',
         description: 'The Best one',
         organization: 'shopify',

@@ -122,8 +122,8 @@ module Shipit
         record = new(
           sha: commit.sha,
           message: commit.commit.message,
-          author:  author,
-          committer: committer,
+          author:,
+          committer:,
           committed_at: commit.commit.committer.date,
           authored_at: commit.commit.author.date,
           additions: commit.stats&.additions,
@@ -213,11 +213,11 @@ module Shipit
 
       @last_release_status = nil
       release_statuses.create!(
-        stack: stack,
-        user: user,
-        state: state,
-        target_url: target_url,
-        description: description,
+        stack:,
+        user:,
+        state:,
+        target_url:,
+        description:,
       )
     end
 
@@ -246,7 +246,7 @@ module Shipit
     end
 
     def children
-      self.class.where(stack_id: stack_id).newer_than(self)
+      self.class.where(stack_id:).newer_than(self)
     end
 
     def detach_children!
@@ -374,7 +374,7 @@ module Shipit
       new_status = status
 
       unless already_deployed
-        payload = { commit: self, stack: stack, status: new_status.state }
+        payload = { commit: self, stack:, status: new_status.state }
         if previous_status != new_status
           Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status))
         end

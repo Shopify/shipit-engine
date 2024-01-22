@@ -21,7 +21,7 @@ module Shipit
 
     class << self
       def find_or_create_by_login!(login)
-        find_or_create_by!(login: login) do |user|
+        find_or_create_by!(login:) do |user|
           # Users are global, any app can be used
           # This will not work for users that only exist in an Enterprise install
           user.github_user = Shipit.github.api.user(login)
@@ -55,7 +55,7 @@ module Shipit
       end
 
       def create_from_github(github_user)
-        create(github_user: github_user)
+        create(github_user:)
       end
 
       def refresh_shard(shard_index, shards_count)
@@ -72,7 +72,7 @@ module Shipit
     end
 
     def identifiers_for_ping
-      { github_id: github_id, name: name, email: email, github_login: login }
+      { github_id:, name:, email:, github_login: login }
     end
 
     def logged_in?
@@ -92,7 +92,7 @@ module Shipit
     def stacks_contributed_to
       return [] unless id
 
-      Commit.where('author_id = :id or committer_id = :id', id: id).distinct.pluck(:stack_id)
+      Commit.where('author_id = :id or committer_id = :id', id:).distinct.pluck(:stack_id)
     end
 
     def refresh_from_github!

@@ -17,7 +17,7 @@ module Shipit
         url = stack_tail_commit_checks_path(stack, sha: commit.sha, since: next_offset)
       end
 
-      render(json: { url: url, output: output, status: checks.status })
+      render(json: { url:, output:, status: checks.status })
     end
 
     private

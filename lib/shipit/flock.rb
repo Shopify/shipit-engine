@@ -20,7 +20,7 @@ module Shipit
 
       path.parent.mkpath
       path.open('w') do |file|
-        if retrying(timeout: timeout) { file.flock(File::LOCK_EX | File::LOCK_NB) }
+        if retrying(timeout:) { file.flock(File::LOCK_EX | File::LOCK_NB) }
           file.write($PROCESS_ID.to_s)
           @acquired = true
           begin
