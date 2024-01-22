@@ -4,6 +4,9 @@ require 'test_helper'
 
 module Shipit
   class GitHubAppTest < ActiveSupport::TestCase
+    Struct.new('Token', :token, :expires_at)
+    Struct::Token.superclass
+
     setup do
       @github = app
       @enterprise = app(domain: 'github.example.com')
@@ -81,11 +84,11 @@ module Shipit
         installation_id: "test_installation_id",
         private_key: "test_private_key",
       }
-      initial_token = OpenStruct.new(
+      initial_token = Struct::Token.new(
         token: "some_initial_github_token",
         expires_at: Time.now.utc + 60.minutes,
       )
-      second_token = OpenStruct.new(
+      second_token = Struct::Token.new(
         token: "some_new_github_token",
         expires_at: initial_token.expires_at + 60.minutes,
       )
@@ -119,11 +122,11 @@ module Shipit
         installation_id: "test_installation_id",
         private_key: "test_private_key",
       }
-      initial_token = OpenStruct.new(
+      initial_token = Struct::Token.new(
         token: "some_initial_github_token",
         expires_at: Time.now.utc + 60.minutes,
       )
-      second_token = OpenStruct.new(
+      second_token = Struct::Token.new(
         token: "some_new_github_token",
         expires_at: initial_token.expires_at + 60.minutes,
       )
@@ -167,7 +170,7 @@ module Shipit
       initial_cached_token = Shipit::GitHubApp::Token.new("some_initial_github_token", Time.now.utc - 1.minute)
       initial_cached_token.instance_variable_set(:@refresh_at, nil)
 
-      second_token = OpenStruct.new(
+      second_token = Struct::Token.new(
         token: "some_new_github_token",
         expires_at: initial_cached_token.expires_at + 60.minutes,
       )
