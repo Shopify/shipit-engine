@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class FetchDeployedRevisionJob < BackgroundJob
     queue_as :deploys

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -472,10 +473,12 @@ module Shipit
       commit = shipit_commits(:second)
       assert_predicate commit.status, :group?
       assert_equal 3, commit.status.size
-      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => { 'hide' => [
-        'Travis CI',
-        'metrics/coveralls',
-      ] }))
+      commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {
+        'hide' => [
+          'Travis CI',
+          'metrics/coveralls',
+        ],
+      }))
       commit.reload
       refute_predicate commit.status, :group?
     end

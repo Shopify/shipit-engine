@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class OctokitIterator
     include Enumerable
@@ -20,6 +21,7 @@ module Shipit
 
         response.data.each(&block)
         return unless response.rels[:next]
+
         response = response.rels[:next].get
       end
     end

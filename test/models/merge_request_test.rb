@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -137,7 +138,7 @@ module Shipit
           html_url: 'http://example.com',
           completed_at: Time.now,
           started_at: 1.minute.ago,
-        )]
+        )],
       ))
 
       merge_request.refresh!

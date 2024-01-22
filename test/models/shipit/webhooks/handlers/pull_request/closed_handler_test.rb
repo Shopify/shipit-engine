@@ -41,7 +41,7 @@ module Shipit
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
               repository: repository,
-              behavior: :allow_all
+              behavior: :allow_all,
             )
 
             Shipit::Webhooks::Handlers::PullRequest::ClosedHandler.new(payload_parsed(:pull_request_closed)).process
@@ -55,7 +55,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_closed)
             payload["pull_request"]["labels"] << { "name" => "pull-requests-label" }
@@ -71,7 +71,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_closed)
             payload["pull_request"]["labels"] = []
@@ -87,7 +87,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_closed)
             payload["pull_request"]["labels"] = []
@@ -103,7 +103,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_closed)
             payload["pull_request"]["labels"] << { "name" => "pull-requests-label" }
@@ -181,8 +181,8 @@ module Shipit
                       additions: 1,
                       deletions: 1,
                     },
-                  }
-                )
+                  },
+                ),
               )
           end
         end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class StacksController < ShipitController
     before_action :load_stack, only: %i(update destroy settings statistics clear_git_cache refresh)

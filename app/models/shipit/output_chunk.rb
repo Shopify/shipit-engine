@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class OutputChunk < Record
     belongs_to :task

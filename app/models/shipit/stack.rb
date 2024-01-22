@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'fileutils'
 
 module Shipit
@@ -92,7 +93,8 @@ module Shipit
     end
 
     validates :repository, uniqueness: {
-      scope: %i(environment), case_sensitive: false,
+      scope: %i(environment),
+      case_sensitive: false,
       message: 'cannot be used more than once with this environment. Check archived stacks.',
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }
@@ -111,7 +113,7 @@ module Shipit
       :supports_fetch_deployed_revision?,
       :supports_rollback?,
       to: :cached_deploy_spec,
-      allow_nil: true
+      allow_nil: true,
     )
 
     def self.refresh_deployed_revisions
@@ -280,6 +282,7 @@ module Shipit
       return 'locked' if locked?
       return 'failure' if %w(failure error).freeze.include?(branch_status)
       return 'backlogged' if backlogged?(backlog_leniency_factor: backlog_leniency_factor)
+
       'success'
     end
 
@@ -297,6 +300,7 @@ module Shipit
 
     def status
       return :deploying if active_task?
+
       :default
     end
 
@@ -403,6 +407,7 @@ module Shipit
     def clear_git_cache!
       tmp_path = "#{git_path}-#{SecureRandom.hex}"
       return unless git_path.exist?
+
       acquire_git_cache_lock do
         git_path.rename(tmp_path)
       end
@@ -454,6 +459,7 @@ module Shipit
 
     def active_task
       return @active_task if defined?(@active_task)
+
       @active_task ||= tasks.current
     end
 
@@ -515,9 +521,19 @@ module Shipit
         ).first!
     end
 
-    delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
-      :blocking_statuses, :deploy_variables, :filter_task_envs, :filter_deploy_envs,
-      :maximum_commits_per_deploy, :pause_between_deploys, :retries_on_deploy, :retries_on_rollback,
+    delegate :plugins,
+      :task_definitions,
+      :hidden_statuses,
+      :required_statuses,
+      :soft_failing_statuses,
+      :blocking_statuses,
+      :deploy_variables,
+      :filter_task_envs,
+      :filter_deploy_envs,
+      :maximum_commits_per_deploy,
+      :pause_between_deploys,
+      :retries_on_deploy,
+      :retries_on_rollback,
       to: :cached_deploy_spec
 
     def monitoring?

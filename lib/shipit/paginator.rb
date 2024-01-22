@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Paginator
     def initialize(resources, controller, order: { id: :desc }, max_page_size: 100, default_page_size: 30)

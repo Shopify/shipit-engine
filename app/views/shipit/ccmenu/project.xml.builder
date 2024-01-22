@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Derived from http://timnew.me/blog/2013/04/07/multiple-project-summary-reporting-standard-cctray-xml-feed/
 status_map = { 'backlogged' => 'failure', 'locked' => 'failure' }
 xml.instruct!

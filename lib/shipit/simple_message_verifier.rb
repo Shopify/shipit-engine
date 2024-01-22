@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class SimpleMessageVerifier < ActiveSupport::MessageVerifier
     def initialize(secret, **options)

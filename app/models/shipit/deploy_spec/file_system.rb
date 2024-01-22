@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
@@ -139,9 +140,9 @@ module Shipit
 
       def shipit_not_obeying_bare_file_echo_command
         <<~EOM
-          echo \"\e[1;31mShipit is configured to ignore the bare '#{app_name}.yml' file.
+          echo "\e[1;31mShipit is configured to ignore the bare '#{app_name}.yml' file.
           Please rename this file to more specifically include the environment name.
-          Deployments will fail until a valid '#{app_name}.#{@env}.yml' file is found.\e[0m\"
+          Deployments will fail until a valid '#{app_name}.#{@env}.yml' file is found.\e[0m"
         EOM
       end
     end

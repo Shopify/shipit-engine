@@ -10,7 +10,7 @@ module Shipit
       def execute
         raise(
           NotImplmentedError,
-          "subclasses of TaskExectuionStrategy::Base must implement the #execute method"
+          "subclasses of TaskExectuionStrategy::Base must implement the #execute method",
         )
       end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Status
     class Group
@@ -30,7 +31,14 @@ module Shipit
         @statuses = visible_statuses.sort_by!(&:context)
       end
 
-      delegate :pending?, :success?, :error?, :failure?, :unknown?, :missing?, :state, :simple_state,
+      delegate :pending?,
+        :success?,
+        :error?,
+        :failure?,
+        :unknown?,
+        :missing?,
+        :state,
+        :simple_state,
         to: :significant_status
       delegate :each, :size, :map, to: :statuses
       delegate :required_statuses, to: :commit
@@ -75,8 +83,10 @@ module Shipit
       def select_significant_status(statuses)
         statuses = reject_allowed_to_fail(statuses)
         return Status::Unknown.new(commit) if statuses.empty?
+
         non_success_statuses = statuses.reject(&:success?)
         return statuses.first if non_success_statuses.empty?
+
         non_success_statuses.reject(&:pending?).first || non_success_statuses.first || Status::Unknown.new(commit)
       end
 

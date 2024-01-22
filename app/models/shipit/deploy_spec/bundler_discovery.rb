@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     module BundlerDiscovery
@@ -43,6 +44,7 @@ module Shipit
       def frozen_flag
         return unless gemfile_lock_exists?
         return if config('dependencies', 'bundler', 'frozen') == false
+
         '--frozen'
       end
 

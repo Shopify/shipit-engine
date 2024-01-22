@@ -25,7 +25,7 @@ module Shipit
 
       assert_equal(
         deployment_checks,
-        Shipit.deployment_checks
+        Shipit.deployment_checks,
       )
     end
 

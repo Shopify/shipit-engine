@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Lint/MissingSuper
 module Shipit
   class TaskCommands < Commands
@@ -53,7 +54,7 @@ module Shipit
         'checkout',
         '--quiet',
         commit.sha,
-        chdir: @task.working_directory
+        chdir: @task.working_directory,
       )
     end
 
@@ -63,10 +64,11 @@ module Shipit
           'clone',
           '--quiet',
           '--local',
-          '--origin', 'cache',
+          '--origin',
+          'cache',
           @stack.git_path,
           @task.working_directory,
-          chdir: @stack.deploys_path
+          chdir: @stack.deploys_path,
         ),
         git('remote', 'add', 'origin', @stack.repo_git_url, chdir: @task.working_directory),
       ]
