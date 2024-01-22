@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class RefreshMergeRequestJob < BackgroundJob
     queue_as :default

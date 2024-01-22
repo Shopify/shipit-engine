@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class SameSiteCookieMiddleware
     COOKIE_SEPARATOR = "\n"
@@ -11,7 +12,7 @@ module Shipit
       status, headers, body = @app.call(env)
 
       if headers && headers['Set-Cookie'] &&
-         Rack::Request.new(env).ssl?
+          Rack::Request.new(env).ssl?
 
         set_cookies = headers['Set-Cookie'].split(COOKIE_SEPARATOR).compact
         set_cookies.map! do |cookie|

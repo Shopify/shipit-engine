@@ -56,7 +56,7 @@ module Shipit
                     {
                       id: repository.id,
                     },
-                }
+                },
               )
           end
 

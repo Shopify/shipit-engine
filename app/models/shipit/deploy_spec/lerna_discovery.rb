@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'json'
 
 module Shipit
@@ -72,6 +73,7 @@ module Shipit
 
       def publish_lerna_packages
         return publish_independent_packages if lerna_version == 'independent'
+
         publish_fixed_version_packages
       end
 
@@ -95,20 +97,25 @@ module Shipit
         version = lerna_version
         publish = if lerna_lerna >= LATEST_MAJOR_VERSION
           %W(
-            node_modules/.bin/lerna publish
+            node_modules/.bin/lerna
+            publish
             from-git
             --yes
-            --dist-tag #{dist_tag(version)}
+            --dist-tag
+            #{dist_tag(version)}
           ).join(" ")
         else
           # `yarn publish` requires user input, so always use npm.
           %W(
-            node_modules/.bin/lerna publish
+            node_modules/.bin/lerna
+            publish
             --yes
             --skip-git
-            --repo-version #{version}
+            --repo-version
+            #{version}
             --force-publish=*
-            --npm-tag #{dist_tag(version)}
+            --npm-tag
+            #{dist_tag(version)}
             --npm-client=npm
             --skip-npm=false
           ).join(" ")

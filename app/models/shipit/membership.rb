@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Membership < Record
     belongs_to :team, required: true

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Commit < Record
     include DeferredTouch
@@ -20,8 +21,11 @@ module Shipit
     after_commit { broadcast_update }
     after_create { stack.update_undeployed_commits_count }
 
-    after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
-      :schedule_continuous_delivery, on: :create
+    after_commit :schedule_refresh_statuses!,
+      :schedule_refresh_check_runs!,
+      :schedule_fetch_stats!,
+      :schedule_continuous_delivery,
+      on: :create
 
     belongs_to :author, class_name: 'User', optional: true, inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', optional: true, inverse_of: :commits
@@ -53,26 +57,35 @@ module Shipit
 
     scope :reachable, -> { where(detached: false) }
 
-    delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
-      :soft_failing_statuses, to: :stack
+    delegate :broadcast_update,
+      :github_repo_name,
+      :hidden_statuses,
+      :required_statuses,
+      :blocking_statuses,
+      :soft_failing_statuses,
+      to: :stack
 
     def self.newer_than(commit)
       return all unless commit
+
       where('id > ?', commit.try(:id) || commit)
     end
 
     def self.older_than(commit)
       return all unless commit
+
       where('id < ?', commit.try(:id) || commit)
     end
 
     def self.since(commit)
       return all unless commit
+
       where('id >= ?', commit.try(:id) || commit)
     end
 
     def self.until(commit)
       return all unless commit
+
       where('id <= ?', commit.try(:id) || commit)
     end
 
@@ -91,6 +104,7 @@ module Shipit
 
       commits = where('sha like ?', "#{sha}%").take(2)
       raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+
       commits.first
     end
 
@@ -266,6 +280,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless deployable? && stack.continuous_deployment? && stack.deployable?
+
       # This buffer is to allow for statuses and checks to be refreshed before evaluating if the commit is deployable
       # - e.g. if the commit was fast-forwarded with already passing CI.
       ContinuousDeliveryJob.set(wait: RECENT_COMMIT_THRESHOLD).perform_later(stack)
@@ -300,6 +315,7 @@ module Shipit
 
     def identify_merge_request
       return unless message_parser.pull_request?
+
       if merge_request = stack.merge_requests.find_by(number: message_parser.pull_request_number)
         self.merge_request = merge_request
         self.pull_request_number = merge_request.number

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Lint/MissingSuper
 require 'pathname'
 require 'fileutils'
@@ -76,9 +77,13 @@ module Shipit
 
       Dir.mktmpdir do |dir|
         git(
-          'clone', @stack.git_path, @stack.repo_name,
-          '--recursive', '--origin', 'cache',
-          chdir: dir
+          'clone',
+          @stack.git_path,
+          @stack.repo_name,
+          '--recursive',
+          '--origin',
+          'cache',
+          chdir: dir,
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
@@ -88,7 +93,7 @@ module Shipit
           'checkout',
           '--quiet',
           commit.sha,
-          chdir: git_dir
+          chdir: git_dir,
         ).run! if commit
         yield Pathname.new(git_dir)
       end
@@ -111,7 +116,8 @@ module Shipit
     end
 
     def modern_git_args
-      return [] unless git_version >= Gem::Version.new('1.7.10')
+      return [] if git_version < Gem::Version.new('1.7.10')
+
       %w(--single-branch)
     end
 

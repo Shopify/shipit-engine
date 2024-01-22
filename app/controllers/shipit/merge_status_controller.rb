@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class MergeStatusController < ShipitController
     skip_authentication only: %i(check show)
@@ -12,6 +13,7 @@ module Shipit
 
       if stack
         return render('logged_out') unless current_user.logged_in?
+
         if stale?(last_modified: [stack.updated_at, merge_request.updated_at].max, template: false)
           render(stack_status, layout: !request.xhr?)
         end
@@ -84,12 +86,14 @@ module Shipit
 
     def merge_request
       return @merge_request if defined?(@merge_request)
+
       @merge_request = pull_request_number && stack.merge_requests.find_by_number(pull_request_number)
       @merge_request ||= UnknownMergeRequest.new
     end
 
     def pull_request_number
       return @pull_request_number if defined?(@pull_request_number)
+
       @pull_request_number = referrer_parser.pull_request_number
     end
 

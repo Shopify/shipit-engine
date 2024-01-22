@@ -25,7 +25,7 @@ module Shipit
 
       assert_equal(
         Shipit::ProvisioningHandler::UnregisteredProvisioningHandler,
-        Shipit::ProvisioningHandler.fetch(unregistered_handler)
+        Shipit::ProvisioningHandler.fetch(unregistered_handler),
       )
     end
 
@@ -40,7 +40,7 @@ module Shipit
     test "handlers are called during provisioning" do
       stack = shipit_stacks(:review_stack)
       stack.update(
-        provision_status: :deprovisioned
+        provision_status: :deprovisioned,
       )
       handler = Shipit::ProvisioningHandler.default
 
@@ -52,7 +52,7 @@ module Shipit
     test "handlers are called during deprovisioning" do
       stack = shipit_stacks(:review_stack)
       stack.update(
-        provision_status: :provisioned
+        provision_status: :provisioned,
       )
       handler = Shipit::ProvisioningHandler.default
 

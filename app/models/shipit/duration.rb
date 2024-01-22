@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Duration < ActiveSupport::Duration
     ParseError = Class.new(ArgumentError)
@@ -25,6 +26,7 @@ module Shipit
         unless match = FORMAT.match(value.to_s)
           raise ParseError, "not a duration: #{value.inspect}"
         end
+
         parts = []
         UNITS.each_value do |unit|
           if value = match[unit]

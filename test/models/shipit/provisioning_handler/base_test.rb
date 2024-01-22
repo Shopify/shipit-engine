@@ -8,14 +8,14 @@ module Shipit
       test "provides a default #up handler" do
         assert(
           handler.respond_to?(:up),
-          "expected #{handler.class.name} to provide a default #up handler"
+          "expected #{handler.class.name} to provide a default #up handler",
         )
       end
 
       test "provides a default #down handler" do
         assert(
           handler.respond_to?(:down),
-          "expected #{handler.class.name} to provide a default #down handler"
+          "expected #{handler.class.name} to provide a default #down handler",
         )
       end
 

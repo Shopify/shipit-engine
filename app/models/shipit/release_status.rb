@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class ReleaseStatus < Record
     MAX_DESCRIPTION_LENGTH = 140

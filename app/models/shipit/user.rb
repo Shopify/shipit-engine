@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class User < Record
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
@@ -48,6 +49,7 @@ module Shipit
 
     def self.find_from_github(github_user)
       return unless github_user.id
+
       find_by(github_id: github_user.id)
     end
 
@@ -81,11 +83,13 @@ module Shipit
 
     def repositories_contributed_to
       return [] unless id
+
       Stack.where(id: stacks_contributed_to).distinct.pluck(:repository_id)
     end
 
     def stacks_contributed_to
       return [] unless id
+
       Commit.where('author_id = :id or committer_id = :id', id: id).distinct.pluck(:stack_id)
     end
 
@@ -142,6 +146,7 @@ module Shipit
     def identify_renamed_user!
       last_commit = commits.last
       return unless last_commit
+
       github_author = last_commit.github_commit.author
       update!(github_user: github_author)
     rescue Octokit::NotFound

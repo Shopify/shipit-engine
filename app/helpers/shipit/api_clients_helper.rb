@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module ApiClientsHelper
     def api_client_token(api_client)

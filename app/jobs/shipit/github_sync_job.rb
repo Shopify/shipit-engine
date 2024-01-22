@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique
@@ -43,6 +44,7 @@ module Shipit
         if shared_parent = lookup_commit(commit.sha)
           return commits, shared_parent
         end
+
         commits.unshift(commit)
       end
       [commits, nil]

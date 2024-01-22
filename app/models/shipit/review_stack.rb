@@ -6,7 +6,7 @@ module Shipit
       Shipit::ReviewStack.where(
         "archived_since > :earliest AND archived_since < :latest",
         earliest: 1.day.ago,
-        latest: 1.hour.ago
+        latest: 1.hour.ago,
       ).find_each do |review_stack|
         review_stack.clear_local_files
       end
@@ -16,7 +16,7 @@ module Shipit
       Shipit::Deploy.not_active.where(
         "created_at > :earliest AND updated_at < :latest",
         earliest: 1.day.ago,
-        latest: 1.hour.ago
+        latest: 1.hour.ago,
       ).find_each do |deploy|
         Shipit::Commands.for(deploy).clear_working_directory
       end
@@ -88,7 +88,7 @@ module Shipit
         .merge(
           pull_request
             .labels
-            .each_with_object({}) { |label_name, labels| labels[label_name.upcase] = "true" }
+            .each_with_object({}) { |label_name, labels| labels[label_name.upcase] = "true" },
         )
     end
 
@@ -102,11 +102,13 @@ module Shipit
 
     def enqueue_for_provisioning
       return if awaiting_provision
+
       update!(awaiting_provision: true)
     end
 
     def remove_from_provisioning_queue
       return unless awaiting_provision
+
       update!(awaiting_provision: false)
     end
 
