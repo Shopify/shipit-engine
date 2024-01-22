@@ -87,7 +87,7 @@ module Shipit
     validates :content_type, presence: true, inclusion: { in: CONTENT_TYPES.keys }
     validates :events, presence: true, subset: { of: EVENTS }
 
-    serialize :events, Shipit::CSVSerializer
+    serialize :events, coder: Shipit::CSVSerializer
 
     scope :global, -> { where(stack_id: nil) }
     scope :scoped_to, ->(stack) { where(stack_id: stack.id) }

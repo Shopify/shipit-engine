@@ -144,6 +144,10 @@ GEM
     docile (1.4.0)
     drb (2.2.0)
       ruby2_keywords
+    ejson (1.4.1)
+    ejson-rails (0.2.1)
+      ejson
+      railties (>= 5.2)
     equalizer (0.0.11)
     erubi (1.12.0)
     execjs (2.8.1)
@@ -416,6 +420,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  ejson-rails
   faker
   mocha
   mysql2

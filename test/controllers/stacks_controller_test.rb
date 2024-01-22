@@ -10,7 +10,7 @@ module Shipit
     end
 
     test "validates that Shipit.github is present" do
-      Rails.application.secrets.stubs(:github).returns(nil)
+      Rails.application.credentials.stubs(:github).returns(nil)
       get :index
       assert_select "#github_app .missing"
       assert_select ".missing", count: 1
