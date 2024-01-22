@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sqlite3'
+gem 'ejson-rails', require: 'ejson/rails/skip_secrets'
 
 group :ci do
   gem 'mysql2'
