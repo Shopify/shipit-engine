@@ -299,7 +299,7 @@ module Shipit
   end
 
   def secrets
-    Rails.application.secrets
+    Rails.application.credentials
   end
 end
 

@@ -22,7 +22,7 @@ module Shipit
       Shipit::Engine.routes.default_url_options[:host] = Shipit.host
       Pubsubstub.redis_url = Shipit.redis_url.to_s
 
-      Rails.application.secrets.deep_symbolize_keys!
+      Rails.application.credentials.deep_symbolize_keys!
 
       app.config.assets.paths << Emoji.images_path
       app.config.assets.precompile += %w(
