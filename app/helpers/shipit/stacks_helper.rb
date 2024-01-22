@@ -34,7 +34,7 @@ module Shipit
         data[:tooltip] = t('deploy_button.hint.max_commits', maximum: commit.stack.maximum_commits_per_deploy)
       end
 
-      link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data:)
+      link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data: data)
     end
 
     def rollback_button(deploy)

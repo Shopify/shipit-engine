@@ -26,7 +26,7 @@ module Shipit
     test "#peform ignores non-finished jobs" do
       logger = mock
       logger.expects(:error).once
-      @job.stubs(logger:)
+      @job.stubs(logger: logger)
 
       @task.update_attribute(:status, :pending)
 
@@ -36,7 +36,7 @@ module Shipit
     test "#perform ignores tasks already rolled up" do
       logger = mock
       logger.expects(:error).once
-      @job.stubs(logger:)
+      @job.stubs(logger: logger)
 
       @task.rolled_up = true
 

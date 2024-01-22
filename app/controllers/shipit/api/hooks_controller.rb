@@ -44,7 +44,7 @@ module Shipit
       end
 
       def hooks
-        Hook.where(stack_id:)
+        Hook.where(stack_id: stack_id)
       end
 
       def stack_id

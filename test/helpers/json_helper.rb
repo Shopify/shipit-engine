@@ -9,7 +9,7 @@ module JSONHelper
   end
 
   def assert_json_document(document, path, expected_value = UNDEFINED)
-    value = follow_path(path.to_s.split('.'), document:)
+    value = follow_path(path.to_s.split('.'), document: document)
     if block_given?
       yield value
     elsif expected_value == UNDEFINED
@@ -27,7 +27,7 @@ module JSONHelper
       path = nil
     end
 
-    value = follow_path(path.to_s.split('.'), document:)
+    value = follow_path(path.to_s.split('.'), document: document)
     case value
     when Hash
       assert_equal(keys.sort, value.keys.sort)
@@ -39,7 +39,7 @@ module JSONHelper
   def assert_no_json(path, document: response.body)
     segments = path.to_s.split('.')
     last_segment = segments.pop
-    leaf = follow_path(segments, document:)
+    leaf = follow_path(segments, document: document)
     case leaf
     when Hash
       refute(leaf.key?(last_segment), "Expected #{leaf.inspect} not to include #{last_segment.inspect}")

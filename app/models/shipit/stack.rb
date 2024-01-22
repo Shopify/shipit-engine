@@ -133,7 +133,7 @@ module Shipit
         env = stack.cached_deploy_spec.default_deploy_env
         current_user = Shipit::CommandLineUser.new
 
-        stack.trigger_deploy(until_commit, current_user, env:, force: true, run_now: true)
+        stack.trigger_deploy(until_commit, current_user, env: env, force: true, run_now: true)
       end
 
       def from_param!(param)
@@ -144,7 +144,7 @@ module Shipit
               owner: repo_owner.downcase,
               name: repo_name.downcase,
             },
-            environment:,
+            environment: environment,
           ).first!
       end
     end
@@ -164,7 +164,7 @@ module Shipit
       commit = last_deployed_commit.presence || commits.first
       task = tasks.create(
         user_id: user.id,
-        definition:,
+        definition: definition,
         until_commit_id: commit.id,
         since_commit_id: commit.id,
         env: definition.filter_envs(env),
@@ -179,8 +179,8 @@ module Shipit
       since_commit = last_deployed_commit.presence || commits.first
       deploys.build(
         user_id: user.id,
-        until_commit:,
-        since_commit:,
+        until_commit: until_commit,
+        since_commit: since_commit,
         env: filter_deploy_envs(env&.to_h || {}),
         allow_concurrency: force,
         ignored_safeties: force || !until_commit.deployable?,
@@ -304,7 +304,7 @@ module Shipit
     def merge_status(backlog_leniency_factor: 2.0)
       return 'locked' if locked?
       return 'failure' if %w(failure error).freeze.include?(branch_status)
-      return 'backlogged' if backlogged?(backlog_leniency_factor:)
+      return 'backlogged' if backlogged?(backlog_leniency_factor: backlog_leniency_factor)
 
       'success'
     end
@@ -424,7 +424,7 @@ module Shipit
 
     def acquire_git_cache_lock(timeout: 15, &block)
       @git_cache_lock ||= Flock.new(git_path.to_s + '.lock')
-      @git_cache_lock.lock(timeout:, &block)
+      @git_cache_lock.lock(timeout: timeout, &block)
     end
 
     def clear_git_cache!
@@ -569,7 +569,7 @@ module Shipit
     def broadcast_update
       Pubsubstub.publish(
         "stack.#{id}",
-        { id:, updated_at: }.to_json,
+        { id: id, updated_at: updated_at }.to_json,
         name: 'update',
       )
     end
@@ -645,7 +645,7 @@ module Shipit
         { from: previous_changes['locked_since'].first, until: Time.zone.now }
       end
 
-      Hook.emit(:lock, self, locked: locked?, lock_details:, stack: self)
+      Hook.emit(:lock, self, locked: locked?, lock_details: lock_details, stack: self)
     end
 
     private
@@ -699,7 +699,7 @@ module Shipit
     end
 
     def emit_merge_status_hooks
-      Hook.emit(:merge_status, self, merge_status:, stack: self)
+      Hook.emit(:merge_status, self, merge_status: merge_status, stack: self)
     end
 
     def ci_enabled_cache_key

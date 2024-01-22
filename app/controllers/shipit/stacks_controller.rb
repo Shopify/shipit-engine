@@ -38,7 +38,7 @@ module Shipit
         scope.preload(:author, :statuses, :check_runs, :lock_author)
       end
 
-      next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits:)
+      next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits: commits)
 
       @active_commits = []
       @undeployed_commits = []
@@ -49,11 +49,11 @@ module Shipit
 
       @active_commits = map_to_undeployed_commit(
         @active_commits,
-        next_expected_commit_to_deploy:,
+        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
       )
       @undeployed_commits = map_to_undeployed_commit(
         @undeployed_commits,
-        next_expected_commit_to_deploy:,
+        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
       )
     end
 
@@ -146,7 +146,7 @@ module Shipit
     def map_to_undeployed_commit(commits, next_expected_commit_to_deploy:)
       commits.map.with_index do |c, i|
         index = commits.size - i - 1
-        UndeployedCommit.new(c, index:, next_expected_commit_to_deploy:)
+        UndeployedCommit.new(c, index: index, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
       end
     end
 

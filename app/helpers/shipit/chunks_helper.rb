@@ -5,7 +5,7 @@ module Shipit
     def next_chunks_url(task, last_byte: 0)
       return if task.finished?
 
-      tail_stack_task_path(task.stack, task, last_byte:)
+      tail_stack_task_path(task.stack, task, last_byte: last_byte)
     end
   end
 end

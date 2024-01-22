@@ -26,7 +26,7 @@ module Shipit
 
     test "#send! post the payload and update the status to `sent`" do
       headers = { 'content-type' => 'text/plain', 'content-length' => '2' }
-      stub_request(:post, @delivery.url).to_return(headers:, body: 'OK')
+      stub_request(:post, @delivery.url).to_return(headers: headers, body: 'OK')
 
       assert_equal 'scheduled', @delivery.status
       @delivery.send!

@@ -47,7 +47,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_all,
             )
 
@@ -60,7 +60,7 @@ module Shipit
           test "provisions missing stacks for repos that allow_all" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_all,
             )
             payload = payload_parsed(:pull_request_reopened)
@@ -79,7 +79,7 @@ module Shipit
           test "auto-created stack should have pull request assigned" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_all,
             )
             payload = payload_parsed(:pull_request_reopened)
@@ -93,7 +93,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -109,7 +109,7 @@ module Shipit
           test "provisions missing stacks for repos that allow_with_label when label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -131,7 +131,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -147,7 +147,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -163,7 +163,7 @@ module Shipit
           test "provisions missing stacks for repos that prevent_with_label when label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -185,7 +185,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )

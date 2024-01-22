@@ -13,12 +13,12 @@ namespace :shipit do
       class Task
         def write(text)
           p(text)
-          chunks.create!(text:)
+          chunks.create!(text: text)
         end
       end
     end
 
-    Shipit::Stack.run_deploy_in_foreground(stack:, revision:)
+    Shipit::Stack.run_deploy_in_foreground(stack: stack, revision: revision)
   rescue ArgumentError
     p("Use this command as follows:")
     p("bundle exec rake shipit:deploy stack='shopify/shipit/production' revision='$SHA'")

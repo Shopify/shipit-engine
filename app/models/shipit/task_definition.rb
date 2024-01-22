@@ -49,13 +49,13 @@ module Shipit
 
     def as_json
       {
-        id:,
-        action:,
+        id: id,
+        action: action,
         title: @title,
-        description:,
-        steps:,
+        description: description,
+        steps: steps,
         variables: variables.map(&:to_h),
-        checklist:,
+        checklist: checklist,
         allow_concurrency: allow_concurrency?,
       }
     end

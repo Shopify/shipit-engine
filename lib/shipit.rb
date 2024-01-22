@@ -150,7 +150,7 @@ module Shipit
   self.database_serializer = TransitionalSerializer
 
   def serialized_column(attribute_name, type: nil, coder: nil)
-    column = Paquito::SerializedColumn.new(database_serializer, type, attribute_name:)
+    column = Paquito::SerializedColumn.new(database_serializer, type, attribute_name: attribute_name)
     if coder
       Paquito.chain(coder, column)
     else

@@ -62,13 +62,13 @@ module Shipit
         [
           stub(
             sha: '36514755579bfb5bc313f403b216f4347a027990',
-            author:,
+            author: author,
             committer: author,
             stats: nil,
             commit: stub(
               sha: '36514755579bfb5bc313f403b216f4347a027990',
               message: 'Revert "fix it!"',
-              author:,
+              author: author,
               committer: author,
             ),
           ),

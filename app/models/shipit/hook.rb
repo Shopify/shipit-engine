@@ -144,7 +144,7 @@ module Shipit
         url: delivery_url,
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
-        secret:,
+        secret: secret,
       )
     end
 

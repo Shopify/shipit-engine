@@ -15,7 +15,7 @@ module Shipit
         if params[:repo_owner] && params[:repo_name]
           full_repo_name = [repo_owner, repo_name].join('/')
           @stacks = if (repository = Repository.from_github_repo_name(full_repo_name))
-            stacks.where(repository:)
+            stacks.where(repository: repository)
           else
             Stack.none
           end

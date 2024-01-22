@@ -19,7 +19,7 @@ module Shipit
 
     test ":create can receive an :env hash" do
       env = { 'SAFETY_DISABLED' => '1' }
-      post :create, params: { stack_id: @stack.to_param, rollback: { parent_id: @deploy.id, env: } }
+      post :create, params: { stack_id: @stack.to_param, rollback: { parent_id: @deploy.id, env: env } }
       new_rollback = Rollback.last
       assert_equal env, new_rollback.env
     end

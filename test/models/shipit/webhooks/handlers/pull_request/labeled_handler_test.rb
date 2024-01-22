@@ -26,7 +26,7 @@ module Shipit
           test "ignores Github PullRequest webhooks when the Repository has disabled the Review Stacks feature" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               provisioning_enabled: false,
               behavior: :allow_with_label,
               label: "pull-requests-label",
@@ -40,7 +40,7 @@ module Shipit
           test "ignores Github PullRequest webhooks when the repository allows_all PullRequests to create ReviewStacks" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_all,
             )
 
@@ -53,7 +53,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -69,7 +69,7 @@ module Shipit
           test "creates and provisions a new review stack when the repository creates ReviewStacks with allow_with_label and the label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -91,7 +91,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -107,7 +107,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -122,7 +122,7 @@ module Shipit
           test "ignores Github PullRequest webhooks when the repository allow_with_label to create ReviewStacks and the label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -138,7 +138,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -152,7 +152,7 @@ module Shipit
             stack = create_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -165,7 +165,7 @@ module Shipit
           test "ignores Github PullRequest webhooks when the repository prevent_with_label to create ReviewStacks and the label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -179,7 +179,7 @@ module Shipit
             stack = create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -195,7 +195,7 @@ module Shipit
           test "creates and provisions a new review stack when the repository creates ReviewStacks with prevent_with_label and the label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -216,7 +216,7 @@ module Shipit
           test "assigns the PullRequest to newly created stacks" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -232,7 +232,7 @@ module Shipit
             create_archived_stack
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository:,
+              repository: repository,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )

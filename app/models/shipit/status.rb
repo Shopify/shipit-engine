@@ -23,7 +23,7 @@ module Shipit
     class << self
       def replicate_from_github!(stack_id, github_status)
         find_or_create_by!(
-          stack_id:,
+          stack_id: stack_id,
           state: github_status.state,
           description: github_status.description,
           target_url: github_status.target_url,

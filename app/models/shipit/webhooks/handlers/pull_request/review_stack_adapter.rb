@@ -13,7 +13,7 @@ module Shipit
           end
 
           def stack
-            @stack ||= scope.find_by(environment:)
+            @stack ||= scope.find_by(environment: environment)
           end
 
           def find_or_create!
@@ -87,7 +87,7 @@ module Shipit
           def stack_attributes
             {
               branch: params.pull_request.head.ref,
-              environment:,
+              environment: environment,
               ignore_ci: false,
               continuous_deployment: false,
             }

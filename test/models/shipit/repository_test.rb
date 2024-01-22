@@ -72,7 +72,7 @@ module Shipit
       owner = "repository-owner"
       name = "repository-name"
       github_repo_name = [owner, name].join("/")
-      expected_repository = Repository.create(owner:, name:)
+      expected_repository = Repository.create(owner: owner, name: name)
 
       found_repository = Repository.from_github_repo_name(github_repo_name)
 

@@ -358,8 +358,8 @@ module Shipit
 
     def abort!(rollback_once_aborted: false, rollback_once_aborted_to: nil, aborted_by:)
       update!(
-        rollback_once_aborted:,
-        rollback_once_aborted_to:,
+        rollback_once_aborted: rollback_once_aborted,
+        rollback_once_aborted_to: rollback_once_aborted_to,
         aborted_by_id: aborted_by.id,
       )
 
@@ -395,7 +395,7 @@ module Shipit
     end
 
     def emit_hooks
-      Hook.emit(hook_event, stack, hook_event => self, status:, stack:)
+      Hook.emit(hook_event, stack, hook_event => self, status: status, stack: stack)
     end
 
     def hook_event

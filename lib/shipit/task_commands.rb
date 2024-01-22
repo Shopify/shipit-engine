@@ -16,13 +16,13 @@ module Shipit
 
     def install_dependencies
       deploy_spec.dependencies_steps!.map do |command_line|
-        Command.new(command_line, env:, chdir: steps_directory)
+        Command.new(command_line, env: env, chdir: steps_directory)
       end
     end
 
     def perform
       steps.map do |command_line|
-        Command.new(command_line, env:, chdir: steps_directory)
+        Command.new(command_line, env: env, chdir: steps_directory)
       end
     end
 

@@ -93,7 +93,7 @@ module Shipit
                 email: 'walrus@shopify.com',
                 date: Time.now,
               },
-              message:,
+              message: message,
             },
           ),
         )

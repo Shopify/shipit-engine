@@ -23,7 +23,7 @@ module Shipit
 
         initialize_redis_state
       end
-      PerformCommitChecksJob.perform_later(commit:)
+      PerformCommitChecksJob.perform_later(commit: commit)
       true
     end
 

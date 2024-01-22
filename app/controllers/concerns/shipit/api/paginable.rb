@@ -24,8 +24,8 @@ module Shipit
           resource,
           self,
           order: default_order,
-          max_page_size:,
-          default_page_size:,
+          max_page_size: max_page_size,
+          default_page_size: default_page_size,
         )
         headers[LINK] = render_links(paginator.links)
         super(paginator.to_a)

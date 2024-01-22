@@ -45,7 +45,7 @@ module Shipit
             render(plain: stack_status, status: 503)
           end
         end
-        format.json { render(json: { stack_status: }) }
+        format.json { render(json: { stack_status: stack_status }) }
       end
     end
 

@@ -102,8 +102,8 @@ module Shipit
       [head_sha, base_sha].each do |sha|
         Shipit.github.api.expects(:commit).with(@stack.github_repo_name, sha).returns(
           stub(
-            sha:,
-            author:,
+            sha: sha,
+            author: author,
             committer: author,
             commit: stub(
               message: 'Great feature',

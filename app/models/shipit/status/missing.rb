@@ -25,7 +25,7 @@ module Shipit
       end
 
       def description
-        I18n.t('missing_status.description', context:)
+        I18n.t('missing_status.description', context: context)
       end
 
       def to_partial_path

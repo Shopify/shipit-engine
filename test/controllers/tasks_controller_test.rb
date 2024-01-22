@@ -55,7 +55,7 @@ module Shipit
     test "tasks with variables defined in the shipit.yml can be triggered with their variables set" do
       env = { "FOO" => "0" }
 
-      post :create, params: { stack_id: @stack, definition_id: @definition.id, task: { env: }, force: 'true' }
+      post :create, params: { stack_id: @stack, definition_id: @definition.id, task: { env: env }, force: 'true' }
 
       assert_redirected_to stack_tasks_path(@stack, Task.last)
     end

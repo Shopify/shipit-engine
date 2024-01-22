@@ -37,7 +37,7 @@ module Shipit
     def fetch_missing_commits(&block)
       commits = []
       github_api = stack&.github_api
-      iterator = Shipit::FirstParentCommitsIterator.new(github_api:, &block)
+      iterator = Shipit::FirstParentCommitsIterator.new(github_api: github_api, &block)
       iterator.each_with_index do |commit, index|
         break if index >= MAX_FETCHED_COMMITS
 
@@ -61,7 +61,7 @@ module Shipit
     end
 
     def lookup_commit(sha)
-      stack.commits.find_by(sha:)
+      stack.commits.find_by(sha: sha)
     end
   end
 end
