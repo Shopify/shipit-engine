@@ -106,40 +106,42 @@ module Shipit
       end
     end
 
-    def self.schedule_merges
-      Shipit::Stack.where(merge_queue_enabled: true).find_each(&:schedule_merges)
-    end
-
-    def self.extract_number(stack, number_or_url)
-      org = stack.repository.owner
-      case number_or_url
-      when /\A#?(\d+)\z/
-        $1.to_i
-      when %r{\Ahttps://#{Regexp.escape(Shipit.github(organization: org).domain)}/([^/]+)/([^/]+)/pull/(\d+)}
-        return unless $1.downcase == stack.repo_owner.downcase
-        return unless $2.downcase == stack.repo_name.downcase
-
-        $3.to_i
+    class << self
+      def schedule_merges
+        Shipit::Stack.where(merge_queue_enabled: true).find_each(&:schedule_merges)
       end
-    end
 
-    def self.request_merge!(stack, number, user)
-      now = Time.now.utc
-      merge_request = begin
-        create_with(
-          merge_requested_at: now,
-          merge_requested_by: user.presence,
-        ).find_or_create_by!(
-          stack: stack,
-          number: number,
-        )
-      rescue ActiveRecord::RecordNotUnique
-        retry
+      def extract_number(stack, number_or_url)
+        org = stack.repository.owner
+        case number_or_url
+        when /\A#?(\d+)\z/
+          $1.to_i
+        when %r{\Ahttps://#{Regexp.escape(Shipit.github(organization: org).domain)}/([^/]+)/([^/]+)/pull/(\d+)}
+          return unless $1.downcase == stack.repo_owner.downcase
+          return unless $2.downcase == stack.repo_name.downcase
+
+          $3.to_i
+        end
       end
-      merge_request.update!(merge_requested_by: user.presence)
-      merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
-      merge_request.schedule_refresh!
-      merge_request
+
+      def request_merge!(stack, number, user)
+        now = Time.now.utc
+        merge_request = begin
+          create_with(
+            merge_requested_at: now,
+            merge_requested_by: user.presence,
+          ).find_or_create_by!(
+            stack: stack,
+            number: number,
+          )
+        rescue ActiveRecord::RecordNotUnique
+          retry
+        end
+        merge_request.update!(merge_requested_by: user.presence)
+        merge_request.retry! if merge_request.rejected? || merge_request.canceled? || merge_request.revalidating?
+        merge_request.schedule_refresh!
+        merge_request
+      end
     end
 
     def reject!(reason)
