@@ -7,6 +7,9 @@ module Shipit
     module Handlers
       module PullRequest
         class ReviewStackAdapterTest < ActiveSupport::TestCase
+          Struct.new('Stack', :number, :repository, :sender)
+          Struct::Stack.superclass
+
           test "unarchive! on an unarchived stack is a no-op" do
             stack = create_stack
             review_stack = Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter.new(
@@ -68,12 +71,12 @@ module Shipit
           end
 
           def params_for(stack)
-            OpenStruct.new(
-              number: pr_number,
-              repository: {
+            Struct::Stack.new(
+              pr_number,
+              {
                 "full_name" => stack.github_repo_name,
               },
-              sender: { login: shipit_users(:walrus).login },
+              { login: shipit_users(:walrus).login },
             )
           end
 
