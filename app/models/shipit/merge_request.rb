@@ -131,8 +131,8 @@ module Shipit
             merge_requested_at: now,
             merge_requested_by: user.presence,
           ).find_or_create_by!(
-            stack: stack,
-            number: number,
+            stack:,
+            number:,
           )
         rescue ActiveRecord::RecordNotUnique
           retry
@@ -298,7 +298,7 @@ module Shipit
       return unless @merge_status_changed
 
       @merge_status_changed = nil
-      Hook.emit('merge', stack, merge_request: self, status: merge_status, stack: stack)
+      Hook.emit('merge', stack, merge_request: self, status: merge_status, stack:)
     end
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)

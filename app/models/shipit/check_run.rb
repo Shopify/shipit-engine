@@ -42,7 +42,7 @@ module Shipit
 
         unless checkrun_date
           Rails.logger.warn("No valid timestamp found in checkrun data. Checkrun id: #{github_check_run.id}.")
-          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(stack_id: stack_id)
+          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(stack_id:)
           return
         end
 
@@ -51,7 +51,7 @@ module Shipit
             github_id: github_check_run.id,
           },
           attributes: {
-            stack_id: stack_id,
+            stack_id:,
             name: github_check_run.name,
             conclusion: github_check_run.conclusion,
             title: github_check_run.output.title.to_s.truncate(1_000),

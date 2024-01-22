@@ -42,7 +42,7 @@ module Shipit
       test "#create fails to create stack if it already exists" do
         repository = shipit_repositories(:rails)
         existing_stack = Stack.create!(
-          repository: repository,
+          repository:,
           environment: 'staging',
           branch: 'staging',
         )

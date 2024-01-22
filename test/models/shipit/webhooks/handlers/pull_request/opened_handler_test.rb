@@ -96,7 +96,7 @@ module Shipit
           test "only provision stacks for repos with auto-provisioning enabled" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               provisioning_enabled: false,
               behavior: :allow_all,
             )
@@ -116,7 +116,7 @@ module Shipit
           test "creates stacks for repos that allow_all" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_all,
               label: "pull-requests-label",
             )
@@ -129,7 +129,7 @@ module Shipit
           test "creates stacks for repos that allow_with_label when label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -144,7 +144,7 @@ module Shipit
           test "does not create stacks for repos that allow_with_label when label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label",
             )
@@ -159,7 +159,7 @@ module Shipit
           test "create stacks for repos what prevent_with_label when label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )
@@ -174,7 +174,7 @@ module Shipit
           test "does not create stacks for repos what prevent_with_label when label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label",
             )

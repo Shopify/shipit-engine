@@ -30,7 +30,7 @@ module Shipit
     end
 
     def emit_hooks(reason)
-      Hook.emit('pull_request', stack, action: reason, pull_request: self, stack: stack)
+      Hook.emit('pull_request', stack, action: reason, pull_request: self, stack:)
     end
 
     def github_pull_request=(github_pull_request)

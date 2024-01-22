@@ -18,7 +18,7 @@ module Shipit
 
       full_repo_name = stack.github_repo_name
 
-      update_or_create_ref(client: client, repo_name: full_repo_name, ref: stack_ref, new_sha: stack_sha)
+      update_or_create_ref(client:, repo_name: full_repo_name, ref: stack_ref, new_sha: stack_sha)
     end
 
     private
@@ -36,7 +36,7 @@ module Shipit
     rescue Octokit::UnprocessableEntity => e
       error_msg = e.message
       if error_msg.include?("Reference does not exist")
-        create_ref(client: client, repo_name: repo_name, ref: ref, sha: new_sha)
+        create_ref(client:, repo_name:, ref:, sha: new_sha)
       else
         raise
       end

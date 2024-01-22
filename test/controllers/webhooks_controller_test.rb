@@ -25,7 +25,7 @@ module Shipit
 
       body = JSON.parse(payload(:push_master)).to_json
       assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :create, body: body, as: :json
+        post :create, body:, as: :json
       end
     end
 
@@ -44,7 +44,7 @@ module Shipit
 
       body = JSON.parse(payload(:status_master)).merge(repository_params).to_json
       assert_difference 'commit.statuses.count', 1 do
-        post :create, body: body, as: :json
+        post :create, body:, as: :json
       end
 
       status = commit.statuses.last
