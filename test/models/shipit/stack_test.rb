@@ -87,7 +87,7 @@ module Shipit
       assert_includes(FakeReceiver.hooks, [
         :deploy,
         @stack,
-        { deploy: deploy, status: "pending", stack: @stack },
+        { deploy:, status: "pending", stack: @stack },
       ])
     ensure
       Shipit.internal_hook_receivers = original_receivers
@@ -818,7 +818,7 @@ module Shipit
       assert !commits.empty?
       commits.each { |c| refute_predicate c, :deployable? }
 
-      assert_nil @stack.next_expected_commit_to_deploy(commits: commits)
+      assert_nil @stack.next_expected_commit_to_deploy(commits:)
     end
 
     test "#next_expected_commit_to_deploy returns nil if all deployable commits are active" do
@@ -828,7 +828,7 @@ module Shipit
       assert !commits.empty?
       commits.each { |c| assert_predicate c, :active? }
 
-      assert_nil @stack.next_expected_commit_to_deploy(commits: commits)
+      assert_nil @stack.next_expected_commit_to_deploy(commits:)
     end
 
     test "#next_expected_commit_to_deploy returns nil if there are no commits" do
@@ -841,7 +841,7 @@ module Shipit
 
       assert !commits.empty?
 
-      most_recent_limited = @stack.next_expected_commit_to_deploy(commits: commits)
+      most_recent_limited = @stack.next_expected_commit_to_deploy(commits:)
       most_recent = commits.find { |c| !c.active? && c.deployable? }
 
       assert most_recent.id > most_recent_limited.id
@@ -860,7 +860,7 @@ module Shipit
     test "#lock_reverted_commits! locks all commits between the original and reverted commits" do
       reverted_commit = @stack.undeployed_commits.first
       revert_author = shipit_users(:bob)
-      generate_revert_commit(stack: @stack, reverted_commit: reverted_commit, author: revert_author)
+      generate_revert_commit(stack: @stack, reverted_commit:, author: revert_author)
       @stack.reload
 
       assert_equal(
@@ -888,7 +888,7 @@ module Shipit
     test "#lock_reverted_commits! is a no-op if the reverted commit has already shipped" do
       reverted_commit = shipit_commits(:first)
       revert_author = shipit_users(:bob)
-      generate_revert_commit(stack: @stack, reverted_commit: reverted_commit, author: revert_author)
+      generate_revert_commit(stack: @stack, reverted_commit:, author: revert_author)
       @stack.reload
 
       initial_state = [
@@ -1016,7 +1016,7 @@ module Shipit
       stack.commits.create(
         sha: SecureRandom.hex(20),
         message: "Revert \"#{reverted_commit.message_header}\"",
-        author: author,
+        author:,
         committer: author,
         authored_at: Time.zone.now,
         committed_at: Time.zone.now,

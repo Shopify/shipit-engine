@@ -17,17 +17,17 @@ module Shipit
     class << self
       def find_or_create_by_handle(handle)
         organization, slug = handle.split('/').map(&:downcase)
-        find_by(organization: organization, slug: slug) || fetch_and_create_from_github(organization, slug)
+        find_by(organization:, slug:) || fetch_and_create_from_github(organization, slug)
       end
 
       def fetch_and_create_from_github(organization, slug)
         if github_team = find_team_on_github(organization, slug)
-          create!(github_team: github_team, organization: organization)
+          create!(github_team:, organization:)
         end
       end
 
       def find_team_on_github(organization, slug)
-        gh_api = Shipit.github(organization: organization).api
+        gh_api = Shipit.github(organization:).api
         teams = Shipit::OctokitIterator.new(github_api: gh_api) { gh_api.org_teams(organization, per_page: 100) }
         teams.find { |t| t.slug == slug }
       rescue Octokit::NotFound
@@ -43,7 +43,7 @@ module Shipit
     end
 
     def refresh_members!
-      github_api = Shipit.github(organization: organization).api
+      github_api = Shipit.github(organization:).api
       github_members = Shipit::OctokitIterator.new(github_api.get(api_url).rels[:members])
       members = github_members.map { |u| User.find_or_create_from_github(u) }
       self.members = members

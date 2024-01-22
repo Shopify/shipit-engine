@@ -13,7 +13,7 @@ module Shipit
       after_transition to: :aborted, do: :trigger_revert_if_required
       after_transition any => any, do: :update_release_status
       after_transition any => any, do: :update_commit_deployments
-      after_transition any => any, do: :update_last_deploy_time
+      after_transition any:, do: :update_last_deploy_time
     end
 
     belongs_to :until_commit, class_name: 'Commit', required: true
@@ -92,10 +92,10 @@ module Shipit
     def build_rollback(user = nil, env: nil, force: false)
       Rollback.new(
         user_id: user&.id,
-        stack_id: stack_id,
+        stack_id:,
         parent_id: id,
         since_commit: stack.last_deployed_commit,
-        until_commit: until_commit,
+        until_commit:,
         env: env&.to_h || {},
         allow_concurrency: force,
         ignored_safeties: force,
@@ -105,14 +105,14 @@ module Shipit
 
     # Rolls the stack back to this deploy
     def trigger_rollback(user = AnonymousUser.new, env: nil, force: false, lock: true)
-      rollback = build_rollback(user, env: env, force: force)
+      rollback = build_rollback(user, env:, force:)
       rollback.save!
       rollback.enqueue
 
       if lock
         lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
           "Please make sure the reason for the rollback has been addressed before deploying again."
-        stack.update!(lock_reason: lock_reason, lock_author_id: user.id)
+        stack.update!(lock_reason:, lock_author_id: user.id)
       end
 
       rollback
@@ -123,8 +123,8 @@ module Shipit
       previous_successful_commit = rollback_to&.until_commit || commit_to_rollback_to
 
       rollback = Rollback.create!(
-        user_id: user_id,
-        stack_id: stack_id,
+        user_id:,
+        stack_id:,
         parent_id: id,
         since_commit: until_commit,
         until_commit: previous_successful_commit,
@@ -134,7 +134,7 @@ module Shipit
       rollback.enqueue
       lock_reason = "A rollback for #{until_commit.sha} has been triggered. " \
         "Please make sure the reason for the rollback has been addressed before deploying again."
-      stack.update!(lock_reason: lock_reason, lock_author_id: user_id)
+      stack.update!(lock_reason:, lock_author_id: user_id)
       stack.emit_lock_hooks
       rollback
     end
@@ -211,7 +211,7 @@ module Shipit
         state,
         user: user.presence,
         target_url: permalink,
-        description: description,
+        description:,
       )
       status
     end
@@ -234,7 +234,7 @@ module Shipit
         append_release_status(
           'success',
           description,
-          user: user,
+          user:,
         )
       end
     end
@@ -245,7 +245,7 @@ module Shipit
         append_release_status(
           'failure',
           description,
-          user: user,
+          user:,
         )
       end
     end

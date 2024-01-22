@@ -31,7 +31,7 @@ module Shipit
         commit.sha,
         state,
         context: stack.release_status_context,
-        target_url: target_url,
+        target_url:,
         description: description&.truncate(MAX_DESCRIPTION_LENGTH),
       )
     end
