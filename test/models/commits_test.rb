@@ -4,7 +4,7 @@ require 'test_helper'
 
 module Shipit
   class CommitsTest < ActiveSupport::TestCase
-    Struct.new('GithubStatus', :state, :description, :context, :created_at)
+    Struct.new('GithubStatus', :state, :description, :context, :created_at, :target_url)
     Struct::GithubStatus.superclass
 
     setup do
@@ -633,7 +633,7 @@ module Shipit
           expected_status_attributes = { state: new_state, description: initial_state, context: 'ci/travis' }
           add_status = lambda do
             attrs = expected_status_attributes.merge(created_at: 1.day.ago.to_formatted_s(:db))
-            commit.create_status_from_github!(Struct::GithubStatus.new(attrs))
+            commit.create_status_from_github!(Struct::GithubStatus.new(**attrs))
           end
           expect_hook_emit(commit, :commit_status, expected_status_attributes) do
             if should_fire
