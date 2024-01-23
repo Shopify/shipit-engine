@@ -11,7 +11,7 @@ module Shipit
     has_many :pull_request_assignments
     has_many :assignees, class_name: :User, through: :pull_request_assignments, source: :user
 
-    serialize :labels, Shipit.serialized_column(:labels, type: Array)
+    serialize :labels, coder: Shipit.serialized_column(:labels, type: Array)
 
     after_create_commit :emit_create_hooks
     after_update_commit :emit_update_hooks
