@@ -24,6 +24,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'pry'
+  gem 'pry-byebug'
   gem 'mini_racer'
 end

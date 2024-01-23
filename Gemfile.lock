@@ -267,6 +267,9 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
     psych (5.1.2)
       stringio
     public_suffix (5.0.4)
@@ -429,7 +432,7 @@ DEPENDENCIES
   mocha
   mysql2
   pg
-  pry
+  pry-byebug
   rubocop (= 1.26.1)
   rubocop-shopify
   shipit-engine!
