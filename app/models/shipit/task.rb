@@ -61,7 +61,7 @@ module Shipit
     end
 
     serialize :definition, coder: TaskDefinition
-    serialize :env, Shipit.serialized_column(:env, coder: EnvHash)
+    serialize :env, coder: Shipit.serialized_column(:env, coder: EnvHash)
 
     scope :success, -> { where(status: 'success') }
     scope :completed, -> { where(status: COMPLETED_STATUSES) }
