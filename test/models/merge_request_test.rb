@@ -243,7 +243,10 @@ module Shipit
     end
 
     test "status transitions emit hooks" do
-      job = assert_enqueued_with(job: EmitEventJob) do
+      expected_args = ->(job_args) do
+        job_args.first[:event] == 'merge'
+      end
+      job = assert_enqueued_with(job: EmitEventJob, args: expected_args) do
         @pr.reject!('merge_conflict')
       end
       params = job.arguments.first
