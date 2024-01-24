@@ -17,7 +17,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'spy'
+  gem 'spy', '1.0.2'
   gem 'mocha'
   gem 'simplecov', require: false
 end
