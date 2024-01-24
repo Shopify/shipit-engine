@@ -6,7 +6,7 @@ module Shipit
   class CheckRunTest < ActiveSupport::TestCase
     Struct.new('GithubCheckRun', :id, :conclusion, :output, :name, :html_url, :details_url, :completed_at, :started_at)
     Struct::GithubCheckRun.superclass
-    Struct.new('Output', :description)
+    Struct.new('Output', :description, :title)
     Struct::Output.superclass
 
     setup do
