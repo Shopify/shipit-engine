@@ -16,7 +16,7 @@ PATH
       omniauth-github (~> 1.4)
       paquito
       pubsubstub (~> 0.2.0)
-      rails (= 7.1.1)
+      rails (~> 7.1.1)
       rails-timeago (~> 2.13.0)
       rails_autolink (~> 1.1.6)
       rake
