@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency('octokit', '~> 4.20')
   s.add_dependency('omniauth-github', '~> 1.4')
   s.add_dependency('pubsubstub', '~> 0.2.0')
-  s.add_dependency('rails', '= 7.1.1')
+  s.add_dependency('rails', '~> 7.1.1')
   s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rails_autolink', '~> 1.1.6')
   s.add_dependency('rake')
