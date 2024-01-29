@@ -168,10 +168,26 @@ module Shipit
       end
     end
 
-    def refresh_check_runs!
+    def paginated_check_runs
       response = stack.handle_github_redirections do
-        stack.github_api.check_runs(github_repo_name, sha)
+        stack.github_api.check_runs(github_repo_name, sha, per_page: 100)
       end
+
+      return response if stack.github_api.last_response.rels[:next].nil?
+
+      loop do
+        page = stack.handle_github_redirections do
+          stack.github_api.get(stack.github_api.last_response.rels[:next].href)
+        end
+        response.check_runs.concat(page.check_runs)
+        break if stack.github_api.last_response.rels[:next].nil?
+      end
+
+      response
+    end
+
+    def refresh_check_runs!
+      response = paginated_check_runs
       response.check_runs.each do |check_run|
         create_or_update_check_run_from_github!(check_run)
       end
