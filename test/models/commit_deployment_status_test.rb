@@ -15,7 +15,6 @@ module Shipit
       @author.github_api.class.any_instance.expects(:create_deployment_status).with(
         @deployment.api_url,
         'in_progress',
-        accept: "application/vnd.github.flash-preview+json",
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
         description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.short_sha}",
         environment_url: "https://shipit.shopify.com",
