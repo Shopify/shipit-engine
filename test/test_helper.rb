@@ -23,7 +23,7 @@ require 'spy/integration'
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
-  ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+  ActiveSupport::TestCase.fixture_paths << File.expand_path("../fixtures", __FILE__)
   ActiveSupport::TestCase.fixtures(:all)
 end
 
@@ -71,7 +71,7 @@ module ActiveSupport
       end
     end
 
-    ActiveRecord::Migration.check_pending!
+    ActiveRecord::Migration.check_all_pending!
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     #

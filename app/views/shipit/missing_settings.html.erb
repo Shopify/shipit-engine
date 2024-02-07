@@ -22,7 +22,7 @@
 
     <p id="github_app">
       Config:
-    <% if Rails.application.secrets.github.present? %>
+    <% if Rails.application.credentials.github.present? %>
        Success!
     <% else %>
       <span class="missing">

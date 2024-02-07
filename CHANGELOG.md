@@ -1,4 +1,10 @@
 # Unreleased
+* Upgraded Octokit to 5.6.1 (#1327)
+* Migrate from legacy Rails secrets to credentials (#1326)
+  * Rails secrets were [deprecated in Rails 7.1](https://github.com/rails/rails/pull/48472)
+  * [Guide on credentials](https://guides.rubyonrails.org/security.html#custom-credentials)
+
+# 0.39.0
 
 * Upgraded to Rails 7.1.1
 

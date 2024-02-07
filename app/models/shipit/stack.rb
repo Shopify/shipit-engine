@@ -101,7 +101,7 @@ module Shipit
 
     validates :lock_reason, length: { maximum: 4096 }
 
-    serialize :cached_deploy_spec, DeploySpec
+    serialize :cached_deploy_spec, coder: DeploySpec
     delegate(
       :provisioning_handler_name,
       :find_task_definition,
