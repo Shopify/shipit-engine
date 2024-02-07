@@ -103,7 +103,6 @@ module Shipit
       ) do
         response = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
           installation_id,
-          accept: 'application/vnd.github.machine-man-preview+json',
         )
         token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
