@@ -203,6 +203,14 @@ module Shipit
       assert_equal 'george@cyclim.se', user.email
     end
 
+    test "#refresh_from_github! logs deleted users" do
+      Shipit.github.api.expects(:user).with(@user.github_id).raises(Octokit::Forbidden)
+
+      Rails.logger.expects(:info).with("User #{@user.name}, github_id #{@user.github_id} has forbidden access to their GitHub, likely deleted.")
+
+      @user.refresh_from_github!
+    end
+
     test "#github_api uses the user's access token" do
       assert_equal @user.github_access_token, @user.github_api.access_token
     end

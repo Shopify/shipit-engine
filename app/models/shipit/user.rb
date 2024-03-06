@@ -95,6 +95,8 @@ module Shipit
       update!(github_user: Shipit.github.api.user(github_id))
     rescue Octokit::NotFound
       identify_renamed_user!
+    rescue Octokit::Forbidden
+      Rails.logger.info("User #{name}, github_id #{github_id} has forbidden access to their GitHub, likely deleted.")
     end
 
     def github_user=(github_user)
