@@ -150,14 +150,14 @@ module Shipit
       task
     end
 
-    def build_deploy(until_commit, user, env: nil, force: false)
+    def build_deploy(until_commit, user, env: nil, force: false, allow_concurrency: force)
       since_commit = last_deployed_commit.presence || commits.first
       deploys.build(
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
         env: filter_deploy_envs(env&.to_h || {}),
-        allow_concurrency: force,
+        allow_concurrency: allow_concurrency,
         ignored_safeties: force || !until_commit.deployable?,
         max_retries: retries_on_deploy,
       )

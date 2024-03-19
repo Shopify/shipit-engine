@@ -357,6 +357,11 @@ For example:
 fetch:
   curl --silent https://app.example.com/services/ping/version
 ```
+
+**Note:** Currently, deployments in emergency mode are configured to occur concurrently via [the `build_deploy` method](https://github.com/Shopify/shipit-engine/blob/main/app/models/shipit/stack.rb),
+whose `allow_concurrency` keyword argument defaults to `force`, where `force` is true when emergency mode is enabled. 
+If you'd like to separate these two from one another, override this method as desired in your service.
+
 <h3 id="kubernetes">Kubernetes</h3>
 
 **<code>kubernetes</code>** allows to specify a Kubernetes namespace and context to deploy to.

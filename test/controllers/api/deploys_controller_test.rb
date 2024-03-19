@@ -120,6 +120,29 @@ module Shipit
         assert_response :accepted
         assert_json 'status', 'pending'
       end
+
+      test "#create uses allow_concurrency param when provided" do
+        @stack.update!(lock_reason: 'Something broken')
+
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: 'true', allow_concurrency: 'false' }
+        end
+        assert_response :accepted
+        assert_json 'status', 'pending'
+        refute @stack.deploys.last.allow_concurrency
+      end
+
+      test "#create defaults allow_concurrency to force param when not provided" do
+        @stack.update!(lock_reason: 'Something broken')
+        expected_force = true
+
+        assert_difference -> { @stack.deploys.count }, 1 do
+          post :create, params: { stack_id: @stack.to_param, sha: @commit.sha, force: expected_force }
+        end
+        assert_response :accepted
+        assert_json 'status', 'pending'
+        assert_equal expected_force, @stack.deploys.last.allow_concurrency
+      end
     end
   end
 end

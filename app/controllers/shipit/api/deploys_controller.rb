@@ -11,6 +11,7 @@ module Shipit
       params do
         requires :sha, String, length: { in: 6..40 }
         accepts :force, Boolean, default: false
+        accepts :allow_concurrency, Boolean
         accepts :require_ci, Boolean, default: false
         accepts :env, Hash, default: {}
       end
@@ -18,7 +19,10 @@ module Shipit
         commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
         param_error!(:force, "Can't deploy a locked stack") if !params.force && stack.locked?
         param_error!(:require_ci, "Commit is not deployable") if params.require_ci && !commit.deployable?
-        deploy = stack.trigger_deploy(commit, current_user, env: params.env, force: params.force)
+
+        allow_concurrency = params.allow_concurrency.nil? ? params.force : params.allow_concurrency
+        deploy = stack.trigger_deploy(commit, current_user, env: params.env, force: params.force,
+          allow_concurrency: allow_concurrency)
         render_resource(deploy, status: :accepted)
       end
     end
