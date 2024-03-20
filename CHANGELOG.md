@@ -3,6 +3,8 @@
 * Migrate from legacy Rails secrets to credentials (#1326)
   * Rails secrets were [deprecated in Rails 7.1](https://github.com/rails/rails/pull/48472)
   * [Guide on credentials](https://guides.rubyonrails.org/security.html#custom-credentials)
+* For deployments, `allow_concurrency` defaults to the same value as `force`. If wanted, it can be set separately by passing the intended value for `allow_concurrency` to `build_deploy` method
+
 
 # 0.39.0
 
