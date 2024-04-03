@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shipit-engine (0.38.0)
+    shipit-engine (0.39.0)
       active_model_serializers (~> 0.9.3)
       ansi_stream (~> 0.0.6)
       autoprefixer-rails (~> 6.4.1)
@@ -231,11 +231,9 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.15.5-arm64-darwin)
+    nokogiri (1.16.3-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.15.5-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.15.5-x86_64-linux)
+    nokogiri (1.16.3-x86_64-linux)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -265,7 +263,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    psych (5.1.2)
+    psych (4.0.6)
       stringio
     public_suffix (4.0.6)
     pubsubstub (0.2.2)
@@ -377,7 +375,8 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     spy (1.0.2)
-    sqlite3 (1.4.2)
+    sqlite3 (1.7.3-arm64-darwin)
+    sqlite3 (1.7.3-x86_64-linux)
     state_machines (0.5.0)
     state_machines-activemodel (0.8.0)
       activemodel (>= 5.1)
@@ -413,9 +412,7 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  arm64-darwin-21
-  arm64-darwin-22
-  x86_64-darwin-20
+  arm64-darwin
   x86_64-linux
 
 DEPENDENCIES
