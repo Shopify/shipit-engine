@@ -21,6 +21,7 @@ module Shipit
 
         response.data.each(&block)
         return unless response.rels[:next]
+
         response = response.rels[:next].get
       end
     end

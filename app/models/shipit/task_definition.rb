@@ -7,12 +7,14 @@ module Shipit
     class << self
       def load(payload)
         return if payload.blank?
+
         json = JSON.parse(payload)
         new(json.delete('id'), json)
       end
 
       def dump(definition)
         return if definition.blank?
+
         JSON.dump(definition.as_json)
       end
     end

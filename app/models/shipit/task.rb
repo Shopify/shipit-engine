@@ -36,6 +36,7 @@ module Shipit
       class << self
         def dump(hash)
           raise TypeError, "Task#env should be a Hash[String => String]" unless hash.is_a?(Hash)
+
           hash = hash.to_h.stringify_keys
           hash.transform_values! do |value|
             case value
@@ -225,11 +226,13 @@ module Shipit
 
     def enqueue
       raise "only persisted jobs can be enqueued" unless persisted?
+
       PerformTaskJob.perform_later(self)
     end
 
     def run_now!
       raise "only persisted jobs can be run" unless persisted?
+
       PerformTaskJob.perform_now(self)
     end
 
@@ -384,6 +387,7 @@ module Shipit
 
     def emit_hooks_if_status_changed
       return unless @status_changed
+
       @status_changed = nil
       emit_hooks
     end

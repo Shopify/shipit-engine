@@ -17,6 +17,7 @@ module Shipit
 
     def schedule
       return false if Shipit.redis.get(key('status')).present?
+
       synchronize do
         return false if Shipit.redis.get(key('status')).present?
 

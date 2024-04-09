@@ -60,6 +60,7 @@ module Shipit
         # An 1.0.0-beta.1 would be installable using both:
         # `yarn add package@1.0.0-beta.1` and `yarn add package@next`
         return 'next' if ['-beta', '-alpha', '-rc', '-next'].any? { |tag| version.include?(tag) }
+
         'latest'
       end
 
@@ -105,21 +106,25 @@ module Shipit
         # default to private deploy when we enforce a publishConfig
         if enforce_publish_config?
           return PRIVATE if config.blank?
+
           config['access'] || PRIVATE
         end
 
         return PUBLIC if config.blank?
+
         config['access'] || PUBLIC
       end
 
       def scoped_package?
         return false if Shipit.npm_org_scope.nil?
+
         package_name.start_with?(Shipit.npm_org_scope)
       end
 
       def enforce_publish_config?
         enforce = Shipit.enforce_publish_config
         return false if enforce.nil? || enforce.to_s == "0"
+
         true
       end
 
@@ -165,6 +170,7 @@ module Shipit
         publish = "npm publish --tag #{dist_tag(package_version)} --access #{publish_config_access}"
 
         return [check_tags, generate_npmrc, publish] if enforce_publish_config?
+
         [check_tags, publish]
       end
 

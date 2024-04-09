@@ -40,6 +40,7 @@ module Shipit
       unless permissions.include?(required_permission)
         raise InsufficientPermission, "This operation requires the `#{required_permission}` permission"
       end
+
       true
     end
   end

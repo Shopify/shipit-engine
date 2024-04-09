@@ -17,6 +17,7 @@ module Shipit
 
     def lock(timeout:)
       return yield if @acquired
+
       path.parent.mkpath
       path.open('w') do |file|
         if retrying(timeout: timeout) { file.flock(File::LOCK_EX | File::LOCK_NB) }

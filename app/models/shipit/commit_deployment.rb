@@ -24,6 +24,7 @@ module Shipit
         create_deployment_on_github(stack.github_api)
       rescue Octokit::ClientError
         raise if Shipit.github(organization: stack.repository.owner).api == stack.github_api
+
         # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
         # user.
         #

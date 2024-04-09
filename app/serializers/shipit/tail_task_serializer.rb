@@ -9,6 +9,7 @@ module Shipit
 
     def url
       return @url if defined? @url
+
       @url = next_chunks_url(task, last_byte: next_offset)
     end
 
@@ -43,6 +44,7 @@ module Shipit
 
     def rollback
       return @rollback if defined? @rollback
+
       @rollback = stack.rollbacks.where(parent_id: task.id).last
     end
   end

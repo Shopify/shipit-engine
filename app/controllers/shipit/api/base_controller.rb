@@ -55,6 +55,7 @@ module Shipit
           end
         end
         return if @current_api_client
+
         headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'
         render(status: :unauthorized, json: { message: 'Bad credentials' })
       end

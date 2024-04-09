@@ -21,6 +21,7 @@ module Shipit
       merge_requests.select(&:pending?).each do |merge_request|
         merge_request.refresh!
         next unless merge_request.all_status_checks_passed?
+
         begin
           merge_request.merge!
         rescue MergeRequest::NotReady

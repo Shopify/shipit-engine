@@ -40,6 +40,7 @@ module Shipit
       def fetch
         fetch_members do |records|
           return if records.empty?
+
           records = records.each_with_object({}) do |(model, id, attribute), hash|
             attributes = (hash[model] ||= {})
             ids = (attributes[attribute] ||= [])
@@ -79,6 +80,7 @@ module Shipit
 
     def schedule_touches
       return unless self.class.deferred_touches
+
       deferred_touches = self.class.deferred_touches.reject do |m, _fk, _a|
         ActiveRecord::NoTouching.applied_to?(m.constantize)
       end

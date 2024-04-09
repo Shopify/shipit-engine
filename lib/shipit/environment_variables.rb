@@ -13,6 +13,7 @@ module Shipit
     def permit(variable_definitions)
       return {} unless @env
       raise "A whitelist is required to sanitize environment variables" unless variable_definitions
+
       sanitize_env_vars(variable_definitions)
     end
 

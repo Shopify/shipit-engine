@@ -73,6 +73,7 @@ module Shipit
 
       def publish_lerna_packages
         return publish_independent_packages if lerna_version == 'independent'
+
         publish_fixed_version_packages
       end
 

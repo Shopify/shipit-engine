@@ -28,6 +28,7 @@ module Shipit
 
     def parsed
       return @parsed if defined?(@parsed)
+
       @parsed = to_s.match(GITHUB_MERGE_COMMIT_PATTERN)
     end
   end

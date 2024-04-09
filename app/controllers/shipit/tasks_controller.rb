@@ -76,6 +76,7 @@ module Shipit
 
     def task_params
       return {} unless params[:task]
+
       @definition = stack.find_task_definition(params[:definition_id])
       @task_params ||= params.require(:task).permit(env: @definition.variables.map(&:name))
     end

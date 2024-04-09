@@ -97,6 +97,7 @@ module Shipit
     class << self
       def emit(event, stack, payload)
         raise "#{event} is not declared in Shipit::Hook::EVENTS" unless EVENTS.include?(event.to_s)
+
         Shipit::EmitEventJob.perform_later(
           event: event.to_s,
           stack_id: stack&.id,

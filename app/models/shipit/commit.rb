@@ -59,21 +59,25 @@ module Shipit
 
     def self.newer_than(commit)
       return all unless commit
+
       where('id > ?', commit.try(:id) || commit)
     end
 
     def self.older_than(commit)
       return all unless commit
+
       where('id < ?', commit.try(:id) || commit)
     end
 
     def self.since(commit)
       return all unless commit
+
       where('id >= ?', commit.try(:id) || commit)
     end
 
     def self.until(commit)
       return all unless commit
+
       where('id <= ?', commit.try(:id) || commit)
     end
 
@@ -92,6 +96,7 @@ module Shipit
 
       commits = where('sha like ?', "#{sha}%").take(2)
       raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+
       commits.first
     end
 
@@ -267,6 +272,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless deployable? && stack.continuous_deployment? && stack.deployable?
+
       # This buffer is to allow for statuses and checks to be refreshed before evaluating if the commit is deployable
       # - e.g. if the commit was fast-forwarded with already passing CI.
       ContinuousDeliveryJob.set(wait: RECENT_COMMIT_THRESHOLD).perform_later(stack)
@@ -301,6 +307,7 @@ module Shipit
 
     def identify_merge_request
       return unless message_parser.pull_request?
+
       if merge_request = stack.merge_requests.find_by(number: message_parser.pull_request_number)
         self.merge_request = merge_request
         self.pull_request_number = merge_request.number

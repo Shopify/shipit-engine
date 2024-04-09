@@ -113,6 +113,7 @@ module Shipit
     class << self
       def load(serial)
         return nil if serial.nil?
+
         # JSON.load is unsafe, we should use parse instead
         JSON.parse(serial)
       end
@@ -137,6 +138,7 @@ module Shipit
 
       def dump(object)
         return if object.nil?
+
         JSON.dump(object)
       end
     end
@@ -168,12 +170,14 @@ module Shipit
 
   def github_default_organization
     return nil unless secrets&.github
+
     org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
   end
 
   def github_organizations
     return [nil] unless github_default_organization
+
     secrets.github.keys
   end
 

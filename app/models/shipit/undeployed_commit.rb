@@ -51,6 +51,7 @@ module Shipit
 
     def blocked?
       return @blocked if defined?(@blocked)
+
       @blocked = super
     end
   end

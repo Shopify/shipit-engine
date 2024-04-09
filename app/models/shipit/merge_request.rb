@@ -118,6 +118,7 @@ module Shipit
       when %r{\Ahttps://#{Regexp.escape(Shipit.github(organization: org).domain)}/([^/]+)/([^/]+)/pull/(\d+)}
         return unless $1.downcase == stack.repo_owner.downcase
         return unless $2.downcase == stack.repo_name.downcase
+
         $3.to_i
       end
     end
@@ -145,6 +146,7 @@ module Shipit
       unless REJECTION_REASONS.include?(reason)
         raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"
       end
+
       self.rejection_reason = reason.presence
       super()
       true
@@ -155,6 +157,7 @@ module Shipit
       return reject!('ci_missing') if any_status_checks_missing?
       return reject!('ci_failing') if any_status_checks_failed?
       return reject!('requires_rebase') if stale?
+
       false
     end
 
@@ -189,6 +192,7 @@ module Shipit
 
     def all_status_checks_passed?
       return false unless head
+
       StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).success?
     end
 
@@ -208,6 +212,7 @@ module Shipit
     def need_revalidation?
       timeout = stack.cached_deploy_spec&.revalidate_merge_requests_after
       return false unless timeout
+
       (revalidated_at + timeout).past?
     end
 
@@ -256,11 +261,13 @@ module Shipit
 
     def merge_message
       return title unless merge_requested_by
+
       "#{title}\n\n#{MERGE_REQUEST_FIELD}: #{merge_requested_by.login}\n"
     end
 
     def stale?
       return false unless base_commit
+
       spec = stack.cached_deploy_spec
       if max_branch_age = spec.max_divergence_age
         return true if Time.now.utc - head.committed_at > max_branch_age
@@ -287,6 +294,7 @@ module Shipit
 
     def emit_hooks
       return unless @merge_status_changed
+
       @merge_status_changed = nil
       Hook.emit('merge', stack, merge_request: self, status: merge_status, stack: stack)
     end

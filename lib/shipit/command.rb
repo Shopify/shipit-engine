@@ -84,6 +84,7 @@ module Shipit
 
     def start(&block)
       return if @started
+
       @control_block = block
       @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
@@ -126,6 +127,7 @@ module Shipit
     def stream!(&block)
       stream(&block)
       raise Failed.new(exit_message, code) unless success?
+
       self
     end
 
@@ -191,6 +193,7 @@ module Shipit
         if reap_child!(block: false)
           return true
         end
+
         # If we let the child a little bit of time, it solves it.
         retry_count -= 1
         if retry_count > 0
@@ -236,6 +239,7 @@ module Shipit
     def reap_child!(block: true)
       return @status if @status
       return unless running? # Command was never started e.g. permission denied, not found etc
+
       if block
         _, @status = Process.waitpid2(@pid)
       elsif res = Process.waitpid2(@pid, Process::WNOHANG)

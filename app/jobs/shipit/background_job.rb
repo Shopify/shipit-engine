@@ -19,6 +19,7 @@ module Shipit
 
     def with_timeout(&block)
       return yield unless timeout
+
       Timeout.timeout(timeout, &block)
     end
 

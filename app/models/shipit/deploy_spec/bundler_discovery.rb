@@ -44,6 +44,7 @@ module Shipit
       def frozen_flag
         return unless gemfile_lock_exists?
         return if config('dependencies', 'bundler', 'frozen') == false
+
         '--frozen'
       end
 

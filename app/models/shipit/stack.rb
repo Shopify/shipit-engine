@@ -281,6 +281,7 @@ module Shipit
       return 'locked' if locked?
       return 'failure' if %w(failure error).freeze.include?(branch_status)
       return 'backlogged' if backlogged?(backlog_leniency_factor: backlog_leniency_factor)
+
       'success'
     end
 
@@ -298,6 +299,7 @@ module Shipit
 
     def status
       return :deploying if active_task?
+
       :default
     end
 
@@ -404,6 +406,7 @@ module Shipit
     def clear_git_cache!
       tmp_path = "#{git_path}-#{SecureRandom.hex}"
       return unless git_path.exist?
+
       acquire_git_cache_lock do
         git_path.rename(tmp_path)
       end
@@ -455,6 +458,7 @@ module Shipit
 
     def active_task
       return @active_task if defined?(@active_task)
+
       @active_task ||= tasks.current
     end
 

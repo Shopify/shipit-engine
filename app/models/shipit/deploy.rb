@@ -65,21 +65,25 @@ module Shipit
 
     def self.newer_than(deploy)
       return all unless deploy
+
       where('id > ?', deploy.try(:id) || deploy)
     end
 
     def self.older_than(deploy)
       return all unless deploy
+
       where('id < ?', deploy.try(:id) || deploy)
     end
 
     def self.since(deploy)
       return all unless deploy
+
       where('id >= ?', deploy.try(:id) || deploy)
     end
 
     def self.until(deploy)
       return all unless deploy
+
       where('id <= ?', deploy.try(:id) || deploy)
     end
 
@@ -177,6 +181,7 @@ module Shipit
 
     def reject!
       return if failed? || aborted?
+
       transaction do
         flap! unless flapping?
         update!(confirmations: [confirmations - 1, -1].min)
@@ -186,6 +191,7 @@ module Shipit
 
     def accept!
       return if success?
+
       transaction do
         flap! unless flapping?
         update!(confirmations: [confirmations + 1, 1].max)
@@ -255,6 +261,7 @@ module Shipit
       # Create one for each pull request in the batch, to give feedback on the PR timeline
       commits.select(&:pull_request?).each do |commit|
         next if commit.pull_request_head_sha.blank? # This attribute was not always populated
+
         commit_deployments.create!(sha: commit.pull_request_head_sha)
       end
 
@@ -290,11 +297,13 @@ module Shipit
     def trigger_revert_if_required
       return unless rollback_once_aborted?
       return unless supports_rollback?
+
       trigger_revert(rollback_to: rollback_once_aborted_to)
     end
 
     def default_since_commit_id
       return unless stack
+
       @default_since_commit_id ||= stack.last_completed_deploy&.until_commit_id
     end
 
@@ -309,6 +318,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless stack.continuous_deployment?
+
       ContinuousDeliveryJob.perform_later(stack)
     end
 
@@ -322,6 +332,7 @@ module Shipit
 
     def update_latest_deployed_ref
       return unless previous_changes.include?(:status)
+
       stack.update_latest_deployed_ref if previous_changes[:status].last == 'success'
     end
   end
