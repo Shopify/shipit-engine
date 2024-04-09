@@ -13,7 +13,7 @@ end
 group :development, :test do
   gem 'faker'
   gem 'webmock'
-  gem 'rubocop', '1.18.3'
+  gem 'rubocop', '1.61.0'
   gem 'rubocop-shopify', require: false
 end
 
