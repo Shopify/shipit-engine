@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.license = "MIT"
 
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
-  s.test_files = Dir["test/**/*"] - Dir["test/dummy/tmp/**/*"] - Dir["test/dummy/log/**/*"]
 
   s.required_ruby_version = '>= 3.0.0'
 
@@ -32,21 +31,21 @@ Gem::Specification.new do |s|
   s.add_dependency('lodash-rails', '~> 4.17')
   s.add_dependency('octokit', '~> 5.6.0')
   s.add_dependency('omniauth-github', '~> 1.4')
+  s.add_dependency('paquito')
   s.add_dependency('pubsubstub', '~> 0.2.0')
   s.add_dependency('rails', '~> 7.1.1')
-  s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rails_autolink', '~> 1.1.6')
+  s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rake')
   s.add_dependency('redis-objects', '~> 1.5')
   s.add_dependency('responders', '~> 3.0')
   s.add_dependency('safe_yaml', '~> 1.0.4')
   s.add_dependency('sass-rails', '>= 5.0')
   s.add_dependency('securecompare', '~> 1.0.0')
-  s.add_dependency('sprockets-rails', '>= 2.3.2')
   s.add_dependency('sprockets', '< 4')
+  s.add_dependency('sprockets-rails', '>= 2.3.2')
   s.add_dependency('state_machines-activerecord', '~> 0.8.0')
   s.add_dependency('validate_url', '~> 1.0.0')
-  s.add_dependency('paquito')
 
   s.metadata['allowed_push_host'] = 'https://rubygems.org'
 end
