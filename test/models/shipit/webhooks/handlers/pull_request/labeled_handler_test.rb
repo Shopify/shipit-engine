@@ -29,7 +29,7 @@ module Shipit
               repository: repository,
               provisioning_enabled: false,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
 
             assert_no_difference -> { Shipit::Stack.count } do
@@ -41,7 +41,7 @@ module Shipit
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
               repository: repository,
-              behavior: :allow_all
+              behavior: :allow_all,
             )
 
             assert_no_difference -> { Shipit::Stack.count } do
@@ -55,7 +55,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] << { "name" => "pull-requests-label" }
@@ -71,7 +71,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = [{ "name" => "pull-requests-label" }]
@@ -93,7 +93,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -109,7 +109,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -124,7 +124,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -140,7 +140,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
 
             LabeledHandler.new(payload_parsed(:pull_request_labeled)).process
@@ -154,7 +154,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
 
             LabeledHandler.new(payload_parsed(:pull_request_labeled)).process
@@ -167,7 +167,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
 
             assert_no_difference -> { Shipit::Stack.count } do
@@ -181,7 +181,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -197,7 +197,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -218,7 +218,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :prevent_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] = []
@@ -234,7 +234,7 @@ module Shipit
             configure_provisioning_behavior(
               repository: repository,
               behavior: :allow_with_label,
-              label: "pull-requests-label"
+              label: "pull-requests-label",
             )
             payload = payload_parsed(:pull_request_labeled)
             payload["pull_request"]["labels"] << { "name" => "pull-requests-label" }
@@ -321,8 +321,8 @@ module Shipit
                       additions: 1,
                       deletions: 1,
                     },
-                  }
-                )
+                  },
+                ),
               )
           end
         end

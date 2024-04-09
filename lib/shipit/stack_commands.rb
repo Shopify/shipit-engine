@@ -83,7 +83,7 @@ module Shipit
           '--recursive',
           '--origin',
           'cache',
-          chdir: dir
+          chdir: dir,
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
@@ -93,7 +93,7 @@ module Shipit
           'checkout',
           '--quiet',
           commit.sha,
-          chdir: git_dir
+          chdir: git_dir,
         ).run! if commit
         yield Pathname.new(git_dir)
       end

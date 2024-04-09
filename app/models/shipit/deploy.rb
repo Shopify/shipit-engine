@@ -282,7 +282,7 @@ module Shipit
       when 'validating'
         append_release_status(
           'pending',
-          "The deploy on #{stack.environment} succeeded"
+          "The deploy on #{stack.environment} succeeded",
         ) unless stack.release_status_delay.zero?
 
         MarkDeployHealthyJob.set(wait: stack.release_status_delay)

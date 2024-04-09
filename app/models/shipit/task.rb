@@ -360,7 +360,7 @@ module Shipit
       update!(
         rollback_once_aborted: rollback_once_aborted,
         rollback_once_aborted_to: rollback_once_aborted_to,
-        aborted_by_id: aborted_by.id
+        aborted_by_id: aborted_by.id,
       )
 
       if alive?

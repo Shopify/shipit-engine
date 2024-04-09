@@ -15,14 +15,14 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: nil, completed_at: '2021-04-29T18:05:12Z')
+          github_check_run(conclusion: nil, completed_at: '2021-04-29T18:05:12Z'),
         )
       end
 
       assert_no_enqueued_jobs(only: RefreshCheckRunsJob) do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at + 1.minute)
+          github_check_run(conclusion: 'success', completed_at: completed_at + 1.minute),
         )
       end
 
@@ -34,14 +34,14 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at: completed_at),
         )
       end
 
       assert_enqueued_with(job: RefreshCheckRunsJob) do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: nil, completed_at: completed_at)
+          github_check_run(conclusion: nil, completed_at: completed_at),
         )
       end
 
@@ -78,7 +78,7 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at: completed_at),
         )
       end
 
@@ -110,7 +110,7 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at: completed_at),
         )
       end
 
@@ -120,7 +120,7 @@ module Shipit
         assert_no_enqueued_jobs(only: RefreshCheckRunsJob) do
           @commit.check_runs.create_or_update_from_github!(
             @stack.id,
-            github_check_run(conclusion: nil, completed_at: completed_at - 1.minute)
+            github_check_run(conclusion: nil, completed_at: completed_at - 1.minute),
           )
         end
       end
@@ -131,7 +131,7 @@ module Shipit
         assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do
           @commit.check_runs.create_or_update_from_github!(
             @stack.id,
-            github_check_run(conclusion: nil, completed_at: nil, started_at: nil)
+            github_check_run(conclusion: nil, completed_at: nil, started_at: nil),
           )
         end
       end

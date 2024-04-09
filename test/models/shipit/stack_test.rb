@@ -14,7 +14,7 @@ module Shipit
     test "branch defaults to default branch name" do
       @stack.branch = ""
       Shipit.github.api.expects(:repo).with("shopify/shipit-engine").returns(
-        Struct.new(:default_branch).new('something')
+        Struct.new(:default_branch).new('something'),
       )
       assert @stack.save
       assert_equal 'something', @stack.branch

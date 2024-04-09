@@ -30,7 +30,7 @@ module Shipit
               name: "deploy",
             },
           ],
-        }
+        },
       )
       stack = shipit_stacks(:review_stack)
       pull_request = stack.pull_request

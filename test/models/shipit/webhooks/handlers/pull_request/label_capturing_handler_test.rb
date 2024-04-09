@@ -198,8 +198,8 @@ module Shipit
                       additions: 1,
                       deletions: 1,
                     },
-                  }
-                )
+                  },
+                ),
               )
           end
         end

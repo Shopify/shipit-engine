@@ -112,7 +112,7 @@ module Shipit
       :supports_fetch_deployed_revision?,
       :supports_rollback?,
       to: :cached_deploy_spec,
-      allow_nil: true
+      allow_nil: true,
     )
 
     def self.refresh_deployed_revisions

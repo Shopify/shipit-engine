@@ -23,7 +23,7 @@ module Shipit
           def archive!(*args, &block)
             if stack.blank?
               Rails.logger.info(
-                "Processing #{action} event for #{repo_name} PR #{pr_number} but no Stack exists. Ignoring."
+                "Processing #{action} event for #{repo_name} PR #{pr_number} but no Stack exists. Ignoring.",
               )
               return true
             end
@@ -37,7 +37,7 @@ module Shipit
           def unarchive!(*args, &block)
             if stack.blank?
               Rails.logger.info(
-                "Processing #{action} event for #{repo_name} PR #{pr_number} but no ReviewStack exists. Creating."
+                "Processing #{action} event for #{repo_name} PR #{pr_number} but no ReviewStack exists. Creating.",
               )
               return create!
             end
@@ -75,7 +75,7 @@ module Shipit
               stack
                 .build_pull_request
                 .update!(
-                  github_pull_request: params.pull_request
+                  github_pull_request: params.pull_request,
                 )
             end
 

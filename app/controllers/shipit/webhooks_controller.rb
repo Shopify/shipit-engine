@@ -25,7 +25,7 @@ module Shipit
       github_app = Shipit.github(organization: repository_owner)
       verified = github_app.verify_webhook_signature(
         request.headers['X-Hub-Signature'],
-        request.raw_post
+        request.raw_post,
       )
       head(422) unless verified
 
