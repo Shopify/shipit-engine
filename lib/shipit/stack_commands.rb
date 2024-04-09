@@ -116,7 +116,7 @@ module Shipit
     end
 
     def modern_git_args
-      return [] unless git_version >= Gem::Version.new('1.7.10')
+      return [] if git_version < Gem::Version.new('1.7.10')
 
       %w(--single-branch)
     end
