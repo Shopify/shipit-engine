@@ -539,7 +539,8 @@ module Shipit
       assert_equal [
         { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
         { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
-      ], @spec.review_monitoring
+      ],
+        @spec.review_monitoring
     end
 
     test "#review_monitoring returns an empty array if the section is missing" do

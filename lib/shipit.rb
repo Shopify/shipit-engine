@@ -65,7 +65,10 @@ module Shipit
 
   delegate :table_name_prefix, to: :secrets
 
-  attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks, :respect_bare_shipit_file,
+  attr_accessor :disable_api_authentication,
+    :timeout_exit_codes,
+    :deployment_checks,
+    :respect_bare_shipit_file,
     :database_serializer
   attr_writer(
     :internal_hook_receivers,

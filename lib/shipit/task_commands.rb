@@ -64,7 +64,8 @@ module Shipit
           'clone',
           '--quiet',
           '--local',
-          '--origin', 'cache',
+          '--origin',
+          'cache',
           @stack.git_path,
           @task.working_directory,
           chdir: @stack.deploys_path

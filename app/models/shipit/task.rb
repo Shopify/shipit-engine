@@ -207,7 +207,9 @@ module Shipit
       error!
     end
 
-    delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, :async_update_estimated_deploy_duration,
+    delegate :acquire_git_cache_lock,
+      :async_refresh_deployed_revision,
+      :async_update_estimated_deploy_duration,
       to: :stack
 
     delegate :checklist, to: :definition
