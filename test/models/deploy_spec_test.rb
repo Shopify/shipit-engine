@@ -393,11 +393,13 @@ module Shipit
     end
 
     test "#deploy_variables returns an array of VariableDefinition instances" do
-      @spec.stubs(:load_config).returns('deploy' => { 'variables' => [{
-        'name' => 'SAFETY_DISABLED',
-        'title' => 'Set to 1 to do dangerous things',
-        'default' => 0,
-      }] })
+      @spec.stubs(:load_config).returns('deploy' => {
+        'variables' => [{
+          'name' => 'SAFETY_DISABLED',
+          'title' => 'Set to 1 to do dangerous things',
+          'default' => 0,
+        }],
+      })
 
       assert_equal 1, @spec.deploy_variables.size
       variable_definition = @spec.deploy_variables.first
@@ -496,22 +498,24 @@ module Shipit
 
     test "task definitions returns an array of VariableDefinition instances" do
       @spec.expects(:load_config).returns('tasks' =>
-        { 'restart' =>
-          {
-            'variables' => [
-              {
-                'name' => 'SAFETY_DISABLED',
-                'title' => 'Set to 1 to do dangerous things',
-                'default' => 0,
-              },
-              {
-                'name' => 'FOO',
-                'title' => 'Set to 0 to foo',
-                'default' => 1,
-              },
-            ],
-            'steps' => %w(foo),
-          } })
+        {
+          'restart' =>
+                    {
+                      'variables' => [
+                        {
+                          'name' => 'SAFETY_DISABLED',
+                          'title' => 'Set to 1 to do dangerous things',
+                          'default' => 0,
+                        },
+                        {
+                          'name' => 'FOO',
+                          'title' => 'Set to 0 to foo',
+                          'default' => 1,
+                        },
+                      ],
+                      'steps' => %w(foo),
+                    },
+        })
 
       assert_equal 2, @spec.task_definitions.first.variables.size
       variable_definition = @spec.task_definitions.first.variables.first
@@ -532,10 +536,12 @@ module Shipit
     end
 
     test "#review_monitoring returns an array of hashes" do
-      @spec.expects(:load_config).returns('review' => { 'monitoring' => [
-        { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
-        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
-      ] })
+      @spec.expects(:load_config).returns('review' => {
+        'monitoring' => [
+          { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
+          { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
+        ],
+      })
       assert_equal [
         { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
         { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },

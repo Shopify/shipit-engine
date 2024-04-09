@@ -93,7 +93,8 @@ module Shipit
     end
 
     validates :repository, uniqueness: {
-      scope: %i(environment), case_sensitive: false,
+      scope: %i(environment),
+      case_sensitive: false,
       message: 'cannot be used more than once with this environment. Check archived stacks.',
     }
     validates :environment, format: { with: /\A[a-z0-9\-_\:]+\z/ }, length: { maximum: ENVIRONMENT_MAX_SIZE }

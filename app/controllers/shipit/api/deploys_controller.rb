@@ -22,11 +22,13 @@ module Shipit
         param_error!(:require_ci, "Commit is not deployable") if params.require_ci && !commit.deployable?
 
         allow_concurrency = params.allow_concurrency.nil? ? params.force : params.allow_concurrency
-        deploy = stack.trigger_deploy(commit,
+        deploy = stack.trigger_deploy(
+          commit,
           current_user,
           env: params.env,
           force: params.force,
-          allow_concurrency: allow_concurrency)
+          allow_concurrency: allow_concurrency,
+        )
         render_resource(deploy, status: :accepted)
       end
     end

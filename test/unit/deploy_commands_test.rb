@@ -208,9 +208,14 @@ module Shipit
       commands = @commands.clone
       assert_equal 2, commands.size
       clone_args = [
-        'git', 'clone', '--quiet',
-        '--local', '--origin', 'cache',
-        @stack.git_path.to_s, @deploy.working_directory,
+        'git',
+        'clone',
+        '--quiet',
+        '--local',
+        '--origin',
+        'cache',
+        @stack.git_path.to_s,
+        @deploy.working_directory,
       ]
       assert_equal clone_args, commands.first.args
       assert_equal ['git', 'remote', 'add', 'origin', @stack.repo_git_url.to_s], commands.second.args
@@ -224,7 +229,11 @@ module Shipit
     test "#checkout checks out the deployed commit" do
       command = @commands.checkout(@deploy.until_commit)
       checkout_args = [
-        'git', '-c', 'advice.detachedHead=false', 'checkout', '--quiet',
+        'git',
+        '-c',
+        'advice.detachedHead=false',
+        'checkout',
+        '--quiet',
         @deploy.until_commit.sha,
       ]
       assert_equal checkout_args, command.args
