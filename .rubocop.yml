@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   Exclude:
     - tmp/*
@@ -42,6 +40,11 @@ Lint/RescueException:
   Exclude:
     - app/models/shipit/task_execution_strategy/default.rb
 
+Lint/MissingCopEnableDirective:
+  Exclude:
+    - 'lib/shipit/stack_commands.rb'
+    - 'lib/shipit/task_commands.rb'
+
 Lint/SuppressedException:
   Enabled: false
 
@@ -63,6 +66,32 @@ Style/WordArray:
 
 Style/SymbolArray:
   Enabled: false
+
+Style/ClassMethodsDefinitions:
+  Exclude:
+    - 'app/models/shipit/commit.rb'
+    - 'app/models/shipit/deploy.rb'
+    - 'app/models/shipit/merge_request.rb'
+    - 'app/models/shipit/repository.rb'
+    - 'app/models/shipit/review_stack.rb'
+    - 'app/models/shipit/review_stack_provisioning_queue.rb'
+    - 'app/models/shipit/stack.rb'
+    - 'app/models/shipit/task.rb'
+    - 'app/models/shipit/user.rb'
+    - 'app/models/shipit/webhooks/handlers/handler.rb'
+    - 'lib/shipit/simple_message_verifier.rb'
+    - 'test/models/shipit/stack_test.rb'
+    - 'test/unit/shipit_deployment_checks_test.rb'
+
+Style/OpenStructUse:
+  Exclude:
+    - 'test/jobs/update_github_last_deployed_ref_job_test.rb'
+    - 'test/models/commits_test.rb'
+    - 'test/models/shipit/check_run_test.rb'
+    - 'test/models/shipit/webhooks/handlers/pull_request/review_stack_adapter_test.rb'
+    - 'test/models/status_test.rb'
+    - 'test/unit/github_app_test.rb'
+    - 'test/unit/github_apps_test.rb'
 
 Naming/InclusiveLanguage:
   Enabled: false
