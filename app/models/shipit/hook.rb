@@ -52,7 +52,7 @@ module Shipit
       end
 
       def signature
-        return nil if secret.blank?
+        return if secret.blank?
 
         DeliverySigner.new(secret).sign(payload)
       end

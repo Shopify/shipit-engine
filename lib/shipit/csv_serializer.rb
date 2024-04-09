@@ -11,7 +11,7 @@ module Shipit
     end
 
     def dump(array)
-      return nil if array.blank?
+      return if array.blank?
 
       Array.wrap(array).join(',')
     end

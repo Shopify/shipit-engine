@@ -115,7 +115,7 @@ module Shipit
   module SafeJSON
     class << self
       def load(serial)
-        return nil if serial.nil?
+        return if serial.nil?
 
         # JSON.load is unsafe, we should use parse instead
         JSON.parse(serial)
@@ -172,7 +172,7 @@ module Shipit
   end
 
   def github_default_organization
-    return nil unless secrets&.github
+    return unless secrets&.github
 
     org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
