@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module DeploysHelper
     def render_checklist(checklist)

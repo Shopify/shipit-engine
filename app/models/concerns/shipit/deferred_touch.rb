@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module DeferredTouch
     extend ActiveSupport::Concern

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LinksHelper
   LINKS_PATTERN = /\<(.*?)\>; rel="(\w+)"/
 

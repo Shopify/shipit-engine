@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitDeploymentStatus < Record
     DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB = 140

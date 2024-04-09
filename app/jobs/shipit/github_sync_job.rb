@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique

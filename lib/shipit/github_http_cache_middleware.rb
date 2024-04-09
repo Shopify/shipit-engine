@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GitHubHTTPCacheMiddleware < Faraday::Middleware
     def call(request_env)

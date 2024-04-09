@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Team < Record
     REQUIRED_HOOKS = %i(membership).freeze

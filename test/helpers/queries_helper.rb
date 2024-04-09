@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module QueriesHelper
   def assert_no_queries(ignored_sql = nil, &block)
     assert_queries(0, ignored_sql, &block)

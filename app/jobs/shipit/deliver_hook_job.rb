@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeliverHookJob < BackgroundJob
     queue_as :hooks

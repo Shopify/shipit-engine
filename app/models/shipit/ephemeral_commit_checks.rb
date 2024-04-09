@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class EphemeralCommitChecks
     FINAL_STATUSES = %w(failed error success).freeze

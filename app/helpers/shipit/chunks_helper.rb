@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module ChunksHelper
     def next_chunks_url(task, last_byte: 0)

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class EnvironmentVariables
     NotPermitted = Class.new(StandardError)

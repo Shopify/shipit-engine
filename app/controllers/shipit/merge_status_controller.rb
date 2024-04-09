@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class MergeStatusController < ShipitController
     skip_authentication only: %i(check show)

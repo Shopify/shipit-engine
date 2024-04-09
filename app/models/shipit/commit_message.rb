@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitMessage
     GITHUB_MERGE_COMMIT_PATTERN = /\AMerge pull request #(?<pr_id>\d+) from \S+\n\n(?<pr_title>.*)/

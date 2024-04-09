@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Shipit::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   repository_id_format = %r{[^/]+/[^/]+}
