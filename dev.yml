@@ -7,8 +7,7 @@ type: rails
 up:
   - packages:
     - sqlite
-  - ruby:
-      version: 3.0.3
+  - ruby
   - isogun
   - bundler:
       without: ci
