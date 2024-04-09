@@ -37,7 +37,7 @@ module QueriesHelper
 
     # FIXME: this needs to be refactored so specific database can add their own
     # ignored SQL.  This ignored SQL is for Oracle.
-    ignored_sql.concat([/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im])
+    ignored_sql.push(/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im)
 
     attr_reader :ignore
     attr_reader :log
