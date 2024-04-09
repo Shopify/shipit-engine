@@ -16,7 +16,7 @@ module Shipit
 
       params do
         requires :delivery_url, String
-        requires :events, Array[String]
+        requires :events, [String]
         accepts :content_type, String
       end
       def create
@@ -25,7 +25,7 @@ module Shipit
 
       params do
         accepts :delivery_url, String
-        accepts :events, Array[String]
+        accepts :events, [String]
         accepts :content_type, String
       end
       def update
