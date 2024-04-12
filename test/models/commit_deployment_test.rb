@@ -32,5 +32,15 @@ module Shipit
       assert_equal deployment_response.id, @deployment.github_id
       assert_equal deployment_response.url, @deployment.api_url
     end
+
+    test "#create_on_github! enqueues creation job for each associated status" do
+      deployment_response = stub(id: 42, url: 'https://example.com')
+      @author.github_api.expects(:create_deployment).returns(deployment_response)
+      status = @deployment.statuses.create!(status: "in_progress")
+
+      assert_enqueued_with(job: CreateOnGithubJob, args: [status]) do
+        @deployment.create_on_github!
+      end
+    end
   end
 end

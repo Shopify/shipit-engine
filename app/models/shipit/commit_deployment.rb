@@ -10,7 +10,7 @@ module Shipit
 
     def create_on_github!
       create_deployment_on_github!
-      statuses.order(id: :asc).each(&:create_on_github!)
+      statuses.order(id: :asc).each { |status| CreateOnGithubJob.perform_later(status) }
     rescue Octokit::NotFound, Octokit::Forbidden => error
       Rails.logger.warn("Got #{error.class.name} creating deployment or statuses: #{error.message}")
       # If no one can create the deployment we can only give up
