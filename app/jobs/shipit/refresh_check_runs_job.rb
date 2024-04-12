@@ -8,7 +8,9 @@ module Shipit
         Commit.find(params[:commit_id]).refresh_check_runs!
       else
         stack = Stack.find(params[:stack_id])
-        stack.commits.order(id: :desc).limit(30).each(&:refresh_check_runs!)
+        stack.commits.order(id: :desc).limit(30).each do |commit|
+          RefreshCheckRunsJob.perform_later(commit_id: commit.id)
+        end
       end
     end
   end
