@@ -5,8 +5,14 @@ module Shipit
       attr_accessor :timeout
     end
 
+    DEFAULT_RETRY_TIME_IN_SECONDS = 30
+
     # Write actions can sometimes fail intermittently, particulary for large and/or busy repositories
     retry_on(Octokit::BadGateway, Octokit::InternalServerError)
+
+    rescue_from(Octokit::TooManyRequests, Octokit::AbuseDetected) do |exception|
+      retry_job wait: exception.response_headers.fetch("Retry-After", DEFAULT_RETRY_TIME_IN_SECONDS)
+    end
 
     def perform(*)
       with_timeout do
