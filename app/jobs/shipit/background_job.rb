@@ -11,7 +11,7 @@ module Shipit
     retry_on(Octokit::BadGateway, Octokit::InternalServerError)
 
     rescue_from(Octokit::TooManyRequests, Octokit::AbuseDetected) do |exception|
-      retry_job wait: exception.response_headers.fetch("Retry-After", DEFAULT_RETRY_TIME_IN_SECONDS)
+      retry_job wait: exception.response_headers.fetch("Retry-After", DEFAULT_RETRY_TIME_IN_SECONDS).to_i
     end
 
     def perform(*)
