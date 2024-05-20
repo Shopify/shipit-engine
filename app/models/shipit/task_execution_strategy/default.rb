@@ -94,7 +94,7 @@ module Shipit
           @task.write(line)
         end
         finished_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        @task.write("pid: #{command.pid} finished in: #{finished_at - started_at} seconds\n")
+        @task.write("pid: #{command.pid} finished in: #{(finished_at - started_at).round(3)} seconds\n")
         command.success?
       end
 
