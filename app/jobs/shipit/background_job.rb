@@ -6,7 +6,7 @@ module Shipit
     end
 
     # Write actions can sometimes fail intermittently, particulary for large and/or busy repositories
-    retry_on(Octokit::BadGateway, Octokit::InternalServerError)
+    retry_on(Octokit::ServerError)
 
     def perform(*)
       with_timeout do
