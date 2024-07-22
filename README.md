@@ -615,7 +615,7 @@ review:
 
 <h3 id="shell-commands-timeout">Shell commands timeout</h3>
 
-All the shell commands can take an optional `timeout` parameter to limit their duration:
+All the shell commands can take an optional `timeout` parameter. This is the value in seconds that a command can be inactive before Shipit will terminate the task.
 
 ```yml
 deploy:
