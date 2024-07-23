@@ -9,7 +9,7 @@
           <% if variable.select %>
             <%= field.select variable.name, options_for_select([["Please select...", { disabled: "disabled" }]] + variable.select, variable.default || "Please select...") %>
           <% else %>
-            <%= field.text_field variable.name, value: variable.default %>
+            <%= field.text_field variable.name, value: params[variable.name].presence || variable.default %>
           <% end %>
           <%= field.label variable.name, variable.title || variable.name %>
         </p>

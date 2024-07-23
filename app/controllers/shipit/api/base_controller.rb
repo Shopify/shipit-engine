@@ -93,8 +93,8 @@ module Shipit
         render(status: :not_found, json: { status: '404', error: 'Not Found' })
       end
 
-      def conflict(_error)
-        render(status: :conflict, json: { status: '409', error: 'Conflict' })
+      def conflict(error)
+        render(status: :conflict, json: { status: '409', error: error.message })
       end
     end
   end

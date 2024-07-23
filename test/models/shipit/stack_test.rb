@@ -3,7 +3,7 @@ require 'test_helper'
 require 'securerandom'
 
 module Shipit
-  class StacksTest < ActiveSupport::TestCase
+  class StackTest < ActiveSupport::TestCase
     def setup
       @stack = shipit_stacks(:shipit)
       @expected_base_path = Rails.root.join('data', 'stacks', @stack.to_param).to_s
@@ -276,6 +276,36 @@ module Shipit
       assert_queries(1) do
         10.times { @stack.active_task? }
       end
+    end
+
+    test "#active_task? is false if stack has a concurrent deploy in active state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new, force: true)
+      refute @stack.active_task?
+    end
+
+    test "#occupied? is false if stack has no deploy in either pending or running state" do
+      @stack.deploys.active.destroy_all
+      refute @stack.occupied?
+    end
+
+    test "#occupied? is false if stack has no deploy at all" do
+      @stack.deploys.destroy_all
+      refute @stack.occupied?
+    end
+
+    test "occupied? is true if stack has a concurrent deploy in active state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new, force: true)
+      assert @stack.occupied?
+    end
+
+    test "occupied? is true if stack has a deploy in pending state" do
+      @stack.trigger_deploy(shipit_commits(:third), AnonymousUser.new)
+      assert @stack.occupied?
+    end
+
+    test "#occupied? is true if a rollback is ongoing" do
+      shipit_deploys(:shipit_complete).trigger_rollback(AnonymousUser.new)
+      assert @stack.occupied?
     end
 
     test "#deployable? returns true if the stack is not locked, not awaiting provision, and is not deploying" do
@@ -674,16 +704,29 @@ module Shipit
       assert_equal shipit_commits(:fifth), @stack.next_commit_to_deploy
     end
 
-    test "#next_commit_to_deploy respects the deploy.max_commits directive" do
+    test "#next_commit_to_deploy respects the deploy.max_commits directive given the commit is deployable" do
       @stack.tasks.destroy_all
 
-      fifth_commit = shipit_commits(:third)
-      fifth_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
-      assert_predicate fifth_commit, :deployable?
+      third_commit = shipit_commits(:third)
+      third_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
+      assert_predicate third_commit, :deployable?
 
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
 
       @stack.expects(:maximum_commits_per_deploy).returns(3).at_least_once
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
+    end
+
+    test "#next_commit_to_deploy deploys the first deployable commit when deploy.max_commits directive fails to find a deployable commit" do
+      @stack.tasks.destroy_all
+
+      third_commit = shipit_commits(:third)
+      third_commit.statuses.create!(stack_id: @stack.id, state: 'success', context: 'ci/travis')
+      assert_predicate third_commit, :deployable?
+
+      assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
+
+      @stack.expects(:maximum_commits_per_deploy).returns(1).at_least_once
       assert_equal shipit_commits(:third), @stack.next_commit_to_deploy
     end
 

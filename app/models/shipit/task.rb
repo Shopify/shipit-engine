@@ -3,7 +3,11 @@ module Shipit
   class Task < Record
     include DeferredTouch
 
-    ConcurrentTaskRunning = Class.new(StandardError)
+    class ConcurrentTaskRunning < StandardError
+      def message
+        "A task is already running."
+      end
+    end
 
     PRESENCE_CHECK_TIMEOUT = 30
     ACTIVE_STATUSES = %w(pending running aborting).freeze
@@ -54,8 +58,8 @@ module Shipit
       end
     end
 
-    serialize :definition, TaskDefinition
-    serialize :env, Shipit.serialized_column(:env, coder: EnvHash)
+    serialize :definition, coder: TaskDefinition
+    serialize :env, coder: Shipit.serialized_column(:env, coder: EnvHash)
 
     scope :success, -> { where(status: 'success') }
     scope :completed, -> { where(status: COMPLETED_STATUSES) }

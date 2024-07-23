@@ -125,7 +125,7 @@ module Shipit
         created_at: 1.day.ago,
       )])
 
-      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, head_sha).returns(stub(
+      response = stub(rels: {}, data: stub(
         check_runs: [stub(
           id: 123456,
           name: 'check run',
@@ -140,6 +140,8 @@ module Shipit
         )]
       ))
 
+      Shipit.github.api.expects(:last_response).returns(response)
+      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, head_sha, per_page: 100).returns(response.data)
       merge_request.refresh!
 
       assert_predicate merge_request, :mergeable?
@@ -243,7 +245,10 @@ module Shipit
     end
 
     test "status transitions emit hooks" do
-      job = assert_enqueued_with(job: EmitEventJob) do
+      expected_args = ->(job_args) do
+        job_args.first[:event] == 'merge'
+      end
+      job = assert_enqueued_with(job: EmitEventJob, args: expected_args) do
         @pr.reject!('merge_conflict')
       end
       params = job.arguments.first

@@ -25,8 +25,8 @@ This guide aims to help you [set up](#installation-and-setup), [use](#using-ship
 **II. USING SHIPIT**
 
 * [Adding stacks](#adding-stacks)
-* [Working on stacks](#working-on-stacks),
-* [Configuring stacks](#configuring-stacks).
+* [Working on stacks](#working-on-stacks)
+* [Configuring stacks](#configuring-stacks)
 
 **III. REFERENCE**
 
@@ -357,6 +357,11 @@ For example:
 fetch:
   curl --silent https://app.example.com/services/ping/version
 ```
+
+**Note:** Currently, deployments in emergency mode are configured to occur concurrently via [the `build_deploy` method](https://github.com/Shopify/shipit-engine/blob/main/app/models/shipit/stack.rb),
+whose `allow_concurrency` keyword argument defaults to `force`, where `force` is true when emergency mode is enabled. 
+If you'd like to separate these two from one another, override this method as desired in your service.
+
 <h3 id="kubernetes">Kubernetes</h3>
 
 **<code>kubernetes</code>** allows to specify a Kubernetes namespace and context to deploy to.
@@ -610,7 +615,7 @@ review:
 
 <h3 id="shell-commands-timeout">Shell commands timeout</h3>
 
-All the shell commands can take an optional `timeout` parameter to limit their duration:
+All the shell commands can take an optional `timeout` parameter. This is the value in seconds that a command can be inactive before Shipit will terminate the task.
 
 ```yml
 deploy:
@@ -641,7 +646,7 @@ Your deploy scripts have access to the following environment variables:
 * `GITHUB_REPO_OWNER`: The GitHub username of the repository owner for the current deploy/task.
 * `EMAIL`: Email of the user that triggered the deploy/task (if available)
 * `ENVIRONMENT`: The stack environment (e.g `production` / `staging`)
-* `BRANCH`: The stack branch (e.g `master`)
+* `BRANCH`: The stack branch (e.g `main`)
 * `LAST_DEPLOYED_SHA`: The git SHA of the last deployed commit
 * `DIFF_LINK`: URL to the diff on GitHub.
 * `TASK_ID`: ID of the task that is running

@@ -101,7 +101,7 @@ module Shipit
 
     validates :lock_reason, length: { maximum: 4096 }
 
-    serialize :cached_deploy_spec, DeploySpec
+    serialize :cached_deploy_spec, coder: DeploySpec
     delegate(
       :provisioning_handler_name,
       :find_task_definition,
@@ -150,14 +150,14 @@ module Shipit
       task
     end
 
-    def build_deploy(until_commit, user, env: nil, force: false)
+    def build_deploy(until_commit, user, env: nil, force: false, allow_concurrency: force)
       since_commit = last_deployed_commit.presence || commits.first
       deploys.build(
         user_id: user.id,
         until_commit: until_commit,
         since_commit: since_commit,
         env: filter_deploy_envs(env&.to_h || {}),
-        allow_concurrency: force,
+        allow_concurrency: allow_concurrency,
         ignored_safeties: force || !until_commit.deployable?,
         max_retries: retries_on_deploy,
       )
@@ -226,8 +226,12 @@ module Shipit
 
     def next_commit_to_deploy
       commits_to_deploy = commits.order(id: :asc).newer_than(last_deployed_commit).reachable.preload(:statuses)
-      commits_to_deploy = commits_to_deploy.limit(maximum_commits_per_deploy) if maximum_commits_per_deploy
-      commits_to_deploy.to_a.reverse.find(&:deployable?)
+      if maximum_commits_per_deploy
+        commits_with_max_applied = commits_to_deploy.limit(maximum_commits_per_deploy)
+        deployable_commits(commits_with_max_applied) || deployable_commits(commits_to_deploy)
+      else
+        deployable_commits(commits_to_deploy)
+      end
     end
 
     def deployed_too_recently?
@@ -453,6 +457,14 @@ module Shipit
       @active_task ||= tasks.current
     end
 
+    def occupied?
+      !!occupied
+    end
+
+    def occupied
+      @occupied ||= tasks.active.last
+    end
+
     def locked?
       lock_reason.present?
     end
@@ -619,6 +631,10 @@ module Shipit
     end
 
     private
+
+    def deployable_commits(commits)
+      commits.to_a.reverse.find(&:deployable?)
+    end
 
     def clear_cache
       remove_instance_variable(:@active_task) if defined?(@active_task)

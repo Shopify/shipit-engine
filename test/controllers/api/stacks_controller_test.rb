@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class StacksControllerTest < ActionController::TestCase
+    class StacksControllerTest < ApiControllerTestCase
       setup do
         authenticate!
         @stack = shipit_stacks(:shipit)
@@ -114,6 +114,57 @@ module Shipit
         refute @stack.continuous_deployment
       end
 
+      test "#update does not perform archive when key is not provided" do
+        refute_predicate @stack, :archived?
+        refute_predicate @stack, :locked?
+
+        patch :update, params: { id: @stack.to_param }
+
+        @stack.reload
+        refute_predicate @stack, :archived?
+        refute_predicate @stack, :locked?
+      end
+
+      test "#update does not perform unarchive when key is not provided" do
+        @stack.archive!(shipit_users(:walrus))
+        assert_predicate @stack, :locked?
+        assert_predicate @stack, :archived?
+
+        patch :update, params: { id: @stack.to_param }
+
+        @stack.reload
+        assert_predicate @stack, :locked?
+        assert_predicate @stack, :archived?
+      end
+
+      test "#update allows to archive the stack" do
+        refute_predicate @stack, :archived?
+        refute_predicate @stack, :locked?
+
+        patch :update, params: { id: @stack.to_param, archived: true }
+
+        @stack.reload
+        assert_predicate @stack, :locked?
+        assert_predicate @stack, :archived?
+        assert_instance_of AnonymousUser, @stack.lock_author
+        assert_equal "Archived", @stack.lock_reason
+      end
+
+      test "#update allows to unarchive the stack" do
+        @stack.archive!(shipit_users(:walrus))
+        assert_predicate @stack, :locked?
+        assert_predicate @stack, :archived?
+
+        patch :update, params: { id: @stack.to_param, archived: false }
+
+        @stack.reload
+        refute_predicate @stack, :archived?
+        refute_predicate @stack, :locked?
+        assert_nil @stack.locked_since
+        assert_nil @stack.lock_reason
+        assert_instance_of AnonymousUser, @stack.lock_author
+      end
+
       test "#index returns a list of stacks" do
         stack = Stack.last
         get :index
@@ -211,6 +262,15 @@ module Shipit
       test "#refresh queues a GithubSyncJob" do
         assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
           post :refresh, params: { id: @stack.to_param }
+        end
+        assert_response :accepted
+      end
+
+      test "#refresh queues a RefreshStatusesJob and RefreshCheckRunsJob" do
+        assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
+          assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do
+            post :refresh, params: { id: @stack.to_param }
+          end
         end
         assert_response :accepted
       end

@@ -13,6 +13,16 @@ module Shipit
       super.merge(@stack.env)
     end
 
+    def fetch_commit(commit)
+      create_directories
+      if valid_git_repository?(@stack.git_path)
+        git('fetch', 'origin', '--quiet', '--tags', commit.sha, env: env, chdir: @stack.git_path)
+      else
+        @stack.clear_git_cache!
+        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
+      end
+    end
+
     def fetch
       create_directories
       if valid_git_repository?(@stack.git_path)
@@ -48,12 +58,12 @@ module Shipit
     end
 
     def build_cacheable_deploy_spec
-      with_temporary_working_directory do |dir|
+      with_temporary_working_directory(recursive: false) do |dir|
         DeploySpec::FileSystem.new(dir, @stack.environment).cacheable
       end
     end
 
-    def with_temporary_working_directory(commit: nil)
+    def with_temporary_working_directory(commit: nil, recursive: true)
       commit ||= @stack.last_deployed_commit.presence || @stack.commits.reachable.last
 
       if !commit || !fetched?(commit).tap(&:run).success?
@@ -64,15 +74,24 @@ module Shipit
         end
       end
 
+      git_args = []
+      git_args << '--recursive' if recursive
       Dir.mktmpdir do |dir|
         git(
           'clone', @stack.git_path, @stack.repo_name,
-          '--recursive', '--origin', 'cache',
+          *git_args, '--origin', 'cache',
           chdir: dir
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
-        git('-c', 'advice.detachedHead=false', 'checkout', commit.sha, chdir: git_dir).run! if commit
+        git(
+          '-c',
+          'advice.detachedHead=false',
+          'checkout',
+          '--quiet',
+          commit.sha,
+          chdir: git_dir
+        ).run! if commit
         yield Pathname.new(git_dir)
       end
     end

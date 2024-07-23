@@ -3,7 +3,7 @@ require 'test_helper'
 
 module Shipit
   module Api
-    class CCMenuControllerTest < ActionController::TestCase
+    class CCMenuControllerTest < ApiControllerTestCase
       setup do
         authenticate!
         @stack = shipit_stacks(:shipit)

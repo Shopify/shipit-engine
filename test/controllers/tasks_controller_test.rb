@@ -11,9 +11,16 @@ module Shipit
       session[:user_id] = shipit_users(:walrus).id
     end
 
-    test "tasks defined in the shipit.yml can be displayed" do
+    test "tasks defined in the shipit.yml can be displayed with default variable values" do
       get :new, params: { stack_id: @stack, definition_id: @definition.id }
       assert_response :ok
+      assert_select 'input[name="task[env][FOO]"][value="1"]'
+    end
+
+    test "it is possible to provide a default value override for a task" do
+      get :new, params: { stack_id: @stack, definition_id: @definition.id, FOO: '42' }
+      assert_response :ok
+      assert_select 'input[name="task[env][FOO]"][value="42"]'
     end
 
     test "tasks defined in the shipit.yml can't be triggered if the stack is being deployed" do

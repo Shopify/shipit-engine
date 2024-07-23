@@ -2,7 +2,7 @@
 # rubocop:disable Lint/MissingSuper
 module Shipit
   class TaskCommands < Commands
-    delegate :fetch, :fetched?, to: :stack_commands
+    delegate :fetch_commit, :fetch, :fetched?, to: :stack_commands
 
     def initialize(task)
       @task = task
@@ -47,7 +47,14 @@ module Shipit
     end
 
     def checkout(commit)
-      git('-c', 'advice.detachedHead=false', 'checkout', commit.sha, chdir: @task.working_directory)
+      git(
+        '-c',
+        'advice.detachedHead=false',
+        'checkout',
+        '--quiet',
+        commit.sha,
+        chdir: @task.working_directory
+      )
     end
 
     def clone

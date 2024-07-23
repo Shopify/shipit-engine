@@ -1,5 +1,26 @@
 # Unreleased
 
+# 0.39.0
+
+* Minimum Ruby version is now Ruby 3.0
+* Upgraded to Rails 7.1.1
+* Upgraded Octokit to 5.6.1 (#1327)
+* Migrate from legacy Rails secrets to credentials (#1326)
+  * Rails secrets were [deprecated in Rails 7.1](https://github.com/rails/rails/pull/48472)
+  * [Guide on credentials](https://guides.rubyonrails.org/security.html#custom-credentials)
+* For deployments, `allow_concurrency` defaults to the same value as `force`. If wanted, it can be set separately by passing the intended value for `allow_concurrency` to `build_deploy` method
+
+# 0.38.0
+
+* Convert `commit_deployment_statuses.github_id` to bigint (#1312)
+* Allow to lock and archive stacks from the API (#1282)
+* Hide API tokens from the user interface after the initial creation (#1298)
+
+# 0.37.0
+
+* Suppress progress output for git checkout (#1278)
+* Make API refresh action match non-API refresh action for stacks (#1277)
+
 # 0.36.1
 
 * Fix compatibility with Rails 7.0.3.1 (YAML serialized fields). (#1273)

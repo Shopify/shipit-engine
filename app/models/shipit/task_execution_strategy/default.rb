@@ -70,7 +70,7 @@ module Shipit
           @task.acquire_git_cache_lock do
             @task.ping
             unless @commands.fetched?(@task.until_commit).tap(&:run).success?
-              capture!(@commands.fetch)
+              capture!(@commands.fetch_commit(@task.until_commit))
             end
           end
         end
@@ -94,7 +94,7 @@ module Shipit
           @task.write(line)
         end
         finished_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        @task.write("pid: #{command.pid} finished in: #{finished_at - started_at} seconds\n")
+        @task.write("pid: #{command.pid} finished in: #{(finished_at - started_at).round(3)} seconds\n")
         command.success?
       end
 

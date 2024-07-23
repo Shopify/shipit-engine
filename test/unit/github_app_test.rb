@@ -202,7 +202,7 @@ module Shipit
     end
 
     def default_config
-      Rails.application.secrets.github.deep_dup
+      Rails.application.credentials.github.deep_dup
     end
   end
 end

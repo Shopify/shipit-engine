@@ -5,10 +5,9 @@ name: shipit-engine
 type: rails
 
 up:
-  - homebrew:
+  - packages:
     - sqlite
-  - ruby:
-      version: 2.7.5
+  - ruby
   - isogun
   - bundler:
       without: ci

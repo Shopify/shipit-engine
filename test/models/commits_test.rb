@@ -353,10 +353,11 @@ module Shipit
         completed_at: Time.now,
         started_at: Time.now - 1.minute,
       )
-      response = mock(
+      response = stub(rels: {}, data: mock(
         check_runs: [check_run],
-      )
-      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, @commit.sha).returns(response)
+      ))
+      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns(response.data)
+      Shipit.github.api.expects(:last_response).returns(response)
 
       assert_difference -> { @commit.check_runs.count }, 1 do
         @commit.refresh_check_runs!

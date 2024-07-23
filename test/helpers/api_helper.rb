@@ -8,3 +8,16 @@ module ApiHelper
     request.headers['Authorization'] = "Basic #{Base64.encode64(client.authentication_token)}"
   end
 end
+
+module Shipit
+  class ApiControllerTestCase < ActionController::TestCase
+    private
+
+    def process(_action, **kwargs)
+      if kwargs[:method] != "GET"
+        kwargs[:as] ||= :json
+      end
+      super
+    end
+  end
+end

@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"] - Dir["test/dummy/tmp/**/*"] - Dir["test/dummy/log/**/*"]
 
+  s.required_ruby_version = '>= 3.0.0'
+
   s.add_dependency('active_model_serializers', '~> 0.9.3')
   s.add_dependency('ansi_stream', '~> 0.0.6')
   s.add_dependency('autoprefixer-rails', '~> 6.4.1')
@@ -27,10 +29,10 @@ Gem::Specification.new do |s|
   s.add_dependency('gemoji', '~> 2.1')
   s.add_dependency('jquery-rails', '~> 4.4')
   s.add_dependency('lodash-rails', '~> 4.17')
-  s.add_dependency('octokit', '~> 4.20')
+  s.add_dependency('octokit', '~> 5.6.0')
   s.add_dependency('omniauth-github', '~> 1.4')
   s.add_dependency('pubsubstub', '~> 0.2.0')
-  s.add_dependency('rails', '~> 7.0.0')
+  s.add_dependency('rails', '~> 7.1.1')
   s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rails_autolink', '~> 1.1.6')
   s.add_dependency('rake')
