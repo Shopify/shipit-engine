@@ -219,7 +219,7 @@ module Shipit
     end
 
     def spec
-      @spec ||= DeploySpec::FileSystem.new(working_directory, stack.environment)
+      @spec ||= DeploySpec::FileSystem.new(working_directory, stack)
     end
 
     def enqueue

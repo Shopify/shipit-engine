@@ -5,7 +5,8 @@ module Shipit
   class DeploySpecTest < ActiveSupport::TestCase
     setup do
       @app_dir = '/tmp/'
-      @spec = DeploySpec::FileSystem.new(@app_dir, 'env')
+      @stack = shipit_stacks(:shipit)
+      @spec = DeploySpec::FileSystem.new(@app_dir, @stack)
       @spec.stubs(:load_config).returns({})
     end
 
@@ -287,7 +288,7 @@ module Shipit
     end
 
     test '#gemspec gives the path of the repo gemspec if present' do
-      spec = DeploySpec::FileSystem.new('foobar/', 'production')
+      spec = DeploySpec::FileSystem.new('foobar/', @stack)
       Dir.expects(:[]).with('foobar/*.gemspec').returns(['foobar/foobar.gemspec'])
       assert_equal 'foobar/foobar.gemspec', spec.gemspec
     end
@@ -309,7 +310,7 @@ module Shipit
     end
 
     test '#setup_dot_py gives the path of the repo setup.py if present' do
-      spec = DeploySpec::FileSystem.new('foobar/', 'production')
+      spec = DeploySpec::FileSystem.new('foobar/', @stack)
       assert_equal Pathname.new('foobar/setup.py'), spec.setup_dot_py
     end
 
@@ -438,7 +439,8 @@ module Shipit
       DuplicateCustomizedDeploySpec.include(TestTaskDiscovery)
 
       # Setup the spec as we would normally, but use the customized version
-      @spec = DuplicateCustomizedDeploySpec.new(@app_dir, 'env')
+      stack = shipit_stacks(:shipit)
+      @spec = DuplicateCustomizedDeploySpec.new(@app_dir, stack)
       @spec.stubs(:load_config).returns(
         'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
       )
@@ -468,7 +470,8 @@ module Shipit
       CustomizedDeploySpec.include(TestTaskDiscovery)
 
       # Setup the spec as we would normally, but use the customized version
-      @spec = CustomizedDeploySpec.new(@app_dir, 'env')
+      stack = shipit_stacks(:shipit)
+      @spec = CustomizedDeploySpec.new(@app_dir, stack)
       @spec.stubs(:load_config).returns(
         'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
         'kubernetes' => {
