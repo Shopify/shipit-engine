@@ -49,7 +49,7 @@ module Shipit
 
     def fetch_deployed_revision
       with_temporary_working_directory(commit: @stack.commits.reachable.last) do |dir|
-        spec = DeploySpec::FileSystem.new(dir, @stack.environment)
+        spec = DeploySpec::FileSystem.new(dir, @stack)
         outputs = spec.fetch_deployed_revision_steps!.map do |command_line|
           Command.new(command_line, env: env, chdir: dir).run
         end
@@ -59,7 +59,7 @@ module Shipit
 
     def build_cacheable_deploy_spec
       with_temporary_working_directory(recursive: false) do |dir|
-        DeploySpec::FileSystem.new(dir, @stack.environment).cacheable
+        DeploySpec::FileSystem.new(dir, @stack).cacheable
       end
     end
 

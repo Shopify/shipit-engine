@@ -1,5 +1,7 @@
 # Unreleased
 
+* Pass `Shipit::Stack` to `DeploySpec::FileSystem.new` and make it accessible through an accessor. (#1356)
+
 # 0.39.0
 
 * Minimum Ruby version is now Ruby 3.0

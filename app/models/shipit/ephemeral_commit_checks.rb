@@ -14,7 +14,7 @@ module Shipit
       self.status = 'running'
       commands = StackCommands.new(stack)
       commands.with_temporary_working_directory(commit: commit) do |directory|
-        deploy_spec = DeploySpec::FileSystem.new(directory, stack.environment)
+        deploy_spec = DeploySpec::FileSystem.new(directory, stack)
         capture_all(build_commands(deploy_spec.dependencies_steps, chdir: directory))
         capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
       end

@@ -10,7 +10,7 @@ module Shipit
     end
 
     def deploy_spec
-      @deploy_spec ||= DeploySpec::FileSystem.new(@task.working_directory, @stack.environment)
+      @deploy_spec ||= DeploySpec::FileSystem.new(@task.working_directory, @stack)
     end
 
     def install_dependencies

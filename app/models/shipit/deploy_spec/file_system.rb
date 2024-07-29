@@ -10,9 +10,12 @@ module Shipit
       include BundlerDiscovery
       include KubernetesDiscovery
 
-      def initialize(app_dir, env)
+      attr_reader :stack
+
+      def initialize(app_dir, stack)
         @app_dir = Pathname(app_dir)
-        @env = env
+        @env = stack.environment
+        @stack = stack
         super(nil)
       end
 
