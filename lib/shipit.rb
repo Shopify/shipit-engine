@@ -220,6 +220,10 @@ module Shipit
     secrets.update_latest_deployed_ref
   end
 
+  def git_progress_output
+    secrets.git_progress_output || false
+  end
+
   def enforce_publish_config
     secrets.enforce_publish_config.presence
   end

@@ -220,7 +220,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.3.0)
     mutex_m (0.2.0)
-    mysql2 (0.5.3)
+    mysql2 (0.5.6)
     net-imap (0.4.12)
       date
       net-protocol

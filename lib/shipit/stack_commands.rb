@@ -16,7 +16,7 @@ module Shipit
     def fetch_commit(commit)
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', '--quiet', '--tags', '--force', commit.sha, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', commit.sha, env: env, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
         git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
@@ -26,7 +26,7 @@ module Shipit
     def fetch
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', '--quiet', '--tags', '--force', @stack.branch, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', @stack.branch, env: env, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
         git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
@@ -35,7 +35,7 @@ module Shipit
 
     def fetched?(commit)
       if valid_git_repository?(@stack.git_path)
-        git('rev-parse', '--quiet', '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
+        git('rev-parse', *quiet_git_arg, '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
       else
         # When the stack's git cache is not valid, the commit is
         # NOT fetched. To keep the interface of this method
@@ -88,7 +88,7 @@ module Shipit
           '-c',
           'advice.detachedHead=false',
           'checkout',
-          '--quiet',
+          *quiet_git_arg,
           commit.sha,
           chdir: git_dir
         ).run! if commit
@@ -109,7 +109,7 @@ module Shipit
     end
 
     def git_clone(url, path, branch: 'main', **kwargs)
-      git('clone', '--quiet', *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
+      git('clone', *quiet_git_arg, *modern_git_args, '--recursive', '--branch', branch, url, path, **kwargs)
     end
 
     def modern_git_args
@@ -119,6 +119,10 @@ module Shipit
 
     def create_directories
       FileUtils.mkdir_p(@stack.deploys_path)
+    end
+
+    def quiet_git_arg
+      Shipit.git_progress_output ? [] : ['--quiet']
     end
 
     private
