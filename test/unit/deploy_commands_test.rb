@@ -189,6 +189,15 @@ module Shipit
       assert_equal expected, command.args.map(&:to_s)
     end
 
+    test "#fetch does not use --quit if git_progress_output is enabled" do
+      Shipit.stubs(:git_progress_output).returns(true)
+
+      command = @commands.fetch
+
+      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      assert_equal expected, command.args.map(&:to_s)
+    end
+
     test "#fetch calls git fetch in base_path directory if repository cache do not exist" do
       @stack.git_path.stubs(:exist?).returns(false)
 

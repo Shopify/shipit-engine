@@ -164,6 +164,13 @@ production:
   update_latest_deployed_ref: true
 ```
 
+**`git_progress_output`** enables git commands verbosity in the deploys.
+
+```yml
+production:
+  git_progress_output: true
+```
+
 ### Using Multiple Github Applications
 
 A Github application can only authenticate to the Github organization it's installed in. If you want to deploy code from multiple Github organizations the `github` section of your `config/secrets.yml` will need to be formatted differently. The top-level keys should be the name of each Github organization, and the following sub-keys are the Github app details for that particular organization.
