@@ -9,7 +9,7 @@
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
-/db/*.sqlite3-journal
+/db/*.sqlite3-*
 
 # Ignore all logfiles and tempfiles.
 log/*
@@ -23,7 +23,7 @@ coverage/*
 public/assets/*
 pkg/
 test/dummy/db/*.sqlite3
-test/dummy/db/*.sqlite3-journal
+test/dummy/db/*.sqlite3-*
 test/dummy/db/migrate/*.rb
 test/dummy/log/*.log
 test/dummy/tmp/*
