@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_181143) do
-
+ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
     t.integer "creator_id", limit: 4
@@ -85,6 +84,34 @@ ActiveRecord::Schema.define(version: 2023_07_03_181143) do
     t.index ["created_at"], name: "index_commits_on_created_at"
     t.index ["sha", "stack_id"], name: "index_commits_on_sha_and_stack_id", unique: true
     t.index ["stack_id"], name: "index_commits_on_stack_id"
+  end
+
+  create_table "continuous_delivery_schedules", force: :cascade do |t|
+    t.integer "stack_id", null: false
+    t.boolean "sunday_enabled", default: true, null: false
+    t.time "sunday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "sunday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "monday_enabled", default: true, null: false
+    t.time "monday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "monday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "tuesday_enabled", default: true, null: false
+    t.time "tuesday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "tuesday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "wednesday_enabled", default: true, null: false
+    t.time "wednesday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "wednesday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "thursday_enabled", default: true, null: false
+    t.time "thursday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "thursday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "friday_enabled", default: true, null: false
+    t.time "friday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "friday_end", default: "2000-01-01 23:59:00", null: false
+    t.boolean "saturday_enabled", default: true, null: false
+    t.time "saturday_start", default: "2000-01-01 00:00:00", null: false
+    t.time "saturday_end", default: "2000-01-01 23:59:00", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stack_id"], name: "index_continuous_delivery_schedules_on_stack_id", unique: true
   end
 
   create_table "deliveries", force: :cascade do |t|

@@ -84,6 +84,8 @@ Shipit::Engine.routes.draw do
     post :refresh, controller: :stacks
     get :refresh, controller: :stacks # For easier design, sorry :/
     post :clear_git_cache, controller: :stacks
+
+    resource :continuous_delivery_schedule, only: %i(show update)
   end
 
   scope '/task/:id', controller: :tasks do

@@ -1,5 +1,6 @@
 # Unreleased
 
+* Implement Continuous Deployment Hours. (#1361)
 * Pass `Shipit::Stack` to `DeploySpec::FileSystem.new` and make it accessible through an accessor. (#1356)
 
 # 0.39.0
