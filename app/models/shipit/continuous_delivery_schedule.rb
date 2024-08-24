@@ -6,6 +6,16 @@ module Shipit
 
     DAYS = %w[sunday monday tuesday wednesday thursday friday saturday].freeze
 
+    validates(
+      *DAYS.map { |day| "#{day}_enabled" },
+      inclusion: [true, false],
+    )
+
+    validates(
+      *DAYS.product([:start, :end]).map { |parts| parts.join("_") },
+      presence: true
+    )
+
     DeploymentWindow = Struct.new(:starts_at, :ends_at, :enabled) do
       alias_method :enabled?, :enabled
     end

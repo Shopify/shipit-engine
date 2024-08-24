@@ -4,7 +4,10 @@ require "test_helper"
 module Shipit
   class ContinuousDeliveryScheduleTest < ActiveSupport::TestCase
     test "defaults to all the time" do
-      schedule = Shipit::ContinuousDeliverySchedule.new
+      stack = shipit_stacks(:shipit)
+      schedule = stack.build_continuous_delivery_schedule
+
+      assert(schedule.valid?)
 
       Shipit::ContinuousDeliverySchedule::DAYS.each_with_index do |day|
         assert(schedule.read_attribute("#{day}_enabled"))
@@ -69,6 +72,26 @@ module Shipit
       assert(schedule.can_deploy?(wednesday.advance(hours: 12)))
       assert(schedule.can_deploy?(wednesday.advance(hours: 17, minutes: 30).at_end_of_minute))
       refute(schedule.can_deploy?(wednesday.advance(hours: 17, minutes: 31)))
+    end
+
+    test "validates `*_enabled` fields" do
+      schedule = Shipit::ContinuousDeliverySchedule.new(
+        friday_enabled: nil,
+      )
+
+      schedule.validate
+      assert_equal(["is not included in the list"], schedule.errors.messages_for(:friday_enabled))
+    end
+
+    test "requires `_start` and `_end` fields" do
+      schedule = Shipit::ContinuousDeliverySchedule.new(
+        saturday_start: nil,
+        saturday_end: nil,
+      )
+
+      schedule.validate
+      assert_equal(["can't be blank"], schedule.errors.messages_for(:saturday_start))
+      assert_equal(["can't be blank"], schedule.errors.messages_for(:saturday_end))
     end
   end
 end
