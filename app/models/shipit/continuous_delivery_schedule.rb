@@ -16,6 +16,8 @@ module Shipit
       presence: true
     )
 
+    validate(:validate_time_windows)
+
     DeploymentWindow = Struct.new(:starts_at, :ends_at, :enabled) do
       alias_method :enabled?, :enabled
     end
@@ -61,6 +63,22 @@ module Shipit
         ends_at.at_end_of_minute,
         enabled,
       )
+    end
+
+    private
+
+    # Make sure every `*_end` attribute comes after its matching `*_start`
+    # attribute
+    def validate_time_windows
+      DAYS.each do |day|
+        day_start, day_end = [:start, :end].map { |bound| read_attribute("#{day}_#{bound}") }
+
+        next unless day_start && day_end
+
+        next if day_start <= day_end
+
+        errors.add("#{day}_end", :must_be_after_start, start: day_start.strftime("%I:%M %p"))
+      end
     end
   end
 end

@@ -74,6 +74,17 @@ module Shipit
       refute(schedule.can_deploy?(wednesday.advance(hours: 17, minutes: 31)))
     end
 
+    test "validates that end times must come after start times" do
+      schedule = Shipit::ContinuousDeliverySchedule.new(
+        thursday_start: "15:00",
+        thursday_end: "14:00"
+      )
+
+      schedule.validate
+      assert(schedule.errors.include?(:thursday_end))
+      assert_equal(["must be after start (03:00 PM)"], schedule.errors.messages_for(:thursday_end))
+    end
+
     test "validates `*_enabled` fields" do
       schedule = Shipit::ContinuousDeliverySchedule.new(
         friday_enabled: nil,
