@@ -29,7 +29,6 @@ module Shipit
 
     def continuous_delivery_schedule_params
       params.require(:continuous_delivery_schedule).permit(
-        :timezone_name,
         *Shipit::ContinuousDeliverySchedule::DAYS.flat_map do |day|
           [
             "#{day}_start",
@@ -38,10 +37,6 @@ module Shipit
           ]
         end
       )
-    end
-
-    def operation_param
-      params.require(:continuous_delivery_schedule).permit(:_operation)[:_operation]
     end
   end
 end
