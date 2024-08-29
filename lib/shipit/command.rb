@@ -29,7 +29,7 @@ module Shipit
 
     def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
       @args, options = parse_arguments(args)
-      @timeout = options['timeout'] || options[:timeout] || default_timeout
+      @timeout = parse_timeout(options['timeout'] || options[:timeout]) || default_timeout
       @env = env.transform_values { |v| v&.to_s }
       @chdir = chdir.to_s
       @timed_out = false
@@ -206,6 +206,22 @@ module Shipit
       Process.kill(sig, @pid)
     end
 
+    def parse_timeout(timeout)
+      case timeout
+      when String
+        begin
+          Duration.parse(timeout).to_i
+        rescue Duration::ParseError
+          # If given garbage we fallback to the default.
+          # It's not ideal but we don't have a good way to notify about
+          # syntax errors.
+          nil
+        end
+      else
+        timeout
+      end
+    end
+
     def parse_arguments(arguments)
       options = {}
       args = arguments.flatten.map do |argument|
@@ -217,6 +233,7 @@ module Shipit
           argument
         end
       end
+
       [args.map(&:to_s), options]
     end
 
