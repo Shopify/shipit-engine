@@ -2,7 +2,7 @@
 module Shipit
   class Delivery < Record
     STATUSES = %w(pending scheduled sent).freeze
-    enum status: STATUSES.zip(STATUSES).to_h
+    enum :status, STATUSES.zip(STATUSES).to_h
 
     belongs_to :hook
 

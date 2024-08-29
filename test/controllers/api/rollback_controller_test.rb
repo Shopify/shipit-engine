@@ -38,14 +38,14 @@ module Shipit
         request.headers['X-Shipit-User'] = @user.login
         post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         rollback = Rollback.last
-        rollback.user == @user
+        assert_equal @user, rollback.user
       end
 
       test "#create normalises the claimed user" do
         request.headers['X-Shipit-User'] = @user.login.swapcase
         post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         rollback = Rollback.last
-        rollback.user == @user
+        assert_equal @user, rollback.user
       end
 
       test "#create renders a 422 if the sha isn't found" do

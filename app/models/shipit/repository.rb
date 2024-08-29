@@ -47,7 +47,7 @@ module Shipit
     has_many :review_stacks, dependent: :destroy
 
     PROVISIONING_BEHAVIORS = %w(allow_all allow_with_label prevent_with_label).freeze
-    enum provisioning_behavior: PROVISIONING_BEHAVIORS.zip(PROVISIONING_BEHAVIORS).to_h, _prefix: :provisioning_behavior
+    enum :provisioning_behavior, PROVISIONING_BEHAVIORS.zip(PROVISIONING_BEHAVIORS).to_h, prefix: :provisioning_behavior
 
     def self.from_github_repo_name(github_repo_name)
       repo_owner, repo_name = github_repo_name.downcase.split('/')

@@ -73,6 +73,8 @@ module ActiveSupport
 
     ActiveRecord::Migration.check_all_pending!
 
+    fixture_paths << File.expand_path("../fixtures", __FILE__)
+
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     #
     # Note: You'll currently still have to declare fixtures explicitly in integration tests

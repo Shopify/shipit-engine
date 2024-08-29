@@ -49,7 +49,7 @@ module Shipit
         request.headers['X-Shipit-User'] = @user.login
         post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }
         deploy = Deploy.last
-        deploy.user == @user
+        assert_equal @user, deploy.user
       end
 
       test "#create normalises the claimed user" do

@@ -82,7 +82,7 @@ module Shipit
     test ".emit calls #deliver on internal hooks" do
       original_receivers = Shipit.internal_hook_receivers
       FakeReceiver = Module.new
-      FakeReceiver.expects(:deliver).with(:deploy, @stack, 'foo' => 42)
+      FakeReceiver.expects(:deliver).with(:deploy, @stack, { 'foo' => 42 })
 
       Shipit.internal_hook_receivers << FakeReceiver
       Hook.emit(:deploy, @stack, 'foo' => 42)
@@ -93,7 +93,9 @@ module Shipit
     test ".emit calls no internal hooks if there are no internal_hook_receivers" do
       original_receivers = Shipit.internal_hook_receivers
       Shipit.internal_hook_receivers = nil
-      Hook.emit(:deploy, @stack, 'foo' => 42)
+      assert_nothing_raised do
+        Hook.emit(:deploy, @stack, 'foo' => 42)
+      end
     ensure
       Shipit.internal_hook_receivers = original_receivers
     end

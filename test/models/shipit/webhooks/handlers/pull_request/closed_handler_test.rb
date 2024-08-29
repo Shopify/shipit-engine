@@ -18,7 +18,9 @@ module Shipit
           end
 
           test "does not error for repos that are not tracked" do
-            Shipit::Webhooks::Handlers::PullRequest::ClosedHandler.new(payload_parsed(:pull_request_with_no_repo).merge(action: "closed")).process
+            assert_nothing_raised do
+              Shipit::Webhooks::Handlers::PullRequest::ClosedHandler.new(payload_parsed(:pull_request_with_no_repo).merge(action: "closed")).process
+            end
           end
 
           test "archives stacks for repos that are tracked" do
