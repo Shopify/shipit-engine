@@ -430,7 +430,7 @@ DEPENDENCIES
   shipit-engine!
   simplecov
   spy
-  sqlite3
+  sqlite3 (< 2)
   webmock
 
 BUNDLED WITH
