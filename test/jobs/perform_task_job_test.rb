@@ -94,7 +94,7 @@ module Shipit
     end
 
     test "marks deploy as `failed` if a command exit with an error code" do
-      Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).at_least_once.raises(Command::Error.new('something'))
+      Shipit::TaskExecutionStrategy::Default.any_instance.stubs(:capture!).at_least_once.raises(Command::Error.new('something'))
       @job.perform(@deploy)
       assert_equal 'failed', @deploy.reload.status
     end

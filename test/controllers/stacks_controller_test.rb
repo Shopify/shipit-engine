@@ -98,6 +98,7 @@ module Shipit
     test "#show handles locked stacks without a lock_author" do
       @stack.update!(lock_reason: "I am a lock with no author")
       get :show, params: { id: @stack.to_param }
+      assert_response :ok
     end
 
     test "#show auto-links URLs in lock reason" do

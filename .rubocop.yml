@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   Exclude:
     - tmp/*
     - bin/*
@@ -65,3 +65,14 @@ Style/SymbolArray:
 
 Naming/InclusiveLanguage:
   Enabled: false
+
+
+# Crashing cops. We need to update rubocop at some point but better do it in its own PR.
+Layout/BlockAlignment:
+  Exclude:
+    - config/initializers/inflections.rb
+    - config/routes.rb
+    - lib/tasks/cron.rake
+    - lib/tasks/dev.rake
+    - lib/tasks/shipit.rake
+    - lib/tasks/teams.rake

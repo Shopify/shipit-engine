@@ -63,7 +63,7 @@ module Shipit
           events: %w(deploy rollback),
           created_at: 2.months.ago.to_formatted_s(:db),
         }
-        Hook.last.created_at > 2.seconds.ago
+        assert_operator Hook.last.created_at, :>, 2.seconds.ago
       end
 
       test "#create returns validation errors" do

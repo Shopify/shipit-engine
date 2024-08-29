@@ -9,7 +9,6 @@ module Shipit
 
     test ".github uses indifferent access to search through the Github applications" do
       secrets = ActiveSupport::OrderedOptions.new
-      secrets.merge!(Rails::Secrets.parse(['test/dummy/config/secrets.yml'], env: Rails.env))
       secrets.merge!(YAML.load_file('test/dummy/config/secrets_double_github_app.yml'))
       secrets.deep_symbolize_keys!
       Shipit.stubs(:secrets).returns(secrets)

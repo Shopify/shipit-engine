@@ -5,7 +5,7 @@ module Shipit
     include DeferredTouch
 
     STATES = %w(pending success failure error).freeze
-    enum state: STATES.zip(STATES).to_h
+    enum :state, STATES.zip(STATES).to_h
 
     belongs_to :stack, required: true
     belongs_to :commit, required: true

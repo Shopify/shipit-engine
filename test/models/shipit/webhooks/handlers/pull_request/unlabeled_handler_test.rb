@@ -18,7 +18,9 @@ module Shipit
           end
 
           test "ignores Github PullRequest webhooks by default" do
-            UnlabeledHandler.new(payload_parsed(:pull_request_with_no_repo).merge(action: "closed")).process
+            assert_no_difference -> { Shipit::PullRequest.count } do
+              UnlabeledHandler.new(payload_parsed(:pull_request_with_no_repo).merge(action: "closed")).process
+            end
           end
 
           test "ignores Github PullRequest webhooks when the Repository has disabled the Review Stacks feature" do

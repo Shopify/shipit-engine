@@ -31,6 +31,7 @@ module Shipit
     test ":new works for not yet deployed stacks" do
       @stack = shipit_stacks(:undeployed_stack)
       get :new, params: { stack_id: @stack.to_param, sha: @stack.commits.last.sha }
+      assert_response :success
     end
 
     test ":new shows a warning if a deploy is already running" do
