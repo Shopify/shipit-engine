@@ -54,6 +54,14 @@ module Shipit
       assert_equal 10, command.timeout
     end
 
+    test "#timeout in duration string form" do
+      command = Command.new({ 'cap $LANG deploy' => { 'timeout' => '10m' } }, default_timeout: 5, env: {}, chdir: '.')
+      assert_equal 600, command.timeout
+
+      command = Command.new({ 'cap $LANG deploy' => { 'timeout' => '10B' } }, default_timeout: 5, env: {}, chdir: '.')
+      assert_equal 5, command.timeout # default
+    end
+
     test "the process is properly terminated if it times out" do
       # Minitest being run in an at_exit callback, signal handling etc is unreliable
       assert system(
