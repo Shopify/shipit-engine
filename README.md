@@ -70,6 +70,8 @@ The main workflows in Shipit are [adding stacks](#adding-stacks), [working on st
 
 A **stack** is composed of a GitHub repository, a branch, and a deployment environment. Shipit tracks the commits made to the branch, and then displays them in the stack overview. From there, you can deploy the branch to whatever environment you've chosen (some typical environments include *production*, *staging*, *performance*, etc.).
 
+⚡️ It is not possible to change the branch that a stack is pointing to. If you want to change the branch, you will need to delete and recreate your stack to point it to a new branch.
+
 <h3 id="adding-stacks">Add a new stack</h3>
 
 1. From the main page in Shipit, click **Add a stack**.
