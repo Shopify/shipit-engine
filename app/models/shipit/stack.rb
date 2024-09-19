@@ -415,7 +415,7 @@ module Shipit
 
     def github_commits
       handle_github_redirections do
-        github_api.commits(github_repo_name, sha: branch)
+        github_api.commits(github_repo_name, sha: branch, path: path)
       end
     rescue Octokit::Conflict
       [] # Repository is empty...

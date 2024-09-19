@@ -9,6 +9,12 @@
 			<span>Branch: <%= stack.branch %></span>
 		</div>
 
+    <% if stack.path.present? %>
+      <div class="field-wrapper">
+        <span>Path: <%= stack.path %></span>
+      </div>
+    <% end %>
+
 		<div class="field-wrapper">
 			<%= f.label :deploy_url, 'Deploy URL (Where is this stack deployed to?)' %>
 			<%= f.text_field :deploy_url, placeholder: 'https://' %>

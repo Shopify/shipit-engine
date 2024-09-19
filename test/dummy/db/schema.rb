@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_181143) do
-
+ActiveRecord::Schema[7.2].define(version: 2024_09_19_171423) do
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
     t.integer "creator_id", limit: 4
@@ -197,8 +196,8 @@ ActiveRecord::Schema.define(version: 2023_07_03_181143) do
     t.integer "user_id"
     t.text "labels"
     t.integer "head_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["head_id"], name: "index_pull_requests_on_head_id"
     t.index ["stack_id", "github_id"], name: "index_pull_requests_on_stack_id_and_github_id", unique: true
     t.index ["stack_id", "number"], name: "index_pull_requests_on_stack_id_and_number", unique: true
@@ -223,8 +222,8 @@ ActiveRecord::Schema.define(version: 2023_07_03_181143) do
   create_table "repositories", force: :cascade do |t|
     t.string "owner", limit: 39, null: false
     t.string "name", limit: 100, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "review_stacks_enabled", default: false
     t.string "provisioning_behavior", default: "allow_all"
     t.string "provisioning_label_name"
@@ -255,6 +254,7 @@ ActiveRecord::Schema.define(version: 2023_07_03_181143) do
     t.string "provision_status", default: "deprovisioned", null: false
     t.string "type", default: "Shipit::Stack"
     t.boolean "awaiting_provision", default: false, null: false
+    t.string "path"
     t.index ["archived_since"], name: "index_stacks_on_archived_since"
     t.index ["awaiting_provision"], name: "index_stacks_on_awaiting_provision"
     t.index ["provision_status"], name: "index_stacks_on_provision_status"
@@ -338,5 +338,4 @@ ActiveRecord::Schema.define(version: 2023_07_03_181143) do
     t.index ["login"], name: "index_users_on_login"
     t.index ["updated_at"], name: "index_users_on_updated_at"
   end
-
 end

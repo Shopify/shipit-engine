@@ -8,6 +8,7 @@ up:
   - packages:
     - sqlite
   - ruby
+  - redis
   - isogun
   - bundler:
       without: ci
