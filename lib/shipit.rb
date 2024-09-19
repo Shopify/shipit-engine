@@ -95,7 +95,7 @@ module Shipit
   end
 
   def redis_url
-    secrets.redis_url.present? ? URI(secrets.redis_url) : nil
+    secrets.redis_url.present? ? URI(secrets.redis_url) : ENV["REDIS_URL"]
   end
 
   def redis

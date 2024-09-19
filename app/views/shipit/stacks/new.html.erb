@@ -24,6 +24,11 @@
           <%= f.text_field :environment, placeholder: 'production' %>
         </div>
         <div class="field-wrapper">
+          <%= f.label :path %>
+          <span class="form-hint"><small>Only track a subpath of this repo?</small></span>
+          <%= f.text_field :path, placeholder: '/' %>
+        </div>
+        <div class="field-wrapper">
           <%= f.label :deploy_url %>
           <span class="form-hint"><small>Where is this stack deployed to?</small></span>
           <%= f.text_field :deploy_url, placeholder: 'https://' %>
