@@ -1,0 +1,59 @@
+<%= render partial: 'shipit/stacks/header', locals: { stack: @stack } %>
+
+<div class="wrapper continuous-delivery-schedule">
+    <section>
+        <header class="section-header">
+            <h2>Continuous Delivery Schedule (Stack #<%= @stack.id %>)</h2>
+        </header>
+    </section>
+    <div class="setting-section">
+        <% if @continuous_delivery_schedule.errors.any? %>
+            <div class="validation-errors">
+                <p>Validation errors prevented your schedule from being saved</p>
+                <ul>
+                    <% @continuous_delivery_schedule.errors.full_messages.each do |full_message| %>
+                        <li><%= full_message %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+        <%= form_for(@continuous_delivery_schedule, url: stack_continuous_delivery_schedule_path, method: :patch) do |f| %>
+            <table class="field-wrapper">
+                <tbody>
+                    <% Shipit::ContinuousDeliverySchedule::DAYS.rotate.each do |day| %>
+                        <tr>
+                            <td>
+                                <%= f.check_box("#{day}_enabled") %>
+                            </td>
+                            <td>
+                                <%= f.label("#{day}_enabled", day.titlecase) %>
+                            </td>
+                            <td>
+                                <%= f.time_field("#{day}_start", include_seconds: false) %>
+                            </td>
+                            <td>&rarr;</td>
+                            <td>
+                                <%= f.time_field("#{day}_end", include_seconds: false) %>
+                            </td>
+                            <td>
+                                <% if day == "monday" %>
+                                    <button data-action="copy-to-all" type="button">Copy to all &darr;</button>
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+            
+            <p>
+                &#x2139;&#xFE0F; 
+                All times are in <%= Time.zone.name %>
+                (the <a href="https://guides.rubyonrails.org/configuring.html#config-time-zone">default time zone</a>).
+            </p>
+
+            <div class="field-wrapper">
+                <%= f.submit("Save", class: "btn") %>
+            </div>
+        <% end %>
+    </div>
+</div>

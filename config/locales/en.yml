@@ -81,6 +81,7 @@ en:
     messages:
       subset: "is not a strict subset of %{of}"
       ascii: "contains non-ASCII characters"
+      must_be_after_start: "must be after start (%{start})"
   deployment_description:
     deploy:
       in_progress: "%{author} triggered the deploy of %{stack} to %{sha}"

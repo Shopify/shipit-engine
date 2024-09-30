@@ -17,6 +17,7 @@
 		<div class="field-wrapper">
 			<%= f.check_box :continuous_deployment %>
 			<%= f.label :continuous_deployment, 'Enable continuous deployment' %>
+			(<%= link_to("Edit schedule", stack_continuous_delivery_schedule_path) %>)
 		</div>
 
 		<div class="field-wrapper">
