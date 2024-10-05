@@ -22,6 +22,7 @@
 
     <section class="submit-section">
       <%= f.hidden_field :until_commit_id %>
+      <%= f.hidden_field :ignored_safeties %>
       <%= f.submit class: 'btn btn--primary btn--large trigger-deploy' %>
     </section>
   <% end %>
