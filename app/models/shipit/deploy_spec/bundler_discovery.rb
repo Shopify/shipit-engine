@@ -36,7 +36,7 @@ module Shipit
           # OSX is nitpicky about the -i.
           %q(/usr/bin/sed -i '' '/^ruby\s/d' Gemfile)
         else
-          %q(sed -i '/^ruby\s/d' Gemfile)
+          %q(find . -name Gemfile -type f -exec sed -i '/^ruby\s/d' {} +)
         end
       end
 
