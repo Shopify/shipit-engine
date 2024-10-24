@@ -108,6 +108,10 @@ module Shipit
     )
   end
 
+  def redis=(client)
+    @redis ||= client
+  end
+
   module SafeJSON
     class << self
       def load(serial)
