@@ -23,8 +23,10 @@ module Shipit
       Shipit::CommitDeploymentStatus.where(commit_deployment_id: commit_deployments_ids).in_batches(&:delete_all)
       Shipit::CommitDeployment.where(id: commit_deployments_ids).in_batches(&:delete_all)
 
-      Shipit::Status.where(commit_id: commits_ids).find_in_batches do |batch|
-        Shipit::Status.where(id: batch.map(&:id)).delete_all
+      commits_ids.each_slice(1000) do |commit_ids_batch|
+        Shipit::Status.where(commit_id: commit_ids_batch)
+          .in_batches(of: 500)
+          .delete_all
       end
 
       commits_ids.each_slice(1000) do |batch|
