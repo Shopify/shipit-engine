@@ -22,8 +22,15 @@ module Shipit
       commit_deployments_ids = Shipit::CommitDeployment.where(task_id: tasks_ids).pluck(:id)
       Shipit::CommitDeploymentStatus.where(commit_deployment_id: commit_deployments_ids).in_batches(&:delete_all)
       Shipit::CommitDeployment.where(id: commit_deployments_ids).in_batches(&:delete_all)
-      Shipit::Status.where(commit_id: commits_ids).in_batches(&:delete_all)
-      Shipit::Commit.where(id: commits_ids).in_batches(&:delete_all)
+
+      Shipit::Status.where(commit_id: commits_ids).find_in_batches do |batch|
+        Shipit::Status.where(id: batch.map(&:id)).delete_all
+      end
+
+      commits_ids.each_slice(1000) do |batch|
+        Shipit::Commit.where(id: batch).delete_all
+      end
+
       Shipit::GithubHook.where(stack_id: stack.id).destroy_all
       Shipit::Hook.where(stack_id: stack.id).in_batches(&:delete_all)
       Shipit::MergeRequest.where(stack_id: stack.id).in_batches(&:delete_all)
