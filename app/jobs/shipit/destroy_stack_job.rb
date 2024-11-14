@@ -16,29 +16,39 @@ module Shipit
     #     +-- chunks
 
     def perform(stack)
-      Shipit::ApiClient.where(stack_id: stack.id).delete_all
-      commits_ids = Shipit::Commit.where(stack_id: stack.id).pluck(:id)
-      tasks_ids = Shipit::Task.where(stack_id: stack.id).pluck(:id)
-      commit_deployments_ids = Shipit::CommitDeployment.where(task_id: tasks_ids).pluck(:id)
-      Shipit::CommitDeploymentStatus.where(commit_deployment_id: commit_deployments_ids).in_batches(&:delete_all)
-      Shipit::CommitDeployment.where(id: commit_deployments_ids).in_batches(&:delete_all)
+      delete(Shipit::ApiClient.where(stack_id: stack.id))
 
-      Shipit::Status.where(commit_id: commits_ids).find_in_batches do |batch|
-        Shipit::Status.where(id: batch.map(&:id)).delete_all
-      end
+      delete(
+        Shipit::CommitDeploymentStatus
+        .joins(commit_deployment: [:task])
+        .where(commit_deployment: { tasks: { stack_id: stack.id } })
+      )
 
-      commits_ids.each_slice(1000) do |batch|
-        Shipit::Commit.where(id: batch).delete_all
-      end
+      delete(Shipit::CommitDeployment.joins(:task).where(task: { stack_id: stack.id }))
+      delete(Shipit::Status.joins(:commit).where(commit: { stack_id: stack.id }))
+      delete(Shipit::GithubHook.where(stack_id: stack.id))
+      delete(Shipit::Hook.where(stack_id: stack.id))
+      delete(Shipit::MergeRequest.where(stack_id: stack.id))
 
-      Shipit::GithubHook.where(stack_id: stack.id).destroy_all
-      Shipit::Hook.where(stack_id: stack.id).in_batches(&:delete_all)
-      Shipit::MergeRequest.where(stack_id: stack.id).in_batches(&:delete_all)
-      tasks_ids.each_slice(100) do |ids|
-        Shipit::OutputChunk.where(task_id: ids).in_batches(&:delete_all)
-        Shipit::Task.where(id: ids).in_batches(&:delete_all)
-      end
+      delete(Shipit::OutputChunk.joins(:task).where(task: { stack_id: stack.id }))
+      delete(Shipit::Task.where(stack_id: stack.id))
       stack.destroy!
+    end
+
+    private
+
+    BATCH_SIZE = 1000
+
+    def delete(relation)
+      if relation.connection.adapter_name.match?(/(mysql|trilogy)/i)
+        while relation.limit(BATCH_SIZE).delete_all == BATCH_SIZE
+          true # loop
+        end
+      else
+        while relation.model.where(id: relation.select(:id).limit(BATCH_SIZE)).delete_all == BATCH_SIZE
+          true # loop
+        end
+      end
     end
   end
 end
