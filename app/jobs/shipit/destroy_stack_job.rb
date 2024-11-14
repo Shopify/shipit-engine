@@ -32,6 +32,9 @@ module Shipit
 
       delete(Shipit::OutputChunk.joins(:task).where(task: { stack_id: stack.id }))
       delete(Shipit::Task.where(stack_id: stack.id))
+
+      delete(Shipit::Commit.where(stack_id: stack.id))
+
       stack.destroy!
     end
 
