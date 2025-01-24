@@ -476,7 +476,7 @@ merge:
     - codeclimate
 ```
 
-**<code>merge.method</code>** the [merge method](https://docs.github.com/en/rest/reference/pulls#merge-a-pull-request--parameters) to use for this stack. If it's not set the default merge method will be used. Can be either `merge`, `squash` or `rebase`.
+**<code>merge.method</code>** the [merge method](https://docs.github.com/en/rest/pulls/pulls#merge-a-pull-request--parameters) to use for this stack. If it's not set the default merge method will be used. Can be either `merge`, `squash` or `rebase`.
 
 For example:
 ```yml
