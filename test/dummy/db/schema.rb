@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_21_003007) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_27_175900) do
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
     t.integer "creator_id", limit: 4
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_21_003007) do
   create_table "commit_deployments", force: :cascade do |t|
     t.integer "commit_id"
     t.integer "task_id"
-    t.integer "github_id"
+    t.bigint "github_id"
     t.string "api_url"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
