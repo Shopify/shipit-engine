@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_07_203053) do
   create_table "api_clients", force: :cascade do |t|
     t.text "permissions", limit: 65535
     t.integer "creator_id", limit: 4
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
   create_table "commit_deployments", force: :cascade do |t|
     t.integer "commit_id"
     t.integer "task_id"
-    t.integer "github_id"
+    t.bigint "github_id"
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -133,7 +133,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
 
   create_table "github_hooks", force: :cascade do |t|
     t.integer "stack_id", limit: 4
-    t.integer "github_id", limit: 4
+    t.bigint "github_id"
     t.string "event", limit: 50, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -340,7 +340,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
   end
 
   create_table "teams", force: :cascade do |t|
-    t.integer "github_id", limit: 4
+    t.bigint "github_id"
     t.string "api_url", limit: 255
     t.string "slug", limit: 255
     t.string "name", limit: 255
@@ -351,7 +351,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_21_003007) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.integer "github_id", limit: 4
+    t.bigint "github_id"
     t.string "name", limit: 255, null: false
     t.string "email", limit: 255
     t.string "login", limit: 39
