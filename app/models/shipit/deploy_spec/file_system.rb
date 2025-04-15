@@ -141,14 +141,11 @@ module Shipit
       def build_config(path, config_obj)
         return config_obj if config_obj.blank? || !config_obj.key?(SHIPIT_CONFIG_INHERIT_FROM_KEY)
 
-        inherits_from_path = path.dirname.join(config_obj[SHIPIT_CONFIG_INHERIT_FROM_KEY])
+        inherits_from_path = path.dirname.join(config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY))
         if inherits_from_path.exist?
           inherits_config_obj = read_config(inherits_from_path)
-          config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY)
           config_obj = inherits_config_obj.deep_merge(config_obj)
           path = inherits_from_path
-        else
-          config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY)
         end
 
         build_config(path, config_obj)
