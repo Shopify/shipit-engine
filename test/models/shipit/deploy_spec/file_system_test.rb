@@ -63,6 +63,35 @@ module Shipit
         assert loaded_config["deploy"]["pre"].include?('exit 1')
       end
 
+      test '#load_config builds proper config if inherit_from is present' do
+        Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
+        stack = shipit_stacks(:shipit)
+        deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
+        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit_1.yml').at_least_once
+        deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_inherit_from_yaml), SafeYAML.load(deploy_spec_yaml)).at_least_once
+        Pathname.any_instance.stubs(:exist?).returns(true)
+        loaded_config = deploy_spec.send(:load_config)
+        assert loaded_config.key?("deploy")
+        assert loaded_config["deploy"].key?("pre")
+        assert loaded_config["deploy"]["pre"].include?("test 2")
+        assert loaded_config["deploy"]["override"].include?("test 11")
+        assert_not loaded_config.include?(Shipit::DeploySpec::FileSystem::SHIPIT_CONFIG_INHERIT_FROM_KEY)
+      end
+
+      test '#load_config builds valid config if inherit_from path is missing' do
+        Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
+        stack = shipit_stacks(:shipit)
+        deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
+        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit_1.yml').at_least_once
+        deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_inherit_from_yaml)).at_least_once
+        Pathname.any_instance.stubs(:exist?).returns(false)
+        loaded_config = deploy_spec.send(:load_config)
+        assert loaded_config.key?("deploy")
+        assert_not loaded_config["deploy"].include?("pre")
+        assert loaded_config["deploy"]["override"].include?("test 11")
+        assert_not loaded_config.include?(Shipit::DeploySpec::FileSystem::SHIPIT_CONFIG_INHERIT_FROM_KEY)
+      end
+
       def deploy_spec_yaml
         <<~EOYAML
           deploy:
@@ -70,6 +99,15 @@ module Shipit
               - test 2
             override:
               - test 1
+        EOYAML
+      end
+
+      def deploy_spec_inherit_from_yaml
+        <<~EOYAML
+          inherit_from: shipit.yml
+          deploy:
+            override:
+              - test 11
         EOYAML
       end
 

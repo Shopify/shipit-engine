@@ -100,7 +100,8 @@ module Shipit
           return { 'deploy' => { 'pre' => [shipit_not_obeying_bare_file_echo_command, 'exit 1'] } }
         end
 
-        read_config(config_file_path)
+        config_obj = read_config(config_file_path)
+        build_config(config_file_path, config_obj)
       end
 
       def shipit_file_names_in_priority_order
@@ -134,6 +135,23 @@ module Shipit
 
       def app_name
         @app_name ||= Shipit.app_name.downcase
+      end
+
+      SHIPIT_CONFIG_INHERIT_FROM_KEY = "inherit_from"
+      def build_config(path, config_obj)
+        return config_obj if config_obj.blank? || !config_obj.key?(SHIPIT_CONFIG_INHERIT_FROM_KEY)
+
+        inherits_from_path = path.dirname.join(config_obj[SHIPIT_CONFIG_INHERIT_FROM_KEY])
+        if inherits_from_path.exist?
+          inherits_config_obj = read_config(inherits_from_path)
+          config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY)
+          config_obj = inherits_config_obj.deep_merge(config_obj)
+          path = inherits_from_path
+        else
+          config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY)
+        end
+
+        build_config(path, config_obj)
       end
 
       def read_config(path)
