@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -41,24 +42,24 @@ module Shipit
       test "#create fails to create stack if it already exists" do
         repository = shipit_repositories(:rails)
         existing_stack = Stack.create!(
-          repository: repository,
+          repository:,
           environment: 'staging',
-          branch: 'staging',
+          branch: 'staging'
         )
 
         assert_no_difference -> { Stack.count } do
           post :create,
-            params: {
-              repo_name: existing_stack.repo_name,
-              repo_owner: existing_stack.repo_owner,
-              environment: existing_stack.environment,
-              branch: existing_stack.branch,
-            }
+               params: {
+                 repo_name: existing_stack.repo_name,
+                 repo_owner: existing_stack.repo_owner,
+                 environment: existing_stack.environment,
+                 branch: existing_stack.branch
+               }
         end
 
         assert_response :unprocessable_entity
         assert_json 'errors', 'repository' => [
-          'cannot be used more than once with this environment. Check archived stacks.',
+          'cannot be used more than once with this environment. Check archived stacks.'
         ]
       end
 
@@ -71,7 +72,7 @@ module Shipit
           id: @stack.to_param,
           merge_queue_enabled: false,
           ignore_ci: true,
-          continuous_deployment: true,
+          continuous_deployment: true
         }
 
         assert_response :ok
@@ -87,7 +88,7 @@ module Shipit
 
         patch :update, params: {
           id: @stack.to_param,
-          branch: 'test',
+          branch: 'test'
         }
 
         assert_response :ok
@@ -104,7 +105,7 @@ module Shipit
 
         patch :update, params: {
           id: @stack.to_param,
-          continuous_deployment: false,
+          continuous_deployment: false
         }
 
         assert_response :ok

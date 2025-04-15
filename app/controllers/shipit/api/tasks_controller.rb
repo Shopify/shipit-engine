@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module Shipit
   module Api
     class TasksController < BaseController
       require_permission :read, :stack
-      require_permission :deploy, :stack, only: %i(trigger abort)
+      require_permission :deploy, :stack, only: %i[trigger abort]
 
       def index
         render_resources(stack.tasks)
@@ -20,8 +21,8 @@ module Shipit
         render_resource(stack.trigger_task(params[:task_name], current_user, env: params.env), status: :accepted)
       rescue Shipit::Task::ConcurrentTaskRunning
         render(status: :conflict, json: {
-          message: 'A task is already running.',
-        })
+                 message: 'A task is already running.'
+               })
       end
 
       def abort
@@ -30,8 +31,8 @@ module Shipit
           head(:accepted)
         else
           render(status: :method_not_allowed, json: {
-            message: "This task is not currently running.",
-          })
+                   message: "This task is not currently running."
+                 })
         end
       end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class WebhooksController < ActionController::Base
     skip_before_action :verify_authenticity_token, raise: false
@@ -33,7 +34,7 @@ module Shipit
         "event=#{event}",
         "repository_owner=#{repository_owner}",
         "signature=#{request.headers['X-Hub-Signature']}",
-        "status=#{status}",
+        "status=#{status}"
       ].join(' '))
     end
 

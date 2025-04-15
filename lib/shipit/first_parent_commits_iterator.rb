@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class FirstParentCommitsIterator < OctokitIterator
     def each
@@ -9,9 +10,7 @@ module Shipit
           next
         end
 
-        if last_ancestor.parents.empty? || last_ancestor.parents.first.sha == commit.sha
-          yield last_ancestor = commit
-        end
+        yield last_ancestor = commit if last_ancestor.parents.empty? || last_ancestor.parents.first.sha == commit.sha
       end
     end
   end

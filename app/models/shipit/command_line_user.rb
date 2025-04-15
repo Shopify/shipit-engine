@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommandLineUser
     def present?
@@ -21,11 +22,9 @@ module Shipit
       'https://github.com/images/error/octocat_happy.gif'
     end
 
-    def id
-    end
+    def id; end
 
-    def github_id
-    end
+    def github_id; end
 
     def logged_in?
       false
@@ -50,7 +49,7 @@ module Shipit
     def created_at
       Time.at(0).utc
     end
-    alias_method :updated_at, :created_at
+    alias updated_at created_at
 
     def read_attribute_for_serialization(attr)
       public_send(attr)

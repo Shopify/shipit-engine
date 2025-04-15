@@ -39,7 +39,7 @@ module Shipit
     def setup_provisioning_handler(for_stack:, provision:)
       provisioning_handler_instance = mock("ProvisioningHandler instance")
       provisioning_handler_instance.expects(:provision?).returns(provision)
-      provisioning_handler_instance.expects(:up).returns(true) if !!provision
+      provisioning_handler_instance.expects(:up).returns(true) if provision
       provisioning_handler_class = mock("ProvisioningHandler class")
       provisioning_handler_class.expects(:new).at_least_once.with(for_stack).returns(provisioning_handler_instance)
       Shipit::ProvisioningHandler.expects(:fetch).at_least_once.returns(provisioning_handler_class)
@@ -50,7 +50,7 @@ module Shipit
     def provisionable_review_stack
       review_stack = shipit_stacks(:review_stack)
       review_stack.update(
-        provision_status: :deprovisioned,
+        provision_status: :deprovisioned
       )
 
       review_stack

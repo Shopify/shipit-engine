@@ -55,7 +55,7 @@ module Shipit
           def stack
             @stack ||=
               Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter
-                .new(params, scope: repository.review_stacks)
+              .new(params, scope: repository.review_stacks)
           end
 
           def pull_request

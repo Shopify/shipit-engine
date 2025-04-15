@@ -13,7 +13,7 @@ module Shipit
     end
 
     test "splits up multiple lines" do
-      assert_equal(%w(a b), @buffer.buffer("a\nb\n").to_a)
+      assert_equal(%w[a b], @buffer.buffer("a\nb\n").to_a)
       assert_predicate(@buffer, :empty?)
     end
   end

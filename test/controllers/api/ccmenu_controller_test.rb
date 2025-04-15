@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -32,7 +33,7 @@ module Shipit
       test "xml contains required attributes" do
         get :show, params: { stack_id: @stack.to_param }
         project = get_project_from_xml(response.body)
-        %w(name activity lastBuildStatus lastBuildLabel lastBuildTime webUrl).each do |attribute|
+        %w[name activity lastBuildStatus lastBuildLabel lastBuildTime webUrl].each do |attribute|
           assert_includes project, attribute, "Response missing required attribute: #{attribute}"
         end
       end
@@ -55,9 +56,9 @@ module Shipit
         Hash.from_xml(xml)['Projects']['Project']
       end
 
-      def assert_payload(k, v)
+      def assert_payload(key, value)
         @project ||= get_project_from_xml(response.body)
-        assert_equal(v, @project[k])
+        assert_equal(value, @project[key])
       end
     end
   end

@@ -258,7 +258,7 @@ canaries_fifth:
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
   created_at: <%= 1.day.ago.to_formatted_s(:db) %>
 
-undeployed_1:
+undeployed1:
   id: 401
   sha: 4d9278037b872fd9a6690523e411ecb3aa181355
   message: "lets go"
@@ -271,7 +271,7 @@ undeployed_1:
   deletions: 24
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_2:
+undeployed2:
   id: 402
   sha: 4890fd8b5f2be05d1fedb763a3605ee461c39074
   message: "sheep it!"
@@ -284,7 +284,7 @@ undeployed_2:
   deletions: 1
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_3:
+undeployed3:
   id: 403
   sha: 467578b362bf2b4df5903e1c7960929361c39074
   message: "fix it!"
@@ -297,7 +297,7 @@ undeployed_3:
   deletions: 64
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_4:
+undeployed4:
   id: 404
   sha: 447578b362bf2b4df5903e1c7960929361c3435a
   message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"
@@ -310,7 +310,7 @@ undeployed_4:
   deletions: 342
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_5:
+undeployed5:
   id: 405
   sha: 457578b362bf2b4df5903e1c7960929361c3435a
   message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"
@@ -323,7 +323,7 @@ undeployed_5:
   deletions: 342
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_6:
+undeployed6:
   id: 406
   sha: 467578b362bf2b4df5903e1c7960929361c3435a
   message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"
@@ -336,7 +336,7 @@ undeployed_6:
   deletions: 342
   updated_at: <%= 8.days.ago.to_formatted_s(:db) %>
 
-undeployed_7:
+undeployed7:
   id: 407
   sha: 477578b362bf2b4df5903e1c7960929361c3435a
   message: "Merge pull request #7 from shipit-engine/yoloshipit\n\nyoloshipit!"

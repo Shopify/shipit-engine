@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -54,7 +55,7 @@ module Shipit
       assert_response :forbidden
       assert_equal(
         'You must be a member of cyclimse/cooks or shopify/developers to access this application.',
-        response.body,
+        response.body
       )
     end
 
@@ -115,8 +116,8 @@ module Shipit
             repo_name: 'rails',
             repo_owner: 'rails',
             environment: 'staging',
-            branch: 'staging',
-          },
+            branch: 'staging'
+          }
         }
       end
 
@@ -241,8 +242,8 @@ module Shipit
           repo_owner: 'rails',
           environment: 'staging',
           branch: 'staging',
-          deploy_url: 'Javascript:alert(1);',
-        },
+          deploy_url: 'Javascript:alert(1);'
+        }
       }
       assert_response :success
       assert_equal 'Deploy url is invalid', flash[:warning]

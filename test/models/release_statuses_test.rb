@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -10,7 +11,7 @@ module Shipit
         'pending',
         context: 'shipit/canaries',
         target_url: 'https://example.com/deploys/42',
-        description: 'Deploy started',
+        description: 'Deploy started'
       ).returns(resource(id: 42))
 
       @status = shipit_release_statuses(:to_be_created)

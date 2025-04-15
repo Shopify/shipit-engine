@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class TasksController < ShipitController
     include Pagination
@@ -34,7 +35,7 @@ module Shipit
           params[:definition_id],
           current_user,
           env: task_params[:env],
-          force: params[:force].present?,
+          force: params[:force].present?
         )
         redirect_to([stack, @task])
       rescue Task::ConcurrentTaskRunning
@@ -75,6 +76,7 @@ module Shipit
 
     def task_params
       return {} unless params[:task]
+
       @definition = stack.find_task_definition(params[:definition_id])
       @task_params ||= params.require(:task).permit(env: @definition.variables.map(&:name))
     end

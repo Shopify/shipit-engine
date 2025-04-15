@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -17,11 +18,11 @@ module Shipit
     end
 
     test "load split the words by comma" do
-      assert_loaded %w(foo bar), 'foo,bar'
+      assert_loaded %w[foo bar], 'foo,bar'
     end
 
     test "dump join the words with a comma" do
-      assert_dumped 'foo,bar', %w(foo bar)
+      assert_dumped 'foo,bar', %w[foo bar]
     end
 
     private

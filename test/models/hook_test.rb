@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -21,11 +22,11 @@ module Shipit
     end
 
     test "#events is accessible as an array" do
-      assert_equal %w(deploy rollback), @hook.events
+      assert_equal %w[deploy rollback], @hook.events
     end
 
     test "#events can only contain a defined set of values" do
-      @hook.events = %w(foo)
+      @hook.events = %w[foo]
       refute @hook.valid?
       assert_equal ["Events is not a strict subset of #{Hook::EVENTS.inspect}"], @hook.errors.full_messages
     end

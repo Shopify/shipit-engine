@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -39,42 +40,42 @@ module Shipit
 
         expected_env = {
           "FOO" => "1",
-          "BAR" => "0",
+          "BAR" => "0"
         }
         assert_equal expected_env, Shipit::Task.last.env
       end
 
       test "#trigger refuses to trigger a task with tasks not whitelisted" do
         env = { 'DANGEROUS_VARIABLE' => 'bar' }
-        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: env }
+        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: }
         assert_response :unprocessable_entity
         assert_json 'message', 'Variables DANGEROUS_VARIABLE have not been whitelisted'
       end
 
       test "#trigger triggers a task with only whitelisted env variables" do
         env = { 'FOO' => 'bar' }
-        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: env }
+        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: }
         assert_response :accepted
         assert_json 'type', 'task'
         assert_json 'status', 'pending'
 
         expected_env = {
           "FOO" => "bar",
-          "BAR" => "0",
+          "BAR" => "0"
         }
         assert_equal expected_env, Shipit::Task.last.env
       end
 
       test "#trigger triggers a task with explicitly passed and default variables" do
         env = { 'WALRUS' => 'overridden value' }
-        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: env }
+        post :trigger, params: { stack_id: @stack.to_param, task_name: 'restart', env: }
         assert_response :accepted
 
         # FOO and BAR are variables with a default value
         expected_env = {
           "FOO" => "1",
           "BAR" => "0",
-          "WALRUS" => "overridden value",
+          "WALRUS" => "overridden value"
         }
         assert_equal expected_env, Shipit::Task.last.env
       end

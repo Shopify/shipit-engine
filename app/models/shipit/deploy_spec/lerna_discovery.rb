@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'json'
 
 module Shipit
@@ -23,23 +24,23 @@ module Shipit
       end
 
       def discover_lerna_checklist
-        if lerna?
-          command = if lerna_lerna >= LATEST_MAJOR_VERSION
-            'lerna version'
-          else
-            %(
+        return unless lerna?
+
+        command = if lerna_lerna >= LATEST_MAJOR_VERSION
+                    'lerna version'
+                  else
+                    %(
               lerna publish --skip-npm
               && git add -A
               && git push --follow-tags
             )
-          end
+                  end
 
-          [%(
+        [%(
             <strong>Don't forget version and tag before publishing!</strong>
             You can do this with:<br/>
             <pre>#{command}</pre>
            )]
-        end
       end
 
       def lerna?
@@ -72,47 +73,47 @@ module Shipit
 
       def publish_lerna_packages
         return publish_independent_packages if lerna_version == 'independent'
+
         publish_fixed_version_packages
       end
 
       def publish_independent_packages
-        command = if lerna_lerna >= LATEST_MAJOR_VERSION
+        if lerna_lerna >= LATEST_MAJOR_VERSION
           [
             'assert-lerna-independent-version-tags',
-            'publish-lerna-independent-packages',
+            'publish-lerna-independent-packages'
           ]
         else
           [
             'assert-lerna-independent-version-tags',
-            'publish-lerna-independent-packages-legacy',
+            'publish-lerna-independent-packages-legacy'
           ]
         end
-        command
       end
 
       def publish_fixed_version_packages
         check_tags = 'assert-lerna-fixed-version-tag'
         version = lerna_version
         publish = if lerna_lerna >= LATEST_MAJOR_VERSION
-          %W(
-            node_modules/.bin/lerna publish
-            from-git
-            --yes
-            --dist-tag #{dist_tag(version)}
-          ).join(" ")
-        else
-          # `yarn publish` requires user input, so always use npm.
-          %W(
-            node_modules/.bin/lerna publish
-            --yes
-            --skip-git
-            --repo-version #{version}
-            --force-publish=*
-            --npm-tag #{dist_tag(version)}
-            --npm-client=npm
-            --skip-npm=false
-          ).join(" ")
-        end
+                    %W[
+                      node_modules/.bin/lerna publish
+                      from-git
+                      --yes
+                      --dist-tag #{dist_tag(version)}
+                    ].join(" ")
+                  else
+                    # `yarn publish` requires user input, so always use npm.
+                    %W[
+                      node_modules/.bin/lerna publish
+                      --yes
+                      --skip-git
+                      --repo-version #{version}
+                      --force-publish=*
+                      --npm-tag #{dist_tag(version)}
+                      --npm-client=npm
+                      --skip-npm=false
+                    ].join(" ")
+                  end
 
         [check_tags, publish]
       end

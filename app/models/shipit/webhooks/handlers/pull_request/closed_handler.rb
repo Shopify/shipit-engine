@@ -55,7 +55,7 @@ module Shipit
           def review_stack
             @review_stack ||=
               Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter
-                .new(params, scope: repository.review_stacks)
+              .new(params, scope: repository.review_stacks)
           end
 
           def respond_to_pull_request_closed?

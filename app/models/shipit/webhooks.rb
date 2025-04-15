@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module Webhooks
     class << self
@@ -13,11 +14,11 @@ module Shipit
             Handlers::PullRequest::AssignedHandler,
             Handlers::PullRequest::LabeledHandler,
             Handlers::PullRequest::UnlabeledHandler,
-            Handlers::PullRequest::LabelCapturingHandler,
+            Handlers::PullRequest::LabelCapturingHandler
           ],
           'status' => [Handlers::StatusHandler],
           'membership' => [Handlers::MembershipHandler],
-          'check_suite' => [Handlers::CheckSuiteHandler],
+          'check_suite' => [Handlers::CheckSuiteHandler]
         }
       end
 

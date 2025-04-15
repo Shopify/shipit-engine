@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module Api
     class BaseController < ActionController::Base
@@ -35,7 +36,7 @@ module Shipit
 
         private
 
-        def has_basic_credentials?(request)
+        def basic_credentials?(request)
           request.authorization.present? && (auth_scheme(request).downcase == "basic")
         end
       end
@@ -46,14 +47,15 @@ module Shipit
 
       def authenticate_api_client
         @current_api_client = if Shipit.disable_api_authentication
-          UnlimitedApiClient.new
-        else
-          BasicAuth.authenticate(request) do |*parts|
-            token = parts.select(&:present?).join('--')
-            ApiClient.authenticate(token)
-          end
-        end
+                                UnlimitedApiClient.new
+                              else
+                                BasicAuth.authenticate(request) do |*parts|
+                                  token = parts.select(&:present?).join('--')
+                                  ApiClient.authenticate(token)
+                                end
+                              end
         return if @current_api_client
+
         headers['WWW-Authenticate'] = 'Basic realm="Authentication token"'
         render(status: :unauthorized, json: { message: 'Bad credentials' })
       end

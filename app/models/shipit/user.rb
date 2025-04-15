@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module Shipit
   class User < Record
     DEFAULT_AVATAR = URI.parse('https://avatars.githubusercontent.com/u/583231?')
 
-    self.ignored_columns = %w(encrypted_github_access_token_iv)
+    self.ignored_columns = %w[encrypted_github_access_token_iv]
 
     has_many :memberships
     has_many :teams, through: :memberships
@@ -19,7 +20,7 @@ module Shipit
     after_find :discard_outdated_credentials!
 
     def self.find_or_create_by_login!(login)
-      find_or_create_by!(login: login) do |user|
+      find_or_create_by!(login:) do |user|
         # Users are global, any app can be used
         # This will not work for users that only exist in an Enterprise install
         user.github_user = Shipit.github.api.user(login)
@@ -31,7 +32,7 @@ module Shipit
     end
 
     def self.find_or_create_author_from_github_commit(github_commit)
-      if (match_info = github_commit.commit.message.match(/^#{MergeRequest::MERGE_REQUEST_FIELD}: ([\w\-\.]+)$/))
+      if (match_info = github_commit.commit.message.match(/^#{MergeRequest::MERGE_REQUEST_FIELD}: ([\w\-.]+)$/))
         begin
           return find_or_create_by_login!(match_info[1])
         rescue Octokit::NotFound
@@ -48,11 +49,12 @@ module Shipit
 
     def self.find_from_github(github_user)
       return unless github_user.id
+
       find_by(github_id: github_user.id)
     end
 
     def self.create_from_github(github_user)
-      create(github_user: github_user)
+      create(github_user:)
     end
 
     def self.refresh_shard(shard_index, shards_count)
@@ -68,7 +70,7 @@ module Shipit
     end
 
     def identifiers_for_ping
-      { github_id: github_id, name: name, email: email, github_login: login }
+      { github_id:, name:, email:, github_login: login }
     end
 
     def logged_in?
@@ -81,12 +83,14 @@ module Shipit
 
     def repositories_contributed_to
       return [] unless id
+
       Stack.where(id: stacks_contributed_to).distinct.pluck(:repository_id)
     end
 
     def stacks_contributed_to
       return [] unless id
-      Commit.where('author_id = :id or committer_id = :id', id: id).distinct.pluck(:stack_id)
+
+      Commit.where('author_id = :id or committer_id = :id', id:).distinct.pluck(:stack_id)
     end
 
     def refresh_from_github!
@@ -112,7 +116,7 @@ module Shipit
         email: appropriate_email_for(github_user),
         login: github_user.login,
         avatar_url: github_user.avatar_url,
-        api_url: github_user.url,
+        api_url: github_user.url
       )
     end
 
@@ -132,18 +136,19 @@ module Shipit
     private
 
     def discard_outdated_credentials!
-      if encrypted_github_access_token_before_type_cast.present?
-        begin
-          encrypted_github_access_token
-        rescue ActiveRecord::Encryption::Errors::Decryption
-          update_column(:encrypted_github_access_token, nil)
-        end
+      return unless encrypted_github_access_token_before_type_cast.present?
+
+      begin
+        encrypted_github_access_token
+      rescue ActiveRecord::Encryption::Errors::Decryption
+        update_column(:encrypted_github_access_token, nil)
       end
     end
 
     def identify_renamed_user!
       last_commit = commits.last
       return unless last_commit
+
       github_author = last_commit.github_commit.author
       update!(github_user: github_author)
     rescue Octokit::NotFound
@@ -163,9 +168,9 @@ module Shipit
 
       begin
         github_api.emails
-          .sort_by { |e| e.primary ? 0 : 1 }
-          .map(&:email)
-          .find { |e| email_valid_and_preferred?(e) }
+                  .sort_by { |e| e.primary ? 0 : 1 }
+                  .map(&:email)
+                  .find { |e| email_valid_and_preferred?(e) }
       rescue Octokit::NotFound, Octokit::Forbidden, Octokit::Unauthorized
         # If the user hasn't agreed to the necessary permission, we can't access their private emails.
         Rails.logger.warn("Failed to retrieve emails for user '#{github_user.name || github_user.login}'")

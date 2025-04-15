@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class RollbacksController < ShipitController
     before_action :load_stack
@@ -8,7 +9,7 @@ module Shipit
       @rollback = @deploy.trigger_rollback(
         current_user,
         env: rollback_params[:env]&.to_unsafe_hash,
-        force: params[:force].present?,
+        force: params[:force].present?
       )
       redirect_to(stack_deploy_path(@stack, @rollback))
     rescue Task::ConcurrentTaskRunning

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ApiHelper
   private
 
@@ -14,9 +15,7 @@ module Shipit
     private
 
     def process(_action, **kwargs)
-      if kwargs[:method] != "GET"
-        kwargs[:as] ||= :json
-      end
+      kwargs[:as] ||= :json if kwargs[:method] != "GET"
       super
     end
   end

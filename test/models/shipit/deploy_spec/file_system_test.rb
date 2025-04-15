@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 require 'tmpdir'
 
@@ -9,7 +10,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(false).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.yml").at_least_once
         deploy_spec.expects(:read_config).never
         pre_commands = deploy_spec.send(:config, 'deploy', 'pre')
         assert pre_commands.include?('exit 1')
@@ -21,7 +22,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.yml").at_least_once
         deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_yaml))
         pre_commands = deploy_spec.send(:config, 'deploy', 'pre')
         refute pre_commands.include?('exit 1')
@@ -33,7 +34,7 @@ module Shipit
           Shipit.expects(:respect_bare_shipit_file?).returns(obey_val).at_least_once
           stack = shipit_stacks(:shipit)
           deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-          deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.env.yml').at_least_once
+          deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.env.yml").at_least_once
           deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_yaml))
           pre_commands = deploy_spec.send(:config, 'deploy', 'pre')
           refute pre_commands.include?('exit 1')
@@ -45,7 +46,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.env.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.env.yml").at_least_once
         deploy_spec.expects(:read_config).at_least_once.returns(false)
         loaded_config = deploy_spec.send(:cacheable_config)
         refute loaded_config == false
@@ -55,7 +56,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(false).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.yml").at_least_once
         deploy_spec.expects(:read_config).never
         loaded_config = deploy_spec.send(:load_config)
         assert loaded_config.key?("deploy")

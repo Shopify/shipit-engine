@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module Pagination
     extend ActiveSupport::Concern
@@ -20,8 +21,8 @@ module Shipit
         relation,
         self,
         order: default_order,
-        max_page_size: max_page_size,
-        default_page_size: default_page_size,
+        max_page_size:,
+        default_page_size:
       )
     end
   end

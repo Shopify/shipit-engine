@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module Api
     class DeploysController < BaseController
@@ -22,7 +23,7 @@ module Shipit
 
         allow_concurrency = params.allow_concurrency.nil? ? params.force : params.allow_concurrency
         deploy = stack.trigger_deploy(commit, current_user, env: params.env, force: params.force,
-          allow_concurrency: allow_concurrency)
+                                                            allow_concurrency:)
         render_resource(deploy, status: :accepted)
       end
     end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :shipit do
   desc "Deploy from a running instance. "
   task deploy: :environment do
@@ -12,12 +13,12 @@ namespace :shipit do
       class Task
         def write(text)
           p(text)
-          chunks.create!(text: text)
+          chunks.create!(text:)
         end
       end
     end
 
-    Shipit::Stack.run_deploy_in_foreground(stack: stack, revision: revision)
+    Shipit::Stack.run_deploy_in_foreground(stack:, revision:)
   rescue ArgumentError
     p("Use this command as follows:")
     p("bundle exec rake shipit:deploy stack='shopify/shipit/production' revision='$SHA'")

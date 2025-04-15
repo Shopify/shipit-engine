@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -36,13 +37,13 @@ module Shipit
         author: reverted_commit.author,
         committer: reverted_commit.committer,
         authored_at: Time.zone.now,
-        committed_at: Time.zone.now,
+        committed_at: Time.zone.now
       )
 
       expected = [
         ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false, nil],
         ["whoami", false, nil],
-        ['fix all the things', false, nil],
+        ['fix all the things', false, nil]
       ]
       assert_equal(expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?, c.lock_author_id] })
 
@@ -55,7 +56,7 @@ module Shipit
         ['Revert "Merge pull request #7 from shipit-engine/yoloshipit"', false, nil],
         ["whoami", true, user_id],
         ['fix all the things', true, user_id],
-        ['yoloshipit!', true, user_id],
+        ['yoloshipit!', true, user_id]
       ]
 
       assert_equal(expected, @stack.undeployed_commits.map { |c| [c.title, c.locked?, c.lock_author_id] })

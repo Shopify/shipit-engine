@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Hook < Record
     class DeliverySigner
@@ -46,7 +47,7 @@ module Shipit
           'Content-Type' => content_type,
           'X-Shipit-Event' => event,
           'X-Shipit-Signature' => signature,
-          'Accept' => '*/*',
+          'Accept' => '*/*'
         }
       end
 
@@ -63,10 +64,10 @@ module Shipit
 
     CONTENT_TYPES = {
       'json' => 'application/json',
-      'form' => 'application/x-www-form-urlencoded',
+      'form' => 'application/x-www-form-urlencoded'
     }.freeze
 
-    EVENTS = %w(
+    EVENTS = %w[
       stack
       review_stack
       task
@@ -78,7 +79,7 @@ module Shipit
       merge_status
       merge
       pull_request
-    ).freeze
+    ].freeze
 
     belongs_to :stack, required: false
     has_many :deliveries
@@ -96,10 +97,11 @@ module Shipit
     class << self
       def emit(event, stack, payload)
         raise "#{event} is not declared in Shipit::Hook::EVENTS" unless EVENTS.include?(event.to_s)
+
         Shipit::EmitEventJob.perform_later(
           event: event.to_s,
           stack_id: stack&.id,
-          payload: coerce_payload(payload),
+          payload: coerce_payload(payload)
         )
         deliver_internal_hooks(event, stack, payload)
       end
@@ -142,7 +144,7 @@ module Shipit
         url: delivery_url,
         content_type: CONTENT_TYPES[content_type],
         payload: serialize_payload(payload),
-        secret: secret,
+        secret:
       )
     end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GithubSyncJob < BackgroundJob
     include BackgroundJob::Unique
@@ -36,13 +37,14 @@ module Shipit
     def fetch_missing_commits(&block)
       commits = []
       github_api = stack&.github_api
-      iterator = Shipit::FirstParentCommitsIterator.new(github_api: github_api, &block)
+      iterator = Shipit::FirstParentCommitsIterator.new(github_api:, &block)
       iterator.each_with_index do |commit, index|
         break if index >= MAX_FETCHED_COMMITS
 
         if shared_parent = lookup_commit(commit.sha)
           return commits, shared_parent
         end
+
         commits.unshift(commit)
       end
       [commits, nil]
@@ -59,7 +61,7 @@ module Shipit
     end
 
     def lookup_commit(sha)
-      stack.commits.find_by(sha: sha)
+      stack.commits.find_by(sha:)
     end
   end
 end

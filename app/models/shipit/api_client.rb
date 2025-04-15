@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class ApiClient < Record
     InsufficientPermission = Class.new(StandardError)
@@ -9,14 +10,14 @@ module Shipit
     validates :creator, :name, presence: true
 
     serialize :permissions, coder: Shipit.serialized_column(:permissions, type: Array)
-    PERMISSIONS = %w(
+    PERMISSIONS = %w[
       read:stack
       write:stack
       deploy:stack
       lock:stack
       read:hook
       write:hook
-    ).freeze
+    ].freeze
     validates :permissions, subset: { of: PERMISSIONS }
 
     class << self
@@ -39,6 +40,7 @@ module Shipit
       unless permissions.include?(required_permission)
         raise InsufficientPermission, "This operation requires the `#{required_permission}` permission"
       end
+
       true
     end
   end

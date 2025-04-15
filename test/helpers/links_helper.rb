@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+
 module LinksHelper
-  LINKS_PATTERN = /\<(.*?)\>; rel="(\w+)"/
+  LINKS_PATTERN = /<(.*?)>; rel="(\w+)"/
 
   def assert_link(rel, url)
     assert_includes(response_links, rel)

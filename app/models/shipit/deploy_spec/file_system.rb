@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     class FileSystem < DeploySpec
@@ -42,29 +43,29 @@ module Shipit
             'method' => merge_request_merge_method,
             'max_divergence' => {
               'commits' => max_divergence_commits&.to_i,
-              'age' => max_divergence_age&.to_i,
-            },
+              'age' => max_divergence_age&.to_i
+            }
           },
           'ci' => {
             'hide' => hidden_statuses,
             'allow_failures' => soft_failing_statuses,
             'require' => required_statuses,
-            'blocking' => blocking_statuses,
+            'blocking' => blocking_statuses
           },
           'machine' => {
             'environment' => discover_machine_env.merge(machine_env),
             'directory' => directory,
-            'cleanup' => true,
+            'cleanup' => true
           },
           'review' => {
             'checklist' => review_checklist,
             'monitoring' => review_monitoring,
-            'checks' => review_checks,
+            'checks' => review_checks
           },
           'plugins' => plugins,
           'status' => {
             'context' => release_status_context,
-            'delay' => release_status_delay,
+            'delay' => release_status_delay
           },
           'dependencies' => { 'override' => dependencies_steps },
           'provision' => { 'handler_name' => provisioning_handler_name },
@@ -73,19 +74,19 @@ module Shipit
             'variables' => deploy_variables.map(&:to_h),
             'max_commits' => maximum_commits_per_deploy,
             'interval' => pause_between_deploys,
-            'retries' => retries_on_deploy,
+            'retries' => retries_on_deploy
           },
           'rollback' => {
             'override' => rollback_steps,
-            'retries' => retries_on_rollback,
+            'retries' => retries_on_rollback
           },
           'fetch' => fetch_deployed_revision_steps,
-          'tasks' => cacheable_tasks,
+          'tasks' => cacheable_tasks
         )
       end
 
       def cacheable_tasks
-        discover_task_definitions.map { |k, c| [k, coerce_task_definition(c)] }.to_h
+        discover_task_definitions.transform_values { |c| coerce_task_definition(c) }
       end
 
       def config(*)
@@ -115,7 +116,7 @@ module Shipit
           ".shipit/#{@env}.yml",
 
           "shipit.yml",
-          ".shipit/shipit.yml",
+          ".shipit/shipit.yml"
         ].uniq
       end
 
@@ -141,11 +142,11 @@ module Shipit
       end
 
       def shipit_not_obeying_bare_file_echo_command
-        <<~EOM
+        <<~WARNING_MESSAGE
           echo \"\e[1;31mShipit is configured to ignore the bare '#{app_name}.yml' file.
           Please rename this file to more specifically include the environment name.
           Deployments will fail until a valid '#{app_name}.#{@env}.yml' file is found.\e[0m\"
-        EOM
+        WARNING_MESSAGE
       end
     end
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class VariableDefinition
     attr_reader :name, :title, :default, :select
@@ -20,7 +21,7 @@ module Shipit
         'name' => @name,
         'title' => @title,
         'default' => @default,
-        'select' => @select,
+        'select' => @select
       }
     end
   end

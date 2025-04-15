@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -41,9 +42,9 @@ module Shipit
     end
 
     test "#expected_to_be_deployed? returns true if the stack has continuous deployment enabled, next expected commit to deploy id is greater or equals to the commit id and commit is not active" do
-      commit = shipit_commits(:undeployed_4)
+      commit = shipit_commits(:undeployed4)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
-      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy:)
 
       refute_predicate next_expected_commit_to_deploy, :nil?
       assert_predicate undeployed_commit.stack, :continuous_deployment
@@ -56,7 +57,7 @@ module Shipit
     test "#expected_to_be_deployed? returns true if the active task has no commit range" do
       commit = shipit_commits(:task_no_commits)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
-      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy:)
 
       refute_predicate next_expected_commit_to_deploy, :nil?
       assert_predicate undeployed_commit.stack, :continuous_deployment
@@ -69,7 +70,7 @@ module Shipit
     test "#expected_to_be_deployed? returns false if the stack has continuous deployment disabled" do
       commit = shipit_commits(:cyclimse_first)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
-      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy:)
 
       refute_predicate next_expected_commit_to_deploy, :nil?
       refute_predicate undeployed_commit.stack, :continuous_deployment
@@ -80,9 +81,9 @@ module Shipit
     end
 
     test "#expected_to_be_deployed? returns false if the commit is part of the active task" do
-      commit = shipit_commits(:undeployed_3)
+      commit = shipit_commits(:undeployed3)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
-      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy:)
 
       refute_predicate next_expected_commit_to_deploy, :nil?
       assert_predicate undeployed_commit.stack, :continuous_deployment
@@ -93,16 +94,16 @@ module Shipit
     end
 
     test "#expected_to_be_deployed? returns false if there is no commit to deploy" do
-      commit = shipit_commits(:undeployed_3)
+      commit = shipit_commits(:undeployed3)
       undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: nil)
 
       refute_predicate undeployed_commit, :expected_to_be_deployed?
     end
 
     test "#expected_to_be_deployed? returns false if the commit has an id greater than next commit to deploy" do
-      commit = shipit_commits(:undeployed_7)
+      commit = shipit_commits(:undeployed7)
       next_expected_commit_to_deploy = commit.stack.next_expected_commit_to_deploy
-      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+      undeployed_commit = UndeployedCommit.new(commit, index: 1, next_expected_commit_to_deploy:)
 
       refute_predicate next_expected_commit_to_deploy, :nil?
       assert_predicate undeployed_commit.stack, :continuous_deployment

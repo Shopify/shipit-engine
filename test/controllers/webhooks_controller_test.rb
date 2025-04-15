@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -24,7 +25,7 @@ module Shipit
 
       body = JSON.parse(payload(:push_master)).to_json
       assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :create, body: body, as: :json
+        post :create, body:, as: :json
       end
     end
 
@@ -43,7 +44,7 @@ module Shipit
 
       body = JSON.parse(payload(:status_master)).merge(repository_params).to_json
       assert_difference 'commit.statuses.count', 1 do
-        post :create, body: body, as: :json
+        post :create, body:, as: :json
       end
 
       status = commit.statuses.last
@@ -74,7 +75,7 @@ module Shipit
 
       body = JSON.parse(payload(:check_suite_master)).to_json
       assert_enqueued_with(job: RefreshCheckRunsJob) do
-        post :create, body: body, as: :json
+        post :create, body:, as: :json
         assert_response :ok
       end
     end
@@ -107,11 +108,11 @@ module Shipit
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Team.count }, 1 do
         post :create, as: :json, body: membership_params.merge(team: {
-          id: 48,
-          name: 'Ouiche Cooks',
-          slug: 'ouiche-cooks',
-          url: 'https://example.com',
-        }).to_json
+                                                                 id: 48,
+                                                                 name: 'Ouiche Cooks',
+                                                                 slug: 'ouiche-cooks',
+                                                                 url: 'https://example.com'
+                                                               }).to_json
         assert_response :ok
       end
     end
@@ -201,7 +202,7 @@ module Shipit
         login: 'george',
         email: 'george@cyclim.se',
         avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
-        url: 'https://api.github.com/user/george',
+        url: 'https://api.github.com/user/george'
       )
     end
   end

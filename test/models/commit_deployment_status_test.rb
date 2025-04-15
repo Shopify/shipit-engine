@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -17,7 +18,7 @@ module Shipit
         'in_progress',
         target_url: "http://shipit.com/shopify/shipit-engine/production/deploys/#{@task.id}",
         description: "walrus triggered the deploy of shopify/shipit-engine/production to #{@deployment.short_sha}",
-        environment_url: "https://shipit.shopify.com",
+        environment_url: "https://shipit.shopify.com"
       ).returns(response)
 
       @status.create_on_github!

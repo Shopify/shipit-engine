@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeployCommands < TaskCommands
     def steps
@@ -10,7 +11,7 @@ module Shipit
       super.merge(
         'SHA' => commit.sha,
         'REVISION' => commit.sha,
-        'DIFF_LINK' => diff_url,
+        'DIFF_LINK' => diff_url
       )
     end
 

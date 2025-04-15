@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 require 'tmpdir'
 
@@ -71,7 +72,7 @@ module Shipit
         '',
         '$ echo review',
         'review',
-        '',
+        ''
       ]
       assert_equal 'success', @checks.status
       assert_equal lines, @checks.output.lines.map(&:strip)

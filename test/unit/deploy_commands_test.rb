@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -14,7 +15,7 @@ module Shipit
         rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
         machine_env: { 'GLOBAL' => '1' },
         directory: nil,
-        clear_working_directory?: true,
+        clear_working_directory?: true
       )
       @commands.stubs(:deploy_spec).returns(@deploy_spec)
 
@@ -27,7 +28,7 @@ module Shipit
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      assert_equal %W(git fetch origin --quiet --tags --force #{@deploy.until_commit.sha}), command.args
+      assert_equal %W[git fetch origin --quiet --tags --force #{@deploy.until_commit.sha}], command.args
     end
 
     test "#fetch_commit calls git fetch in git_path directory if repository cache already exist" do
@@ -44,7 +45,7 @@ module Shipit
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -54,7 +55,7 @@ module Shipit
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -62,12 +63,12 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
       StackCommands.any_instance.expects(:git_cmd_succeeds?)
-        .with(@stack.git_path)
-        .returns(false)
+                   .with(@stack.git_path)
+                   .returns(false)
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -76,12 +77,12 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
       StackCommands.any_instance.expects(:git_cmd_succeeds?)
-        .with(@stack.git_path)
-        .returns(false)
+                   .with(@stack.git_path)
+                   .returns(false)
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -91,7 +92,7 @@ module Shipit
 
       command = @commands.fetch_commit(@deploy.until_commit)
 
-      expected = %W(git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -121,7 +122,7 @@ module Shipit
 
       command = @commands.fetch
 
-      assert_equal %w(git fetch origin --quiet --tags --force master), command.args
+      assert_equal %w[git fetch origin --quiet --tags --force master], command.args
     end
 
     test "#fetch calls git fetch in git_path directory if repository cache already exist" do
@@ -138,7 +139,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -148,7 +149,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -156,12 +157,12 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
       StackCommands.any_instance.expects(:git_cmd_succeeds?)
-        .with(@stack.git_path)
-        .returns(false)
+                   .with(@stack.git_path)
+                   .returns(false)
 
       command = @commands.fetch
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -170,12 +171,12 @@ module Shipit
       @stack.git_path.stubs(:exist?).returns(true)
       @stack.git_path.stubs(:empty?).returns(false)
       StackCommands.any_instance.expects(:git_cmd_succeeds?)
-        .with(@stack.git_path)
-        .returns(false)
+                   .with(@stack.git_path)
+                   .returns(false)
 
       command = @commands.fetch
 
-      expected = %W(git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args
     end
 
@@ -185,7 +186,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --quiet --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -194,7 +195,7 @@ module Shipit
 
       command = @commands.fetch
 
-      expected = %W(git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path})
+      expected = %W[git clone --single-branch --recursive --branch master #{@stack.repo_git_url} #{@stack.git_path}]
       assert_equal expected, command.args.map(&:to_s)
     end
 
@@ -218,7 +219,7 @@ module Shipit
       clone_args = [
         'git', 'clone', '--quiet',
         '--local', '--origin', 'cache',
-        @stack.git_path.to_s, @deploy.working_directory,
+        @stack.git_path.to_s, @deploy.working_directory
       ]
       assert_equal clone_args, commands.first.args
       assert_equal ['git', 'remote', 'add', 'origin', @stack.repo_git_url.to_s], commands.second.args
@@ -233,7 +234,7 @@ module Shipit
       command = @commands.checkout(@deploy.until_commit)
       checkout_args = [
         'git', '-c', 'advice.detachedHead=false', 'checkout', '--quiet',
-        @deploy.until_commit.sha,
+        @deploy.until_commit.sha
       ]
       assert_equal checkout_args, command.args
     end

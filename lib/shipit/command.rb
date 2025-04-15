@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'pty'
 require 'shellwords'
 require 'fileutils'
@@ -27,7 +28,7 @@ module Shipit
 
     attr_reader :out, :chdir, :env, :args, :pid, :timeout
 
-    def initialize(*args, default_timeout: Shipit.default_inactivity_timeout, env: {}, chdir:)
+    def initialize(*args, chdir:, default_timeout: Shipit.default_inactivity_timeout, env: {})
       @args, options = parse_arguments(args)
       @timeout = parse_timeout(options['timeout'] || options[:timeout]) || default_timeout
       @env = env.transform_values { |v| v&.to_s }
@@ -83,6 +84,7 @@ module Shipit
 
     def start(&block)
       return if @started
+
       @control_block = block
       @out = @pid = nil
       FileUtils.mkdir_p(@chdir)
@@ -106,10 +108,10 @@ module Shipit
       start
       begin
         read_stream(@out, &block)
-      rescue TimedOut => error
-        yield red("No output received in the last #{timeout} seconds.") + "\n"
+      rescue TimedOut => e
+        yield "#{red("No output received in the last #{timeout} seconds.")}\n"
         terminate!(&block)
-        raise error
+        raise e
       rescue Errno::EIO # Somewhat expected on Linux: http://stackoverflow.com/a/10306782
       end
 
@@ -125,6 +127,7 @@ module Shipit
     def stream!(&block)
       stream(&block)
       raise Failed.new(exit_message, code) unless success?
+
       self
     end
 
@@ -173,7 +176,7 @@ module Shipit
     ensure
       begin
         read_stream(@out, &block)
-      rescue
+      rescue StandardError
       end
     end
 
@@ -187,9 +190,8 @@ module Shipit
       rescue TimedOut
       rescue Errno::EIO # EIO is somewhat expected on Linux: http://stackoverflow.com/a/10306782
         # If we try to read the stream right after sending a signal, we often get an Errno::EIO.
-        if reap_child!(block: false)
-          return true
-        end
+        return true if reap_child!(block: false)
+
         # If we let the child a little bit of time, it solves it.
         retry_count -= 1
         if retry_count > 0
@@ -252,6 +254,7 @@ module Shipit
     def reap_child!(block: true)
       return @status if @status
       return unless running? # Command was never started e.g. permission denied, not found etc
+
       if block
         _, @status = Process.waitpid2(@pid)
       elsif res = Process.waitpid2(@pid, Process::WNOHANG)

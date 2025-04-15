@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -16,7 +17,7 @@ module Shipit
 
     test '#title returns an error message when the title raises an error' do
       task = shipit_tasks(:shipit_with_title_parsing_issue)
-      assert_equal 'This task (title: Using the %{WRONG_VARIABLE_NAME}) cannot be shown due to an incorrect variable name. Check your shipit.yml file', task.title
+      assert_equal 'This task (title: Using the %<WRONG_VARIABLE_NAME>) cannot be shown due to an incorrect variable name. Check your shipit.yml file', task.title
     end
 
     test "#write sends line-buffered output to task logger" do
@@ -44,7 +45,7 @@ module Shipit
       # We don't use assert_includes because it will print the whole message
       assert(
         output.include?(Task::OUTPUT_TRUNCATED_MESSAGE),
-        "'#{Task::OUTPUT_TRUNCATED_MESSAGE.chomp}' was not present in the output",
+        "'#{Task::OUTPUT_TRUNCATED_MESSAGE.chomp}' was not present in the output"
       )
     end
 
@@ -94,7 +95,7 @@ module Shipit
       task.update(
         rolled_up: false,
         created_at: (60 + 1).minutes.ago.to_formatted_s(:db),
-        status: "success",
+        status: "success"
       )
 
       assert_includes Shipit::Task.due_for_rollup, task
@@ -105,7 +106,7 @@ module Shipit
       task.update(
         rolled_up: false,
         created_at: (60 + 1).minutes.ago.to_formatted_s(:db),
-        status: "error",
+        status: "error"
       )
 
       assert_includes Shipit::Task.due_for_rollup, task

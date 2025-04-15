@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'active_support/all'
 require 'active_model_serializers'
 require 'state_machines-activerecord'
@@ -60,17 +61,17 @@ module Shipit
   extend self
 
   GithubOrganizationUnknown = Class.new(StandardError)
-  TOP_LEVEL_GH_KEYS = [:app_id, :installation_id, :webhook_secret, :private_key, :oauth, :domain]
+  TOP_LEVEL_GH_KEYS = [:app_id, :installation_id, :webhook_secret, :private_key, :oauth, :domain].freeze
 
   delegate :table_name_prefix, to: :secrets
 
   attr_accessor :disable_api_authentication, :timeout_exit_codes, :deployment_checks, :respect_bare_shipit_file,
-    :database_serializer
+                :database_serializer
   attr_writer(
     :internal_hook_receivers,
     :preferred_org_emails,
     :task_execution_strategy,
-    :task_logger,
+    :task_logger
   )
 
   def task_execution_strategy
@@ -80,7 +81,7 @@ module Shipit
   self.timeout_exit_codes = [].freeze
   self.respect_bare_shipit_file = true
 
-  alias_method :respect_bare_shipit_file?, :respect_bare_shipit_file
+  alias respect_bare_shipit_file? respect_bare_shipit_file
 
   def authentication_disabled?
     ENV['SHIPIT_DISABLE_AUTH'].present?
@@ -104,7 +105,7 @@ module Shipit
       logger: Rails.logger,
       reconnect_attempts: 3,
       reconnect_delay: 0.5,
-      reconnect_delay_max: 1,
+      reconnect_delay_max: 1
     )
   end
 
@@ -116,6 +117,7 @@ module Shipit
     class << self
       def load(serial)
         return nil if serial.nil?
+
         # JSON.load is unsafe, we should use parse instead
         JSON.parse(serial)
       end
@@ -140,6 +142,7 @@ module Shipit
 
       def dump(object)
         return if object.nil?
+
         JSON.dump(object)
       end
     end
@@ -148,7 +151,7 @@ module Shipit
   self.database_serializer = TransitionalSerializer
 
   def serialized_column(attribute_name, type: nil, coder: nil)
-    column = Paquito::SerializedColumn.new(database_serializer, type, attribute_name: attribute_name)
+    column = Paquito::SerializedColumn.new(database_serializer, type, attribute_name:)
     if coder
       Paquito.chain(coder, column)
     else
@@ -171,12 +174,14 @@ module Shipit
 
   def github_default_organization
     return nil unless secrets&.github
+
     org = secrets.github.keys.first
     TOP_LEVEL_GH_KEYS.include?(org) ? nil : org
   end
 
   def github_organizations
     return [nil] unless github_default_organization
+
     secrets.github.keys
   end
 
@@ -187,9 +192,9 @@ module Shipit
   end
 
   def legacy_github_api
-    if secrets&.github_api.present?
-      @legacy_github_api ||= github.new_client(access_token: secrets.github_api[:access_token])
-    end
+    return unless secrets&.github_api.present?
+
+    @legacy_github_api ||= github.new_client(access_token: secrets.github_api[:access_token])
   end
 
   def user
@@ -208,7 +213,7 @@ module Shipit
     if secrets.user_access_tokens_key.present?
       secrets.user_access_tokens_key
     elsif secrets.secret_key_base
-      Digest::SHA256.digest("user_access_tokens_key" + secrets.secret_key_base)
+      Digest::SHA256.digest("user_access_tokens_key#{secrets.secret_key_base}")
     end
   end
 
@@ -248,7 +253,7 @@ module Shipit
     @all_settings_present ||= [
       secrets.github, # TODO: handle GitHub settings
       redis_url,
-      host,
+      host
     ].all?(&:present?)
   end
 
@@ -262,10 +267,10 @@ module Shipit
 
   def revision
     @revision ||= if revision_file.exist?
-      revision_file.read
-    else
-      %x(git rev-parse HEAD)
-    end.strip
+                    revision_file.read
+                  else
+                    `git rev-parse HEAD`
+                  end.strip
   end
 
   def default_inactivity_timeout

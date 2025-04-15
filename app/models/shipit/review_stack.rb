@@ -102,11 +102,13 @@ module Shipit
 
     def enqueue_for_provisioning
       return if awaiting_provision
+
       update!(awaiting_provision: true)
     end
 
     def remove_from_provisioning_queue
       return unless awaiting_provision
+
       update!(awaiting_provision: false)
     end
 
@@ -119,7 +121,7 @@ module Shipit
     end
 
     def emit_updated_hooks
-      changed = !(previous_changes.keys - %w(updated_at)).empty?
+      changed = !(previous_changes.keys - %w[updated_at]).empty?
       Hook.emit(:review_stack, self, action: :updated, review_stack: self) if changed
     end
 

@@ -1,6 +1,7 @@
 # Unreleased
 
 * Pass `Shipit::Stack` to `DeploySpec::FileSystem.new` and make it accessible through an accessor. (#1356)
+* Upgrade Rubocop to 1.48.0
 
 # 0.39.0
 

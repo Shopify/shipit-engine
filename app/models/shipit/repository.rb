@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class NullRepository
     def id
@@ -37,16 +38,16 @@ module Shipit
     NAME_MAX_SIZE = 100
     private_constant :NAME_MAX_SIZE
 
-    validates :name, uniqueness: { scope: %i(owner), case_sensitive: false,
-                                   message: 'cannot be used more than once', }
+    validates :name, uniqueness: { scope: %i[owner], case_sensitive: false,
+                                   message: 'cannot be used more than once' }
     validates :owner, :name, presence: true, ascii_only: true
-    validates :owner, format: { with: /\A[a-z0-9_\-\.]+\z/ }, length: { maximum: OWNER_MAX_SIZE }
-    validates :name, format: { with: /\A[a-z0-9_\-\.]+\z/ }, length: { maximum: NAME_MAX_SIZE }
+    validates :owner, format: { with: /\A[a-z0-9_\-.]+\z/ }, length: { maximum: OWNER_MAX_SIZE }
+    validates :name, format: { with: /\A[a-z0-9_\-.]+\z/ }, length: { maximum: NAME_MAX_SIZE }
 
     has_many :stacks, dependent: :destroy
     has_many :review_stacks, dependent: :destroy
 
-    PROVISIONING_BEHAVIORS = %w(allow_all allow_with_label prevent_with_label).freeze
+    PROVISIONING_BEHAVIORS = %w[allow_all allow_with_label prevent_with_label].freeze
     enum :provisioning_behavior, PROVISIONING_BEHAVIORS.zip(PROVISIONING_BEHAVIORS).to_h, prefix: :provisioning_behavior
 
     def self.from_github_repo_name(github_repo_name)
@@ -54,12 +55,12 @@ module Shipit
       find_by(owner: repo_owner, name: repo_name)
     end
 
-    def name=(n)
-      super(n&.downcase)
+    def name=(name_value)
+      super(name_value&.downcase)
     end
 
-    def owner=(o)
-      super(o&.downcase)
+    def owner=(owner_value)
+      super(owner_value&.downcase)
     end
 
     def github_repo_name
@@ -90,7 +91,7 @@ module Shipit
       repo_owner, repo_name = param.split('/')
       where(
         owner: repo_owner.downcase,
-        name: repo_name.downcase,
+        name: repo_name.downcase
       ).first!
     end
 

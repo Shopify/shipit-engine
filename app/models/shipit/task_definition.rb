@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class TaskDefinition
     NotFound = Class.new(StandardError)
@@ -6,18 +7,20 @@ module Shipit
     class << self
       def load(payload)
         return if payload.blank?
+
         json = JSON.parse(payload)
         new(json.delete('id'), json)
       end
 
       def dump(definition)
         return if definition.blank?
+
         JSON.dump(definition.as_json)
       end
     end
 
     attr_reader :id, :action, :description, :steps, :checklist, :variables
-    alias_method :to_param, :id
+    alias to_param id
 
     def initialize(id, config)
       @id = id
@@ -46,14 +49,14 @@ module Shipit
 
     def as_json
       {
-        id: id,
-        action: action,
+        id:,
+        action:,
         title: @title,
-        description: description,
-        steps: steps,
+        description:,
+        steps:,
         variables: variables.map(&:to_h),
-        checklist: checklist,
-        allow_concurrency: allow_concurrency?,
+        checklist:,
+        allow_concurrency: allow_concurrency?
       }
     end
 

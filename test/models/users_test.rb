@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -12,7 +13,7 @@ module Shipit
         login: 'george',
         email: 'george@cyclim.se',
         avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
-        url: 'https://api.github.com/user/george',
+        url: 'https://api.github.com/user/george'
       )
       @org_domain = "shopify.com"
       @emails_url = "https://api.github.com/user/emails"
@@ -23,7 +24,7 @@ module Shipit
         email: nil,
         avatar_url: 'https://avatars.githubusercontent.com/u/43?v=3',
         url: 'https://api.github.com/user/peter',
-        rels: nil,
+        rels: nil
       )
     end
 
@@ -78,7 +79,7 @@ module Shipit
         login: 'jim',
         email: "jim@#{@org_domain}",
         avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
-        url: 'https://api.github.com/user/jim',
+        url: 'https://api.github.com/user/jim'
       )
 
       Shipit.preferred_org_emails = [].freeze
@@ -91,9 +92,9 @@ module Shipit
       expected_email = "myuser@#{@org_domain}"
 
       stub_request(:get, @emails_url).to_return(
-        status: %w(200 OK),
+        status: %w[200 OK],
         body: [{ email: expected_email }].to_json,
-        headers: { "Content-Type" => "application/json" },
+        headers: { "Content-Type" => "application/json" }
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -106,21 +107,21 @@ module Shipit
       result_email_records = [
         {
           email: "notmyuser1@#{@org_domain}",
-          primary: false,
+          primary: false
         },
         {
-          email: "notmyuser2@#{@org_domain}",
+          email: "notmyuser2@#{@org_domain}"
         },
         {
           email: expected_email,
-          primary: true,
-        },
+          primary: true
+        }
       ]
 
       stub_request(:get, @emails_url).to_return(
-        status: %w(200 OK),
+        status: %w[200 OK],
         body: result_email_records.to_json,
-        headers: { "Content-Type" => "application/json" },
+        headers: { "Content-Type" => "application/json" }
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -132,17 +133,17 @@ module Shipit
       result_email_records = [
         {
           email: "notmyuser1@not#{@org_domain}",
-          primary: false,
+          primary: false
         },
         {
-          email: "notmyuser2@not#{@org_domain}",
-        },
+          email: "notmyuser2@not#{@org_domain}"
+        }
       ]
 
       stub_request(:get, @emails_url).to_return(
-        status: %w(200 OK),
+        status: %w[200 OK],
         body: result_email_records.to_json,
-        headers: { "Content-Type" => "application/json" },
+        headers: { "Content-Type" => "application/json" }
       )
 
       user = User.find_or_create_from_github(@github_user)
@@ -273,15 +274,15 @@ module Shipit
             id: user.github_id,
             name: user.name,
             email: user.email,
-            date: Time.now.utc,
+            date: Time.now.utc
           },
           committer: {
             name: user.name,
             email: user.email,
-            date: Time.now.utc,
+            date: Time.now.utc
           },
-          message: "commit to trigger staging build\n\nMerge-Requested-By: missinguser\n",
-        },
+          message: "commit to trigger staging build\n\nMerge-Requested-By: missinguser\n"
+        }
       )
       found_user = Shipit::User.find_or_create_author_from_github_commit(github_commit)
       assert_equal user, found_user

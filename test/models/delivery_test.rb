@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -13,7 +14,7 @@ module Shipit
         event: 'deploy',
         url: 'http://example.com',
         content_type: 'application/json',
-        payload: '{}',
+        payload: '{}'
       )
       assert_equal 'pending', delivery.status
 
@@ -25,7 +26,7 @@ module Shipit
 
     test "#send! post the payload and update the status to `sent`" do
       headers = { 'content-type' => 'text/plain', 'content-length' => '2' }
-      stub_request(:post, @delivery.url).to_return(headers: headers, body: 'OK')
+      stub_request(:post, @delivery.url).to_return(headers:, body: 'OK')
 
       assert_equal 'scheduled', @delivery.status
       @delivery.send!

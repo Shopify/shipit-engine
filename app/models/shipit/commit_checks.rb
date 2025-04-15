@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitChecks < EphemeralCommitChecks
     OUTPUT_TTL = 10.minutes.to_i
-    FINAL_STATUSES = %w(failed error success).freeze
+    FINAL_STATUSES = %w[failed error success].freeze
 
     def initialize(commit)
       @commit = commit
@@ -16,12 +17,13 @@ module Shipit
 
     def schedule
       return false if Shipit.redis.get(key('status')).present?
+
       synchronize do
         return false if Shipit.redis.get(key('status')).present?
 
         initialize_redis_state
       end
-      PerformCommitChecksJob.perform_later(commit: commit)
+      PerformCommitChecksJob.perform_later(commit:)
       true
     end
 

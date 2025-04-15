@@ -48,16 +48,16 @@ module Shipit
 
           def pull_request
             @pull_request ||= Shipit::PullRequest
-              .joins(:stack, stack: :repository)
-              .find_by(
-                number: params.number,
-                stacks: {
-                  repositories:
-                    {
-                      id: repository.id,
-                    },
-                }
-              )
+                              .joins(:stack, stack: :repository)
+                              .find_by(
+                                number: params.number,
+                                stacks: {
+                                  repositories:
+                                    {
+                                      id: repository.id
+                                    }
+                                }
+                              )
           end
 
           def repository

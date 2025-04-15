@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -7,7 +8,6 @@ module Shipit
       assert_equal Duration.new(1), Duration.new(1)
       assert Duration.new(2) > Duration.new(1)
       assert Duration.new(2) > 1
-      assert 1 < Duration.new(2)
     end
 
     test "can be added to a Time instance" do

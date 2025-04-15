@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module Shipit
   module Api
     class HooksController < BaseController
-      require_permission :read, :hook, only: %i(index show)
-      require_permission :write, :hook, only: %i(create update destroy)
+      require_permission :read, :hook, only: %i[index show]
+      require_permission :write, :hook, only: %i[create update destroy]
 
       def index
         render_resources(hooks)
@@ -43,7 +44,7 @@ module Shipit
       end
 
       def hooks
-        Hook.where(stack_id: stack_id)
+        Hook.where(stack_id:)
       end
 
       def stack_id

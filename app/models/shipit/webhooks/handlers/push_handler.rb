@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module Webhooks
     module Handlers
@@ -9,7 +10,7 @@ module Shipit
         def process
           stacks
             .not_archived
-            .where(branch: branch)
+            .where(branch:)
             .find_each(&:sync_github)
         end
 

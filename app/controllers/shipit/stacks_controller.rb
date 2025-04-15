@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module Shipit
   class StacksController < ShipitController
-    before_action :load_stack, only: %i(update destroy settings statistics clear_git_cache refresh)
+    before_action :load_stack, only: %i[update destroy settings statistics clear_git_cache refresh]
 
     def new
       @stack = Stack.new
@@ -13,10 +14,10 @@ module Shipit
       @stacks = Stack.all
       if params[:repo]
         @stacks = if (repository = Repository.from_github_repo_name(params[:repo]))
-          repository.stacks
-        else
-          Stack.none
-        end
+                    repository.stacks
+                  else
+                    Stack.none
+                  end
       end
 
       @stacks = @stacks.order(Arel.sql('(undeployed_commits_count > 0) desc'), tasks_count: :desc)
@@ -37,7 +38,7 @@ module Shipit
         scope.preload(:author, :statuses, :check_runs, :lock_author)
       end
 
-      next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits: commits)
+      next_expected_commit_to_deploy = @stack.next_expected_commit_to_deploy(commits:)
 
       @active_commits = []
       @undeployed_commits = []
@@ -48,11 +49,11 @@ module Shipit
 
       @active_commits = map_to_undeployed_commit(
         @active_commits,
-        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
+        next_expected_commit_to_deploy:
       )
       @undeployed_commits = map_to_undeployed_commit(
         @undeployed_commits,
-        next_expected_commit_to_deploy: next_expected_commit_to_deploy,
+        next_expected_commit_to_deploy:
       )
     end
 
@@ -64,9 +65,7 @@ module Shipit
     def create
       @stack = Stack.new(create_params)
       @stack.repository = repository
-      unless @stack.save
-        flash[:warning] = @stack.errors.full_messages.to_sentence
-      end
+      flash[:warning] = @stack.errors.full_messages.to_sentence unless @stack.save
       respond_with(@stack)
     end
 
@@ -75,8 +74,7 @@ module Shipit
       redirect_to(stacks_url)
     end
 
-    def settings
-    end
+    def settings; end
 
     def all_tasks
       @stack = Stack.from_param!(params[:id])
@@ -103,9 +101,7 @@ module Shipit
 
     def update
       options = {}
-      unless @stack.update(update_params)
-        options = { flash: { warning: @stack.errors.full_messages.to_sentence } }
-      end
+      options = { flash: { warning: @stack.errors.full_messages.to_sentence } } unless @stack.update(update_params)
 
       update_lock
       update_archived
@@ -122,30 +118,30 @@ module Shipit
     private
 
     def update_lock
-      if params[:stack].key?(:lock_reason)
-        reason = params[:stack][:lock_reason]
-        if reason.present?
-          @stack.lock(reason, current_user)
-        elsif @stack.locked?
-          @stack.unlock
-        end
+      return unless params[:stack].key?(:lock_reason)
+
+      reason = params[:stack][:lock_reason]
+      if reason.present?
+        @stack.lock(reason, current_user)
+      elsif @stack.locked?
+        @stack.unlock
       end
     end
 
     def update_archived
-      if params[:stack][:archived].present?
-        if params[:stack][:archived] == "true"
-          @stack.archive!(current_user)
-        elsif @stack.archived?
-          @stack.unarchive!
-        end
+      return unless params[:stack][:archived].present?
+
+      if params[:stack][:archived] == "true"
+        @stack.archive!(current_user)
+      elsif @stack.archived?
+        @stack.unarchive!
       end
     end
 
     def map_to_undeployed_commit(commits, next_expected_commit_to_deploy:)
       commits.map.with_index do |c, i|
         index = commits.size - i - 1
-        UndeployedCommit.new(c, index: index, next_expected_commit_to_deploy: next_expected_commit_to_deploy)
+        UndeployedCommit.new(c, index:, next_expected_commit_to_deploy:)
       end
     end
 
@@ -163,7 +159,7 @@ module Shipit
         :environment,
         :continuous_deployment,
         :ignore_ci,
-        :merge_queue_enabled,
+        :merge_queue_enabled
       )
     end
 

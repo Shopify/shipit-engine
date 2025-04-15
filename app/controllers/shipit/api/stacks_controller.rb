@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 module Shipit
   module Api
     class StacksController < BaseController
-      require_permission :read, :stack, only: %i(index show)
-      require_permission :write, :stack, only: %i(create update destroy)
+      require_permission :read, :stack, only: %i[index show]
+      require_permission :write, :stack, only: %i[create update destroy]
 
       params do
         accepts :repo_owner, String
@@ -14,10 +15,10 @@ module Shipit
         if params[:repo_owner] && params[:repo_name]
           full_repo_name = [repo_owner, repo_name].join('/')
           @stacks = if (repository = Repository.from_github_repo_name(full_repo_name))
-            stacks.where(repository: repository)
-          else
-            Stack.none
-          end
+                      stacks.where(repository:)
+                    else
+                      Stack.none
+                    end
         end
         render_resources(@stacks)
       end
@@ -75,7 +76,7 @@ module Shipit
       private
 
       def create_params
-        params.reject { |key, _| %i(repo_owner repo_name).include?(key) }
+        params.reject { |key, _| %i[repo_owner repo_name].include?(key) }
       end
 
       def stack
@@ -83,12 +84,12 @@ module Shipit
       end
 
       def update_archived
-        if key?(:archived)
-          if params[:archived]
-            stack.archive!(nil)
-          elsif stack.archived?
-            stack.unarchive!
-          end
+        return unless key?(:archived)
+
+        if params[:archived]
+          stack.archive!(nil)
+        elsif stack.archived?
+          stack.unarchive!
         end
       end
 
@@ -98,7 +99,7 @@ module Shipit
 
       def update_params
         params.select do |key, _|
-          %i(environment branch deploy_url ignore_ci merge_queue_enabled continuous_deployment).include?(key)
+          %i[environment branch deploy_url ignore_ci merge_queue_enabled continuous_deployment].include?(key)
         end
       end
 

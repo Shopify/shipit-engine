@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -22,7 +23,7 @@ module Shipit
       assert_response :forbidden
       assert_equal(
         'You must be a member of cyclimse/cooks or shopify/developers to access this application.',
-        response.body,
+        response.body
       )
     end
 
@@ -36,8 +37,8 @@ module Shipit
         post :create, params: {
           repository: {
             name: 'valid',
-            owner: 'repository',
-          },
+            owner: 'repository'
+          }
         }
       end
       assert_redirected_to repository_path(Repository.last)
@@ -48,8 +49,8 @@ module Shipit
         post :create, params: {
           repository: {
             owner: 'some',
-            name: 'owner/path',
-          },
+            name: 'owner/path'
+          }
         }
       end
       assert_response :success

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeployStats
     delegate :empty?, to: :@deploys
@@ -14,6 +15,7 @@ module Shipit
 
     def average_duration
       return if empty?
+
       @durations.sum / @durations.length.to_f
     end
 
@@ -27,11 +29,13 @@ module Shipit
 
     def median_duration
       return if @durations.empty?
+
       (sorted_durations[(@durations.length - 1) / 2] + sorted_durations[@durations.length / 2]) / 2.0
     end
 
     def success_rate
       return if empty?
+
       (@deploys.count(&:success?) / @deploys.length.to_f) * 100
     end
 
@@ -39,7 +43,7 @@ module Shipit
       {
         count: percent_change(compare_stats.count, count),
         average_duration: percent_change(compare_stats.average_duration, average_duration),
-        median_duration: percent_change(compare_stats.median_duration, median_duration),
+        median_duration: percent_change(compare_stats.median_duration, median_duration)
       }
     end
 
@@ -52,6 +56,7 @@ module Shipit
     def percent_change(from, to)
       return if to.nil? || from.nil?
       return to * 100 if from.zero?
+
       ((to - from) / from.to_f) * 100
     end
   end

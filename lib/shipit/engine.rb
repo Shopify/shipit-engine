@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Engine < ::Rails::Engine
     isolate_namespace Shipit
@@ -11,7 +12,7 @@ module Shipit
         # But if AR Encryption is already configured, we just use that
         app.credentials[:active_record_encryption] = {
           primary_key: Shipit.user_access_tokens_key,
-          key_derivation_salt: Digest::SHA256.digest("salt:".b + Shipit.user_access_tokens_key),
+          key_derivation_salt: Digest::SHA256.digest("salt:".b + Shipit.user_access_tokens_key)
         }
       end
     end
@@ -24,16 +25,16 @@ module Shipit
       Rails.application.credentials.deep_symbolize_keys!
 
       app.config.assets.paths << Emoji.images_path
-      app.config.assets.precompile += %w(
+      app.config.assets.precompile += %w[
         favicon.ico
         task.js
         shipit.js
         shipit.css
         merge_status.js
         merge_status.css
-      )
+      ]
       app.config.assets.precompile << proc do |path|
-        path =~ %r{\Aplugins/[\-\w]+\.(js|css)\Z}
+        path =~ %r{\Aplugins/[-\w]+\.(js|css)\Z}
       end
       app.config.assets.precompile << proc do |path|
         path.end_with?('.svg') || (path.start_with?('emoji/') && path.end_with?('.png'))

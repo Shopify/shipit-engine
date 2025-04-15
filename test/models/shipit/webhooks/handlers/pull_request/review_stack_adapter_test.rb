@@ -71,7 +71,7 @@ module Shipit
             OpenStruct.new(
               number: pr_number,
               repository: {
-                "full_name" => stack.github_repo_name,
+                "full_name" => stack.github_repo_name
               },
               sender: { login: shipit_users(:walrus).login }
             )

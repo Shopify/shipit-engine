@@ -1,21 +1,22 @@
 # frozen_string_literal: true
+
 module Shipit
   class Duration < ActiveSupport::Duration
     ParseError = Class.new(ArgumentError)
 
-    FORMAT = %r{
+    FORMAT = /
       \A
       (?<days>\d+d)?
       (?<hours>\d+h)?
       (?<minutes>\d+m)?
       (?<seconds>\d+s?)?
       \z
-    }x
+    /x
     UNITS = {
       's' => :seconds,
       'm' => :minutes,
       'h' => :hours,
-      'd' => :days,
+      'd' => :days
     }.freeze
 
     class << self
@@ -25,6 +26,7 @@ module Shipit
         unless match = FORMAT.match(value.to_s)
           raise ParseError, "not a duration: #{value.inspect}"
         end
+
         parts = []
         UNITS.each_value do |unit|
           if value = match[unit]

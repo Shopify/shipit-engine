@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class TailTaskSerializer < ActiveModel::Serializer
     include ChunksHelper
@@ -8,6 +9,7 @@ module Shipit
 
     def url
       return @url if defined? @url
+
       @url = next_chunks_url(task, last_byte: next_offset)
     end
 
@@ -29,7 +31,7 @@ module Shipit
 
     private
 
-    alias_method :task, :object
+    alias task object
     delegate :stack, to: :object
 
     def next_offset
@@ -42,6 +44,7 @@ module Shipit
 
     def rollback
       return @rollback if defined? @rollback
+
       @rollback = stack.rollbacks.where(parent_id: task.id).last
     end
   end

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploysController < ShipitController
     include ChunksHelper
 
     before_action :load_stack
-    before_action :load_deploy, only: %i(show rollback revert)
+    before_action :load_deploy, only: %i[show rollback revert]
     before_action :load_until_commit, only: :create
     helper_method :short_commit_sha
 
@@ -26,7 +27,7 @@ module Shipit
         @until_commit,
         current_user,
         env: deploy_params[:env],
-        force: params[:force].present?,
+        force: params[:force].present?
       )
       respond_with(@deploy.stack, @deploy)
     rescue Task::ConcurrentTaskRunning
@@ -43,9 +44,9 @@ module Shipit
     end
 
     def short_commit_sha(task)
-      if previous_successful_deploy_commit(task)
-        @short_commit_sha ||= @previous_successful_deploy_commit&.short_sha
-      end
+      return unless previous_successful_deploy_commit(task)
+
+      @short_commit_sha ||= @previous_successful_deploy_commit&.short_sha
     end
 
     private

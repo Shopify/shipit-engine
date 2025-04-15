@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module Shipit
   class CheckRun < ApplicationRecord
-    CONCLUSIONS = %w(success failure neutral cancelled timed_out action_required stale skipped).freeze
+    CONCLUSIONS = %w[success failure neutral cancelled timed_out action_required stale skipped].freeze
     include DeferredTouch
     include Status::Common
 
@@ -41,23 +42,23 @@ module Shipit
 
         unless checkrun_date
           Rails.logger.warn("No valid timestamp found in checkrun data. Checkrun id: #{github_check_run.id}.")
-          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(stack_id: stack_id)
+          RefreshCheckRunsJob.set(wait: CHECK_RUN_REFRESH_DELAY).perform_later(stack_id:)
           return
         end
 
         create_or_update_by!(
           selector: {
-            github_id: github_check_run.id,
+            github_id: github_check_run.id
           },
           attributes: {
-            stack_id: stack_id,
+            stack_id:,
             name: github_check_run.name,
             conclusion: github_check_run.conclusion,
             title: github_check_run.output.title.to_s.truncate(1_000),
             details_url: github_check_run.details_url,
             html_url: github_check_run.html_url,
-            github_updated_at: checkrun_date,
-          },
+            github_updated_at: checkrun_date
+          }
         )
       end
 

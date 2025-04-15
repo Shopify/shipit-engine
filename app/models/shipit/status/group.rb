@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Status
     class Group
@@ -31,7 +32,7 @@ module Shipit
       end
 
       delegate :pending?, :success?, :error?, :failure?, :unknown?, :missing?, :state, :simple_state,
-        to: :significant_status
+               to: :significant_status
       delegate :each, :size, :map, to: :statuses
       delegate :required_statuses, to: :commit
 
@@ -43,8 +44,7 @@ module Shipit
         "#{success_count} / #{statuses.count} checks OK"
       end
 
-      def target_url
-      end
+      def target_url; end
 
       def to_partial_path
         'statuses/group'
@@ -75,8 +75,10 @@ module Shipit
       def select_significant_status(statuses)
         statuses = reject_allowed_to_fail(statuses)
         return Status::Unknown.new(commit) if statuses.empty?
+
         non_success_statuses = statuses.reject(&:success?)
         return statuses.first if non_success_statuses.empty?
+
         non_success_statuses.reject(&:pending?).first || non_success_statuses.first || Status::Unknown.new(commit)
       end
 

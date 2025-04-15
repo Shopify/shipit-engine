@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -34,8 +35,8 @@ module Shipit
     end
 
     test '#dependencies_steps returns `dependencies.override` if present' do
-      @spec.stubs(:load_config).returns('dependencies' => { 'override' => %w(foo bar baz) })
-      assert_equal %w(foo bar baz), @spec.dependencies_steps
+      @spec.stubs(:load_config).returns('dependencies' => { 'override' => %w[foo bar baz] })
+      assert_equal %w[foo bar baz], @spec.dependencies_steps
     end
 
     test '#dependencies_steps returns `bundle install` if a `Gemfile` is present' do
@@ -77,7 +78,7 @@ module Shipit
 
     test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
       @spec.stubs(:gemfile_lock_exists?).returns(true)
-      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       command = %(
         bundle install
         --frozen
@@ -90,13 +91,13 @@ module Shipit
     end
 
     test '#bundle_install has --frozen option if Gemfile.lock is present' do
-      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       assert @spec.bundle_install.last.include?('--frozen')
     end
 
     test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
-      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w(some custom groups) } })
+      @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       @spec.stubs(:gemfile_lock_exists?).returns(false)
       refute @spec.bundle_install.last.include?('--frozen')
     end
@@ -114,8 +115,8 @@ module Shipit
     end
 
     test '#deploy_steps returns `deploy.override` if present' do
-      @spec.stubs(:load_config).returns('deploy' => { 'override' => %w(foo bar baz) })
-      assert_equal %w(foo bar baz), @spec.deploy_steps
+      @spec.stubs(:load_config).returns('deploy' => { 'override' => %w[foo bar baz] })
+      assert_equal %w[foo bar baz], @spec.deploy_steps
     end
 
     test '#deploy_steps returns `cap $ENVIRONMENT deploy` if a `Capfile` is present' do
@@ -128,8 +129,8 @@ module Shipit
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
-        },
+          'context' => 'bar'
+        }
       )
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.deploy_steps
     end
@@ -139,8 +140,8 @@ module Shipit
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
-          'timeout' => false,
-        },
+          'timeout' => false
+        }
       )
       assert_equal ["kubernetes-deploy foo bar"], @spec.deploy_steps
     end
@@ -151,8 +152,8 @@ module Shipit
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
-        },
+          'context' => 'bar'
+        }
       )
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.deploy_steps
     end
@@ -162,8 +163,8 @@ module Shipit
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
-          'template_dir' => 'k8s_templates/',
-        },
+          'template_dir' => 'k8s_templates/'
+        }
       )
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 --template-dir k8s_templates/ foo bar"], @spec.deploy_steps
     end
@@ -193,8 +194,8 @@ module Shipit
     end
 
     test '#rollback_steps returns `rollback.override` if present' do
-      @spec.stubs(:load_config).returns('rollback' => { 'override' => %w(foo bar baz) })
-      assert_equal %w(foo bar baz), @spec.rollback_steps
+      @spec.stubs(:load_config).returns('rollback' => { 'override' => %w[foo bar baz] })
+      assert_equal %w[foo bar baz], @spec.rollback_steps
     end
 
     test '#retries_on_rollback returns `rollback.retries` if present' do
@@ -224,8 +225,8 @@ module Shipit
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
-        },
+          'context' => 'bar'
+        }
       )
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.rollback_steps
     end
@@ -236,8 +237,8 @@ module Shipit
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
-        },
+          'context' => 'bar'
+        }
       )
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.rollback_steps
     end
@@ -246,15 +247,15 @@ module Shipit
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
-        },
+          'context' => 'bar'
+        }
       )
       tasks = {
         'restart' => {
           'action' => 'Restart application',
           'description' => 'Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility',
-          'steps' => ['kubernetes-restart foo bar --max-watch-seconds 900'],
-        },
+          'steps' => ['kubernetes-restart foo bar --max-watch-seconds 900']
+        }
       }
       assert_equal tasks, @spec.discover_task_definitions
     end
@@ -264,20 +265,20 @@ module Shipit
         'restart' => {
           'action' => 'Restart application',
           'description' => 'Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility',
-          'steps' => ['kubernetes-restart something custom'],
+          'steps' => ['kubernetes-restart something custom']
         },
         'some-other-tasj' => {
           'action' => 'Do something else',
           'description' => 'Eat some chips!',
-          'steps' => ['echo chips'],
-        },
+          'steps' => ['echo chips']
+        }
       }
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
           'namespace' => 'foo',
-          'context' => 'bar',
+          'context' => 'bar'
         },
-        'tasks' => tasks,
+        'tasks' => tasks
       )
       assert_equal tasks, @spec.discover_task_definitions
     end
@@ -331,7 +332,7 @@ module Shipit
       steps = [
         'assert-egg-version-tag /tmp/fake_setup.py',
         'python setup.py register sdist',
-        'twine upload dist/*',
+        'twine upload dist/*'
       ]
       assert_equal steps, @spec.deploy_steps
     end
@@ -347,43 +348,43 @@ module Shipit
           'method' => nil,
           'max_divergence' => {
             'commits' => nil,
-            'age' => nil,
-          },
+            'age' => nil
+          }
         },
         'ci' => {
           'hide' => [],
           'allow_failures' => [],
           'require' => [],
-          'blocking' => [],
+          'blocking' => []
         },
         'machine' => {
           'environment' => { 'BUNDLE_PATH' => @spec.bundle_path.to_s },
           'directory' => nil,
-          'cleanup' => true,
+          'cleanup' => true
         },
         'review' => { 'checklist' => [], 'monitoring' => [], 'checks' => [] },
         'status' => {
           'context' => nil,
-          'delay' => 0,
+          'delay' => 0
         },
         'dependencies' => { 'override' => [] },
         'plugins' => {},
         'provision' => {
-          'handler_name' => nil,
+          'handler_name' => nil
         },
         'deploy' => {
           'override' => nil,
           'variables' => [],
           'max_commits' => 8,
           'interval' => 0,
-          'retries' => nil,
+          'retries' => nil
         },
         'rollback' => {
           'override' => nil,
-          'retries' => nil,
+          'retries' => nil
         },
         'fetch' => nil,
-        'tasks' => {},
+        'tasks' => {}
       }
       assert_equal config, @spec.cacheable.config
     end
@@ -394,10 +395,10 @@ module Shipit
 
     test "#deploy_variables returns an array of VariableDefinition instances" do
       @spec.stubs(:load_config).returns('deploy' => { 'variables' => [{
-        'name' => 'SAFETY_DISABLED',
-        'title' => 'Set to 1 to do dangerous things',
-        'default' => 0,
-      }] })
+                                          'name' => 'SAFETY_DISABLED',
+                                          'title' => 'Set to 1 to do dangerous things',
+                                          'default' => 0
+                                        }] })
 
       assert_equal 1, @spec.deploy_variables.size
       variable_definition = @spec.deploy_variables.first
@@ -405,13 +406,13 @@ module Shipit
     end
 
     test "task definitions don't prepend bundle exec by default" do
-      @spec.expects(:load_config).returns('tasks' => { 'restart' => { 'steps' => %w(foo) } })
+      @spec.expects(:load_config).returns('tasks' => { 'restart' => { 'steps' => %w[foo] } })
       definition = @spec.find_task_definition('restart')
       assert_equal ['foo'], definition.steps
     end
 
     test "task definitions don't bundle exec before serialization" do
-      @spec.expects(:discover_task_definitions).returns('restart' => { 'steps' => %w(foo) })
+      @spec.expects(:discover_task_definitions).returns('restart' => { 'steps' => %w[foo] })
       @spec.expects(:bundler?).returns(true).at_least_once
 
       cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
@@ -430,7 +431,7 @@ module Shipit
       module TestTaskDiscovery
         def discover_task_definitions
           {
-            'config_task' => { 'steps' => %w(bar) },
+            'config_task' => { 'steps' => %w[bar] }
           }.merge!(super)
         end
       end
@@ -442,12 +443,12 @@ module Shipit
       stack = shipit_stacks(:shipit)
       @spec = DuplicateCustomizedDeploySpec.new(@app_dir, stack)
       @spec.stubs(:load_config).returns(
-        'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
+        'tasks' => { 'config_task' => { 'steps' => %w[foo] } }
       )
       tasks = @spec.task_definitions
 
       # Assert we get only the task from the config, not from the module
-      assert_equal %w(config_task), tasks.map(&:id)
+      assert_equal %w[config_task], tasks.map(&:id)
       assert_equal ["foo"], tasks.first.steps
     end
 
@@ -461,7 +462,7 @@ module Shipit
       module TestTaskDiscovery
         def discover_task_definitions
           {
-            'module_task' => { 'steps' => %w(bar) },
+            'module_task' => { 'steps' => %w[bar] }
           }.merge(super)
         end
       end
@@ -473,18 +474,18 @@ module Shipit
       stack = shipit_stacks(:shipit)
       @spec = CustomizedDeploySpec.new(@app_dir, stack)
       @spec.stubs(:load_config).returns(
-        'tasks' => { 'config_task' => { 'steps' => %w(foo) } },
+        'tasks' => { 'config_task' => { 'steps' => %w[foo] } },
         'kubernetes' => {
           'namespace' => 'foo',
           'context' => 'bar',
-          'timeout' => '20m',
-        },
+          'timeout' => '20m'
+        }
       )
       tasks = @spec.task_definitions
 
       # Assert we get tasks from all three sources: config, shipit-engine defined modules, and
       # "third party" modules
-      assert_equal %w(config_task module_task restart), tasks.map(&:id).sort
+      assert_equal %w[config_task module_task restart], tasks.map(&:id).sort
 
       module_task = tasks.find { |t| t.id == "config_task" }
       assert_equal ["foo"], module_task.steps
@@ -504,15 +505,15 @@ module Shipit
               {
                 'name' => 'SAFETY_DISABLED',
                 'title' => 'Set to 1 to do dangerous things',
-                'default' => 0,
+                'default' => 0
               },
               {
                 'name' => 'FOO',
                 'title' => 'Set to 0 to foo',
-                'default' => 1,
-              },
+                'default' => 1
+              }
             ],
-            'steps' => %w(foo),
+            'steps' => %w[foo]
           } })
 
       assert_equal 2, @spec.task_definitions.first.variables.size
@@ -525,8 +526,8 @@ module Shipit
     end
 
     test "#review_checklist returns an array" do
-      @spec.expects(:load_config).returns('review' => { 'checklist' => %w(foo bar) })
-      assert_equal %w(foo bar), @spec.review_checklist
+      @spec.expects(:load_config).returns('review' => { 'checklist' => %w[foo bar] })
+      assert_equal %w[foo bar], @spec.review_checklist
     end
 
     test "#review_checklist returns an empty array if the section is missing" do
@@ -535,12 +536,12 @@ module Shipit
 
     test "#review_monitoring returns an array of hashes" do
       @spec.expects(:load_config).returns('review' => { 'monitoring' => [
-        { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
-        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
-      ] })
+                                            { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
+                                            { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 }
+                                          ] })
       assert_equal [
         { 'image' => 'http://example.com/foo.png', 'width' => 200, 'height' => 400 },
-        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 },
+        { 'iframe' => 'http://example.com/', 'width' => 200, 'height' => 400 }
       ], @spec.review_monitoring
     end
 
@@ -554,22 +555,22 @@ module Shipit
 
     test "#hidden_statuses is an array even if the value is a string" do
       @spec.expects(:load_config).returns('ci' => { 'hide' => 'ci/circleci' })
-      assert_equal %w(ci/circleci), @spec.hidden_statuses
+      assert_equal %w[ci/circleci], @spec.hidden_statuses
     end
 
     test "#hidden_statuses is an array even if the value is present" do
-      @spec.expects(:load_config).returns('ci' => { 'hide' => %w(ci/circleci ci/jenkins) })
-      assert_equal %w(ci/circleci ci/jenkins), @spec.hidden_statuses
+      @spec.expects(:load_config).returns('ci' => { 'hide' => %w[ci/circleci ci/jenkins] })
+      assert_equal %w[ci/circleci ci/jenkins], @spec.hidden_statuses
     end
 
     test "#required_statuses automatically includes #blocking_statuses" do
       @spec.expects(:load_config).returns(
         'ci' => {
-          'require' => %w(ci/circleci),
-          'blocking' => %w(soc/compliance),
-        },
+          'require' => %w[ci/circleci],
+          'blocking' => %w[soc/compliance]
+        }
       )
-      assert_equal %w(ci/circleci soc/compliance), @spec.required_statuses
+      assert_equal %w[ci/circleci soc/compliance], @spec.required_statuses
     end
 
     test "merge_request_merge_method defaults to `nil`" do
@@ -580,8 +581,8 @@ module Shipit
     test "merge_request_merge_method returns `merge.method`" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'method' => 'squash',
-        },
+          'method' => 'squash'
+        }
       )
       assert_equal 'squash', @spec.merge_request_merge_method
     end
@@ -589,8 +590,8 @@ module Shipit
     test "merge_request_merge_method returns `nil` if `merge.method` is invalid" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'method' => 'squashing',
-        },
+          'method' => 'squashing'
+        }
       )
       assert_nil @spec.merge_request_merge_method
     end
@@ -598,22 +599,22 @@ module Shipit
     test "merge_request_ignored_statuses defaults to the union of ci.hide and ci.allow_failures" do
       @spec.expects(:load_config).returns(
         'ci' => {
-          'hide' => %w(ci/circleci ci/jenkins),
-          'allow_failures' => %w(ci/circleci ci/travis),
-        },
+          'hide' => %w[ci/circleci ci/jenkins],
+          'allow_failures' => %w[ci/circleci ci/travis]
+        }
       )
-      assert_equal %w(ci/circleci ci/jenkins ci/travis).sort, @spec.merge_request_ignored_statuses.sort
+      assert_equal %w[ci/circleci ci/jenkins ci/travis].sort, @spec.merge_request_ignored_statuses.sort
     end
 
     test "merge_request_ignored_statuses defaults to empty if `merge.require` is present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'require' => 'bar',
+          'require' => 'bar'
         },
         'ci' => {
-          'hide' => %w(ci/circleci ci/jenkins),
-          'allow_failures' => %w(ci/circleci ci/travis),
-        },
+          'hide' => %w[ci/circleci ci/jenkins],
+          'allow_failures' => %w[ci/circleci ci/travis]
+        }
       )
       assert_equal [], @spec.merge_request_ignored_statuses
     end
@@ -621,12 +622,12 @@ module Shipit
     test "merge_request_ignored_statuses returns `merge.ignore` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'ignore' => 'bar',
+          'ignore' => 'bar'
         },
         'ci' => {
-          'hide' => %w(ci/circleci ci/jenkins),
-          'allow_failures' => %w(ci/circleci ci/travis),
-        },
+          'hide' => %w[ci/circleci ci/jenkins],
+          'allow_failures' => %w[ci/circleci ci/travis]
+        }
       )
       assert_equal ['bar'], @spec.merge_request_ignored_statuses
     end
@@ -634,20 +635,20 @@ module Shipit
     test "merge_request_required_statuses defaults to ci.require" do
       @spec.expects(:load_config).returns(
         'ci' => {
-          'require' => %w(ci/circleci ci/jenkins),
-        },
+          'require' => %w[ci/circleci ci/jenkins]
+        }
       )
-      assert_equal %w(ci/circleci ci/jenkins), @spec.merge_request_required_statuses
+      assert_equal %w[ci/circleci ci/jenkins], @spec.merge_request_required_statuses
     end
 
     test "merge_request_required_statuses defaults to empty if `merge.ignore` is present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'ignore' => 'bar',
+          'ignore' => 'bar'
         },
         'ci' => {
-          'require' => %w(ci/circleci ci/jenkins),
-        },
+          'require' => %w[ci/circleci ci/jenkins]
+        }
       )
       assert_equal [], @spec.merge_request_required_statuses
     end
@@ -655,12 +656,12 @@ module Shipit
     test "merge_request_required_statuses returns `merge.require` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'require' => 'bar',
+          'require' => 'bar'
         },
         'ci' => {
-          'hide' => %w(ci/circleci ci/jenkins),
-          'allow_failures' => %w(ci/circleci ci/travis),
-        },
+          'hide' => %w[ci/circleci ci/jenkins],
+          'allow_failures' => %w[ci/circleci ci/travis]
+        }
       )
       assert_equal ['bar'], @spec.merge_request_required_statuses
     end
@@ -673,8 +674,8 @@ module Shipit
     test "revalidate_merge_requests_after defaults to `nil` if `merge.timeout` cannot be parsed" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'revalidate_after' => 'ALSKhfjsdkf',
-        },
+          'revalidate_after' => 'ALSKhfjsdkf'
+        }
       )
       assert_nil @spec.revalidate_merge_requests_after
     end
@@ -682,8 +683,8 @@ module Shipit
     test "revalidate_after returns `merge.revalidate_after` if present" do
       @spec.expects(:load_config).returns(
         'merge' => {
-          'revalidate_after' => '5m30s',
-        },
+          'revalidate_after' => '5m30s'
+        }
       )
       assert_equal 330, @spec.revalidate_merge_requests_after.to_i
     end
@@ -1098,9 +1099,9 @@ module Shipit
       @spec.expects(:load_config).returns(
         'merge' => {
           'max_divergence' => {
-            'age' => 'badbadbad',
-          },
-        },
+            'age' => 'badbadbad'
+          }
+        }
       )
       assert_nil @spec.max_divergence_age
     end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'pathname'
 
 module Shipit
@@ -47,11 +48,9 @@ module Shipit
     def config(*keys, &default)
       default ||= -> { nil }
       keys.flatten.reduce(@config) do |hash, key|
-        if hash.is_a?(Hash)
-          hash.fetch(key) { return default.call }
-        else
-          return default.call
-        end
+        return default.call unless hash.is_a?(Hash)
+
+        hash.fetch(key) { return default.call }
       end
     end
 
@@ -80,7 +79,7 @@ module Shipit
         config('dependencies', 'override') { discover_dependencies_steps || [] }
       end
     end
-    alias_method :dependencies_steps!, :dependencies_steps
+    alias dependencies_steps! dependencies_steps
 
     def maximum_commits_per_deploy
       config('deploy', 'max_commits') { 8 }
@@ -95,9 +94,9 @@ module Shipit
     end
 
     def release_status_delay
-      if delay = config('status', 'delay') { config('deploy', 'interval') { 0 } }
-        Duration.parse(delay)
-      end
+      return unless delay = config('status', 'delay') { config('deploy', 'interval') { 0 } }
+
+      Duration.parse(delay)
     end
 
     def pause_between_deploys
@@ -193,7 +192,7 @@ module Shipit
 
     def merge_request_merge_method
       method = config('merge', 'method')
-      method if %w(merge rebase squash).include?(method)
+      method if %w[merge rebase squash].include?(method)
     end
 
     def merge_request_required_statuses
@@ -213,11 +212,11 @@ module Shipit
     end
 
     def revalidate_merge_requests_after
-      if timeout = config('merge', 'revalidate_after')
-        begin
-          Duration.parse(timeout)
-        rescue Duration::ParseError
-        end
+      return unless timeout = config('merge', 'revalidate_after')
+
+      begin
+        Duration.parse(timeout)
+      rescue Duration::ParseError
       end
     end
 
@@ -226,11 +225,11 @@ module Shipit
     end
 
     def max_divergence_age
-      if timeout = config('merge', 'max_divergence', 'age')
-        begin
-          Duration.parse(timeout)
-        rescue Duration::ParseError
-        end
+      return unless timeout = config('merge', 'max_divergence', 'age')
+
+      begin
+        Duration.parse(timeout)
+      rescue Duration::ParseError
       end
     end
 
@@ -255,6 +254,7 @@ module Shipit
     def around_steps(section)
       steps = yield
       return unless steps
+
       config(section, 'pre') { [] } + steps + config(section, 'post') { [] }
     end
 
@@ -262,24 +262,19 @@ module Shipit
       config
     end
 
-    def discover_review_checklist
-    end
+    def discover_review_checklist; end
 
     def discover_task_definitions
       config('tasks') || {}
     end
 
-    def discover_dependencies_steps
-    end
+    def discover_dependencies_steps; end
 
-    def discover_deploy_steps
-    end
+    def discover_deploy_steps; end
 
-    def discover_rollback_steps
-    end
+    def discover_rollback_steps; end
 
-    def discover_fetch_deployed_revision_steps
-    end
+    def discover_fetch_deployed_revision_steps; end
 
     def discover_machine_env
       {}

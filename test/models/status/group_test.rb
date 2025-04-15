@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -21,7 +22,7 @@ module Shipit
     end
 
     test "#state is significant's status state" do
-      assert_equal %w(success success failure), @group.statuses.map(&:state)
+      assert_equal %w[success success failure], @group.statuses.map(&:state)
       assert_equal 'failure', @group.state
     end
 
@@ -42,7 +43,7 @@ module Shipit
     end
 
     test "missing required status will have MissingRequiredStatus as placeholder" do
-      @commit.stubs(:required_statuses).returns(%w(ci/very-important))
+      @commit.stubs(:required_statuses).returns(%w[ci/very-important])
       status = Status::Group.compact(@commit, [])
       assert_instance_of Status::Missing, status
       assert_predicate status, :pending?

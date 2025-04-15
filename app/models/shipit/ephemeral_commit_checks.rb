@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module Shipit
   class EphemeralCommitChecks
-    FINAL_STATUSES = %w(failed error success).freeze
+    FINAL_STATUSES = %w[failed error success].freeze
 
     def initialize(commit)
       @commit = commit
@@ -13,7 +14,7 @@ module Shipit
     def run
       self.status = 'running'
       commands = StackCommands.new(stack)
-      commands.with_temporary_working_directory(commit: commit) do |directory|
+      commands.with_temporary_working_directory(commit:) do |directory|
         deploy_spec = DeploySpec::FileSystem.new(directory, stack)
         capture_all(build_commands(deploy_spec.dependencies_steps, chdir: directory))
         capture_all(build_commands(deploy_spec.review_checks, chdir: directory))
@@ -22,7 +23,7 @@ module Shipit
     rescue Command::Error
       self.status = 'failed'
       self
-    rescue
+    rescue StandardError
       self.status = 'error'
       raise
     else
@@ -46,7 +47,7 @@ module Shipit
     private
 
     def build_commands(commands, chdir:)
-      commands.map { |c| Command.new(c, env: Shipit.env, chdir: chdir) }
+      commands.map { |c| Command.new(c, env: Shipit.env, chdir:) }
     end
 
     def capture_all(commands)
@@ -59,8 +60,8 @@ module Shipit
       command.stream! do |line|
         write(line)
       end
-    rescue Command::Error => error
-      write(error.message)
+    rescue Command::Error => e
+      write(e.message)
       raise
     ensure
       write("\n")

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :cron do
   desc "Updates deployed revisions"
   task minutely: :environment do
@@ -10,7 +11,7 @@ namespace :cron do
     Shipit::ReviewStackProvisioningQueue.work
   end
 
-  task hourly: %i(rollup refresh_users clear_stale_caches delete_old_deployment_directories)
+  task hourly: %i[rollup refresh_users clear_stale_caches delete_old_deployment_directories]
 
   desc "Rolls-up output chunks for completed deploys older than an hour"
   task rollup: :environment do

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# rubocop:disable Lint/MissingSuper
+
+# rubocop:disable Lint/MissingCopEnableDirective, Lint/MissingSuper
 require 'pathname'
 require 'fileutils'
 
@@ -16,26 +17,26 @@ module Shipit
     def fetch_commit(commit)
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', commit.sha, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', commit.sha, env:, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
-        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
+        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env:, chdir: @stack.deploys_path)
       end
     end
 
     def fetch
       create_directories
       if valid_git_repository?(@stack.git_path)
-        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', @stack.branch, env: env, chdir: @stack.git_path)
+        git('fetch', 'origin', *quiet_git_arg, '--tags', '--force', @stack.branch, env:, chdir: @stack.git_path)
       else
         @stack.clear_git_cache!
-        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env: env, chdir: @stack.deploys_path)
+        git_clone(@stack.repo_git_url, @stack.git_path, branch: @stack.branch, env:, chdir: @stack.deploys_path)
       end
     end
 
     def fetched?(commit)
       if valid_git_repository?(@stack.git_path)
-        git('rev-parse', *quiet_git_arg, '--verify', "#{commit.sha}^{commit}", env: env, chdir: @stack.git_path)
+        git('rev-parse', *quiet_git_arg, '--verify', "#{commit.sha}^{commit}", env:, chdir: @stack.git_path)
       else
         # When the stack's git cache is not valid, the commit is
         # NOT fetched. To keep the interface of this method
@@ -43,7 +44,7 @@ module Shipit
         # method returns false - has a non-zero exit status. We utilize
         # the POSIX 'test' command with no arguments which should
         # always have an exit status of 1.
-        Command.new('test', env: env, chdir: @stack.deploys_path)
+        Command.new('test', env:, chdir: @stack.deploys_path)
       end
     end
 
@@ -51,7 +52,7 @@ module Shipit
       with_temporary_working_directory(commit: @stack.commits.reachable.last) do |dir|
         spec = DeploySpec::FileSystem.new(dir, @stack)
         outputs = spec.fetch_deployed_revision_steps!.map do |command_line|
-          Command.new(command_line, env: env, chdir: dir).run
+          Command.new(command_line, env:, chdir: dir).run
         end
         outputs.find(&:present?).try(:strip)
       end
@@ -68,9 +69,7 @@ module Shipit
 
       if !commit || !fetched?(commit).tap(&:run).success?
         @stack.acquire_git_cache_lock do
-          unless fetched?(commit).tap(&:run).success?
-            fetch.run!
-          end
+          fetch.run! unless fetched?(commit).tap(&:run).success?
         end
       end
 
@@ -84,14 +83,16 @@ module Shipit
         ).run!
 
         git_dir = File.join(dir, @stack.repo_name)
-        git(
-          '-c',
-          'advice.detachedHead=false',
-          'checkout',
-          *quiet_git_arg,
-          commit.sha,
-          chdir: git_dir
-        ).run! if commit
+        if commit
+          git(
+            '-c',
+            'advice.detachedHead=false',
+            'checkout',
+            *quiet_git_arg,
+            commit.sha,
+            chdir: git_dir
+          ).run!
+        end
         yield Pathname.new(git_dir)
       end
     end
@@ -114,7 +115,8 @@ module Shipit
 
     def modern_git_args
       return [] unless git_version >= Gem::Version.new('1.7.10')
-      %w(--single-branch)
+
+      %w[--single-branch]
     end
 
     def create_directories

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -6,7 +7,7 @@ module Shipit
     test ":callback can sign in to github" do
       auth = OmniAuth::AuthHash.new(
         credentials: OmniAuth::AuthHash.new(
-          token: 's3cr3t',
+          token: 's3cr3t'
         ),
         extra: OmniAuth::AuthHash.new(
           raw_info: OmniAuth::AuthHash.new(
@@ -15,9 +16,9 @@ module Shipit
             email: 'shipit-user@example.com',
             login: 'shipit-user',
             avatar_url: 'https://example.com',
-            api_url: 'https://github.com/api/v3/users/shipit-user',
-          ),
-        ),
+            api_url: 'https://github.com/api/v3/users/shipit-user'
+          )
+        )
       )
       @request.env['omniauth.auth'] = auth
 

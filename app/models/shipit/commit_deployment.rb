@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitDeployment < Record
     belongs_to :task
@@ -11,8 +12,8 @@ module Shipit
     def create_on_github!
       create_deployment_on_github!
       statuses.order(id: :asc).each(&:create_on_github!)
-    rescue Octokit::NotFound, Octokit::Forbidden => error
-      Rails.logger.warn("Got #{error.class.name} creating deployment or statuses: #{error.message}")
+    rescue Octokit::NotFound, Octokit::Forbidden => e
+      Rails.logger.warn("Got #{e.class.name} creating deployment or statuses: #{e.message}")
       # If no one can create the deployment we can only give up
     end
 
@@ -23,6 +24,7 @@ module Shipit
         create_deployment_on_github(stack.github_api)
       rescue Octokit::ClientError
         raise if Shipit.github(organization: stack.repository.owner).api == stack.github_api
+
         # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
         # user.
         #
@@ -55,9 +57,9 @@ module Shipit
           shipit: {
             task_id: task.id,
             from_sha: task.since_commit.sha,
-            to_sha: task.until_commit.sha,
-          },
-        }.to_json,
+            to_sha: task.until_commit.sha
+          }
+        }.to_json
       )
     end
   end

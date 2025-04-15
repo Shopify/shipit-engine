@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -13,7 +14,7 @@ module Shipit
         rollback_steps!: ['bundle exec cap $ENVIRONMENT deploy:rollback'],
         machine_env: { 'GLOBAL' => '1' },
         directory: nil,
-        clear_working_directory?: true,
+        clear_working_directory?: true
       )
       @commands.stubs(:deploy_spec).returns(@deploy_spec)
 
