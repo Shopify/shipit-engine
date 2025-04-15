@@ -3,8 +3,8 @@
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('3.1')
   raise Thor::Error, "You need at least Ruby 3.1 to install shipit"
 end
-if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('7.2')
-  raise Thor::Error, "You need Rails 7.2 to install shipit"
+if Gem::Version.new(Rails::VERSION::STRING) < Gem::Version.new('8.0')
+  raise Thor::Error, "You need Rails 8.0 to install shipit"
 end
 
 route %(mount Shipit::Engine, at: '/')
@@ -124,7 +124,7 @@ Sidekiq.configure_client do |config|
 end
 CODE
 
-inject_into_file 'config/application.rb', after: "load_defaults 7.2\n" do
+inject_into_file 'config/application.rb', after: "load_defaults 8.0\n" do
   "\n    config.active_job.queue_adapter = :sidekiq\n"
 end
 
