@@ -123,12 +123,15 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Custom Tasks](#custom-tasks) (`tasks`)
 * [Custom links](#custom-links) (`links`)
 * [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
+* [Inherit From](#inherit-from)(`inherit_From`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
-Also, if your repository is deployed different ways depending on the environment, you can have an alternative `shipit.yml` by including the environment name.
+Also, if your repository is deployed different ways depending on the environment, you can have an alternative `shipit.yml` by including the environment name. 
 
 For example for a stack like: `my-org/my-repo/staging`, `shipit.staging.yml` will have priority over `shipit.yml`.
+
+In order to reduce duplication across different environment specific files, you can specify an `inherit_from` key in your relevant `shipit.yml` file. This key expects a string of the file name to inherit from. If this key is specified, a deep-merge will be performed on the file therein, overwriting any duplicated values from the parent. See [Inherit From](#inherit-from)(`inherit_From`) for example.
 
 Lastly, if you override the `app_name` configuration in your Shipit deployment, `yourapp.yml` and `yourapp.staging.yml` will work.
 
@@ -611,6 +614,42 @@ For example:
 review:
   checks:
     - bundle exec rake db:migrate:status
+```
+
+<h3 id="inherit-from">Inherit From</h3>
+
+If the `inherit_from` key is specified, a deep-merge will be performed on the file therein, overwriting any duplicated values from the parent. Keys may be chained across files. Example:
+
+``` yaml
+# shipit.production.yml
+inherit_from: shipit.staging.yml
+
+machine:
+  environment:
+    PUBLIC: true
+```
+
+``` yaml
+# shipit.staging.yml
+inherit_from: shipit.yml
+
+deploy:
+  override:
+    - ./some_deployment_process.sh ${PUBLIC}
+```
+
+``` yaml
+# shipit.yml
+
+machine:
+  environment:
+    TEST: true
+    PUBLIC: false
+```
+
+Loading 'shipit.production.yml' would result in:
+```rb
+{"machine"=>{"environment"=>{"TEST"=>true, "PUBLIC"=>true}}, "deploy"=>{"override"=>["./some_deployment_process.sh ${PUBLIC}"]}}
 ```
 
 <h3 id="shell-commands-timeout">Shell commands timeout</h3>
