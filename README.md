@@ -123,7 +123,7 @@ The settings in the `shipit.yml` file relate to the different things you can do 
 * [Custom Tasks](#custom-tasks) (`tasks`)
 * [Custom links](#custom-links) (`links`)
 * [Review Process](#review-process) (`review.checklist`, `review.monitoring`, `review.checks`)
-* [Inherit From](#inherit-from)(`inherit_From`)
+* [Inherit From](#inherit-from)(`inherit_from`)
 
 All the settings in `shipit.yml` are optional. Most applications can be deployed from Shipit without any configuration.
 
