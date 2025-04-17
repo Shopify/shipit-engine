@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -11,9 +12,9 @@ module Shipit
       @commit = shipit_commits(:first)
 
       stub_request(:get, "https://api.github.com/user/emails").to_return(
-        status: %w(200 OK),
+        status: %w[200 OK],
         body: {}.to_json,
-        headers: { "Content-Type" => "application/json" },
+        headers: { "Content-Type" => "application/json" }
       )
     end
 
@@ -28,16 +29,16 @@ module Shipit
               author: {
                 name: 'George Abitbol',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
               committer: {
                 name: 'George Abitbol',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
-              message: "commit to trigger staging build",
-            },
-          ),
+              message: "commit to trigger staging build"
+            }
+          )
         )
       end
     end
@@ -53,16 +54,16 @@ module Shipit
               author: {
                 name: 'Lando Walrussian',
                 email: 'walrus@shopify.com',
-                date: Time.now,
+                date: Time.now
               },
               committer: {
                 name: 'Lando Walrussian',
                 email: 'walrus@shopify.com',
-                date: Time.now,
+                date: Time.now
               },
-              message: '',
-            },
-          ),
+              message: ''
+            }
+          )
         )
       end
       commit = Commit.last
@@ -82,16 +83,16 @@ module Shipit
               author: {
                 name: 'Lando Walrussian',
                 email: 'walrus@shopify.com',
-                date: Time.now,
+                date: Time.now
               },
               committer: {
                 name: 'Lando Walrussian',
                 email: 'walrus@shopify.com',
-                date: Time.now,
+                date: Time.now
               },
-              message: message,
-            },
-          ),
+              message:
+            }
+          )
         )
       end
 
@@ -113,16 +114,16 @@ module Shipit
               author: {
                 name: 'Shipit',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
               committer: {
                 name: 'Shipit',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
-              message: "commit to trigger staging build\n\nMerge-Requested-By: walrus\n",
-            },
-          ),
+              message: "commit to trigger staging build\n\nMerge-Requested-By: walrus\n"
+            }
+          )
         )
       end
 
@@ -141,20 +142,20 @@ module Shipit
               author: {
                 name: 'Shipit',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
               committer: {
                 name: 'Shipit',
                 email: '',
-                date: Time.now,
+                date: Time.now
               },
-              message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+              message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!"
             },
             parents: [
               { sha: "1864542e3d2f8a41916a2dec0f2b4d3c1bf4899b", url: '', html_url: '' },
-              { sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: '' },
-            ],
-          ),
+              { sha: "63d7e03e517fd2ae1caeb1b7a9f21767f84d671a", url: '', html_url: '' }
+            ]
+          )
         )
       end
 
@@ -270,14 +271,14 @@ module Shipit
         author: walrus,
         committer: walrus,
         authored_at: Time.now,
-        committed_at: Time.now,
+        committed_at: Time.now
       )
 
       deploy = @stack.deploys.build(
         user_id: walrus.id,
         since_commit: @stack.commits.first,
         until_commit: new_commit,
-        status: 'success',
+        status: 'success'
       )
       deploy.stubs(:pull_request_head_for_commit).returns(nil)
       deploy.save!
@@ -321,7 +322,7 @@ module Shipit
         sha: "ab12",
         authored_at: Time.now,
         committed_at: Time.now,
-        message: "more fish!",
+        message: "more fish!"
       )
     end
 
@@ -331,7 +332,7 @@ module Shipit
         description: nil,
         context: 'default',
         target_url: 'http://example.com',
-        created_at: 1.day.ago,
+        created_at: 1.day.ago
       )
       Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns([status])
       assert_difference '@commit.statuses.count', 1 do
@@ -348,13 +349,13 @@ module Shipit
         details_url: 'https://example.com/details',
         html_url: 'https://example.com/run',
         output: mock(
-          title: 'Tests build ran successfully',
+          title: 'Tests build ran successfully'
         ),
         completed_at: Time.now,
-        started_at: Time.now - 1.minute,
+        started_at: Time.now - 1.minute
       )
       response = stub(rels: {}, data: mock(
-        check_runs: [check_run],
+        check_runs: [check_run]
       ))
       Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns(response.data)
       Shipit.github.api.expects(:last_response).returns(response)
@@ -375,7 +376,7 @@ module Shipit
         sha: "ab12",
         authored_at: Time.now,
         committed_at: Time.now,
-        message: "more fish!",
+        message: "more fish!"
       )
       @stack.reload
       assert_equal 3, @stack.undeployed_commits_count
@@ -416,7 +417,7 @@ module Shipit
         sha: "ab12",
         authored_at: Time.now,
         committed_at: Time.now,
-        message: "more fish!",
+        message: "more fish!"
       )
       stack.reload
       assert_nil stack.last_deployed_at
@@ -456,9 +457,9 @@ module Shipit
       assert_equal 'failure', @commit.reload.state
 
       @commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => {
-        'hide' => 'metrics/coveralls',
-        'allow_failures' => 'metrics/performance',
-      }))
+                                                                 'hide' => 'metrics/coveralls',
+                                                                 'allow_failures' => 'metrics/performance'
+                                                               }))
       assert_equal 'pending', @commit.reload.state
     end
 
@@ -474,9 +475,9 @@ module Shipit
       assert_predicate commit.status, :group?
       assert_equal 3, commit.status.size
       commit.stack.update!(cached_deploy_spec: DeploySpec.new('ci' => { 'hide' => [
-        'Travis CI',
-        'metrics/coveralls',
-      ] }))
+                                                                'Travis CI',
+                                                                'metrics/coveralls'
+                                                              ] }))
       commit.reload
       refute_predicate commit.status, :group?
     end
@@ -503,7 +504,7 @@ module Shipit
 
     test "#deployable? is false if a required status is missing" do
       commit = shipit_commits(:cyclimse_first)
-      commit.stack.stubs(:required_statuses).returns(%w(ci/very-important))
+      commit.stack.stubs(:required_statuses).returns(%w[ci/very-important])
       refute_predicate commit, :deployable?
     end
 
@@ -599,15 +600,15 @@ module Shipit
     end
 
     expected_webhook_transitions = { # we expect deployable_status to fire on these transitions, and not on any others
-      'unknown' => %w(pending success failure error),
-      'pending' => %w(success failure error),
-      'success' => %w(failure error),
-      'failure' => %w(success),
-      'error' => %w(success),
+      'unknown' => %w[pending success failure error],
+      'pending' => %w[success failure error],
+      'success' => %w[failure error],
+      'failure' => %w[success],
+      'error' => %w[success]
     }
     expected_webhook_transitions.each do |initial_state, firing_states|
       initial_status_attributes = { state: initial_state, description: 'abc', context: 'ci/travis' }
-      (expected_webhook_transitions.keys - %w(unknown)).each do |new_state|
+      (expected_webhook_transitions.keys - %w[unknown]).each do |new_state|
         should_fire = firing_states.include?(new_state)
         action = should_fire ? 'fires' : 'does not fire'
         test "#add_status #{action} for status from #{initial_state} to #{new_state}" do
@@ -619,7 +620,7 @@ module Shipit
           unless initial_state == 'unknown'
             attrs = initial_status_attributes.merge(
               stack_id: commit.stack_id,
-              created_at: 10.days.ago.to_formatted_s(:db),
+              created_at: 10.days.ago.to_formatted_s(:db)
             )
             commit.statuses.create!(attrs)
           end
@@ -652,7 +653,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/hidden',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_formatted_s(:db)
         )
         commit.create_status_from_github!(github_status)
       end
@@ -669,7 +670,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/ok_to_fail',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_formatted_s(:db)
         )
         commit.create_status_from_github!(github_status)
       end
@@ -684,7 +685,7 @@ module Shipit
           state: 'failure',
           description: 'Sad',
           context: 'ci/travis',
-          created_at: 1.day.ago.to_formatted_s(:db),
+          created_at: 1.day.ago.to_formatted_s(:db)
         )
         commit.create_status_from_github!(github_status)
       end
@@ -696,7 +697,7 @@ module Shipit
         state: 'success',
         description: 'Cool',
         context: 'metrics/coveralls',
-        created_at: 1.day.ago.to_formatted_s(:db),
+        created_at: 1.day.ago.to_formatted_s(:db)
       )
 
       assert_equal 'failure', commit.state
@@ -739,7 +740,7 @@ module Shipit
         committer: shipit_users(:shipit),
         committed_at: Time.now,
         sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
-        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!"
       )
       merge_request = shipit_merge_requests(:shipit_pending)
 
@@ -756,7 +757,7 @@ module Shipit
         committer: shipit_users(:shipit),
         committed_at: Time.now,
         sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
-        message: "Merge pull request #99 from shipit-engine/yoloshipit\n\nyoloshipit!",
+        message: "Merge pull request #99 from shipit-engine/yoloshipit\n\nyoloshipit!"
       )
 
       assert_predicate commit, :pull_request?
@@ -772,7 +773,7 @@ module Shipit
         committer: shipit_users(:shipit),
         committed_at: Time.now,
         sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
-        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!",
+        message: "Merge pull request #62 from shipit-engine/yoloshipit\n\nyoloshipit!"
       )
 
       assert_equal shipit_users(:walrus), commit.author
@@ -785,7 +786,7 @@ module Shipit
         committer: shipit_users(:shipit),
         committed_at: Time.now,
         sha: '5590fd8b5f2be05d1fedb763a3605ee461c39074',
-        message: "Yoloshipit!",
+        message: "Yoloshipit!"
       )
 
       refute_predicate commit, :pull_request?
@@ -801,44 +802,44 @@ module Shipit
 
     test "#revert? returns true for commits reverted by GitHub" do
       commit = Commit.new(
-        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\"",
+        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\""
       )
       assert_predicate commit, :revert?
     end
 
     test "#revert? returns true for commits reverted from CLI" do
       commit = Commit.new(
-        message: "Revert \"Super Feature\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa.",
+        message: "Revert \"Super Feature\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa."
       )
       assert_predicate commit, :revert?
     end
 
     test "#revert_of? works with pull requests reverted on GitHub" do
       commit = Commit.new(
-        message: "Merge pull request #16 from byroot/casperisfine-patch-1\n\nCreate README.md",
+        message: "Merge pull request #16 from byroot/casperisfine-patch-1\n\nCreate README.md"
       )
       revert = Commit.new(
-        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\"",
+        message: "Merge pull request #17 from Shopify/revert-16\n\nRevert \"Create README.md\""
       )
       assert revert.revert_of?(commit)
     end
 
     test "#revert_of? works with commits reverted from CLI" do
       commit = Commit.new(
-        message: "Create README.md",
+        message: "Create README.md"
       )
       revert = Commit.new(
-        message: "Revert \"Create README.md\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa.",
+        message: "Revert \"Create README.md\"\n\nThis reverts commit 49430d5091abc34f2c576c23ebf369ec7094d8aa."
       )
       assert revert.revert_of?(commit)
     end
 
     test "#revert_of? works with pull requests reverted from CLI" do
       commit = Commit.new(
-        message: "Merge pull request #19 from byroot/casperisfine-patch-1\n\nUpdate README.md",
+        message: "Merge pull request #19 from byroot/casperisfine-patch-1\n\nUpdate README.md"
       )
       revert = Commit.new(
-        message: "Revert \"Merge pull request #19 from byroot/casperisfine-patch-1\"\n\nThis reverts commit fa3722ef8372b47160f5d96010d3c54743d192f9, reversing\nchanges made to 868b6f65f759d003c04d056f2f928f18d6813c7e.",
+        message: "Revert \"Merge pull request #19 from byroot/casperisfine-patch-1\"\n\nThis reverts commit fa3722ef8372b47160f5d96010d3c54743d192f9, reversing\nchanges made to 868b6f65f759d003c04d056f2f928f18d6813c7e."
       )
       assert revert.revert_of?(commit)
     end

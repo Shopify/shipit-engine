@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# rubocop:disable Lint/MissingSuper
+
+# rubocop:disable Lint/MissingCopEnableDirective, Lint/MissingSuper
 module Shipit
   class TaskCommands < Commands
     delegate :fetch_commit, :fetch, :fetched?, to: :stack_commands
@@ -15,13 +16,13 @@ module Shipit
 
     def install_dependencies
       deploy_spec.dependencies_steps!.map do |command_line|
-        Command.new(command_line, env: env, chdir: steps_directory)
+        Command.new(command_line, env:, chdir: steps_directory)
       end
     end
 
     def perform
       steps.map do |command_line|
-        Command.new(command_line, env: env, chdir: steps_directory)
+        Command.new(command_line, env:, chdir: steps_directory)
       end
     end
 
@@ -40,7 +41,7 @@ module Shipit
           'TASK_ID' => @task.id.to_s,
           'IGNORED_SAFETIES' => @task.ignored_safeties? ? '1' : '0',
           'GIT_COMMITTER_NAME' => @task.user&.name || Shipit.committer_name,
-          'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email,
+          'GIT_COMMITTER_EMAIL' => @task.user&.email || Shipit.committer_email
         )
         .merge(deploy_spec.machine_env)
         .merge(@task.env)
@@ -68,7 +69,7 @@ module Shipit
           @task.working_directory,
           chdir: @stack.deploys_path
         ),
-        git('remote', 'add', 'origin', @stack.repo_git_url, chdir: @task.working_directory),
+        git('remote', 'add', 'origin', @stack.repo_git_url, chdir: @task.working_directory)
       ]
     end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -21,7 +22,7 @@ module Shipit
           post :create, params: {
             stack_id: @stack.to_param,
             deploy_id: @deploy.id,
-            status: 'foo',
+            status: 'foo'
           }
         end
 
@@ -34,7 +35,7 @@ module Shipit
           post :create, params: {
             stack_id: @stack.to_param,
             deploy_id: @deploy.id,
-            status: 'success',
+            status: 'success'
           }
           assert_response :created
         end
@@ -51,7 +52,7 @@ module Shipit
           post :create, params: {
             stack_id: @stack.to_param,
             deploy_id: @deploy.id,
-            status: 'failure',
+            status: 'failure'
           }
           assert_response :created
         end

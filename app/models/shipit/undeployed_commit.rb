@@ -1,4 +1,10 @@
 # frozen_string_literal: true
+
+# rubocop:disable Lint/MissingCopEnableDirective, Style/OptionalBooleanParameter
+# Disabling for now because we need to support the `bypass_safeties` parameter
+# in the `deploy_state` and `redeploy_state` methods. We can revisit this later.
+
+require 'delegate'
 module Shipit
   class UndeployedCommit < DelegateClass(Commit)
     attr_reader :index
@@ -26,9 +32,7 @@ module Shipit
 
     def redeploy_state(bypass_safeties = false)
       state = 'allowed'
-      unless bypass_safeties
-        state = 'deploying' if stack.active_task?
-      end
+      state = 'deploying' if !bypass_safeties && stack.active_task?
       state
     end
 
@@ -50,6 +54,7 @@ module Shipit
 
     def blocked?
       return @blocked if defined?(@blocked)
+
       @blocked = super
     end
   end

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
   class RollbacksControllerTest < ActionController::TestCase
     setup do
-      Deploy.where(status: %w(running pending)).update_all(status: 'success')
+      Deploy.where(status: %w[running pending]).update_all(status: 'success')
       @stack = shipit_stacks(:shipit)
       @deploy = shipit_deploys(:shipit)
       session[:user_id] = shipit_users(:walrus).id
@@ -18,7 +19,7 @@ module Shipit
 
     test ":create can receive an :env hash" do
       env = { 'SAFETY_DISABLED' => '1' }
-      post :create, params: { stack_id: @stack.to_param, rollback: { parent_id: @deploy.id, env: env } }
+      post :create, params: { stack_id: @stack.to_param, rollback: { parent_id: @deploy.id, env: } }
       new_rollback = Rollback.last
       assert_equal env, new_rollback.env
     end

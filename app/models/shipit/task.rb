@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Task < Record
     include DeferredTouch
@@ -10,12 +11,12 @@ module Shipit
     end
 
     PRESENCE_CHECK_TIMEOUT = 30
-    ACTIVE_STATUSES = %w(pending running aborting).freeze
-    COMPLETED_STATUSES = %w(success flapping faulty validating).freeze
-    UNSUCCESSFUL_STATUSES = %w(error failed aborted flapping timedout faulty).freeze
+    ACTIVE_STATUSES = %w[pending running aborting].freeze
+    COMPLETED_STATUSES = %w[success flapping faulty validating].freeze
+    UNSUCCESSFUL_STATUSES = %w[error failed aborted flapping timedout faulty].freeze
     OUTPUT_SIZE_LIMIT = 16.megabytes # A MySQL mediumblob
     HUMAN_READABLE_OUTPUT_LIMIT = ActionController::Base.helpers.number_to_human_size(OUTPUT_SIZE_LIMIT)
-    OUTPUT_TRUNCATED_MESSAGE = "Output exceeded the limit of #{HUMAN_READABLE_OUTPUT_LIMIT} and was truncated\n"
+    OUTPUT_TRUNCATED_MESSAGE = "Output exceeded the limit of #{HUMAN_READABLE_OUTPUT_LIMIT} and was truncated\n".freeze
 
     attr_accessor :pid
 
@@ -35,6 +36,7 @@ module Shipit
       class << self
         def dump(hash)
           raise TypeError, "Task#env should be a Hash[String => String]" unless hash.is_a?(Hash)
+
           hash = hash.to_h.stringify_keys
           hash.transform_values! do |value|
             case value
@@ -49,7 +51,7 @@ module Shipit
         end
 
         def load(hash)
-          hash&.to_h || {} # cast back to a real hash
+          hash.to_h # cast back to a real hash
         end
 
         def new
@@ -104,11 +106,11 @@ module Shipit
         task.ended_at ||= Time.now.utc
       end
 
-      after_transition any => %i(success failed error timedout) do |task|
+      after_transition any => %i[success failed error timedout] do |task|
         task.async_refresh_deployed_revision
       end
 
-      after_transition any => %i(aborted success failed error timedout) do |task|
+      after_transition any => %i[aborted success failed error timedout] do |task|
         task.schedule_rollup_chunks
       end
 
@@ -120,7 +122,7 @@ module Shipit
         task.async_update_estimated_deploy_duration
       end
 
-      after_transition any => %i(failed error timedout) do |task|
+      after_transition any => %i[failed error timedout] do |task|
         task.retry_if_necessary
       end
 
@@ -129,19 +131,19 @@ module Shipit
       end
 
       event :failure do
-        transition %i(running flapping) => :failed
+        transition %i[running flapping] => :failed
       end
 
       event :complete do
-        transition %i(running flapping validating faulty) => :success
+        transition %i[running flapping validating faulty] => :success
       end
 
       event :enter_validation do
-        transition %i(running flapping) => :validating
+        transition %i[running flapping] => :validating
       end
 
       event :mark_faulty do
-        transition %i(validating success) => :faulty
+        transition %i[validating success] => :faulty
       end
 
       event :error do
@@ -153,7 +155,7 @@ module Shipit
       end
 
       event :aborting do
-        transition all - %i(aborted) => :aborting
+        transition all - %i[aborted] => :aborting
       end
 
       event :aborted do
@@ -161,7 +163,7 @@ module Shipit
       end
 
       event :flap do
-        transition %i(failed error timedout success) => :flapping
+        transition %i[failed error timedout success] => :flapping
       end
 
       state :pending
@@ -206,7 +208,7 @@ module Shipit
     end
 
     delegate :acquire_git_cache_lock, :async_refresh_deployed_revision, :async_update_estimated_deploy_duration,
-      to: :stack
+             to: :stack
 
     delegate :checklist, to: :definition
 
@@ -224,11 +226,13 @@ module Shipit
 
     def enqueue
       raise "only persisted jobs can be enqueued" unless persisted?
+
       PerformTaskJob.perform_later(self)
     end
 
     def run_now!
       raise "only persisted jobs can be run" unless persisted?
+
       PerformTaskJob.perform_now(self)
     end
 
@@ -350,10 +354,10 @@ module Shipit
       end
     end
 
-    def abort!(rollback_once_aborted: false, rollback_once_aborted_to: nil, aborted_by:)
+    def abort!(aborted_by:, rollback_once_aborted: false, rollback_once_aborted_to: nil)
       update!(
-        rollback_once_aborted: rollback_once_aborted,
-        rollback_once_aborted_to: rollback_once_aborted_to,
+        rollback_once_aborted:,
+        rollback_once_aborted_to:,
         aborted_by_id: aborted_by.id
       )
 
@@ -383,12 +387,13 @@ module Shipit
 
     def emit_hooks_if_status_changed
       return unless @status_changed
+
       @status_changed = nil
       emit_hooks
     end
 
     def emit_hooks
-      Hook.emit(hook_event, stack, hook_event => self, status: status, stack: stack)
+      Hook.emit(hook_event, stack, hook_event => self, status:, stack:)
     end
 
     def hook_event
@@ -427,13 +432,13 @@ module Shipit
       5.minutes.ago
     end
 
-    ZOMBIE_STATES = %w(running aborting).freeze
+    ZOMBIE_STATES = %w[running aborting].freeze
     private_constant :ZOMBIE_STATES
     def self.zombies
       where(status: ZOMBIE_STATES)
         .where(
           "created_at <= :recently",
-          recently: recently_created_at,
+          recently: recently_created_at
         )
         .reject(&:alive?)
     end
@@ -441,13 +446,13 @@ module Shipit
     def retry_if_necessary
       return unless retries_configured? && !stack.reload.locked?
 
-      if retry_attempt < max_retries
-        retry_task = duplicate_task
-        retry_task.retry_attempt = duplicate_task.retry_attempt + 1
-        retry_task.save!
+      return unless retry_attempt < max_retries
 
-        retry_task.enqueue
-      end
+      retry_task = duplicate_task
+      retry_task.retry_attempt = duplicate_task.retry_attempt + 1
+      retry_task.save!
+
+      retry_task.enqueue
     end
 
     def retries_configured?

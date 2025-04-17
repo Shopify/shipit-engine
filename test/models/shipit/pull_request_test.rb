@@ -8,28 +8,28 @@ module Shipit
       github_pull_request = resource(
         {
           url: "https://api.github.com/repos/Codertocat/Hello-World/pulls/2",
-          id: 279147437,
+          id: 279_147_437,
           number: 2,
           state: "open",
           additions: 100,
           deletions: 101,
           title: "Update the README with new information.",
           head: {
-            sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
+            sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821"
           },
           user: {
-            login: "Codertocat",
+            login: "Codertocat"
           },
           assignees: [
             {
-              login: "bob",
-            },
+              login: "bob"
+            }
           ],
           labels: [
             {
-              name: "deploy",
-            },
-          ],
+              name: "deploy"
+            }
+          ]
         }
       )
       stack = shipit_stacks(:review_stack)
@@ -37,7 +37,7 @@ module Shipit
 
       stack.pull_request.github_pull_request = github_pull_request
 
-      assert_equal 279147437, pull_request.github_id
+      assert_equal 279_147_437, pull_request.github_id
       assert_equal 2, pull_request.number
       assert_equal "https://api.github.com/repos/Codertocat/Hello-World/pulls/2", pull_request.api_url
       assert_equal "Update the README with new information.", pull_request.title

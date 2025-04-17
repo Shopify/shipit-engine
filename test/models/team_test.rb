@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -34,7 +35,7 @@ module Shipit
       skip unless limit
 
       slug = 'a' * 255
-      team = new_team(slug: slug)
+      team = new_team(slug:)
 
       response = stub(rels: {}, data: [team])
       Shipit.github.api.expects(:org_teams).with('shopify', per_page: 100).returns(response.data)
@@ -61,7 +62,7 @@ module Shipit
         login: 'george',
         email: 'george@cyclim.se',
         avatar_url: 'https://avatars.githubusercontent.com/u/42?v=3',
-        url: 'https://api.github.com/user/george',
+        url: 'https://api.github.com/user/george'
       )
     end
 
@@ -69,10 +70,10 @@ module Shipit
       stub(
         id: 24,
         name: 'New Team',
-        slug: slug,
+        slug:,
         url: 'https://example.com',
         description: 'The Best one',
-        organization: 'shopify',
+        organization: 'shopify'
       )
     end
   end

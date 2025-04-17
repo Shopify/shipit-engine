@@ -13,9 +13,6 @@ AllCops:
     - lib/shipit-engine.rb
     - template.rb
 
-inherit_gem:
-  rubocop-shopify: rubocop.yml
-
 Layout/LineLength:
   Exclude:
     - config/routes.rb
@@ -66,6 +63,41 @@ Style/SymbolArray:
 Naming/InclusiveLanguage:
   Enabled: false
 
+Style/Documentation:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+    Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/ModuleFunction:
+  Enabled: false
 
 # Crashing cops. We need to update rubocop at some point but better do it in its own PR.
 Layout/BlockAlignment:

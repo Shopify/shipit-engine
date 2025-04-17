@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -14,10 +15,10 @@ module Shipit
       refute_predicate(@commit, :locked?)
 
       patch(:update, params: {
-        stack_id: @stack.to_param,
-        id: @commit.id,
-        commit: { locked: true },
-      })
+              stack_id: @stack.to_param,
+              id: @commit.id,
+              commit: { locked: true }
+            })
 
       assert_response(:ok)
       @commit.reload
@@ -29,10 +30,10 @@ module Shipit
       @commit.lock(@user)
 
       patch(:update, params: {
-        stack_id: @stack.to_param,
-        id: @commit.id,
-        commit: { locked: false },
-      })
+              stack_id: @stack.to_param,
+              id: @commit.id,
+              commit: { locked: false }
+            })
 
       assert_response(:ok)
       @commit.reload

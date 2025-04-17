@@ -17,6 +17,7 @@ module Shipit
 
       def fetch(name)
         return default if name.blank?
+
         registry.fetch(name) { ProvisioningHandler::UnregisteredProvisioningHandler }
       end
 

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module Shipit
   module StacksHelper
     def redeploy_button(deployed_commit)
       commit = UndeployedCommit.new(deployed_commit, index: 0)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
-      classes = %W(btn btn--primary deploy-action #{commit.state})
+      classes = %W[btn btn--primary deploy-action #{commit.state}]
 
       unless commit.stack.deployable?
         classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
@@ -19,21 +20,19 @@ module Shipit
 
     def deploy_button(commit)
       url = new_stack_deploy_path(commit.stack, sha: commit.sha)
-      classes = %W(btn btn--primary deploy-action #{commit.state})
+      classes = %W[btn btn--primary deploy-action #{commit.state}]
       deploy_state = commit.deploy_state(bypass_safeties?)
       data = {}
 
       if commit.deploy_disallowed?
         classes.push(bypass_safeties? ? 'btn--warning' : 'btn--disabled')
-        if deploy_state == 'blocked'
-          data[:tooltip] = t('deploy_button.hint.blocked')
-        end
+        data[:tooltip] = t('deploy_button.hint.blocked') if deploy_state == 'blocked'
       elsif commit.deploy_discouraged?
         classes.push('btn--warning')
         data[:tooltip] = t('deploy_button.hint.max_commits', maximum: commit.stack.maximum_commits_per_deploy)
       end
 
-      link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data: data)
+      link_to(t("deploy_button.caption.#{deploy_state}"), url, class: classes, data:)
     end
 
     def rollback_button(deploy)
@@ -41,7 +40,7 @@ module Shipit
         link_to('Deploy in progress...', '#', class: 'btn disabled deploy-action')
       else
         url = rollback_stack_deploy_path(deploy.stack, deploy)
-        classes = %w(btn btn--delete deploy-action rollback-action)
+        classes = %w[btn btn--delete deploy-action rollback-action]
 
         link_to('Rollback to this deploy...', url, class: classes)
       end
@@ -80,10 +79,10 @@ module Shipit
 
     def pull_request_link(pull_request_or_commit)
       number = if pull_request_or_commit.respond_to?(:pull_request_number)
-        pull_request_or_commit.pull_request_number
-      else
-        pull_request_or_commit.number
-      end
+                 pull_request_or_commit.pull_request_number
+               else
+                 pull_request_or_commit.number
+               end
       link_to("##{number}", github_pull_request_url(pull_request_or_commit), target: '_blank', class: 'number')
     end
 

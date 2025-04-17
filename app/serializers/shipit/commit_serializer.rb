@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitSerializer < ShortCommitSerializer
     include GithubUrlHelper
@@ -24,7 +25,7 @@ module Shipit
     def pull_request
       {
         number: object.pull_request_number,
-        html_url: github_pull_request_url(object),
+        html_url: github_pull_request_url(object)
       }
     end
 

@@ -33,7 +33,7 @@ module Shipit
           [
             "#{day}_start",
             "#{day}_end",
-            "#{day}_enabled",
+            "#{day}_enabled"
           ]
         end
       )

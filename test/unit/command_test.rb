@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -67,7 +68,7 @@ module Shipit
       assert system(
         Engine.root.join('test/dummy/bin/rails').to_s,
         'runner',
-        Engine.root.join('test/test_command_integration.rb').to_s,
+        Engine.root.join('test/test_command_integration.rb').to_s
       )
     end
 

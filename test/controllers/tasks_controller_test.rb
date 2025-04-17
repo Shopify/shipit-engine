@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -54,7 +55,7 @@ module Shipit
     test "tasks with variables defined in the shipit.yml can be triggered with their variables set" do
       env = { "FOO" => "0" }
 
-      post :create, params: { stack_id: @stack, definition_id: @definition.id, task: { env: env }, force: 'true' }
+      post :create, params: { stack_id: @stack, definition_id: @definition.id, task: { env: }, force: 'true' }
 
       assert_redirected_to stack_tasks_path(@stack, Task.last)
     end
@@ -113,7 +114,7 @@ module Shipit
 
       get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
-      assert_json_keys %w(url status output)
+      assert_json_keys %w[url status output]
       assert_json 'status', @task.status
       assert_json 'output', @task.chunk_output
       assert_json 'url', "/shopify/shipit-engine/production/tasks/#{@task.id}/tail?last_byte=#{last_chunk}"
@@ -125,7 +126,7 @@ module Shipit
 
       get :tail, params: { stack_id: @stack.to_param, id: @task.id, last_byte: "50" }, format: :json
       assert_response :success
-      assert_json_keys %w(url status output)
+      assert_json_keys %w[url status output]
     end
 
     test ":tail doesn't returns the next url if the task is finished" do
@@ -141,7 +142,7 @@ module Shipit
 
       get :tail, params: { stack_id: @stack.to_param, id: @task.id }, format: :json
       assert_response :success
-      assert_json_keys %w(status output rollback_url)
+      assert_json_keys %w[status output rollback_url]
     end
 
     test ":lookup returns stack task url if the task is an instance of Task" do

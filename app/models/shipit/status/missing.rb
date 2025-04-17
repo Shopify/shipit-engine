@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Status
     class Missing
@@ -24,7 +25,7 @@ module Shipit
       end
 
       def description
-        I18n.t('missing_status.description', context: context)
+        I18n.t('missing_status.description', context:)
       end
 
       def to_partial_path

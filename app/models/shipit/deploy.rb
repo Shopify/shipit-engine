@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'fileutils'
 
 module Shipit
@@ -26,7 +27,7 @@ module Shipit
         'success' => 'success',
         'faulty' => 'error',
         'error' => 'error',
-        'aborted' => 'error',
+        'aborted' => 'error'
       }.freeze
 
       def append_status(task_status)
@@ -37,7 +38,7 @@ module Shipit
               "Creating #{github_status} deploy status for deployment #{deployment.id}. "\
               "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
               "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}, "\
-              "API Url: #{deployment.api_url}.",
+              "API Url: #{deployment.api_url}."
             )
             deployment.statuses.create!(status: github_status)
           end
@@ -47,7 +48,7 @@ module Shipit
               "No GitHub status for task status #{task_status}. "\
               "Commit: #{deployment.sha}, Github id: #{deployment.github_id}, "\
               "Repo: #{deployment.stack.repo_name}, Environment: #{deployment.stack.environment}, "\
-              "API Url: #{deployment.api_url}.",
+              "API Url: #{deployment.api_url}."
             )
           end
         end
@@ -64,48 +65,52 @@ module Shipit
 
     def self.newer_than(deploy)
       return all unless deploy
+
       where('id > ?', deploy.try(:id) || deploy)
     end
 
     def self.older_than(deploy)
       return all unless deploy
+
       where('id < ?', deploy.try(:id) || deploy)
     end
 
     def self.since(deploy)
       return all unless deploy
+
       where('id >= ?', deploy.try(:id) || deploy)
     end
 
     def self.until(deploy)
       return all unless deploy
+
       where('id <= ?', deploy.try(:id) || deploy)
     end
 
     def build_rollback(user = nil, env: nil, force: false)
       Rollback.new(
         user_id: user&.id,
-        stack_id: stack_id,
+        stack_id:,
         parent_id: id,
         since_commit: stack.last_deployed_commit,
-        until_commit: until_commit,
-        env: env&.to_h || {},
+        until_commit:,
+        env: env.to_h,
         allow_concurrency: force,
         ignored_safeties: force,
-        max_retries: stack.retries_on_rollback,
+        max_retries: stack.retries_on_rollback
       )
     end
 
     # Rolls the stack back to this deploy
     def trigger_rollback(user = AnonymousUser.new, env: nil, force: false, lock: true)
-      rollback = build_rollback(user, env: env, force: force)
+      rollback = build_rollback(user, env:, force:)
       rollback.save!
       rollback.enqueue
 
       if lock
         lock_reason = "A rollback for #{rollback.since_commit.sha} has been triggered. " \
           "Please make sure the reason for the rollback has been addressed before deploying again."
-        stack.update!(lock_reason: lock_reason, lock_author_id: user.id)
+        stack.update!(lock_reason:, lock_author_id: user.id)
       end
 
       rollback
@@ -116,18 +121,18 @@ module Shipit
       previous_successful_commit = rollback_to&.until_commit || commit_to_rollback_to
 
       rollback = Rollback.create!(
-        user_id: user_id,
-        stack_id: stack_id,
+        user_id:,
+        stack_id:,
         parent_id: id,
         since_commit: until_commit,
         until_commit: previous_successful_commit,
-        allow_concurrency: force,
+        allow_concurrency: force
       )
 
       rollback.enqueue
       lock_reason = "A rollback for #{until_commit.sha} has been triggered. " \
         "Please make sure the reason for the rollback has been addressed before deploying again."
-      stack.update!(lock_reason: lock_reason, lock_author_id: user_id)
+      stack.update!(lock_reason:, lock_author_id: user_id)
       stack.emit_lock_hooks
       rollback
     end
@@ -176,6 +181,7 @@ module Shipit
 
     def reject!
       return if failed? || aborted?
+
       transaction do
         flap! unless flapping?
         update!(confirmations: [confirmations - 1, -1].min)
@@ -185,6 +191,7 @@ module Shipit
 
     def accept!
       return if success?
+
       transaction do
         flap! unless flapping?
         update!(confirmations: [confirmations + 1, 1].max)
@@ -198,13 +205,12 @@ module Shipit
 
     delegate :last_release_status, to: :until_commit
     def append_release_status(state, description, user: self.user)
-      status = until_commit.create_release_status!(
+      until_commit.create_release_status!(
         state,
         user: user.presence,
         target_url: permalink,
-        description: description,
+        description:
       )
-      status
     end
 
     def permalink
@@ -225,7 +231,7 @@ module Shipit
         append_release_status(
           'success',
           description,
-          user: user,
+          user:
         )
       end
     end
@@ -236,7 +242,7 @@ module Shipit
         append_release_status(
           'failure',
           description,
-          user: user,
+          user:
         )
       end
     end
@@ -254,6 +260,7 @@ module Shipit
       # Create one for each pull request in the batch, to give feedback on the PR timeline
       commits.select(&:pull_request?).each do |commit|
         next if commit.pull_request_head_sha.blank? # This attribute was not always populated
+
         commit_deployments.create!(sha: commit.pull_request_head_sha)
       end
 
@@ -272,13 +279,17 @@ module Shipit
       when 'aborted', 'aborting'
         append_release_status('failure', "The deploy on #{stack.environment} was canceled")
       when 'validating'
-        append_release_status(
-          'pending',
-          "The deploy on #{stack.environment} succeeded"
-        ) unless stack.release_status_delay.zero?
+        unless stack.release_status_delay.zero?
+          append_release_status(
+            'pending',
+            "The deploy on #{stack.environment} succeeded"
+          )
+        end
 
-        MarkDeployHealthyJob.set(wait: stack.release_status_delay)
-          .perform_later(self) if stack.release_status_delay.positive?
+        if stack.release_status_delay.positive?
+          MarkDeployHealthyJob.set(wait: stack.release_status_delay)
+                              .perform_later(self)
+        end
       when 'success'
         if stack.release_status_delay.zero?
           append_release_status('success', "The deploy on #{stack.environment} succeeded")
@@ -289,11 +300,13 @@ module Shipit
     def trigger_revert_if_required
       return unless rollback_once_aborted?
       return unless supports_rollback?
+
       trigger_revert(rollback_to: rollback_once_aborted_to)
     end
 
     def default_since_commit_id
       return unless stack
+
       @default_since_commit_id ||= stack.last_completed_deploy&.until_commit_id
     end
 
@@ -308,6 +321,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless stack.continuous_deployment?
+
       ContinuousDeliveryJob.perform_later(stack)
     end
 
@@ -321,6 +335,7 @@ module Shipit
 
     def update_latest_deployed_ref
       return unless previous_changes.include?(:status)
+
       stack.update_latest_deployed_ref if previous_changes[:status].last == 'success'
     end
   end

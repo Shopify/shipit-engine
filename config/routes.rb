@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Shipit::Engine.routes.draw do
   stack_id_format = %r{[^/]+/[^/]+/[^/]+}
   repository_id_format = %r{[^/]+/[^/]+}
@@ -15,7 +16,7 @@ Shipit::Engine.routes.draw do
   # API
   namespace :api do
     root to: 'base#index'
-    resources :stacks, only: %i(index create)
+    resources :stacks, only: %i[index create]
     scope '/stacks/*id', id: stack_id_format, as: :stack do
       get '/' => 'stacks#show'
       delete '/' => 'stacks#destroy'
@@ -25,24 +26,24 @@ Shipit::Engine.routes.draw do
 
     scope '/stacks/*stack_id', stack_id: stack_id_format, as: :stack do
       get '/ccmenu' => 'ccmenu#show', as: :ccmenu
-      resource :lock, only: %i(create update destroy)
-      resources :tasks, only: %i(index show) do
+      resource :lock, only: %i[create update destroy]
+      resources :tasks, only: %i[index show] do
         resource :output, only: :show
         member do
           put :abort
         end
       end
-      resources :deploys, only: %i(index create) do
-        resources :release_statuses, only: %i(create)
+      resources :deploys, only: %i[index create] do
+        resources :release_statuses, only: %i[create]
       end
-      resources :rollbacks, only: %i(create)
-      resources :commits, only: %i(index)
-      resources :merge_requests, only: %i(index show update destroy)
+      resources :rollbacks, only: %i[create]
+      resources :commits, only: %i[index]
+      resources :merge_requests, only: %i[index show update destroy]
       post '/task/:task_name' => 'tasks#trigger', as: :trigger_task
-      resources :hooks, only: %i(index create show update destroy)
+      resources :hooks, only: %i[index create show update destroy]
     end
 
-    resources :hooks, only: %i(index create show update destroy)
+    resources :hooks, only: %i[index create show update destroy]
   end
 
   scope '/ccmenu/*stack_id', stack_id: stack_id_format, as: :ccmenu_url do
@@ -57,7 +58,7 @@ Shipit::Engine.routes.draw do
   # Humans
   resources :api_clients
 
-  resources :repositories, only: %i(new index create)
+  resources :repositories, only: %i[new index create]
   scope '/repositories/*id', id: repository_id_format, as: :repository do
     get '/' => 'repositories#show'
     patch '/' => 'repositories#update'
@@ -73,7 +74,7 @@ Shipit::Engine.routes.draw do
     get :logout
   end
 
-  resources :stacks, only: %i(new create index)
+  resources :stacks, only: %i[new create index]
   scope '/*id', id: stack_id_format, as: :stack do
     get '/' => 'stacks#show'
     patch '/' => 'stacks#update'
@@ -85,7 +86,7 @@ Shipit::Engine.routes.draw do
     get :refresh, controller: :stacks # For easier design, sorry :/
     post :clear_git_cache, controller: :stacks
 
-    resource :continuous_delivery_schedule, only: %i(show update)
+    resource :continuous_delivery_schedule, only: %i[show update]
   end
 
   scope '/task/:id', controller: :tasks do
@@ -98,9 +99,9 @@ Shipit::Engine.routes.draw do
 
     get '/stats' => 'stats#show', as: :stats
 
-    resources :rollbacks, only: %i(create)
-    resources :commits, only: %i(update)
-    resources :tasks, only: %i(show) do
+    resources :rollbacks, only: %i[create]
+    resources :commits, only: %i[update]
+    resources :tasks, only: %i[show] do
       collection do
         get '' => 'tasks#index', as: :index
         get ':definition_id/new' => 'tasks#new', as: :new
@@ -113,17 +114,17 @@ Shipit::Engine.routes.draw do
       end
     end
 
-    resources :deploys, only: %i(show create) do
+    resources :deploys, only: %i[show create] do
       get ':sha', sha: sha_format, on: :new, action: :new, as: ''
       member do
         get :rollback
         get :revert
       end
 
-      resources :release_statuses, only: %i(create)
+      resources :release_statuses, only: %i[create]
     end
 
-    resources :merge_requests, only: %i(index destroy create)
+    resources :merge_requests, only: %i[index destroy create]
   end
   get '/stacks/:id' => 'stacks#lookup'
 

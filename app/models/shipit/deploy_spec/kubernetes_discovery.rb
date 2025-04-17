@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     module KubernetesDiscovery
@@ -16,8 +17,8 @@ module Shipit
             'restart' => {
               'action' => "Restart application",
               'description' => "Simulates a rollout of Kubernetes deployments by using kubernetes-restart utility",
-              'steps' => [kubernetes_restart_cmd],
-            },
+              'steps' => [kubernetes_restart_cmd]
+            }
           }.merge!(super)
         else
           super
@@ -55,7 +56,7 @@ module Shipit
         cmd = [
           "kubernetes-restart",
           kube_config.fetch('namespace'),
-          kube_config.fetch('context'),
+          kube_config.fetch('context')
         ]
         cmd += ["--max-watch-seconds", timeout_duration] if timeout_duration
         Shellwords.join(cmd)

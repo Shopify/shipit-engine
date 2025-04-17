@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -82,38 +83,38 @@ module Shipit
           merged_at: nil,
           head: stub(
             ref: 'super-branch',
-            sha: head_sha,
+            sha: head_sha
           ),
           base: stub(
-            ref:  'default-branch',
-            sha: base_sha,
-          ),
-        ),
+            ref: 'default-branch',
+            sha: base_sha
+          )
+        )
       )
 
       author = stub(
         id: 1234,
         login: 'bob',
         name: 'Bob the Builder',
-        email: 'bob@bob.com',
+        email: 'bob@bob.com'
       )
 
       [head_sha, base_sha].each do |sha|
         Shipit.github.api.expects(:commit).with(@stack.github_repo_name, sha).returns(
           stub(
-            sha: sha,
-            author: author,
+            sha:,
+            author:,
             committer: author,
             commit: stub(
               message: 'Great feature',
               author: stub(date: 1.day.ago),
-              committer: stub(date: 1.day.ago),
+              committer: stub(date: 1.day.ago)
             ),
             stats: stub(
               additions: 24,
-              deletions: 5,
-            ),
-          ),
+              deletions: 5
+            )
+          )
         )
       end
 
@@ -122,21 +123,21 @@ module Shipit
         description: nil,
         context: 'default',
         target_url: 'http://example.com',
-        created_at: 1.day.ago,
+        created_at: 1.day.ago
       )])
 
       response = stub(rels: {}, data: stub(
         check_runs: [stub(
-          id: 123456,
+          id: 123_456,
           name: 'check run',
           conclusion: 'success',
           output: stub(
-            title: 'a test checkrun',
+            title: 'a test checkrun'
           ),
           details_url: 'http://example.com',
           html_url: 'http://example.com',
           completed_at: Time.now,
-          started_at: 1.minute.ago,
+          started_at: 1.minute.ago
         )]
       ))
 
@@ -245,7 +246,7 @@ module Shipit
     end
 
     test "status transitions emit hooks" do
-      expected_args = ->(job_args) do
+      expected_args = lambda do |job_args|
         job_args.first[:event] == 'merge'
       end
       job = assert_enqueued_with(job: EmitEventJob, args: expected_args) do
@@ -289,8 +290,8 @@ module Shipit
       @pr.base_ref = 'default-branch'
       Shipit.github.api.expects(:compare).with(@stack.github_repo_name, @pr.base_ref, @pr.head.sha).returns(
         stub(
-          behind_by: 10,
-        ),
+          behind_by: 10
+        )
       )
       spec = { 'merge' => { 'max_divergence' => { 'commits' => 1 } } }
       @pr.stack.cached_deploy_spec = DeploySpec.new(spec)

@@ -51,7 +51,7 @@ module Shipit
               url: "https://api.github.com/user/some-new-user-login"
             )
             Shipit.github.api.expects(:user).with("some-new-user-login")
-              .returns(github_user)
+                  .returns(github_user)
             payload = payload_parsed(:pull_request_opened)
             payload["pull_request"]["user"]["login"] = github_user.login
 
@@ -96,7 +96,7 @@ module Shipit
           test "only provision stacks for repos with auto-provisioning enabled" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               provisioning_enabled: false,
               behavior: :allow_all
             )
@@ -116,7 +116,7 @@ module Shipit
           test "creates stacks for repos that allow_all" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_all,
               label: "pull-requests-label"
             )
@@ -129,7 +129,7 @@ module Shipit
           test "creates stacks for repos that allow_with_label when label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label"
             )
@@ -144,7 +144,7 @@ module Shipit
           test "does not create stacks for repos that allow_with_label when label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :allow_with_label,
               label: "pull-requests-label"
             )
@@ -159,7 +159,7 @@ module Shipit
           test "create stacks for repos what prevent_with_label when label is absent" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label"
             )
@@ -174,7 +174,7 @@ module Shipit
           test "does not create stacks for repos what prevent_with_label when label is present" do
             repository = shipit_repositories(:shipit)
             configure_provisioning_behavior(
-              repository: repository,
+              repository:,
               behavior: :prevent_with_label,
               label: "pull-requests-label"
             )
@@ -204,32 +204,32 @@ module Shipit
 
           setup do
             Shipit.github.api.stubs(:commit)
-              .with("shopify/shipit-engine", "ec26c3e57ca3a959ca5aad62de7213c562f8c821")
-              .returns(
-                resource(
-                  {
-                    sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
-                    commit: {
-                      author: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      committer: {
-                        name: "Codertocat",
-                        email: "21031067+Codertocat@users.noreply.github.com",
-                        date: "2019-05-15 15:20:30",
-                      },
-                      message: "Update README.md",
-                    },
-                    stats: {
-                      total: 2,
-                      additions: 1,
-                      deletions: 1,
-                    },
-                  }
-                )
-              )
+                  .with("shopify/shipit-engine", "ec26c3e57ca3a959ca5aad62de7213c562f8c821")
+                  .returns(
+                    resource(
+                      {
+                        sha: "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
+                        commit: {
+                          author: {
+                            name: "Codertocat",
+                            email: "21031067+Codertocat@users.noreply.github.com",
+                            date: "2019-05-15 15:20:30"
+                          },
+                          committer: {
+                            name: "Codertocat",
+                            email: "21031067+Codertocat@users.noreply.github.com",
+                            date: "2019-05-15 15:20:30"
+                          },
+                          message: "Update README.md"
+                        },
+                        stats: {
+                          total: 2,
+                          additions: 1,
+                          deletions: 1
+                        }
+                      }
+                    )
+                  )
           end
         end
       end

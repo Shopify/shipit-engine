@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -45,7 +46,7 @@ module Shipit
               }
             ]
           }
-        ),
+        )
       )
       assert_equal "operational", app.api_status[:status]
     end
@@ -78,15 +79,15 @@ module Shipit
       config = {
         app_id: "test_id",
         installation_id: "test_installation_id",
-        private_key: "test_private_key",
+        private_key: "test_private_key"
       }
       initial_token = OpenStruct.new(
         token: "some_initial_github_token",
-        expires_at: Time.now.utc + 60.minutes,
+        expires_at: Time.now.utc + 60.minutes
       )
       second_token = OpenStruct.new(
         token: "some_new_github_token",
-        expires_at: initial_token.expires_at + 60.minutes,
+        expires_at: initial_token.expires_at + 60.minutes
       )
       auth_payload = "test_auth_payload"
 
@@ -116,15 +117,15 @@ module Shipit
       config = {
         app_id: "test_id",
         installation_id: "test_installation_id",
-        private_key: "test_private_key",
+        private_key: "test_private_key"
       }
       initial_token = OpenStruct.new(
         token: "some_initial_github_token",
-        expires_at: Time.now.utc + 60.minutes,
+        expires_at: Time.now.utc + 60.minutes
       )
       second_token = OpenStruct.new(
         token: "some_new_github_token",
-        expires_at: initial_token.expires_at + 60.minutes,
+        expires_at: initial_token.expires_at + 60.minutes
       )
       auth_payload = "test_auth_payload"
 
@@ -161,14 +162,14 @@ module Shipit
       config = {
         app_id: "test_id",
         installation_id: "test_installation_id",
-        private_key: "test_private_key",
+        private_key: "test_private_key"
       }
       initial_cached_token = Shipit::GitHubApp::Token.new("some_initial_github_token", Time.now.utc - 1.minute)
       initial_cached_token.instance_variable_set(:@refresh_at, nil)
 
       second_token = OpenStruct.new(
         token: "some_new_github_token",
-        expires_at: initial_cached_token.expires_at + 60.minutes,
+        expires_at: initial_cached_token.expires_at + 60.minutes
       )
       auth_payload = "test_auth_payload"
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -33,14 +34,14 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at:)
         )
       end
 
       assert_enqueued_with(job: RefreshCheckRunsJob) do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: nil, completed_at: completed_at)
+          github_check_run(conclusion: nil, completed_at:)
         )
       end
 
@@ -50,9 +51,9 @@ module Shipit
           @stack.id,
           github_check_run(
             conclusion: 'action_required',
-            completed_at: completed_at,
-            started_at: completed_at + 1.minute,
-          ),
+            completed_at:,
+            started_at: completed_at + 1.minute
+          )
         )
       end
 
@@ -62,12 +63,12 @@ module Shipit
     test ".create_or_update_from_github! is idempotent" do
       completed_at = Time.now
       assert_difference -> { @commit.check_runs.count }, +1 do
-        @commit.check_runs.create_or_update_from_github!(@stack.id, github_check_run(completed_at: completed_at))
+        @commit.check_runs.create_or_update_from_github!(@stack.id, github_check_run(completed_at:))
       end
 
       assert_no_difference -> { @commit.check_runs.count } do
         assert_no_enqueued_jobs(only: RefreshCheckRunsJob) do
-          @commit.check_runs.create_or_update_from_github!(@stack.id, github_check_run(completed_at: completed_at))
+          @commit.check_runs.create_or_update_from_github!(@stack.id, github_check_run(completed_at:))
         end
       end
     end
@@ -77,7 +78,7 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at:)
         )
       end
 
@@ -109,7 +110,7 @@ module Shipit
       assert_difference -> { @commit.check_runs.count }, +1 do
         @commit.check_runs.create_or_update_from_github!(
           @stack.id,
-          github_check_run(conclusion: 'success', completed_at: completed_at)
+          github_check_run(conclusion: 'success', completed_at:)
         )
       end
 
@@ -143,10 +144,10 @@ module Shipit
       'neutral' => 'success',
       'cancelled' => 'failure',
       'timed_out' => 'error',
-      'action_required' => 'pending',
+      'action_required' => 'pending'
     }.each do |conclusion, expected_status|
       test "#state is #{expected_status.inspect} when conclusion is #{conclusion.inspect}" do
-        @check_run.update!(conclusion: conclusion)
+        @check_run.update!(conclusion:)
         assert_equal expected_status, @check_run.state
       end
     end
@@ -156,15 +157,15 @@ module Shipit
     def github_check_run(conclusion: 'success', completed_at: Time.now, started_at: Time.now - 1.minute)
       OpenStruct.new(
         id: 424_242,
-        conclusion: conclusion,
+        conclusion:,
         output: OpenStruct.new(
-          description: 'This is a description',
+          description: 'This is a description'
         ),
         name: 'Test Suite',
         html_url: 'http://example.com/run',
         details_url: 'http://example.com/details',
-        completed_at: completed_at,
-        started_at: started_at,
+        completed_at:,
+        started_at:
       )
     end
   end

@@ -23,7 +23,7 @@ module Shipit
       assert_response :forbidden
       assert_equal(
         'You must be a member of cyclimse/cooks or shopify/developers to access this application.',
-        response.body,
+        response.body
       )
     end
 
@@ -44,9 +44,9 @@ module Shipit
             name: 'walrus_app',
             permissions: [
               'read:stack',
-              'lock:stack',
-            ],
-          },
+              'lock:stack'
+            ]
+          }
         }
       end
 
@@ -59,9 +59,9 @@ module Shipit
           name: 'walrus_app',
           permissions: [
             'read:stack',
-            'lock:stack',
-          ],
-        },
+            'lock:stack'
+          ]
+        }
       }
 
       assert_equal shipit_users(:walrus).id, ApiClient.last.creator.id
@@ -84,15 +84,15 @@ module Shipit
     test "#update updates an existing api_client" do
       new_permissions = [
         'read:stack',
-        'lock:stack',
+        'lock:stack'
       ]
 
       assert_difference "ApiClient.count", 0 do
         patch :update, params: {
           id: @api_client.id,
           api_client: {
-            permissions: new_permissions,
-          },
+            permissions: new_permissions
+          }
         }
       end
       @api_client.reload

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
   class PerformTaskJobTest < ActiveSupport::TestCase
     class FakeSuccessfulCommand
-      def run
-      end
+      def run; end
 
       def success?
         true

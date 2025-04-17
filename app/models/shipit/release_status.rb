@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class ReleaseStatus < Record
     MAX_DESCRIPTION_LENGTH = 140
@@ -13,7 +14,7 @@ module Shipit
 
     scope :to_be_created, -> { where(github_id: nil).order(id: :asc) }
 
-    STATES = %w(pending success failure error).freeze
+    STATES = %w[pending success failure error].freeze
     validates :state, presence: true, inclusion: { in: STATES }
 
     def create_status_on_github!
@@ -30,8 +31,8 @@ module Shipit
         commit.sha,
         state,
         context: stack.release_status_context,
-        target_url: target_url,
-        description: description&.truncate(MAX_DESCRIPTION_LENGTH),
+        target_url:,
+        description: description&.truncate(MAX_DESCRIPTION_LENGTH)
       )
     end
 

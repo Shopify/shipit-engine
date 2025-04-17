@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -13,7 +14,7 @@ module Shipit
     test "#perform retries on Octokit secondary rate limit exceptions" do
       freeze_time do
         Octokit::Forbidden.any_instance.expects(:response_headers)
-          .returns({ "Retry-After" => 45 })
+                          .returns({ "Retry-After" => 45 })
 
         Shipit.github.api.expects(:user).with(@user.github_id).raises(Octokit::TooManyRequests)
 

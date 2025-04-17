@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module Shipit
@@ -9,7 +10,7 @@ module Shipit
 
       assert(schedule.valid?)
 
-      Shipit::ContinuousDeliverySchedule::DAYS.each_with_index do |day|
+      Shipit::ContinuousDeliverySchedule::DAYS.each do |day|
         assert(schedule.read_attribute("#{day}_enabled"))
 
         day_start = schedule.read_attribute("#{day}_start")
@@ -24,7 +25,7 @@ module Shipit
       schedule = Shipit::ContinuousDeliverySchedule.new(
         monday_enabled: false,
         monday_start: "09:15",
-        monday_end: "17:30",
+        monday_end: "17:30"
       )
 
       monday = Date.current.monday
@@ -50,7 +51,7 @@ module Shipit
       schedule = Shipit::ContinuousDeliverySchedule.new(
         tuesday_enabled: false,
         tuesday_start: "00:00",
-        tuesday_end: "23:59",
+        tuesday_end: "23:59"
       )
 
       tuesday = Date.current.monday.advance(days: 1).beginning_of_day
@@ -62,7 +63,7 @@ module Shipit
       schedule = Shipit::ContinuousDeliverySchedule.new(
         wednesday_enabled: true,
         wednesday_start: "09:15",
-        wednesday_end: "17:30",
+        wednesday_end: "17:30"
       )
 
       wednesday = Date.current.monday.advance(days: 2).beginning_of_day
@@ -87,7 +88,7 @@ module Shipit
 
     test "validates `*_enabled` fields" do
       schedule = Shipit::ContinuousDeliverySchedule.new(
-        friday_enabled: nil,
+        friday_enabled: nil
       )
 
       schedule.validate
@@ -97,7 +98,7 @@ module Shipit
     test "requires `_start` and `_end` fields" do
       schedule = Shipit::ContinuousDeliverySchedule.new(
         saturday_start: nil,
-        saturday_end: nil,
+        saturday_end: nil
       )
 
       schedule.validate

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module Shipit
   class Status < Record
     include Common
     include DeferredTouch
 
-    STATES = %w(pending success failure error).freeze
+    STATES = %w[pending success failure error].freeze
     enum :state, STATES.zip(STATES).to_h
 
     belongs_to :stack, required: true
@@ -22,12 +23,12 @@ module Shipit
     class << self
       def replicate_from_github!(stack_id, github_status)
         find_or_create_by!(
-          stack_id: stack_id,
+          stack_id:,
           state: github_status.state,
           description: github_status.description,
           target_url: github_status.target_url,
           context: github_status.context,
-          created_at: github_status.created_at,
+          created_at: github_status.created_at
         )
       end
     end

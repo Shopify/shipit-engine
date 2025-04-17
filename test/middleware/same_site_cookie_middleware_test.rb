@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -14,8 +15,7 @@ module Shipit
     end
 
     def env_for_url(url)
-      env = Rack::MockRequest.env_for(url)
-      env
+      Rack::MockRequest.env_for(url)
     end
 
     def middleware

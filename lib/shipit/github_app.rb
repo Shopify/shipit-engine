@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GitHubApp
     include Mutex_m
@@ -62,9 +63,7 @@ module Shipit
 
     def api
       client = (Thread.current[:github_client] ||= new_client(access_token: token))
-      if client.access_token != token
-        client.access_token = token
-      end
+      client.access_token = token if client.access_token != token
       client
     end
 
@@ -99,14 +98,15 @@ module Shipit
       Rails.cache.fetch(
         "github:integration:#{cache_key}access-token",
         expires_in: GITHUB_TOKEN_RAILS_CACHE_LIFETIME,
-        race_condition_ttl: 4.minutes,
+        race_condition_ttl: 4.minutes
       ) do
         response = new_client(bearer_token: authentication_payload).create_app_installation_access_token(
-          installation_id,
+          installation_id
         )
         token = Token.from_github(response)
         raise AuthenticationFailed if token.blank?
-        Rails.logger.info("Created GitHub access token ending #{token.to_s[-5..-1]}, expires at #{token.expires_at}"\
+
+        Rails.logger.info("Created GitHub access token ending #{token.to_s[-5..]}, expires at #{token.expires_at}"\
           " and will be refreshed at #{token&.refresh_at}")
         token
       end
@@ -122,14 +122,14 @@ module Shipit
         options = {
           site: api_endpoint,
           authorize_url: url('/login/oauth/authorize'),
-          token_url: url('/login/oauth/access_token'),
+          token_url: url('/login/oauth/access_token')
         }
       end
 
       [
         oauth_id,
         oauth_secret,
-        client_options: options,
+        { client_options: options }
       ]
     end
 
@@ -153,8 +153,8 @@ module Shipit
     def new_client(options = {})
       if enterprise?
         options = options.reverse_merge(
-          api_endpoint: api_endpoint,
-          web_endpoint: web_endpoint,
+          api_endpoint:,
+          web_endpoint:
         )
       end
       client = Octokit::Client.new(options)
@@ -173,7 +173,7 @@ module Shipit
           shared_cache: false,
           store: Rails.cache,
           logger: Rails.logger,
-          serializer: NullSerializer,
+          serializer: NullSerializer
         )
         builder.use(GitHubHTTPCacheMiddleware)
         builder.use(Octokit::Response::RaiseError)
@@ -197,7 +197,7 @@ module Shipit
       payload = {
         iat: Time.now.to_i,
         exp: 10.minutes.from_now.to_i,
-        iss: app_id,
+        iss: app_id
       }
       key = OpenSSL::PKey::RSA.new(private_key)
       JWT.encode(payload, key, 'RS256')

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module Shipit
   class Delivery < Record
-    STATUSES = %w(pending scheduled sent).freeze
+    STATUSES = %w[pending scheduled sent].freeze
     enum :status, STATUSES.zip(STATUSES).to_h
 
     belongs_to :hook
@@ -47,7 +48,7 @@ module Shipit
         'Content-Type' => content_type,
         'X-Shipit-Event' => event,
         'X-Shipit-Delivery' => id.to_s,
-        'Accept' => '*/*',
+        'Accept' => '*/*'
       }
     end
   end

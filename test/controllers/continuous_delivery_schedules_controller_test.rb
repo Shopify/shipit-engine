@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -25,11 +26,11 @@ module Shipit
 
     test "#update" do
       patch(:update, params: {
-        id: @stack.to_param,
-        continuous_delivery_schedule: {
-          **valid_params,
-        },
-      })
+              id: @stack.to_param,
+              continuous_delivery_schedule: {
+          **valid_params
+              }
+            })
 
       assert_redirected_to(stack_continuous_delivery_schedule_path(@stack))
       assert_equal("Successfully updated", flash[:success])
@@ -49,12 +50,12 @@ module Shipit
 
     test "#update renders validation errors" do
       patch(:update, params: {
-        id: @stack.to_param,
-        continuous_delivery_schedule: {
+              id: @stack.to_param,
+              continuous_delivery_schedule: {
           # Make Sunday end before it starts
-          **valid_params.merge(sunday_end: "08:00"),
-        },
-      })
+          **valid_params.merge(sunday_end: "08:00")
+              }
+            })
 
       assert_response(:unprocessable_entity)
       assert_equal("Check form for errors", flash[:warning])

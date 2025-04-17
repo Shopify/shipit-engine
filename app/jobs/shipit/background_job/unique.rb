@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class BackgroundJob
     module Unique
@@ -18,7 +19,7 @@ module Shipit
           lock_key(*arguments),
           Shipit.redis,
           expiration: self.class.timeout || DEFAULT_TIMEOUT,
-          timeout: self.class.lock_timeout || 0,
+          timeout: self.class.lock_timeout || 0
         )
         mutex.lock(&block)
       rescue Redis::Lock::LockTimeout
@@ -30,7 +31,7 @@ module Shipit
       end
 
       module ClassMethods
-        ACTIONS = %i(retry drop).freeze
+        ACTIONS = %i[retry drop].freeze
         ACTIONS_LIST = ACTIONS.map(&:inspect).join(', ').freeze
         def on_duplicate(action)
           unless ACTIONS.include?(action)

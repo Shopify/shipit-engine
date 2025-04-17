@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -46,34 +47,34 @@ module Shipit
         ["yoloshipit!", false],
         ["fix it!", false],
         ["sheep it!", false],
-        ["lets go", false],
+        ["lets go", false]
       ]
-      assert_equal initial_queue, @stack.undeployed_commits.map { |c| [c.title, c.locked?] }
+      assert_equal(initial_queue, @stack.undeployed_commits.map { |c| [c.title, c.locked?] })
 
       author = stub(
         id: 1234,
         login: 'bob',
         name: 'Bob the Builder',
         email: 'bob@bob.com',
-        date: '2011-04-14T16:00:49Z',
+        date: '2011-04-14T16:00:49Z'
       )
       @job.expects(:fetch_missing_commits).returns([
-        [
-          stub(
-            sha: '36514755579bfb5bc313f403b216f4347a027990',
-            author: author,
-            committer: author,
-            stats: nil,
-            commit: stub(
-              sha: '36514755579bfb5bc313f403b216f4347a027990',
-              message: 'Revert "fix it!"',
-              author: author,
-              committer: author,
-            ),
-          ),
-        ],
-        shipit_commits(:fifth),
-      ])
+                                                     [
+                                                       stub(
+                                                         sha: '36514755579bfb5bc313f403b216f4347a027990',
+                                                         author:,
+                                                         committer: author,
+                                                         stats: nil,
+                                                         commit: stub(
+                                                           sha: '36514755579bfb5bc313f403b216f4347a027990',
+                                                           message: 'Revert "fix it!"',
+                                                           author:,
+                                                           committer: author
+                                                         )
+                                                       )
+                                                     ],
+                                                     shipit_commits(:fifth)
+                                                   ])
       @job.perform(stack_id: @stack.id)
 
       final_queue = [
@@ -82,9 +83,9 @@ module Shipit
         ["yoloshipit!", true],
         ["fix it!", true],
         ["sheep it!", false],
-        ["lets go", false],
+        ["lets go", false]
       ]
-      assert_equal final_queue, @stack.reload.undeployed_commits.map { |c| [c.title, c.locked?] }
+      assert_equal(final_queue, @stack.reload.undeployed_commits.map { |c| [c.title, c.locked?] })
     end
 
     test "#fetch_missing_commits returns the commits in the reverse order if it doesn't know the parent" do

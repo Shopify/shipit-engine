@@ -16,7 +16,7 @@ expected_output = [
   "Sleeping for 10 seconds\r\n",
   "\e[1;31mNo output received in the last 2 seconds.\e[0m\n",
   "\e[1;31mSending SIGINT to PID #{command.pid}\n\e[0m",
-  "Recieved SIGINT, aborting.\r\n",
+  "Recieved SIGINT, aborting.\r\n"
 ]
 
 unless buffer.join == expected_output.join

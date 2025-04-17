@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class GithubHook < Record
     # TODO: app-migration, delete class

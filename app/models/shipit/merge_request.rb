@@ -1,13 +1,14 @@
 # frozen_string_literal: true
+
 module Shipit
   class MergeRequest < ApplicationRecord
     include DeferredTouch
 
     MERGE_REQUEST_FIELD = 'Merge-Requested-By'
 
-    WAITING_STATUSES = %w(fetching pending).freeze
-    QUEUED_STATUSES = %w(pending revalidating).freeze
-    REJECTION_REASONS = %w(ci_missing ci_failing merge_conflict requires_rebase).freeze
+    WAITING_STATUSES = %w[fetching pending].freeze
+    QUEUED_STATUSES = %w[pending revalidating].freeze
+    REJECTION_REASONS = %w[ci_missing ci_failing merge_conflict requires_rebase].freeze
     InvalidTransition = Class.new(StandardError)
     NotReady = Class.new(StandardError)
 
@@ -85,14 +86,14 @@ module Shipit
       end
 
       event :retry do
-        transition %i(rejected canceled revalidating) => :pending
+        transition %i[rejected canceled revalidating] => :pending
       end
 
       before_transition rejected: any do |pr|
         pr.rejection_reason = nil
       end
 
-      before_transition %i(fetching rejected canceled) => :pending do |pr|
+      before_transition %i[fetching rejected canceled] => :pending do |pr|
         pr.merge_requested_at = Time.now.utc
       end
 
@@ -100,7 +101,7 @@ module Shipit
         pr.revalidated_at = Time.now.utc
       end
 
-      before_transition %i(pending) => :merged do |pr|
+      before_transition %i[pending] => :merged do |pr|
         Stack.increment_counter(:undeployed_commits_count, pr.stack_id)
       end
     end
@@ -117,6 +118,7 @@ module Shipit
       when %r{\Ahttps://#{Regexp.escape(Shipit.github(organization: org).domain)}/([^/]+)/([^/]+)/pull/(\d+)}
         return unless $1.downcase == stack.repo_owner.downcase
         return unless $2.downcase == stack.repo_name.downcase
+
         $3.to_i
       end
     end
@@ -126,10 +128,10 @@ module Shipit
       merge_request = begin
         create_with(
           merge_requested_at: now,
-          merge_requested_by: user.presence,
+          merge_requested_by: user.presence
         ).find_or_create_by!(
-          stack: stack,
-          number: number,
+          stack:,
+          number:
         )
       rescue ActiveRecord::RecordNotUnique
         retry
@@ -144,6 +146,7 @@ module Shipit
       unless REJECTION_REASONS.include?(reason)
         raise ArgumentError, "invalid reason: #{reason.inspect}, must be one of: #{REJECTION_REASONS.inspect}"
       end
+
       self.rejection_reason = reason.presence
       super()
       true
@@ -154,6 +157,7 @@ module Shipit
       return reject!('ci_missing') if any_status_checks_missing?
       return reject!('ci_failing') if any_status_checks_failed?
       return reject!('requires_rebase') if stale?
+
       false
     end
 
@@ -168,7 +172,7 @@ module Shipit
         merge_message,
         sha: head.sha,
         commit_message: 'Merged by Shipit',
-        merge_method: stack.merge_method,
+        merge_method: stack.merge_method
       )
       begin
         if stack.github_api.pull_requests(stack.github_repo_name, base: branch).empty?
@@ -188,6 +192,7 @@ module Shipit
 
     def all_status_checks_passed?
       return false unless head
+
       StatusChecker.new(head, head.statuses_and_check_runs, stack.cached_deploy_spec).success?
     end
 
@@ -207,6 +212,7 @@ module Shipit
     def need_revalidation?
       timeout = stack.cached_deploy_spec&.revalidate_merge_requests_after
       return false unless timeout
+
       (revalidated_at + timeout).past?
     end
 
@@ -255,18 +261,21 @@ module Shipit
 
     def merge_message
       return title unless merge_requested_by
+
       "#{title}\n\n#{MERGE_REQUEST_FIELD}: #{merge_requested_by.login}\n"
     end
 
     def stale?
       return false unless base_commit
+
       spec = stack.cached_deploy_spec
-      if max_branch_age = spec.max_divergence_age
-        return true if Time.now.utc - head.committed_at > max_branch_age
+      if (max_branch_age = spec.max_divergence_age) && (Time.now.utc - head.committed_at > max_branch_age)
+        return true
       end
-      if commit_count_limit = spec.max_divergence_commits
-        return true if comparison.behind_by > commit_count_limit
+      if (commit_count_limit = spec.max_divergence_commits) && (comparison.behind_by > commit_count_limit)
+        return true
       end
+
       false
     end
 
@@ -274,7 +283,7 @@ module Shipit
       @comparison ||= stack.github_api.compare(
         stack.github_repo_name,
         base_ref,
-        head.sha,
+        head.sha
       )
     end
 
@@ -286,8 +295,9 @@ module Shipit
 
     def emit_hooks
       return unless @merge_status_changed
+
       @merge_status_changed = nil
-      Hook.emit('merge', stack, merge_request: self, status: merge_status, stack: stack)
+      Hook.emit('merge', stack, merge_request: self, status: merge_status, stack:)
     end
 
     def find_or_create_commit_from_github_by_sha!(sha, attributes)

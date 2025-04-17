@@ -10,8 +10,7 @@ shipit:
   cached_deploy_spec: |-
     {
       "machine": {
-        "environment": {
-        }
+        "environment": {}
       },
       "review": {
         "checklist": [
@@ -28,9 +27,7 @@ shipit:
         ]
       },
       "dependencies": {
-        "override": [
-
-        ]
+        "override": []
       },
       "deploy": {
         "override": null,
@@ -494,8 +491,7 @@ review_stack:
   cached_deploy_spec: |-
     {
       "machine": {
-        "environment": {
-        }
+        "environment": {}
       },
       "review": {
         "checklist": [
@@ -512,9 +508,7 @@ review_stack:
         ]
       },
       "dependencies": {
-        "override": [
-
-        ]
+        "override": []
       },
       "deploy": {
         "override": null,

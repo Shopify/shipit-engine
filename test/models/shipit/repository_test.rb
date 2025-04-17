@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -23,7 +24,7 @@ module Shipit
         error = assert_raises(ActiveRecord::RecordInvalid) do
           Repository.create!(
             owner: @repository.owner.upcase,
-            name: @repository.name.upcase,
+            name: @repository.name.upcase
           )
         end
         assert_equal 'Validation failed: Name cannot be used more than once', error.message
@@ -71,7 +72,7 @@ module Shipit
       owner = "repository-owner"
       name = "repository-name"
       github_repo_name = [owner, name].join("/")
-      expected_repository = Repository.create(owner: owner, name: name)
+      expected_repository = Repository.create(owner:, name:)
 
       found_repository = Repository.from_github_repo_name(github_repo_name)
 

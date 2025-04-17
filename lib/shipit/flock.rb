@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'English'
 require 'timeout'
 require 'pathname'
@@ -16,18 +17,19 @@ module Shipit
 
     def lock(timeout:)
       return yield if @acquired
+
       path.parent.mkpath
       path.open('w') do |file|
-        if retrying(timeout: timeout) { file.flock(File::LOCK_EX | File::LOCK_NB) }
-          file.write($PROCESS_ID.to_s)
-          @acquired = true
-          begin
-            yield
-          ensure
-            @acquired = false
-          end
-        else
+        unless retrying(timeout:) { file.flock(File::LOCK_EX | File::LOCK_NB) }
           raise TimeoutError, "Couldn't acquire lock for #{path} in #{timeout} seconds"
+        end
+
+        file.write($PROCESS_ID.to_s)
+        @acquired = true
+        begin
+          yield
+        ensure
+          @acquired = false
         end
       end
     end

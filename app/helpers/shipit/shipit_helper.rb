@@ -1,20 +1,22 @@
 # frozen_string_literal: true
+
 module Shipit
   module ShipitHelper
     def subscribe(url, *selectors)
       content_for(:update_subscription) do
         [
           tag('meta', name: 'subscription-channel', content: url),
-          *selectors.map { |s| tag('meta', name: 'subscription-selector', content: s) },
+          *selectors.map { |s| tag('meta', name: 'subscription-selector', content: s) }
         ].join("\n").html_safe
       end
     end
 
     def emojify(content)
-      if content.present?
-        h(content).to_str.gsub(/:([\w+-]+):/) do |match|
-          if emoji = Emoji.find_by_alias($1)
-            %(
+      return unless content.present?
+
+      h(content).to_str.gsub(/:([\w+-]+):/) do |match|
+        if emoji = Emoji.find_by_alias($1)
+          %(
               <img
                 alt="##{$1}"
                 src="#{image_path("emoji/#{emoji.image_filename}")}"
@@ -23,11 +25,10 @@ module Shipit
                 height="20"
               />
             )
-          else
-            match
-          end
-        end.html_safe
-      end
+        else
+          match
+        end
+      end.html_safe
     end
 
     def include_plugins(stack)

@@ -8,7 +8,7 @@ module Shipit
 
     validates(
       *DAYS.map { |day| "#{day}_enabled" },
-      inclusion: [true, false],
+      inclusion: [true, false]
     )
 
     validates(
@@ -51,7 +51,7 @@ module Shipit
           date.month,
           date.day,
           raw_time.hour,
-          raw_time.min,
+          raw_time.min
         )
       end
 
@@ -61,7 +61,7 @@ module Shipit
         # that a window configured to end at 17:59 actually ends at 17:59:59
         # instead of 17:59:00.
         ends_at.at_end_of_minute,
-        enabled,
+        enabled
       )
     end
 

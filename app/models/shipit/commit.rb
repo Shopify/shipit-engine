@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class Commit < Record
     include DeferredTouch
@@ -21,7 +22,7 @@ module Shipit
     after_create { stack.update_undeployed_commits_count }
 
     after_commit :schedule_refresh_statuses!, :schedule_refresh_check_runs!, :schedule_fetch_stats!,
-      :schedule_continuous_delivery, on: :create
+                 :schedule_continuous_delivery, on: :create
 
     belongs_to :author, class_name: 'User', optional: true, inverse_of: :authored_commits
     belongs_to :committer, class_name: 'User', optional: true, inverse_of: :commits
@@ -54,25 +55,29 @@ module Shipit
     scope :reachable, -> { where(detached: false) }
 
     delegate :broadcast_update, :github_repo_name, :hidden_statuses, :required_statuses, :blocking_statuses,
-      :soft_failing_statuses, to: :stack
+             :soft_failing_statuses, to: :stack
 
     def self.newer_than(commit)
       return all unless commit
+
       where('id > ?', commit.try(:id) || commit)
     end
 
     def self.older_than(commit)
       return all unless commit
+
       where('id < ?', commit.try(:id) || commit)
     end
 
     def self.since(commit)
       return all unless commit
+
       where('id >= ?', commit.try(:id) || commit)
     end
 
     def self.until(commit)
       return all unless commit
+
       where('id <= ?', commit.try(:id) || commit)
     end
 
@@ -85,12 +90,11 @@ module Shipit
     end
 
     def self.by_sha(sha)
-      if sha.to_s.size < 6
-        raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (too short)"
-      end
+      raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (too short)" if sha.to_s.size < 6
 
       commits = where('sha like ?', "#{sha}%").take(2)
       raise AmbiguousRevision, "Short SHA1 #{sha} is ambiguous (matches multiple commits)" if commits.size > 1
+
       commits.first
     end
 
@@ -107,26 +111,22 @@ module Shipit
       record = new(
         sha: commit.sha,
         message: commit.commit.message,
-        author:  author,
-        committer: committer,
+        author:,
+        committer:,
         committed_at: commit.commit.committer.date,
         authored_at: commit.commit.author.date,
         additions: commit.stats&.additions,
-        deletions: commit.stats&.deletions,
+        deletions: commit.stats&.deletions
       )
 
-      if record.pull_request?
-        record.pull_request_head_sha = commit.parents.last.sha
-      end
+      record.pull_request_head_sha = commit.parents.last.sha if record.pull_request?
 
       record
     end
 
     def message=(message)
       limit = self.class.columns_hash['message'].limit
-      if limit && message && message.bytesize > limit
-        message = message.truncate_bytes(limit)
-      end
+      message = message.truncate_bytes(limit) if limit && message && message.bytesize > limit
       super(message)
     end
 
@@ -206,11 +206,11 @@ module Shipit
 
       @last_release_status = nil
       release_statuses.create!(
-        stack: stack,
-        user: user,
-        state: state,
-        target_url: target_url,
-        description: description,
+        stack:,
+        user:,
+        state:,
+        target_url:,
+        description:
       )
     end
 
@@ -239,7 +239,7 @@ module Shipit
     end
 
     def children
-      self.class.where(stack_id: stack_id).newer_than(self)
+      self.class.where(stack_id:).newer_than(self)
     end
 
     def detach_children!
@@ -282,6 +282,7 @@ module Shipit
 
     def schedule_continuous_delivery
       return unless deployable? && stack.continuous_deployment? && stack.deployable?
+
       # This buffer is to allow for statuses and checks to be refreshed before evaluating if the commit is deployable
       # - e.g. if the commit was fast-forwarded with already passing CI.
       ContinuousDeliveryJob.set(wait: RECENT_COMMIT_THRESHOLD).perform_later(stack)
@@ -298,7 +299,7 @@ module Shipit
     def fetch_stats!
       update!(
         additions: github_commit.stats&.additions,
-        deletions: github_commit.stats&.deletions,
+        deletions: github_commit.stats&.deletions
       )
     end
 
@@ -316,6 +317,7 @@ module Shipit
 
     def identify_merge_request
       return unless message_parser.pull_request?
+
       if merge_request = stack.merge_requests.find_by(number: message_parser.pull_request_number)
         self.merge_request = merge_request
         self.pull_request_number = merge_request.number
@@ -338,14 +340,14 @@ module Shipit
     def lock(user)
       update!(
         locked: true,
-        lock_author_id: user.id,
+        lock_author_id: user.id
       )
     end
 
     def self.lock_all(user)
       update_all(
         locked: true,
-        lock_author_id: user.id,
+        lock_author_id: user.id
       )
     end
 
@@ -372,19 +374,15 @@ module Shipit
       new_status = status
 
       unless already_deployed
-        payload = { commit: self, stack: stack, status: new_status.state }
-        if previous_status != new_status
-          Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status))
-        end
+        payload = { commit: self, stack:, status: new_status.state }
+        Hook.emit(:commit_status, stack, payload.merge(commit_status: new_status)) if previous_status != new_status
       end
 
       if previous_status.simple_state != new_status.simple_state
         if !already_deployed && (!new_status.pending? || previous_status.unknown?)
           Hook.emit(:deployable_status, stack, payload.merge(deployable_status: new_status))
         end
-        if new_status.pending? || new_status.success?
-          stack.schedule_merges
-        end
+        stack.schedule_merges if new_status.pending? || new_status.success?
       end
       new_status
     end

@@ -59,12 +59,12 @@ module Shipit
           def stack
             @stack ||=
               Shipit::Webhooks::Handlers::PullRequest::ReviewStackAdapter
-                .new(params, scope: repository.review_stacks)
+              .new(params, scope: repository.review_stacks)
           end
 
           def repository
             @repository ||= Shipit::Repository.from_github_repo_name(params.repository.full_name) ||
-              Shipit::NullRepository.new
+                            Shipit::NullRepository.new
           end
 
           def pull_request

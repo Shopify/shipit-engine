@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   module GithubUrlHelper
     private
@@ -44,10 +45,10 @@ module Shipit
     def github_pull_request_url(pull_request_or_commit)
       stack = pull_request_or_commit.stack
       number = if pull_request_or_commit.respond_to?(:pull_request_number)
-        pull_request_or_commit.pull_request_number
-      else
-        pull_request_or_commit.number
-      end
+                 pull_request_or_commit.pull_request_number
+               else
+                 pull_request_or_commit.number
+               end
       github_repo_url(stack.repo_owner, stack.repo_name, 'pull', number)
     end
 

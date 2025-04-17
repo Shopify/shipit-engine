@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -50,7 +51,7 @@ module Shipit
         description: 'This is a description',
         context: 'default',
         target_url: 'http://example.com',
-        created_at: 1.day.ago.to_time,
+        created_at: 1.day.ago.to_time
       )
     end
 

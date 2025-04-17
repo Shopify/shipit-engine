@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -49,7 +50,7 @@ module Shipit
 
       test "#create adds a new hook" do
         assert_difference -> { Hook.count }, 1 do
-          post :create, params: { delivery_url: 'https://example.com/hook', events: %w(deploy rollback) }
+          post :create, params: { delivery_url: 'https://example.com/hook', events: %w[deploy rollback] }
         end
         hook = Hook.last
         assert_json 'delivery_url', 'https://example.com/hook'
@@ -60,14 +61,14 @@ module Shipit
       test "#create do not allow to set protected attributes" do
         post :create, params: {
           delivery_url: 'https://example.com/hook',
-          events: %w(deploy rollback),
-          created_at: 2.months.ago.to_formatted_s(:db),
+          events: %w[deploy rollback],
+          created_at: 2.months.ago.to_formatted_s(:db)
         }
         assert_operator Hook.last.created_at, :>, 2.seconds.ago
       end
 
       test "#create returns validation errors" do
-        post :create, params: { delivery_url: '../etc/passwd', events: %w(deploy) }
+        post :create, params: { delivery_url: '../etc/passwd', events: %w[deploy] }
         assert_response :unprocessable_entity
         assert_json 'errors', 'delivery_url' => ['is not a valid URL']
       end

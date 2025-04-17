@@ -20,8 +20,8 @@ module Shipit
 
     def queued_stacks
       @queued_stacks ||= Shipit::ReviewStack
-        .with_provision_status(:deprovisioned)
-        .where(awaiting_provision: true)
+                         .with_provision_status(:deprovisioned)
+                         .where(awaiting_provision: true)
     end
 
     private

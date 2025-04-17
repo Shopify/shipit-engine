@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
   class DeploysControllerTest < ActionController::TestCase
     setup do
-      Deploy.where(status: %w(running pending)).update_all(status: 'success')
+      Deploy.where(status: %w[running pending]).update_all(status: 'success')
       @stack = shipit_stacks(:shipit)
       @deploy = shipit_deploys(:shipit)
       @commit = shipit_commits(:second)
@@ -63,7 +64,7 @@ module Shipit
 
     test ":create can receive an :env hash" do
       env = { 'SAFETY_DISABLED' => '1' }
-      post :create, params: { stack_id: @stack.to_param, deploy: { until_commit_id: @commit.id, env: env } }
+      post :create, params: { stack_id: @stack.to_param, deploy: { until_commit_id: @commit.id, env: } }
       new_deploy = Deploy.last
       assert_equal env, new_deploy.env
     end

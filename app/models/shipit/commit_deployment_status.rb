@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class CommitDeploymentStatus < Record
     DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB = 140
@@ -11,10 +12,12 @@ module Shipit
 
     def create_on_github!
       return if github_id?
+
       response = begin
         create_status_on_github(stack.github_api)
       rescue Octokit::ClientError
         raise if Shipit.github(organization: stack.repository.owner).api == stack.github_api
+
         # If the deploy author didn't gave us the permission to create the deployment we falback the the main shipit
         # user.
         #
@@ -30,7 +33,7 @@ module Shipit
         "deployment_description.#{task_type}.#{status}",
         sha: task.until_commit.short_sha,
         author: task.author.login,
-        stack: stack.to_param,
+        stack: stack.to_param
       )
     end
 
@@ -50,7 +53,7 @@ module Shipit
         status,
         target_url: url_helpers.stack_deploy_url(stack, task),
         description: description.truncate(DESCRIPTION_CHARACTER_LIMIT_ON_GITHUB),
-        environment_url: stack.deploy_url,
+        environment_url: stack.deploy_url
       )
     end
 

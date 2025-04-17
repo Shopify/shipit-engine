@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module QueriesHelper
   def assert_no_queries(ignored_sql = nil, &block)
     assert_queries(0, ignored_sql, &block)
@@ -31,15 +32,14 @@ module QueriesHelper
       /^BEGIN/,
       /^COMMIT/,
       /^SHOW FULL FIELDS/,
-      /^SHOW TABLES LIKE/,
+      /^SHOW TABLES LIKE/
     ]
 
     # FIXME: this needs to be refactored so specific database can add their own
     # ignored SQL.  This ignored SQL is for Oracle.
     ignored_sql.concat([/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im])
 
-    attr_reader :ignore
-    attr_reader :log
+    attr_reader :ignore, :log
 
     def initialize(ignore = nil)
       @ignore = ignore || self.class.ignored_sql
@@ -52,6 +52,7 @@ module QueriesHelper
       # FIXME: this seems bad. we should probably have a better way to indicate
       # the query was cached
       return if values[:name] == 'CACHE' || ignore.any? { |x| x =~ sql }
+
       log << sql
     end
   end

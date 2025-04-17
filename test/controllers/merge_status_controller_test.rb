@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -38,14 +39,14 @@ module Shipit
     test "GET show prefers stacks with merge_queue_enabled" do
       existing = shipit_stacks(:shipit)
       Shipit::Stack.where(
-        repository: existing.repository,
+        repository: existing.repository
       ).update_all(merge_queue_enabled: false)
 
       Shipit::Stack.create(
         repository: existing.repository,
         environment: 'foo',
         branch: existing.branch,
-        merge_queue_enabled: true,
+        merge_queue_enabled: true
       )
 
       get :show, params: { referrer: 'https://github.com/Shopify/shipit-engine/pull/42', branch: 'master' }
@@ -56,7 +57,7 @@ module Shipit
     test "GET show prefers locked stacks above all else" do
       existing = shipit_stacks(:shipit)
       Shipit::Stack.where(
-        repository: existing.repository,
+        repository: existing.repository
       ).update_all(lock_reason: 'testing', merge_queue_enabled: false, locked_since: Time.now.utc)
 
       # Shipit would otherwise prefer this, because it has the merge queue enabled
@@ -64,7 +65,7 @@ module Shipit
         repository: existing.repository,
         environment: 'foo',
         branch: existing.branch,
-        merge_queue_enabled: true,
+        merge_queue_enabled: true
       )
 
       get :show, params: { referrer: 'https://github.com/Shopify/shipit-engine/pull/42', branch: 'master' }

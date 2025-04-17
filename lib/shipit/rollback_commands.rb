@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class RollbackCommands < DeployCommands
     def steps
@@ -7,7 +8,7 @@ module Shipit
 
     def env
       super.merge(
-        'ROLLBACK' => '1',
+        'ROLLBACK' => '1'
       )
     end
   end

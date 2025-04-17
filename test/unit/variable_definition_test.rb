@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -7,9 +8,9 @@ module Shipit
       @attributes = {
         "name" => "Variable name",
         "title" => "Variable title",
-        "default" => "Variable default",
+        "default" => "Variable default"
       }
-      @select = %w(var1 var2 var3)
+      @select = %w[var1 var2 var3]
     end
 
     test "#initialize sets up the expected values" do
@@ -53,7 +54,7 @@ module Shipit
     test "#default_provided?" do
       attributes = {
         "name" => "Variable name",
-        "title" => "Variable title",
+        "title" => "Variable title"
       }
       subject = Shipit::VariableDefinition.new(attributes)
       refute subject.default_provided?

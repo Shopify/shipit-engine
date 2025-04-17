@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 module Shipit
@@ -6,7 +7,7 @@ module Shipit
     def setup
       variable_defs = [
         { "name" => "FOO", "title" => "Set to 0 to foo", "default" => 1 },
-        { "name" => "BAR", "title" => "Set to 1 to bar", "default" => 0 },
+        { "name" => "BAR", "title" => "Set to 1 to bar", "default" => 0 }
       ]
       @variable_definitions = variable_defs.map(&VariableDefinition.method(:new))
     end

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
+
 ENV["RAILS_ENV"] ||= "test"
 
-if Warning.respond_to?(:[]=)
-  Warning[:deprecated] = true
-end
+Warning[:deprecated] = true if Warning.respond_to?(:[]=)
 
 require 'simplecov'
 SimpleCov.start('rails') do
@@ -12,10 +11,10 @@ end
 
 require 'webmock/minitest'
 
-require File.expand_path('../../test/dummy/config/environment.rb', __FILE__)
+require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 ActiveRecord::Migrator.migrations_paths = [
-  File.expand_path('../../test/dummy/db/migrate', __FILE__),
-  File.expand_path('../../db/migrate', __FILE__),
+  File.expand_path('../test/dummy/db/migrate', __dir__),
+  File.expand_path('../db/migrate', __dir__)
 ]
 require 'rails/test_help'
 require 'mocha/minitest'
@@ -23,11 +22,11 @@ require 'spy/integration'
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
-  ActiveSupport::TestCase.fixture_paths << File.expand_path("../fixtures", __FILE__)
+  ActiveSupport::TestCase.fixture_paths << File.expand_path('fixtures', __dir__)
   ActiveSupport::TestCase.fixtures(:all)
 end
 
-Dir[File.expand_path('../helpers/**/*.rb', __FILE__)].each do |helper|
+Dir[File.expand_path('helpers/**/*.rb', __dir__)].each do |helper|
   require helper
 end
 
@@ -66,14 +65,15 @@ module ActiveSupport
     teardown do
       Shipit.redis.flushdb
       Shipit.instance_variable_names.each do |name|
-        next if %w(@mocha @redis).include?(name)
+        next if %w[@mocha @redis].include?(name)
+
         Shipit.remove_instance_variable(name)
       end
     end
 
     ActiveRecord::Migration.check_all_pending!
 
-    fixture_paths << File.expand_path("../fixtures", __FILE__)
+    fixture_paths << File.expand_path('fixtures', __dir__)
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     #

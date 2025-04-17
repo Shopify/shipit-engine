@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     module BundlerDiscovery
-      DEFAULT_BUNDLER_WITHOUT = %w(default production development test staging benchmark debug).freeze
+      DEFAULT_BUNDLER_WITHOUT = %w[default production development test staging benchmark debug].freeze
 
       def discover_dependencies_steps
         discover_bundler || super
@@ -43,6 +44,7 @@ module Shipit
       def frozen_flag
         return unless gemfile_lock_exists?
         return if config('dependencies', 'bundler', 'frozen') == false
+
         '--frozen'
       end
 

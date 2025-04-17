@@ -2,7 +2,7 @@
 
 module Shipit
   class RepositoriesController < ShipitController
-    before_action :load_repository, only: %i(destroy settings update new_stack)
+    before_action :load_repository, only: %i[destroy settings update new_stack]
 
     def index
       @user_repositories = current_user.repositories_contributed_to
@@ -21,9 +21,7 @@ module Shipit
 
     def create
       @repository = Repository.new(create_params)
-      unless @repository.save
-        flash[:warning] = @repository.errors.full_messages.to_sentence
-      end
+      flash[:warning] = @repository.errors.full_messages.to_sentence unless @repository.save
       respond_with(@repository)
     end
 
@@ -45,8 +43,7 @@ module Shipit
       redirect_to(params[:return_to].presence || repository_settings_path(@repository), options)
     end
 
-    def settings
-    end
+    def settings; end
 
     def new_stack
       @stack = @repository.stacks.new
@@ -63,7 +60,7 @@ module Shipit
       params.require(:repository).permit(
         :review_stacks_enabled,
         :provisioning_behavior,
-        :provisioning_label_name,
+        :provisioning_label_name
       )
     end
 

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 namespace :dev do
   desc "Appends chunks to the last deploy, or specify with DEPLOY=id"
   task stream: :environment do
     require 'faker'
-    logger = Logger.new(STDOUT)
+    logger = Logger.new($stdout)
 
     deploy = Shipit::Deploy.find(ENV['DEPLOY']) if ENV['DEPLOY']
     deploy ||= Deploy.last
@@ -25,7 +26,7 @@ namespace :dev do
 
       logger.error(sentence)
 
-      deploy.chunks.create(text: sentence + "\n")
+      deploy.chunks.create(text: "#{sentence}\n")
       sleep 1
     end
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DeploySpec
     module PypiDiscovery
@@ -15,10 +16,10 @@ module Shipit
       end
 
       def discover_pypi_checklist
-        if egg?
-          [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
+        return unless egg?
+
+        [%(<strong>Don't forget to add a tag before deploying!</strong> You can do this with:
             git tag -a -m "Version <strong>x.y.z</strong>" v<strong>x.y.z</strong> && git push --tags)]
-        end
       end
 
       def egg?
@@ -33,7 +34,7 @@ module Shipit
         [
           "assert-egg-version-tag #{setup_dot_py}",
           'python setup.py register sdist',
-          'twine upload dist/*',
+          'twine upload dist/*'
         ]
       end
     end

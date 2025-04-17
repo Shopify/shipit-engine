@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Shipit
   class DestroyRepositoryJob < BackgroundJob
     queue_as :default

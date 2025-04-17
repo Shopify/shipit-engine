@@ -21,16 +21,16 @@ module Shipit
         perform_task
         @task.write("\nCompleted successfully\n")
         @task.report_complete!
-      rescue Command::TimedOut => error
-        @task.write("\n#{error.message}\n")
-        @task.report_timeout!(error)
-      rescue Command::Error => error
-        @task.write("\n#{error.message}\n")
-        @task.report_failure!(error)
-      rescue StandardError => error
-        @task.report_error!(error)
-      rescue Exception => error
-        @task.report_error!(error)
+      rescue Command::TimedOut => e
+        @task.write("\n#{e.message}\n")
+        @task.report_timeout!(e)
+      rescue Command::Error => e
+        @task.write("\n#{e.message}\n")
+        @task.report_failure!(e)
+      rescue StandardError => e
+        @task.report_error!(e)
+      rescue Exception => e
+        @task.report_error!(e)
         raise
       end
 
@@ -42,8 +42,8 @@ module Shipit
         else
           @task.write("Can't abort, no recorded pid, WTF?\n")
         end
-      rescue SystemCallError => error
-        @task.write("kill: (#{pid}) - #{error.message}\n")
+      rescue SystemCallError => e
+        @task.write("kill: (#{pid}) - #{e.message}\n")
       end
 
       def check_for_abort
