@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"] - Dir["test/dummy/tmp/**/*"] - Dir["test/dummy/log/**/*"]
 
-  s.required_ruby_version = '>= 3.1.0'
+  s.required_ruby_version = '>= 3.2.0'
 
   s.add_dependency('active_model_serializers', '~> 0.9.3')
   s.add_dependency('ansi_stream', '~> 0.0.6')
@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency('omniauth-github', '~> 1.4')
   s.add_dependency('paquito')
   s.add_dependency('pubsubstub', '~> 0.2.0')
-  s.add_dependency('rails', '~> 7.2.1')
+  s.add_dependency('rails', '~> 8.0.1')
   s.add_dependency('rails_autolink', '~> 1.1.6')
   s.add_dependency('rails-timeago', '~> 2.13.0')
   s.add_dependency('rake')

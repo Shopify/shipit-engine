@@ -1,7 +1,10 @@
 # Unreleased
 
 * Pass `Shipit::Stack` to `DeploySpec::FileSystem.new` and make it accessible through an accessor. (#1356)
-* Upgrade Rubocop to 1.48.0
+* Upgraded Rubocop to 1.48.0
+* Upgraded to Rails 8.0.1
+* Upgraded to Sqlite3 2.6.0
+* Minimum Ruby version is now Ruby 3.2
 
 # 0.39.0
 
