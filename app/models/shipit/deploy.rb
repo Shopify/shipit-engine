@@ -117,7 +117,7 @@ module Shipit
     end
 
     # Rolls the stack back to the most recent **previous** successful deploy
-    def trigger_revert(force: false, rollback_to: nil)
+    def trigger_revert(force: false, rollback_to: nil, env: nil)
       previous_successful_commit = rollback_to&.until_commit || commit_to_rollback_to
 
       rollback = Rollback.create!(
@@ -126,6 +126,7 @@ module Shipit
         parent_id: id,
         since_commit: until_commit,
         until_commit: previous_successful_commit,
+        env: env || self.env,
         allow_concurrency: force
       )
 
@@ -301,7 +302,11 @@ module Shipit
       return unless rollback_once_aborted?
       return unless supports_rollback?
 
-      trigger_revert(rollback_to: rollback_once_aborted_to)
+      if rollback_once_aborted_to
+        rollback_once_aborted_to.trigger_rollback(aborted_by, env: env, force: true)
+      else
+        trigger_revert(force: true, env: env)
+      end
     end
 
     def default_since_commit_id

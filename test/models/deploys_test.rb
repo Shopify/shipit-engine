@@ -437,6 +437,7 @@ module Shipit
       @deploy = shipit_deploys(:shipit_running)
       @deploy.ping
       @deploy.pid = 42
+      @deploy.env = { 'CUSTOM_VAR' => 'value' }
       @deploy.abort!(rollback_once_aborted: true, aborted_by: @user)
 
       assert_difference -> { @stack.rollbacks.count }, 1 do
@@ -444,6 +445,9 @@ module Shipit
           @deploy.aborted!
         end
       end
+
+      rollback = @stack.rollbacks.last
+      assert_equal({ 'CUSTOM_VAR' => 'value' }, rollback.env)
     end
 
     test "transitioning to aborted schedule a rollback to the designated deploy if set" do
@@ -451,6 +455,7 @@ module Shipit
       @deploy = shipit_deploys(:shipit_running)
       @deploy.ping
       @deploy.pid = 42
+      @deploy.env = { 'CUSTOM_VAR' => 'value' }
       @deploy.abort!(rollback_once_aborted: true, rollback_once_aborted_to: @rollback_to, aborted_by: @user)
 
       assert_difference -> { @stack.rollbacks.count }, 1 do
@@ -458,6 +463,9 @@ module Shipit
           @deploy.aborted!
         end
       end
+
+      rollback = @stack.rollbacks.last
+      assert_equal({ 'CUSTOM_VAR' => 'value' }, rollback.env)
     end
 
     test "transitioning to aborted locks the stack if a rollback is scheduled" do
