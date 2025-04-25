@@ -303,9 +303,9 @@ module Shipit
       return unless supports_rollback?
 
       if rollback_once_aborted_to
-        rollback_once_aborted_to.trigger_rollback(aborted_by, env: env, force: true)
+        rollback_once_aborted_to.trigger_rollback(aborted_by, env:, force: true)
       else
-        trigger_revert(force: true, env: env)
+        trigger_revert(force: true, env:)
       end
     end
 
