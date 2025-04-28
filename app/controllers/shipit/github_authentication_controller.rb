@@ -12,6 +12,11 @@ module Shipit
 
       session[:user_id] = sign_in_github(auth)
 
+      # We need to set this so that the /events and /sidekiq endpoint
+      # which leverage `UserRequiredMiddleware` will recognize the user
+      # is authenticated.
+      session[:authenticated] = true
+
       redirect_to(return_url)
     end
 
