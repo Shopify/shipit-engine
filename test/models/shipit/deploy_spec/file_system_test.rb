@@ -68,7 +68,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit_1.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns(Pathname.new("#{Dir.tmpdir}/shipit_1.yml")).at_least_once
         deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_inherit_from_yaml), SafeYAML.load(deploy_spec_yaml)).at_least_once
         Pathname.any_instance.stubs(:exist?).returns(true)
         loaded_config = deploy_spec.send(:load_config)
@@ -83,7 +83,7 @@ module Shipit
         Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
         stack = shipit_stacks(:shipit)
         deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
-        deploy_spec.expects(:config_file_path).returns(Pathname.new(Dir.tmpdir) + '/shipit_1.yml').at_least_once
+        deploy_spec.expects(:config_file_path).returns(Pathname.new("#{Dir.tmpdir}/shipit_1.yml")).at_least_once
         deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_inherit_from_yaml)).at_least_once
         Pathname.any_instance.stubs(:exist?).returns(false)
         loaded_config = deploy_spec.send(:load_config)
