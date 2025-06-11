@@ -9,12 +9,14 @@ up:
     - sqlite
   - ruby
   - isogun
+  - nginx
+  - redis
+  - mysql
   - bundler:
       without: ci
 
 server:
   root: test/dummy
-  port: 55330
 
 commands:
   bootstrap: bin/bootstrap shopify

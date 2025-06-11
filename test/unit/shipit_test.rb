@@ -43,7 +43,7 @@ module Shipit
       test ".redis should build a new redis client" do
         Redis.expects(:new).with(
           has_entries(
-            url: "redis://127.0.0.1:6379/7",
+            url: Shipit.redis_url.to_s,
             reconnect_attempts: 3,
             reconnect_delay: 0.5,
             reconnect_delay_max: 1
