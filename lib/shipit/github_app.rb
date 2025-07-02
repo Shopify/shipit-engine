@@ -2,8 +2,6 @@
 
 module Shipit
   class GitHubApp
-    include Mutex_m
-
     class Token
       class << self
         def from_github(github_response)
@@ -45,6 +43,7 @@ module Shipit
 
     def initialize(organization, config)
       super()
+      @mutex = Mutex.new
       @organization = organization
       @config = (config || {}).with_indifferent_access
       @domain = @config[:domain] || DOMAIN
@@ -87,7 +86,7 @@ module Shipit
       return 't0kEn' if Rails.env.test? # TODO: figure out something cleaner
       return unless private_key && app_id && installation_id
 
-      @token = @token.presence || synchronize { @token.presence || fetch_new_token }
+      @token = @token.presence || @mutex.synchronize { @token.presence || fetch_new_token }
       @token.to_s
     end
 
