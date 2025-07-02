@@ -21,7 +21,8 @@ module Shipit
     test "the lock key is serialized" do
       task = shipit_tasks(:shipit_restart)
       job = ChunkRollupJob.new(task)
-      key = %(Shipit::ChunkRollupJob-{"_aj_globalid"=>"gid://shipit/Shipit::Task/#{task.id}"})
+      args = { "_aj_globalid" => "gid://shipit/Shipit::Task/#{task.id}" }
+      key = %(Shipit::ChunkRollupJob-#{args})
       assert_equal key, job.lock_key(*job.arguments)
     end
   end

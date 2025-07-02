@@ -108,6 +108,7 @@ jobs:
         ruby_version:
           - '3.2'
           - '3.3'
+          - '3.4'
 
     services:
       redis:
