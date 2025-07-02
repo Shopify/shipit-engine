@@ -15,7 +15,7 @@ PATH
       octokit (~> 5.6.0)
       omniauth-github (~> 1.4)
       paquito
-      pubsubstub (~> 0.2.0)
+      pubsubstub (~> 0.2)
       rails (~> 8.0.1)
       rails-timeago (~> 2.13.0)
       rails_autolink (~> 1.1.6)
@@ -213,6 +213,7 @@ GEM
     marcel (1.0.4)
     method_source (1.0.0)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (5.25.1)
     mocha (2.4.5)
       ruby2_keywords (>= 0.0.5)
@@ -230,6 +231,9 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.3)
+    nokogiri (1.16.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.16.7-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.7-x86_64-linux)
@@ -267,11 +271,12 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (4.0.6)
-    pubsubstub (0.2.2)
+    pubsubstub (0.3.1)
+      logger
       rack
       redis (~> 4.0)
     racc (1.8.1)
-    rack (2.2.10)
+    rack (2.2.17)
     rack-session (1.0.2)
       rack (< 3)
     rack-test (2.1.0)
@@ -436,4 +441,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.4.18
+   2.6.7
