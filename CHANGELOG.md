@@ -1,8 +1,12 @@
 # Unreleased
 
+# 0.40.0
+
+* Allow `shipit.yml` inheritance. (#1393)
+* Forward deploy custom env variable when rolling back.
 * Pass `Shipit::Stack` to `DeploySpec::FileSystem.new` and make it accessible through an accessor. (#1356)
 * Upgraded Rubocop to 1.48.0
-* Upgraded to Rails 8.0.1
+* Upgraded to Rails 8.0
 * Upgraded to Sqlite3 2.6.0
 * Minimum Ruby version is now Ruby 3.2
 
