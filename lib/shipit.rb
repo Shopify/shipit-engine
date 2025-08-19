@@ -102,15 +102,26 @@ module Shipit
   def redis
     @redis ||= Redis.new(
       url: redis_url.to_s.presence,
+      ssl: redis_ssl_params,
       logger: Rails.logger,
       reconnect_attempts: 3,
       reconnect_delay: 0.5,
-      reconnect_delay_max: 1
+      reconnect_delay_max: 1,
     )
   end
 
   def redis=(client)
     @redis ||= client
+  end
+
+  def redis_ssl_params
+    if(ENV['REDIS_SSL_VERIFY'] == 'false')
+      {
+        verify_mode: OpenSSL::SSL::VERIFY_NONE
+      }
+    else
+      {}
+    end
   end
 
   module SafeJSON
