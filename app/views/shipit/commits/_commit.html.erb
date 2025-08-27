@@ -4,7 +4,7 @@
       <%= render 'shipit/shared/author', author: commit.author %>
     <% end %>
 
-    <%= render commit.status %>
+    <%= render 'shipit/statuses/status', status: commit.status %>
     <div class="commit-details">
       <span class="commit-title"><%= render_commit_message_with_link commit %></span>
       <p class="commit-meta">
