@@ -1,9 +1,5 @@
 # Unreleased
 
-# 0.40.1
-
-* Suppress ActionView warnings (#1414)
-
 # 0.40.0
 
 * Allow `shipit.yml` inheritance. (#1393)
