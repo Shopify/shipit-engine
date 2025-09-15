@@ -754,12 +754,12 @@ module Shipit
         def try_lock
           @stack.update!(lock_reason: "Upstream lock!")
         end
-        refute @stack.locked?
-
-        LockProvider::Config.configure { |c| c.provider = LockedProvider.new }
-        assert @stack.locked?
-        assert_equal "Upstream lock!", @stack.lock_reason
       end
+
+      refute @stack.locked?
+      LockProvider::Config.configure { |c| c.provider = LockedProvider.new }
+      assert @stack.locked?
+      assert_equal "Upstream lock!", @stack.lock_reason
     end
 
     test "#lock sets reason and user" do
