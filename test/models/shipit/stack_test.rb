@@ -757,7 +757,7 @@ module Shipit
       end
 
       refute @stack.locked?
-      LockProvider::Config.configure { |c| c.provider = LockedProvider.new }
+      LockProviders::Config.configure { |c| c.provider = LockedProvider.new }
       assert @stack.locked?
       assert_equal "Upstream lock!", @stack.lock_reason
     end
