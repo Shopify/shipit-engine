@@ -15,7 +15,7 @@ module Shipit
         end
 
         def config
-          @config ||= new(provider: NullProvider)
+          @config ||= new(provider: NullProvider.new)
         end
       end
 

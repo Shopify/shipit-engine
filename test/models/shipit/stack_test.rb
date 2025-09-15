@@ -749,6 +749,19 @@ module Shipit
       assert_equal expected, @stack.locked_since
     end
 
+    test "#locked? updates lock if LockProvider finds lock" do
+      class LockedProvider < LockProviders::Provider
+        def try_lock
+          @stack.update!(lock_reason: "Upstream lock!")
+        end
+        refute @stack.locked?
+
+        LockProvider::Config.configure { |c| c.provider = LockedProvider.new }
+        assert @stack.locked?
+        assert_equal "Upstream lock!", @stack.lock_reason
+      end
+    end
+
     test "#lock sets reason and user" do
       reason = "Here comes the walrus"
       user = shipit_users(:walrus)
