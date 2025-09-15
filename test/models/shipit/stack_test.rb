@@ -752,14 +752,14 @@ module Shipit
     test "#locked? updates lock if LockProvider finds lock" do
       class LockedProvider < LockProviders::Provider
         def try_lock
-          Stack.update_all!(lock_reason: "Upstream lock!")
+          Stack.find_each { |s| s.update(lock_reason: "test lock") }
         end
       end
 
       refute @stack.reload.locked?
       LockProviders::Config.configure { |c| c.provider = LockedProvider.new }
       assert @stack.locked?
-      assert_equal "Upstream lock!", @stack.lock_reason
+      assert_equal "test lock", @stack.lock_reason
     end
 
     test "#lock sets reason and user" do
