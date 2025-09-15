@@ -469,7 +469,7 @@ module Shipit
     end
 
     def locked?
-      LockProvider.new.try_lock
+      LockProviders::Config.provider.try_lock
 
       lock_reason.present?
     end
