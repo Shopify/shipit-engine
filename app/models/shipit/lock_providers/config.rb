@@ -7,6 +7,8 @@ module Shipit
       attr_accessor :provider
 
       class << self
+        delegate :provider, to: :config
+
         def configure
           yield config
           config
