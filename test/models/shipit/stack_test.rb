@@ -764,6 +764,8 @@ module Shipit
       LockProviders::Config.configure { |c| c.provider = LockedProvider.new(@stack) }
       assert @stack.locked?
       assert_equal "test lock", @stack.lock_reason
+    ensure
+      LockProviders::Config.configure { |c| c.provider = LockProvides::NullProvider.new }
     end
 
     test "#lock sets reason and user" do
