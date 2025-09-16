@@ -760,7 +760,7 @@ module Shipit
         end
       end
 
-      refute @stack.reload.locked?
+      refute @stack.locked?
       LockProviders::Config.configure { |c| c.provider = LockedProvider.new(@stack) }
       assert @stack.locked?
       assert_equal "test lock", @stack.lock_reason
