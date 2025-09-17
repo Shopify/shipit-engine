@@ -6,12 +6,14 @@ module Shipit
       class PushHandler < Handler
         params do
           requires :ref
+          requires :after
         end
+
         def process
           stacks
             .not_archived
             .where(branch:)
-            .find_each(&:sync_github)
+            .find_each { |stack| stack.sync_github(expected_head_sha: params.after) }
         end
 
         private
