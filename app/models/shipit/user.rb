@@ -28,7 +28,11 @@ module Shipit
     end
 
     def self.find_or_create_committer_from_github_commit(github_commit)
-      find_or_create_from_github(github_commit.committer.presence || github_commit.commit.committer.presence)
+      begin
+        find_or_create_from_github(github_commit.committer.presence || github_commit.commit.committer.presence)
+      rescue Octokit::NotFound
+        find_or_create_from_github(Shipit::AnonymousUser.new)
+      end
     end
 
     def self.find_or_create_author_from_github_commit(github_commit)
