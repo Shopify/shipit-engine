@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.41.0
+
+* Retry GithubSyncJob when expected_head_sha is not found in the github response. (#1417)
+
 # 0.40.1
 
 * Suppress ActionView warnings (#1414)
