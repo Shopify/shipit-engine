@@ -3,6 +3,7 @@
 # 0.41.0
 
 * Display banner with optional/default message when deployment checks are triggered (#1422)
+* Retry GithubSyncJob when expected_head_sha is not found in the github response. (#1417)
 
 # 0.40.1
 
