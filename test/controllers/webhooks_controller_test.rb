@@ -23,9 +23,11 @@ module Shipit
     test ":push with the target branch queues a GithubSyncJob" do
       request.headers['X-Github-Event'] = 'push'
 
-      body = JSON.parse(payload(:push_master)).to_json
-      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
-        post :create, body:, as: :json
+      parsed_body = JSON.parse(payload(:push_master))
+      expected_head_sha = parsed_body["after"]
+
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id, expected_head_sha:]) do
+        post :create, body: parsed_body.to_json, as: :json
       end
     end
 

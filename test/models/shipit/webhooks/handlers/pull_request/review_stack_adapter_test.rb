@@ -26,7 +26,7 @@ module Shipit
               scope: stack.repository.stacks
             )
 
-            assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id]) do
+            assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id, expected_head_sha: nil]) do
               review_stack.unarchive!
             end
           end

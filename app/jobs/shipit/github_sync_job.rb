@@ -7,6 +7,8 @@ module Shipit
     attr_reader :stack
 
     MAX_FETCHED_COMMITS = 25
+    MAX_RETRY_ATTEMPTS = 5
+    RETRY_DELAY = 5.seconds
     queue_as :default
     on_duplicate :drop
 
@@ -15,9 +17,18 @@ module Shipit
 
     def perform(params)
       @stack = Stack.find(params[:stack_id])
+      expected_head_sha = params[:expected_head_sha]
+      retry_count = params[:retry_count] || 0
 
       handle_github_errors do
         new_commits, shared_parent = fetch_missing_commits { stack.github_commits }
+
+        # Retry on Github eventual consistency: webhook indicated new commits but we found none
+        if expected_head_sha && new_commits.empty? && !commit_exists?(expected_head_sha) &&
+           retry_count < MAX_RETRY_ATTEMPTS
+          GithubSyncJob.set(wait: RETRY_DELAY * retry_count).perform_later(params.merge(retry_count: retry_count + 1))
+          return
+        end
 
         stack.transaction do
           shared_parent&.detach_children!
@@ -62,6 +73,10 @@ module Shipit
 
     def lookup_commit(sha)
       stack.commits.find_by(sha:)
+    end
+
+    def commit_exists?(sha)
+      stack.commits.exists?(sha:)
     end
   end
 end

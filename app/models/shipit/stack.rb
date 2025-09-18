@@ -602,8 +602,8 @@ module Shipit
       tasks.where(type: 'Shipit::Deploy').success.order(id: :desc).limit(100).durations
     end
 
-    def sync_github
-      GithubSyncJob.perform_later(stack_id: id)
+    def sync_github(expected_head_sha: nil)
+      GithubSyncJob.perform_later(stack_id: id, expected_head_sha:)
     end
 
     def links

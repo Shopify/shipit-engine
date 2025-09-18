@@ -118,5 +118,50 @@ module Shipit
 
       assert_equal true, @stack.reload.inaccessible_since?
     end
+
+    test "#perform retries when expected_head_sha is not found in the github response" do
+      expected_sha = "abcd1234"
+      Stack.any_instance.expects(:github_commits).returns(@github_commits)
+      @job.expects(:fetch_missing_commits).yields.returns([[], nil])
+      @job.expects(:commit_exists?).with(expected_sha).returns(false)
+
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id, expected_head_sha: expected_sha, retry_count: 1]) do
+        @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha)
+      end
+    end
+
+    test "#perform stops retrying after MAX_RETRY_ATTEMPTS" do
+      expected_sha = "abcd1234"
+      Stack.any_instance.expects(:github_commits).returns(@github_commits)
+      @job.expects(:fetch_missing_commits).yields.returns([[], nil])
+      @job.expects(:commit_exists?).with(expected_sha).returns(false)
+
+      assert_no_enqueued_jobs(only: GithubSyncJob) do
+        @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha, retry_count: GithubSyncJob::MAX_RETRY_ATTEMPTS)
+      end
+    end
+
+    test "#perform processes normally when expected_head_sha exists" do
+      expected_sha = "abcd1234"
+      Stack.any_instance.expects(:github_commits).returns(@github_commits)
+      @job.expects(:fetch_missing_commits).yields.returns([[], nil])
+      @job.expects(:commit_exists?).with(expected_sha).returns(true)
+
+      assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+        @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha)
+      end
+    end
+
+    test "#perform processes normally when new commits are found" do
+      expected_sha = "abcd1234"
+      new_commit = stub(sha: expected_sha)
+      Stack.any_instance.expects(:github_commits).returns(@github_commits)
+      @job.expects(:fetch_missing_commits).yields.returns([[new_commit], nil])
+      @job.expects(:append_commit).with(new_commit).returns(stub(revert?: false))
+
+      assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+        @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha)
+      end
+    end
   end
 end

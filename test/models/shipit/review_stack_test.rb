@@ -70,7 +70,7 @@ module Shipit
         stack.archive!(shipit_users(:codertocat))
       end
 
-      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id]) do
+      assert_enqueued_with(job: GithubSyncJob, args: [stack_id: stack.id, expected_head_sha: nil]) do
         stack.unarchive!
       end
     end
