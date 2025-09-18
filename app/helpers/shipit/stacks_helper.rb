@@ -105,5 +105,13 @@ module Shipit
     def contributor_class(stacks_contributed_to, stack_id)
       stacks_contributed_to.include?(stack_id) ? "contributor" : "not-matching"
     end
+
+    def deployment_checks_message(stack)
+      if !stack.deployment_checks_passed? && Shipit.deployment_checks.respond_to?(:message)
+        Shipit.deployment_checks.message(stack)
+      else
+        "Deploys have been locked by an external system"
+      end
+    end
   end
 end
