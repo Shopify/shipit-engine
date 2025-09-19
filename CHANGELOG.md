@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.41.0
+
+* Display banner with optional/default message when deployment checks are triggered (#1422)
+
 # 0.40.1
 
 * Suppress ActionView warnings (#1414)
