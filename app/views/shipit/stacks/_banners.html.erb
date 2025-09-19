@@ -76,4 +76,15 @@
       </div>
     </div>
   </div>
+<% elsif !stack.deployment_checks_passed? %>
+  <div class="banner banner--orange">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">Stack has been locked by external system!</h2>
+        <p class = "banner__text">
+          <%= simple_format(deployment_checks_message(stack)) %>
+        </p>
+      </div>
+    </div>
+  </div>
 <% end %>
