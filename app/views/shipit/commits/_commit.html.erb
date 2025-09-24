@@ -4,7 +4,11 @@
       <%= render 'shipit/shared/author', author: commit.author %>
     <% end %>
 
-    <%= render 'shipit/statuses/status', status: commit.status %>
+    <% if commit.status.group? %>
+      <%= render 'shipit/statuses/group', group: commit.status %>
+    <% else %>
+      <%= render 'shipit/statuses/status', status: commit.status %>
+    <% end %>
     <div class="commit-details">
       <span class="commit-title"><%= render_commit_message_with_link commit %></span>
       <p class="commit-meta">
