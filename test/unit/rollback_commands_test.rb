@@ -33,5 +33,22 @@ module Shipit
       command = commands.first
       assert_equal '1', command.env['ROLLBACK']
     end
+
+    test "failure_step returns nil if there's no rollback_post step" do
+      @deploy_spec.stubs(:rollback_post).returns(nil)
+      assert_nil @commands.failure_step
+    end
+
+    test "failure_step returns a Command if there's a rollback_post with config to run on_error" do
+      @deploy_spec.stubs(:rollback_post).returns('echo "hello"' => { 'on_error' => true })
+      command = @commands.failure_step
+      assert_instance_of Command, command
+      assert_equal ['echo "hello"'], command.args
+    end
+
+    test "failure_step returns nil if there's a rollback_post without config to run on_error" do
+      @deploy_spec.stubs(:rollback_post).returns('echo "hello"')
+      assert_nil @commands.failure_step
+    end
   end
 end
