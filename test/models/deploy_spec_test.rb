@@ -183,6 +183,16 @@ module Shipit
       end
     end
 
+    test '#deploy_post returns a default value if `deploy.post` is not present' do
+      @spec.stubs(:load_config).returns('deploy' => {})
+      assert_equal [], @spec.deploy_post
+    end
+
+    test '#deploy_post returns `deploy.post` if present' do
+      @spec.stubs(:load_config).returns('deploy' => { 'post' => %w[foo bar baz] })
+      assert_equal %w[foo bar baz], @spec.deploy_post
+    end
+
     test '#retries_on_deploy returns `deploy.retries` if present' do
       @spec.stubs(:load_config).returns('deploy' => { 'retries' => 5 })
       assert_equal 5, @spec.retries_on_deploy
@@ -206,6 +216,16 @@ module Shipit
     test '#retries_on_rollback returns a default value if `rollback.retries` is not present' do
       @spec.stubs(:load_config).returns('rollback' => {})
       assert_nil @spec.retries_on_rollback
+    end
+
+    test '#rollback_post returns a default value if `rollback.post` is not present' do
+      @spec.stubs(:load_config).returns('rollback' => {})
+      assert_equal [], @spec.rollback_post
+    end
+
+    test '#rollback_post returns `rollback.post` if present' do
+      @spec.stubs(:load_config).returns('rollback' => { 'post' => %w[foo bar baz] })
+      assert_equal %w[foo bar baz], @spec.rollback_post
     end
 
     test '#rollback_steps returns `cap $ENVIRONMENT deploy:rollback` if a `Capfile` is present' do
