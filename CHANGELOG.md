@@ -8,6 +8,10 @@
 * Updated README to include sections on post scripts with on_error flag
 * Refactored README to use mostly pure markdown instead of HTML
 
+# 0.41.1
+
+* Fix commit statuses (#1424)
+
 # 0.41.0
 
 * Display banner with optional/default message when deployment checks are triggered (#1422)
