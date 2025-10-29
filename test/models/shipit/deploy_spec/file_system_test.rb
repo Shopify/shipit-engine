@@ -93,6 +93,34 @@ module Shipit
         assert_not loaded_config.include?(Shipit::DeploySpec::FileSystem::SHIPIT_CONFIG_INHERIT_FROM_KEY)
       end
 
+      test '#load_config accurately deserializes deploy variables' do
+        Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
+        stack = shipit_stacks(:shipit)
+        deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.yml").at_least_once
+        deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_with_variables_yaml))
+
+        deploy_vars = deploy_spec.deploy_variables
+        assert_equal 1, deploy_vars.length
+
+        assert_equal 'TEST_VAR', deploy_vars[0].name
+        assert_equal 'deploy_default', deploy_vars[0].default
+      end
+
+      test '#load_config accurately deserializes rollback variables' do
+        Shipit.expects(:respect_bare_shipit_file?).returns(true).at_least_once
+        stack = shipit_stacks(:shipit)
+        deploy_spec = Shipit::DeploySpec::FileSystem.new(Dir.tmpdir, stack)
+        deploy_spec.expects(:config_file_path).returns("#{Pathname.new(Dir.tmpdir)}/shipit.yml").at_least_once
+        deploy_spec.expects(:read_config).returns(SafeYAML.load(deploy_spec_with_variables_yaml))
+
+        rollback_vars = deploy_spec.rollback_variables
+        assert_equal 1, rollback_vars.length
+
+        assert_equal 'TEST_VAR', rollback_vars[0].name
+        assert_equal 'rollhback_default', rollback_vars[0].default
+      end
+
       def deploy_spec_yaml
         <<~EOYAML
           deploy:
@@ -118,6 +146,19 @@ module Shipit
             application: test-application
             runtime_ids:
               - production-unrestricted-1234
+        EOYAML
+      end
+
+      def deploy_spec_with_variables_yaml
+        <<~EOYAML
+          deploy:
+            variables:
+              - name: TEST_VAR
+                default: "deploy_default"
+          rollback:
+            variables:
+              - name: TEST_VAR
+                default: "rollhback_default"
         EOYAML
       end
     end

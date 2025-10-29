@@ -519,7 +519,7 @@ module Shipit
     end
 
     delegate :plugins, :task_definitions, :hidden_statuses, :required_statuses, :soft_failing_statuses,
-             :blocking_statuses, :deploy_variables, :filter_task_envs, :filter_deploy_envs,
+             :blocking_statuses, :deploy_variables, :rollback_variables, :filter_task_envs, :filter_deploy_envs,
              :maximum_commits_per_deploy, :pause_between_deploys, :retries_on_deploy, :retries_on_rollback,
              to: :cached_deploy_spec
 

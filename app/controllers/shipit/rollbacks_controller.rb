@@ -27,7 +27,7 @@ module Shipit
     end
 
     def rollback_params
-      params.require(:rollback).permit(:parent_id, env: @stack.deploy_variables.map(&:name))
+      params.require(:rollback).permit(:parent_id, env: @stack.rollback_variables.map(&:name))
     end
   end
 end

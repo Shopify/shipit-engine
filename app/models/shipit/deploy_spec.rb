@@ -139,6 +139,15 @@ module Shipit
       rollback_steps || cant_detect!(:rollback)
     end
 
+    def rollback_variables
+      if config('rollback', 'variables').present?
+        Array.wrap(config('rollback', 'variables')).map(&VariableDefinition.method(:new))
+      else
+        # For backwards compatibility, fallback to using deploy_variables if no explicit rollback variables are set
+        deploy_variables
+      end
+    end
+
     def retries_on_rollback
       config('rollback', 'retries') { nil }
     end
@@ -164,6 +173,10 @@ module Shipit
 
     def filter_deploy_envs(env)
       EnvironmentVariables.with(env).permit(deploy_variables)
+    end
+
+    def filter_rollback_envs(env)
+      EnvironmentVariables.with(env).permit(rollback_variables)
     end
 
     def review_checklist

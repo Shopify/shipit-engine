@@ -243,6 +243,31 @@ module Shipit
       assert_equal ["kubernetes-deploy --max-watch-seconds 900 foo bar"], @spec.rollback_steps
     end
 
+    test "#rollback_variables returns an empty array by default" do
+      assert_equal [], @spec.deploy_variables
+    end
+
+    test "#rollback_variables returns an array of VariableDefinition instances" do
+      @spec.stubs(:load_config).returns('rollback' => { 'variables' => [{
+                                          'name' => 'SAFETY_DISABLED',
+                                          'title' => 'Set to 1 to do dangerous things',
+                                          'default' => 0
+                                        }] })
+
+      assert_equal 1, @spec.rollback_variables.size
+      variable_definition = @spec.rollback_variables.first
+      assert_equal 'SAFETY_DISABLED', variable_definition.name
+    end
+
+    test "#rollback_variables falls back to deploy_variables if rollback_variables itself is empty" do
+      @spec.stubs(:load_config).returns('deploy' => { 'variables' => [{
+                                          'name' => 'SAFETY_DISABLED',
+                                          'title' => 'Set to 1 to do dangerous things',
+                                          'default' => 0
+                                        }] })
+      assert_equal @spec.rollback_variables.map(&:to_h), @spec.deploy_variables.map(&:to_h)
+    end
+
     test "#discover_task_definitions include a kubernetes restart command if `kubernetes` is present" do
       @spec.stubs(:load_config).returns(
         'kubernetes' => {
@@ -381,7 +406,8 @@ module Shipit
         },
         'rollback' => {
           'override' => nil,
-          'retries' => nil
+          'retries' => nil,
+          'variables' => []
         },
         'fetch' => nil,
         'tasks' => {}
