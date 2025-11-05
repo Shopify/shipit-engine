@@ -118,7 +118,7 @@ module Shipit
         assert_equal 1, rollback_vars.length
 
         assert_equal 'TEST_VAR', rollback_vars[0].name
-        assert_equal 'rollhback_default', rollback_vars[0].default
+        assert_equal 'rollback_default', rollback_vars[0].default
       end
 
       def deploy_spec_yaml
@@ -158,7 +158,7 @@ module Shipit
           rollback:
             variables:
               - name: TEST_VAR
-                default: "rollhback_default"
+                default: "rollback_default"
         EOYAML
       end
     end

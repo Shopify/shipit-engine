@@ -244,7 +244,7 @@ module Shipit
     end
 
     test "#rollback_variables returns an empty array by default" do
-      assert_equal [], @spec.deploy_variables
+      assert_equal [], @spec.rollback_variables
     end
 
     test "#rollback_variables returns an array of VariableDefinition instances" do
