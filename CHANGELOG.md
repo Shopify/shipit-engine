@@ -1,5 +1,7 @@
 # Unreleased
 
+* Allow explicit configuration of rollback variables (#1432)
+
 # 0.41.1
 
 * Fix commit statuses (#1424)

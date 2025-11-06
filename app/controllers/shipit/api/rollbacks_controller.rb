@@ -15,7 +15,7 @@ module Shipit
         commit = stack.commits.by_sha(params.sha) || param_error!(:sha, 'Unknown revision')
         param_error!(:force, "Can't rollback a locked stack") if !params.force && stack.locked?
         deploy = stack.deploys.find_by(until_commit: commit) || param_error!(:sha, 'Cant find associated deploy')
-        deploy_env = stack.filter_deploy_envs(params.env)
+        rollback_env = stack.filter_rollback_envs(params.env)
 
         response = nil
         if !params.force && stack.active_task?
@@ -25,7 +25,7 @@ module Shipit
           active_task.abort!(aborted_by: current_user, rollback_once_aborted_to: deploy, rollback_once_aborted: true)
           response = active_task
         else
-          response = deploy.trigger_rollback(current_user, env: deploy_env, force: params.force, lock: params.lock)
+          response = deploy.trigger_rollback(current_user, env: rollback_env, force: params.force, lock: params.lock)
         end
 
         render_resource(response, status: :accepted)

@@ -38,6 +38,10 @@ module Shipit
       complete!
     end
 
+    def variables
+      stack.rollback_variables
+    end
+
     private
 
     def update_release_status
