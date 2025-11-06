@@ -1,5 +1,7 @@
 # Unreleased
 
+# 0.42.0
+
 * Allow explicit configuration of rollback variables (#1432)
 
 # 0.41.1
