@@ -140,7 +140,7 @@ module Shipit
     end
 
     def rollback_variables
-      if config('rollback', 'variables').present?
+      if config('rollback', 'variables').nil?
         Array.wrap(config('rollback', 'variables')).map(&VariableDefinition.method(:new))
       else
         # For backwards compatibility, fallback to using deploy_variables if no explicit rollback variables are set
