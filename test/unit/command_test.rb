@@ -124,6 +124,21 @@ module Shipit
       assert_equal 'timed out and terminated with INT signal', command.termination_status
     end
 
+    test 'on_error defaults to false' do
+      command = Command.new('cap $LANG deploy', chdir: '.')
+      assert_equal false, command.run_on_error
+    end
+
+    test 'accepts option for on_error behavior with symbol key' do
+      command = Command.new({ 'cap $LANG deploy' => { on_error: true } }, chdir: '.')
+      assert_equal true, command.run_on_error
+    end
+
+    test 'accepts option for on_error behavior with string key' do
+      command = Command.new({ 'cap $LANG deploy' => { 'on_error' => true } }, chdir: '.')
+      assert_equal true, command.run_on_error
+    end
+
     private
 
     def command_signaller_thread(command, signal: 'KILL')
