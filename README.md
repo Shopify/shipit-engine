@@ -380,6 +380,38 @@ rollback:
     - ./script/notify_rollback_end
 ```
 
+You can also accept custom environment variables defined by the user that triggers the rollback:
+
+**<code>rollback.variables</code>** contains an array of variable definitions.
+
+For example:
+
+```yaml
+rollback:
+  variables:
+    -
+      name: RUN_MIGRATIONS
+      title: Run database migrations on rollback
+      default: 1
+```
+<br>
+
+**<code>rollback.variables.select</code>** will turn the input into a `<select>` of values.
+
+For example:
+
+```yaml
+rollback:
+  variables:
+    -
+      name: REGION
+      title: Run a rollback in a given region
+      select:
+        - east
+        - west
+        - north
+```
+<br>
 
 **`fetch`** contains an array of the shell commands that Shipit executes to check the revision of the currently-deployed version. This key defaults to `disabled`.
 
@@ -391,8 +423,8 @@ fetch:
 
 > [!NOTE]
 > Currently, deployments in emergency mode are configured to occur concurrently via [the `build_deploy` method](https://github.com/Shopify/shipit-engine/blob/main/app/models/shipit/stack.rb),
-> whose `allow_concurrency` keyword argument defaults to `force`, where `force` is true when emergency mode is enabled.
-> If you'd like to separate these two from one another, override this method as desired in your service.
+whose `allow_concurrency` keyword argument defaults to `force`, where `force` is true when emergency mode is enabled.
+If you'd like to separate these two from one another, override this method as desired in your service.
 
 ### Kubernetes
 
