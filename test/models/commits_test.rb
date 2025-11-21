@@ -367,6 +367,75 @@ module Shipit
       assert_equal 'success', @commit.check_runs.first.state
     end
 
+    test "refresh_check_runs! handles paginated responses from github" do
+      # First page check runs
+      check_run1 = mock(
+        id: 111_111_111_111_111,
+        name: 'Test suite 1',
+        conclusion: 'success',
+        details_url: 'https://example.com/details/1',
+        html_url: 'https://example.com/run/1',
+        output: mock(
+          title: 'Tests build 1 ran successfully'
+        ),
+        completed_at: Time.now,
+        started_at: Time.now - 1.minute
+      )
+      check_run2 = mock(
+        id: 222_222_222_222_222,
+        name: 'Test suite 2',
+        conclusion: 'failure',
+        details_url: 'https://example.com/details/2',
+        html_url: 'https://example.com/run/2',
+        output: mock(
+          title: 'Tests build 2 failed'
+        ),
+        completed_at: Time.now,
+        started_at: Time.now - 2.minutes
+      )
+
+      # Second page check runs
+      check_run3 = mock(
+        id: 333_333_333_333_333,
+        name: 'Test suite 3',
+        conclusion: 'success',
+        details_url: 'https://example.com/details/3',
+        html_url: 'https://example.com/run/3',
+        output: mock(
+          title: 'Tests build 3 skipped'
+        ),
+        completed_at: Time.now,
+        started_at: Time.now - 3.minutes
+      )
+
+      next_link = stub(href: 'https://api.github.com/repos/test/repo/check-runs?page=2')
+      first_response = stub(rels: { next: next_link }, data: mock(check_runs: [check_run1, check_run2]))
+      second_response = stub(rels: {}, data: mock(check_runs: [check_run3]))
+
+      call_sequence = sequence('api_calls')
+      Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns(first_response.data).in_sequence(call_sequence)
+      Shipit.github.api.expects(:last_response).returns(first_response).in_sequence(call_sequence)
+      Shipit.github.api.expects(:last_response).returns(first_response).in_sequence(call_sequence)
+      Shipit.github.api.expects(:get).with(next_link.href).returns(second_response.data).in_sequence(call_sequence)
+      Shipit.github.api.expects(:last_response).returns(second_response).in_sequence(call_sequence)
+
+      assert_difference -> { @commit.check_runs.count }, 3 do
+        @commit.refresh_check_runs!
+      end
+
+      check1 = @commit.check_runs.find_by(github_id: 111_111_111_111_111)
+      assert_not_nil check1
+      assert_equal 'success', check1.state
+
+      check2 = @commit.check_runs.find_by(github_id: 222_222_222_222_222)
+      assert_not_nil check2
+      assert_equal 'failure', check2.state
+
+      check3 = @commit.check_runs.find_by(github_id: 333_333_333_333_333)
+      assert_not_nil check3
+      assert_equal 'success', check3.state
+    end
+
     test "#creating a commit update the undeployed_commits_count" do
       walrus = shipit_users(:walrus)
       assert_equal 2, @stack.undeployed_commits_count
