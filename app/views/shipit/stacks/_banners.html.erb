@@ -62,7 +62,7 @@
   </div>
 <% end %>
 
-<% if stack.continuous_delivery_delayed? %>
+<% if !stack.deployment_checks_passed? %>
   <div class="banner">
     <div class="banner__inner wrapper">
       <div class="banner__content">
@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-<% elsif !stack.deployment_checks_passed? %>
+<% elsif stack.continuous_delivery_delayed? %>
   <div class="banner banner--orange">
     <div class="banner__inner wrapper">
       <div class="banner__content">
