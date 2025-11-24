@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.42.1
+
+* Fix unbounded memory usage in RefreshCheckRunsJob(#1436)
+
 # 0.42.0
 
 * Allow explicit configuration of rollback variables (#1432)
