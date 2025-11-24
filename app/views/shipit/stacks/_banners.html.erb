@@ -63,6 +63,17 @@
 <% end %>
 
 <% if !stack.deployment_checks_passed? %>
+<div class="banner banner--orange">
+    <div class="banner__inner wrapper">
+      <div class="banner__content">
+        <h2 class="banner__title">Stack has been locked by external system!</h2>
+        <p class = "banner__text">
+          <%= simple_format(deployment_checks_message(stack)) %>
+        </p>
+      </div>
+    </div>
+  </div>
+<% elsif stack.continuous_delivery_delayed? %>
   <div class="banner">
     <div class="banner__inner wrapper">
       <div class="banner__content">
@@ -72,17 +83,6 @@
 
           <%= link_to_if stack.deployment_checks_passed?, 'the pre-deploy checks failed', stack_commit_checks_path(stack, sha: stack.next_commit_to_deploy.sha) %>.
           You can either wait for them to pass, or trigger a deploy manually.
-        </p>
-      </div>
-    </div>
-  </div>
-<% elsif stack.continuous_delivery_delayed? %>
-  <div class="banner banner--orange">
-    <div class="banner__inner wrapper">
-      <div class="banner__content">
-        <h2 class="banner__title">Stack has been locked by external system!</h2>
-        <p class = "banner__text">
-          <%= simple_format(deployment_checks_message(stack)) %>
         </p>
       </div>
     </div>
