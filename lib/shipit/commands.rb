@@ -35,11 +35,18 @@ module Shipit
     private
 
     def base_env
-      @base_env ||= Shipit.env.merge(
-        'GITHUB_DOMAIN' => github.domain,
-        'GITHUB_TOKEN' => github.token,
-        'GIT_ASKPASS' => Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s
-      )
+      @base_env ||= begin
+        env = Shipit.env.merge(
+          'GITHUB_DOMAIN' => github.domain,
+          'GITHUB_TOKEN' => github.token
+        )
+
+        unless Rails.env.development? || Rails.env.test?
+          env['GIT_ASKPASS'] = Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s
+        end
+
+        env
+      end
     end
 
     def github
