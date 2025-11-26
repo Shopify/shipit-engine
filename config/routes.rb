@@ -68,7 +68,8 @@ Shipit::Engine.routes.draw do
   end
 
   scope '/github/auth/github', as: :github_authentication, controller: :github_authentication do
-    get '/', action: :request
+    get :login
+    post '/', action: :request
     post :callback
     get :callback
     get :logout

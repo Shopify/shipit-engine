@@ -4,6 +4,12 @@ require 'test_helper'
 
 module Shipit
   class GithubAuthenticationControllerTest < ActionController::TestCase
+    test ":login can render a page to start the OAuth Flow" do
+      get :login
+
+      assert_response :ok
+    end
+
     test ":callback can sign in to github" do
       auth = OmniAuth::AuthHash.new(
         credentials: OmniAuth::AuthHash.new(

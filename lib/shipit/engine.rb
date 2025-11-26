@@ -45,6 +45,7 @@ module Shipit
       ActiveModel::Serializer.include(Engine.routes.url_helpers)
 
       if Shipit.github.oauth?
+        OmniAuth::AuthenticityTokenProtection.default_options(key: "_csrf_token", authenticity_param: "authenticity_token")
         OmniAuth::Strategies::GitHub.configure(path_prefix: '/github/auth')
         app.middleware.use(OmniAuth::Builder) do
           provider(:github, *Shipit.github.oauth_config)
