@@ -71,7 +71,8 @@ module Shipit
     :internal_hook_receivers,
     :preferred_org_emails,
     :task_execution_strategy,
-    :task_logger
+    :task_logger,
+    :use_git_askpass
   )
 
   def task_execution_strategy
@@ -295,6 +296,12 @@ module Shipit
 
   def task_logger
     @task_logger ||= Logger.new(nil)
+  end
+
+  def use_git_askpass?
+    return @use_git_askpass unless @use_git_askpass.nil?
+
+    true
   end
 
   protected

@@ -41,7 +41,7 @@ module Shipit
           'GITHUB_TOKEN' => github.token
         )
 
-        unless Rails.env.development? || Rails.env.test?
+        if Shipit.use_git_askpass?
           env['GIT_ASKPASS'] = Shipit::Engine.root.join('lib', 'snippets', 'git-askpass').realpath.to_s
         end
 
