@@ -8,6 +8,10 @@
 * Updated README to include sections on post scripts with on_error flag
 * Refactored README to use mostly pure markdown instead of HTML
 
+# 0.42.1
+
+* Fix unbounded memory usage in RefreshCheckRunsJob(#1436)
+
 # 0.42.0
 
 * Allow explicit configuration of rollback variables (#1432)
