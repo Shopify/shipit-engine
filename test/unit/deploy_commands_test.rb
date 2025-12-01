@@ -307,6 +307,20 @@ module Shipit
       assert_equal @deploy.id.to_s, command.env['TASK_ID']
     end
 
+    test "#perform calls cap $environment deploy with the FAILED state in the environment" do
+      commands = @commands.perform
+      assert_equal 1, commands.length
+      command = commands.first
+      assert_equal '0', command.env['FAILED']
+    end
+
+    test "#perform calls cap $environment deploy with the FAILURE_MESSAGE in the environment" do
+      commands = @commands.perform
+      assert_equal 1, commands.length
+      command = commands.first
+      assert_equal '', command.env['FAILURE_MESSAGE']
+    end
+
     test "#perform transliterates the user name" do
       @deploy.user = User.new(login: 'Sirupsen', name: "Simon Hørup Eskildsen")
       commands = @commands.perform
@@ -389,6 +403,29 @@ module Shipit
       @deploy_spec.expects(:clear_working_directory?).returns(false)
       FileUtils.expects(:rm_rf).never
       @commands.clear_working_directory
+    end
+
+    test "failure_step returns nil if there's no deploy_post step" do
+      @deploy_spec.stubs(:deploy_post).returns(nil)
+      assert_nil @commands.failure_step
+    end
+
+    test "failure_step returns a Command if there's a deploy_post with config to run on_error" do
+      @deploy_spec.stubs(:deploy_post).returns('echo "hello"' => { 'on_error' => true })
+      command = @commands.failure_step
+      assert_instance_of Command, command
+      assert_equal ['echo "hello"'], command.args
+    end
+
+    test "failure_step returns nil if there's no deploy_post without config to run on_error" do
+      @deploy_spec.stubs(:deploy_post).returns('echo "hello"')
+      assert_nil @commands.failure_step
+    end
+
+    test "#failed! updates the env with the FAILED and FAILURE_MESSAGE states" do
+      @commands.failed!('Deployment failed')
+      assert_equal '1', @commands.env['FAILED']
+      assert_equal 'Deployment failed', @commands.env['FAILURE_MESSAGE']
     end
   end
 end
