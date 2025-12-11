@@ -76,4 +76,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Make sure git askpass is enabled in production
+  Shipit.use_git_askpass = true
 end
