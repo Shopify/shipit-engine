@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.42.2
+* Move git ask pass to env config for improved local development (##1441)
+
 # 0.42.1
 
 * Fix unbounded memory usage in RefreshCheckRunsJob(#1436)
