@@ -24,13 +24,17 @@ module Shipit
       rescue Command::TimedOut => e
         @task.write("\n#{e.message}\n")
         @task.report_timeout!(e)
+        failure!(e)
       rescue Command::Error => e
         @task.write("\n#{e.message}\n")
         @task.report_failure!(e)
+        failure!(e)
       rescue StandardError => e
         @task.report_error!(e)
+        failure!(e)
       rescue Exception => e
         @task.report_error!(e)
+        failure!(e)
         raise
       end
 
@@ -103,6 +107,15 @@ module Shipit
         command.success?
       rescue Command::Error
         false
+      end
+
+      def failure!(error)
+        return unless @commands.respond_to?(:failed!)
+
+        @commands.failed!(error.message)
+        return unless @commands.respond_to?(:failure_step) && @commands.failure_step
+
+        capture!(@commands.failure_step)
       end
     end
   end
