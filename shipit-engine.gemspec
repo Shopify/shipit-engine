@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_dependency('jquery-rails', '~> 4.4')
   s.add_dependency('lodash-rails', '~> 4.17')
   s.add_dependency('octokit', '~> 5.6.0')
-  s.add_dependency('omniauth-github', '~> 1.4')
+  s.add_dependency('omniauth-github', '~> 2.0')
   s.add_dependency('paquito')
   s.add_dependency('pubsubstub', '~> 0.2')
   s.add_dependency('rails', '~> 8.0.1')
