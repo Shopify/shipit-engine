@@ -4,6 +4,8 @@ module Shipit
   class GithubAuthenticationController < ActionController::Base
     include Shipit::Engine.routes.url_helpers
 
+    layout 'shipit', only: 'login'
+
     def callback
       return_url = request.env['omniauth.origin'] || root_path
       auth = request.env['omniauth.auth']

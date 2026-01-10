@@ -21,7 +21,7 @@ module Shipit
       if current_user.logged_in? && current_user.requires_fresh_login?
         Rails.logger.warn("User #{current_user.id} requires a fresh login, logging out...")
         reset_session
-        redirect_to(Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url))
+        redirect_to(Shipit::Engine.routes.url_helpers.github_authentication_login_path(origin: request.original_url))
       elsif Shipit.authentication_disabled? || current_user.logged_in?
         unless current_user.authorized?
           team_handles = Shipit.github_teams.map(&:handle)
@@ -29,7 +29,7 @@ module Shipit
           render(plain: "You must be a member of #{team_list} to access this application.", status: :forbidden)
         end
       else
-        redirect_to(Shipit::Engine.routes.url_helpers.github_authentication_path(origin: request.original_url))
+        redirect_to(Shipit::Engine.routes.url_helpers.github_authentication_login_path(origin: request.original_url))
       end
     end
 
