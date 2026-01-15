@@ -67,7 +67,6 @@ module Shipit
       @spec.stubs(:gemfile_lock_exists?).returns(true)
       command = %(
         bundle install
-        --frozen
         --jobs 4
         --path #{DeploySpec.bundle_path}
         --retry 2
@@ -81,7 +80,6 @@ module Shipit
       @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       command = %(
         bundle install
-        --frozen
         --jobs 4
         --path #{DeploySpec.bundle_path}
         --retry 2
@@ -90,22 +88,22 @@ module Shipit
       assert_equal command, @spec.bundle_install.last
     end
 
-    test '#bundle_install has --frozen option if Gemfile.lock is present' do
+    test '#bundle_install configures frozen mode if Gemfile.lock is present' do
       @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       @spec.stubs(:gemfile_lock_exists?).returns(true)
-      assert @spec.bundle_install.last.include?('--frozen')
+      assert @spec.bundle_install.include?('bundle config set --local frozen true')
     end
 
-    test '#bundle_install does not have --frozen option if Gemfile.lock is not present' do
+    test '#bundle_install does not configure frozen mode if Gemfile.lock is not present' do
       @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'without' => %w[some custom groups] } })
       @spec.stubs(:gemfile_lock_exists?).returns(false)
-      refute @spec.bundle_install.last.include?('--frozen')
+      refute @spec.bundle_install.include?('bundle config set --local frozen true')
     end
 
-    test '#bundle_install does not have --frozen if overridden in shipit.yml' do
+    test '#bundle_install does not configure frozen mode if overridden in shipit.yml' do
       @spec.stubs(:load_config).returns('dependencies' => { 'bundler' => { 'frozen' => false } })
       @spec.stubs(:gemfile_lock_exists?).returns(true)
-      refute @spec.bundle_install.last.include?('--frozen')
+      refute @spec.bundle_install.include?('bundle config set --local frozen true')
     end
 
     test "#provisioning_handler returns `provision.handler` if present" do
