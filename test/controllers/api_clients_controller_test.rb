@@ -13,7 +13,7 @@ module Shipit
     test "GitHub authentication is mandatory" do
       session[:user_id] = nil
       get :index
-      assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2Fapi_clients'
+      assert_redirected_to '/github/auth/github/login?origin=http%3A%2F%2Ftest.host%2Fapi_clients'
     end
 
     test "current_user must be a member of at least a Shipit.github_teams" do
