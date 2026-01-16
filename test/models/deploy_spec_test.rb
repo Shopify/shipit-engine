@@ -68,7 +68,6 @@ module Shipit
       command = %(
         bundle install
         --jobs 4
-        --path #{DeploySpec.bundle_path}
         --retry 2
         --without=default:production:development:test:staging:benchmark:debug
       ).gsub(/\s+/, ' ').strip
@@ -81,7 +80,6 @@ module Shipit
       command = %(
         bundle install
         --jobs 4
-        --path #{DeploySpec.bundle_path}
         --retry 2
         --without=some:custom:groups
       ).gsub(/\s+/, ' ').strip

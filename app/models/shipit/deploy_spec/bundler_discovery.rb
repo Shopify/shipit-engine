@@ -26,11 +26,13 @@ module Shipit
       end
 
       def bundle_install
-        install_command = %(bundle install --jobs 4 --path #{bundle_path} --retry 2)
+        path_config_command = %(bundle config set path #{bundle_path})
+        install_command = %(bundle install --jobs 4 --retry 2)
         install_command += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
         [
           remove_ruby_version_from_gemfile,
           (bundle_config_frozen if frozen_mode?),
+          path_config_command,
           install_command
         ].compact
       end
