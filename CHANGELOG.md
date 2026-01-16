@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.43.0
+* Use `bundle config set frozen true` instead of deprecated `--frozen` flag
+
 # 0.42.2
 * Move git ask pass to env config for improved local development (##1441)
 
