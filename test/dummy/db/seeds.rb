@@ -53,7 +53,7 @@ module Shipit
               ]
             },
             "override": [
-              "bundle check --path=/tmp/bundler || bundle install --frozen --path=/tmp/bundler --retry=2 --without=default:production:development:test:staging:benchmark:debug"
+              "bundle config set path /tmp/bundler && (bundle check || bundle install --frozen --retry=2 --without=default:production:development:test:staging:benchmark:debug)"
             ]
           },
           "fetch": [
