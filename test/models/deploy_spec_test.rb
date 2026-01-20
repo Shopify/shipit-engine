@@ -69,12 +69,13 @@ module Shipit
         bundle install
         --jobs 4
         --retry 2
-        --without=default:production:development:test:staging:benchmark:debug
       ).gsub(/\s+/, ' ').strip
       config_command = "bundle config set --local path #{@spec.bundle_path}"
+      without_command = "bundle config set without 'default:production:development:test:staging:benchmark:debug'"
 
       assert_equal command, @spec.bundle_install.last
       assert @spec.bundle_install.include?(config_command)
+      assert @spec.bundle_install.include?(without_command)
     end
 
     test '#bundle_install use `dependencies.bundler.without` if present to build the --without argument' do
@@ -84,9 +85,10 @@ module Shipit
         bundle install
         --jobs 4
         --retry 2
-        --without=some:custom:groups
       ).gsub(/\s+/, ' ').strip
       assert_equal command, @spec.bundle_install.last
+      without_command = "bundle config set without 'some:custom:groups'"
+      assert @spec.bundle_install.include?(without_command)
     end
 
     test '#bundle_install configures frozen mode if Gemfile.lock is present' do

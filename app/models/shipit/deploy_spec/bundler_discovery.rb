@@ -27,11 +27,11 @@ module Shipit
 
       def bundle_install
         install_command = %(bundle install --jobs 4 --retry 2)
-        install_command += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
         [
           remove_ruby_version_from_gemfile,
           (bundle_config_frozen if frozen_mode?),
           bundle_config_path,
+          (bundle_without_groups unless bundler_without.empty?),
           install_command
         ].compact
       end
@@ -52,6 +52,10 @@ module Shipit
 
       def bundle_config_frozen
         'bundle config set --local frozen true'
+      end
+
+      def bundle_without_groups
+        "bundle config set without '#{bundler_without.join(':')}'"
       end
 
       def frozen_mode?
