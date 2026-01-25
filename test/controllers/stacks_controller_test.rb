@@ -34,7 +34,7 @@ module Shipit
     test "GitHub authentication is mandatory" do
       session[:user_id] = nil
       get :index
-      assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
+      assert_redirected_to '/github/auth/github/login?origin=http%3A%2F%2Ftest.host%2F'
     end
 
     test "users which require a fresh login are redirected" do
@@ -44,7 +44,7 @@ module Shipit
 
       get :index
 
-      assert_redirected_to '/github/auth/github?origin=http%3A%2F%2Ftest.host%2F'
+      assert_redirected_to '/github/auth/github/login?origin=http%3A%2F%2Ftest.host%2F'
       assert_nil session[:user_id]
     end
 
