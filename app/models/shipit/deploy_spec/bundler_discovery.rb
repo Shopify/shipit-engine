@@ -31,7 +31,7 @@ module Shipit
           remove_ruby_version_from_gemfile,
           (bundle_config_frozen if frozen_mode?),
           bundle_config_path,
-          (bundle_without_groups unless bundler_without.empty?),
+          bundle_without_groups,
           install_command
         ].compact
       end

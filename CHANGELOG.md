@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.43.3
+* (bugfix) Ensure we always call `bundle config set without`, even if the without group is empty
+
 # 0.43.0
 * Use `bundle config set frozen true` instead of deprecated `--frozen` flag
 
