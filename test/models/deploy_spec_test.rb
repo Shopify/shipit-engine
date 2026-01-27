@@ -71,7 +71,7 @@ module Shipit
         --retry 2
       ).gsub(/\s+/, ' ').strip
       config_command = "bundle config set --local path #{@spec.bundle_path}"
-      without_command = "bundle config set without 'default:production:development:test:staging:benchmark:debug'"
+      without_command = "bundle config set --local without 'default:production:development:test:staging:benchmark:debug'"
 
       assert_equal command, @spec.bundle_install.last
       assert @spec.bundle_install.include?(config_command)
@@ -87,7 +87,7 @@ module Shipit
         --retry 2
       ).gsub(/\s+/, ' ').strip
       assert_equal command, @spec.bundle_install.last
-      without_command = "bundle config set without 'some:custom:groups'"
+      without_command = "bundle config set --local without 'some:custom:groups'"
       assert @spec.bundle_install.include?(without_command)
     end
 

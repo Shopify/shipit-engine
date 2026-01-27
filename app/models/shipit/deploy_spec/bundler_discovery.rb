@@ -55,7 +55,7 @@ module Shipit
       end
 
       def bundle_without_groups
-        "bundle config set without '#{bundler_without.join(':')}'"
+        "bundle config set --local without '#{bundler_without.join(':')}'"
       end
 
       def frozen_mode?
