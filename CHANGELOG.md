@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.44.0
+* Return 422 and log when a webhook is from an unknown (unconfigured) GitHub organization.
+
 # 0.43.3
 * (bugfix) Ensure we always call `bundle config set without`, even if the without group is empty
 
