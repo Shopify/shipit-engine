@@ -8,6 +8,9 @@ module Shipit
 
     DEFAULT_RETRY_TIME_IN_SECONDS = 30
 
+    # If the record was deleted before the job ran, there's nothing to do
+    discard_on(ActiveRecord::RecordNotFound)
+
     # Write actions can sometimes fail intermittently, particulary for large and/or busy repositories
     retry_on(Octokit::ServerError)
 
