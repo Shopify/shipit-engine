@@ -106,6 +106,26 @@ module Shipit
       assert_response :unprocessable_entity
     end
 
+    test "unknown github organization logs and returns unprocessable entity" do
+      @request.headers['X-Github-Event'] = 'push'
+
+      payload = JSON.parse(payload(:push_master))
+      payload["repository"]["owner"]["login"] = "unknown-org"
+
+      Shipit.stubs(:github).raises(Shipit::GithubOrganizationUnknown.new("unknown-org"))
+      Rails.logger.expects(:warn).with([
+        'WebhookController#verify_signature',
+        'Webhook from unknown organization',
+        "event=push",
+        "repository_owner=unknown-org",
+        "unknown_organization=unknown-org",
+        "status=422"
+      ].join(' '))
+
+      post :create, body: payload.to_json, as: :json
+      assert_response :unprocessable_entity
+    end
+
     test ":membership creates the mentioned team on the fly" do
       @request.headers['X-Github-Event'] = 'membership'
       assert_difference -> { Team.count }, 1 do

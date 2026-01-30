@@ -36,6 +36,16 @@ module Shipit
         "signature=#{request.headers['X-Hub-Signature']}",
         "status=#{status}"
       ].join(' '))
+    rescue Shipit::GithubOrganizationUnknown => e
+      head(422)
+      Rails.logger.warn([
+        'WebhookController#verify_signature',
+        'Webhook from unknown organization',
+        "event=#{event}",
+        "repository_owner=#{repository_owner}",
+        "unknown_organization=#{e.message}",
+        "status=#{status}"
+      ].join(' '))
     end
 
     def check_if_ping
