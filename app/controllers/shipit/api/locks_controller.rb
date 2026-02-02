@@ -26,8 +26,12 @@ module Shipit
       end
 
       def destroy
-        stack.unlock
-        render_resource(stack)
+        if (found_stack = stacks.from_param(params[:stack_id]))
+          found_stack.unlock
+          render_resource(found_stack)
+        else
+          head(:no_content)
+        end
       end
     end
   end

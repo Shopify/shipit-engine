@@ -54,6 +54,11 @@ module Shipit
         assert_json 'is_locked', false
         assert_json { |json| assert_nil json['locked_since'] }
       end
+
+      test "#destroy returns 204 when stack does not exist" do
+        delete :destroy, params: { stack_id: 'shopify/nonexistent/production' }
+        assert_response :no_content
+      end
     end
   end
 end
