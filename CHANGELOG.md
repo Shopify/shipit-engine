@@ -1,4 +1,7 @@
 # Unreleased
+ 
+# 0.44.1
+* (bugfix) Fix NoMethodError in continuous delivery delayed banner when `next_commit_to_deploy` is nil
 
 # 0.44.0
 * Return 422 and log when a webhook is from an unknown (unconfigured) GitHub organization.
