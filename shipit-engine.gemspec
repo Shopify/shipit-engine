@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency('autoprefixer-rails', '~> 6.4.1')
   s.add_dependency('coffee-rails', '~> 5.0')
   s.add_dependency('explicit-parameters', '~> 0.4.0')
-  s.add_dependency('faraday', '~> 1.3')
+  s.add_dependency('faraday', '>= 1.3', '< 3.0')
   s.add_dependency('faraday-http-cache', '~> 2.2')
   s.add_dependency('gemoji', '~> 2.1')
   s.add_dependency('jquery-rails', '~> 4.4')
