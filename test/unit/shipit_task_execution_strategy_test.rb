@@ -44,4 +44,41 @@ module Shipit
       Shipit::PerformTaskJob.new.perform(task)
     end
   end
+
+  class DefaultTaskExecutionStrategyDryRunTest < ActiveSupport::TestCase
+    setup do
+      @task = mock('task')
+      @commands = mock('commands')
+      @install_deps = [mock('install_dep_cmd')]
+      @perform_cmds = [mock('perform_cmd')]
+      @commands.stubs(:install_dependencies).returns(@install_deps)
+      @commands.stubs(:perform).returns(@perform_cmds)
+      Shipit::Commands.stubs(:for).with(@task).returns(@commands)
+
+      @strategy = Shipit::TaskExecutionStrategy::Default.new(@task)
+    end
+
+    teardown do
+      ENV.delete('SHIPIT_DRY_RUN')
+    end
+
+    test "perform_task runs both install_dependencies and perform when SHIPIT_DRY_RUN is not set" do
+      @strategy.instance_variable_set(:@commands, @commands)
+      @strategy.expects(:capture_all!).with(@install_deps).once
+      @strategy.expects(:capture_all!).with(@perform_cmds).once
+
+      @strategy.perform_task
+    end
+
+    test "perform_task skips perform when SHIPIT_DRY_RUN is set" do
+      ENV['SHIPIT_DRY_RUN'] = '1'
+
+      @strategy.instance_variable_set(:@commands, @commands)
+      @strategy.expects(:capture_all!).with(@install_deps).once
+      @strategy.expects(:capture_all!).with(@perform_cmds).never
+      @task.expects(:write).with("\nSkipping deploy steps (dry run mode)\n")
+
+      @strategy.perform_task
+    end
+  end
 end
