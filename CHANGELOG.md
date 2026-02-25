@@ -1,5 +1,8 @@
 # Unreleased
- 
+
+# 0.44.2
+* Add dry-run flag for testing environments
+
 # 0.44.1
 * (bugfix) Fix NoMethodError in continuous delivery delayed banner when `next_commit_to_deploy` is nil
 
