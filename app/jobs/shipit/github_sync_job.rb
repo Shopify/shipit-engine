@@ -67,6 +67,9 @@ module Shipit
       yield
     rescue Octokit::NotFound
       stack.mark_as_inaccessible!
+    rescue Shipit::GithubOrganizationUnknown => e
+      Rails.logger.warn("GithubSyncJob: unknown GitHub organization #{e.message} for stack #{stack.id}")
+      stack.mark_as_inaccessible!
     else
       stack.mark_as_accessible!
     end
