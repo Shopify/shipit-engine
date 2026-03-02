@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.44.3
+* Handle GithubOrganizationUnknown in GithubSyncJob by logging a warning and marking the stack as inaccessible.
+
 # 0.44.2
 * Add dry-run flag for testing environments
 
