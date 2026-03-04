@@ -2,7 +2,6 @@
 <html>
   <head>
     <%= stylesheet_link_tag *(params[:stylesheets] || []).select { |url| url.start_with?('https://assets-cdn.github.com/', 'https://github.githubassets.com/') } %>
-    <%= stylesheet_link_tag 'merge_status' %>
   </head>
   <body data-color-mode="<%= params[:mode] %>">
     <div class="merge-status-container" data-layout-content><%= yield %></div>
