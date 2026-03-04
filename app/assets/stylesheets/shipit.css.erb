@@ -1,0 +1,2081 @@
+/*= require 'ansi_stream' */
+/*= require 'clusterize' */
+
+/* COLORS */
+
+:root {
+  --banner-blue: #96A9BA;
+  --banner-red: #EE6A6A;
+  --blue: #248AF2;
+  --green: #25C351;
+  --red: #F39494;
+  --bright-red: #F73B3B;
+  --light-red: #ffd9d6;
+  --yellow: #FFC66C;
+  --dark-yellow: #CEA61B;
+  --orange: #FFAD4C;
+  --light-orange: #ffebcc;
+  --slate: #2E343A;
+  --terminal-black: #272C30;
+  --grey: #999;
+  --grey-light: #e0e0e0;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  clip: rect(0 0 0 0);
+  width: 2px;
+  height: 2px;
+  margin: -2px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+}
+
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+::-moz-selection {
+  background: var(--blue);
+  color: #fff;
+}
+::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  color: #333;
+  background-color: #fafafa;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+p {
+  margin: 0;
+  margin-bottom: 1.5em;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--blue);
+}
+
+a.disabled {
+  cursor: default;
+}
+
+.more:after {
+  content: " >";
+  font-family: "Checkout Symbols";
+}
+
+h1, .repository-search, .stack-search {
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin: 0;
+  color: #333;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+h4 {
+  color: rgba(255, 255, 255, 0.25);
+  text-transform: uppercase;
+  font-size: .75rem;
+  font-weight: 400;
+  margin: -1rem 0 1.5rem;
+}
+
+h5 {
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: .5rem;
+}
+
+[data-tooltip], [data-tooltip-multiline] {
+  position: relative;
+  cursor: pointer;
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+[data-tooltip]:before, [data-tooltip]:after, [data-tooltip-multiline]:before, [data-tooltip-multiline]:after {
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+[data-tooltip]:hover:before, [data-tooltip]:hover:after, [data-tooltip-multiline]:hover:before, [data-tooltip-multiline]:hover:after {
+  visibility: visible;
+  opacity: 1;
+}
+
+[data-tooltip]:before, [data-tooltip-multiline]:before {
+  content: attr(data-tooltip);
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  margin-bottom: 5px;
+  padding: .75em 1em;
+  border-radius: 5px;
+  background: #333;
+  background: rgba(68, 68, 68, 0.9);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.4em;
+  text-align: center;
+  color: #fff;
+  text-indent: 0;
+}
+
+[data-tooltip]:after, [data-tooltip-multiline]:after {
+  content: " ";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  margin-left: -7px;
+  width: 0;
+  border-top: 5px solid #333;
+  border-top: 5px solid rgba(68, 68, 68, 0.9);
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+  font-size: 0;
+  line-height: 0;
+}
+
+[data-tooltip-multiline]:before {
+  width: 180px;
+  margin-left: -90px;
+  white-space: normal;
+}
+
+[data-tooltip]:before {
+  white-space: nowrap;
+  -webkit-transform: translateX(-50%);
+}
+
+a.disabled {
+  cursor: default;
+}
+
+@font-face {
+  font-family: 'Checkout Symbols';
+  font-weight: 400;
+  src: asset-url('CheckoutSymbols-Regular.woff') format('woff'), /* Modern Browsers */
+       asset-url('CheckoutSymbols-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       asset-url('CheckoutSymbols-Regular.svg#9a6d998e14a2d97b6369d42f64b6816f') format('svg'); /* Legacy iOS */
+  font-style: normal;
+}
+
+.hidden {
+  display: none;
+}
+
+.flash {
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  left: 50%;
+  position: fixed;
+  padding: 1em;
+  border-radius: 4px;
+  min-width: 30%;
+  text-align: center;
+  z-index: 1;
+}
+
+.flash-success {
+  background-color: #E2F1FF;
+}
+
+.flash-warning {
+  background-color: orange;
+}
+
+form + form {
+  margin-top: 1rem;
+}
+
+input[type=text], input[type=password], select, textarea {
+  display: block;
+  font-size: .875rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: .75rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+label + input[type=text], label + input[type=password], label + select, label + textarea {
+  margin-top: .75rem;
+}
+
+textarea {
+  height: 6rem;
+}
+
+.field-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.field-wrapper input:focus {
+  border-color: var(--blue);
+}
+
+.field-wrapper.inline input {
+  display: inline;
+}
+
+.field-wrapper.inline input.btn {
+  height: 2.5rem;
+}
+
+.field-wrapper.inline input:focus {
+  padding-right: 30px;
+}
+
+.field_with_errors {
+  border: 1px solid var(--red);
+  display: inline-block;
+}
+
+.icon--lock {
+  display: inline-block;
+  background-color: #000;
+  mask: url(<%= asset_data_uri "lock.svg" %>) no-repeat 50% 50%;
+  height: 15px;
+  width: 12px;
+}
+
+.icon--validate {
+  display: inline-block;
+  background-color: #000;
+  mask: url(<%= asset_data_uri "success-small.svg" %>) no-repeat 50% 50%;
+  height: 15px;
+  width: 12px;
+}
+
+.icon--reject {
+  display: inline-block;
+  background-color: #000;
+  mask: url(<%= asset_data_uri "error-small.svg" %>) no-repeat 50% 50%;
+  height: 15px;
+  width: 12px;
+}
+
+.btn {
+  display: inline-block;
+  font-family: inherit;
+  background: #fff;
+  color: var(--blue);
+  padding: .75em 1em;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.btn--primary {
+  background-color: var(--blue);
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn--primary.btn--disabled {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.btn--primary.btn--warning {
+  background-color: var(--yellow);
+}
+
+.btn--disabled {
+  color: var(--grey);
+  background-color: #fafafa;
+  cursor: default;
+}
+
+.btn--delete {
+  color: #fff;
+  border: none;
+  background-color: var(--bright-red);
+}
+
+.btn--delete.btn-disabled {
+  color: var(--grey);
+  background-color: var(--light-red);
+}
+
+.btn--alert {
+  color: #fff;
+  background-color: var(--orange);
+}
+
+.btn--alert.btn-disabled {
+  color: var(--grey);
+  background-color: var(--light-orange);
+}
+
+.btn--large {
+  font-size: 1rem;
+  padding: 1em 1.25em;
+}
+
+.banner {
+  background: var(--blue);
+  padding: 1.75rem 0;
+  position: relative;
+}
+
+.banner a {
+  color: #fff;
+}
+
+.banner .icon {
+  background-color: #fff;
+}
+
+.banner__inner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.banner__title {
+  color: #fff;
+  margin-bottom: .5rem;
+}
+
+.banner__text {
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.3em;
+  margin-bottom: 0;
+}
+
+.banner__btn {
+  margin-top: 1rem;
+}
+
+.banner__accessory .banner__btn {
+  margin-top: 0;
+}
+
+.banner__dismiss {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 1.25rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: .5em .75em;
+}
+
+.banner__content {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.banner__accessory {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.banner--orange {
+  background: var(--orange);
+}
+
+.banner--blue {
+  background: var(--banner-blue);
+}
+
+.banner--red {
+  background: var(--banner-red);
+}
+
+.wrapper {
+  width: 80%;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.header {
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #fff;
+  color: var(--grey);
+}
+
+.header__inner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 1.5rem 0;
+  position: relative;
+}
+
+.header__page-title {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.header__btn {
+  margin: 0.4em 0.5em 0.4em 0;
+}
+
+.powered-by {
+  float: right;
+  position: relative;
+  top: 0.75rem;
+  right: 1rem;
+  font-size: 12px;
+  color: var(--grey);
+}
+
+.logo {
+  background: url(<%= asset_data_uri("anchor.svg") %>) center center no-repeat;
+  display: block;
+  width: 40px;
+  height: 40px;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  transition: -webkit-transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
+  text-indent: -9999px;
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-right: 1rem;
+  margin-top: -20px;
+}
+
+.logo:hover {
+  -webkit-transform: rotate(-25deg);
+          transform: rotate(-25deg);
+}
+
+.nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__list--primary {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.nav__list__item {
+  display: inline-block;
+  cursor: pointer;
+  color: var(--blue);
+  padding-bottom: 1.5rem;
+}
+
+.nav__list__item + .nav__list__item {
+  margin-left: 1.5rem;
+}
+
+.nav__list__sub__item {
+  list-style: none;
+  white-space: nowrap;
+}
+
+.nav__list__sub__item + .nav__list__sub__item {
+  margin-top: 0.75rem;
+}
+
+.nav__sub__list {
+  position: absolute;
+  top: calc(100% - 0.75rem);
+  z-index: 10;
+  background-color: white;
+  padding: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transform: translateY(-10px);
+          transform: translateY(-10px);
+  border: 1px solid var(--grey-light);
+  border-radius: 3px;
+  -webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+}
+
+.nav__sub__list::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -7px;
+  background-color: white;
+  border: 1px solid var(--grey-light);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  height: 12px;
+  width: 12px;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+
+.nav__list__item--has-children {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.nav__list__item--has-children::after {
+  display: inline-block;
+  content: '';
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHBhdGggZD0iTTUgOGw1IDUgNS01IiBmaWxsPSIjMjQ4QUYyIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4K);
+  width: 20px;
+  height: 20px;
+}
+
+.nav__list__item--has-children:hover .nav__sub__list {
+  opacity: 1;
+  pointer-events: initial;
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+
+.main {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding-bottom: 3rem;
+}
+
+.main.no-footer {
+  padding-bottom: 0;
+}
+
+section {
+  margin-top: 3rem;
+}
+
+section.warning {
+  background-color: orange;
+  padding: 1rem;
+  text-align: center;
+}
+
+section.warning li {
+  list-style-type: none;
+  padding-bottom: 0.5rem;
+}
+
+.section-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 1rem;
+}
+
+.section-header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.section-header h2 {
+  float: left;
+}
+
+.section-header .header-accessory {
+  float: right;
+}
+
+.section-header .header-accessory > a {
+  padding: .7rem 0;
+  display: inline-block;
+}
+
+.section-header .header-accessory > a + a {
+  margin-left: 1rem;
+}
+
+.section-header .header-accessory > p {
+  margin: 0;
+  padding: .7rem 0;
+  color: var(--grey);
+  font-size: .875rem;
+}
+
+.section-header .header-accessory > p .repo-name {
+  font-weight: 500;
+  color: #777;
+}
+
+pre {
+  background-color: var(--terminal-black);
+  min-height: 100%;
+  overflow-x: auto;
+  color: #fff;
+  padding: 1.5rem;
+  line-height: 1.5em;
+  font-family: "Source Code Pro";
+  white-space: pre-wrap;
+}
+
+pre.nowrap {
+  white-space: pre;
+  margin-top: -.25rem;
+  margin-bottom: 0rem;
+}
+
+.number {
+  font-family: Menlo, monospace;
+}
+
+.repo-header {
+  background-color: var(--blue);
+  padding: 1.75rem 0;
+}
+
+.repo-header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.repo-header.success {
+  background-color: var(--green);
+}
+
+.repo-header.failure {
+  background-color: var(--bright-red);
+}
+
+.repo-header a {
+  color: #fff;
+}
+
+.repo-header .repo-name {
+  float: left;
+}
+
+.repo-header .repo-name h1 a, .repo-header .repo-name .repository-search a, .repo-header .repo-name .stack-search a {
+  text-transform: capitalize;
+}
+
+.repo-header p {
+  font-size: .75rem;
+  color: rgba(0, 0, 0, 0.4);
+  margin: 0;
+}
+
+.repo-header h1, .repo-header .repository-search, .repo-header .stack-search {
+  color: #fff;
+  font-size: 1.75rem;
+  margin-bottom: 0;
+}
+
+.repo-header h1 small, .repo-header .repository-search small, .repo-header .stack-search small {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 1em;
+  font-weight: 200;
+  text-transform: capitalize;
+}
+
+.repo-header .header-accessory {
+  float: right;
+  margin-top: 1.35rem;
+}
+
+.repo-header .header-accessory a + a {
+  margin-left: .5rem;
+}
+
+.repo-header .deploy-url {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: .75em;
+}
+
+.notice {
+  background-color: #f0f4f7;
+  padding: 1rem 1.5rem;
+  -webkit-animation: notice-slide-in .3s .6s ease-in-out backwards;
+  overflow: hidden;
+}
+
+.notice .message {
+  float: left;
+}
+
+.notice .cta {
+  float: right;
+}
+
+.notice h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: #4b5866;
+}
+
+.notice p {
+  font-size: .875rem;
+  color: #828d96;
+  margin: 0;
+}
+
+.less-important {
+  color: var(--grey);
+  margin-bottom: 0em;
+  margin-top: 5em;
+}
+
+.less-important p {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5em;
+}
+
+@-webkit-keyframes notice-slide-in {
+  0% {
+    margin-top: -74px;
+  }
+}
+
+@keyframes notice-slide-in {
+  0% {
+    margin-top: -74px;
+  }
+}
+
+.status-list {
+  position: absolute;
+  width: 25rem;
+  left: 3.25rem;
+  top: 0.25rem;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.075), 0 5px 13px rgba(0, 0, 0, 0.15);
+  -webkit-transform: scale(0.75);
+          transform: scale(0.75);
+  -webkit-transform-origin: -10% 20%;
+          transform-origin: -10% 20%;
+  -webkit-transition: all 0.3s cubic-bezier(0.34, 1.61, 0.7, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.61, 0.7, 1);
+  visibility: hidden;
+  opacity: 0;
+  z-index: 2;
+}
+
+.status-group:hover .status-list {
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.status-list:before,
+.status-list:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0.55rem;
+  border: 7px outset transparent;
+}
+
+.status-list:before {
+  border-right: 7px solid rgba(0, 0, 0, 0.075);
+  left: -14px;
+}
+
+.status-list:after {
+  border-right: 7px solid white;
+  left: -12px;
+}
+
+.status-item {
+  padding: 0.6rem;
+}
+
+.status-item {
+  background: rgba(0, 0, 0, 0.035);
+  font-size: 0.8rem;
+}
+
+.status-item + .status-item {
+  border-top: 1px solid #fff;
+}
+
+.status-item--summary {
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+.status-item__description {
+  color: #777;
+}
+
+.status-item--success .status-item__service {
+  color: var(--green);
+}
+
+.status-item--pending .status-item__service {
+  color: var(--dark-yellow);
+}
+
+.status-item--error .status-item__service {
+  color: #333;
+}
+
+.status-item--failed .status-item__service, .status-item--failure .status-item__service {
+  color: var(--bright-red);
+}
+
+.status-item__icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: transparent no-repeat center center;
+  vertical-align: -2px;
+}
+
+.status-item--success .status-item__icon {
+  background-image: url(<%= asset_data_uri("success-small.svg") %>);
+}
+
+.status-item--pending .status-item__icon {
+  background-image: url(<%= asset_data_uri("pending-small.svg") %>);
+}
+
+.status-item--error .status-item__icon {
+  background-image: url(<%= asset_data_uri("error-small.svg") %>);
+}
+
+.status-item--failed .status-item__icon,
+.status-item--failure .status-item__icon {
+  background-image: url(<%= asset_data_uri("failure-small.svg") %>);
+}
+
+.deploy-status__icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: transparent no-repeat center center;
+  vertical-align: -2px;
+}
+
+.deploy[data-release-status=success] .deploy-status__icon {
+  background-image: url(<%= asset_data_uri("success-small.svg") %>);
+}
+
+.deploy[data-release-status=pending] .deploy-status__icon, .deploy[data-release-status=unknown] .deploy-status__icon {
+  background-image: url(<%= asset_data_uri("pending-small.svg") %>);
+}
+
+.deploy[data-release-status=error] .deploy-status__icon {
+  background-image: url(<%= asset_data_uri("error-small.svg") %>);
+}
+
+.deploy[data-release-status=failure] .deploy-status__icon {
+  background-image: url(<%= asset_data_uri("failure-small.svg") %>);
+}
+
+.commit-list, .task-list, .pr-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.commit-list-actions {
+  float: right;
+}
+
+.commit, .task, .pr {
+  padding: .75rem 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+@media (min-width: 1000px) {
+  .commit, .task, .pr {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+                -ms-grid-row-align: center;
+            align-items: center;
+  }
+}
+
+.commit + .commit, .commit + .task, .commit + .pr, .task + .commit, .task + .task, .task + .pr, .pr + .commit, .pr + .task, .pr + .pr {
+  border-top: 1px solid #e5e5e5;
+}
+
+.commit-author {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 10em;
+}
+
+@media (max-width: 999px) {
+  .commit-author {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  .commit-author {
+    margin-right: 1rem;
+  }
+}
+
+.commit-author__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.commit-author__name {
+  font-size: 0.8em;
+}
+
+.commit-author__name__real-name {
+  font-weight: 500;
+  color: #555;
+  display: block;
+}
+
+.commit-author__name__username {
+  color: var(--grey);
+}
+
+.commit-details, .pr-details {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media (max-width: 999px) {
+  .commit-details, .pr-details {
+    margin-bottom: 1rem;
+    -webkit-box-ordinal-group: 0;
+        -ms-flex-order: -1;
+            order: -1;
+  }
+}
+
+.commit-title {
+  font-size: 1em;
+  display: block;
+}
+
+@media (min-width: 1000px) {
+  .commit-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.commit-title a, .pr-title a {
+  color: #333;
+}
+
+.pr-details .pr-number .number {
+  color: var(--blue);
+}
+
+.commit-lock {
+  display: inline-block;
+}
+
+.commit-lock .icon {
+  background-color: #ddd;
+}
+
+.commit-lock:hover .icon {
+  background-color: #aaaaaa;
+}
+
+.commit-lock .action-unlock-commit {
+  display: none;
+}
+
+.commit.locked .commit-lock .icon {
+  background-color: var(--bright-red);
+}
+
+.commit.locked .commit-lock:hover .icon {
+  background-color: #c40808;
+}
+
+.commit.locked .commit-lock .action-lock-commit {
+  display: none;
+}
+
+.commit.locked .commit-lock .action-unlock-commit {
+  display: inline-block;
+}
+
+.commit-meta, .pr-meta {
+  font-size: 0.8em;
+  color: var(--grey);
+  margin: 0;
+}
+
+.commit-meta .warning, .pr-meta .warning {
+  color: var(--orange);
+}
+
+.utc-timecode {
+  color: #bbb;
+}
+
+.code-additions {
+  color: var(--green);
+}
+
+.code-deletions {
+  color: var(--red);
+}
+
+.commit-actions {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+@media (min-width: 1000px) {
+  .commit-actions {
+    margin-left: 1rem;
+    min-width: 12rem;
+  }
+  .commit-actions .btn {
+    float: right;
+  }
+}
+
+.status-group {
+  position: relative;
+}
+
+.status-group .status-item.ignored {
+  opacity: .5;
+}
+
+.status {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+@media (max-width: 999px) {
+  .status {
+    margin-bottom: 1rem;
+    -webkit-box-ordinal-group: -1;
+        -ms-flex-order: -2;
+            order: -2;
+  }
+}
+
+@media (min-width: 1000px) {
+  .status {
+    margin-right: 0.75rem;
+  }
+}
+
+.status {
+  display: inline-block;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.status .status__icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url(<%= asset_data_uri("unknown.svg") %>) center center no-repeat;
+}
+
+.status--pending .status__icon,
+[data-deploy-status='pending'] .status__icon {
+  background-image: url(<%= asset_data_uri("pending.gif") %>);
+  background-size: 21px 5px;
+}
+
+.status--running,
+[data-deploy-status='running'] {
+  border-color: var(--blue);
+}
+
+.status--running .status__icon,
+[data-deploy-status='running'] .status__icon {
+  background-image: url(<%= asset_data_uri("deploying.svg") %>);
+  -webkit-animation: rotate 2s linear infinite;
+          animation: rotate 2s linear infinite;
+}
+
+.status--aborting,
+[data-deploy-status='aborting'] {
+  border-color: var(--orange);
+}
+
+.status--aborting .status__icon,
+[data-deploy-status='aborting'] .status__icon {
+  background-image: url(<%= asset_data_uri("aborting.svg") %>);
+  -webkit-animation: rotate 2s linear infinite;
+          animation: rotate 2s linear infinite;
+}
+
+.status--aborted,
+[data-deploy-status='aborted'] {
+  border-color: var(--orange);
+}
+
+.status--aborted .status__icon,
+[data-deploy-status='aborted'] .status__icon {
+  background-image: url(<%= asset_data_uri("aborted.svg") %>);
+}
+
+.status--flapping,
+[data-deploy-status='flapping'] {
+  border-color: var(--orange);
+}
+
+.status--flapping .status__icon,
+[data-deploy-status='flapping'] .status__icon {
+  background-image: url(<%= asset_data_uri("flapping.svg") %>);
+}
+
+.status--validating,
+[data-deploy-status='validating'] {
+  border-color: var(--green);
+}
+
+.status--validating .status__icon,
+[data-deploy-status='validating'] .status__icon {
+  background-image: url(<%= asset_data_uri("validating.svg") %>);
+}
+
+.status--faulty,
+[data-deploy-status='faulty'] {
+  border-color: var(--yellow);
+}
+
+.status--faulty .status__icon,
+[data-deploy-status='faulty'] .status__icon {
+  background-image: url(<%= asset_data_uri("faulty.svg") %>);
+}
+
+.status--success,
+[data-deploy-status='success'] {
+  border-color: var(--green);
+}
+
+.status--success .status__icon,
+[data-deploy-status='success'] .status__icon {
+  background-image: url(<%= asset_data_uri("success.svg") %>);
+}
+
+.status--failure,
+.status--failed,
+[data-deploy-status='failure'],
+[data-deploy-status='failed'] {
+  border-color: var(--bright-red);
+}
+
+.status--failure .status__icon,
+.status--failed .status__icon,
+[data-deploy-status='failure'] .status__icon,
+[data-deploy-status='failed'] .status__icon {
+  background-image: url(<%= asset_data_uri("failure.svg") %>);
+}
+
+.status--error,
+[data-deploy-status='error'] {
+  border-color: #333;
+}
+
+.status--error .status__icon,
+[data-deploy-status='error'] .status__icon {
+  background-image: url(<%= asset_data_uri("error.svg") %>);
+}
+
+.status--timedout,
+[data-deploy-status='timedout'] {
+  border-color: #333;
+}
+
+.status--timedout .status__icon,
+[data-deploy-status='timedout'] .status__icon {
+  background-image: url(<%= asset_data_uri("timedout.svg") %>);
+  background-position: top 35% left 50%;
+  background-size: 55%;
+}
+
+.commit-summary-list {
+  list-style-type: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.commit-summary {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: .5em;
+}
+
+.commit-summary__avatar {
+  margin-right: .5rem;
+}
+
+.commit-summary__avatar img {
+  border-radius: 4px;
+}
+
+.commit-summary__title {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.commit-summary__title a {
+  color: #555;
+}
+
+.commit-summary__sha {
+  font-size: 0.875rem;
+  color: var(--grey);
+}
+
+.setting-section {
+  padding: 2rem 0;
+}
+
+.setting-section + .setting-section {
+  border-top: 1px solid #e5e5e5;
+}
+
+.setting-section .form-hint {
+  font-size: smaller;
+  font-style: italic;
+}
+
+.setting-section .ccmenu-url {
+  width: 85%;
+}
+
+.setting-section .hidden {
+  display: none;
+}
+
+.stack-search {
+  -webkit-appearance: none;
+  width: 100%;
+  border: none;
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 200;
+  background: url(<%= asset_data_uri("search.svg") %>) no-repeat center right;
+}
+
+.stack-search::-webkit-input-placeholder {
+  color: #B5C0CA;
+}
+
+.stack-search:focus {
+  outline: none;
+  background-image: url(<%= asset_data_uri("search-active.svg") %>);
+}
+
+.stack-table-header {
+  margin: 0;
+  padding: 1.25rem 0 1rem;
+}
+
+.stack-table-header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.stack-table-header .col {
+  width: 25%;
+  float: left;
+}
+
+.stack-table-header li {
+  list-style-type: none;
+  font-size: .875em;
+  color: #BAC5D1;
+}
+
+.stack-lst {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.stack-lst .col {
+  width: 25%;
+  float: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: .5rem;
+  box-sizing: border-box;
+}
+
+.stack-lst .undeployed {
+  background-image: url(<%= asset_data_uri("ship.png") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.stack-lst .archived {
+  background-image: url(<%= asset_data_uri("archive-solid.svg") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.stack-lst .auto-provisioned {
+  background-image: url(<%= asset_data_uri("magic-solid.svg") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.stack-lst:empty:before {
+  content: "No environment to deploy to, Shipit Squirrel is displeased";
+}
+
+.stack-lst li:nth-child(even) a {
+  background-color: #f8f9fa;
+}
+
+.stack-lst li.selected a {
+  background-color: var(--blue);
+  outline: none;
+}
+
+.stack-lst li.selected a span {
+  color: #fff;
+}
+
+.stack-lst li.selected a small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stack-lst li a {
+  padding: .35rem;
+  margin-left: -0.35rem;
+  margin-right: -0.35rem;
+  border-radius: 4px;
+  display: block;
+}
+
+.stack-lst li a:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.stack-lst li a:hover, .stack-lst li a:focus {
+  background-color: var(--blue);
+  outline: none;
+}
+
+.stack-lst li a:hover span, .stack-lst li a:focus span {
+  color: #fff;
+}
+
+.stack-lst li a:hover small, .stack-lst li a:focus small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.commits-path {
+  font-size: 18px;
+}
+
+.commits-path small {
+  font-size: 18px;
+  color: #8D9EB0;
+}
+
+.stack-search input {
+  margin-left: 4%;
+  width: 92%;
+  padding: 6px;
+  font-size: larger;
+  border-radius: 8px;
+  outline: 0;
+  border: 1px #a0a0a0 solid;
+}
+
+.stack-search-header {
+  display: none;
+}
+
+.show-all-stacks {
+  display: none;
+}
+
+.filtering-enabled .show-all-stacks {
+  display: inline-block;
+}
+
+.filtering-enabled .stack-search-header {
+  display: block;
+}
+
+.filtering-enabled .search-item.not-matching {
+  display: none;
+}
+
+.message {
+  background-color: #E2F1FF;
+  margin: 0px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.message h2 {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.message p {
+  margin: 0px;
+}
+
+.configure-ci, .ignoring-ci {
+  background-color: #E2F1FF;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.configure-ci p, .ignoring-ci p {
+  font-weight: bold;
+}
+
+.new_stack input.repo {
+  width: 200px;
+  display: inline;
+}
+
+.new_stack input.repo:focus {
+  padding-right: 30px !important;
+}
+
+.new_stack input:focus {
+  border-color: var(--blue);
+}
+
+.pagination {
+  text-align: center;
+}
+
+.box {
+  border-radius: 5px;
+  width: 32%;
+  float: left;
+  padding: 5px;
+}
+
+.box__header {
+  padding: 15px 25px;
+  position: relative;
+}
+
+.box__header-title {
+  color: #333;
+  font-size: 18px;
+}
+
+.box__body {
+  padding: 0 25px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.auto-provisioned {
+  background-image: url(<%= asset_data_uri("magic-solid.svg") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: 5px;
+}
+
+/* STATS */
+.stats {
+  color: #333;
+  position: relative;
+  padding-bottom: 25px;
+}
+
+.stats__amount {
+  font-size: 54px;
+  line-height: 1.2;
+}
+
+.stats__caption {
+  font-size: 18px;
+}
+
+.stats__change {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  text-align: right;
+  color: #B1B7C8;
+}
+
+.stats__value {
+  font-size: 18px;
+}
+
+.stats__period {
+  font-size: 14px;
+}
+
+.stats__value--positive {
+  color: #AEDC6F;
+}
+
+.stats__value--negative {
+  color: #FB5055;
+}
+
+.repository-search {
+  -webkit-appearance: none;
+  width: 100%;
+  border: none;
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 200;
+  background: url(<%= asset_data_uri("search.svg") %>) no-repeat center right;
+}
+
+.repository-search::-webkit-input-placeholder {
+  color: #B5C0CA;
+}
+
+.repository-search:focus {
+  outline: none;
+  background-image: url(<%= asset_data_uri("search-active.svg") %>);
+}
+
+.repository-table-header {
+  margin: 0;
+  padding: 1.25rem 0 1rem;
+}
+
+.repository-table-header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.repository-table-header .col {
+  width: 25%;
+  float: left;
+}
+
+.repository-table-header li {
+  list-style-type: none;
+  font-size: .875em;
+  color: #BAC5D1;
+}
+
+.repository-lst {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.repository-lst .col {
+  width: 25%;
+  float: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: .5rem;
+  box-sizing: border-box;
+}
+
+.repository-lst .undeployed {
+  background-image: url(<%= asset_data_uri("ship.png") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.repository-lst .archived {
+  background-image: url(<%= asset_data_uri("archive-solid.svg") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.repository-lst .auto-provisioned {
+  background-image: url(<%= asset_data_uri("magic-solid.svg") %>);
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+  background-position: 0px center;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+
+.repository-lst:empty:before {
+  content: "No environment to deploy to, Shipit Squirrel is displeased";
+}
+
+.repository-lst li:nth-child(even) a {
+  background-color: #f8f9fa;
+}
+
+.repository-lst li.selected a {
+  background-color: var(--blue);
+  outline: none;
+}
+
+.repository-lst li.selected a span {
+  color: #fff;
+}
+
+.repository-lst li.selected a small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.repository-lst li a {
+  padding: .35rem;
+  margin-left: -0.35rem;
+  margin-right: -0.35rem;
+  border-radius: 4px;
+  display: block;
+}
+
+.repository-lst li a:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.repository-lst li a:hover, .repository-lst li a:focus {
+  background-color: var(--blue);
+  outline: none;
+}
+
+.repository-lst li a:hover span, .repository-lst li a:focus span {
+  color: #fff;
+}
+
+.repository-lst li a:hover small, .repository-lst li a:focus small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.repository-search input {
+  margin-left: 4%;
+  width: 92%;
+  padding: 6px;
+  font-size: larger;
+  border-radius: 8px;
+  outline: 0;
+  border: 1px #a0a0a0 solid;
+}
+
+.repository-search-header {
+  display: none;
+}
+
+.show-all-repositories {
+  display: none;
+}
+
+.filtering-enabled .show-all-repositories {
+  display: inline-block;
+}
+
+.filtering-enabled .repository-search-header {
+  display: block;
+}
+
+.filtering-enabled .search-item.not-matching {
+  display: none;
+}
+
+.new_repository input.repo {
+  width: 200px;
+  display: inline;
+}
+
+.new_repository input.repo:focus {
+  padding-right: 30px !important;
+}
+
+.new_repository input:focus {
+  border-color: var(--blue);
+}
+
+.deploy-checklist {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+.deploy-checklist__item {
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.variables-header {
+  margin: 1rem 0;
+  padding-top: 1rem;
+}
+
+.variables-fields input, .variables-fields select {
+  display: inline-block;
+  width: inherit;
+  margin-right: 1rem;
+}
+
+.deploy-checklist__item__checkbox {
+  margin-right: 1rem;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.action-button {
+  margin: 0 0.5rem;
+  display: none;
+}
+
+.action-button[data-status="running"], .action-button[data-status="aborting"], .action-button[data-status="pending"] {
+  display: inline-block;
+}
+
+.action-button .caption--pending {
+  display: none;
+}
+
+.action-button.pending .deploy-action {
+  cursor: default;
+}
+
+.action-button.pending .caption--ready {
+  display: none;
+}
+
+.action-button.pending .caption--pending {
+  display: inline;
+}
+
+.task-output-container.task-output-container-main-page {
+  height: calc(100vh - 9rem - 4rem - 1px);
+}
+
+.output-line {
+  height: 1.5rem;
+}
+
+.deploy-banner {
+  min-height: 4rem;
+  height: auto;
+  background-color: #f0f4f7;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  overflow-x: hidden;
+}
+
+.deploy-banner .deploy-banner-section {
+  display: inline-block;
+  padding: .75rem 1.5rem;
+}
+
+.deploy-banner .stack-link {
+  display: none;
+}
+
+.deploy-banner .action-buttons {
+  -webkit-box-flex: 0;
+      -ms-flex: none;
+          flex: none;
+}
+
+.deploy-banner .deploy-banner-status {
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.deploy-banner[data-status="failure"] .deploy-banner-status, .deploy-banner[data-status="error"] .deploy-banner-status, .deploy-banner[data-status="timedout"] .deploy-banner-status {
+  background-color: var(--bright-red);
+  width: 100%;
+}
+
+.deploy-banner[data-status="aborted"] .deploy-banner-status, .deploy-banner[data-status="flapping"] .deploy-banner-status {
+  background-color: var(--orange);
+  width: 100%;
+}
+
+.deploy-banner[data-status="success"] .deploy-banner-status {
+  background-color: var(--green);
+  width: 100%;
+}
+
+.deploy-banner[data-status="pending"] .deploy-banner-status, .deploy-banner[data-status="running"] .deploy-banner-status {
+  background-color: var(--blue);
+  width: 0%;
+  z-index: 9999;
+  -webkit-animation: loading-slide 1.2s linear infinite;
+}
+
+.deploy-banner[data-status="aborting"] .deploy-banner-status {
+  background-color: var(--orange);
+  width: 0%;
+  z-index: 9999;
+  -webkit-animation: loading-slide 1.2s linear infinite;
+}
+
+.deploy-banner .deploy-status {
+  color: #8f9498;
+}
+
+.deploy-banner .short-sha {
+  background: #e6eaed;
+  font-family: Menlo, monospace;
+  color: #9cacbb;
+  border-radius: 4px;
+  font-size: .875rem;
+  padding: .25em .45em;
+}
+
+.deploy-banner .short-sha-no-bg {
+  font-family: Menlo, monospace;
+  border-radius: 4px;
+  font-size: .875rem;
+}
+
+.search-bar {
+  background-color: #f0f4f7;
+  border: 1px solid #f0f4f7;
+  position: absolute;
+  right: 0px;
+  padding: .125rem;
+  border-bottom-left-radius: .25rem;
+}
+
+.search-bar input[type="search"] {
+  width: 300px;
+}
+
+@-webkit-keyframes loading-slide {
+  0% {
+    width: 0%;
+    left: 0%;
+  }
+  30% {
+    left: 0%;
+  }
+  100% {
+    width: 50%;
+    left: 100%;
+  }
+}
+
+@keyframes loading-slide {
+  0% {
+    width: 0%;
+    left: 0%;
+  }
+  30% {
+    left: 0%;
+  }
+  100% {
+    width: 50%;
+    left: 100%;
+  }
+}
+
+.code-preview {
+  margin: 1.5rem 0;
+}
+
+.sidebar.enabled + .deploy-main {
+  margin-left: 300px;
+}
+
+.sidebar {
+  background-color: var(--slate);
+  color: white;
+  overflow: hidden;
+  height: calc(100vh - 9rem - 1px);
+  position: absolute;
+  width: 0px;
+}
+
+.sidebar.enabled {
+  width: 300px;
+}
+
+.sidebar-plugins {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.commit-checks {
+  border: 0.25rem solid var(--terminal-black);
+}
+
+.commit-checks[data-status="success"] {
+  border-color: var(--green);
+}
+
+.commit-checks[data-status="failed"], .commit-checks[data-status="failure"], .commit-checks[data-status="error"], .commit-checks[data-status="timedout"] {
+  border-color: var(--bright-red);
+}
+
+.commit-checks[data-status="pending"], .commit-checks[data-status="running"] {
+  border-color: var(--dark-yellow);
+}
+
+.monitoring-panel {
+  display: inline-block;
+}
+
+.monitoring-panel iframe {
+  border: none;
+}
+
+.ignored-safeties {
+  color: var(--orange);
+}
+
+.deploy-actions {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+@media (min-width: 1000px) {
+  .deploy-actions {
+    margin-left: 1rem;
+    min-width: 12rem;
+  }
+  .deploy-actions .btn {
+    float: right;
+  }
+}
+
+.release-validation {
+  display: inline-block;
+}
+
+.release-validation .icon {
+  background-color: #ddd;
+}
+
+.release-validation:hover .icon {
+  background-color: #aaaaaa;
+}
+
+.deploy[data-release-status="success"] .release-validation .action-validate-release:before, .deploy[data-release-status="success"] .release-validation .action-validate-release:after,
+.deploy[data-release-status="failure"] .release-validation .action-reject-release:before,
+.deploy[data-release-status="failure"] .release-validation .action-reject-release:after {
+  display: none;
+}
+
+.deploy[data-release-status="success"] .release-validation .action-validate-release .icon,
+.deploy[data-release-status="failure"] .release-validation .action-reject-release .icon {
+  background-color: #ddd;
+}
+
+.deploy .commit-lock .icon {
+  background-color: var(--bright-red);
+}
+
+.deploy .commit-lock:hover .icon {
+  background-color: #c40808;
+}
+
+.deploy .commit-lock .action-lock-commit {
+  display: none;
+}
+
+.deploy .commit-lock .action-unlock-commit {
+  display: inline-block;
+}
