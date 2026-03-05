@@ -119,6 +119,14 @@ module Shipit
       assert_equal true, @stack.reload.inaccessible_since?
     end
 
+    test "if the GitHub organization is unknown, the stack is marked as inaccessible and a warning is logged" do
+      @job.expects(:fetch_missing_commits).raises(Shipit::GithubOrganizationUnknown.new("shopify-playgrounds"))
+      Rails.logger.expects(:warn).with("GithubSyncJob: unknown GitHub organization shopify-playgrounds for stack #{@stack.id}")
+      @job.perform(stack_id: @stack.id)
+
+      assert_equal true, @stack.reload.inaccessible_since?
+    end
+
     test "#perform retries when expected_head_sha is not found in the github response" do
       expected_sha = "abcd1234"
       Stack.any_instance.expects(:github_commits).returns(@github_commits)
