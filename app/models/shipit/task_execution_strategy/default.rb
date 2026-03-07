@@ -62,7 +62,11 @@ module Shipit
 
       def perform_task
         capture_all!(@commands.install_dependencies)
-        capture_all!(@commands.perform)
+        if ENV['SHIPIT_DRY_RUN'].present?
+          @task.write("\nSkipping deploy steps (dry run mode)\n")
+        else
+          capture_all!(@commands.perform)
+        end
       end
 
       def checkout_repository

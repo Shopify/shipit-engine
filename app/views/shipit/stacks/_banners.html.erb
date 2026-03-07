@@ -70,7 +70,11 @@
         <p class="banner__text">
           Continuous Delivery for this stack is currently paused because
 
-          <%= link_to_if stack.deployment_checks_passed?, 'the pre-deploy checks failed', stack_commit_checks_path(stack, sha: stack.next_commit_to_deploy.sha) %>.
+          <% if stack.next_commit_to_deploy %>
+            <%= link_to_if stack.deployment_checks_passed?, 'the pre-deploy checks failed', stack_commit_checks_path(stack, sha: stack.next_commit_to_deploy.sha) %>.
+          <% else %>
+            the pre-deploy checks failed.
+          <% end %>
           You can either wait for them to pass, or trigger a deploy manually.
         </p>
       </div>

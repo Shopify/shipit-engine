@@ -8,6 +8,24 @@
 * Updated README to include sections on post scripts with on_error flag
 * Refactored README to use mostly pure markdown instead of HTML
 
+# 0.44.2
+* Add dry-run flag for testing environments
+
+# 0.44.1
+* (bugfix) Fix NoMethodError in continuous delivery delayed banner when `next_commit_to_deploy` is nil
+
+# 0.44.0
+* Return 422 and log when a webhook is from an unknown (unconfigured) GitHub organization.
+
+# 0.43.3
+* (bugfix) Ensure we always call `bundle config set without`, even if the without group is empty
+
+# 0.43.0
+* Use `bundle config set frozen true` instead of deprecated `--frozen` flag
+
+# 0.42.2
+* Move git ask pass to env config for improved local development (##1441)
+
 # 0.42.1
 
 * Fix unbounded memory usage in RefreshCheckRunsJob(#1436)

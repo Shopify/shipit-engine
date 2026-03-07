@@ -26,9 +26,18 @@ module Shipit
       end
 
       def bundle_install
-        bundle = %(bundle install #{frozen_flag} --jobs 4 --path #{bundle_path} --retry 2)
-        bundle += " --without=#{bundler_without.join(':')}" unless bundler_without.empty?
-        [remove_ruby_version_from_gemfile, bundle]
+        install_command = %(bundle install --jobs 4 --retry 2)
+        [
+          remove_ruby_version_from_gemfile,
+          (bundle_config_frozen if frozen_mode?),
+          bundle_config_path,
+          bundle_without_groups,
+          install_command
+        ].compact
+      end
+
+      def bundle_config_path
+        "bundle config set --local path #{bundle_path}"
       end
 
       def remove_ruby_version_from_gemfile
@@ -41,11 +50,18 @@ module Shipit
         end
       end
 
-      def frozen_flag
-        return unless gemfile_lock_exists?
-        return if config('dependencies', 'bundler', 'frozen') == false
+      def bundle_config_frozen
+        'bundle config set --local frozen true'
+      end
 
-        '--frozen'
+      def bundle_without_groups
+        "bundle config set --local without '#{bundler_without.join(':')}'"
+      end
+
+      def frozen_mode?
+        return false unless gemfile_lock_exists?
+
+        config('dependencies', 'bundler', 'frozen') != false
       end
 
       def bundler_without

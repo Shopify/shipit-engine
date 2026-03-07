@@ -17,7 +17,7 @@ end
 
 module Shipit
   class Application < Rails::Application
-    config.load_defaults 8.0
+    config.load_defaults 8.1
     config.active_record.encryption.support_sha1_for_non_deterministic_encryption = true
   end
 end

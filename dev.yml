@@ -6,14 +6,17 @@ type: rails
 
 up:
   - packages:
-    - sqlite
+      - sqlite
   - ruby
-  - isogun
   - nginx
   - redis
   - mysql
   - bundler:
       without: ci
+  - custom:
+      name: Check for secrets file
+      met?: test -f config/secrets.development.yml
+      meet: "echo \"Run 'dev bootstrap' first (WARNING: drops database)\" && exit 1"
 
 server:
   root: test/dummy
