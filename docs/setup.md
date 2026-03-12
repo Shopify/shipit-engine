@@ -171,6 +171,14 @@ production:
   git_progress_output: true
 ```
 
+### Environment Variables
+
+**`SHIPIT_PRESENCE_CHECK_TIMEOUT`** is the duration (in seconds) after which a deploy task is considered dead if the background job hasn't reported back. Defaults to `30`. Increase this if deploy tasks are being reaped during long-running steps like `bundle install` with native extension compilation.
+
+```bash
+export SHIPIT_PRESENCE_CHECK_TIMEOUT=120
+```
+
 ### Using Multiple Github Applications
 
 A Github application can only authenticate to the Github organization it's installed in. If you want to deploy code from multiple Github organizations the `github` section of your `config/secrets.yml` will need to be formatted differently. The top-level keys should be the name of each Github organization, and the following sub-keys are the Github app details for that particular organization.

@@ -91,6 +91,10 @@ module Shipit
     ENV['SHIPIT_ENABLE_SAMESITE_NONE'].present?
   end
 
+  def presence_check_timeout
+    ENV.fetch('SHIPIT_PRESENCE_CHECK_TIMEOUT', 30).to_i
+  end
+
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end

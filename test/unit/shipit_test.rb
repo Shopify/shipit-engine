@@ -30,6 +30,17 @@ module Shipit
       assert_equal(['shopify/developers'], Shipit.github_teams.map(&:handle))
     end
 
+    test ".presence_check_timeout defaults to 30" do
+      assert_equal 30, Shipit.presence_check_timeout
+    end
+
+    test ".presence_check_timeout returns the configured value from ENV" do
+      ENV['SHIPIT_PRESENCE_CHECK_TIMEOUT'] = '120'
+      assert_equal 120, Shipit.presence_check_timeout
+    ensure
+      ENV.delete('SHIPIT_PRESENCE_CHECK_TIMEOUT')
+    end
+
     class RedisTest < self
       setup do
         @client = mock(:client)
