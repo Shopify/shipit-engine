@@ -41,6 +41,29 @@ module Shipit
       ENV.delete('SHIPIT_PRESENCE_CHECK_TIMEOUT')
     end
 
+    test ".presence_check_timeout raises on non-numeric string" do
+      ENV['SHIPIT_PRESENCE_CHECK_TIMEOUT'] = 'abc'
+      assert_raises(ArgumentError) { Shipit.presence_check_timeout }
+    ensure
+      ENV.delete('SHIPIT_PRESENCE_CHECK_TIMEOUT')
+    end
+
+    test ".presence_check_timeout raises on zero" do
+      ENV['SHIPIT_PRESENCE_CHECK_TIMEOUT'] = '0'
+      error = assert_raises(ArgumentError) { Shipit.presence_check_timeout }
+      assert_match(/must be a positive integer/, error.message)
+    ensure
+      ENV.delete('SHIPIT_PRESENCE_CHECK_TIMEOUT')
+    end
+
+    test ".presence_check_timeout raises on negative value" do
+      ENV['SHIPIT_PRESENCE_CHECK_TIMEOUT'] = '-5'
+      error = assert_raises(ArgumentError) { Shipit.presence_check_timeout }
+      assert_match(/must be a positive integer/, error.message)
+    ensure
+      ENV.delete('SHIPIT_PRESENCE_CHECK_TIMEOUT')
+    end
+
     class RedisTest < self
       setup do
         @client = mock(:client)

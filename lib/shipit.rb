@@ -92,7 +92,11 @@ module Shipit
   end
 
   def presence_check_timeout
-    ENV.fetch('SHIPIT_PRESENCE_CHECK_TIMEOUT', 30).to_i
+    raw = ENV.fetch('SHIPIT_PRESENCE_CHECK_TIMEOUT', '30')
+    timeout = Integer(raw)
+    raise ArgumentError, "SHIPIT_PRESENCE_CHECK_TIMEOUT must be a positive integer, got #{raw.inspect}" if timeout <= 0
+
+    timeout
   end
 
   def app_name
