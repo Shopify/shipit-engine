@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.45.1
+* Make `PRESENCE_CHECK_TIMEOUT` configurable via environment variable
+
 # 0.45.0
 * Shipit-engine now requires application to be at least on Rails 8.1.1.
 * Remove dependency on SaasC that is lo longer maintained. A vanilla CSS file now ships  with shipit-engine.
