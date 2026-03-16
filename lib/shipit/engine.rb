@@ -31,7 +31,6 @@ module Shipit
         shipit.js
         shipit.css
         merge_status.js
-        merge_status.css
       ]
       app.config.assets.precompile << proc do |path|
         path =~ %r{\Aplugins/[-\w]+\.(js|css)\Z}
