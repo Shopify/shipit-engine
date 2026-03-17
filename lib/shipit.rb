@@ -91,6 +91,14 @@ module Shipit
     ENV['SHIPIT_ENABLE_SAMESITE_NONE'].present?
   end
 
+  def presence_check_timeout
+    raw = ENV.fetch('SHIPIT_PRESENCE_CHECK_TIMEOUT', '30')
+    timeout = Integer(raw)
+    raise ArgumentError, "SHIPIT_PRESENCE_CHECK_TIMEOUT must be a positive integer, got #{raw.inspect}" if timeout <= 0
+
+    timeout
+  end
+
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end

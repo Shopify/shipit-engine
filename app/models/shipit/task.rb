@@ -10,7 +10,6 @@ module Shipit
       end
     end
 
-    PRESENCE_CHECK_TIMEOUT = 30
     ACTIVE_STATUSES = %w[pending running aborting].freeze
     COMPLETED_STATUSES = %w[success flapping faulty validating].freeze
     UNSUCCESSFUL_STATUSES = %w[error failed aborted flapping timedout faulty].freeze
@@ -327,7 +326,7 @@ module Shipit
     end
 
     def ping
-      Shipit.redis.set(status_key, 'alive', ex: PRESENCE_CHECK_TIMEOUT)
+      Shipit.redis.set(status_key, 'alive', ex: Shipit.presence_check_timeout)
     end
 
     def alive?
@@ -335,7 +334,7 @@ module Shipit
     end
 
     def report_dead!
-      write("ERROR: Background job hasn't reported back in #{PRESENCE_CHECK_TIMEOUT} seconds.")
+      write("ERROR: Background job hasn't reported back in #{Shipit.presence_check_timeout} seconds.")
       error!
     end
 
