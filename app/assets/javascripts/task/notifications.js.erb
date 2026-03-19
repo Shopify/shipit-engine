@@ -1,0 +1,48 @@
+var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+this.Notifications = (function() {
+  var IMAGES;
+
+  IMAGES = {
+    success: '<%= image_path "deploy_success.jpg" %>',
+    failed: '<%= image_path "deploy_failed.jpg" %>',
+    error: '<%= image_path "deploy_error.jpg" %>'
+  };
+
+  Notifications.init = function(outputStream, task) {
+    outputStream.addEventListener('status', new this(task).statusUpdated);
+  };
+
+  function Notifications(arg) {
+    this.repo = arg.repo, this.description = arg.description;
+    this.statusUpdated = bind(this.statusUpdated, this);
+  }
+
+  Notifications.prototype.statusUpdated = function(status) {
+    if (!(status in IMAGES)) {
+      return;
+    }
+    if ($.notifyCheck() !== $.NOTIFY_ALLOWED) {
+      return;
+    }
+    $.notify(IMAGES[status], this.repo, this.message(status));
+  };
+
+  Notifications.prototype.message = function(status) {
+    var deployShortSha;
+    deployShortSha = $('.short-sha').text();
+    switch (status) {
+      case 'success':
+        return "Your " + this.description + " was successful!";
+      case 'failed':
+        return "Your " + this.description + " failed.";
+      case 'error':
+        return "Error during " + this.description + ".";
+      default:
+        return "Your " + this.description + " ended with status: " + status;
+    }
+  };
+
+  return Notifications;
+
+})();

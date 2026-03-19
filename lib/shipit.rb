@@ -8,7 +8,6 @@ require 'responders'
 require 'explicit-parameters'
 require 'paquito'
 
-require 'coffee-rails'
 require 'jquery-rails'
 require 'rails-timeago'
 require 'lodash-rails'
