@@ -35,6 +35,12 @@ module Shipit
 
     self.pretty_generate = false
 
+    SAFE_DEPLOY_COMMAND_PREFIXES = %w[
+      production-platform-next
+      kubernetes-deploy
+      kubernetes-restart
+    ].freeze
+
     def initialize(config)
       @config = config
     end
@@ -76,7 +82,18 @@ module Shipit
 
     def dependencies_steps
       around_steps('dependencies') do
-        config('dependencies', 'override') { discover_dependencies_steps || [] }
+        config('dependencies', 'override') do
+          if skip_dependencies_for_production_platform?
+            Rails.logger.warn(
+              "Skipping dependency installation: stack uses production_platform " \
+              "and has no deploy steps requiring local dependencies. " \
+              "To override, set `dependencies.override` in your shipit.yml."
+            )
+            []
+          else
+            discover_dependencies_steps || []
+          end
+        end
       end
     end
     alias dependencies_steps! dependencies_steps
@@ -263,6 +280,43 @@ module Shipit
     end
 
     private
+
+    def production_platform?
+      config('production_platform').present?
+    end
+
+    def skip_dependencies_for_production_platform?
+      return false unless production_platform?
+
+      # Only check explicitly configured steps. If deploy/rollback rely on auto-discovery
+      # (no override), we conservatively assume dependencies may be needed.
+      # Similarly, discovered task definitions (e.g., kubernetes-restart) are inherently
+      # safe commands and don't need to be checked here.
+      all_steps = Array(config('deploy', 'override')) +
+                  Array(config('deploy', 'pre')) +
+                  Array(config('deploy', 'post')) +
+                  Array(config('rollback', 'override')) +
+                  Array(config('rollback', 'pre')) +
+                  Array(config('rollback', 'post')) +
+                  all_task_steps
+
+      all_steps = all_steps.compact
+      return false if all_steps.empty?
+
+      all_steps.all? { |step| safe_deploy_command?(step) }
+    end
+
+    def all_task_steps
+      task_configs = config('tasks') || {}
+      task_configs.values.flat_map { |td| Array(td['steps']) }
+    end
+
+    def safe_deploy_command?(step)
+      step = step.to_s.strip
+      return true if step.empty?
+
+      SAFE_DEPLOY_COMMAND_PREFIXES.any? { |prefix| step == prefix || step.start_with?("#{prefix} ") }
+    end
 
     def around_steps(section)
       steps = yield

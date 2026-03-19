@@ -52,6 +52,120 @@ module Shipit
       assert_equal ['before', 'bundle install', 'after'], @spec.dependencies_steps
     end
 
+    test '#dependencies_steps returns empty when production_platform is configured and all steps are safe' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['production-platform-next deploy my-app production-unrestricted'] }
+      )
+      assert_equal [], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps still discovers deps when production_platform has unsafe deploy steps' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['bundle exec rake deploy'] }
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps still discovers deps when production_platform is absent' do
+      @spec.stubs(:load_config).returns({})
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps respects explicit override even with production_platform' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'dependencies' => { 'override' => ['custom-install'] }
+      )
+      assert_equal ['custom-install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps preserves pre/post steps when skipping for production_platform' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['production-platform-next deploy my-app production-unrestricted'] },
+        'dependencies' => { 'pre' => ['echo before'], 'post' => ['echo after'] }
+      )
+      assert_equal ['echo before', 'echo after'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps skips deps when production_platform tasks only use safe commands' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'tasks' => {
+          'restart' => { 'steps' => ['production-platform-next run-once my-app production-unrestricted restart'] }
+        }
+      )
+      assert_equal [], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps does not skip when production_platform task has unsafe steps' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'tasks' => {
+          'migrate' => { 'steps' => ['bundle exec rake db:migrate'] }
+        }
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps skips deps when production_platform uses kubernetes-deploy' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['kubernetes-deploy --max-watch-seconds 900 my-namespace my-context'] }
+      )
+      assert_equal [], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps falls through to discovery when deploy step has unknown command' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['some-unknown-deploy-tool --flag'] }
+      )
+      @spec.expects(:discover_dependencies_steps).returns(nil).once
+      assert_equal [], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps does not skip when deploy is safe but rollback is unsafe' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => { 'override' => ['production-platform-next deploy my-app production-unrestricted'] },
+        'rollback' => { 'override' => ['bundle exec rake rollback'] }
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps does not skip when deploy.pre has unsafe steps' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] },
+        'deploy' => {
+          'pre' => ['bundle exec rake before_deploy'],
+          'override' => ['production-platform-next deploy my-app production-unrestricted']
+        }
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
+    test '#dependencies_steps does not skip when production_platform has no deploy override configured' do
+      @spec.stubs(:load_config).returns(
+        'production_platform' => { 'application' => 'my-app', 'runtime_ids' => ['production-unrestricted'] }
+      )
+      @spec.expects(:bundler?).returns(true).at_least_once
+      @spec.expects(:bundle_install).returns(['bundle install'])
+      assert_equal ['bundle install'], @spec.dependencies_steps
+    end
+
     test '#fetch_deployed_revision_steps! is unknown by default' do
       assert_raises DeploySpec::Error do
         @spec.fetch_deployed_revision_steps!
