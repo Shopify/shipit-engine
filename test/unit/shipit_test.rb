@@ -30,6 +30,15 @@ module Shipit
       assert_equal(['shopify/developers'], Shipit.github_teams.map(&:handle))
     end
 
+    test ".safe_deploy_command_prefixes defaults to empty array" do
+      assert_equal [], Shipit.safe_deploy_command_prefixes
+    end
+
+    test ".safe_deploy_command_prefixes can be set" do
+      Shipit.safe_deploy_command_prefixes = %w[foo bar]
+      assert_equal %w[foo bar], Shipit.safe_deploy_command_prefixes
+    end
+
     test ".presence_check_timeout defaults to 30" do
       assert_equal 30, Shipit.presence_check_timeout
     end

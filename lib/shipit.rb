@@ -69,6 +69,7 @@ module Shipit
   attr_writer(
     :internal_hook_receivers,
     :preferred_org_emails,
+    :safe_deploy_command_prefixes,
     :task_execution_strategy,
     :task_logger,
     :use_git_askpass
@@ -291,6 +292,10 @@ module Shipit
 
   def committer_email
     secrets.committer_email.presence || "#{app_name.underscore.dasherize}@#{host}"
+  end
+
+  def safe_deploy_command_prefixes
+    @safe_deploy_command_prefixes ||= []
   end
 
   def internal_hook_receivers
