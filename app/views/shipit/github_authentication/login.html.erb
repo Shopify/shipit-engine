@@ -1,0 +1,14 @@
+<% content_for :page_title do %>
+  <h1>Login</h1>
+<% end %>
+
+<div class="wrapper">
+  <section>
+    <%= form_with url: github_authentication_path, method: :post do |form| %>
+      <%= form.hidden_field :origin, value: params[:origin] %>
+      <div class="field-wrapper">
+        <%= form.submit "Login with GitHub", class: 'btn primary' %>
+      </div>
+    <% end %>
+  </section>
+</div>
