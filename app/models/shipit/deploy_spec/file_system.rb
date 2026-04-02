@@ -106,24 +106,30 @@ module Shipit
         build_config(config_file_path, config_obj)
       end
 
+      YAML_EXTENSIONS = ["yml", "yaml"].freeze
+
       def shipit_file_names_in_priority_order
-        [
-          "#{app_name}.#{@env}.yml",
-          ".shipit/#{app_name}.#{@env}.yml",
+        YAML_EXTENSIONS.flat_map do |ext|
+          [
+            "#{app_name}.#{@env}.#{ext}",
+            ".shipit/#{app_name}.#{@env}.#{ext}",
 
-          "#{app_name}.yml",
-          ".shipit/#{app_name}.yml",
+            "#{app_name}.#{ext}",
+            ".shipit/#{app_name}.#{ext}",
 
-          "shipit.#{@env}.yml",
-          ".shipit/#{@env}.yml",
+            "shipit.#{@env}.#{ext}",
+            ".shipit/#{@env}.#{ext}",
 
-          "shipit.yml",
-          ".shipit/shipit.yml"
-        ].uniq
+            "shipit.#{ext}",
+            ".shipit/shipit.#{ext}"
+          ]
+        end.uniq
       end
 
       def bare_shipit_filenames
-        ["#{app_name}.yml", "shipit.yml", ".shipit/#{app_name}.yml", ".shipit/shipit.yml"].uniq
+        YAML_EXTENSIONS.flat_map do |ext|
+          ["#{app_name}.#{ext}", "shipit.#{ext}", ".shipit/#{app_name}.#{ext}", ".shipit/shipit.#{ext}"]
+        end.uniq
       end
 
       def config_file_path
