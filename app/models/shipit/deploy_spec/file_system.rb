@@ -121,7 +121,7 @@ module Shipit
             ".shipit/#{@env}.#{ext}",
 
             "shipit.#{ext}",
-            ".shipit/shipit.#{ext}",
+            ".shipit/shipit.#{ext}"
           ]
         end.uniq
       end
