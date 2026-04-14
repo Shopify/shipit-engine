@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.45.2
+* (bugfix) Fix 404 error when removing all permissions from an API client
+
 # 0.45.1
 * Make `PRESENCE_CHECK_TIMEOUT` configurable via environment variable
 
