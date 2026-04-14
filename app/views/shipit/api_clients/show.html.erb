@@ -17,6 +17,7 @@
   <section>
     <%= form_for @api_client, url: api_client_path(@api_client) do |f| %>
       <h3> Permissions </h3>
+      <%= hidden_field_tag 'api_client[permissions][]', '' %>
       <ul class="deploy-checklist">
         <% Shipit::ApiClient::PERMISSIONS.each do |permission| %>
           <li class="deploy-checklist__item">

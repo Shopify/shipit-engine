@@ -43,7 +43,9 @@ module Shipit
     end
 
     def update_params
-      params.require(:api_client).permit(permissions: [])
+      permitted = params.require(:api_client).permit(permissions: [])
+      permitted[:permissions] = permitted[:permissions].reject(&:blank?)
+      permitted
     end
   end
 end
