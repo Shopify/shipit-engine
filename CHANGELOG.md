@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.45.3
+* Retry CreateOnGithubJob on transient GitHub authentication failures.
+* Stabilize PerformTaskJob tests by stubbing the task execution strategy instead of Command#stream!.
+
 # 0.45.2
 * (bugfix) Fix 404 error when removing all permissions from an API client
 
