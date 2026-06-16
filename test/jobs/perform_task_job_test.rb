@@ -107,7 +107,7 @@ module Shipit
     end
 
     test "mark deploy as error an unexpected exception is raised" do
-      Command.any_instance.expects(:stream!).at_least_once.raises(Command::Denied)
+      Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).at_least_once.raises(Command::Denied)
 
       @job.perform(@deploy)
 
@@ -116,7 +116,7 @@ module Shipit
     end
 
     test "mark deploy as timedout if a command timeout" do
-      Command.any_instance.expects(:stream!).at_least_once.raises(Command::TimedOut)
+      Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).at_least_once.raises(Command::TimedOut)
 
       @job.perform(@deploy)
 
@@ -129,7 +129,7 @@ module Shipit
       begin
         Shipit.timeout_exit_codes = [70].freeze
 
-        Command.any_instance.expects(:stream!).at_least_once.raises(Command::Failed.new('Blah', 70))
+        Shipit::TaskExecutionStrategy::Default.any_instance.expects(:capture!).at_least_once.raises(Command::Failed.new('Blah', 70))
 
         @job.perform(@deploy)
 
