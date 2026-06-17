@@ -109,6 +109,26 @@ module Shipit
       assert_select 'a[href="http://google.com"]'
     end
 
+    test "#show renders both the delayed and external-lock banners when both apply" do
+      failing_checks = Class.new do
+        def self.call(_stack)
+          false
+        end
+      end
+      Shipit.deployment_checks = failing_checks
+      @stack.update!(continuous_deployment: true, continuous_delivery_delayed_since: Time.current)
+      assert @stack.continuous_delivery_delayed?
+      refute @stack.deployment_checks_passed?
+
+      get :show, params: { id: @stack.to_param }
+
+      assert_response :ok
+      assert_select '.banner .banner__title', text: 'Continuous Delivery Delayed!'
+      assert_select '.banner--orange .banner__title', text: 'Stack has been locked by external system!'
+    ensure
+      Shipit.deployment_checks = nil
+    end
+
     test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
       assert_difference "Stack.count" do
         post :create, params: {
