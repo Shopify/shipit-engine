@@ -93,6 +93,13 @@ module Shipit
       Commit.where('author_id = :id or committer_id = :id', id:).distinct.pluck(:stack_id)
     end
 
+    TRANSIENT_GITHUB_REFRESH_ERRORS = [
+      Faraday::ConnectionFailed,
+      Faraday::TimeoutError,
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+    ].freeze
+
     def refresh_from_github!
       # Users are global, any app can be used
       # This will not work for users that only exist in an Enterprise install
@@ -101,6 +108,9 @@ module Shipit
       identify_renamed_user!
     rescue Octokit::Forbidden
       Rails.logger.info("User #{name}, github_id #{github_id} has forbidden access to their GitHub, likely deleted.")
+    rescue *TRANSIENT_GITHUB_REFRESH_ERRORS => error
+      instrument_transient_github_refresh_error(error)
+      raise
     end
 
     def github_user=(github_user)
@@ -153,6 +163,24 @@ module Shipit
       update!(github_user: github_author)
     rescue Octokit::NotFound
       false
+    end
+
+    def instrument_transient_github_refresh_error(error)
+      payload = {
+        user_id: id,
+        github_id: github_id,
+        github_login: login,
+        error_class: error.class.name,
+        error_message: error.message,
+        operation: "refresh_github_user",
+      }
+
+      ActiveSupport::Notifications.instrument("transient_github_refresh_error.shipit", payload)
+      Rails.logger.warn(
+        "Transient GitHub user refresh error " \
+          "user_id=#{id} github_id=#{github_id} github_login=#{login.inspect} " \
+          "error_class=#{error.class.name} error_message=#{error.message.inspect}"
+      )
     end
 
     def email_valid_and_preferred?(email_address)
