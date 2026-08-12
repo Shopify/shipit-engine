@@ -151,8 +151,17 @@ module Shipit
       end
 
       SHIPIT_CONFIG_INHERIT_FROM_KEY = "inherit_from"
-      def build_config(path, config_obj)
+      MAX_INHERIT_FROM_DEPTH = 10
+
+      def build_config(path, config_obj, depth = 0)
         return config_obj if config_obj.blank? || !config_obj.key?(SHIPIT_CONFIG_INHERIT_FROM_KEY)
+
+        # An inherit_from cycle (a.yml <-> b.yml) would otherwise recurse until
+        # SystemStackError. Surface a clear configuration error instead.
+        if depth >= MAX_INHERIT_FROM_DEPTH
+          raise Error, "inherit_from chain exceeds #{MAX_INHERIT_FROM_DEPTH} levels " \
+                       "(cycle?) while resolving #{path}"
+        end
 
         inherits_from_path = path.dirname.join(config_obj.delete(SHIPIT_CONFIG_INHERIT_FROM_KEY))
         if inherits_from_path.exist?
@@ -161,7 +170,7 @@ module Shipit
           path = inherits_from_path
         end
 
-        build_config(path, config_obj)
+        build_config(path, config_obj, depth + 1)
       end
 
       def read_config(path)

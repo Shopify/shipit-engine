@@ -11,6 +11,31 @@ module Shipit
       @spec.stubs(:load_config).returns({})
     end
 
+    test 'an inherit_from cycle raises a clear error instead of recursing forever' do
+      Dir.mktmpdir do |dir|
+        File.write(File.join(dir, 'shipit.production.yml'), "inherit_from: a.yml\n")
+        File.write(File.join(dir, 'a.yml'), "inherit_from: b.yml\n")
+        File.write(File.join(dir, 'b.yml'), "inherit_from: a.yml\n")
+
+        spec = DeploySpec::FileSystem.new(dir, @stack)
+        error = assert_raises(DeploySpec::Error) { spec.cacheable }
+        assert_match(/inherit_from chain exceeds/, error.message)
+      end
+    end
+
+    test 'an inherit_from chain under the depth cap resolves normally' do
+      Dir.mktmpdir do |dir|
+        File.write(File.join(dir, 'shipit.production.yml'), "inherit_from: a.yml\ndeploy:\n  override:\n    - echo child\n")
+        File.write(File.join(dir, 'a.yml'), "inherit_from: b.yml\n")
+        File.write(File.join(dir, 'b.yml'), "machine:\n  environment:\n    FOO: bar\n")
+
+        spec = DeploySpec::FileSystem.new(dir, @stack)
+        config = spec.cacheable.config
+        assert_equal ['echo child'], config.dig('deploy', 'override')
+        assert_equal 'bar', config.dig('machine', 'environment', 'FOO')
+      end
+    end
+
     test '#supports_fetch_deployed_revision? returns false by default' do
       refute @spec.supports_fetch_deployed_revision?
     end
