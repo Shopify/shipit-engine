@@ -204,7 +204,7 @@ module Shipit
 
       assert_enqueued_with(job: RefreshStatusesJob, args: [stack_id: @stack.id]) do
         assert_enqueued_with(job: RefreshCheckRunsJob, args: [stack_id: @stack.id]) do
-          assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id]) do
+          assert_enqueued_with(job: GithubSyncJob, args: [stack_id: @stack.id, force_spec_cache: true]) do
             post :refresh, params: { id: @stack.to_param }
           end
         end

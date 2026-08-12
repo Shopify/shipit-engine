@@ -16,9 +16,49 @@ module Shipit
       @job.perform(stack_id: @stack.id)
     end
 
-    test "#perform finally enqueue a CacheDeploySpecJob" do
+    test "#perform does not enqueue a CacheDeploySpecJob when the sync found nothing new" do
       Stack.any_instance.stubs(:github_commits).returns(@github_commits)
       @job.stubs(:fetch_missing_commits).yields.returns([[], nil])
+
+      assert_no_enqueued_jobs(only: CacheDeploySpecJob) do
+        @job.perform(stack_id: @stack.id)
+      end
+    end
+
+    test "#perform enqueues a CacheDeploySpecJob when the cached spec is missing" do
+      @stack.update!(cached_deploy_spec: nil)
+      Stack.any_instance.stubs(:github_commits).returns(@github_commits)
+      @job.stubs(:fetch_missing_commits).yields.returns([[], nil])
+
+      assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+        @job.perform(stack_id: @stack.id)
+      end
+    end
+
+    test "#perform enqueues a CacheDeploySpecJob when nothing changed but force_spec_cache is set" do
+      Stack.any_instance.stubs(:github_commits).returns(@github_commits)
+      @job.stubs(:fetch_missing_commits).yields.returns([[], nil])
+
+      assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+        @job.perform(stack_id: @stack.id, force_spec_cache: true)
+      end
+    end
+
+    test "#perform preserves force_spec_cache across eventual-consistency retries" do
+      expected_sha = "abcd1234"
+      Stack.any_instance.expects(:github_commits).returns(@github_commits)
+      @job.expects(:fetch_missing_commits).yields.returns([[], nil])
+      @job.expects(:commit_exists?).with(expected_sha).returns(false)
+
+      expected_args = { stack_id: @stack.id, expected_head_sha: expected_sha, force_spec_cache: true, retry_count: 1 }
+      assert_enqueued_with(job: GithubSyncJob, args: [expected_args]) do
+        @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha, force_spec_cache: true)
+      end
+    end
+
+    test "#perform enqueues a CacheDeploySpecJob when commits are detached without new commits" do
+      Stack.any_instance.stubs(:github_commits).returns(@github_commits)
+      @job.stubs(:fetch_missing_commits).yields.returns([[], shipit_commits(:third)])
 
       assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
         @job.perform(stack_id: @stack.id)
@@ -155,7 +195,9 @@ module Shipit
       @job.expects(:fetch_missing_commits).yields.returns([[], nil])
       @job.expects(:commit_exists?).with(expected_sha).returns(true)
 
-      assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
+      # No retry is scheduled, and since the sync found nothing new,
+      # no spec re-cache is needed either.
+      assert_no_enqueued_jobs(only: [GithubSyncJob, CacheDeploySpecJob]) do
         @job.perform(stack_id: @stack.id, expected_head_sha: expected_sha)
       end
     end
