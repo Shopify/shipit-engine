@@ -15,7 +15,7 @@ module Shipit
 
       dir = Pathname(Dir.tmpdir)
       StackCommands.any_instance.expects(:with_temporary_working_directory)
-        .with(commit: @last_commit, recursive: false).yields(dir)
+                   .with(commit: @last_commit, recursive: false).yields(dir)
 
       assert_equal %w[foo bar], @stack.checklist
       @job.perform(@stack)
