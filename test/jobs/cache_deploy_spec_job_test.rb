@@ -45,8 +45,8 @@ module Shipit
       @stack.stubs(:commits).returns(stub(reachable:))
       @stack.stubs(:update!) # side-effect callbacks are irrelevant to this test
 
-      StackCommands.any_instance.expects(:with_temporary_working_directory)
-                   .with(commit: @last_commit, recursive: false).yields(Pathname(Dir.tmpdir))
+      StackCommands.any_instance.expects(:cacheable_deploy_spec)
+                   .with(commit: @last_commit).returns(DeploySpec.new({}))
 
       assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
         @job.perform(@stack)
@@ -54,8 +54,8 @@ module Shipit
     end
 
     test "#perform does not re-enqueue itself when the head is unchanged" do
-      StackCommands.any_instance.expects(:with_temporary_working_directory)
-                   .with(commit: @last_commit, recursive: false).yields(Pathname(Dir.tmpdir))
+      StackCommands.any_instance.expects(:cacheable_deploy_spec)
+                   .with(commit: @last_commit).returns(DeploySpec.new({}))
 
       assert_no_enqueued_jobs(only: CacheDeploySpecJob) do
         @job.perform(@stack)

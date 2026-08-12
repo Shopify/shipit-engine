@@ -181,6 +181,42 @@ module Shipit
         assert_equal :gitattributes, error.reason
       end
 
+      test "fallback: glob listing under a symlinked directory" do
+        repo, sha = make_repo('realdir/x.gemspec' => "Gem::Specification.new\n") do |dir|
+          File.symlink('realdir', dir.join('linkdir'))
+        end
+        commands = commands_for(repo)
+
+        Dir.mktmpdir do |dir|
+          fs = GitObjectFileSystem.new(dir, @stack, commands:, sha:)
+          error = assert_raises(GitObjectFileSystem::FallbackRequired) do
+            fs.file('linkdir/*.gemspec', root: true)
+          end
+          assert_equal :symlink, error.reason
+        end
+      end
+
+      test "fallback: repository-level checkout conversion config" do
+        repo, _sha = make_repo('shipit.production.yml' => "deploy:\n  override:\n    - echo x\n")
+        git(repo, 'config', 'core.autocrlf', 'true')
+        commands = commands_for(repo)
+
+        error = assert_raises(GitObjectFileSystem::FallbackRequired) do
+          commands.send(:ensure_no_checkout_conversion_config!)
+        end
+        assert_equal :git_config, error.reason
+      end
+
+      test "checkout conversion config guard tolerates safe autocrlf values" do
+        repo, _sha = make_repo('shipit.production.yml' => "deploy:\n  override:\n    - echo x\n")
+        git(repo, 'config', 'core.autocrlf', 'input')
+        commands = commands_for(repo)
+
+        assert_nothing_raised do
+          commands.send(:ensure_no_checkout_conversion_config!)
+        end
+      end
+
       # --- Idempotency ---
 
       test "repeat access to the same file reads the object database once" do

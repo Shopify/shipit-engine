@@ -18,6 +18,12 @@ module Shipit
     # escaping the repository, runaway inherit_from chains), FallbackRequired
     # is raised and the caller is expected to fall back to the checkout-based
     # code path.
+    #
+    # Unlike the checkout path (which clones a snapshot first), reads target
+    # the stack's live git cache. A concurrent ClearGitCacheJob or git gc
+    # degrades to a command failure, which the caller treats as a fallback;
+    # since every read is pinned to a single commit sha there is no torn-read
+    # hazard.
     class GitObjectFileSystem < FileSystem
       class FallbackRequired < StandardError
         attr_reader :reason, :detail
@@ -50,6 +56,7 @@ module Shipit
         pathname = super
         if path.to_s.match?(GLOB_CHARS)
           dir = repo_rel(pathname.dirname)
+          validate_dir!(dir)
           pattern = File.basename(path.to_s)
           entries(dir).each_key do |name|
             next unless File.fnmatch(pattern, name)
@@ -147,6 +154,26 @@ module Shipit
         end
 
         (parts.last && entries(prefix)[parts.last]) || :absent
+      end
+
+      # The glob branch lists a directory without materializing a file, so the
+      # directory's own path components must be validated explicitly:
+      # `git ls-tree <sha> -- '<dir>/'` on a symlinked directory or on a
+      # regular file returns an empty listing with exit 0, which would
+      # silently diverge from Dir[] on a checkout (which follows symlinks).
+      def validate_dir!(dir)
+        return if dir.empty?
+
+        case blob_mode(dir)
+        when TREE_MODE, :absent
+          nil
+        when SYMLINK_MODE
+          raise FallbackRequired.new(:symlink, dir)
+        when GITLINK_MODE
+          raise FallbackRequired.new(:submodule, dir)
+        else
+          raise FallbackRequired.new(:file_in_path, dir)
+        end
       end
 
       # Memoized directory listings, keyed by canonical repo-relative dir

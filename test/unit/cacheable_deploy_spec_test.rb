@@ -101,6 +101,25 @@ module Shipit
       assert_includes @events.first[:detail], 'deploy'
     end
 
+    test "shadow mode preserves the fallback reason taxonomy" do
+      Shipit.checkout_less_deploy_spec = :shadow
+      error = DeploySpec::GitObjectFileSystem::FallbackRequired.new(:gitattributes, 'app')
+      @commands.expects(:checkout_cacheable_deploy_spec).with(@commit).returns([@old_spec, '/tmp/old'])
+      @commands.expects(:git_object_cacheable_deploy_spec).raises(error)
+
+      assert_equal @old_spec, @commands.cacheable_deploy_spec(commit: @commit)
+      assert_equal :gitattributes, @events.first[:reason]
+      assert_equal 'app', @events.first[:detail]
+    end
+
+    test "events carry the active mode" do
+      Shipit.checkout_less_deploy_spec = :enabled
+      @commands.expects(:git_object_cacheable_deploy_spec).with(@commit).returns([@new_spec, '/tmp/new'])
+
+      @commands.cacheable_deploy_spec(commit: @commit)
+      assert_equal :enabled, @events.first[:mode]
+    end
+
     test "shadow mode never propagates new-path exceptions" do
       Shipit.checkout_less_deploy_spec = :shadow
       @commands.expects(:checkout_cacheable_deploy_spec).with(@commit).returns([@old_spec, '/tmp/old'])
