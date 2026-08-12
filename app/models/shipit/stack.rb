@@ -117,11 +117,17 @@ module Shipit
     )
 
     def self.refresh_deployed_revisions
-      find_each.select(&:supports_fetch_deployed_revision?).each(&:async_refresh_deployed_revision)
+      # where.not avoids deserializing every stack's cached_deploy_spec each
+      # minute: a stack without a cached spec cannot have fetch steps.
+      not_archived
+        .where.not(cached_deploy_spec: nil)
+        .find_each
+        .select(&:supports_fetch_deployed_revision?)
+        .each(&:async_refresh_deployed_revision)
     end
 
     def self.schedule_continuous_delivery
-      where(continuous_deployment: true).find_each do |stack|
+      not_archived.where(continuous_deployment: true).find_each do |stack|
         ContinuousDeliveryJob.perform_later(stack)
       end
     end
