@@ -16,10 +16,16 @@ module Shipit
     def perform(stack)
       return if stack.inaccessible?
 
+      commit = stack.commits.reachable.last
       commands = Commands.for(stack)
-      commands.with_temporary_working_directory(commit: stack.commits.reachable.last, recursive: false) do |path|
+      commands.with_temporary_working_directory(commit:, recursive: false) do |path|
         stack.update!(cached_deploy_spec: DeploySpec::FileSystem.new(path, stack))
       end
+
+      # A duplicate enqueued while this job held the dedupe lock was dropped;
+      # if the head moved under us, that dropped job's work is still
+      # outstanding, so hand it off rather than leaving the spec stale.
+      CacheDeploySpecJob.perform_later(stack) if stack.commits.reachable.last&.id != commit&.id
     end
   end
 end
