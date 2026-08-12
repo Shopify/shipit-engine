@@ -7,6 +7,12 @@ module Shipit
 
     queue_as :deploys
 
+    # Caps job execution AND sets the dedupe lock expiration to match.
+    # Without it the lock falls back to Unique::DEFAULT_TIMEOUT (10s), which is
+    # far shorter than the job's runtime, letting duplicate jobs for the same
+    # stack run concurrently once the lock expires mid-run.
+    self.timeout = 15.minutes.to_i
+
     def perform(stack)
       return if stack.inaccessible?
 

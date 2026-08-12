@@ -21,5 +21,24 @@ module Shipit
       @job.perform(@stack)
       assert_equal [], @stack.reload.checklist
     end
+
+    test "the dedupe lock expiration covers the job runtime" do
+      assert_operator CacheDeploySpecJob.timeout, :>, BackgroundJob::Unique::DEFAULT_TIMEOUT
+      assert_equal 15.minutes.to_i, CacheDeploySpecJob.timeout
+    end
+
+    test "a duplicate job for the same stack is dropped while the lock is held" do
+      job = CacheDeploySpecJob.new(@stack)
+      duplicate = CacheDeploySpecJob.new(@stack)
+      duplicate_ran = false
+
+      job.acquire_lock do
+        duplicate.acquire_lock do
+          duplicate_ran = true
+        end
+      end
+
+      refute duplicate_ran, "duplicate should have been dropped, not executed"
+    end
   end
 end
