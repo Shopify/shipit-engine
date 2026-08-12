@@ -14,7 +14,8 @@ module Shipit
       @stack.update!(cached_deploy_spec: DeploySpec.new('review' => { 'checklist' => %w[foo bar] }))
 
       dir = Pathname(Dir.tmpdir)
-      StackCommands.any_instance.expects(:with_temporary_working_directory).with(commit: @last_commit).yields(dir)
+      StackCommands.any_instance.expects(:with_temporary_working_directory)
+                   .with(commit: @last_commit, recursive: false).yields(dir)
 
       assert_equal %w[foo bar], @stack.checklist
       @job.perform(@stack)
