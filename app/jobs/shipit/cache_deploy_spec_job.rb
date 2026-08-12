@@ -18,9 +18,8 @@ module Shipit
 
       commit = stack.commits.reachable.last
       commands = Commands.for(stack)
-      commands.with_temporary_working_directory(commit:, recursive: false) do |path|
-        stack.update!(cached_deploy_spec: DeploySpec::FileSystem.new(path, stack))
-      end
+      spec = commands.cacheable_deploy_spec(commit:)
+      stack.update!(cached_deploy_spec: spec)
 
       # A duplicate enqueued while this job held the dedupe lock was dropped;
       # if the head moved under us, that dropped job's work is still

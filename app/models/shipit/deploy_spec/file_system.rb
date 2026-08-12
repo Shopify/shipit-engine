@@ -24,6 +24,11 @@ module Shipit
         DeploySpec.new(cacheable_config)
       end
 
+      # NOTE: +file+ and +build_config+ (which probes and reads the
+      # inherit_from chain) are the only methods through which spec
+      # evaluation touches the disk. GitObjectFileSystem relies on that
+      # invariant by overriding both; if you add a new disk access, route it
+      # through one of them or update the subclass.
       def file(path, root: false)
         if root || directory.blank?
           @app_dir.join(path)
