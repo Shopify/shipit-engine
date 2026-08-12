@@ -79,7 +79,7 @@ module Shipit
       # file. The old checkout-based path is uncapped (a cycle loops forever)
       # and follows escaping paths onto the worker filesystem; both are hard
       # fallbacks here.
-      def build_config(path, config_obj)
+      def build_config(path, config_obj, depth = 0)
         if config_obj.present? && config_obj.key?(SHIPIT_CONFIG_INHERIT_FROM_KEY)
           @inherit_reads += 1
           raise FallbackRequired.new(:inherit_depth, @inherit_chain.join(' -> ')) if @inherit_reads > MAX_INHERIT_READS
