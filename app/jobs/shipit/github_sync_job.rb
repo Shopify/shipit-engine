@@ -19,6 +19,8 @@ module Shipit
       @stack = Stack.find(params[:stack_id])
       expected_head_sha = params[:expected_head_sha]
       retry_count = params[:retry_count] || 0
+      head_before_sync = spec_cache_target
+      appended_commits = []
 
       handle_github_errors do
         new_commits, shared_parent = fetch_missing_commits { stack.github_commits }
@@ -38,6 +40,11 @@ module Shipit
           stack.lock_reverted_commits! if appended_commits.any?(&:revert?)
         end
       end
+      sync_changed_nothing = appended_commits.empty? &&
+                             spec_cache_target == head_before_sync &&
+                             stack.cached_deploy_spec.present?
+      return if sync_changed_nothing && !params[:force_spec_cache]
+
       CacheDeploySpecJob.perform_later(stack)
     end
 
@@ -62,6 +69,13 @@ module Shipit
     end
 
     protected
+
+    # The commit CacheDeploySpecJob would check out: the newest reachable one.
+    # If it didn't change during the sync (no appends, no detaches), the cached
+    # spec is still accurate and doesn't need to be recomputed.
+    def spec_cache_target
+      stack.commits.reachable.last&.sha
+    end
 
     def handle_github_errors
       yield

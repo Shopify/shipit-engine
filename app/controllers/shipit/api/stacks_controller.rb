@@ -69,7 +69,12 @@ module Shipit
       def refresh
         RefreshStatusesJob.perform_later(stack_id: stack.id)
         RefreshCheckRunsJob.perform_later(stack_id: stack.id)
-        GithubSyncJob.perform_later(stack_id: stack.id)
+        # force_spec_cache: explicit refreshes always recompute the cached deploy
+        # spec, even when the head hasn't moved: refreshing is how a stale or
+        # broken cached spec is fixed. Threading it through the sync job (rather
+        # than enqueuing CacheDeploySpecJob directly) guarantees the spec is
+        # computed from the post-sync head.
+        GithubSyncJob.perform_later(stack_id: stack.id, force_spec_cache: true)
         render_resource(stack, status: :accepted)
       end
 
