@@ -11,6 +11,38 @@ module Shipit
       GithubHook.any_instance.stubs(:teardown!)
     end
 
+    test ".schedule_continuous_delivery skips archived stacks" do
+      archived = shipit_stacks(:archived_6hours_ago)
+      archived.update!(continuous_deployment: true)
+      @stack.update!(continuous_deployment: true)
+
+      Stack.schedule_continuous_delivery
+
+      enqueued_args = enqueued_jobs
+                      .select { |job| job[:job] == ContinuousDeliveryJob }
+                      .map { |job| job[:args].to_s }
+      assert enqueued_args.any? { |args| args.include?("Stack/#{@stack.id}") },
+             "expected a ContinuousDeliveryJob for the active stack"
+      refute enqueued_args.any? { |args| args.include?("Stack/#{archived.id}") },
+             "archived stacks must not trigger continuous delivery"
+    end
+
+    test ".refresh_deployed_revisions skips archived stacks" do
+      archived = shipit_stacks(:archived_6hours_ago)
+      archived.update!(cached_deploy_spec: DeploySpec.new('fetch' => ['echo 1']))
+      @stack.update!(cached_deploy_spec: DeploySpec.new('fetch' => ['echo 1']))
+
+      Stack.refresh_deployed_revisions
+
+      enqueued_args = enqueued_jobs
+                      .select { |job| job[:job] == FetchDeployedRevisionJob }
+                      .map { |job| job[:args].to_s }
+      assert enqueued_args.any? { |args| args.include?("Stack/#{@stack.id}") },
+             "expected a FetchDeployedRevisionJob for the active stack with fetch steps"
+      refute enqueued_args.any? { |args| args.include?("Stack/#{archived.id}") },
+             "archived stacks must not refresh deployed revisions"
+    end
+
     test "branch defaults to default branch name" do
       @stack.branch = ""
       Shipit.github.api.expects(:repo).with("shopify/shipit-engine").returns(
