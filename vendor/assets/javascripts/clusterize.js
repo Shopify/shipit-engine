@@ -251,7 +251,12 @@
       var tag = document.createElement(this.options.tag),
         clusterize_prefix = 'clusterize-';
       tag.className = [clusterize_prefix + 'extra-row', clusterize_prefix + class_name].join(' ');
-      height && (tag.style.height = height + 'px');
+      // CSP FIX: this element is serialized to markup via outerHTML and re-parsed by
+      // innerHTML below. Under a `style-src` policy without 'unsafe-inline', the browser
+      // refuses to apply a style ATTRIBUTE that came from parsed markup, so the spacer
+      // renders at height 0 and virtual scrolling collapses. Carry the height in a data
+      // attribute instead and apply it through CSSOM after insertion, which CSP allows.
+      height && tag.setAttribute('data-clusterize-height', height);
       return tag.outerHTML;
     },
     // if necessary verify data changed and insert to DOM
@@ -279,6 +284,14 @@
       }
     },
     // unfortunately ie <= 9 does not allow to use innerHTML for table elements, so make a workaround
+    // CSP FIX: apply spacer heights via CSSOM once the nodes are live in the document.
+    applyExtraRowHeights: function() {
+      var rows = this.content_elem.getElementsByClassName('clusterize-extra-row');
+      for(var i = 0; i < rows.length; i++) {
+        var h = rows[i].getAttribute('data-clusterize-height');
+        if(h) rows[i].style.height = h + 'px';
+      }
+    },
     html: function(data) {
       var content_elem = this.content_elem;
       if(ie && ie <= 9 && this.options.tag == 'tr') {
@@ -294,6 +307,7 @@
       } else {
         content_elem.innerHTML = data;
       }
+      this.applyExtraRowHeights();
     },
     getChildNodes: function(tag) {
         var child_nodes = tag.children, nodes = [];
