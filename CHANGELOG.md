@@ -1,4 +1,9 @@
 # Unreleased
+* (bugfix) Fix task output flickering and freezing on long logs. Clusterize sized its virtual-scroll
+  spacers with an inline style attribute produced by `outerHTML`, which a `style-src` Content
+  Security Policy without `'unsafe-inline'` refuses to apply. The spacers collapsed to zero height,
+  so the log viewport oscillated and stopped following new output. Heights are now applied via
+  CSSOM after insertion.
 
 # 0.45.3
 * Retry CreateOnGithubJob on transient GitHub authentication failures.
