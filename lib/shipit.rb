@@ -78,6 +78,26 @@ module Shipit
     @task_execution_strategy ||= Shipit::TaskExecutionStrategy::Default
   end
 
+  CHECKOUT_LESS_DEPLOY_SPEC_MODES = %i[disabled shadow enabled].freeze
+
+  # Controls how cacheable deploy specs are evaluated. See
+  # StackCommands#cacheable_deploy_spec. :shadow runs both the checkout-based
+  # and the git-object-database paths and reports divergence; :enabled serves
+  # from the git object database with automatic fallback to a checkout.
+  def checkout_less_deploy_spec
+    @checkout_less_deploy_spec || :disabled
+  end
+
+  def checkout_less_deploy_spec=(mode)
+    mode = mode.to_sym if mode.respond_to?(:to_sym)
+    unless CHECKOUT_LESS_DEPLOY_SPEC_MODES.include?(mode)
+      raise ArgumentError,
+            "checkout_less_deploy_spec must be one of #{CHECKOUT_LESS_DEPLOY_SPEC_MODES.inspect}, got #{mode.inspect}"
+    end
+
+    @checkout_less_deploy_spec = mode
+  end
+
   self.timeout_exit_codes = [].freeze
   self.respect_bare_shipit_file = true
 
