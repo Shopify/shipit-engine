@@ -212,6 +212,31 @@ module Shipit
       @user.refresh_from_github!
     end
 
+    test "#refresh_from_github! instruments transient GitHub failures and reraises" do
+      error = Net::OpenTimeout.new("execution expired")
+      events = []
+      subscriber = lambda do |*args|
+        events << ActiveSupport::Notifications::Event.new(*args)
+      end
+
+      Shipit.github.api.expects(:user).with(@user.github_id).raises(error)
+      Rails.logger.expects(:warn).with(regexp_matches(/Transient GitHub user refresh error/))
+
+      ActiveSupport::Notifications.subscribed(subscriber, "transient_github_refresh_error.shipit") do
+        assert_raises Net::OpenTimeout do
+          @user.refresh_from_github!
+        end
+      end
+
+      assert_equal 1, events.size
+      assert_equal @user.id, events.first.payload[:user_id]
+      assert_equal @user.github_id, events.first.payload[:github_id]
+      assert_equal @user.login, events.first.payload[:github_login]
+      assert_equal "Net::OpenTimeout", events.first.payload[:error_class]
+      assert_equal "execution expired", events.first.payload[:error_message]
+      assert_equal "refresh_github_user", events.first.payload[:operation]
+    end
+
     test "#github_api uses the user's access token" do
       assert_equal @user.github_access_token, @user.github_api.access_token
     end
