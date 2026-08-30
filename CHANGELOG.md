@@ -23,6 +23,14 @@
 # 0.44.3
 * Handle GithubOrganizationUnknown in GithubSyncJob by logging a warning and marking the stack as inaccessible.
 
+* Update the bundler discovery section to let the `sed` command work with modern macs (issue #1371)
+* Add config for `post` scripts on both deploy and rollback sections to run `on_error`
+* Updated the code to allow for post scripts to run on command errors
+* Added extra env config (FAILED/FAILURE_MESSAGE) for use in pre-/post-scripts
+* Updated README to include `dependencies.bundler.frozen`
+* Updated README to include sections on post scripts with on_error flag
+* Refactored README to use mostly pure markdown instead of HTML
+
 # 0.44.2
 * Add dry-run flag for testing environments
 

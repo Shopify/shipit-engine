@@ -26,11 +26,12 @@ module Shipit
       end
     end
 
-    attr_reader :out, :chdir, :env, :args, :pid, :timeout
+    attr_reader :out, :chdir, :env, :args, :pid, :timeout, :run_on_error
 
     def initialize(*args, chdir:, default_timeout: Shipit.default_inactivity_timeout, env: {})
-      @args, options = parse_arguments(args)
-      @timeout = parse_timeout(options['timeout'] || options[:timeout]) || default_timeout
+      @args, @options = parse_arguments(args)
+      @timeout = parse_timeout(@options['timeout'] || @options[:timeout]) || default_timeout
+      @run_on_error = (@options['on_error'] || @options[:on_error]) == true
       @env = env.transform_values { |v| v&.to_s }
       @chdir = chdir.to_s
       @timed_out = false

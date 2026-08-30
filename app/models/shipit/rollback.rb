@@ -31,7 +31,7 @@ module Shipit
     end
 
     def to_partial_path
-      'deploys/deploy'
+      'shipit/deploys/deploy'
     end
 
     def report_complete!

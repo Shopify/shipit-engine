@@ -117,6 +117,10 @@ module Shipit
       deploy_steps || cant_detect!(:deploy)
     end
 
+    def deploy_post
+      config('deploy', 'post') { [] }
+    end
+
     def deploy_variables
       Array.wrap(config('deploy', 'variables')).map(&VariableDefinition.method(:new))
     end
@@ -150,6 +154,10 @@ module Shipit
 
     def retries_on_rollback
       config('rollback', 'retries') { nil }
+    end
+
+    def rollback_post
+      config('rollback', 'post') { [] }
     end
 
     def fetch_deployed_revision_steps
