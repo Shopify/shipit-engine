@@ -48,12 +48,23 @@ module Shipit
 
           def handle
             if archive?
+              capture_labels
               stack.archive!
             elsif unarchive?
               stack.unarchive!
             end
 
             stack
+          end
+
+          def capture_labels
+            review_stack = stack.stack
+            return if review_stack.blank? || review_stack.archived?
+
+            persisted_pull_request = review_stack.pull_request
+            return if persisted_pull_request.blank?
+
+            persisted_pull_request.update!(labels: pull_request_label_names)
           end
 
           def repository

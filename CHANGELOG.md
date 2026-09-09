@@ -1,4 +1,10 @@
 # Unreleased
+* (bugfix) Capture a pull request's labels before a label change archives its review stack.
+  `LabelCapturingHandler` is registered after `LabeledHandler`/`UnlabeledHandler` and skips
+  archived stacks, so the label event that that archived the stack was never captured,
+  and the stack kept the label that tore it down. `LabeledHandler` and `UnlabeledHandler`
+  now capture the payload's labels before archiving. Already-archived stacks and the unarchive path
+  are unchanged.
 * (bugfix) Fix task output flickering and freezing on long logs. Clusterize sized its virtual-scroll
   spacers with an inline style attribute produced by `outerHTML`, which a `style-src` Content
   Security Policy without `'unsafe-inline'` refuses to apply. The spacers collapsed to zero height,

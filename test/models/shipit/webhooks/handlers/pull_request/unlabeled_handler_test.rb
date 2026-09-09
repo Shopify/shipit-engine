@@ -239,6 +239,97 @@ module Shipit
             UnlabeledHandler.new(payload).process
           end
 
+          test "captures the PullRequest labels when removing the provisioning label archives the stack" do
+            stack = create_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :allow_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_unlabeled)
+            payload["pull_request"]["labels"] = [{ "name" => "ready-for-review" }]
+
+            UnlabeledHandler.new(payload).process
+
+            stack.reload
+            assert stack.archived?, "Expected stack to be archived"
+            assert_equal(["ready-for-review"], stack.pull_request.labels)
+          end
+
+          test "captures an empty label list when removing the last label archives the stack" do
+            stack = create_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :allow_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_unlabeled)
+            payload["pull_request"]["labels"] = []
+
+            UnlabeledHandler.new(payload).process
+
+            stack.reload
+            assert stack.archived?, "Expected stack to be archived"
+            assert_empty(stack.pull_request.labels)
+          end
+
+          test "does not capture the PullRequest labels when the stack is already archived" do
+            stack = create_archived_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :allow_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_unlabeled)
+            payload["pull_request"]["labels"] = [{ "name" => "ready-for-review" }]
+
+            UnlabeledHandler.new(payload).process
+
+            assert_equal(["pull-requests-label"], stack.reload.pull_request.labels)
+          end
+
+          test "does not capture the PullRequest labels when unarchiving an existing review stack" do
+            stack = create_archived_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :allow_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_unlabeled)
+            payload["pull_request"]["labels"] = [
+              { "name" => "pull-requests-label" },
+              { "name" => "ready-for-review" }
+            ]
+
+            UnlabeledHandler.new(payload).process
+
+            stack.reload
+            assert_not stack.archived?, "Expected stack to NOT be archived"
+            assert_equal(["pull-requests-label"], stack.pull_request.labels)
+          end
+
+          test "the removed provisioning label does not survive the whole pull_request handler chain" do
+            stack = create_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :allow_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_unlabeled)
+            payload["pull_request"]["labels"] = [{ "name" => "ready-for-review" }]
+
+            Shipit::Webhooks.for_event("pull_request").each { |handler| handler.call(payload) }
+
+            stack.reload
+            assert stack.archived?, "Expected stack to be archived"
+            assert_equal(["ready-for-review"], stack.pull_request.labels)
+          end
+
           def configure_provisioning_behavior(repository:, provisioning_enabled: true, behavior: :allow_all, label: nil)
             repository.review_stacks_enabled = provisioning_enabled
             repository.provisioning_behavior = behavior
