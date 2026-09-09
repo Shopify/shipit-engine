@@ -245,6 +245,64 @@ module Shipit
             LabeledHandler.new(payload).process
           end
 
+          test "captures the PullRequest labels when adding the provisioning label archives the stack" do
+            stack = create_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :prevent_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_labeled)
+            payload["pull_request"]["labels"] = [
+              { "name" => "pull-requests-label" },
+              { "name" => "ready-for-review" }
+            ]
+
+            LabeledHandler.new(payload).process
+
+            stack.reload
+            assert stack.archived?, "Expected stack to be archived"
+            assert_equal(["pull-requests-label", "ready-for-review"], stack.pull_request.labels)
+          end
+
+          test "does not capture the PullRequest labels when the stack is already archived" do
+            stack = create_archived_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :prevent_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_labeled)
+            payload["pull_request"]["labels"] = [
+              { "name" => "pull-requests-label" },
+              { "name" => "ready-for-review" }
+            ]
+
+            LabeledHandler.new(payload).process
+
+            assert_equal(["pull-requests-label"], stack.reload.pull_request.labels)
+          end
+
+          test "does not capture the PullRequest labels when unarchiving an existing review stack" do
+            stack = create_archived_stack
+            repository = shipit_repositories(:shipit)
+            configure_provisioning_behavior(
+              repository:,
+              behavior: :prevent_with_label,
+              label: "pull-requests-label"
+            )
+            payload = payload_parsed(:pull_request_labeled)
+            payload["pull_request"]["labels"] = []
+
+            LabeledHandler.new(payload).process
+
+            stack.reload
+            assert_not stack.archived?, "Expected stack to NOT be archived"
+            assert_equal(["pull-requests-label"], stack.pull_request.labels)
+          end
+
           def configure_provisioning_behavior(repository:, provisioning_enabled: true, behavior: :allow_all, label: nil)
             repository.review_stacks_enabled = provisioning_enabled
             repository.provisioning_behavior = behavior
