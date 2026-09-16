@@ -1,4 +1,10 @@
 # Unreleased
+* (performance) Preload commit statuses and check runs when serializing deploys. `DeploySerializer`
+  embeds every commit of a deploy and `CommitSerializer` reads each commit's status, so rendering a
+  deploy issued two queries per commit. On a deploy spanning thousands of commits that is thousands of
+  round trips held open for the life of the request: in production `GET /api/stacks/:stack/tasks`
+  responses reached 119s and pushed web processes into their memory limit. The commits relation now
+  preloads, and both API index actions preload the task's user and commits.
 * (bugfix) Fix task output flickering and freezing on long logs. Clusterize sized its virtual-scroll
   spacers with an inline style attribute produced by `outerHTML`, which a `style-src` Content
   Security Policy without `'unsafe-inline'` refuses to apply. The spacers collapsed to zero height,

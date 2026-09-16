@@ -881,6 +881,19 @@ module Shipit
       assert_predicate @deploy, :error?
     end
 
+    test "#commits preloads what serializers read, so rendering a deploy costs no query per commit" do
+      deploy = shipit_deploys(:shipit_pending)
+      commits = deploy.commits.to_a
+      assert_operator commits.size, :>, 1
+
+      assert_no_queries do
+        commits.each do |commit|
+          commit.statuses.to_a
+          commit.check_runs.to_a
+        end
+      end
+    end
+
     test "#chunk_output fetches from Redis if logs not rolled up" do
       assert_equal Shipit.redis.get(@deploy.send(:output_key)), @deploy.chunk_output
       refute @deploy.rolled_up
