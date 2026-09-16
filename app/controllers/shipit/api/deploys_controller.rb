@@ -6,7 +6,7 @@ module Shipit
       require_permission :deploy, :stack
 
       def index
-        render_resources(stack.deploys_and_rollbacks)
+        render_resources(stack.deploys_and_rollbacks.preload(:user, :until_commit, :since_commit))
       end
 
       params do

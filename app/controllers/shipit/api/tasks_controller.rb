@@ -7,7 +7,7 @@ module Shipit
       require_permission :deploy, :stack, only: %i[trigger abort]
 
       def index
-        render_resources(stack.tasks)
+        render_resources(stack.tasks.preload(:user, :until_commit, :since_commit))
       end
 
       def show

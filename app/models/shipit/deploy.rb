@@ -163,7 +163,8 @@ module Shipit
     def commits
       return Commit.none unless stack
 
-      @commits ||= stack.commits.reachable.newer_than(since_commit_id).until(until_commit_id).order(id: :desc)
+      @commits ||= stack.commits.reachable.newer_than(since_commit_id).until(until_commit_id)
+                        .order(id: :desc).preload(:statuses, :check_runs)
     end
 
     def commits_since
