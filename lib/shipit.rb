@@ -99,6 +99,16 @@ module Shipit
     timeout
   end
 
+  # Maximum number of commits the API embeds in a serialized deploy. Deploys can span thousands of
+  # commits, and embedding all of them is what pushes web processes into their memory limit.
+  def api_embedded_commits_limit
+    raw = ENV.fetch('SHIPIT_API_EMBEDDED_COMMITS_LIMIT', '100')
+    limit = Integer(raw)
+    raise ArgumentError, "SHIPIT_API_EMBEDDED_COMMITS_LIMIT must be positive, got #{raw.inspect}" if limit <= 0
+
+    limit
+  end
+
   def app_name
     @app_name ||= secrets.app_name || Rails.application.class.name.split(':').first || 'Shipit'
   end

@@ -23,6 +23,21 @@ module Shipit
         end
       end
 
+      test "#index caps the commits embedded in each deploy" do
+        Shipit.stubs(:api_embedded_commits_limit).returns(1)
+
+        get :index, params: { stack_id: @stack.to_param }
+        assert_response :ok
+
+        deploys = JSON.parse(response.body).select { |task| task.key?('commits') }
+        assert_predicate deploys, :any?
+        deploys.each { |deploy| assert_operator deploy['commits'].size, :<=, 1 }
+
+        truncated = deploys.select { |deploy| deploy['commits_truncated'] }
+        assert_predicate truncated, :any?
+        truncated.each { |deploy| assert_operator deploy['commits_count'], :>, 1 }
+      end
+
       test "#create triggers a new deploy for the stack" do
         assert_difference -> { @stack.deploys.count }, 1 do
           post :create, params: { stack_id: @stack.to_param, sha: @commit.sha }

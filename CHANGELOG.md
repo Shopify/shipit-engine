@@ -1,4 +1,13 @@
 # Unreleased
+* (performance) Cap the commits the API embeds in a serialized deploy. `DeploySerializer` embedded
+  every commit of a deploy, so a single page of `GET /api/stacks/:stack/tasks` held every commit,
+  status and check run of up to 30 deploys in memory for the life of the request, which is what
+  pushed web processes into their memory limit. Preloading those associations in 0.45.4 removed the
+  queries but not the resident objects. API responses now embed at most
+  `Shipit.api_embedded_commits_limit` of the most recent commits (default 100, tunable with
+  `SHIPIT_API_EMBEDDED_COMMITS_LIMIT`) and carry `commits_count` and `commits_truncated`. The cap is
+  applied through the serialization context by `Shipit::Api::BaseController`, so hook payloads,
+  which serialize deploys in the worker that emits them, still carry every commit.
 
 # 0.45.4
 * (performance) Preload commit statuses and check runs when serializing deploys. `DeploySerializer`
