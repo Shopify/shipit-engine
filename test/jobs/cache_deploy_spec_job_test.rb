@@ -10,12 +10,11 @@ module Shipit
       @job = CacheDeploySpecJob.new
     end
 
-    test "#perform checkout the repository to the last recorded commit and cache the deploy spec" do
+    test "#perform evaluates the cacheable spec for the last recorded commit and caches it" do
       @stack.update!(cached_deploy_spec: DeploySpec.new('review' => { 'checklist' => %w[foo bar] }))
 
-      dir = Pathname(Dir.tmpdir)
-      StackCommands.any_instance.expects(:with_temporary_working_directory)
-                   .with(commit: @last_commit, recursive: false).yields(dir)
+      StackCommands.any_instance.expects(:cacheable_deploy_spec)
+                   .with(commit: @last_commit).returns(DeploySpec.new({}))
 
       assert_equal %w[foo bar], @stack.checklist
       @job.perform(@stack)
@@ -46,8 +45,8 @@ module Shipit
       @stack.stubs(:commits).returns(stub(reachable:))
       @stack.stubs(:update!) # side-effect callbacks are irrelevant to this test
 
-      StackCommands.any_instance.expects(:with_temporary_working_directory)
-                   .with(commit: @last_commit, recursive: false).yields(Pathname(Dir.tmpdir))
+      StackCommands.any_instance.expects(:cacheable_deploy_spec)
+                   .with(commit: @last_commit).returns(DeploySpec.new({}))
 
       assert_enqueued_with(job: CacheDeploySpecJob, args: [@stack]) do
         @job.perform(@stack)
@@ -55,8 +54,8 @@ module Shipit
     end
 
     test "#perform does not re-enqueue itself when the head is unchanged" do
-      StackCommands.any_instance.expects(:with_temporary_working_directory)
-                   .with(commit: @last_commit, recursive: false).yields(Pathname(Dir.tmpdir))
+      StackCommands.any_instance.expects(:cacheable_deploy_spec)
+                   .with(commit: @last_commit).returns(DeploySpec.new({}))
 
       assert_no_enqueued_jobs(only: CacheDeploySpecJob) do
         @job.perform(@stack)
