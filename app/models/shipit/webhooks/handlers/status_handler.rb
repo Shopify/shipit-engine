@@ -18,7 +18,7 @@ module Shipit
         end
 
         def process
-          Commit.where(sha: params.sha).each do |commit|
+          Commit.where(sha: params.sha, stack_id: stacks.select(:id)).each do |commit|
             commit.create_status_from_github!(params)
           end
         end

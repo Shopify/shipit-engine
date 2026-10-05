@@ -44,7 +44,7 @@ module Shipit
 
       commit = shipit_commits(:first)
 
-      body = JSON.parse(payload(:status_master)).merge(repository_params).to_json
+      body = JSON.parse(payload(:status_master)).merge(repository_params.deep_stringify_keys).to_json
       assert_difference 'commit.statuses.count', 1 do
         post :create, body:, as: :json
       end
@@ -56,6 +56,24 @@ module Shipit
       assert_equal status_payload['description'], status.description
       assert_equal status_payload['context'], status.context
       assert_equal status_payload['created_at'], status.created_at.iso8601
+    end
+
+    test ":status only updates matching commits in the payload repository" do
+      request.headers['X-Github-Event'] = 'status'
+
+      commit = shipit_commits(:first)
+      canary_commit = shipit_commits(:canaries_first)
+      other_commit = shipit_commits(:undeployed_stack_first)
+      other_commit.update!(sha: commit.sha)
+
+      body = JSON.parse(payload(:status_master)).merge(repository_params.deep_stringify_keys).to_json
+
+      assert_difference [-> { commit.statuses.count }, -> { canary_commit.statuses.count }], 1 do
+        assert_no_difference -> { other_commit.statuses.count } do
+          post :create, body:, as: :json
+          assert_response :ok
+        end
+      end
     end
 
     test ":state with a unexisting commit respond with 200 OK" do
@@ -214,7 +232,7 @@ module Shipit
     end
 
     def repository_params
-      { repository: { owner: { login: 'shopify' } } }
+      { repository: { full_name: @stack.github_repo_name, owner: { login: 'shopify' } } }
     end
 
     def george
