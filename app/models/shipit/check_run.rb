@@ -19,9 +19,16 @@ module Shipit
 
     class << self
       def create_or_update_by!(selector:, attributes: {})
-        create!(selector.merge(attributes))
-      rescue ActiveRecord::RecordNotUnique
-        record = find_by!(selector)
+        record = find_by(selector)
+        unless record
+          begin
+            return transaction(requires_new: true) { create!(selector.merge(attributes)) }
+          rescue ActiveRecord::RecordNotUnique
+            # A concurrent insert may have created the run after the initial lookup.
+            # Locking also makes this a current read on MySQL within an enclosing transaction.
+            record = lock.find_by!(selector)
+          end
+        end
 
         # Checkruns can jump between states and conclusions, and the github timestamps are low precision and unreliable.
         # Since there's a conflict and the webhook seems older, enqueue a refresh.

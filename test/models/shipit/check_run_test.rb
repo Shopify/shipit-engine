@@ -73,6 +73,74 @@ module Shipit
       end
     end
 
+    test ".create_or_update_from_github! updates existing runs without SQL errors" do
+      completed_at = Time.now
+      check_run = @commit.check_runs.create_or_update_from_github!(
+        @stack.id,
+        github_check_run(conclusion: nil, completed_at:)
+      )
+      sql_errors = []
+      subscriber = lambda do |event|
+        sql_errors << event.payload[:exception] if event.payload[:exception]
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, 'sql.active_record') do
+        assert_no_difference -> { @commit.check_runs.count } do
+          @commit.check_runs.create_or_update_from_github!(
+            @stack.id,
+            github_check_run(conclusion: 'success', completed_at: completed_at + 1.minute)
+          )
+        end
+      end
+
+      assert_equal 'success', check_run.reload.conclusion
+      assert_empty sql_errors
+    end
+
+    test ".create_or_update_from_github! scopes matching GitHub IDs to the commit" do
+      check_run = nil
+      assert_difference -> { CheckRun.where(github_id: @check_run.github_id).count }, +1 do
+        check_run = @commit.check_runs.create_or_update_from_github!(
+          @stack.id,
+          github_check_run(conclusion: 'failure')
+        )
+      end
+
+      @commit.check_runs.create_or_update_from_github!(
+        @stack.id,
+        github_check_run(conclusion: 'cancelled')
+      )
+
+      assert_equal @commit.id, check_run.commit_id
+      assert_equal 'cancelled', check_run.reload.conclusion
+      assert_equal 'success', @check_run.reload.conclusion
+    end
+
+    test ".create_or_update_from_github! handles a concurrent insert inside a transaction" do
+      completed_at = Time.now
+      check_run = @commit.check_runs.create_or_update_from_github!(
+        @stack.id,
+        github_check_run(conclusion: 'success', completed_at:)
+      )
+      CheckRun.expects(:find_by).with({ github_id: check_run.github_id }).returns(nil)
+
+      result = nil
+      CheckRun.transaction(requires_new: true) do
+        assert_no_difference -> { @commit.check_runs.count } do
+          assert_enqueued_with(job: RefreshCheckRunsJob, args: [{ commit_id: @commit.id }]) do
+            result = @commit.check_runs.create_or_update_from_github!(
+              @stack.id,
+              github_check_run(conclusion: 'failure', completed_at: completed_at - 1.minute)
+            )
+          end
+        end
+      end
+
+      assert_equal check_run.id, result.id
+      assert_equal 'failure', check_run.reload.conclusion
+      assert_equal 'success', @check_run.reload.conclusion
+    end
+
     test ".create_or_update_from_github! enqueues refresh and updates record when new statuses have stale timestamps" do
       completed_at = Time.now
       assert_difference -> { @commit.check_runs.count }, +1 do
