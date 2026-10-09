@@ -1,6 +1,10 @@
 # Unreleased
+
+# 0.45.5
 * (bugfix) Update existing check runs without first attempting a duplicate insert. Concurrent
   creations still update the existing run, and a savepoint keeps enclosing transactions usable.
+* (bugfix) Scope status webhooks to their repository so commits with the same SHA in other
+  repositories are not updated.
 
 # 0.45.4
 * (performance) Preload commit statuses and check runs when serializing deploys. `DeploySerializer`
