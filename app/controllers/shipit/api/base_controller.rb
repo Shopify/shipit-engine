@@ -45,6 +45,14 @@ module Shipit
         nil
       end
 
+      # Cap the commits embedded in a serialized deploy, for API responses only. A deploy can span
+      # thousands of commits, and holding all of them with their statuses and check runs is what
+      # pushes web processes into their memory limit. Hook payloads serialize the same objects with
+      # no context and stay uncapped, in the worker that emits them.
+      def default_serializer_options
+        { context: { commits_limit: Shipit.api_embedded_commits_limit } }
+      end
+
       def authenticate_api_client
         @current_api_client = if Shipit.disable_api_authentication
                                 UnlimitedApiClient.new
