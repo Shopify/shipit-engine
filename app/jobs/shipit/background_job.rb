@@ -8,8 +8,8 @@ module Shipit
 
     DEFAULT_RETRY_TIME_IN_SECONDS = 30
 
-    # Write actions can sometimes fail intermittently, particulary for large and/or busy repositories
-    retry_on(Octokit::ServerError)
+    # Allow hours for GitHub outages to recover while still raising after the last attempt.
+    retry_on(Octokit::ServerError, wait: :polynomially_longer, attempts: 10)
 
     rescue_from(Octokit::TooManyRequests, Octokit::AbuseDetected) do |exception|
       retry_job wait: exception.response_headers.fetch("Retry-After", DEFAULT_RETRY_TIME_IN_SECONDS).to_i.seconds
