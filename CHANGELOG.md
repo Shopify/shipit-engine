@@ -1,4 +1,6 @@
 # Unreleased
+* (bugfix) Retry GitHub server errors in background jobs with polynomial backoff for ten attempts
+  (about 4.3 hours plus jitter), retaining error reporting when retries are exhausted.
 
 # 0.45.5
 * (bugfix) Update existing check runs without first attempting a duplicate insert. Concurrent
