@@ -205,6 +205,18 @@ module Shipit
       end
     end
 
+    test ".create_or_update_from_github! persists a details_url longer than 255 characters" do
+      # Some integrations link to log files whose path embeds a long workspace name.
+      details_url = "https://logs.example.com/ci/#{'very-long-workspace-name/' * 16}build.log"
+      assert_operator details_url.length, :>, 255
+
+      assert_difference -> { @commit.check_runs.count }, +1 do
+        @commit.check_runs.create_or_update_from_github!(@stack.id, github_check_run(details_url:))
+      end
+
+      assert_equal details_url, @commit.check_runs.find_by!(github_id: 424_242).details_url
+    end
+
     {
       nil => 'pending',
       'success' => 'success',
@@ -222,7 +234,12 @@ module Shipit
 
     private
 
-    def github_check_run(conclusion: 'success', completed_at: Time.now, started_at: Time.now - 1.minute)
+    def github_check_run(
+      conclusion: 'success',
+      completed_at: Time.now,
+      started_at: Time.now - 1.minute,
+      details_url: 'http://example.com/details'
+    )
       OpenStruct.new(
         id: 424_242,
         conclusion:,
@@ -231,7 +248,7 @@ module Shipit
         ),
         name: 'Test Suite',
         html_url: 'http://example.com/run',
-        details_url: 'http://example.com/details',
+        details_url:,
         completed_at:,
         started_at:
       )

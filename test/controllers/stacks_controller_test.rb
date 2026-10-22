@@ -109,6 +109,44 @@ module Shipit
       assert_select 'a[href="http://google.com"]'
     end
 
+    test "#show displays the external lock banner instead of the CD delayed banner when deployment checks fail" do
+      deployment_checks = Module.new do
+        def self.call(_stack)
+          false
+        end
+
+        def self.message(_stack)
+          "Deploys were locked via Infra Central"
+        end
+      end
+      Shipit.stubs(:deployment_checks).returns(deployment_checks)
+      @stack.update!(continuous_deployment: true, continuous_delivery_delayed_since: Time.now.utc)
+      assert_predicate @stack, :continuous_delivery_delayed?
+
+      get :show, params: { id: @stack.to_param }
+
+      assert_response :ok
+      assert_select ".banner__title", text: "Stack has been locked by external system!"
+      assert_select ".banner__content", text: /Deploys were locked via Infra Central/
+      assert_select ".banner__title", text: "Continuous Delivery Delayed!", count: 0
+    end
+
+    test "#show displays the CD delayed banner when deployment checks pass" do
+      deployment_checks = Module.new do
+        def self.call(_stack)
+          true
+        end
+      end
+      Shipit.stubs(:deployment_checks).returns(deployment_checks)
+      @stack.update!(continuous_deployment: true, continuous_delivery_delayed_since: Time.now.utc)
+
+      get :show, params: { id: @stack.to_param }
+
+      assert_response :ok
+      assert_select ".banner__title", text: "Continuous Delivery Delayed!"
+      assert_select ".banner__title", text: "Stack has been locked by external system!", count: 0
+    end
+
     test "#create creates a Stack, queues a job to setup webhooks and redirects to it" do
       assert_difference "Stack.count" do
         post :create, params: {

@@ -8,6 +8,13 @@
 * (bugfix) Scope status webhooks to their repository so commits with the same SHA in other
   repositories are not updated.
 
+# 0.45.5
+* Fix order of banners when global lock is enabled
+* (bugfix) Widen `check_runs.details_url` and `check_runs.html_url` from 255 to 2048 characters. On MySQL, a
+  check run with a longer `details_url` raised `ActiveRecord::ValueTooLong`, and `Shipit::Commit#refresh_check_runs!`
+  stopped before it refreshed the remaining check runs of that commit. Install the new migration with
+  `rake shipit:install:migrations db:migrate`.
+
 # 0.45.4
 * (performance) Preload commit statuses and check runs when serializing deploys. `DeploySerializer`
   embeds every commit of a deploy and `CommitSerializer` reads each commit's status, so rendering a
