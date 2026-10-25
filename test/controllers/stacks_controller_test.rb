@@ -83,6 +83,15 @@ module Shipit
       assert_response :ok
     end
 
+    test "#show links deploys, rollbacks, and tasks to their own pages" do
+      get :show, params: { id: @stack.to_param }
+
+      assert_response :ok
+      assert_select ".commit-list a[href='#{stack_deploy_path(@stack, shipit_tasks(:shipit))}']"
+      assert_select ".commit-list a[href='#{stack_deploy_path(@stack, shipit_tasks(:shipit_rollback))}']"
+      assert_select ".commit-list a[href='#{stack_task_path(@stack, shipit_tasks(:shipit_restart))}']"
+    end
+
     test "#show with faulty and validating deploys is success" do
       get :show, params: { id: shipit_stacks(:shipit_canaries).to_param }
       assert_response :ok
