@@ -43,6 +43,7 @@ module Shipit
     validates :owner, :name, presence: true, ascii_only: true
     validates :owner, format: { with: /\A[a-z0-9_\-.]+\z/ }, length: { maximum: OWNER_MAX_SIZE }
     validates :name, format: { with: /\A[a-z0-9_\-.]+\z/ }, length: { maximum: NAME_MAX_SIZE }
+    validate :owner_has_configured_github_app
 
     has_many :stacks, dependent: :destroy
     has_many :review_stacks, dependent: :destroy
@@ -96,6 +97,16 @@ module Shipit
     end
 
     protected
+
+    def owner_has_configured_github_app
+      return if owner.blank?
+
+      organizations = Shipit.github_organizations
+      return if organizations.include?(nil) # Legacy single-app configuration supports any organization.
+      return if organizations.any? { |organization| organization.to_s.casecmp?(owner) }
+
+      errors.add(:owner, 'is not configured with a GitHub App')
+    end
 
     def github_app
       Shipit.github(organization: owner)

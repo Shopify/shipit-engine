@@ -248,6 +248,15 @@ module Shipit
       end
     end
 
+    test "cannot create a stack for an unconfigured GitHub organization" do
+      Shipit.stubs(:github_organizations).returns(%w[shopify])
+      stack = Stack.new(repository: Repository.new(owner: 'unknown-org', name: 'app'), branch: 'main')
+
+      assert_not stack.save
+      assert_not_predicate stack, :persisted?
+      assert_includes stack.repository.errors[:owner], 'is not configured with a GitHub App'
+    end
+
     test "#destroy also destroy associated GithubHooks" do
       assert_difference -> { GithubHook.count }, -2 do
         shipit_stacks(:shipit).destroy
