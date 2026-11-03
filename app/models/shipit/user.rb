@@ -107,7 +107,11 @@ module Shipit
       return unless github_user
 
       if github_user.name.nil? && github_user.rels && github_user.rels[:self]
-        github_user = github_user.rels[:self].get.data
+        begin
+          github_user = github_user.rels[:self].get.data
+        rescue Octokit::NotFound
+          # Keep the commit payload when GitHub cannot resolve the profile URL.
+        end
       end
 
       assign_attributes(

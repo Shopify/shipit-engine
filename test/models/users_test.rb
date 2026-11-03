@@ -72,6 +72,28 @@ module Shipit
       assert_equal @minimal_github_user.login, user.login
     end
 
+    test "find_or_create_author_from_github_commit falls back when the profile URL is not found" do
+      Shipit.preferred_org_emails = [].freeze
+      profile_link = Object.new
+      profile_link.define_singleton_method(:get) { raise Octokit::NotFound }
+      github_user = stub(
+        id: 44,
+        name: nil,
+        login: 'Copilot',
+        email: nil,
+        avatar_url: 'https://avatars.githubusercontent.com/u/44?v=3',
+        url: 'https://api.github.com/users/Copilot',
+        rels: { self: profile_link }
+      )
+      github_commit = stub(author: github_user, commit: stub(message: 'Automated commit'))
+
+      user = User.find_or_create_author_from_github_commit(github_commit)
+
+      assert_equal 44, user.github_id
+      assert_equal 'Copilot', user.login
+      assert_equal 'Copilot', user.name
+    end
+
     test "find_or_create_from_github selects any email when org email is unspecified" do
       github_org_user = stub(
         id: 42,
