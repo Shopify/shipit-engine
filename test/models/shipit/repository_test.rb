@@ -39,6 +39,31 @@ module Shipit
       assert_equal 'george', @repository.owner
     end
 
+    test "owner must have a configured GitHub App in multi-app setups" do
+      Shipit.stubs(:github_organizations).returns(%w[shopify other-org])
+
+      repository = Repository.new(owner: 'unknown-org', name: 'app')
+
+      refute_predicate repository, :valid?
+      assert_equal ['is not configured with a GitHub App'], repository.errors[:owner]
+    end
+
+    test "configured GitHub App organization matching is case insensitive" do
+      Shipit.stubs(:github_organizations).returns(['Shopify'])
+
+      repository = Repository.new(owner: 'SHOPIFY', name: 'app')
+
+      assert_predicate repository, :valid?
+    end
+
+    test "legacy single-app configuration supports any organization" do
+      Shipit.stubs(:github_organizations).returns([nil])
+
+      repository = Repository.new(owner: 'unknown-org', name: 'app')
+
+      assert_predicate repository, :valid?
+    end
+
     test "name is automatically downcased" do
       @repository.name = 'Cyclim.se'
       assert_equal 'cyclim.se', @repository.name
