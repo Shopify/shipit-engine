@@ -335,10 +335,31 @@ module Shipit
         created_at: 1.day.ago
       )
       Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns([status])
+      Shipit.github.api.expects(:last_response).returns(stub(rels: {}))
       assert_difference '@commit.statuses.count', 1 do
         @commit.refresh_statuses!
       end
       assert_equal 'success', @commit.statuses.first.state
+    end
+
+    test "refresh_statuses! handles paginated responses from github" do
+      first_page = [
+        mock(state: 'success', description: nil, context: 'ci/a', target_url: 'http://example.com/a', created_at: 1.day.ago),
+        mock(state: 'pending', description: nil, context: 'ci/b', target_url: 'http://example.com/b', created_at: 1.day.ago)
+      ]
+      second_page = [
+        mock(state: 'failure', description: nil, context: 'ci/c', target_url: 'http://example.com/c', created_at: 1.day.ago)
+      ]
+      next_link = stub(href: 'https://api.github.com/repos/test/repo/commits/abc/statuses?page=2')
+
+      Shipit.github.api.expects(:statuses).with(@stack.github_repo_name, @commit.sha, per_page: 100).returns(first_page)
+      Shipit.github.api.expects(:get).with(next_link.href).returns(second_page)
+      Shipit.github.api.stubs(:last_response).returns(stub(rels: { next: next_link })).then.returns(stub(rels: {}))
+
+      assert_difference '@commit.statuses.count', 3 do
+        @commit.refresh_statuses!
+      end
+      assert_equal 'failure', @commit.statuses.find_by(context: 'ci/c')&.state
     end
 
     test "refresh_check_runs! pull state from github" do

@@ -141,7 +141,7 @@ module Shipit
         )]
       ))
 
-      Shipit.github.api.expects(:last_response).returns(response)
+      Shipit.github.api.expects(:last_response).twice.returns(response)
       Shipit.github.api.expects(:check_runs).with(@stack.github_repo_name, head_sha, per_page: 100).returns(response.data)
       merge_request.refresh!
 

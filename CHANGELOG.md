@@ -1,6 +1,7 @@
 # Unreleased
 * (bugfix) Retry GitHub server errors in background jobs with polynomial backoff for ten attempts
   (about 4.3 hours plus jitter), retaining error reporting when retries are exhausted.
+* (bugfix) Fetch every page of a commit's statuses from GitHub, instead of only the first 100.
 
 # 0.45.5
 * (bugfix) Update existing check runs without first attempting a duplicate insert. Concurrent

@@ -157,8 +157,17 @@ module Shipit
       github_statuses = stack.handle_github_redirections do
         stack.github_api.statuses(github_repo_name, sha, per_page: 100)
       end
-      github_statuses.each do |status|
-        create_status_from_github!(status)
+
+      loop do
+        next_page = stack.github_api.last_response.rels[:next]
+        github_statuses.each do |status|
+          create_status_from_github!(status)
+        end
+        break if next_page.nil?
+
+        github_statuses = stack.handle_github_redirections do
+          stack.github_api.get(next_page.href)
+        end
       end
     end
 
