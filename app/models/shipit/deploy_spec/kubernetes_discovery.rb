@@ -12,7 +12,7 @@ module Shipit
       end
 
       def discover_task_definitions
-        if kube_config.present?
+        if kubernetes_target?
           {
             'restart' => {
               'action' => "Restart application",
@@ -50,6 +50,13 @@ module Shipit
 
       def kube_config
         @kube_config ||= config('kubernetes') || {}
+      end
+
+      # `kubernetes-restart` needs both the namespace and the context. A
+      # `kubernetes` section without them (for example on a stack that
+      # deploys another way) offers no restart task.
+      def kubernetes_target?
+        kube_config['namespace'].present? && kube_config['context'].present?
       end
 
       def kubernetes_restart_cmd

@@ -1,4 +1,7 @@
 # Unreleased
+* (bugfix) Offer the Kubernetes `restart` task only when the `kubernetes` section names both `namespace`
+  and `context`. A `kubernetes` section without them raised `KeyError` while the deploy spec was cached,
+  so `CacheDeploySpecJob` failed and retried, and the stack kept its old cached deploy spec.
 * (bugfix) Retry GitHub server errors in background jobs with polynomial backoff for ten attempts
   (about 4.3 hours plus jitter), retaining error reporting when retries are exhausted.
 
