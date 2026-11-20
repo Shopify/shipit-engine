@@ -286,6 +286,55 @@ module Shipit
       assert_equal tasks, @spec.discover_task_definitions
     end
 
+    test "#discover_task_definitions skips the kubernetes restart command if `kubernetes` has no namespace" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'context' => 'bar',
+          'timeout' => '20m'
+        }
+      )
+      assert_equal({}, @spec.discover_task_definitions)
+    end
+
+    test "#discover_task_definitions skips the kubernetes restart command if `kubernetes` has no context" do
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'namespace' => 'foo'
+        }
+      )
+      assert_equal({}, @spec.discover_task_definitions)
+    end
+
+    test "#discover_task_definitions keeps the user defined tasks if `kubernetes` has no namespace" do
+      tasks = {
+        'some-other-task' => {
+          'action' => 'Do something else',
+          'description' => 'Eat some chips!',
+          'steps' => ['echo chips']
+        }
+      }
+      @spec.stubs(:load_config).returns(
+        'kubernetes' => {
+          'timeout' => '20m'
+        },
+        'tasks' => tasks
+      )
+      assert_equal tasks, @spec.discover_task_definitions
+    end
+
+    test "#cacheable caches a spec with no kubernetes restart task if `kubernetes` has no namespace" do
+      @spec.stubs(:load_config).returns(
+        'deploy' => { 'override' => ['./deploy'] },
+        'rollback' => { 'override' => ['./rollback'] },
+        'kubernetes' => {
+          'context' => 'bar'
+        }
+      )
+      cached_spec = DeploySpec.load(DeploySpec.dump(@spec))
+      assert_equal ['./deploy'], cached_spec.deploy_steps
+      assert_equal({}, cached_spec.config('tasks'))
+    end
+
     test "#discover_task_definitions include the user defined restart command even if `kubernetes` is present" do
       tasks = {
         'restart' => {
